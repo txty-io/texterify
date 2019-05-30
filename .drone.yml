@@ -1,0 +1,8 @@
+kind: pipeline
+name: default
+
+steps:
+- name: app
+  image: chrztoph/texterify:1
+  commands:
+  - rails test
