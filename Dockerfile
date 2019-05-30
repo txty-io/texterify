@@ -54,6 +54,6 @@ RUN apt-get update && apt-get install yarn -y
 COPY . .
 
 # Compile assets.
-RUN bundle exec rails assets:precompile
+RUN SECRET_KEY_BASE=`bin/rails secret` bundle exec rails assets:precompile
 
 CMD ["bundle", "exec", "rails", "server"]
