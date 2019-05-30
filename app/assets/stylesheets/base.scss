@@ -1,0 +1,44 @@
+@import "base/*";
+@import "variables";
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  color: $main-color;
+  font-size: 26px;
+}
+
+ul, ol {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
+
+footer {
+  ul {
+    li {
+      list-style-type: none;
+      margin-bottom: 10px;
+
+      a {
+        &:hover {
+          color: rgba(0, 0, 0, 0.8);
+        }
+
+        color: #888;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

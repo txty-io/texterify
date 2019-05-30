@@ -1,0 +1,36 @@
+class Language < ApplicationRecord
+  belongs_to :project
+  belongs_to :country_code, optional: true
+  belongs_to :parent, class_name: 'Language', optional: true
+  has_many :children, class_name: 'Language', foreign_key: 'parent_id', dependent: :nullify
+  has_many :keys, through: :project
+  has_many :translations, dependent: :destroy
+  has_many :language_project_columns, dependent: :delete_all
+  has_many :project_columns, through: :language_project_columns
+
+  validate :no_duplicate_language_name_for_project
+  validates_format_of :name, with: /\A[A-Za-z_][A-Za-z0-9_]*\z/
+
+  before_validation :strip_leading_and_trailing_whitespace
+
+  # Validates that there no languages with the same name
+  # for a project.
+  def no_duplicate_language_name_for_project
+    project = Project.find(project_id)
+    language = project.languages.find_by(name: name)
+
+    if language.present?
+      updating_language = language.id == self.id
+      
+      if !updating_language
+        errors.add(:name, 'Name is already in use.')
+      end
+    end
+  end
+
+  protected
+
+  def strip_leading_and_trailing_whitespace
+    self.name = self.name.strip
+  end
+end

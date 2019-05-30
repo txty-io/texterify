@@ -1,0 +1,40 @@
+.component-top-bar {
+  a {
+    color: rgba(0, 0, 0, 0.8);
+
+    &:hover,
+    &:active,
+    &:focus {
+      text-decoration: none;
+    }
+  }
+
+  .nav-link {
+    margin-right: 25px;
+    color: #888;
+
+    &:hover {
+      color: rgba(0, 0, 0, 0.8);
+    }
+  }
+
+  &.white {
+    a {
+      color: rgba(255, 255, 255, 0.85);
+
+      &:hover {
+        color: rgba(255, 255, 255, 1);
+      }
+    }
+
+    p {
+      color: #fff;
+    }
+
+    .nav-link {
+      a {
+        color: #fff;
+      }
+    }
+  }
+}

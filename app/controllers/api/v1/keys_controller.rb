@@ -1,0 +1,113 @@
+class Api::V1::KeysController < Api::V1::ApiController
+  def info_for_paper_trail
+    { project_id: params[:project_id] }
+  end
+
+  def index
+    project = current_user.projects.find(params[:project_id])
+
+    page = 0
+    if params[:page].present?
+      page = (params[:page].to_i || 1) - 1
+      page = 0 if page < 0
+    end
+
+    per_page = 10
+    if params[:per_page].present?
+      per_page = params[:per_page].to_i || 10
+      per_page = 10 if per_page < 1
+    end
+
+    keys = project.keys.order(:name)
+    if params[:search]
+      keys = project.keys.left_outer_joins(:translations).where(
+        "name ilike :search or description ilike :search",
+        search: "%#{params[:search]}%"
+      ).or(project.keys.left_outer_joins(:translations).where(
+        "translations.content ilike :search",
+        search: "%#{params[:search]}%"
+      )).order(:name).distinct
+    end
+
+    options = {}
+    options[:meta] = { total: keys.count }
+    options[:include] = [:translations, :'translations.language']
+    render json: KeySerializer.new(
+      keys.offset(page * per_page).limit(per_page),
+      options
+    ).serialized_json
+  end
+
+  def create
+    if params[:name].blank?
+      render json: {
+        error: true,
+        message: 'Missing required parameters'
+      }, status: :bad_request
+      return
+    end
+
+    project = current_user.projects.find(params[:project_id])
+
+    key = Key.new(key_params)
+    key.project = project
+
+    if key.save
+      render json: key
+    else
+      errors = []
+      key.errors.each do |error|
+        errors.push(
+          details: key.errors[error][0]
+        )
+      end
+      render json: {
+        errors: errors
+      }, status: :bad_request
+    end
+  end
+
+  def update
+    project = current_user.projects.find(params[:project_id])
+    key = project.keys.find(params[:id])
+
+    if key.update(key_params)
+      render json: {
+        message: 'key updated'
+      }
+      return
+    else
+      render json: {
+        error: true,
+        errors: key.errors.as_json
+      }, status: :bad_request
+      return
+    end
+  end
+
+  def destroy
+    project = current_user.projects.find(params[:project_id])
+    key_to_destroy = project.keys.find(params[:key][:id])
+    key_to_destroy.destroy
+
+    render json: {
+      message: 'Key deleted'
+    }
+  end
+
+  def destroy_multiple
+    project = current_user.projects.find(params[:project_id])
+    keys_to_destroy = project.keys.find(params[:keys])
+    project.keys.delete(keys_to_destroy)
+
+    render json: {
+      message: 'Keys deleted'
+    }
+  end
+
+  private
+
+  def key_params
+    params.require(:key).permit(:name, :description)
+  end
+end

@@ -1,0 +1,15 @@
+.link-group {
+  margin-right: 75px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  a {
+    color: #999;
+  }
+
+  h3 {
+    color: #866e9a;
+  }
+}

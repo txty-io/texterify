@@ -1,0 +1,27 @@
+.dashboard-main-menu {
+  margin-left: 50px;
+
+  li {
+    a {
+      color: #333;
+      text-decoration: none;
+      padding: 6px 20px;
+      border-radius: 4px;
+      color: #fff;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+    }
+  }
+}
+
+.dashboard-sidebar-menu {
+  .nav-text {
+    display: inline-block;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}

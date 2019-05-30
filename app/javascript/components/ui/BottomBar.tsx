@@ -1,0 +1,110 @@
+import { Button, Dropdown, Icon, Menu } from "antd";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { Link } from "react-router-dom";
+
+import { Routes } from "../routing/Routes";
+import { Constants } from "./Constants";
+
+interface IProps { }
+interface IState {
+  currentLanguageKey: string;
+  keyDisplayNameMapping: object;
+}
+
+class BottomBar extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
+    super(props);
+
+    this.state = {
+      currentLanguageKey: "en",
+      keyDisplayNameMapping: {
+        en: "English",
+        de: "German"
+      }
+    };
+  }
+
+  render(): JSX.Element {
+    const menu: any = (
+      <Menu onClick={this.handleLanguageMenuClick}>
+        <Menu.Item key="en">{this.getFlagElement("en")} English</Menu.Item>
+        <Menu.Item key="de">{this.getFlagElement("de")} German</Menu.Item>
+      </Menu>
+    );
+
+    return (
+      <footer
+        style={{
+          width: "100%",
+          padding: "50px 24px",
+          borderTop: "1px solid #dedede",
+          display: "flex",
+          justifyItems: "center",
+          background: "#f9f9f9"
+        }}
+      >
+        <div style={{ maxWidth: 1040, display: "flex", flexGrow: 1, margin: "auto" }}>
+          <div style={{ flexGrow: 1 }}>
+            <h1 style={{ marginBottom: 0, fontSize: 20, color: "#a07cbd" }}>Texterify</h1>
+            <p>The easy way to localize.</p>
+            <p style={{ fontSize: 12, color: "#999" }}>Created with love by Chrztoph.</p>
+
+            <Dropdown overlay={menu}>
+              <Button style={{ marginTop: 10 }}>
+                {this.getFlagElement(this.state.currentLanguageKey)}
+                {this.getCurrentLanguageDisplayName()}
+                <Icon type="down" />
+              </Button>
+            </Dropdown>
+          </div>
+          <div className="link-group">
+            <h3>Product</h3>
+            <ul>
+              <li><Link to={Routes.PRODUCT.FEATURES}>Features</Link></li>
+              <li><Link to={Routes.AUTH.LOGIN}>Login</Link></li>
+              <li><Link to={Routes.AUTH.SIGNUP}>Signup</Link></li>
+            </ul>
+          </div>
+          <div className="link-group">
+            <h3>Company</h3>
+            <ul>
+              <li><Link to={Routes.OTHER.ABOUT}>About</Link></li>
+              <li><Link to={Routes.OTHER.CONTACT}>Contact</Link></li>
+            </ul>
+          </div>
+          <div className="link-group">
+            <h3>Resources</h3>
+            <ul>
+              <li><Link to={Routes.OTHER.TERMS_OF_SERVICE}>Terms of service</Link></li>
+              <li><Link to={Routes.OTHER.PRIVACY_POLICY}>Privacy policy</Link></li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+    );
+  }
+
+  private getFlagElement = (key: string): JSX.Element => {
+    const flagCode: string = {
+      en: "us",
+      de: "de"
+    }[key];
+
+    return (
+      <span className={`flag-icon flag-icon-${flagCode}`} style={{ marginRight: 10 }} />
+    );
+  }
+
+  private getCurrentLanguageDisplayName = (): string => {
+    return this.state.keyDisplayNameMapping[this.state.currentLanguageKey];
+  }
+
+  private handleLanguageMenuClick = (e: any): void => {
+    this.setState({
+      currentLanguageKey: e.key
+    });
+  }
+}
+
+export { BottomBar };
