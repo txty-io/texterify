@@ -5,4 +5,11 @@ steps:
 - name: app
   image: chrztoph/texterify:1
   commands:
-  - rails test
+  - bin/rails db:create
+  - bin/rails db:migrate
+  - bin/rails db:seed
+  - bin/rails test
+
+services:
+- name: postgres
+  image: postgres
