@@ -1,0 +1,14 @@
+language: ruby
+
+env:
+  - SECRET_KEY_BASE=8dfc55709e6daaf5d7b2ce70e247374400f47db2e4b6867f67821290b440a0acbe931d5f4d9687f386e5aae3f0377da533450058e131b37dbc16b692c296c941
+
+services:
+  - docker
+
+before_install:
+  - docker build -t chrztoph/texterify .
+  - docker run chrztoph/texterify -d --env SECRET_KEY_BASE=$SECRET_KEY_BASE
+
+script:
+  - bundle exec rails test
