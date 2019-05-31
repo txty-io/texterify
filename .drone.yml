@@ -15,9 +15,9 @@ steps:
 - name: app
   image: chrztoph/texterify:test
   commands:
-  - bin/rails db:create
-  - bin/rails db:migrate
-  - bin/rails db:seed
+  - SECRET_KEY_BASE=`bin/rails secret` bin/rails db:create
+  - SECRET_KEY_BASE=`bin/rails secret` bin/rails db:migrate
+  - SECRET_KEY_BASE=`bin/rails secret` bin/rails db:seed
   - SECRET_KEY_BASE=`bin/rails secret` bin/rails test
 
 services:
