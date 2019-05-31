@@ -9,8 +9,8 @@ services:
 
 install:
   - docker-compose up -d
-  # - docker build -t chrztoph/texterify .
-  # - docker run --name texterify -d --env SECRET_KEY_BASE=$SECRET_KEY_BASE chrztoph/texterify
+  - docker-compose run app bin/rails db:create
+  - docker-compose run app bin/rails migrate
 
 script:
   - docker-compose run app bin/rails test
