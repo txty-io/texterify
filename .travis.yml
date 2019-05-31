@@ -5,6 +5,7 @@ env:
 
 services:
   - docker
+  - postgresql
 
 install:
   - docker build -t chrztoph/texterify .
