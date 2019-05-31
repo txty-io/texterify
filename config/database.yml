@@ -80,5 +80,6 @@ test:
 #
 production:
   <<: *default
+  host: db
   database: texterify_production
   username: postgres
