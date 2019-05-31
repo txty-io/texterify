@@ -9,6 +9,7 @@ services:
   app:
     environment:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+    image: chrztoph/texterify:${TRAVIS_COMMIT}
     build:
       context: .
       dockerfile: Dockerfile

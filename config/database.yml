@@ -17,6 +17,8 @@
 default: &default
   adapter: postgresql
   encoding: unicode
+  host: db
+  username: postgres
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
@@ -80,6 +82,4 @@ test:
 #
 production:
   <<: *default
-  host: db
   database: texterify_production
-  username: postgres
