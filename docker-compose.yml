@@ -1,0 +1,16 @@
+version: '3'
+volumes:
+  texterify-database: {}
+services:
+  db:
+    image: postgres
+    volumes:
+      - texterify-database:/var/lib/postgresql/data
+  app:
+    environment:
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db

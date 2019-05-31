@@ -8,8 +8,9 @@ services:
   - postgresql
 
 install:
-  - docker build -t chrztoph/texterify .
-  - docker run --name texterify -d --env SECRET_KEY_BASE=$SECRET_KEY_BASE chrztoph/texterify
+  - docker-compose up
+  # - docker build -t chrztoph/texterify .
+  # - docker run --name texterify -d --env SECRET_KEY_BASE=$SECRET_KEY_BASE chrztoph/texterify
 
 script:
-  - docker exec -it texterify bin/rails test
+  - docker-compose run app bin/rails test
