@@ -3,37 +3,23 @@ name: default
 
 steps:
 - name: build
-  image: docker
-  commands:
-  - docker build -t chrztoph/texterify:app .
-  volumes:
-  - name: docker-socket
-    path: /var/run/docker.sock
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: DOCKER_USERNAME
+    password:
+      from_secret: DOCKER_PASSWORD
+    repo: chrztoph/texterify
+    tags: test
 
 - name: app
-  image: chrztoph/texterify:app
+  image: chrztoph/texterify:test
   commands:
   - bin/rails db:create
   - bin/rails db:migrate
   - bin/rails db:seed
   - SECRET_KEY_BASE=`bin/rails secret` bin/rails test
 
-- name: publish
-  image: docker
-  environment:
-    DOCKER_USERNAME:
-      from_secret: DOCKER_USERNAME
-    DOCKER_PASSWORD:
-      from_secret: DOCKER_PASSWORD
-  commands:
-  - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
-  - docker push chrztoph/texterify:app
-
 services:
 - name: postgres
   image: postgres
-
-volumes:
-- name: docker-socket
-  host:
-    path: /var/run/docker.sock
