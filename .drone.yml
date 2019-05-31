@@ -17,12 +17,10 @@ steps:
   environment:
     SECRET_KEY_BASE: 144e9719fa77bebd74e51453685ea5c2ff8816c1524631186916a6132aff123c44d1b73331ac78a4d603a193a57926862fcfbdbd71328f39b52ae97bc10028c2
   commands:
-  - echo "Test"
-  - echo $SECRET_KEY_BASE
-  - SECRET_KEY_BASE=`bin/rails secret` bin/rails db:create
-  - SECRET_KEY_BASE=`bin/rails secret` bin/rails db:migrate
-  - SECRET_KEY_BASE=`bin/rails secret` bin/rails db:seed
-  - SECRET_KEY_BASE=`bin/rails secret` bin/rails test
+  - bin/rails db:create
+  - bin/rails db:migrate
+  - bin/rails db:seed
+  - bin/rails test
 
 services:
 - name: postgres
