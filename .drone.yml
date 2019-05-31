@@ -7,7 +7,8 @@ steps:
   commands:
   - docker build -t chrztoph/texterify:app .
   volumes:
-  - "/var/run/docker.sock:/var/run/docker.sock"
+  - name: docker-socket
+    path: /var/run/docker.sock
 
 - name: app
   image: chrztoph/texterify:app
@@ -31,3 +32,8 @@ steps:
 services:
 - name: postgres
   image: postgres
+
+volumes:
+- name: docker-socket
+  host:
+    path: /var/run/docker.sock
