@@ -6,6 +6,8 @@ steps:
   image: docker
   commands:
   - docker build -t chrztoph/texterify:app .
+  volumes:
+  - /var/run/docker.sock:/var/run/docker.sock
 
 - name: app
   image: chrztoph/texterify:app
