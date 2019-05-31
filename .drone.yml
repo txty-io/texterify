@@ -6,8 +6,6 @@ steps:
   image: docker
   commands:
   - docker build -t chrztoph/texterify:app .
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
 
 - name: app
   image: chrztoph/texterify:app
@@ -16,8 +14,6 @@ steps:
   - bin/rails db:migrate
   - bin/rails db:seed
   - SECRET_KEY_BASE=`bin/rails secret` bin/rails test
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
 
 - name: publish
   image: docker
@@ -29,8 +25,6 @@ steps:
   commands:
   - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
   - docker push chrztoph/texterify:app
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
 
 services:
 - name: postgres
