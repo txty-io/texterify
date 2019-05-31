@@ -9,8 +9,8 @@ services:
 
 install:
   - docker-compose up -d
-  - docker-compose run app bin/rails db:create
-  - docker-compose run app bin/rails db:migrate
+  - docker-compose run app RAILS_ENV=test bin/rails db:create
+  - docker-compose run app RAILS_ENV=test bin/rails db:migrate
 
 script:
   - docker-compose run app bin/rails test
