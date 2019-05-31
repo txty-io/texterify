@@ -6,9 +6,9 @@ env:
 services:
   - docker
 
-before_install:
+install:
   - docker build -t chrztoph/texterify .
-  - docker run chrztoph/texterify -d --env SECRET_KEY_BASE=$SECRET_KEY_BASE
+  - docker run -d --env SECRET_KEY_BASE=$SECRET_KEY_BASE chrztoph/texterify
 
 script:
   - bundle exec rails test
