@@ -13,3 +13,13 @@ install:
 
 script:
   - docker-compose exec app bin/rails test
+
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  # The chrztoph/texterify:${TRAVIS_COMMIT} tag is created with docker-compose.
+  - docker push chrztoph/texterify:${TRAVIS_COMMIT}
+  # Tag the master as latest.
+  - |
+    if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
+      docker tag chrztoph/texterify:${TRAVIS_COMMIT} chrztoph/texterify:latest
+    fi
