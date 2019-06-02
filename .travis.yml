@@ -15,8 +15,8 @@ script:
   - docker-compose exec app bin/rails test
 
 after_success:
-  - docker_login_response = echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - if [ $docker_login_response != "Login succeeded"]; then
+  - |
+    if echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin | grep -q 'error'; then
       exit 1
     fi
 
