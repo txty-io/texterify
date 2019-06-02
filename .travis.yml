@@ -7,6 +7,10 @@ env:
 services:
   - docker
 
+before_install:
+  - openssl aes-256-cbc -K $encrypted_4cce2d48b512_key -iv $encrypted_4cce2d48b512_iv -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
+  - tar xvf .travis/secrets.tar
+
 install:
   - docker-compose up -d
   - docker-compose exec app bundle exec rails db:create db:migrate RAILS_ENV=test
@@ -15,8 +19,14 @@ script:
   - docker-compose exec app bin/rails test
 
 after_success:
+  # Setup ssh.
+  - eval "$(ssh-agent -s)"
+  - chmod 600 .travis/deploy_key.pem
+  - ssh-add .travis/deploy_key.pem
+
+  # Login to docker.
   - |
-    if echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin | grep -q 'error'; then
+    if echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin | grep --quit --ignore-case 'error'; then
       exit 1
     fi
 

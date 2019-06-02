@@ -23,3 +23,7 @@ config/secrets.yml.key
 public/packs
 public/packs-test
 storage
+
+# Travis stuff.
+.travis/secrets.tar
+.travis/ignored
