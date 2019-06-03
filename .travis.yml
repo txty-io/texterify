@@ -24,21 +24,19 @@ after_success:
   - chmod 600 .travis/deploy_key
   - ssh-add .travis/deploy_key
 
-  # Login to docker.
-  - |
-    if echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin 2>&1 | grep --quiet --ignore-case 'error'; then
-      exit 1
-    fi
-
-  - echo $TRAVIS_BRANCH
-  - echo $TRAVIS_PULL_REQUEST
-
   # Tag the master as latest.
   - |
     if [ $TRAVIS_BRANCH=="master" ] && [ $TRAVIS_PULL_REQUEST=="false" ]; then
-      docker tag chrztoph/texterify:${TRAVIS_COMMIT} chrztoph/texterify:latest
-    fi
+      # Login to docker.
+      if echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin 2>&1 | grep --quiet --ignore-case 'error'; then
+        exit 1
+      fi
 
-  # The chrztoph/texterify:${TRAVIS_COMMIT} tag is created with docker-compose.
-  # Push to docker registry.
-  - docker push chrztoph/texterify:${TRAVIS_COMMIT}
+      # The chrztoph/texterify:${TRAVIS_COMMIT} tag is created with docker-compose.
+      # Push to docker registry.
+      docker push chrztoph/texterify:${TRAVIS_COMMIT}
+
+      # Create latest tag.
+      docker tag chrztoph/texterify:${TRAVIS_COMMIT} chrztoph/texterify:latest
+      docker push chrztoph/texterify:latest
+    fi
