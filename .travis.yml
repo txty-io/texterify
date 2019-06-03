@@ -36,6 +36,6 @@ after_success:
 
   # Tag the master as latest.
   - |
-    if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
+    if [ $TRAVIS_BRANCH=="master" ] && [ $TRAVIS_PULL_REQUEST=="false" ]; then
       docker tag chrztoph/texterify:${TRAVIS_COMMIT} chrztoph/texterify:latest
     fi
