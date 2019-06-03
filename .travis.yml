@@ -9,7 +9,7 @@ services:
 
 before_install:
   - openssl aes-256-cbc -K $encrypted_4cce2d48b512_key -iv $encrypted_4cce2d48b512_iv -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
-  - tar xvf .travis/secrets.tar
+  - tar xvf .travis/secrets.tar -C .travis
 
 install:
   - docker-compose up -d
