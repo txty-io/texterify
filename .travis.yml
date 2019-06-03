@@ -26,7 +26,7 @@ after_success:
 
   # Login to docker.
   - |
-    if echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin | grep --quiet --ignore-case 'error'; then
+    if echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin 2>&1 | grep --quiet --ignore-case 'error'; then
       exit 1
     fi
 
