@@ -21,8 +21,8 @@ script:
 after_success:
   # Setup ssh.
   - eval "$(ssh-agent -s)"
-  - chmod 600 .travis/deploy_key.pem
-  - ssh-add .travis/deploy_key.pem
+  - chmod 600 .travis/deploy_key
+  - ssh-add .travis/deploy_key
 
   # Login to docker.
   - |
