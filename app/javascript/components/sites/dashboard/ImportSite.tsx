@@ -42,23 +42,15 @@ class ImportSite extends React.Component<IProps, IState> {
 
   async componentDidMount() {
     try {
-      this.getLanguagesPromise = makeCancelable(LanguagesAPI.getLanguages(this.props.match.params.projectId));
-
-      const responseLanguages = await this.getLanguagesPromise.promise;
+      const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
 
       this.setState({
         languages: responseLanguages.data,
         languagesResponse: responseLanguages
       });
     } catch (err) {
-      if (!err.isCanceled) {
-        console.error(err);
-      }
+      console.error(err);
     }
-  }
-
-  componentWillUnmount() {
-    if (this.getLanguagesPromise !== null) { this.getLanguagesPromise.cancel(); }
   }
 
   onDrop = (files: any) => {
@@ -76,12 +68,16 @@ class ImportSite extends React.Component<IProps, IState> {
       this.state.files[0]
     );
 
-    if (!response.errors) {
-      message.success("Successfully imported the translations.");
+    console.error(response);
+
+    if (!response.errors && response.ok) {
+      message.success("Successfully imported translations.");
       this.setState({
         files: [],
         selectedLanguageId: null
       });
+    } else {
+      message.error("Failed to import translations.");
     }
 
     this.setState({ loading: false });

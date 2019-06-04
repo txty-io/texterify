@@ -5,15 +5,20 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import styled from "styled-components";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
+import { Styles } from "../../ui/Styles";
 const { Sider } = Layout;
 
 const SidebarTrigger = styled.div`
   width: 100%;
   height: 100%;
-  background: "#fff";
+  background: #fff;
+  color: #333;
+  border-right: 1px solid #e8e8e8;
+  transition: .2s all;
 
   &:hover {
-    background: #fcfcfc;
+    color: ${Styles.COLOR_PRIMARY};
+    background: #f0f1ff;
   }
 `;
 
@@ -132,7 +137,12 @@ class ProjectSidebar extends React.Component<IProps, IState> {
 
   renderSidebarTrigger = () => {
     return (
-      <SidebarTrigger style={{ background: this.state.collapsed ? "#fcfcfc" : undefined }}>
+      <SidebarTrigger
+        style={{
+          background: this.state.collapsed ? "#f0f1ff" : undefined,
+          color: this.state.collapsed ? Styles.COLOR_PRIMARY : undefined
+        }}
+      >
         <Icon
           type={this.state.collapsed ? "menu-unfold" : "menu-fold"}
           onClick={this.toggleSidebar}

@@ -105,16 +105,17 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
                       }],
                       initialValue: record[dataIndex]
                     })(
-                      <Input
+                      <Input.TextArea
                         ref={node => (this.input = node)}
                         onPressEnter={this.save}
+                        autosize
                       />
                     )}
                   </FormItem>
                 ) : (
                     <div
                       className="editable-cell-value-wrap"
-                      style={{ maxWidth: 500, overflow: "scroll", display: "flex", alignItems: "center" }}
+                      style={{ maxWidth: 400, overflow: "scroll", display: "flex", alignItems: "center", wordBreak: "break-all" }}
                       onClick={this.toggleEdit}
                       role="button"
                     >
@@ -263,9 +264,6 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
         loading={this.props.loading}
         size={this.props.size}
         pagination={this.props.pagination}
-        scroll={{
-          x: true
-        }}
       />
     );
   }

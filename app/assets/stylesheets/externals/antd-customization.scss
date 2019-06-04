@@ -14,86 +14,85 @@ $color: #6772e5;
         text-decoration: none;
       }
     }
-  
+
     ul {
       margin: 0;
     }
   }
-  
+
   .editable-cell {
     position: relative;
   }
-  
+
   .editable-cell-value-wrap {
     border: 0;
     padding: 5px 12px;
     cursor: pointer;
     min-height: 33px;
   }
-  
+
   .editable-row:hover .editable-cell-value-wrap {
     border: 1px solid #d9d9d9;
     border-radius: 4px;
     padding: 4px 11px;
   }
-  
+
   .ant-table td {
-    white-space: nowrap;
     text-overflow: ellipsis;
   }
-  
+
   .ant-menu-vertical .ant-menu-item:after, .ant-menu-vertical-left .ant-menu-item:after, .ant-menu-vertical-right .ant-menu-item:after, .ant-menu-inline .ant-menu-item:after {
     border-right-color: $color;
   }
-  
+
   .ant-menu-item > a:hover {
     color: $color;
   }
-  
+
   .ant-menu-item-selected > a, .ant-menu-item-selected > a:hover {
     color: $color;
   }
-  
+
   .ant-menu-item-selected {
     color: $color;
   }
-  
+
   .ant-menu-item:hover, .ant-menu-item-active, .ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open, .ant-menu-submenu-active, .ant-menu-submenu-title:hover {
     color: $color;
   }
-  
+
   .ant-layout-header {
     line-height: 0;
   }
-  
+
   // Remove inner borders from modals.
   .ant-modal-header {
     border-bottom: 0;
   }
-  
+
   .ant-modal-footer {
     border-top: 0;
   }
-  
+
   .ant-modal-title {
     font-size: 22px;
     line-height: 40px;
   }
-  
+
   /* Set background color of content area. */
   .ant-layout, .ant-timeline-item-head, .ant-collapse-borderless {
     background: #fdffff;
   }
-  
+
   .ant-table-tbody .ant-form-item-control {
-    line-height: 0; 
+    line-height: 0;
   }
-  
+
   .ant-input, .ant-btn {
     height: 34px;
-    font-size: 15px;
+    font-size: 14px;
   }
-  
+
   .ant-btn {
     padding: 6px 21px 8px;
     line-height: initial;
