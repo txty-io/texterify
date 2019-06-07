@@ -6,6 +6,8 @@
 
 It is completely free and open-source so you can host it on your own server or just run it locally.
 
+![Example image](https://raw.github.com/chrztoph/texterify/screenshots/example.png)
+
 ## Installation
 
 The easiest way to get the software up and running is by using the official Docker image. We already have a ready to go `docker-compose` configuration for starting Texterify locally or on your server within seconds.
