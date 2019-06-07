@@ -26,7 +26,7 @@ docker volume create --name=texterify-database
 docker-compose up -d
 
 # Create the database.
-docker-compose exec app bin/rails db:create db:migrate
+docker-compose exec app bin/rails db:create db:migrate db:seed
 
 # Service should now be available on http://localhost.
 ```
