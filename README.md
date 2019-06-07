@@ -14,7 +14,7 @@ You only need to have `docker` and `docker-compose` installed on the system wher
 
 The process of starting the application is the following:
 
-```
+```sh
 # Generate a secret key for the app.
 # Make sure to keep this private.
 export TEXTERIFY_SECRET_KEY=`openssl rand -hex 64`
