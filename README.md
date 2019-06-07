@@ -17,7 +17,7 @@ The process of starting the application is the following:
 ```sh
 # Generate a secret key for the app.
 # Make sure to keep this private.
-export TEXTERIFY_SECRET_KEY=`openssl rand -hex 64`
+echo SECRET_KEY_BASE=`openssl rand -hex 64` > secrets.env
 
 # Clone the docker-compose configuration and start the service.
 git clone https://github.com/chrztoph/texterify-docker-compose-setup.git
