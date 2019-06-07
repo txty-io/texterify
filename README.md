@@ -23,7 +23,7 @@ export TEXTERIFY_SECRET_KEY=`openssl rand -hex 64`
 git clone https://github.com/chrztoph/texterify-docker-compose-setup.git
 cd texterify-docker-compose-setup
 docker volume create --name=texterify-database
-docker-compose up
+docker-compose up -d
 
 # Create the database.
 docker-compose exec app bin/rails db:create db:migrate
@@ -31,7 +31,7 @@ docker-compose exec app bin/rails db:create db:migrate
 # Service should now be available on http://localhost.
 ```
 
-This will install the latest version of the service available at the time of setting up. You can also start the service in the background by providing the `-d` flag to the `docker-compose up` command.
+This will install the latest version of the service available at the time of setting up.
 
 ## Contributing
 
