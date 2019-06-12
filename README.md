@@ -17,13 +17,15 @@ You only need to have `docker` and `docker-compose` installed on the system wher
 The process of starting the application is the following:
 
 ```sh
+# Clone the docker-compose configuration.
+git clone https://github.com/chrztoph/texterify-docker-compose-setup.git
+cd texterify-docker-compose-setup
+
 # Generate a secret key for the app.
 # Make sure to keep this private.
 echo SECRET_KEY_BASE=`openssl rand -hex 64` > secrets.env
 
-# Clone the docker-compose configuration and start the service.
-git clone https://github.com/chrztoph/texterify-docker-compose-setup.git
-cd texterify-docker-compose-setup
+# Start the service.
 docker volume create --name=texterify-database
 docker-compose up -d
 
