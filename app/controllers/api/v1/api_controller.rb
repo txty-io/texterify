@@ -13,7 +13,7 @@ module Api::V1
     def authenticate_user_from_token!
       user = User.find_by(email: params[:email])
       api_secret = params[:api_secret].presence
-      token_correct = api_secret && user.access_tokens.find_by(secret: api_secret)
+      token_correct = api_secret && user && user.access_tokens.find_by(secret: api_secret)
       request.headers.merge! user.create_new_auth_token if token_correct
     end
 
