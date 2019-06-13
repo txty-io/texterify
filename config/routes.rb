@@ -20,12 +20,13 @@ Rails.application.routes.draw do
         resources :translations, only: [:create, :update]
         resources :members, only: [:create, :index, :destroy]
       end
-      
+
       resources :access_tokens, only: [:create, :index, :destroy]
       resources :country_codes, only: [:index]
       get 'dashboard/activity', to: 'dashboard#activity'
       get 'users/image', to: 'users#image'
-      post 'users/image', to: 'users#upload_image'
+      post 'users/image', to: 'users#create'
+      delete 'users/image', to: 'users#destroy'
     end
   end
 

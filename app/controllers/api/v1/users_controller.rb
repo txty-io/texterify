@@ -14,7 +14,11 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
-  def upload_image
+  def create
     current_user.image.attach(params[:image])
+  end
+
+  def destroy
+    current_user.image.purge
   end
 end

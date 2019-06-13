@@ -29,13 +29,25 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
   dropzone: any = React.createRef();
   avatarEditor: any = React.createRef();
 
+  async componentDidMount() {
+    const imageResponse = await UsersAPI.getImage(authStore.currentUser.id);
+    if (imageResponse.image) {
+      this.setState({ imageUrl: imageResponse.image });
+    }
+  }
+
   handleSubmit = async (e: any) => {
     e.preventDefault();
     this.props.form.validateFields(async (errors: any, values: { username: string; email: string }) => {
       if (!errors) {
         const imageBlob = await this.getImageBlob();
         const formData = await this.createFormData(imageBlob);
-        await UsersAPI.uploadImage(formData);
+        if (this.state.imageUrl) {
+          await UsersAPI.uploadImage(formData);
+        } else {
+          await UsersAPI.deleteImage();
+          authStore.userImageUrl = null;
+        }
 
         const response = await UsersAPI.updateUser({ username: values.username, email: values.email });
         if (response.errors) {
@@ -168,7 +180,11 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
                     border={0}
                     position={this.state.imagePosition}
                     scale={this.state.imageScale / 100}
-                    onPositionChange={(position) => { console.error(position); this.setState({ imagePosition: position }); }}
+                    onPositionChange={(position) => {
+                      if (!isNaN(position.x) && !isNaN(position.y)) {
+                        this.setState({ imagePosition: position });
+                      }
+                    }}
                     onMouseMove={() => { this.isMovingImage = true; }}
                     onMouseUp={(e) => {
                       if (e) {
