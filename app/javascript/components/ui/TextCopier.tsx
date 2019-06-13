@@ -53,9 +53,9 @@ class TextCopier extends React.Component<IProps, IState> {
               }
             }}
           >
-            <div onClick={this.copyToClipboard} role="button" style={{ cursor: "pointer", padding: "4px 8px" }}>
+            <span onClick={this.copyToClipboard} role="button" style={{ cursor: "pointer", padding: "4px 8px" }}>
               <Icon type="copy" />
-            </div>
+            </span>
           </Tooltip>}
       </>
     );
