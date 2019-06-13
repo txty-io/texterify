@@ -43,10 +43,6 @@ class SiteWrapper extends React.Component<IProps, IState> {
             {this.props.children}
           </div>
         </div>
-        <p style={{ fontSize: 12 }}>
-          <a href="" style={{ marginRight: 24 }}>Privacy Policy</a>
-          <a href="">Imprint</a>
-        </p>
       </div>
     );
   }
