@@ -18,4 +18,9 @@ class User < ApplicationRecord
   def admin_of?(project)
     true
   end
+
+  # Determines if an email confirmation is required after registration.
+  def confirmation_required?
+    ENV["EMAIL_CONFIRMATION_REQUIRED"] == "true"
+  end
 end
