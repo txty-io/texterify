@@ -177,19 +177,19 @@ class Activity extends React.Component<IProps, IState> {
   getStylesForEvent = (event: "create" | "update" | "destroy") => {
     if (event === "create") {
       return {
-        iconColor: Styles.COLOR_GREEN,
+        iconColor: "#333",
         color: Styles.COLOR_GREEN,
         background: Styles.COLOR_GREEN_LIGHT
       };
     } else if (event === "update") {
       return {
-        iconColor: Styles.COLOR_PRIMARY,
+        iconColor: "#333",
         color: Styles.COLOR_SECONDARY,
         background: Styles.COLOR_PRIMARY_LIGHT
       };
     } else if (event === "destroy") {
       return {
-        iconColor: Styles.COLOR_RED,
+        iconColor: "#333",
         color: Styles.COLOR_RED,
         background: Styles.COLOR_RED_LIGHT
       };
