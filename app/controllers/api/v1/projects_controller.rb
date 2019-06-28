@@ -17,12 +17,13 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       per_page = 10 if per_page < 1
     end
 
-    projects = current_user.projects.order(:name)
     if params[:search]
       projects = current_user.projects.where(
         "name ilike :search",
         search: "%#{params[:search]}%"
-      ).order(:name)
+        ).order(:name)
+    else
+      projects = current_user.projects.order(:name)
     end
 
     options = {}
@@ -32,14 +33,6 @@ class Api::V1::ProjectsController < Api::V1::ApiController
   end
 
   def create
-    if params[:project][:name].blank?
-      render json: {
-        error: true,
-        message: 'Missing required parameters'
-      }, status: 400
-      return
-    end
-
     project = Project.new(project_params)
     project.user = current_user
 
@@ -48,40 +41,25 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     project_column.user = current_user
 
     ActiveRecord::Base.transaction do
-      project.save!
-      project_column.save!
+      unless project.save
+        render json: {
+          errors: project.errors.full_messages.map { |error| "#{error}." }
+        }, status: :bad_request
+        raise ActiveRecord::Rollback
+      end
+
+      unless project_column.save
+        render json: {
+          errors: project_column.errors.full_messages.map { |error| "#{error}." }
+        }, status: :bad_request
+        raise ActiveRecord::Rollback
+      end
+
       current_user.projects << project
 
       options = {}
       options[:params] = { current_user: current_user }
       render json: ProjectSerializer.new(project, options).serialized_json
-    end
-  rescue ActiveRecord::RecordInvalid
-    render json: {
-      message: 'Failed to create project'
-    }
-  end
-
-  def edit
-    if params[:project][:name].blank?
-      render json: {
-        error: true,
-        message: 'Missing required parameters'
-      }, status: 400
-      return
-    end
-
-    project = Project.find(params[:project][:id])
-
-    if project.update(project_params)
-      current_user.projects << project
-      options = {}
-      options[:params] = { current_user: current_user }
-      render json: ProjectSerializer.new(project, options).serialized_json
-    else
-      render json: {
-        message: 'Failed to edit project'
-      }
     end
   end
 
@@ -270,6 +248,6 @@ class Api::V1::ProjectsController < Api::V1::ApiController
   private
 
   def project_params
-    params.require(:project).permit(:name, :description)
+    params.permit(:name, :description)
   end
 end

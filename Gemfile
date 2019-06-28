@@ -43,6 +43,12 @@ group :development, :test do
 
   gem 'pry-rails'
   gem 'pry-byebug'
+
+  gem 'rspec-rails'
+  gem 'factory_bot_rails'
+  gem 'database_cleaner'
+  gem 'rubocop'
+  gem 'rubocop-rails'
 end
 
 group :development do

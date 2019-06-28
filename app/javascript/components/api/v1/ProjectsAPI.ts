@@ -27,19 +27,15 @@ const ProjectsAPI = {
 
   createProject: async (name: string, description: string): Promise<any> => {
     return API.postRequest(`projects`, true, {
-      project: {
-        name: name,
-        description: description
-      }
+      name: name,
+      description: description
     }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   },
 
   updateProject: async (projectId: string, name: string, description: string): Promise<any> => {
     return API.putRequest(`projects/${projectId}`, true, {
-      project: {
-        name: name,
-        description: description
-      }
+      name: name,
+      description: description
     }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   },
 

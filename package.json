@@ -56,7 +56,7 @@
   },
   "scripts": {
     "lint": "tslint --project tsconfig.json -c tslint.json",
-    "start": "bundle exec rails s",
+    "start": "bundle exec rails server",
     "watch": "./bin/webpack-dev-server",
     "test": "bundle exec rspec"
   }

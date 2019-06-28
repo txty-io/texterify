@@ -26,6 +26,14 @@ module Texterify
       g.helper_specs nil
       g.skip_routes true
 
+      g.test_framework :rspec,
+        :fixtures => true,
+        :view_specs => true,
+        :helper_specs => true,
+        :routing_specs => true,
+        :controller_specs => true,
+        :request_specs => true
+
       # Use UUID per default as id.
       g.orm :active_record, primary_key_type: :uuid
     end
