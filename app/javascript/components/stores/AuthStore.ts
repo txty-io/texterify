@@ -27,8 +27,8 @@ class AuthStore {
   }
 
   refetchCurrentUserImage = async () => {
-    if (authStore.currentUser) {
-      const imageResponse = await UsersAPI.getImage(authStore.currentUser.id);
+    if (this.currentUser) {
+      const imageResponse = await UsersAPI.getImage(this.currentUser.id);
       this.userImageUrl = imageResponse.image;
     }
   }

@@ -1,10 +1,7 @@
 import { Button, Dropdown, Icon, Menu } from "antd";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { Link } from "react-router-dom";
-
 import { Routes } from "../routing/Routes";
-import { Constants } from "./Constants";
 
 interface IProps { }
 interface IState {
@@ -85,7 +82,7 @@ class BottomBar extends React.Component<IProps, IState> {
     );
   }
 
-  private getFlagElement = (key: string): JSX.Element => {
+  getFlagElement = (key: string): JSX.Element => {
     const flagCode: string = {
       en: "us",
       de: "de"
@@ -96,11 +93,11 @@ class BottomBar extends React.Component<IProps, IState> {
     );
   }
 
-  private getCurrentLanguageDisplayName = (): string => {
+  getCurrentLanguageDisplayName = (): string => {
     return this.state.keyDisplayNameMapping[this.state.currentLanguageKey];
   }
 
-  private handleLanguageMenuClick = (e: any): void => {
+  handleLanguageMenuClick = (e: any): void => {
     this.setState({
       currentLanguageKey: e.key
     });

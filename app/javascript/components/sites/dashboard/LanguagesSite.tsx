@@ -29,9 +29,9 @@ interface IState {
 
 class LanguagesSite extends React.Component<IProps, IState> {
   getLanguagesPromise: any = null;
-  debouncedSearchReloader: any = _.debounce((value) => {
+  debouncedSearchReloader: any = _.debounce(async (value) => {
     this.setState({ search: value, page: 0 });
-    this.reloadTable({ search: value, page: 0 });
+    await this.reloadTable({ search: value, page: 0 });
   }, 500, { trailing: true });
 
   rowSelection: any = {
@@ -102,7 +102,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
     fetchOptions.search = options && options.search || this.state.search;
     fetchOptions.page = options && options.page || this.state.page;
     fetchOptions.perPage = options && options.perPage || this.state.perPage;
-    this.fetchLanguages(fetchOptions);
+    await this.fetchLanguages(fetchOptions);
   }
 
   getColumns = (): any[] => {
@@ -158,7 +158,11 @@ class LanguagesSite extends React.Component<IProps, IState> {
             <FlagIcon code={countryCode.attributes.code.toLowerCase()} /> : "",
           controls: (
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <Icon type="edit" style={{ cursor: "pointer" }} onClick={() => this.onEditLanguageClick(language)} />
+              <Icon
+                type="edit"
+                style={{ cursor: "pointer" }}
+                onClick={() => { this.onEditLanguageClick(language); }}
+              />
             </div>
           )
         };
@@ -253,11 +257,11 @@ class LanguagesSite extends React.Component<IProps, IState> {
                 total: (this.state.languagesResponse && this.state.languagesResponse.meta.total) || 0,
                 onChange: async (page: number, perPage: number) => {
                   this.setState({ page: page });
-                  this.reloadTable({ page: page });
+                  await this.reloadTable({ page: page });
                 },
                 onShowSizeChange: async (current: number, size: number) => {
                   this.setState({ perPage: size });
-                  this.reloadTable({ perPage: size });
+                  await this.reloadTable({ perPage: size });
                 }
               }}
             />

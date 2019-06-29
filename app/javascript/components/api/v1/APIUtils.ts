@@ -31,7 +31,7 @@ const APIUtils = {
   handleErrors: (response: any): any => {
     // Check if the used access token is still valid.
     if (response.errors && Array.isArray(response.errors)) {
-      response.errors.forEach(error => {
+      response.errors.forEach((error) => {
         if (error.code === APIErrors.INVALID_ACCESS_TOKEN) {
           authStore.resetAuth();
           history.push(Routes.AUTH.LOGIN);
@@ -56,8 +56,8 @@ const APIUtils = {
     } else if (response.errors) {
       const keys = Object.keys(response.errors);
       let errorMessage = "";
-      keys.forEach(key => {
-        response.errors[key].forEach(keyError => {
+      keys.forEach((key) => {
+        response.errors[key].forEach((keyError) => {
           errorMessage += `${key.charAt(0).toUpperCase() + key.slice(1)} ${keyError}. `;
         });
       });

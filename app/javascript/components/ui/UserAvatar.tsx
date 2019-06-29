@@ -1,5 +1,4 @@
 import { observer } from "mobx-react";
-import { when } from "q";
 import * as React from "react";
 import { UsersAPI } from "../api/v1/UsersAPI";
 import { authStore } from "../stores/AuthStore";

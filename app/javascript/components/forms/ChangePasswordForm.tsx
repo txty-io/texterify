@@ -92,7 +92,7 @@ class ChangePasswordFormUnwrapped extends React.Component<IProps, IState> {
     );
   }
 
-  private handleSubmit = (e: any): void => {
+  handleSubmit = (e: any): void => {
     e.preventDefault();
     this.setState({
       loginErrors: [],

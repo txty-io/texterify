@@ -40,7 +40,7 @@ class ForgotPasswordFormUnwrapped extends React.Component<IProps, IState> {
     );
   }
 
-  private handleSubmit = (e: any): void => {
+  handleSubmit = (e: any): void => {
     e.preventDefault();
     this.props.form.validateFields((err: any, values: any) => {
       if (!err) {

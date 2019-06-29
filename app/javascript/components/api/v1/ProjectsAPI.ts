@@ -2,11 +2,13 @@ import fileDownload from "js-file-download";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
-function getBase64(file: any) {
+async function getBase64(file: any) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = () => resolve((reader.result as string).split(",")[1]);
+    reader.onload = () => {
+      resolve((reader.result as string).split(",")[1]);
+    };
     reader.onerror = reject;
   });
 }

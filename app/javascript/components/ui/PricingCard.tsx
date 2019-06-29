@@ -1,9 +1,5 @@
-import { Icon, List } from "antd";
+import { Icon } from "antd";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { Link } from "react-router-dom";
-
-import { Routes } from "../routing/Routes";
 
 interface IProps {
   title: string;
@@ -37,7 +33,7 @@ class PricingCard extends React.Component<IProps, IState> {
     );
   }
 
-  private renderFeatureItems = (features: string[]): JSX.Element[] => {
+  renderFeatureItems = (features: string[]): JSX.Element[] => {
     return features.map((feature: string, index: number) => {
       return (
         <div key={index} style={{ textAlign: "left", fontWeight: "bold" }}>

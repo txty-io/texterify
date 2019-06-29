@@ -89,7 +89,7 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
     } = this.props;
 
     return (
-      <td ref={node => (this.cell = node)} {...restProps}>
+      <td ref={(node) => (this.cell = node)} {...restProps}>
         {editable ? (
           <EditableContext.Consumer>
             {(form: any) => {
@@ -106,7 +106,7 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
                       initialValue: record[dataIndex]
                     })(
                       <Input.TextArea
-                        ref={node => (this.input = node)}
+                        ref={(node) => (this.input = node)}
                         onPressEnter={this.save}
                         autosize
                       />
@@ -163,7 +163,7 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
 
   handleDelete = (key: any) => {
     const dataSource = [...this.state.dataSource];
-    this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
+    this.setState({ dataSource: dataSource.filter((item) => item.key !== key) });
   }
 
   handleSave = async (row: any) => {
@@ -241,7 +241,7 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
 
       return {
         ...col,
-        onCell: record => ({
+        onCell: (record) => ({
           record,
           editable: col.editable,
           dataIndex: col.dataIndex,

@@ -55,9 +55,12 @@
     "yarn": ">=1.5.1"
   },
   "scripts": {
-    "lint": "tslint --project tsconfig.json -c tslint.json",
+    "lint:frontend": "tslint --project tsconfig.json -c tslint.json",
+    "lint:backend": "bundle exec rubocop",
+    "lint": "yarn lint:frontend && yarn lint:backend",
     "start": "bundle exec rails server",
     "watch": "./bin/webpack-dev-server",
-    "test": "bundle exec rspec"
+    "test": "yarn test:backend",
+    "test:backend": "bundle exec rspec"
   }
 }

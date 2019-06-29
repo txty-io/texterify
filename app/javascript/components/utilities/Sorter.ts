@@ -1,4 +1,4 @@
-function sortStrings(a: String, b: String, ignoreCase: boolean) {
+function sortStrings(a: string, b: string, ignoreCase: boolean) {
   if (a === null && b === null) {
     return 0;
   } else if (a === null) {

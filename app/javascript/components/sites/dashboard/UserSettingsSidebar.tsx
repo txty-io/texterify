@@ -1,12 +1,7 @@
-import { Avatar, Breadcrumb, Button, Icon, Layout, Menu, Popover } from "antd";
+import { Icon, Layout, Menu } from "antd";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { BrowserRouter, Link, Route, RouteComponentProps, Switch } from "react-router-dom";
-import styled from "styled-components";
-import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
+import { Link, RouteComponentProps } from "react-router-dom";
 import { Routes } from "../../routing/Routes";
-const { Header, Content, Footer, Sider } = Layout;
-import * as _ from "lodash";
 
 interface INavigationData {
   icon: string;
@@ -14,7 +9,7 @@ interface INavigationData {
   text: string;
 }
 
-type IProps = RouteComponentProps<{}> & {};
+type IProps = RouteComponentProps & {};
 interface IState {
   selectedItem: number;
 }
@@ -66,7 +61,7 @@ class UserSettingsSidebar extends React.Component<IProps, IState> {
     return (
       <>
         <div className="logo" />
-        <Sider
+        <Layout.Sider
           breakpoint="md"
           collapsedWidth="0"
           id="sidebar"
@@ -80,7 +75,7 @@ class UserSettingsSidebar extends React.Component<IProps, IState> {
           >
             {this.renderMenuItems()}
           </Menu>
-        </Sider>
+        </Layout.Sider>
       </>
     );
   }

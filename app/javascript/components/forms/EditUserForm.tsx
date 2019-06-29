@@ -71,7 +71,7 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
           }
         }
 
-        authStore.refetchCurrentUserImage();
+        await authStore.refetchCurrentUserImage();
       }
     });
   }

@@ -281,7 +281,7 @@ class KeysSite extends React.Component<IProps, IState> {
       page: this.state.page,
       perPage: this.state.perPage
     };
-    this.fetchKeys(fetchOptions);
+    await this.fetchKeys(fetchOptions);
   }
 
   isNameColumnVisible = () => {
@@ -352,7 +352,7 @@ class KeysSite extends React.Component<IProps, IState> {
               if (checked) {
                 newLanguages.push(language.id);
               } else {
-                newLanguages = newLanguages.filter(o => {
+                newLanguages = newLanguages.filter((o) => {
                   return o !== language.id;
                 });
               }
@@ -451,7 +451,7 @@ class KeysSite extends React.Component<IProps, IState> {
               addDialogVisible: false
             });
 
-            this.reloadTable();
+            await this.reloadTable();
           }}
         />
       </>

@@ -8,7 +8,7 @@ import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
 import { Constants } from "./Constants";
 
-type IProps = RouteComponentProps<{}> & {
+type IProps = RouteComponentProps & {
   white: boolean;
   history?: any;
   location?: any;
@@ -108,11 +108,11 @@ class TopBarUnwrapped extends React.Component<IProps, IState> {
     );
   }
 
-  private isActiveLink = (route: string): boolean => {
+  isActiveLink = (route: string): boolean => {
     return window.location.pathname === route;
   }
 
-  private getLinkStyle = (route: string): object => {
+  getLinkStyle = (route: string): object => {
     if (this.isActiveLink(route)) {
       return { fontWeight: "bold" };
     } else {
@@ -120,7 +120,7 @@ class TopBarUnwrapped extends React.Component<IProps, IState> {
     }
   }
 
-  private renderRoutes = (): JSX.Element[] => {
+  renderRoutes = (): JSX.Element[] => {
     return this.routes.map((route: any, index: number) => {
       // Skip routes that are not authenticated only if authenticated.
       if (route.notAuthenticatedOnly && authStore.isAuthenticated) {

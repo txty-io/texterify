@@ -1,16 +1,12 @@
-import { Button, Input, Layout, List, message, Pagination, Table } from "antd";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-const { Header, Content, Footer, Sider } = Layout;
+import { Button, Input, Layout, List, message, Pagination } from "antd";
 import * as _ from "lodash";
-import { Link, Route, RouteComponentProps, withRouter } from "react-router-dom";
+import * as React from "react";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
-import { NewProjectForm } from "../../forms/NewProjectForm";
 import { NewProjectFormModal } from "../../forms/NewProjectFormModal";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
-import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { PrimaryButton } from "../../ui/PrimaryButton";
 import { Styles } from "../../ui/Styles";
@@ -25,7 +21,7 @@ const ListTitle = styled.span`
   }
 `;
 
-type IProps = RouteComponentProps<{}> & {};
+type IProps = RouteComponentProps & {};
 interface IState {
   projectsResponse: any;
   projects: any[];
@@ -39,7 +35,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
   getProjectsPromise: any = null;
   debouncedSearchReloader: any = _.debounce((value) => {
     this.setState({ search: value, page: 0 });
-    this.reloadTable({ search: value, page: 0 });
+    await this.reloadTable({ search: value, page: 0 });
   }, 500, { trailing: true });
 
   constructor(props: IProps) {
@@ -56,7 +52,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
   }
 
   async componentDidMount(): Promise<void> {
-    this.fetchProjects();
+    await this.fetchProjects();
   }
 
   componentWillUnmount() {
@@ -85,7 +81,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
     fetchOptions.search = options && options.search || this.state.search;
     fetchOptions.page = options && options.page || this.state.page;
     fetchOptions.perPage = options && options.perPage || this.state.perPage;
-    this.fetchProjects(fetchOptions);
+    await this.fetchProjects(fetchOptions);
   }
 
   getRows = (): any[] => {
@@ -116,7 +112,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
     return (
       <>
         <Layout style={{ padding: "0 24px 24px", maxWidth: 800, margin: "0 auto", width: "100%" }}>
-          <Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
+          <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
             <h1 style={{ flexGrow: 1 }}>Projects</h1>
             <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
               <div style={{ flexGrow: 1 }}>
@@ -134,7 +130,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
             <List
               size="small"
               dataSource={this.getRows()}
-              renderItem={item => (
+              renderItem={(item) => (
                 <List.Item key={item.title}>
                   <List.Item.Meta
                     title={
@@ -168,18 +164,18 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                 onChange={
                   async (page: number, perPage: number) => {
                     this.setState({ page: page });
-                    this.reloadTable({ page: page });
+                    await this.reloadTable({ page: page });
                   }
                 }
                 onShowSizeChange={
                   async (current: number, size: number) => {
                     this.setState({ perPage: size });
-                    this.reloadTable({ perPage: size });
+                    await this.reloadTable({ perPage: size });
                   }
                 }
               />
             </div>
-          </Content>
+          </Layout.Content>
         </Layout>
 
         <NewProjectFormModal

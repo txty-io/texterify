@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router";
 
-type IProps = RouteComponentProps<{}> & {};
+type IProps = RouteComponentProps & {};
 interface IState {
   lastLocation: any;
 }

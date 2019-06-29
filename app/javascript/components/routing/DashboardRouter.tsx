@@ -20,7 +20,7 @@ import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
 const { Header } = Layout;
 
-type IProps = RouteComponentProps<{}> & {};
+type IProps = RouteComponentProps & {};
 interface IState {
   hasSidebar: boolean;
   accountMenuVisible: boolean;

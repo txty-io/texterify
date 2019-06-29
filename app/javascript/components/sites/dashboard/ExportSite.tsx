@@ -74,7 +74,7 @@ class ExportSite extends React.Component<IProps, IState> {
     if (this.getLanguagesPromise !== null) { this.getLanguagesPromise.cancel(); }
   }
 
-  findElementForKey = (data: any[], key: string, callback: any, parent: any) => {
+  findElementForKey = (data: any[], key: string, callback: any, parent: any): any => {
     data.forEach((item, index, arr) => {
       if (item.id === key) {
         return callback(item, index, arr, parent);
@@ -105,8 +105,8 @@ class ExportSite extends React.Component<IProps, IState> {
     if (info.dropToGap) {
       // The element has been dropped to a gap.
       let ar;
-      let i;
-      this.findElementForKey(data, dropKey, (item, index, arr, parent) => {
+      let i: number;
+      this.findElementForKey(data, dropKey, (item, index: number, arr, parent) => {
         ar = arr;
         i = index;
         newParent = parent;

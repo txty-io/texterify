@@ -8,7 +8,7 @@ import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { SiteWrapper } from "../../ui/SiteWrapper";
 
-type IProps = RouteComponentProps<{}> & {};
+type IProps = RouteComponentProps & {};
 interface IState { }
 
 @observer

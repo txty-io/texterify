@@ -1,8 +1,7 @@
 import { Layout } from "antd";
 import * as React from "react";
-const { Header, Content, Footer, Sider } = Layout;
 
-class NotFoundSite extends React.Component<{}, {}> {
+class NotFoundSite extends React.Component {
   render(): JSX.Element {
     return (
       <Layout style={{ padding: "0 24px 24px", maxWidth: 800, margin: "40px auto", width: "100%" }}>

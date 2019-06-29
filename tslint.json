@@ -3,7 +3,7 @@
     "extends": [
         "tslint-react",
         "tslint:recommended",
-        "tslint-microsoft-contrib"
+        "tslint-microsoft-contrib/latest"
     ],
     "jsRules": {},
     "rules": {
@@ -97,7 +97,16 @@
         "function-name": false,
         "no-null-keyword": false,
         "use-simple-attributes": false,
-        "newline-per-chained-call": false
+        "newline-per-chained-call": false,
+        "trailing-comma": [
+            true,
+            "never"
+        ],
+        "object-literal-sort-keys": false,
+        "object-literal-shorthand": false,
+        "interface-over-type-literal": false,
+        "max-classes-per-file": false,
+        "react-a11y-accessible-headings": false
     },
     "rulesDirectory": []
 }
