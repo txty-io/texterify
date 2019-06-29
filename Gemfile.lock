@@ -225,6 +225,10 @@ GEM
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
+    rspec (3.8.0)
+      rspec-core (~> 3.8.0)
+      rspec-expectations (~> 3.8.0)
+      rspec-mocks (~> 3.8.0)
     rspec-core (3.8.1)
       rspec-support (~> 3.8.0)
     rspec-expectations (3.8.4)
@@ -347,6 +351,7 @@ DEPENDENCIES
   puma (~> 3.7)
   rails (= 5.2.3)
   react-rails
+  rspec
   rspec-rails
   rubocop
   rubocop-rails
