@@ -33,7 +33,7 @@ interface IState {
 
 class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
   getProjectsPromise: any = null;
-  debouncedSearchReloader: any = _.debounce((value) => {
+  debouncedSearchReloader: any = _.debounce(async (value) => {
     this.setState({ search: value, page: 0 });
     await this.reloadTable({ search: value, page: 0 });
   }, 500, { trailing: true });
