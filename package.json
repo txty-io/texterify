@@ -39,6 +39,8 @@
     "styled-components": "^4.2.0",
     "stylelint-config-standard": "^18.2.0",
     "ts-loader": "^6.0.0",
+    "tslint": "^5.9.1",
+    "tslint-microsoft-contrib": "^6.1.1",
     "tslint-react": "^4.0.0",
     "typescript": "^2.7.2",
     "uuid": "^3.3.2",
@@ -46,8 +48,6 @@
   },
   "devDependencies": {
     "less": "^3.8.1",
-    "tslint": "^5.9.1",
-    "tslint-microsoft-contrib": "^6.1.1",
     "webpack-cli": "^3.3.2",
     "webpack-dev-server": "^3.3.1"
   },
