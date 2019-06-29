@@ -46,9 +46,7 @@ group :development, :test do
 
   gem 'database_cleaner'
   gem 'factory_bot_rails'
-  gem 'rspec'
   gem 'rspec-rails'
-  gem 'rubocop'
   gem 'rubocop-rails'
 end
 
@@ -73,6 +71,9 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+
+gem 'rspec'
+gem 'rubocop'
 
 gem 'bootsnap'
 gem 'devise'
