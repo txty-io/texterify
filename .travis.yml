@@ -16,7 +16,8 @@ install:
   - docker-compose exec app bundle exec rails db:create db:migrate RAILS_ENV=test
 
 script:
-  - docker-compose exec app bin/rails test
+  - docker-compose exec app yarn lint
+  - docker-compose exec app yarn test
 
 after_success:
   # Setup ssh.
