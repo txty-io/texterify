@@ -21,12 +21,12 @@ class Api::V1::KeysController < Api::V1::ApiController
     keys = project.keys.order(:name)
     if params[:search]
       keys = project.keys.left_outer_joins(:translations).where(
-        "name ilike :search or description ilike :search",
+        'name ilike :search or description ilike :search',
         search: "%#{params[:search]}%"
       ).or(project.keys.left_outer_joins(:translations).where(
-        "translations.content ilike :search",
-        search: "%#{params[:search]}%"
-      )).order(:name).distinct
+             'translations.content ilike :search',
+             search: "%#{params[:search]}%"
+           )).order(:name).distinct
     end
 
     options = {}
@@ -75,13 +75,11 @@ class Api::V1::KeysController < Api::V1::ApiController
       render json: {
         message: 'key updated'
       }
-      return
     else
       render json: {
         error: true,
         errors: key.errors.as_json
       }, status: :bad_request
-      return
     end
   end
 

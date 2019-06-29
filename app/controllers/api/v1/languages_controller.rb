@@ -17,7 +17,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     languages = project.languages.order(:name)
     if params[:search]
       languages = project.languages.where(
-        "name ilike :search",
+        'name ilike :search',
         search: "%#{params[:search]}%"
       ).order(:name)
     end
@@ -51,8 +51,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     language.country_code = country_code if country_code
 
     if params[:parent].present?
-      parentLanguage = project.languages.find(params[:parent])
-      language.parent = parentLanguage
+      language.parent = project.languages.find(params[:parent])
     end
 
     if language.save
@@ -83,8 +82,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
 
     if params.key? :parent
       if params[:parent].present?
-        parentLanguage = project.languages.find(params[:parent])
-        language.parent = parentLanguage
+        language.parent = project.languages.find(params[:parent])
       else
         language.parent = nil
       end
@@ -96,13 +94,11 @@ class Api::V1::LanguagesController < Api::V1::ApiController
       render json: {
         message: 'Language updated'
       }
-      return
     else
       render json: {
         error: true,
         errors: language.errors.full_messages
       }, status: :bad_request
-      return
     end
   end
 

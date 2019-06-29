@@ -6,16 +6,16 @@ class Api::V1::TranslationsController < Api::V1::ApiController
   def create
     project = current_user.projects.find(params[:project_id])
     key = project.keys.find(params[:key_id])
-    
+
     if key.translations.find_by(language_id: params[:language_id])
       render json: {
         message: 'Translation already created'
       }
       return
     end
-    
+
     language = project.languages.find(params[:language_id])
-    
+
     translation = Translation.new(translation_params)
     translation.language = language
     translation.key = key
@@ -39,13 +39,11 @@ class Api::V1::TranslationsController < Api::V1::ApiController
       render json: {
         message: 'translation updated'
       }
-      return
     else
       render json: {
         error: true,
         errors: translation.errors.as_json
       }, status: :bad_request
-      return
     end
   end
 

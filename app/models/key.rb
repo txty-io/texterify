@@ -1,6 +1,6 @@
 class Key < ApplicationRecord
   has_paper_trail
-  
+
   belongs_to :project
   has_many :translations, dependent: :destroy
 
@@ -14,19 +14,17 @@ class Key < ApplicationRecord
   def no_duplicate_key_for_project
     project = Project.find(project_id)
     key = project.keys.find_by(name: name)
-    
+
     if key.present?
-      updating_key = key.id == self.id
-      
-      if !updating_key
-        errors.add(:name, 'Name is already in use.')
-      end
+      updating_key = key.id == id
+
+      errors.add(:name, 'Name is already in use.') if !updating_key
     end
   end
 
   protected
 
   def strip_leading_and_trailing_whitespace
-    self.name = self.name.strip
+    self.name = name.strip
   end
 end

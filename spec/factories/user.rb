@@ -7,7 +7,7 @@ FactoryBot.define do
       "user-#{n}@example.com"
     end
     password { 'password' }
-    password_confirmation { "#{password}" }
+    password_confirmation { password.to_s }
 
     factory :user_with_projects do
       transient do

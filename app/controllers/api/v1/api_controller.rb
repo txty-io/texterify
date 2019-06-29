@@ -26,7 +26,7 @@ module Api::V1
               code: 'INVALID_ACCESS_TOKEN'
             }
           ]
-        }, status: 403
+        }, status: :forbidden
       end
     end
 
@@ -44,9 +44,7 @@ module Api::V1
     def render_not_found_error(model_name)
       message = I18n.t('error_messages.not_found.message', item: model_name)
 
-      if model_name.nil?
-        message = I18n.t('error_messages.not_found.message_generic')
-      end
+      message = I18n.t('error_messages.not_found.message_generic') if model_name.nil?
 
       error = {
         message: message,

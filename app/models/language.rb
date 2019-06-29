@@ -2,14 +2,14 @@ class Language < ApplicationRecord
   belongs_to :project
   belongs_to :country_code, optional: true
   belongs_to :parent, class_name: 'Language', optional: true
-  has_many :children, class_name: 'Language', foreign_key: 'parent_id', dependent: :nullify
+  has_many :children, class_name: 'Language', foreign_key: 'parent_id', dependent: :nullify, inverse_of: :parent
   has_many :keys, through: :project
   has_many :translations, dependent: :destroy
   has_many :language_project_columns, dependent: :delete_all
   has_many :project_columns, through: :language_project_columns
 
   validate :no_duplicate_language_name_for_project
-  validates_format_of :name, with: /\A[A-Za-z_][A-Za-z0-9_]*\z/
+  validates :name, format: { with: /\A[A-Za-z_][A-Za-z0-9_]*\z/ }
 
   before_validation :strip_leading_and_trailing_whitespace
 
@@ -20,17 +20,15 @@ class Language < ApplicationRecord
     language = project.languages.find_by(name: name)
 
     if language.present?
-      updating_language = language.id == self.id
-      
-      if !updating_language
-        errors.add(:name, 'Name is already in use.')
-      end
+      updating_language = language.id == id
+
+      errors.add(:name, 'Name is already in use.') if !updating_language
     end
   end
 
   protected
 
   def strip_leading_and_trailing_whitespace
-    self.name = self.name.strip
+    self.name = name.strip
   end
 end

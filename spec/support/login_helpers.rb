@@ -1,22 +1,22 @@
 module LoginHelper
   def sign_in(user)
     post new_user_session_path,
-      params: {
-        email: user.email,
-        password: user.password
-      }.to_json,
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
-    auth_params = get_auth_params_from_login_response_headers(response)
+         params: {
+           email: user.email,
+           password: user.password
+         }.to_json,
+         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+    get_auth_params_from_login_response_headers(response)
   end
 
   def sign_in_invalid(user)
     post new_user_session_path,
-      params: {
-        email: user.email,
-        password: 'invalid password'
-      }.to_json,
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
-    auth_params = get_auth_params_from_login_response_headers(response)
+         params: {
+           email: user.email,
+           password: 'invalid password'
+         }.to_json,
+         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+    get_auth_params_from_login_response_headers(response)
   end
 
   def get_auth_params_from_login_response_headers(response)

@@ -1,9 +1,9 @@
 # See https://github.com/bbatsov/rubocop.
 
+require:
+  - rubocop-rails
+
 AllCops:
-  Include:
-    - '**/Rakefile'
-    - '**/config.ru'
   Exclude:
     - 'db/**/*'
     - 'config/**/*'
@@ -17,7 +17,6 @@ Rails:
 Style/Documentation:
   Enabled: false
 
-# Allow empty methods.
 Style/EmptyMethod:
   Enabled: false
 
@@ -39,7 +38,22 @@ Style/NegatedIf:
 Style/Next:
   Enabled: false
 
+Style/NumericPredicate:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/ConditionalAssignment:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
 Metrics/MethodLength:
+  Enabled: false
+
+Metrics/ClassLength:
   Enabled: false
 
 Metrics/AbcSize:

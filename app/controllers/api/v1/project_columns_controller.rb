@@ -5,7 +5,7 @@ class Api::V1::ProjectColumnsController < ApplicationController
 
     options = {}
     options[:include] = [:languages]
-    render json: ProjectColumnSerializer.new(project_column, options).serialized_json 
+    render json: ProjectColumnSerializer.new(project_column, options).serialized_json
   end
 
   def update

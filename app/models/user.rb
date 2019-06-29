@@ -15,12 +15,8 @@ class User < ApplicationRecord
   has_many :access_tokens, dependent: :destroy
   has_one_attached :image
 
-  def admin_of?(project)
-    true
-  end
-
   # Determines if an email confirmation is required after registration.
   def confirmation_required?
-    ENV["EMAIL_CONFIRMATION_REQUIRED"] == "true"
+    ENV['EMAIL_CONFIRMATION_REQUIRED'] == 'true'
   end
 end

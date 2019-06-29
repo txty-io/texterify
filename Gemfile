@@ -41,12 +41,12 @@ group :development, :test do
   gem 'capybara', '~> 2.13'
   gem 'selenium-webdriver'
 
-  gem 'pry-rails'
   gem 'pry-byebug'
+  gem 'pry-rails'
 
-  gem 'rspec-rails'
-  gem 'factory_bot_rails'
   gem 'database_cleaner'
+  gem 'factory_bot_rails'
+  gem 'rspec-rails'
   gem 'rubocop'
   gem 'rubocop-rails'
 end
@@ -61,27 +61,27 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
 
   # Capistrano
+  gem 'airbrussh', require: false
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
-  gem 'capistrano-rbenv', require: false
-  gem 'capistrano-rails', require: false
   gem 'capistrano-passenger', require: false
+  gem 'capistrano-rails', require: false
   gem 'capistrano-rails-console', require: false
-  gem 'airbrussh', require: false
+  gem 'capistrano-rbenv', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
+gem 'bootsnap'
+gem 'devise'
+gem 'devise_token_auth'
+gem 'dotenv-rails', groups: [:development, :test]
+gem 'fast_jsonapi'
+gem 'figaro'
 gem 'haml'
 gem 'haml-rails', '~> 1.0'
-gem 'react-rails'
-gem 'webpacker', '~> 4.x'
-gem 'devise'
-gem 'figaro'
-gem 'devise_token_auth'
-gem 'fast_jsonapi'
-gem 'dotenv-rails', groups: [:development, :test]
 gem 'paper_trail'
-gem 'bootsnap'
+gem 'react-rails'
 gem 'rubyzip'
+gem 'webpacker', '~> 4.x'

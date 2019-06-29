@@ -17,19 +17,19 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       per_page = 10 if per_page < 1
     end
 
-    if params[:search]
-      projects = current_user.projects.where(
-        "name ilike :search",
-        search: "%#{params[:search]}%"
-        ).order(:name)
-    else
-      projects = current_user.projects.order(:name)
-    end
+    projects = if params[:search]
+                 current_user.projects.where(
+                   'name ilike :search',
+                   search: "%#{params[:search]}%"
+                 ).order(:name)
+               else
+                 current_user.projects.order(:name)
+               end
 
     options = {}
     options[:meta] = { total: projects.count }
     options[:params] = { current_user: current_user }
-    render json: ProjectSerializer.new(projects.offset(page * per_page).limit(per_page), options).serialized_json, status: 200
+    render json: ProjectSerializer.new(projects.offset(page * per_page).limit(per_page), options).serialized_json, status: :ok
   end
 
   def create
@@ -70,17 +70,12 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       options = {}
       options[:params] = { current_user: current_user }
       render json: ProjectSerializer.new(project, options).serialized_json
-      return
     else
       render json: {
         error: true,
         errors: project.errors.as_json
       }, status: :bad_request
-      return
     end
-  end
-
-  def destroy
   end
 
   def show
@@ -88,17 +83,17 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
     options = {}
     options[:params] = { current_user: current_user }
-    render json: ProjectSerializer.new(project, options).serialized_json, status: 200
+    render json: ProjectSerializer.new(project, options).serialized_json, status: :ok
   end
 
   def export
     project = current_user.projects.find(params[:project_id])
 
-    if project.languages.length == 0
+    if project.languages.empty?
       render json: {
         error: true,
         messages: ["can't export anything without languages"]
-      }, status: 400
+      }, status: :bad_request
       return
     end
 
@@ -126,19 +121,19 @@ class Api::V1::ProjectsController < Api::V1::ApiController
             parent_language = parent_language.parent
           end
 
-          if params[:export_type] == "json"
+          if params[:export_type] == 'json'
             language_file = helpers.json(language, export_data)
             zip.add(language.name.downcase + '.json', language_file)
-          elsif params[:export_type] == "typescript"
+          elsif params[:export_type] == 'typescript'
             language_file = helpers.typescript(language, export_data)
             zip.add(language.name.downcase + '.ts', language_file)
-          elsif params[:export_type] == "android"
+          elsif params[:export_type] == 'android'
             language_file = helpers.android(language, export_data)
             zip.add(language.name.downcase + '.xml', language_file)
-          elsif params[:export_type] == "ios"
+          elsif params[:export_type] == 'ios'
             language_file = helpers.ios(language, export_data)
             zip.add(language.name.downcase + '.strings', language_file)
-          elsif params[:export_type] == "rails"
+          elsif params[:export_type] == 'rails'
             language_file = helpers.rails(language, export_data)
             zip.add(language.name.downcase + '.yml', language_file)
           else
@@ -166,7 +161,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       render json: {
         error: true,
         message: 'Missing required parameter'
-      }, status: 400
+      }, status: :bad_request
       return
     end
 
@@ -231,9 +226,9 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
     project = current_user.projects.find(params[:project_id])
     versions = PaperTrail::Version
-      .where(project_id: project.id, whodunnit: current_user.id)
-      .limit(limit)
-      .order(created_at: :desc)
+               .where(project_id: project.id, whodunnit: current_user.id)
+               .limit(limit)
+               .order(created_at: :desc)
 
     options = {}
     options[:include] = [:user]
