@@ -16,8 +16,8 @@ install:
   - docker-compose exec app bundle exec rails db:create db:migrate RAILS_ENV=test
 
 script:
-  - docker-compose exec app yarn lint RAILS_ENV=test
-  - docker-compose exec app yarn test RAILS_ENV=test
+  - docker-compose exec app yarn lint . RAILS_ENV=test
+  - docker-compose exec app yarn test . RAILS_ENV=test
   - docker-compose exec app bundle exec rails db:drop RAILS_ENV=test
 
 after_success:
