@@ -61,6 +61,6 @@
     "start": "bundle exec rails server",
     "watch": "./bin/webpack-dev-server",
     "test": "yarn test:backend",
-    "test:backend": "bundle exec rspec"
+    "test:backend": "RAILS_ENV=test bundle exec rspec "
   }
 }
