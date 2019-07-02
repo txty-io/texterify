@@ -205,6 +205,11 @@ class Api::V1::ProjectsController < Api::V1::ApiController
         end
       end
     end
+
+    render json: {
+      message: 'Successfully imported translations.',
+      ok: true
+    }, status: :ok
   end
 
   def destroy
