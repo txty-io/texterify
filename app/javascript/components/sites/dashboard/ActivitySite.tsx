@@ -4,7 +4,6 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { DashboardAPI } from "../../api/v1/DashboardAPI";
 import { Activity } from "../../ui/Activity";
-import { Breadcrumbs } from "../../ui/Breadcrumbs";
 const { Content } = Layout;
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
