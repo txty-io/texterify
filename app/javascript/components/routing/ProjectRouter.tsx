@@ -20,12 +20,6 @@ interface IState { }
 
 @observer
 class ProjectRouter extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {};
-  }
-
   async componentDidMount() {
     const getProjectResponse = await ProjectsAPI.getProject(this.props.match.params.projectId);
     if (getProjectResponse.errors) {
