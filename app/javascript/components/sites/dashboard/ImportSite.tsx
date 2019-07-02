@@ -1,18 +1,15 @@
 import { Alert, Button, Icon, Layout, message, Select } from "antd";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import Dropzone from "react-dropzone";
 import { Link, RouteComponentProps } from "react-router-dom";
+import { APIUtils } from "../../api/v1/APIUtils";
+import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { Routes } from "../../routing/Routes";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
-const { Header, Content, Footer, Sider } = Layout;
-import Dropzone from "react-dropzone";
-import { APIUtils } from "../../api/v1/APIUtils";
-import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import FlagIcon from "../../ui/FlagIcons";
 import { LoadingOverlay } from "../../ui/LoadingOverlay";
 import { Styles } from "../../ui/Styles";
-import { makeCancelable } from "../../utilities/Promise";
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
 interface IState {
@@ -68,8 +65,6 @@ class ImportSite extends React.Component<IProps, IState> {
       this.state.files[0]
     );
 
-    console.error(response);
-
     if (!response.errors && response.ok) {
       message.success("Successfully imported translations.");
       this.setState({
@@ -88,7 +83,7 @@ class ImportSite extends React.Component<IProps, IState> {
       <>
         <Layout style={{ padding: "0 24px 24px", maxWidth: 500, margin: "0", width: "100%" }}>
           <Breadcrumbs breadcrumbName="import" />
-          <Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
+          <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
             <h1>Import</h1>
             <p>You can select a file to import for a given language.</p>
             {this.state.languagesResponse && this.state.languages.length === 0 &&
@@ -183,13 +178,13 @@ class ImportSite extends React.Component<IProps, IState> {
                   >
                     Remove file
                   </Button>
-                  <Button type="primary" disabled={this.state.files.length === 0} onClick={this.upload}>
+                  <Button type="primary" disabled={this.state.files.length === 0 || !this.state.selectedLanguageId} onClick={this.upload}>
                     Import file
                 </Button>
                 </div>
               </>
             }
-          </Content>
+          </Layout.Content>
         </Layout>
 
         <LoadingOverlay isVisible={this.state.loading} loadingText={"Importing data..."} />
