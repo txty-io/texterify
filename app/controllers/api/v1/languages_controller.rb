@@ -55,6 +55,12 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     end
 
     if language.save
+      # Show language column for all users of the project.
+      project_columns = project.project_columns.where(project_id: project.id)
+      project_columns.each do |project_column|
+        project_column.languages << language
+      end
+
       render json: {
         success: true,
         details: 'Language successfully created.'
