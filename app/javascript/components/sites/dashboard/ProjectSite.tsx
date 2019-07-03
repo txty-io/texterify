@@ -1,10 +1,11 @@
-import { Alert, Layout, Progress } from "antd";
+import { Alert, Button, Layout, Progress } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
+import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Activity } from "../../ui/Activity";
@@ -85,10 +86,21 @@ class ProjectSite extends React.Component<IProps, IState> {
         <Breadcrumbs breadcrumbName="project" />
         <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
           <h1>{dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}</h1>
-          <TextBadge
-            text={`Project ID: ${this.props.match.params.projectId}`}
-            withCopy={this.props.match.params.projectId}
-          />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <TextBadge
+              text={`Project ID: ${this.props.match.params.projectId}`}
+              withCopy={this.props.match.params.projectId}
+            />
+            <Button
+              type="primary"
+              style={{ marginLeft: "auto" }}
+              onClick={() => {
+                history.push(Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId));
+              }}
+            >
+              Open editor
+            </Button>
+          </div>
           <p style={{ marginTop: 16 }}>{dashboardStore.currentProject && dashboardStore.currentProject.attributes.description}</p>
           {this.state.languagesResponse && this.state.projectActivityResponse && (
             <>

@@ -32,6 +32,8 @@ const Routes = {
     PROJECT_SETTINGS: "/dashboard/projects/:projectId/settings",
     PROJECT_KEYS: "/dashboard/projects/:projectId/keys",
     PROJECT_ACTIVITY: "/dashboard/projects/:projectId/activity",
+    PROJECT_EDITOR: "/dashboard/projects/:projectId/editor",
+    PROJECT_EDITOR_KEY: "/dashboard/projects/:projectId/editor/:keyId",
     TEAMS: "/dashboard/teams",
     TEAMS_NEW: "/dashboard/teams/new",
     MEMBERS: "/dashboard/members",

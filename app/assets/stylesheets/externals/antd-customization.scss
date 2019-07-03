@@ -81,7 +81,7 @@ $color: #6772e5;
 
   /* Set background color of content area. */
   .ant-layout, .ant-timeline-item-head, .ant-collapse-borderless {
-    background: #fdffff;
+    background: #fefeff;
   }
 
   .ant-table-tbody .ant-form-item-control {
@@ -104,5 +104,31 @@ $color: #6772e5;
 
   .ant-menu-item > a {
     text-decoration: none;
+  }
+
+  .ant-menu-inline-collapsed {
+    .nav-text {
+      overflow: visible !important;
+    }
+  }
+
+  .ce-block__content {
+    max-width: 100%;
+  }
+
+  .ce-toolbar__content {
+    max-width: 100%;
+  }
+
+  .cdx-list__item {
+    list-style: inherit;
+  }
+
+  .cdx-list--unordered {
+    list-style: disc;
+  }
+
+  .cdx-list--ordered {
+    list-style: decimal;
   }
 }

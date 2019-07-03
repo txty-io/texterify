@@ -53,6 +53,11 @@ class ProjectSidebar extends React.Component<IProps, IState> {
       text: "Languages"
     },
     {
+      icon: "layout",
+      path: Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId),
+      text: "Editor"
+    },
+    {
       icon: "download",
       path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
       text: "Export"
@@ -94,9 +99,13 @@ class ProjectSidebar extends React.Component<IProps, IState> {
         <Menu.Item
           key={"title"}
           title={dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
-          style={{ height: 48, display: "flex", alignItems: "center", padding: "0px" }}
+          style={{ height: 48, display: "flex", alignItems: "center", padding: "0 24px", overflow: "hidden" }}
         >
-          <Link to={Routes.DASHBOARD.PROJECT.replace(":projectId", dashboardStore.currentProject && dashboardStore.currentProject.id)} className="nav-text">
+          <Link
+            to={Routes.DASHBOARD.PROJECT.replace(":projectId", dashboardStore.currentProject && dashboardStore.currentProject.id)}
+            className="nav-text"
+            style={{ overflow: "hidden", textOverflow: "ellipsis" }}
+          >
             <span style={{ fontWeight: "bold" }}>
               {!this.state.collapsed && dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
               {this.state.collapsed && dashboardStore.currentProject && dashboardStore.currentProject.attributes.name.substr(0, 2)}
