@@ -14,7 +14,7 @@ class SiteWrapper extends React.Component<IProps, IState> {
         style={{
           display: "flex",
           flexDirection: "column",
-          background: "#fdffff",
+          background: "#fefeff",
           padding: 40,
           margin: "auto"
         }}
