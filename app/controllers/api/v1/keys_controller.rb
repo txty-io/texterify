@@ -3,6 +3,18 @@ class Api::V1::KeysController < Api::V1::ApiController
     { project_id: params[:project_id] }
   end
 
+  def show
+    project = current_user.projects.find(params[:project_id])
+    key = project.keys.find(params[:id])
+
+    options = {}
+    options[:include] = [:translations, :'translations.language']
+    render json: KeySerializer.new(
+      key,
+      options
+    ).serialized_json
+  end
+
   def index
     project = current_user.projects.find(params[:project_id])
 

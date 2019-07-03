@@ -1,9 +1,12 @@
-import { authStore } from "../../stores/AuthStore";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
-import { ProjectsAPI } from "./ProjectsAPI";
 
 const KeysAPI = {
+  getKey: async (projectId: string, keyId: string): Promise<any> => {
+    return API.getRequest(`projects/${projectId}/keys/${keyId}`, true, {})
+      .then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
+  },
+
   getKeys: async (projectId: string, options: any): Promise<any> => {
     return API.getRequest(`projects/${projectId}/keys`, true, {
       search: options && options.search || undefined,
