@@ -411,7 +411,8 @@ class KeysSite extends React.Component<IProps, IState> {
                 style={{ maxWidth: "50%" }}
               />
             </div>
-            <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap" }}>
+            <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", alignItems: "flex-end" }}>
+              <span style={{ marginRight: 8 }}>Select visible columns:</span>
               {this.renderColumnTags()}
             </div>
             <EditableTable

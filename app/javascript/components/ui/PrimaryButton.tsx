@@ -1,8 +1,6 @@
-import { Button, Layout } from "antd";
+import { Button } from "antd";
 import { ButtonProps } from "antd/lib/button";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import styled from "styled-components";
 
 type IProps = ButtonProps & {};
 interface IState { }
@@ -17,6 +15,4 @@ class PrimaryButton extends React.Component<IProps, IState> {
   }
 }
 
-export {
-  PrimaryButton
-};
+export { PrimaryButton };

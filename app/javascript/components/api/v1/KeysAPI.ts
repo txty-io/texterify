@@ -7,7 +7,7 @@ const KeysAPI = {
       .then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   },
 
-  getKeys: async (projectId: string, options: any): Promise<any> => {
+  getKeys: async (projectId: string, options: { search: string; page: number; perPage: number }): Promise<any> => {
     return API.getRequest(`projects/${projectId}/keys`, true, {
       search: options && options.search || undefined,
       page: options && options.page,
