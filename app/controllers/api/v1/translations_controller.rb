@@ -37,7 +37,7 @@ class Api::V1::TranslationsController < Api::V1::ApiController
 
     if translation.update(translation_params)
       render json: {
-        message: 'translation updated'
+        message: 'Translation updated'
       }
     else
       render json: {
