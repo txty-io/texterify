@@ -236,7 +236,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
                .order(created_at: :desc)
 
     options = {}
-    options[:include] = [:user]
+    options[:include] = [:user, :key, :language, :'language.country_code']
     render json: ActivitySerializer.new(versions, options).serialized_json
   end
 

@@ -11,7 +11,7 @@ class Api::V1::DashboardController < Api::V1::ApiController
     versions = PaperTrail::Version.where(project_id: current_user.projects).limit(limit).order(created_at: :desc)
 
     options = {}
-    options[:include] = [:user, :project]
+    options[:include] = [:user, :project, :key, :language, :'language.country_code']
     options[:params] = { current_user: current_user }
     render json: ActivitySerializer.new(versions, options).serialized_json
   end
