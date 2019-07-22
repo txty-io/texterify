@@ -53,9 +53,9 @@ class ProjectSidebar extends React.Component<IProps, IState> {
       text: "Languages"
     },
     {
-      icon: "layout",
-      path: Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId),
-      text: "Editor"
+      icon: "upload",
+      path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
+      text: "Import"
     },
     {
       icon: "download",
@@ -66,11 +66,6 @@ class ProjectSidebar extends React.Component<IProps, IState> {
       icon: "line-chart",
       path: Routes.DASHBOARD.PROJECT_ACTIVITY.replace(":projectId", this.props.match.params.projectId),
       text: "Activity"
-    },
-    {
-      icon: "upload",
-      path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
-      text: "Import"
     },
     {
       icon: "team",
