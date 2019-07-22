@@ -1,19 +1,17 @@
-import { Alert, Button, Icon, Input, Layout, message, Select, Tree } from "antd";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { Link, RouteComponentProps } from "react-router-dom";
-import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
-import { Routes } from "../../routing/Routes";
-import { Breadcrumbs } from "../../ui/Breadcrumbs";
-const { Header, Content, Footer, Sider } = Layout;
+import { Alert, Button, Icon, Layout, message, Select, Tree } from "antd";
 import * as moment from "moment";
-import Dropzone from "react-dropzone";
+import * as React from "react";
+import { Link, RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
+import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
+import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
+import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import FlagIcon from "../../ui/FlagIcons";
 import { Styles } from "../../ui/Styles";
 import { makeCancelable } from "../../utilities/Promise";
+const { Header, Content, Footer, Sider } = Layout;
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
 interface IState {
@@ -191,9 +189,9 @@ class ExportSite extends React.Component<IProps, IState> {
     });
 
     return (
-      <Layout style={{ padding: "0 24px 24px", maxWidth: 1000, margin: "0", width: "100%" }}>
+      <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
         <Breadcrumbs breadcrumbName="export" />
-        <Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
+        <Content style={{ margin: "24px 16px 0", minHeight: 360, maxWidth: 800 }}>
           <h1>Export</h1>
           {this.state.languagesLoaded && this.state.languages.length === 0 &&
             <>

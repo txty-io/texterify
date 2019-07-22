@@ -83,7 +83,7 @@ class ImportSite extends React.Component<IProps, IState> {
       <>
         <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
           <Breadcrumbs breadcrumbName="import" />
-          <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, maxWidth: 500 }}>
+          <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, maxWidth: 480 }}>
             <h1>Import</h1>
             <p>You can select a file to import for a given language.</p>
             {this.state.languagesResponse && this.state.languages.length === 0 &&
