@@ -98,7 +98,7 @@ class ProjectSite extends React.Component<IProps, IState> {
                 history.push(Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId));
               }}
             >
-              Open editor
+              Open translation editor
             </Button>
           </div>
           <p style={{ marginTop: 16 }}>{dashboardStore.currentProject && dashboardStore.currentProject.attributes.description}</p>
@@ -109,11 +109,11 @@ class ProjectSite extends React.Component<IProps, IState> {
                   <Alert
                     type="info"
                     showIcon
-                    message={<>Welcome to your new project!</>}
+                    message={<>Welcome to your new project.</>}
                     description={
                       <>
                         <p style={{ color: Styles.COLOR_TEXT_DISABLED }}>
-                          Before you start you should <Link to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId)}>
+                          As a first step you should <Link to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId)}>
                             add some languages </Link> to your project.
                           <br />
                           <br />
