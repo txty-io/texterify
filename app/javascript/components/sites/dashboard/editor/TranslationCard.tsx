@@ -156,7 +156,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                                 promise = Promise.resolve(this.state.content);
                             }
 
-                            promise.then((content) => {
+                            promise.then(async (content) => {
                                 if (this.state.isHTMLKey) {
                                     content = JSON.stringify(content);
                                 }
@@ -172,13 +172,13 @@ class TranslationCard extends React.Component<IProps, IState> {
                                 });
 
                                 if (translationIdToUpdate) {
-                                    TranslationsAPI.updateTranslation(
+                                    await TranslationsAPI.updateTranslation(
                                         this.props.projectId,
                                         translationIdToUpdate,
                                         content
                                     );
                                 } else {
-                                    TranslationsAPI.createTranslation(
+                                    await TranslationsAPI.createTranslation(
                                         this.props.projectId,
                                         this.state.selectedLanguage,
                                         this.props.keyResponse.data.id,
