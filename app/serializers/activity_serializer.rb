@@ -11,30 +11,30 @@ class ActivitySerializer
   end
 
   belongs_to :key, if: proc { |object|
-    if object.item_type == "Translation"
-      (object.object_changes && object.object_changes["key_id"] && object.object_changes["key_id"][1]) || object.object["key_id"]
+    if object.item_type == 'Translation'
+      (object.object_changes && object.object_changes['key_id'] && object.object_changes['key_id'][1]) || object.object['key_id']
     end
   } do |object|
-    keyId = nil
-    if object.object_changes && object.object_changes["key_id"] && object.object_changes["key_id"][1]
-      keyId = object.object_changes["key_id"][1]
+    key_id = nil
+    if object.object_changes && object.object_changes['key_id'] && object.object_changes['key_id'][1]
+      key_id = object.object_changes['key_id'][1]
     else
-      keyId = object.object["key_id"]
+      key_id = object.object['key_id']
     end
-    Key.find_by(id: keyId)
+    Key.find_by(id: key_id)
   end
 
   belongs_to :language, if: proc { |object|
-    if object.item_type == "Translation"
-      (object.object_changes && object.object_changes["language_id"] && object.object_changes["language_id"][1]) || object.object["language_id"]
+    if object.item_type == 'Translation'
+      (object.object_changes && object.object_changes['language_id'] && object.object_changes['language_id'][1]) || object.object['language_id']
     end
   } do |object|
-    languageId = nil
-    if object.object_changes && object.object_changes["language_id"] && object.object_changes["language_id"][1]
-      languageId = object.object_changes["language_id"][1]
+    language_id = nil
+    if object.object_changes && object.object_changes['language_id'] && object.object_changes['language_id'][1]
+      language_id = object.object_changes['language_id'][1]
     else
-      languageId = object.object["language_id"]
+      language_id = object.object['language_id']
     end
-    Language.find_by(id: languageId)
+    Language.find_by(id: language_id)
   end
 end
