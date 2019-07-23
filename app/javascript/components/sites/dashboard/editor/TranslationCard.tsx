@@ -5,6 +5,7 @@ import TextArea from "antd/lib/input/TextArea";
 import * as React from "react";
 import styled from "styled-components";
 import { APIUtils } from "../../../api/v1/APIUtils";
+import { TranslationsAPI } from "../../../api/v1/TranslationsAPI";
 import FlagIcon from "../../../ui/FlagIcons";
 import { Styles } from "../../../ui/Styles";
 
@@ -23,6 +24,7 @@ const EditorWrapper = styled.div`
 `;
 
 type IProps = {
+    projectId: string;
     languagesResponse: any;
     defaultSelected: any;
     keyResponse: any;
@@ -31,42 +33,62 @@ type IState = {
     selectedLanguage: string;
     editorContentChanged: boolean;
     editorLoaded: boolean;
+    textareaContentChanged: boolean;
+    isHTMLKey: boolean;
+    translationForLanguage: string;
+    content: string;
 };
 
 class TranslationCard extends React.Component<IProps, IState> {
     state: IState = {
         selectedLanguage: this.props.defaultSelected,
         editorContentChanged: false,
-        editorLoaded: false
+        editorLoaded: false,
+        textareaContentChanged: false,
+        isHTMLKey: true,
+        translationForLanguage: null,
+        content: null
     };
 
     editor: any;
 
     async componentDidMount() {
-        this.editor = new EditorJS({
-            holder: `codex-editor-${this.state.selectedLanguage}`,
-            minHeight: 40,
-            tools: {
-                list: {
-                    class: List,
-                    inlineToolbar: true
-                }
-            },
-            onChange: () => { this.setState({ editorContentChanged: true }); },
-            data: {
-                blocks: [
-                    {
-                        type: "paragraph",
-                        data: {
-                            text: this.getTranslationForLanguage(this.state.selectedLanguage)
-                        }
-                    }
-                ]
+        await this.loadData();
+    }
+
+    loadData = async () => {
+        const translationForLanguage = await this.getTranslationForLanguage(this.state.selectedLanguage);
+        const isHTMLKey = this.props.keyResponse.data.attributes.html_enabled;
+
+        if (isHTMLKey) {
+            let htmlData;
+            try {
+                htmlData = JSON.parse(translationForLanguage);
+            } catch (e) {
+                //
             }
-        });
-        await this.editor.isReady;
+
+            this.editor = new EditorJS({
+                holder: `codex-editor-${this.state.selectedLanguage}`,
+                minHeight: 40,
+                tools: {
+                    list: {
+                        class: List,
+                        inlineToolbar: true
+                    }
+                },
+                onChange: () => { this.setState({ editorContentChanged: true }); },
+                data: isHTMLKey ? htmlData : undefined
+            });
+            await this.editor.isReady;
+        } else {
+            this.setState({ content: translationForLanguage });
+        }
+
         this.setState({
-            editorLoaded: true
+            editorLoaded: true,
+            isHTMLKey: isHTMLKey,
+            translationForLanguage: translationForLanguage
         });
     }
 
@@ -83,11 +105,11 @@ class TranslationCard extends React.Component<IProps, IState> {
     }
 
     isHTMLKey = () => {
-        return true;
+        return this.state.isHTMLKey;
     }
 
     contentChanged = () => {
-        return this.state.editorContentChanged;
+        return this.state.editorContentChanged || this.state.textareaContentChanged;
     }
 
     getEditorLoadingOverlay = () => {
@@ -104,10 +126,10 @@ class TranslationCard extends React.Component<IProps, IState> {
                 <div style={{ marginBottom: 8, display: "flex" }}>
                     <Select
                         style={{ flexGrow: 1, maxWidth: 200 }}
-                        onChange={(selectedValue: string) => {
+                        onChange={async (selectedValue: string) => {
                             this.setState({
                                 selectedLanguage: selectedValue
-                            });
+                            }, this.loadData);
                         }}
                         value={this.state.selectedLanguage}
                     >
@@ -127,9 +149,49 @@ class TranslationCard extends React.Component<IProps, IState> {
                         disabled={!this.contentChanged()}
                         style={{ marginLeft: "auto" }}
                         onClick={() => {
-                            this.editor.save().then((outputData) => {
-                                console.log("Article data: ", outputData);
+                            let promise;
+                            if (this.state.isHTMLKey) {
+                                promise = this.editor.save();
+                            } else {
+                                promise = Promise.resolve(this.state.content);
+                            }
+
+                            promise.then((content) => {
+                                if (this.state.isHTMLKey) {
+                                    content = JSON.stringify(content);
+                                }
+
+                                let translationIdToUpdate;
+                                this.props.keyResponse.data.relationships.translations.data.map((translationReference) => {
+                                    const translation = APIUtils.getIncludedObject(translationReference, this.props.keyResponse.included);
+                                    const languageId = translation.relationships.language.data.id;
+
+                                    if (languageId === this.state.selectedLanguage) {
+                                        translationIdToUpdate = translation.id;
+                                    }
+                                });
+
+                                if (translationIdToUpdate) {
+                                    TranslationsAPI.updateTranslation(
+                                        this.props.projectId,
+                                        translationIdToUpdate,
+                                        content
+                                    );
+                                } else {
+                                    TranslationsAPI.createTranslation(
+                                        this.props.projectId,
+                                        this.state.selectedLanguage,
+                                        this.props.keyResponse.data.id,
+                                        content
+                                    );
+                                }
+
+                                this.setState({
+                                    editorContentChanged: false,
+                                    textareaContentChanged: false
+                                });
                             }).catch((error) => {
+                                console.error(error);
                                 message.error("Failed to save changes.");
                             });
                         }}
@@ -145,7 +207,20 @@ class TranslationCard extends React.Component<IProps, IState> {
                         </EditorWrapper>
                         {!this.state.editorLoaded && this.getEditorLoadingOverlay()}
                     </div> :
-                    <TextArea autosize={{ minRows: 4, maxRows: 6 }} placeholder="Language translation content" />
+                    <TextArea
+                        autosize={{ minRows: 4, maxRows: 6 }}
+                        placeholder="Language translation content"
+                        onChange={(event) => {
+                            if (event.target.value !== this.state.translationForLanguage && !this.state.textareaContentChanged) {
+                                this.setState({ textareaContentChanged: true });
+                            } else if (event.target.value === this.state.translationForLanguage && this.state.textareaContentChanged) {
+                                this.setState({ textareaContentChanged: false });
+                            }
+
+                            this.setState({ content: event.target.value });
+                        }}
+                        value={this.state.content}
+                    />
                 }
             </div>
         );

@@ -118,6 +118,6 @@ class Api::V1::KeysController < Api::V1::ApiController
   private
 
   def key_params
-    params.require(:key).permit(:name, :description)
+    params.require(:key).permit(:name, :description, :html_enabled)
   end
 end

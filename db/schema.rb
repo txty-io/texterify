@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_07_234811) do
+ActiveRecord::Schema.define(version: 2019_07_22_163715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 2019_05_07_234811) do
     t.uuid "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "html_enabled", default: false, null: false
     t.index ["project_id"], name: "index_keys_on_project_id"
   end
 
