@@ -106,7 +106,13 @@ class Api::V1::ProjectsController < Api::V1::ApiController
           export_data = {}
           project.keys.each do |key|
             key_translation = key.translations.where(language_id: language.id).first
-            export_data[key.name] = key_translation.nil? ? '' : key_translation.content
+            if key_translation.nil?
+              export_data[key.name] = ''
+            elsif key.html_enabled
+              export_data[key.name] = helpers.convert_html_translation(key_translation.content)
+            else
+              export_data[key.name] = key_translation.content
+            end
           end
 
           # Add translations of parent languages.
@@ -115,7 +121,13 @@ class Api::V1::ProjectsController < Api::V1::ApiController
             parent_language.keys.each do |key|
               if export_data[key.name].blank?
                 key_translation = key.translations.where(language_id: parent_language.id).first
-                export_data[key.name] = key_translation.nil? ? '' : key_translation.content
+                if key_translation.nil?
+                  export_data[key.name] = ''
+                elsif key.html_enabled
+                  export_data[key.name] = helpers.convert_html_translation(key_translation.content)
+                else
+                  export_data[key.name] = key_translation.content
+                end
               end
             end
             parent_language = parent_language.parent
