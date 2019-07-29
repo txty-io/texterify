@@ -31,7 +31,6 @@ interface INavigationData {
 type IProps = RouteComponentProps<{ projectId: string }> & {};
 interface IState {
   selectedItem: number;
-  collapsed: boolean;
 }
 
 @observer
@@ -83,8 +82,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
     super(props);
 
     this.state = {
-      selectedItem: 0,
-      collapsed: false
+      selectedItem: 0
     };
   }
 
@@ -102,8 +100,8 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             style={{ overflow: "hidden", textOverflow: "ellipsis" }}
           >
             <span style={{ fontWeight: "bold" }}>
-              {!this.state.collapsed && dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
-              {this.state.collapsed && dashboardStore.currentProject && dashboardStore.currentProject.attributes.name.substr(0, 2)}
+              {!dashboardStore.projectSidebarMinimized && dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
+              {dashboardStore.projectSidebarMinimized && dashboardStore.currentProject && dashboardStore.currentProject.attributes.name.substr(0, 2)}
             </span>
           </Link>
         </Menu.Item>
@@ -132,23 +130,23 @@ class ProjectSidebar extends React.Component<IProps, IState> {
   }
 
   onCollapse = (collapsed: boolean) => {
-    this.setState({ collapsed: collapsed });
+    dashboardStore.projectSidebarMinimized = collapsed;
   }
 
   toggleSidebar = () => {
-    this.setState({ collapsed: !this.state.collapsed });
+    dashboardStore.projectSidebarMinimized = !dashboardStore.projectSidebarMinimized;
   }
 
   renderSidebarTrigger = () => {
     return (
       <SidebarTrigger
         style={{
-          background: this.state.collapsed ? "#f0f1ff" : undefined,
-          color: this.state.collapsed ? Styles.COLOR_PRIMARY : undefined
+          background: dashboardStore.projectSidebarMinimized ? "#f0f1ff" : undefined,
+          color: dashboardStore.projectSidebarMinimized ? Styles.COLOR_PRIMARY : undefined
         }}
       >
         <Icon
-          type={this.state.collapsed ? "menu-unfold" : "menu-fold"}
+          type={dashboardStore.projectSidebarMinimized ? "menu-unfold" : "menu-fold"}
           onClick={this.toggleSidebar}
         />
       </SidebarTrigger>
@@ -162,7 +160,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
         <Sider
           collapsible
           breakpoint="md"
-          collapsed={this.state.collapsed}
+          collapsed={dashboardStore.projectSidebarMinimized}
           onCollapse={this.onCollapse}
           trigger={this.renderSidebarTrigger()}
           style={{ boxShadow: "rgba(61, 172, 206, 0.05) 0px 0px 24px" }}
