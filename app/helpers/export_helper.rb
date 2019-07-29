@@ -15,8 +15,8 @@ module ExportHelper
           converted += '<ul>'
         end
 
-        block['data']['items'].map do | item |
-            converted += "<li>#{item}</li>"
+        block['data']['items'].map do |item|
+          converted += "<li>#{item}</li>"
         end
 
         if block['data']['style'] == 'ordered'
