@@ -1,4 +1,4 @@
-import { Button, Icon, Input, Layout, Modal, Popover, Switch, Tag, Tooltip } from "antd";
+import { Button, Icon, Input, Layout, Modal, Popover, Switch, Tag } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
@@ -9,9 +9,10 @@ import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
 import { NewKeyForm } from "../../forms/NewKeyForm";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
-import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
+import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { EditableTable } from "../../ui/EditableTable";
 import FlagIcon from "../../ui/FlagIcons";
+import { Loading } from "../../ui/Loading";
 import { makeCancelable } from "../../utilities/Promise";
 import { sortStrings } from "../../utilities/Sorter";
 import { TranslationCard } from "./editor/TranslationCard";
@@ -478,7 +479,7 @@ class KeysSite extends React.Component<IProps, IState> {
   // tslint:disable-next-line:max-func-body-length
   render(): JSX.Element {
     if (!this.state.projectColumns || !this.state.projectColumns.data) {
-      return null;
+      return <Loading />;
     }
 
     this.rowSelection.selectedRowKeys = this.state.selectedRowKeys;

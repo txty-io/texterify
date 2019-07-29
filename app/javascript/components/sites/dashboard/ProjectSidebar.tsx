@@ -1,4 +1,5 @@
 import { Icon, Layout, Menu } from "antd";
+import { CollapseType } from "antd/lib/layout/Sider";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
@@ -129,12 +130,10 @@ class ProjectSidebar extends React.Component<IProps, IState> {
     });
   }
 
-  onCollapse = (collapsed: boolean) => {
-    dashboardStore.projectSidebarMinimized = collapsed;
-  }
-
-  toggleSidebar = () => {
-    dashboardStore.projectSidebarMinimized = !dashboardStore.projectSidebarMinimized;
+  onCollapse = (collapsed: boolean, type: CollapseType) => {
+    if (type === "clickTrigger") {
+      dashboardStore.projectSidebarMinimized = collapsed;
+    }
   }
 
   renderSidebarTrigger = () => {
@@ -145,10 +144,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
           color: dashboardStore.projectSidebarMinimized ? Styles.COLOR_PRIMARY : undefined
         }}
       >
-        <Icon
-          type={dashboardStore.projectSidebarMinimized ? "menu-unfold" : "menu-fold"}
-          onClick={this.toggleSidebar}
-        />
+        <Icon type={dashboardStore.projectSidebarMinimized ? "menu-unfold" : "menu-fold"} />
       </SidebarTrigger>
     );
   }
@@ -160,6 +156,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
         <Sider
           collapsible
           breakpoint="md"
+          defaultCollapsed={dashboardStore.projectSidebarMinimized}
           collapsed={dashboardStore.projectSidebarMinimized}
           onCollapse={this.onCollapse}
           trigger={this.renderSidebarTrigger()}

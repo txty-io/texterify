@@ -15,7 +15,7 @@ interface IProjectAttributes {
 
 class DashboardStore {
   @observable currentProject: IProject = null;
-  @observable @persist projectSidebarMinimized: boolean = false;
+  @observable @persist projectSidebarMinimized: boolean;
   @observable @persist keysPerPage: number = 10;
   @observable hydrationFinished: boolean = false;
 }
