@@ -28,6 +28,9 @@ type IProps = {
     languagesResponse: any;
     defaultSelected: any;
     keyResponse: any;
+    hideLanguageSelection?: boolean;
+    hideSaveButton?: boolean;
+    onChange?(changed: boolean);
 };
 type IState = {
     selectedLanguage: string;
@@ -77,7 +80,12 @@ class TranslationCard extends React.Component<IProps, IState> {
                         inlineToolbar: true
                     }
                 },
-                onChange: () => { this.setState({ editorContentChanged: true }); },
+                onChange: () => {
+                    if (this.props.onChange) {
+                        this.props.onChange(true);
+                    }
+                    this.setState({ editorContentChanged: true });
+                },
                 data: isHTMLKey ? htmlData : undefined
             });
             await this.editor.isReady;
@@ -120,11 +128,59 @@ class TranslationCard extends React.Component<IProps, IState> {
         );
     }
 
+    saveChanges = async () => {
+        let promise;
+        if (this.state.isHTMLKey) {
+            promise = this.editor.save();
+        } else {
+            promise = Promise.resolve(this.state.content);
+        }
+
+        return promise.then(async (content) => {
+            if (this.state.isHTMLKey) {
+                content = JSON.stringify(content);
+            }
+
+            let translationIdToUpdate;
+            this.props.keyResponse.data.relationships.translations.data.map((translationReference) => {
+                const translation = APIUtils.getIncludedObject(translationReference, this.props.keyResponse.included);
+                const languageId = translation.relationships.language.data.id;
+
+                if (languageId === this.state.selectedLanguage) {
+                    translationIdToUpdate = translation.id;
+                }
+            });
+
+            if (translationIdToUpdate) {
+                await TranslationsAPI.updateTranslation(
+                    this.props.projectId,
+                    translationIdToUpdate,
+                    content
+                );
+            } else {
+                await TranslationsAPI.createTranslation(
+                    this.props.projectId,
+                    this.state.selectedLanguage,
+                    this.props.keyResponse.data.id,
+                    content
+                );
+            }
+
+            this.setState({
+                editorContentChanged: false,
+                textareaContentChanged: false
+            });
+        }).catch((error) => {
+            console.error(error);
+            message.error("Failed to save changes.");
+        });
+    }
+
     render() {
         return (
             <div style={{ marginBottom: 24, width: "100%" }}>
                 <div style={{ marginBottom: 8, display: "flex" }}>
-                    <Select
+                    {!this.props.hideLanguageSelection && <Select
                         style={{ flexGrow: 1, maxWidth: 200 }}
                         onChange={async (selectedValue: string) => {
                             this.setState({
@@ -143,61 +199,15 @@ class TranslationCard extends React.Component<IProps, IState> {
                                 {language.attributes.name}
                             </Select.Option>;
                         })}
-                    </Select>
-                    <Button
+                    </Select>}
+                    {!this.props.hideSaveButton && <Button
                         type="primary"
                         disabled={!this.contentChanged()}
                         style={{ marginLeft: "auto" }}
-                        onClick={() => {
-                            let promise;
-                            if (this.state.isHTMLKey) {
-                                promise = this.editor.save();
-                            } else {
-                                promise = Promise.resolve(this.state.content);
-                            }
-
-                            promise.then(async (content) => {
-                                if (this.state.isHTMLKey) {
-                                    content = JSON.stringify(content);
-                                }
-
-                                let translationIdToUpdate;
-                                this.props.keyResponse.data.relationships.translations.data.map((translationReference) => {
-                                    const translation = APIUtils.getIncludedObject(translationReference, this.props.keyResponse.included);
-                                    const languageId = translation.relationships.language.data.id;
-
-                                    if (languageId === this.state.selectedLanguage) {
-                                        translationIdToUpdate = translation.id;
-                                    }
-                                });
-
-                                if (translationIdToUpdate) {
-                                    await TranslationsAPI.updateTranslation(
-                                        this.props.projectId,
-                                        translationIdToUpdate,
-                                        content
-                                    );
-                                } else {
-                                    await TranslationsAPI.createTranslation(
-                                        this.props.projectId,
-                                        this.state.selectedLanguage,
-                                        this.props.keyResponse.data.id,
-                                        content
-                                    );
-                                }
-
-                                this.setState({
-                                    editorContentChanged: false,
-                                    textareaContentChanged: false
-                                });
-                            }).catch((error) => {
-                                console.error(error);
-                                message.error("Failed to save changes.");
-                            });
-                        }}
+                        onClick={this.saveChanges}
                     >
                         Save changes
-                    </Button>
+                    </Button>}
                 </div>
 
                 {this.isHTMLKey() ?
