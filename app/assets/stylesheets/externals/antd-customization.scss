@@ -29,6 +29,22 @@ $color: #6772e5;
     padding: 5px 12px;
     cursor: pointer;
     min-height: 33px;
+
+    li {
+      list-style-position: inside;
+    }
+
+    ul {
+      li {
+        list-style-type: disc;
+      }
+    }
+
+    ol {
+      li {
+        list-style-type: decimal;
+      }
+    }
   }
 
   .editable-row:hover .editable-cell-value-wrap {
