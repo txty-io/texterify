@@ -1,4 +1,4 @@
-import { Button, Input, Layout, Modal, Tag } from "antd";
+import { Button, Icon, Input, Layout, Modal, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
@@ -7,12 +7,14 @@ import { KeysAPI } from "../../api/v1/KeysAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
 import { NewKeyForm } from "../../forms/NewKeyForm";
+import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { EditableTable } from "../../ui/EditableTable";
 import FlagIcon from "../../ui/FlagIcons";
 import { makeCancelable } from "../../utilities/Promise";
 import { sortStrings } from "../../utilities/Sorter";
+import { TranslationCard } from "./editor/TranslationCard";
 const { Content } = Layout;
 
 const { CheckableTag } = Tag;
@@ -56,17 +58,21 @@ type IProps = RouteComponentProps<{ projectId: string }> & {};
 interface IState {
   keys: any[];
   languages: any[];
-  projectId: string;
   selectedRowKeys: any[];
   isDeleting: boolean;
   languagesResponse: any;
   keysResponse: any;
   addDialogVisible: boolean;
-  perPage: number;
   page: number;
   search: string | undefined;
   keysLoading: boolean;
   projectColumns: any;
+  editTranslationCellOpen: boolean;
+  editTranslationKeyId: string;
+  editTranslationKeyReponse: any;
+  editTranslationLanguageId: string;
+  editTranslationContentChanged: boolean;
+  keyToEdit: any;
 }
 
 class KeysSite extends React.Component<IProps, IState> {
@@ -84,34 +90,36 @@ class KeysSite extends React.Component<IProps, IState> {
     }
   };
 
-  constructor(props: IProps) {
-    super(props);
+  translationCardRef: any;
 
-    this.state = {
-      keys: [],
-      languages: [],
-      projectId: props.match.params.projectId,
-      selectedRowKeys: [],
-      isDeleting: false,
-      languagesResponse: null,
-      keysResponse: null,
-      addDialogVisible: false,
-      perPage: DEFAULT_PAGE_SIZE,
-      page: 0,
-      search: undefined,
-      keysLoading: false,
-      projectColumns: null
-    };
-  }
+  state: IState = {
+    keys: [],
+    languages: [],
+    selectedRowKeys: [],
+    isDeleting: false,
+    languagesResponse: null,
+    keysResponse: null,
+    addDialogVisible: false,
+    page: 0,
+    search: undefined,
+    keysLoading: false,
+    projectColumns: null,
+    editTranslationCellOpen: false,
+    editTranslationKeyId: "",
+    editTranslationKeyReponse: null,
+    editTranslationLanguageId: "",
+    editTranslationContentChanged: false,
+    keyToEdit: null
+  };
 
   async componentDidMount(): Promise<void> {
     await this.reloadTable();
 
     try {
-      this.getLanguagesPromise = makeCancelable(LanguagesAPI.getLanguages(this.state.projectId));
+      this.getLanguagesPromise = makeCancelable(LanguagesAPI.getLanguages(this.props.match.params.projectId));
       const responseLanguages = await this.getLanguagesPromise.promise;
       const projectColumns = await ProjectColumnsAPI.getProjectColumns({
-        projectId: this.state.projectId
+        projectId: this.props.match.params.projectId
       });
       this.setState({
         languages: responseLanguages.data,
@@ -133,7 +141,7 @@ class KeysSite extends React.Component<IProps, IState> {
   fetchKeys = async (options?: any) => {
     this.setState({ keysLoading: true });
     try {
-      this.getKeysPromise = makeCancelable(KeysAPI.getKeys(this.state.projectId, options));
+      this.getKeysPromise = makeCancelable(KeysAPI.getKeys(this.props.match.params.projectId, options));
       const responseKeys = await this.getKeysPromise.promise;
       this.setState({
         keys: responseKeys.data,
@@ -153,6 +161,12 @@ class KeysSite extends React.Component<IProps, IState> {
 
   getColumns = (): any[] => {
     const columns = [];
+
+    columns.push({
+      title: "Tags",
+      dataIndex: "tags",
+      key: "tags"
+    });
 
     if (this.isNameColumnVisible()) {
       columns.push({
@@ -211,7 +225,48 @@ class KeysSite extends React.Component<IProps, IState> {
       };
     }, []);
 
-    return [...columns, ...languageColumns];
+    return [
+      ...columns,
+      ...languageColumns,
+      {
+        dataIndex: "more",
+        key: "more"
+      }
+    ];
+  }
+
+  getHTMLContentPreview = (htmlContent: string) => {
+    try {
+      // tslint:disable-next-line:no-unnecessary-local-variable
+      const json = JSON.parse(htmlContent);
+
+      let converted = "";
+      json.blocks.map((block) => {
+        if (block.type === "list") {
+          if (block.data.style === "ordered") {
+            converted += "<ol>";
+          } else if (block.data.style === "unordered") {
+            converted += "<ul>";
+          }
+
+          block.data.items.map((item) => {
+            converted += `<li>${item}</li>`;
+          });
+
+          if (block.data.style === "ordered") {
+            converted += "</ol>";
+          } else if (block.data.style === "unordered") {
+            converted += "</ul>";
+          }
+        } else if (block.type === "paragraph") {
+          converted += `<p>${block.data.text}</p>`;
+        }
+      });
+
+      return converted;
+    } catch (e) {
+      return htmlContent;
+    }
   }
 
   getRows = (): any[] => {
@@ -219,29 +274,71 @@ class KeysSite extends React.Component<IProps, IState> {
       return [];
     }
 
-    return this.state.keys.map(
-      (key: any) => {
-        const translations = {};
+    return this.state.keys.map((key: any) => {
+      const translations = {};
 
-        // Stores for which languages a translation exists.
-        const translationExistsFor = {};
-        key.relationships.translations.data.map((translationReference) => {
-          const translation = APIUtils.getIncludedObject(translationReference, this.state.keysResponse.included);
-          const languageId = translation.relationships.language.data.id;
-          translations[`language-${languageId}`] = translation.attributes.content;
-          translationExistsFor[`translation-exists-for-${languageId}`] = translation.id;
-        });
+      // Stores for which languages a translation exists.
+      const translationExistsFor = {};
+      key.relationships.translations.data.map((translationReference) => {
+        const translation = APIUtils.getIncludedObject(translationReference, this.state.keysResponse.included);
+        const languageId = translation.relationships.language.data.id;
+        let translationContent = translation.attributes.content;
+        if (key.attributes.html_enabled) {
+          translationContent = this.getHTMLContentPreview(translationContent);
+        }
+        translations[`language-${languageId}`] = translationContent;
+        translationExistsFor[`translation-exists-for-${languageId}`] = translation.id;
+      });
 
-        return {
-          key: key.attributes.id,
-          name: key.attributes.name,
-          description: key.attributes.description,
-          ...translations,
-          ...translationExistsFor
-        };
-      },
-      []
+      return {
+        tags: key.attributes.html_enabled ? <Tag color="magenta">HTML enabled</Tag> : undefined,
+        key: key.attributes.id,
+        name: key.attributes.name,
+        description: key.attributes.description,
+        htmlEnabled: key.attributes.html_enabled,
+        ...translations,
+        ...translationExistsFor,
+        more: (
+          <Popover
+            placement="topRight"
+            title="Key settings"
+            content={
+              <div style={{ padding: "0 16px", display: "flex", alignItems: "center" }}>
+                HTML enabled
+                <Switch
+                  style={{ marginLeft: 16 }}
+                  checked={key.attributes.html_enabled}
+                  onChange={async () => {
+                    await this.changeHTMLEnabled(key);
+                    await this.reloadTable();
+                  }}
+                />
+              </div>
+            }
+            trigger="click"
+          >
+            <Icon type="more" />
+          </Popover>
+        )
+      };
+    }, []);
+  }
+
+  changeHTMLEnabled = async (key: any) => {
+    await KeysAPI.update(
+      this.props.match.params.projectId,
+      key.id,
+      key.attributes.name,
+      key.attributes.description,
+      !key.attributes.html_enabled
     );
+  }
+
+  openKeyEditDialog = (key: any) => {
+    this.setState({
+      addDialogVisible: true,
+      keyToEdit: key
+    });
   }
 
   onDeleteKeys = async () => {
@@ -279,7 +376,7 @@ class KeysSite extends React.Component<IProps, IState> {
     const fetchOptions = {
       search: this.state.search,
       page: this.state.page,
-      perPage: this.state.perPage
+      perPage: dashboardStore.keysPerPage
     };
     await this.fetchKeys(fetchOptions);
   }
@@ -294,7 +391,7 @@ class KeysSite extends React.Component<IProps, IState> {
 
   loadProjectColumns = async () => {
     const projectColumns = await ProjectColumnsAPI.getProjectColumns({
-      projectId: this.state.projectId
+      projectId: this.props.match.params.projectId
     });
 
     this.setState({ projectColumns: projectColumns || [] });
@@ -378,6 +475,7 @@ class KeysSite extends React.Component<IProps, IState> {
     );
   }
 
+  // tslint:disable-next-line:max-func-body-length
   render(): JSX.Element {
     if (!this.state.projectColumns || !this.state.projectColumns.data) {
       return null;
@@ -424,17 +522,27 @@ class KeysSite extends React.Component<IProps, IState> {
               loading={this.state.keysLoading}
               size="middle"
               projectId={this.props.match.params.projectId}
+              onCellEdit={async (options: { languageId: string, keyId: string }) => {
+                const keyResponse = await KeysAPI.getKey(this.props.match.params.projectId, options.keyId);
+                this.setState({
+                  editTranslationCellOpen: true,
+                  editTranslationKeyId: options.keyId,
+                  editTranslationKeyReponse: keyResponse,
+                  editTranslationLanguageId: options.languageId
+                });
+              }}
               pagination={{
                 pageSizeOptions: PAGE_SIZE_OPTIONS,
                 showSizeChanger: true,
                 current: this.state.page,
-                pageSize: this.state.perPage,
+                pageSize: dashboardStore.keysPerPage,
                 total: (this.state.keysResponse && this.state.keysResponse.meta.total) || 0,
                 onChange: async (page: number, perPage: number) => {
                   this.setState({ page: page }, this.reloadTable);
                 },
                 onShowSizeChange: async (current: number, size: number) => {
-                  this.setState({ perPage: size }, this.reloadTable);
+                  dashboardStore.keysPerPage = size;
+                  this.reloadTable();
                 }
               }}
             />
@@ -442,10 +550,11 @@ class KeysSite extends React.Component<IProps, IState> {
         </Layout>
 
         <NewKeyForm
+          keyToEdit={this.state.keyToEdit}
           visible={this.state.addDialogVisible}
           projectId={this.props.match.params.projectId}
           onCancelRequest={() => {
-            this.setState({ addDialogVisible: false });
+            this.setState({ addDialogVisible: false, keyToEdit: null });
           }}
           onCreated={async () => {
             this.setState({
@@ -455,6 +564,50 @@ class KeysSite extends React.Component<IProps, IState> {
             await this.reloadTable();
           }}
         />
+
+        <Modal
+          maskClosable={false}
+          title={"Edit content"}
+          visible={this.state.editTranslationCellOpen}
+          onCancel={() => {
+            this.setState({ editTranslationCellOpen: false });
+          }}
+          destroyOnClose
+          footer={
+            <div style={{ margin: "6px 0" }}>
+              <Button
+                onClick={() => {
+                  this.setState({ editTranslationCellOpen: false, editTranslationContentChanged: false });
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={!this.state.editTranslationContentChanged}
+                type="primary"
+                onClick={async () => {
+                  await this.translationCardRef.saveChanges();
+                  this.setState({ editTranslationCellOpen: false, editTranslationContentChanged: false });
+                  await this.reloadTable();
+                }}
+              >
+                Save changes
+              </Button>
+            </div>}
+        >
+          <TranslationCard
+            projectId={this.props.match.params.projectId}
+            keyResponse={this.state.editTranslationKeyReponse}
+            languagesResponse={this.state.languagesResponse}
+            defaultSelected={this.state.editTranslationLanguageId}
+            hideLanguageSelection
+            hideSaveButton
+            ref={(ref) => this.translationCardRef = ref}
+            onChange={(changed: boolean) => {
+              this.setState({ editTranslationContentChanged: changed });
+            }}
+          />
+        </Modal>
       </>
     );
   }

@@ -14,11 +14,12 @@ const EditableFormRow = Form.create()(EditableRow);
 
 interface IEditableCellProps {
   editable: boolean;
-  dataIndex: any;
+  dataIndex: string;
   title: any;
   record: any;
   index: any;
   handleSave: any;
+  onCellEdit(options: { languageId: string; keyId: string }): any;
 }
 interface IEditableCellState {
   editing: boolean;
@@ -48,12 +49,20 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
   }
 
   toggleEdit = () => {
-    const editing = !this.state.editing;
-    this.setState({ editing }, () => {
-      if (editing) {
-        this.input.focus();
-      }
-    });
+    if (this.props.record.htmlEnabled && this.props.dataIndex !== "name" && this.props.dataIndex !== "description") {
+      console.error(this.props);
+      this.props.onCellEdit({
+        languageId: this.props.dataIndex.substr("language-".length),
+        keyId: this.props.record.key
+      });
+    } else {
+      const editing = !this.state.editing;
+      this.setState({ editing }, () => {
+        if (editing) {
+          this.input.focus();
+        }
+      });
+    }
   }
 
   handleClickOutside = (e: any) => {
@@ -85,6 +94,7 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
       record,
       index,
       handleSave,
+      onCellEdit,
       ...restProps
     } = this.props;
 
@@ -94,6 +104,8 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
           <EditableContext.Consumer>
             {(form: any) => {
               this.form = form;
+
+              // console.error(restProps.children);
 
               return (
                 editing ? (
@@ -113,14 +125,14 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
                     )}
                   </FormItem>
                 ) : (
+                    // tslint:disable-next-line:react-no-dangerous-html
                     <div
                       className="editable-cell-value-wrap"
-                      style={{ maxWidth: 400, overflow: "scroll", display: "flex", alignItems: "center", wordBreak: "break-all" }}
+                      style={{ maxWidth: 400, overflow: "scroll", display: "flex", flexDirection: "column", justifyContent: "center", wordBreak: "break-all" }}
                       onClick={this.toggleEdit}
                       role="button"
-                    >
-                      {restProps.children}
-                    </div>
+                      dangerouslySetInnerHTML={{ __html: restProps.children[2] }}
+                    />
                   )
               );
             }}
@@ -141,6 +153,7 @@ interface IEditableTableProps {
   projectId: any;
   pagination?: any;
   rowSelection?: any;
+  onCellEdit(options: { languageId: string; keyId: string }): void;
 }
 interface IEditableTableState {
   dataSource: any[];
@@ -186,7 +199,8 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
         this.props.projectId,
         row.key,
         row.name,
-        row.description
+        row.description,
+        row.html_enabled
       );
       if (response.errors) {
         return;
@@ -241,14 +255,17 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
 
       return {
         ...col,
-        onCell: (record) => ({
-          record,
-          editable: col.editable,
-          dataIndex: col.dataIndex,
-          title: col.title,
-          handleSave: this.handleSave,
-          width: 400
-        })
+        onCell: (record) => {
+          return {
+            record,
+            editable: col.editable,
+            dataIndex: col.dataIndex,
+            title: col.title,
+            handleSave: this.handleSave,
+            onCellEdit: this.props.onCellEdit,
+            width: 400
+          };
+        }
       };
     });
 
