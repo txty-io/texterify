@@ -1,10 +1,11 @@
-import { Icon, Timeline } from "antd";
+import { Icon, Tag, Timeline } from "antd";
 import * as moment from "moment";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { APIUtils } from "../api/v1/APIUtils";
 import { Routes } from "../routing/Routes";
+import { ActivityTimeAgo } from "./ActivityTimeAgo";
 import FlagIcon from "./FlagIcons";
 import { Styles } from "./Styles";
 
@@ -12,11 +13,11 @@ const ActivityItemWrapper = styled.div`
   word-break: break-all;
 `;
 
-type IActivityKeyElementProps = { color: string; background: string };
+type IActivityKeyElementProps = { color: string; background: string; noMarginRight?: boolean };
 const ActivityKeyElement = styled.span`
   font-family: 'Source Code Pro', monospace;
   background: ${(props: IActivityKeyElementProps) => props.background};
-  margin: 0 4px;
+  margin: 0 ${(props: IActivityKeyElementProps) => props.noMarginRight ? 0 : "4px"} 0 4px;
   color: ${(props: IActivityKeyElementProps) => props.color};
   padding: 0 6px;
   border-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
@@ -60,6 +61,7 @@ class Activity extends React.Component<IProps, IState> {
     if (activity.attributes.item_type === "Key") {
       const isNameChange = activity.attributes.object_changes.name;
       const isDescriptionChange = activity.attributes.object_changes.description;
+      const isHTMLEnabledChange = activity.attributes.object_changes.html_enabled;
 
       if (event === "destroy") {
         activityElement = (
@@ -103,10 +105,23 @@ class Activity extends React.Component<IProps, IState> {
         activityElement = (
           <ActivityItemWrapper>
             Description of key
-            <ActivityKeyElement color={this.getStylesForEvent(itemType, event).color} background={this.getStylesForEvent(itemType, event).background}>
+          <ActivityKeyElement color={this.getStylesForEvent(itemType, event).color} background={this.getStylesForEvent(itemType, event).background}>
               {activity.attributes.object.name}
             </ActivityKeyElement>
             {`${activity.attributes.event}d`}.
+          {userElement}
+          </ActivityItemWrapper>
+        );
+      } else if (isHTMLEnabledChange) {
+        activityElement = (
+          <ActivityItemWrapper>
+            {activity.attributes.object_changes.html_enabled[1] ? "Added " : "Removed "}
+            <Tag color="magenta" style={{ margin: 0 }}>HTML enabled</Tag>
+            {activity.attributes.object_changes.html_enabled[1] ? " to" : " from"} key
+            <ActivityKeyElement noMarginRight color={this.getStylesForEvent(itemType, event).color} background={this.getStylesForEvent(itemType, event).background}>
+              {activity.attributes.object.name}
+            </ActivityKeyElement>
+            .
             {userElement}
           </ActivityItemWrapper>
         );
@@ -137,9 +152,6 @@ class Activity extends React.Component<IProps, IState> {
 
     const diffToNow = moment().diff(moment.utc(activity.attributes.created_at, "YYYY-MM-DD HH:mm:ss"));
     const diffToNowDuration = moment.duration(diffToNow);
-    const isOlderThenOneDay = diffToNowDuration.days() > 0;
-    const isOlderThenOneHour = diffToNowDuration.hours() > 0;
-    const isOlderThenOneMinute = diffToNowDuration.minutes() > 0;
 
     return (
       <div style={{ display: "flex" }}>
@@ -147,12 +159,7 @@ class Activity extends React.Component<IProps, IState> {
           {activityElement}
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0, maxWidth: 200, wordBreak: "break-all" }}>
-          {this.props.showTimeAgo && <div>
-            {isOlderThenOneDay ? `${diffToNowDuration.days()}d ` : ""}
-            {isOlderThenOneDay || isOlderThenOneHour ? `${diffToNowDuration.hours()}h ` : ""}
-            {isOlderThenOneDay || isOlderThenOneHour || isOlderThenOneMinute ? `${diffToNowDuration.minutes()}m ` : ""}
-            {`${diffToNowDuration.seconds()}s ago`}
-          </div>}
+          {this.props.showTimeAgo && <ActivityTimeAgo duration={diffToNowDuration} />}
           {this.props.includeProjectLink && <div>
             <ProjectElement to={Routes.DASHBOARD.PROJECT.replace(":projectId", activity.relationships.project.data.id)}>
               {project.attributes.name}
