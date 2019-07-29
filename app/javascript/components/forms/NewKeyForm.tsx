@@ -1,14 +1,12 @@
-import { Button, Checkbox, Form, Icon, Input, Modal } from "antd";
+import { Button, Checkbox, Form, Icon, Input, Modal, Tooltip } from "antd";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { Link } from "react-router-dom";
 import { KeysAPI } from "../api/v1/KeysAPI";
-import { Routes } from "../routing/Routes";
 
 interface IProps {
   form: any;
   projectId: string;
   visible: boolean;
+  keyToEdit?: any;
   onCancelRequest(): void;
   onCreated?(): void;
 }
@@ -19,7 +17,7 @@ class NewKeyFormUnwrapped extends React.Component<IProps, IState> {
     e.preventDefault();
     this.props.form.validateFields(async (err: any, values: any) => {
       if (!err) {
-        const response = await KeysAPI.createKey(this.props.projectId, values.name, values.description);
+        const response = await KeysAPI.createKey(this.props.projectId, values.name, values.description, values.html_enabled);
         if (response.errors) {
           response.errors.map((error) => {
             if (error.details === "A key with that name already exists for this project.") {
@@ -63,10 +61,11 @@ class NewKeyFormUnwrapped extends React.Component<IProps, IState> {
         destroyOnClose
       >
         <Form id="newKeyForm" onSubmit={this.handleSubmit} style={{ maxWidth: "100%" }}>
-          <h3>Name</h3>
+          <h3>Name *</h3>
           <Form.Item>
             {getFieldDecorator("name", {
-              rules: [{ required: true, message: "Please enter the name of the key." }]
+              rules: [{ required: true, message: "Please enter the name of the key." }],
+              initialValue: this.props.keyToEdit && this.props.keyToEdit.attributes.name
             })(
               <Input placeholder="Name" autoFocus />
             )}
@@ -75,10 +74,23 @@ class NewKeyFormUnwrapped extends React.Component<IProps, IState> {
           <h3>Description</h3>
           <Form.Item>
             {getFieldDecorator("description", {
-              rules: [{ required: false, message: "Please enter a description for the key." }]
+              rules: [{ required: false }],
+              initialValue: this.props.keyToEdit && this.props.keyToEdit.attributes.description
             })(
               <Input placeholder="Description" />
             )}
+          </Form.Item>
+
+          <Form.Item>
+            {getFieldDecorator("html_enabled", {
+              rules: [{ required: false }],
+              initialValue: this.props.keyToEdit && this.props.keyToEdit.attributes.html_enabled
+            })(
+              <Checkbox>HTML enabled</Checkbox>
+            )}
+            <Tooltip title="If checked a editor will de used for translation. You can still change this later.">
+              <Icon type="question-circle" />
+            </Tooltip>
           </Form.Item>
         </Form>
       </Modal>
