@@ -542,7 +542,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 },
                 onShowSizeChange: async (current: number, size: number) => {
                   dashboardStore.keysPerPage = size;
-                  this.reloadTable();
+                  await this.reloadTable();
                 }
               }}
             />
