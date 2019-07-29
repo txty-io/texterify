@@ -15,17 +15,19 @@ const KeysAPI = {
     }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   },
 
-  createKey: async (projectId: string, name: string, description: string): Promise<any> => {
+  createKey: async (projectId: string, name: string, description: string, htmlEnabled: boolean): Promise<any> => {
     return API.postRequest(`projects/${projectId}/keys`, true, {
       name: name,
-      description: description
+      description: description,
+      html_enabled: htmlEnabled
     }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   },
 
-  update: async (projectId: string, keyId: string, name: string, description: string) => {
+  update: async (projectId: string, keyId: string, name: string, description: string, htmlEnabled: boolean) => {
     return API.putRequest(`projects/${projectId}/keys/${keyId}`, true, {
       name: name,
-      description: description
+      description: description,
+      html_enabled: htmlEnabled
     }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   },
 
