@@ -11,10 +11,7 @@ interface IState { }
 class ForgotPasswordSite extends React.Component<IProps, IState> {
   render(): JSX.Element {
     return (
-      <SiteWrapper
-        title="We can help you."
-        content="Enter your email address and we will send you an password recovery email."
-      >
+      <SiteWrapper>
         <h2>Reset password</h2>
         <ForgotPasswordForm />
       </SiteWrapper>

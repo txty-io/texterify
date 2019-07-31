@@ -1,10 +1,7 @@
 import * as React from "react";
 import { Styles } from "./Styles";
 
-interface IProps {
-  title: string;
-  content: React.ReactNode;
-}
+interface IProps { }
 interface IState { }
 
 class SiteWrapper extends React.Component<IProps, IState> {
@@ -14,12 +11,11 @@ class SiteWrapper extends React.Component<IProps, IState> {
         style={{
           display: "flex",
           flexDirection: "column",
-          background: "#fefeff",
           padding: 40,
           margin: "auto"
         }}
       >
-        <h1 style={{ marginBottom: 0, fontSize: 40 }}>Texterify</h1>
+        <h1 style={{ marginBottom: 0, fontSize: 32, fontFamily: "Pacifico" }}>Texterify</h1>
         <div
           style={{
             display: "flex",
@@ -27,7 +23,7 @@ class SiteWrapper extends React.Component<IProps, IState> {
             justifyContent: "center",
             flexGrow: 1,
             alignSelf: "center",
-            padding: "64px 0"
+            padding: "24px 0 64px 0"
           }}
         >
           <div
