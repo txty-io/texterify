@@ -1,4 +1,4 @@
-$color: #6772e5;
+$color: #7977f3;
 
 #app-root {
   display: flex;
@@ -146,5 +146,17 @@ $color: #6772e5;
 
   .cdx-list--ordered {
     list-style: decimal;
+  }
+
+  .ant-progress-bg {
+    background: #2b3556;
+  }
+
+  .ant-progress-status-success .ant-progress-bg {
+    background-color: #52c41a;
+  }
+
+  .ant-tag-checkable-checked {
+    background: #2b3556;
   }
 }

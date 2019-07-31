@@ -190,8 +190,8 @@ class Activity extends React.Component<IProps, IState> {
     } else if (event === "update" || itemType === "Translation") {
       return {
         iconColor: "#333",
-        color: Styles.COLOR_SECONDARY,
-        background: Styles.COLOR_PRIMARY_LIGHT
+        color: Styles.COLOR_SECONDARY_GREY,
+        background: Styles.COLOR_SECONDARY_LIGHT
       };
     } else if (event === "destroy") {
       return {

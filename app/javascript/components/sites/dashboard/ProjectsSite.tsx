@@ -14,7 +14,7 @@ import { makeCancelable } from "../../utilities/Promise";
 
 const ListTitle = styled.span`
   cursor: pointer;
-  color: ${Styles.COLOR_SECONDARY};
+  color: ${Styles.COLOR_PRIMARY};
   font-size: 16px;
   &:hover {
     text-decoration: underline;
@@ -118,7 +118,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
               <div style={{ flexGrow: 1 }}>
                 <PrimaryButton onClick={() => { this.setState({ addDialogVisible: true }); }}>
                   Create project
-              </PrimaryButton>
+                </PrimaryButton>
               </div>
               <Input.Search
                 placeholder="Search projects"

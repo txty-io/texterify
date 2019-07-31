@@ -31,6 +31,7 @@ const AccountProfileContentWrapper: any = styled.div`
     display: block;
     color: #888;
     padding: 4px 16px;
+    background: #fcfcfc;
   }
 
   a:hover {
@@ -90,7 +91,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
         <Layout>
           <Header style={{ padding: "0 24px", display: "flex", alignItems: "center", borderBottom: "1px solid #e8e8e8", zIndex: 10 }}>
             <Link to={Routes.DASHBOARD.ROOT} style={{ textDecoration: "none" }}>
-              <h1 style={{ fontSize: 24, marginBottom: 0, marginRight: 24, textDecoration: "none" }}>Texterify</h1>
+              <h1 style={{ fontSize: 24, marginBottom: 0, marginRight: 24, textDecoration: "none", fontFamily: "Pacifico" }}>Texterify</h1>
             </Link>
             <ul className="dashboard-main-menu" style={{ marginBottom: 0, marginRight: 24, display: "flex", alignItems: "center", flexGrow: 1 }}>
               <li>

@@ -85,15 +85,18 @@ class ProjectSite extends React.Component<IProps, IState> {
       <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
         <Breadcrumbs breadcrumbName="project" />
         <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
-          <h1>{dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}</h1>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <h1 style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
+            {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
+
             <TextBadge
               text={`Project ID: ${this.props.match.params.projectId}`}
               withCopy={this.props.match.params.projectId}
+              style={{ marginLeft: 24 }}
             />
+          </h1>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <Button
               type="primary"
-              style={{ marginLeft: "auto" }}
               onClick={() => {
                 history.push(Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId));
               }}

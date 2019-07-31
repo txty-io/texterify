@@ -1,5 +1,6 @@
-import { Icon, Pagination } from "antd";
+import { Button, Comment, Icon, Pagination } from "antd";
 import Search from "antd/lib/input/Search";
+import TextArea from "antd/lib/input/TextArea";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -11,22 +12,24 @@ import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
+import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Styles } from "../../ui/Styles";
+import { UserAvatar } from "../../ui/UserAvatar";
 import { TranslationCard } from "./editor/TranslationCard";
 
 const Key = styled.div`
   /* background: ${(props) => props.index % 2 === 0 ? "#f8f8f8" : undefined}; */
   cursor: pointer;
   padding: 12px 16px;
-  color: ${Styles.COLOR_SECONDARY};
+  color: #333;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 12px;
-  border-bottom: 1px solid #e8e8e8;
+  font-size: 14px;
+  /* border-bottom: 1px solid #e8e8e8; */
 
   &:hover {
-    color: ${Styles.COLOR_PRIMARY};
+    color: #555;
     background: #f0f1ff;
   }
 `;
@@ -125,17 +128,41 @@ class EditorSite extends React.Component<IProps, IState> {
     return this.props.match.params.keyId === keyId;
   }
 
+  // tslint:disable-next-line:max-func-body-length
   render(): JSX.Element {
     return (
       <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, background: "#fefeff" }}>
-        <div style={{ display: "flex", alignItems: "center", padding: "12px 24px", background: "#fff", borderBottom: "1px solid #e8e8e8" }}>
-          <Link to={Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId)}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "12px 24px",
+            background: "linear-gradient(90deg, #2b3556 0%, #383c54 100%)",
+            color: "#fff"
+          }}
+        >
+          <Link to={Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId)} style={{ color: "#fff" }}>
             <Icon type="arrow-left" />
             <span style={{ margin: "0 16px", paddingRight: 24, borderRight: "1px solid #e8e8e8" }}>
               Back to project
             </span>
           </Link>
           {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
+          <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
+            <UserAvatar user={authStore.currentUser} style={{ color: "#fff", background: "rgba(232, 239, 255, 0.15)" }} />
+            <div
+              style={{
+                padding: "0 16px",
+                borderRadius: Styles.DEFAULT_BORDER_RADIUS,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: "bold"
+              }}
+            >
+              {authStore.currentUser && authStore.currentUser.username}
+            </div>
+          </div>
         </div>
         <div style={{ display: "flex", flexGrow: 1 }}>
           <div
@@ -210,7 +237,7 @@ class EditorSite extends React.Component<IProps, IState> {
             </p>}
           </div>
 
-          {/* <div
+          <div
             style={{ padding: 16, background: "#fff", display: "flex", flexDirection: "column", flexGrow: 1, maxWidth: 320, borderLeft: "1px solid #e8e8e8" }}
           >
             <h3>Chat</h3>
@@ -229,7 +256,7 @@ class EditorSite extends React.Component<IProps, IState> {
                 </>
               }
             />
-          </div> */}
+          </div>
         </div>
       </div>
     );

@@ -19,7 +19,7 @@ const SidebarTrigger = styled.div`
 
   &:hover {
     color: ${Styles.COLOR_PRIMARY};
-    background: #f0f1ff;
+    background: ${Styles.COLOR_PRIMARY_LIGHT};
   }
 `;
 
@@ -140,7 +140,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
     return (
       <SidebarTrigger
         style={{
-          background: dashboardStore.projectSidebarMinimized ? "#f0f1ff" : undefined,
+          background: dashboardStore.projectSidebarMinimized ? Styles.COLOR_PRIMARY_LIGHT : undefined,
           color: dashboardStore.projectSidebarMinimized ? Styles.COLOR_PRIMARY : undefined
         }}
       >
