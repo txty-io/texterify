@@ -1,4 +1,5 @@
 import { Button, Comment, Icon, Pagination } from "antd";
+import { Tabs } from "antd";
 import Search from "antd/lib/input/Search";
 import TextArea from "antd/lib/input/TextArea";
 import * as _ from "lodash";
@@ -149,7 +150,7 @@ class EditorSite extends React.Component<IProps, IState> {
           </Link>
           {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
           <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
-            <UserAvatar user={authStore.currentUser} style={{ color: "#fff", background: "rgba(232, 239, 255, 0.15)" }} />
+            <UserAvatar user={authStore.currentUser} />
             <div
               style={{
                 padding: "0 16px",
@@ -240,6 +241,11 @@ class EditorSite extends React.Component<IProps, IState> {
           <div
             style={{ padding: 16, background: "#fff", display: "flex", flexDirection: "column", flexGrow: 1, maxWidth: 320, borderLeft: "1px solid #e8e8e8" }}
           >
+            <Tabs defaultActiveKey="1" type="card">
+              <Tabs.TabPane tab="History" key="1">
+                History
+              </Tabs.TabPane>
+            </Tabs>
             <h3>Chat</h3>
             <p style={{ color: Styles.COLOR_TEXT_DISABLED, fontStyle: "italic" }}>No chat messages so far for this key.</p>
             <Comment

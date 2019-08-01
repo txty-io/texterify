@@ -27,9 +27,13 @@ class UserAvatar extends React.Component<IProps, IState> {
   }
 
   async componentDidMount() {
-    if (!this.isCurrentUser()) {
+    if (!this.isCurrentUser() || !authStore.userImageUrl) {
       const imageResponse = await UsersAPI.getImage(this.props.user.id);
       this.setState({ image: imageResponse.image });
+
+      if (this.isCurrentUser()) {
+        authStore.userImageUrl = imageResponse.image;
+      }
     }
   }
 
@@ -54,8 +58,8 @@ class UserAvatar extends React.Component<IProps, IState> {
           style={{
             height: 40,
             width: 40,
-            background: Styles.COLOR_PRIMARY_LIGHT,
-            color: Styles.COLOR_PRIMARY,
+            background: "rgba(255, 255, 255, 0.15",
+            color: "#fff",
             borderRadius: Styles.DEFAULT_BORDER_RADIUS,
             lineHeight: 0,
             display: "flex",

@@ -89,9 +89,9 @@ class DashboardRouter extends React.Component<IProps, IState> {
     return (
       <>
         <Layout>
-          <Header style={{ padding: "0 24px", display: "flex", alignItems: "center", borderBottom: "1px solid #e8e8e8", zIndex: 10 }}>
+          <Header style={{ padding: "0 24px", display: "flex", alignItems: "center", color: "#fff", zIndex: 10, background: "linear-gradient(90deg, #2b3556 0%, #383c54 100%)" }}>
             <Link to={Routes.DASHBOARD.ROOT} style={{ textDecoration: "none" }}>
-              <h1 style={{ fontSize: 24, marginBottom: 0, marginRight: 24, textDecoration: "none", fontFamily: "Pacifico" }}>Texterify</h1>
+              <h1 style={{ fontSize: 20, marginBottom: 0, marginRight: 24, textDecoration: "none", fontFamily: "Pacifico", color: "#fff" }}>Texterify</h1>
             </Link>
             <ul className="dashboard-main-menu" style={{ marginBottom: 0, marginRight: 24, display: "flex", alignItems: "center", flexGrow: 1 }}>
               <li>
@@ -110,8 +110,8 @@ class DashboardRouter extends React.Component<IProps, IState> {
                 <Link
                   to={Routes.DASHBOARD.PROJECTS}
                   style={{
-                    background: this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS ? Styles.COLOR_PRIMARY : undefined,
-                    color: this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS ? "#fff" : "#333",
+                    background: this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS ? "rgba(255, 255, 255, 0.15" : undefined,
+                    color: this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS ? "#fff" : "#fff",
                     transition: "none",
                     marginRight: 8,
                     textDecoration: "none"
@@ -122,8 +122,8 @@ class DashboardRouter extends React.Component<IProps, IState> {
                 <Link
                   to={Routes.DASHBOARD.ACTIVITY}
                   style={{
-                    background: this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY ? Styles.COLOR_PRIMARY : undefined,
-                    color: this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY ? "#fff" : "#333",
+                    background: this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY ? "rgba(255, 255, 255, 0.15" : undefined,
+                    color: this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY ? "#fff" : "#fff",
                     transition: "none",
                     textDecoration: "none"
                   }}
