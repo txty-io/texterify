@@ -7,6 +7,7 @@ import { MembersAPI } from "../../api/v1/MembersAPI";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { Loading } from "../../ui/Loading";
 import { Styles } from "../../ui/Styles";
 import { UserAvatar } from "../../ui/UserAvatar";
 import { makeCancelable } from "../../utilities/Promise";
@@ -53,10 +54,6 @@ class MembersSite extends React.Component<IProps, IState> {
   }
 
   getRows = (): any[] => {
-    if (!this.state.getMembersResponse) {
-      return [];
-    }
-
     return this.state.getMembersResponse.data.map(
       (member: any) => {
         return {
@@ -71,6 +68,10 @@ class MembersSite extends React.Component<IProps, IState> {
   }
 
   render(): JSX.Element {
+    if (!this.state.getMembersResponse) {
+      return <Loading/>;
+    }
+
     return (
       <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
         <Breadcrumbs breadcrumbName="members" />
