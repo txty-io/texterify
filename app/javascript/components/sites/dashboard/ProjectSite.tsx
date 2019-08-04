@@ -10,6 +10,8 @@ import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Activity } from "../../ui/Activity";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { Loading } from "../../ui/Loading";
+import { ProjectAvatar } from "../../ui/ProjectAvatar";
 import { Styles } from "../../ui/Styles";
 import { TextBadge } from "../../ui/TextBadge";
 import { makeCancelable } from "../../utilities/Promise";
@@ -86,12 +88,13 @@ class ProjectSite extends React.Component<IProps, IState> {
         <Breadcrumbs breadcrumbName="project" />
         <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
           <h1 style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
+            <ProjectAvatar project={dashboardStore.currentProject} style={{ marginRight: 16 }} />
             {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
 
             <TextBadge
               text={`Project ID: ${this.props.match.params.projectId}`}
               withCopy={this.props.match.params.projectId}
-              style={{ marginLeft: 24 }}
+              style={{ marginLeft: 40 }}
             />
           </h1>
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -105,7 +108,7 @@ class ProjectSite extends React.Component<IProps, IState> {
             </Button>
           </div>
           <p style={{ marginTop: 16 }}>{dashboardStore.currentProject && dashboardStore.currentProject.attributes.description}</p>
-          {this.state.languagesResponse && this.state.projectActivityResponse && (
+          {this.state.languagesResponse && this.state.projectActivityResponse ? (
             <>
               {(!this.state.languagesResponse.data || this.state.languagesResponse.data.length === 0) && (
                 <>
@@ -137,7 +140,7 @@ class ProjectSite extends React.Component<IProps, IState> {
                 </div>
               </div>
             </>
-          )}
+          ) : <Loading />}
         </Layout.Content>
       </Layout>
     );

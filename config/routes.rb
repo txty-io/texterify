@@ -19,6 +19,9 @@ Rails.application.routes.draw do
         delete 'languages', to: 'languages#destroy_multiple'
         resources :translations, only: [:create, :update]
         resources :members, only: [:create, :index, :destroy]
+        get :image, to: 'projects#image'
+        post :image, to: 'projects#image_create'
+        delete :image, to: 'projects#image_destroy'
       end
 
       resources :access_tokens, only: [:create, :index, :destroy]

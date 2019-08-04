@@ -74,6 +74,19 @@ const ProjectsAPI = {
       limit: options.limit
     })
       .then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
+  },
+
+  getImage: async (options: { projectId: string }): Promise<any> => {
+    return API.getRequest(`projects/${options.projectId}/image`, true)
+      .then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
+  },
+
+  deleteImage: async (options: { projectId: string }): Promise<any> => {
+    return API.deleteRequest(`projects/${options.projectId}/image`, true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
+  },
+
+  uploadImage: async (options: { projectId: string; formData: FormData }): Promise<any> => {
+    return API.postRequest(`projects/${options.projectId}/image`, true, options.formData, null, true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   }
 };
 

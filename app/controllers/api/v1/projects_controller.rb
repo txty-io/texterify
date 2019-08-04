@@ -4,6 +4,31 @@ require 'zip'
 class Api::V1::ProjectsController < Api::V1::ApiController
   include ExportHelper
 
+  def image
+    project = Project.find(params[:project_id])
+
+    if project
+      render json: {
+        image: project.image.attached? ? url_for(project.image) : nil
+      }
+    else
+      render json: {
+        error: true,
+        message: 'Project could not be found.'
+      }, status: :bad_request
+    end
+  end
+
+  def image_create
+    project = Project.find(params[:project_id])
+    project.image.attach(params[:image])
+  end
+
+  def image_destroy
+    project = Project.find(params[:project_id])
+    project.image.purge
+  end
+
   def index
     page = 0
     if params[:page].present?

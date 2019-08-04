@@ -9,4 +9,6 @@ class Project < ApplicationRecord
   has_many :project_columns, dependent: :delete_all
   has_many :versions, class_name: 'PaperTrail::Version', dependent: :delete_all
   has_many :users, through: :project_users
+
+  has_one_attached :image
 end

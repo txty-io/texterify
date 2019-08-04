@@ -1,47 +1,38 @@
 import { observer } from "mobx-react";
 import * as React from "react";
-import { UsersAPI } from "../api/v1/UsersAPI";
-import { authStore } from "../stores/AuthStore";
+import { ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { Styles } from "./Styles";
 
 type IProps = {
-  user: any;
+  project: any;
   style?: React.CSSProperties;
 };
 type IState = {
   image: any;
+  loading: boolean;
 };
 
 @observer
-class UserAvatar extends React.Component<IProps, IState> {
+class ProjectAvatar extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
 
     this.state = {
-      image: null
+      image: null,
+      loading: true
     };
   }
 
-  isCurrentUser = () => {
-    return authStore.currentUser && authStore.currentUser.id === this.props.user.id;
-  }
-
   async componentDidMount() {
-    if (!this.isCurrentUser() || !authStore.userImageUrl) {
-      const imageResponse = await UsersAPI.getImage(this.props.user.id);
-      this.setState({ image: imageResponse.image });
-
-      if (this.isCurrentUser()) {
-        authStore.userImageUrl = imageResponse.image;
-      }
-    }
+    const imageResponse = await ProjectsAPI.getImage({ projectId: this.props.project.id });
+    this.setState({ image: imageResponse.image, loading: false });
   }
 
   render() {
-    const hasImage = !!(this.state.image || (this.isCurrentUser() && authStore.userImageUrl));
+    const hasImage = !!this.state.image;
 
     return (
-      <div style={{ display: "inline-block" }}>
+      <div className={this.state.loading ? undefined : "fade-in-fast"} style={{ display: "inline-block", opacity: this.state.loading ? 0 : 1 }}>
         {hasImage &&
           <img
             style={{
@@ -50,16 +41,16 @@ class UserAvatar extends React.Component<IProps, IState> {
               borderRadius: Styles.DEFAULT_BORDER_RADIUS,
               ...this.props.style
             }}
-            src={this.isCurrentUser() ? authStore.userImageUrl : this.state.image}
-            alt="user image"
+            src={this.state.image}
+            alt="project image"
           />
         }
         {!hasImage && <div
           style={{
             height: 40,
             width: 40,
-            background: "rgba(255, 255, 255, 0.15",
-            color: "#fff",
+            background: Styles.COLOR_PRIMARY_LIGHT,
+            color: Styles.COLOR_PRIMARY,
             borderRadius: Styles.DEFAULT_BORDER_RADIUS,
             lineHeight: 0,
             display: "flex",
@@ -70,11 +61,11 @@ class UserAvatar extends React.Component<IProps, IState> {
             ...this.props.style
           }}
         >
-          {this.props.user && this.props.user.username.substr(0, 2)}
+          {this.props.project && this.props.project.attributes.name.substr(0, 2)}
         </div>}
       </div>
     );
   }
 }
 
-export { UserAvatar };
+export { ProjectAvatar };

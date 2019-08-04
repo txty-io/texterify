@@ -9,16 +9,16 @@ import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { PrimaryButton } from "../../ui/PrimaryButton";
+import { ProjectAvatar } from "../../ui/ProjectAvatar";
 import { Styles } from "../../ui/Styles";
 import { makeCancelable } from "../../utilities/Promise";
 
-const ListTitle = styled.span`
+const ListContent = styled.div`
   cursor: pointer;
   color: ${Styles.COLOR_PRIMARY};
+  display: flex;
   font-size: 16px;
-  &:hover {
-    text-decoration: underline;
-  }
+  align-items: center;
 `;
 
 type IProps = RouteComponentProps & {};
@@ -134,16 +134,24 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                 <List.Item key={item.title}>
                   <List.Item.Meta
                     title={
-                      <ListTitle
+                      <ListContent
                         onClick={(): void => {
                           this.openProject(_.find(this.state.projects, { id: item.key }));
                         }}
                         role="button"
                       >
-                        {item.name}
-                      </ListTitle>
+                        <ProjectAvatar
+                          project={_.find(this.state.projects, { id: item.key })}
+                          style={{ marginRight: 16 }}
+                        />
+                        <div>
+                          {item.name}
+                          <div style={{ fontSize: 12 }}>
+                            {item.description}
+                          </div>
+                        </div>
+                      </ListContent>
                     }
-                    description={item.description}
                   />
                   <Button
                     onClick={(): void => {
