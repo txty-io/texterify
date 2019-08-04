@@ -7,7 +7,7 @@ import { ImportSite } from "../sites/dashboard/ImportSite";
 import { KeysSite } from "../sites/dashboard/KeysSite";
 import { LanguagesSite } from "../sites/dashboard/LanguagesSite";
 import { MembersSite } from "../sites/dashboard/MembersSite";
-import { ProjectActivitySite } from "../sites/dashboard/ProjectActivity";
+import { ProjectActivitySite } from "../sites/dashboard/ProjectActivitySite";
 import { ProjectSettingsSite } from "../sites/dashboard/ProjectSettingsSite";
 import { ProjectSite } from "../sites/dashboard/ProjectSite";
 import { dashboardStore } from "../stores/DashboardStore";
