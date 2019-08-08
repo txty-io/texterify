@@ -20,7 +20,7 @@ type IState = {
 class KeyHistory extends React.Component<IProps, IState> {
     state: IState = {
         keyActivityResponse: null,
-        selectedLanguageId: null
+        selectedLanguageId: "all-languages"
     };
 
     async componentDidMount(): Promise<void> {
@@ -124,6 +124,9 @@ class KeyHistory extends React.Component<IProps, IState> {
                     }}
                     value={this.state.selectedLanguageId}
                 >
+                    <Select.Option value="all-languages">
+                        All languages
+                    </Select.Option>
                     {this.state.keyActivityResponse.included.filter((included) => {
                         return included.type === "language";
                     }).map((language) => {
