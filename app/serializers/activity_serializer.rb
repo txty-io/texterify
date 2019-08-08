@@ -37,4 +37,16 @@ class ActivitySerializer
     end
     Language.find_by(id: language_id)
   end
+
+  has_many :translations, if: proc { |object|
+    object.item_type == 'Key'
+  } do |object|
+    key_id = nil
+    if object.object_changes && object.object_changes['id'] && object.object_changes['id'][1]
+      key_id = object.object_changes['id'][1]
+    else
+      key_id = object.object['id']
+    end
+    Translation.where(key_id: key_id)
+  end
 end
