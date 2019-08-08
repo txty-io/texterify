@@ -533,8 +533,8 @@ class KeysSite extends React.Component<IProps, IState> {
                   await this.reloadTable();
                 }
               }}
-              onTranslationUpdated={() => { this.reloadTable(); }}
-              onKeyUpdated={() => { this.reloadTable(); }}
+              onTranslationUpdated={async () => { await this.reloadTable(); }}
+              onKeyUpdated={async () => { await this.reloadTable(); }}
             />
           </Content>
         </Layout>
