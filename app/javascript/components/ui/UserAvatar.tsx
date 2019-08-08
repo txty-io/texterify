@@ -6,6 +6,7 @@ import { Styles } from "./Styles";
 
 type IProps = {
   user: any;
+  light?: boolean;
   style?: React.CSSProperties;
 };
 type IState = {
@@ -58,8 +59,8 @@ class UserAvatar extends React.Component<IProps, IState> {
           style={{
             height: 40,
             width: 40,
-            background: "rgba(255, 255, 255, 0.15",
-            color: "#fff",
+            background: this.props.light ? "rgba(255, 255, 255, 0.15)" : Styles.COLOR_PRIMARY_LIGHT,
+            color: this.props.light ? "#fff" : Styles.COLOR_PRIMARY,
             borderRadius: Styles.DEFAULT_BORDER_RADIUS,
             lineHeight: 0,
             display: "flex",

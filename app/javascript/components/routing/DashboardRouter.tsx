@@ -188,7 +188,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                   </AccountProfileContentWrapper>}
               >
                 <div style={{ display: "flex" }}>
-                  <UserAvatar user={authStore.currentUser} />
+                  <UserAvatar light user={authStore.currentUser} />
                   <div
                     style={{
                       padding: "0 16px",

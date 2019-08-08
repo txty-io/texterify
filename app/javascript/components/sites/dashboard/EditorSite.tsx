@@ -13,6 +13,7 @@ import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
+import { KeyComments } from "../../ui/KeyComments";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { Styles } from "../../ui/Styles";
 import { UserAvatar } from "../../ui/UserAvatar";
@@ -148,7 +149,7 @@ class EditorSite extends React.Component<IProps, IState> {
           </Link>
           {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
           <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
-            <UserAvatar user={authStore.currentUser} />
+            <UserAvatar light user={authStore.currentUser} />
             <div
               style={{
                 padding: "0 16px",
@@ -238,10 +239,13 @@ class EditorSite extends React.Component<IProps, IState> {
 
           {this.keyLoaded() && (
             <div
-              style={{ padding: 16, background: "#fff", display: "flex", flexDirection: "column", flexGrow: 1, maxWidth: 320, borderLeft: "1px solid #e8e8e8" }}
+              style={{ background: "#fff", display: "flex", flexDirection: "column", flexGrow: 1, maxWidth: 400, borderLeft: "1px solid #e8e8e8" }}
             >
-              <Tabs defaultActiveKey="1" type="card">
-                <Tabs.TabPane tab="History" key="1">
+              <Tabs defaultActiveKey="chat" type="card" tabBarStyle={{ background: "#fefeff" }}>
+                <Tabs.TabPane tab="Comments" key="chat" style={{ padding: "0 16px" }} >
+                  <KeyComments />
+                </Tabs.TabPane>
+                <Tabs.TabPane tab="History" key="history" style={{ padding: "0 16px" }} >
                   {this.props.match.params.projectId && this.state.keyResponse.data.id && <KeyHistory
                     projectId={this.props.match.params.projectId}
                     keyId={this.state.keyResponse.data.id}
