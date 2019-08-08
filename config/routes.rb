@@ -13,7 +13,9 @@ Rails.application.routes.draw do
         get :activity
         get :project_columns, to: 'project_columns#show'
         put :project_columns, to: 'project_columns#update'
-        resources :keys, only: [:create, :show, :index, :destroy, :update]
+        resources :keys, only: [:create, :show, :index, :destroy, :update] do
+          get :activity
+        end
         delete 'keys', to: 'keys#destroy_multiple'
         resources :languages, only: [:create, :index, :destroy, :update]
         delete 'languages', to: 'languages#destroy_multiple'
