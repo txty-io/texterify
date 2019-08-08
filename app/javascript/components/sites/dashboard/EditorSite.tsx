@@ -205,6 +205,7 @@ class EditorSite extends React.Component<IProps, IState> {
               }}
               style={{ alignSelf: "center", margin: 16 }}
               size="small"
+              pageSize={12}
             />
           </div>
           <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, padding: 16 }}>
