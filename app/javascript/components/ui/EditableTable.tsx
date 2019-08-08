@@ -154,6 +154,7 @@ interface IEditableTableProps {
   pagination?: any;
   rowSelection?: any;
   onCellEdit(options: { languageId: string; keyId: string }): void;
+  onTranslationUpdated(translation: any): void;
 }
 interface IEditableTableState {
   dataSource: any[];
@@ -229,6 +230,8 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
               newItem[`language-${languageKey}`]
             );
           }
+
+          this.props.onTranslationUpdated(response.data);
 
           if (response.error) {
             return;

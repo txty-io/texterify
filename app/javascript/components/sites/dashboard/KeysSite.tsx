@@ -1,4 +1,4 @@
-import { Button, Icon, Input, Layout, Modal, Popover, Switch, Tag } from "antd";
+import { Button, Drawer, Icon, Input, Layout, Modal, Popover, Switch, Tag } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
@@ -533,6 +533,7 @@ class KeysSite extends React.Component<IProps, IState> {
                   await this.reloadTable();
                 }
               }}
+              onTranslationUpdated={() => { this.reloadTable(); }}
             />
           </Content>
         </Layout>
@@ -553,17 +554,16 @@ class KeysSite extends React.Component<IProps, IState> {
           }}
         />
 
-        <Modal
-          maskClosable={false}
-          title={"Key history"}
+        <Drawer
+          title="Key history"
+          placement="right"
+          width={600}
+          closable={false}
+          onClose={() => { this.setState({ keyToShowHistory: null }); }}
           visible={!!this.state.keyToShowHistory}
-          onCancel={() => {
-            this.setState({ keyToShowHistory: null });
-          }}
-          destroyOnClose
         >
           <KeyHistory projectId={this.props.match.params.projectId} keyId={this.state.keyToShowHistory} />
-        </Modal>
+        </Drawer>
 
         <Modal
           maskClosable={false}
