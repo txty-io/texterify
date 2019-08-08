@@ -8,7 +8,9 @@ class Api::V1::DashboardController < Api::V1::ApiController
       limit = 20 if limit > 20
     end
 
-    versions = PaperTrail::Version.where(project_id: current_user.projects).limit(limit).order(created_at: :desc)
+    versions = PaperTrail::Version.where(
+      project_id: current_user.projects
+    ).limit(limit).order(created_at: :desc)
 
     options = {}
     options[:include] = [:user, :project, :key, :language, :'language.country_code']
