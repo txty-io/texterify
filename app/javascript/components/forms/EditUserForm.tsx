@@ -145,30 +145,7 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
 
     return (
       <Form id="editUserForm" onSubmit={this.handleSubmit} style={{ maxWidth: "100%" }}>
-        <h3 style={{ marginTop: 24 }}>Username</h3>
-        <p>This name will be visible to others.</p>
-        <Form.Item>
-          {getFieldDecorator("username", {
-            initialValue: authStore.currentUser.username,
-            rules: [{ required: true, message: "Please enter your username." }]
-          })(
-            <Input placeholder="Username" />
-          )}
-        </Form.Item>
-
-        <h3>Email address</h3>
-        <p>Your email address that you also use to log in.</p>
-        <Form.Item>
-          {getFieldDecorator("email", {
-            initialValue: authStore.currentUser.email,
-            rules: [{ required: true, message: "Please enter your email address." }]
-          })(
-            <Input placeholder="E-Mail" />
-          )}
-        </Form.Item>
-
         <h3>Profile image</h3>
-
         <Form.Item>
           <div style={{ display: "flex" }}>
             <Dropzone
@@ -186,14 +163,10 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
                       }
                     })}
                     style={{
-                      // tslint:disable-next-line:max-line-length
-                      background: `linear-gradient(to right, ${Styles.COLOR_PRIMARY} 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(${Styles.COLOR_PRIMARY} 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(to right, ${Styles.COLOR_PRIMARY} 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(${Styles.COLOR_PRIMARY} 50%, rgba(255, 255, 255, 0) 0%)`,
-                      backgroundPosition: "top, right, bottom, left",
-                      backgroundRepeat: "repeat-x, repeat-y",
-                      backgroundSize: "12px 2px, 2px 12px",
                       display: "flex",
                       flexDirection: "column",
-                      borderRadius: Styles.DEFAULT_BORDER_RADIUS
+                      borderRadius: Styles.DEFAULT_BORDER_RADIUS,
+                      border: `1px solid ${Styles.COLOR_PRIMARY}`
                     }}
                   >
                     <AvatarEditor
@@ -250,6 +223,28 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
               </Button>
             </div>
           </div>
+        </Form.Item>
+
+        <h3 style={{ marginTop: 24 }}>Username</h3>
+        <p>This name will be visible to others.</p>
+        <Form.Item>
+          {getFieldDecorator("username", {
+            initialValue: authStore.currentUser.username,
+            rules: [{ required: true, message: "Please enter your username." }]
+          })(
+            <Input placeholder="Username" />
+          )}
+        </Form.Item>
+
+        <h3>Email address</h3>
+        <p>Your email address that you also use to log in.</p>
+        <Form.Item>
+          {getFieldDecorator("email", {
+            initialValue: authStore.currentUser.email,
+            rules: [{ required: true, message: "Please enter your email address." }]
+          })(
+            <Input placeholder="E-Mail" />
+          )}
         </Form.Item>
       </Form>
     );

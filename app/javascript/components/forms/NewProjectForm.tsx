@@ -137,25 +137,6 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
 
     return (
       <Form id="newProjectForm" onSubmit={this.handleSubmit} style={{ maxWidth: "100%" }}>
-        <h3>Name</h3>
-        <Form.Item>
-          {getFieldDecorator("name", {
-            initialValue: this.props.isEdit ? dashboardStore.currentProject.attributes.name : "",
-            rules: [{ required: true, message: "Please enter the name of the project." }]
-          })(
-            <Input placeholder="Name" autoFocus={!this.props.isEdit} />
-          )}
-        </Form.Item>
-
-        <h3>Description</h3>
-        <Form.Item>
-          {getFieldDecorator("description", {
-            initialValue: this.props.isEdit ? dashboardStore.currentProject.attributes.description : ""
-          })(
-            <Input.TextArea autosize={{ minRows: 4, maxRows: 8 }} placeholder="Description" />
-          )}
-        </Form.Item>
-
         <h3>Project image</h3>
         <Form.Item>
           <div style={{ display: "flex" }}>
@@ -174,14 +155,10 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
                       }
                     })}
                     style={{
-                      // tslint:disable-next-line:max-line-length
-                      background: `linear-gradient(to right, ${Styles.COLOR_PRIMARY} 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(${Styles.COLOR_PRIMARY} 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(to right, ${Styles.COLOR_PRIMARY} 50%, rgba(255, 255, 255, 0) 0%), linear-gradient(${Styles.COLOR_PRIMARY} 50%, rgba(255, 255, 255, 0) 0%)`,
-                      backgroundPosition: "top, right, bottom, left",
-                      backgroundRepeat: "repeat-x, repeat-y",
-                      backgroundSize: "12px 2px, 2px 12px",
                       display: "flex",
                       flexDirection: "column",
-                      borderRadius: Styles.DEFAULT_BORDER_RADIUS
+                      borderRadius: Styles.DEFAULT_BORDER_RADIUS,
+                      border: `1px solid ${Styles.COLOR_PRIMARY}`
                     }}
                   >
                     <AvatarEditor
@@ -238,6 +215,25 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
               </Button>
             </div>
           </div>
+        </Form.Item>
+
+        <h3>Name</h3>
+        <Form.Item>
+          {getFieldDecorator("name", {
+            initialValue: this.props.isEdit ? dashboardStore.currentProject.attributes.name : "",
+            rules: [{ required: true, message: "Please enter the name of the project." }]
+          })(
+            <Input placeholder="Name" autoFocus={!this.props.isEdit} />
+          )}
+        </Form.Item>
+
+        <h3>Description</h3>
+        <Form.Item>
+          {getFieldDecorator("description", {
+            initialValue: this.props.isEdit ? dashboardStore.currentProject.attributes.description : ""
+          })(
+            <Input.TextArea autosize={{ minRows: 4, maxRows: 8 }} placeholder="Description" />
+          )}
         </Form.Item>
       </Form>
     );
