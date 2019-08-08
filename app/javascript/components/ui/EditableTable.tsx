@@ -155,6 +155,7 @@ interface IEditableTableProps {
   rowSelection?: any;
   onCellEdit(options: { languageId: string; keyId: string }): void;
   onTranslationUpdated(translation: any): void;
+  onKeyUpdated(key: any): void;
 }
 interface IEditableTableState {
   dataSource: any[];
@@ -203,6 +204,7 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
         row.description,
         row.html_enabled
       );
+      this.props.onKeyUpdated(response.data);
       if (response.errors) {
         return;
       }
