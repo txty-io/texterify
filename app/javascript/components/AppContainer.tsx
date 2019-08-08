@@ -3,11 +3,7 @@ import "antd/dist/antd.less";
 import * as React from "react";
 import { AppRouter } from "./routing/AppRouter";
 
-interface IProps {
-  specialHeaderMainSiteImageURL: string;
-  specialHeaderFeaturesSiteImageURL: string;
-}
-
+interface IProps { }
 interface IState { }
 
 class AppContainer extends React.Component<IProps, IState> {

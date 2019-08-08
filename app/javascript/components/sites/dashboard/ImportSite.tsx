@@ -23,7 +23,6 @@ interface IState {
 class ImportSite extends React.Component<IProps, IState> {
   getLanguagesPromise: any;
   dropzoneRef: any;
-  languageSelect: any;
 
   constructor(props: IProps) {
     super(props);
@@ -114,7 +113,6 @@ class ImportSite extends React.Component<IProps, IState> {
                         selectedLanguageId: selectedValue
                       });
                     }}
-                    ref={(node) => { this.languageSelect = node; }}
                     value={this.state.selectedLanguageId}
                   >
                     {this.state.languages.map((language, index) => {
