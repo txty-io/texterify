@@ -1,7 +1,5 @@
-import { Button, Comment, Icon, Pagination } from "antd";
-import { Tabs } from "antd";
+import { Icon, Pagination, Tabs } from "antd";
 import Search from "antd/lib/input/Search";
-import TextArea from "antd/lib/input/TextArea";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -15,19 +13,19 @@ import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
+import { KeyHistory } from "../../ui/KeyHistory";
 import { Styles } from "../../ui/Styles";
 import { UserAvatar } from "../../ui/UserAvatar";
 import { TranslationCard } from "./editor/TranslationCard";
 
 const Key = styled.div`
-  /* background: ${(props) => props.index % 2 === 0 ? "#f8f8f8" : undefined}; */
+  background: ${(props) => props.index % 2 === 0 ? "#fafafa" : undefined};
   cursor: pointer;
   padding: 12px 16px;
   color: #333;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 14px;
-  /* border-bottom: 1px solid #e8e8e8; */
 
   &:hover {
     color: #555;
@@ -238,31 +236,20 @@ class EditorSite extends React.Component<IProps, IState> {
             </p>}
           </div>
 
-          <div
-            style={{ padding: 16, background: "#fff", display: "flex", flexDirection: "column", flexGrow: 1, maxWidth: 320, borderLeft: "1px solid #e8e8e8" }}
-          >
-            <Tabs defaultActiveKey="1" type="card">
-              <Tabs.TabPane tab="History" key="1">
-                History
-              </Tabs.TabPane>
-            </Tabs>
-            <h3>Chat</h3>
-            <p style={{ color: Styles.COLOR_TEXT_DISABLED, fontStyle: "italic" }}>No chat messages so far for this key.</p>
-            <Comment
-              avatar={
-                <UserAvatar user={authStore.currentUser} />
-              }
-              author={authStore.currentUser && authStore.currentUser.username}
-              content={
-                <>
-                  <TextArea autosize={{ minRows: 2, maxRows: 6 }} />
-                  <Button htmlType="submit" type="primary" style={{ marginTop: 8 }}>
-                    Send message
-                  </Button>
-                </>
-              }
-            />
-          </div>
+          {this.keyLoaded() && (
+            <div
+              style={{ padding: 16, background: "#fff", display: "flex", flexDirection: "column", flexGrow: 1, maxWidth: 320, borderLeft: "1px solid #e8e8e8" }}
+            >
+              <Tabs defaultActiveKey="1" type="card">
+                <Tabs.TabPane tab="History" key="1">
+                  {this.props.match.params.projectId && this.state.keyResponse.data.id && <KeyHistory
+                    projectId={this.props.match.params.projectId}
+                    keyId={this.state.keyResponse.data.id}
+                  />}
+                </Tabs.TabPane>
+              </Tabs>
+            </div>
+          )}
         </div>
       </div>
     );
