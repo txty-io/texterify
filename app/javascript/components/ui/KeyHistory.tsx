@@ -62,7 +62,7 @@ class KeyHistory extends React.Component<IProps, IState> {
                 }
 
                 activityElement = (
-                    <div style={{ display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", flexDirection: "column" }} key={activity.id}>
                         {showDivider && <Divider style={{ fontSize: 14 }}>{date}</Divider>}
                         <div style={{ padding: 8 }}>
                             <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
