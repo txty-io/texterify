@@ -129,7 +129,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
         project.languages.each do |language|
           # Create the file content for a language.
           export_data = {}
-          project.keys.each do |key|
+          project.keys.order(:name).each do |key|
             key_translation = key.translations.where(language_id: language.id).first
             if key_translation.nil?
               export_data[key.name] = ''
@@ -268,7 +268,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
     project = current_user.projects.find(params[:project_id])
     versions = PaperTrail::Version
-               .where(project_id: project.id, whodunnit: current_user.id)
+               .where(project_id: project.id)
                .limit(limit)
                .order(created_at: :desc)
 
