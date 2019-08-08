@@ -69,7 +69,7 @@ class MembersSite extends React.Component<IProps, IState> {
 
   render(): JSX.Element {
     if (!this.state.getMembersResponse) {
-      return <Loading/>;
+      return <Loading />;
     }
 
     return (
@@ -116,9 +116,9 @@ class MembersSite extends React.Component<IProps, IState> {
           >
             {this.getRows().map((item) => {
               return (
-                <div key={item.username} style={{ display: "flex", alignItems: "flex-end" }}>
+                <div key={item.username} style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
                   <div style={{ display: "flex", flexGrow: 1 }}>
-                    <UserAvatar user={item} style={{ marginRight: 24, marginBottom: 16 }} />
+                    <UserAvatar user={item} style={{ marginRight: 24 }} />
                     <div style={{ display: "flex", flexDirection: "column" }}>
                       <div style={{ fontWeight: "bold" }}>{item.username}</div>
                       <div>{item.email}</div>
@@ -162,7 +162,7 @@ class MembersSite extends React.Component<IProps, IState> {
                     }}
                     type="danger"
                   >
-                    {item.email === authStore.currentUser.email ? "Leave project" : "Remove"}
+                    {item.email === authStore.currentUser.email ? "Leave" : "Remove"}
                   </Button>
                 </div>
               );
