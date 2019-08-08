@@ -57,15 +57,15 @@ class Api::V1::MembersController < Api::V1::ApiController
   def check_if_allowed
     project = current_user.projects.find(params[:project_id])
 
-    if !current_user.admin_of?(project)
-      render json: {
-        errors: [
-          {
-            details: 'You are not allowed to do this.'
-          }
-        ]
-      }
-      return
-    end
+    # if !current_user.admin_of?(project)
+    #   render json: {
+    #     errors: [
+    #       {
+    #         details: 'You are not allowed to do this.'
+    #       }
+    #     ]
+    #   }
+    #   return
+    # end
   end
 end
