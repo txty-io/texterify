@@ -21,9 +21,7 @@ class Api::V1::TranslationsController < Api::V1::ApiController
     translation.key = key
 
     if translation.save
-      render json: {
-        message: 'Translation created'
-      }
+      render json: TranslationSerializer.new(translation).serialized_json
     else
       render json: {
         error: true,

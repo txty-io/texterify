@@ -221,6 +221,7 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
               newItem.key,
               newItem[`language-${languageKey}`]
             );
+            newItem[`translation-exists-for-${languageKey}`] = response.data.id;
           } else {
             response = await TranslationsAPI.updateTranslation(
               this.props.projectId,
