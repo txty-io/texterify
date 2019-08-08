@@ -25,6 +25,10 @@ class AppRouter extends React.Component<IProps, null> {
             <Switch>
               <PrivateRoute path={Routes.DASHBOARD.PROJECT_EDITOR_KEY} component={EditorSite} />
               <PrivateRoute path={Routes.DASHBOARD.PROJECT_EDITOR} component={EditorSite} />
+
+              {/* Additional route if the project id is needed in the dashboard router. */}
+              <PrivateRoute path={Routes.DASHBOARD.PROJECT} component={DashboardRouter} />
+
               <PrivateRoute path={Routes.DASHBOARD.ROOT} component={DashboardRouter} />
               <Route path={Routes.OTHER.ROOT} component={SiteRouter} />
             </Switch>

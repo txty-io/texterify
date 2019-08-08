@@ -1,4 +1,4 @@
-import { Avatar, Icon, Layout, Popover } from "antd";
+import { Avatar, Button, Icon, Layout, Popover } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
@@ -15,12 +15,13 @@ import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
 import { authStore } from "../stores/AuthStore";
 import { Styles } from "../ui/Styles";
 import { UserAvatar } from "../ui/UserAvatar";
+import { history } from "./history";
 import { PrivateRoute } from "./PrivateRoute";
 import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
 const { Header } = Layout;
 
-type IProps = RouteComponentProps & {};
+type IProps = RouteComponentProps<{ projectId?: string }> & {};
 interface IState {
   hasSidebar: boolean;
   accountMenuVisible: boolean;
@@ -144,6 +145,15 @@ class DashboardRouter extends React.Component<IProps, IState> {
                 </Link>
               </li> */}
             </ul>
+            {this.props.match.params.projectId && <Button
+              type="primary"
+              onClick={() => {
+                history.push(Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId));
+              }}
+              style={{ marginRight: 40, background: "rgba(255, 255, 255, 0.1)", border: "1px solid #fff" }}
+            >
+              Translate now
+            </Button>}
             <div
               onClick={() => { this.setState({ accountMenuVisible: true }); }}
               role="button"

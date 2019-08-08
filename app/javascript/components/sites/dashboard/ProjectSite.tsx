@@ -97,7 +97,7 @@ class ProjectSite extends React.Component<IProps, IState> {
               style={{ marginLeft: 40 }}
             />
           </h1>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          {/* <div style={{ display: "flex", alignItems: "center" }}>
             <Button
               type="primary"
               onClick={() => {
@@ -106,7 +106,7 @@ class ProjectSite extends React.Component<IProps, IState> {
             >
               Open translation editor
             </Button>
-          </div>
+          </div> */}
           <p style={{ marginTop: 16 }}>{dashboardStore.currentProject && dashboardStore.currentProject.attributes.description}</p>
           {this.state.languagesResponse && this.state.projectActivityResponse ? (
             <>
