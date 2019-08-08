@@ -55,7 +55,8 @@ class Api::V1::MembersController < Api::V1::ApiController
   private
 
   def check_if_allowed
-    project = current_user.projects.find(params[:project_id])
+    true
+    # project = current_user.projects.find(params[:project_id])
 
     # if !current_user.admin_of?(project)
     #   render json: {
