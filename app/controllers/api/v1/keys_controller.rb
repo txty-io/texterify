@@ -115,6 +115,15 @@ class Api::V1::KeysController < Api::V1::ApiController
     }
   end
 
+  def activity
+    project = current_user.projects.find(params[:project_id])
+    key = project.keys.find(params[:key_id])
+
+    options = {}
+    options[:include] = [:translations, :'translations.language', :'translations.language.country_code', :key]
+    render json: ActivitySerializer.new(key.translations.map(&:versions).flatten.sort_by(&:created_at).reverse, options).serialized_json
+  end
+
   private
 
   def key_params

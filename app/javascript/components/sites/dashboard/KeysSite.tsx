@@ -12,7 +12,9 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { EditableTable } from "../../ui/EditableTable";
 import FlagIcon from "../../ui/FlagIcons";
+import { KeyHistory } from "../../ui/KeyHistory";
 import { Loading } from "../../ui/Loading";
+import { Utils } from "../../ui/Utils";
 import { makeCancelable } from "../../utilities/Promise";
 import { sortStrings } from "../../utilities/Sorter";
 import { TranslationCard } from "./editor/TranslationCard";
@@ -74,6 +76,8 @@ interface IState {
   editTranslationLanguageId: string;
   editTranslationContentChanged: boolean;
   keyToEdit: any;
+  keyToShowHistory: string;
+  keyMenuVisible: string;
 }
 
 class KeysSite extends React.Component<IProps, IState> {
@@ -110,7 +114,9 @@ class KeysSite extends React.Component<IProps, IState> {
     editTranslationKeyReponse: null,
     editTranslationLanguageId: "",
     editTranslationContentChanged: false,
-    keyToEdit: null
+    keyToEdit: null,
+    keyToShowHistory: null,
+    keyMenuVisible: null
   };
 
   async componentDidMount(): Promise<void> {
@@ -215,7 +221,7 @@ class KeysSite extends React.Component<IProps, IState> {
         title: (
           <span>
             {countryCode ?
-              <span style={{ marginRight: 10 }}><FlagIcon code={countryCode.attributes.code.toLowerCase()} /></span> :
+              <span style={{ marginRight: 8 }}><FlagIcon code={countryCode.attributes.code.toLowerCase()} /></span> :
               ""}
             {language.attributes.name}
           </span>
@@ -236,40 +242,6 @@ class KeysSite extends React.Component<IProps, IState> {
     ];
   }
 
-  getHTMLContentPreview = (htmlContent: string) => {
-    try {
-      // tslint:disable-next-line:no-unnecessary-local-variable
-      const json = JSON.parse(htmlContent);
-
-      let converted = "";
-      json.blocks.map((block) => {
-        if (block.type === "list") {
-          if (block.data.style === "ordered") {
-            converted += "<ol>";
-          } else if (block.data.style === "unordered") {
-            converted += "<ul>";
-          }
-
-          block.data.items.map((item) => {
-            converted += `<li>${item}</li>`;
-          });
-
-          if (block.data.style === "ordered") {
-            converted += "</ol>";
-          } else if (block.data.style === "unordered") {
-            converted += "</ul>";
-          }
-        } else if (block.type === "paragraph") {
-          converted += `<p>${block.data.text}</p>`;
-        }
-      });
-
-      return converted;
-    } catch (e) {
-      return htmlContent;
-    }
-  }
-
   getRows = (): any[] => {
     if (!this.state.keys) {
       return [];
@@ -285,7 +257,7 @@ class KeysSite extends React.Component<IProps, IState> {
         const languageId = translation.relationships.language.data.id;
         let translationContent = translation.attributes.content;
         if (key.attributes.html_enabled) {
-          translationContent = this.getHTMLContentPreview(translationContent);
+          translationContent = Utils.getHTMLContentPreview(translationContent);
         }
         translations[`language-${languageId}`] = translationContent;
         translationExistsFor[`translation-exists-for-${languageId}`] = translation.id;
@@ -303,18 +275,33 @@ class KeysSite extends React.Component<IProps, IState> {
           <Popover
             placement="topRight"
             title="Key settings"
+            visible={this.state.keyMenuVisible === key.attributes.id}
+            onVisibleChange={(visible) => {
+              this.setState({ keyMenuVisible: visible ? key.attributes.id : null });
+            }}
             content={
-              <div style={{ padding: "0 16px", display: "flex", alignItems: "center" }}>
-                HTML enabled
-                <Switch
-                  style={{ marginLeft: 16 }}
-                  checked={key.attributes.html_enabled}
-                  onChange={async () => {
-                    await this.changeHTMLEnabled(key);
-                    await this.reloadTable();
+              <>
+                <div style={{ padding: "8px 16px", display: "flex", alignItems: "center" }}>
+                  HTML enabled
+                  <Switch
+                    style={{ marginLeft: 16 }}
+                    checked={key.attributes.html_enabled}
+                    onChange={async () => {
+                      await this.changeHTMLEnabled(key);
+                      await this.reloadTable();
+                    }}
+                  />
+                </div>
+                <div
+                  role="button"
+                  onClick={() => {
+                    this.setState({ keyToShowHistory: key.attributes.id, keyMenuVisible: null });
                   }}
-                />
-              </div>
+                  style={{ padding: "0 16px", borderTop: "1px solid #fcfcfc", display: "flex", alignItems: "center" }}
+                >
+                  History
+                </div>
+              </>
             }
             trigger="click"
           >
@@ -467,7 +454,7 @@ class KeysSite extends React.Component<IProps, IState> {
             }}
           >
             {countryCode ?
-              <span style={{ marginRight: 10 }}><FlagIcon code={countryCode.attributes.code.toLowerCase()} /></span> :
+              <span style={{ marginRight: 8 }}><FlagIcon code={countryCode.attributes.code.toLowerCase()} /></span> :
               ""}
             {language.attributes.name}
           </ColumnTag>;
@@ -565,6 +552,18 @@ class KeysSite extends React.Component<IProps, IState> {
             await this.reloadTable();
           }}
         />
+
+        <Modal
+          maskClosable={false}
+          title={"Key history"}
+          visible={!!this.state.keyToShowHistory}
+          onCancel={() => {
+            this.setState({ keyToShowHistory: null });
+          }}
+          destroyOnClose
+        >
+          <KeyHistory projectId={this.props.match.params.projectId} keyId={this.state.keyToShowHistory} />
+        </Modal>
 
         <Modal
           maskClosable={false}

@@ -35,6 +35,11 @@ const KeysAPI = {
     return API.deleteRequest(`projects/${projectId}/keys`, true, {
       keys: keys
     }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
+  },
+
+  getActivity: async (options: { projectId: string; keyId: string }) => {
+    return API.getRequest(`projects/${options.projectId}/keys/${options.keyId}/activity`, true, {})
+      .then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   }
 };
 
