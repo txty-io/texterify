@@ -8,12 +8,11 @@ import { UserAvatar } from "./UserAvatar";
 type IProps = {};
 type IState = {};
 
-class KeyChat extends React.Component<IProps, IState> {
+class KeyComments extends React.Component<IProps, IState> {
     render() {
         return (
             <>
-                <h3>Chat</h3>
-                <p style={{ color: Styles.COLOR_TEXT_DISABLED, fontStyle: "italic" }}>No chat messages so far for this key.</p>
+                <p style={{ color: Styles.COLOR_TEXT_DISABLED, fontStyle: "italic" }}>No comments.</p>
                 <Comment
                     avatar={
                         <UserAvatar user={authStore.currentUser} />
@@ -33,4 +32,4 @@ class KeyChat extends React.Component<IProps, IState> {
     }
 }
 
-export { KeyChat };
+export { KeyComments };

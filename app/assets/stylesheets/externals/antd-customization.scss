@@ -159,4 +159,11 @@ $color: #7977f3;
   .ant-tag-checkable-checked {
     background: #2b3556;
   }
+
+  .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab {
+    border-top: none;
+    border-left: none;
+    border-radius: 0;
+    margin-right: 0;
+  }
 }
