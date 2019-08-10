@@ -49,7 +49,7 @@ class Activity extends React.Component<IProps, IState> {
 
     const userElement = (
       <div style={{ fontSize: 12 }}>
-        <div><Icon type="user" style={{ marginRight: 4 }} /> {user ? user.attributes.username : "Deleted user"}</div>
+        <div><Icon type="user" style={{ marginRight: 4 }} /> {user ? user.attributes.username : <span style={{ textDecoration: "line-through" }}>Deleted user</span>}</div>
         <div><Icon type="clock-circle" style={{ marginRight: 4 }} /> {moment.utc(activity.attributes.created_at, "YYYY-MM-DD HH:mm:ss").local().format("DD.MM.YYYY HH:mm")}</div>
       </div>
     );
@@ -139,10 +139,10 @@ class Activity extends React.Component<IProps, IState> {
               <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
             </span>
             <b>{language.attributes.name}</b>
-          </> : <i> Deleted</i>
+          </> : <span style={{ textDecoration: "line-through", marginLeft: 4 }}>Deleted</span>
           } of key
           <ActivityKeyElement color={this.getStylesForEvent(itemType, event).color} background={this.getStylesForEvent(itemType, event).background}>
-            {key ? key.attributes.name : <i>Deleted</i>}
+            {key ? key.attributes.name : <span style={{ textDecoration: "line-through" }}>deleted</span>}
           </ActivityKeyElement>
           updated.
           {userElement}
