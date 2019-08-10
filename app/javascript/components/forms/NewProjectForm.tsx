@@ -139,7 +139,7 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
       <Form id="newProjectForm" onSubmit={this.handleSubmit} style={{ maxWidth: "100%" }}>
         <h3>Project image</h3>
         <Form.Item>
-          <div style={{ display: "flex" }}>
+          <div style={{ display: "flex", marginTop: 4 }}>
             <Dropzone
               onDrop={this.handleDrop}
               accept="image/*"
@@ -158,7 +158,7 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
                       display: "flex",
                       flexDirection: "column",
                       borderRadius: Styles.DEFAULT_BORDER_RADIUS,
-                      border: `1px solid ${Styles.COLOR_PRIMARY}`
+                      border: `1px solid #d9d9d9`
                     }}
                   >
                     <AvatarEditor

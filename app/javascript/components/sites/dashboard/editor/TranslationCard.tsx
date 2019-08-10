@@ -31,6 +31,7 @@ type IProps = {
     hideLanguageSelection?: boolean;
     hideSaveButton?: boolean;
     onChange?(changed: boolean);
+    onSave?();
 };
 type IState = {
     selectedLanguage: string;
@@ -166,6 +167,10 @@ class TranslationCard extends React.Component<IProps, IState> {
                 );
             }
 
+            if (this.props.onSave) {
+                this.props.onSave();
+            }
+
             this.setState({
                 editorContentChanged: false,
                 textareaContentChanged: false
@@ -221,10 +226,12 @@ class TranslationCard extends React.Component<IProps, IState> {
                         autosize={{ minRows: 4, maxRows: 6 }}
                         placeholder="Language translation content"
                         onChange={(event) => {
-                            if (event.target.value !== this.state.translationForLanguage && !this.state.textareaContentChanged) {
-                                this.setState({ textareaContentChanged: true });
-                            } else if (event.target.value === this.state.translationForLanguage && this.state.textareaContentChanged) {
-                                this.setState({ textareaContentChanged: false });
+                            const changed = event.target.value !== this.state.translationForLanguage;
+
+                            this.setState({ textareaContentChanged: changed });
+
+                            if (this.props.onChange) {
+                                this.props.onChange(changed);
                             }
 
                             this.setState({ content: event.target.value });

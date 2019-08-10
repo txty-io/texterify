@@ -62,13 +62,13 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
             // });
             // }
           });
+        }
 
-          // Set new user data.
-          authStore.currentUser = response.data;
+        // Set new user data.
+        authStore.currentUser = response.data;
 
-          if (this.props.onCreated) {
-            this.props.onCreated();
-          }
+        if (this.props.onCreated) {
+          this.props.onCreated();
         }
 
         await authStore.refetchCurrentUserImage();
@@ -147,7 +147,7 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
       <Form id="editUserForm" onSubmit={this.handleSubmit} style={{ maxWidth: "100%" }}>
         <h3>Profile image</h3>
         <Form.Item>
-          <div style={{ display: "flex" }}>
+          <div style={{ display: "flex", marginTop: 4 }}>
             <Dropzone
               onDrop={this.handleDrop}
               accept="image/*"
@@ -166,7 +166,7 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
                       display: "flex",
                       flexDirection: "column",
                       borderRadius: Styles.DEFAULT_BORDER_RADIUS,
-                      border: `1px solid ${Styles.COLOR_PRIMARY}`
+                      border: `1px solid #d9d9d9`
                     }}
                   >
                     <AvatarEditor
