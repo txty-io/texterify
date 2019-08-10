@@ -3,6 +3,7 @@ import * as moment from "moment";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
 import { KeysAPI } from "../api/v1/KeysAPI";
+import { TranslationsAPI } from "../api/v1/TranslationsAPI";
 import FlagIcon from "./FlagIcons";
 import { Loading } from "./Loading";
 import { Styles } from "./Styles";
@@ -10,7 +11,9 @@ import { Utils } from "./Utils";
 
 type IProps = {
     projectId: string;
+    keyName: string;
     keyId: string;
+    onTranslationRestored(): void;
 };
 type IState = {
     keyActivityResponse: any;
@@ -24,6 +27,10 @@ class KeyHistory extends React.Component<IProps, IState> {
     };
 
     async componentDidMount(): Promise<void> {
+        await this.reload();
+    }
+
+    reload = async () => {
         try {
             const keyActivityResponse = await KeysAPI.getActivity({
                 projectId: this.props.projectId,
@@ -34,9 +41,7 @@ class KeyHistory extends React.Component<IProps, IState> {
                 keyActivityResponse: keyActivityResponse
             });
         } catch (err) {
-            if (!err.isCanceled) {
-                console.error(err);
-            }
+            console.error(err);
         }
     }
 
@@ -45,47 +50,79 @@ class KeyHistory extends React.Component<IProps, IState> {
         // shown for the same day multiple times.
         const discoveredDates: string[] = [];
 
-        return this.state.keyActivityResponse.data.map((activity) => {
+        const latestTranslations = {};
+
+        return this.state.keyActivityResponse.data.filter((activity) => {
             const itemType = activity.attributes.item_type;
-
-            let activityElement;
             if (itemType === "Translation") {
-                const newContent = activity.attributes.object_changes.content[1];
-                const date = moment.utc(activity.attributes.created_at, "YYYY-MM-DD HH:mm:ss").local().format("LL");
-                const time = moment.utc(activity.attributes.created_at, "YYYY-MM-DD HH:mm:ss").local().format("HH:mm");
-                const key = APIUtils.getIncludedObject(activity.relationships.key.data, this.state.keyActivityResponse.included);
+                const translationLanguageId = activity.attributes.object ? activity.attributes.object.language_id : activity.attributes.object_changes.language_id[1];
 
-                let showDivider = false;
-                if (discoveredDates.indexOf(date) === -1) {
-                    discoveredDates.push(date);
-                    showDivider = true;
+                if (!latestTranslations[translationLanguageId]) {
+                    latestTranslations[translationLanguageId] = activity.attributes.object_changes.content[1];
                 }
 
-                activityElement = (
-                    <div style={{ display: "flex", flexDirection: "column" }} key={activity.id}>
-                        {showDivider && <Divider style={{ fontSize: 14 }}>{date}</Divider>}
-                        <div style={{ padding: 8 }}>
-                            <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
-                                <div style={{ wordBreak: "break-word", flexGrow: 1 }}>
-                                    {key.attributes.html_enabled ?
-                                        // tslint:disable-next-line:react-no-dangerous-html
-                                        <span
-                                            dangerouslySetInnerHTML={{
-                                                __html: Utils.getHTMLContentPreview(newContent)
-                                            }}
-                                        /> :
-                                        newContent
-                                    }
+                return translationLanguageId === this.state.selectedLanguageId ||
+                    this.state.selectedLanguageId === "all-languages";
+            }
+        }).map((activity) => {
+            const translationLanguageId = activity.attributes.object ? activity.attributes.object.language_id : activity.attributes.object_changes.language_id[1];
+            const newContent = activity.attributes.object_changes.content[1];
+            const date = moment.utc(activity.attributes.created_at, "YYYY-MM-DD HH:mm:ss").local().format("LL");
+            const time = moment.utc(activity.attributes.created_at, "YYYY-MM-DD HH:mm:ss").local().format("HH:mm");
+            const key = APIUtils.getIncludedObject(activity.relationships.key.data, this.state.keyActivityResponse.included);
+            const language = APIUtils.getIncludedObject({
+                id: translationLanguageId,
+                type: "language"
+            }, this.state.keyActivityResponse.included);
+            const countryCode = APIUtils.getIncludedObject(language.relationships.country_code.data, this.state.keyActivityResponse.included);
+
+            let showDivider = false;
+            if (discoveredDates.indexOf(date) === -1) {
+                discoveredDates.push(date);
+                showDivider = true;
+            }
+
+            return (
+                <div style={{ display: "flex", flexDirection: "column" }} key={activity.id}>
+                    {showDivider && <Divider style={{ fontSize: 14 }}>{date}</Divider>}
+                    <div style={{ padding: 8 }}>
+                        <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
+                            <div style={{ wordBreak: "break-word", flexGrow: 1 }}>
+                                <div style={{ fontWeight: "bold", marginBottom: 4 }}>
+                                    {countryCode && <span style={{ marginRight: 8 }}>
+                                        <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
+                                    </span>}
+                                    {`${language.attributes.name} content changed`}
                                 </div>
-                                <div style={{ marginLeft: 16, fontSize: 12, color: Styles.COLOR_TEXT_DISABLED }}>
-                                    {time}
-                                </div>
+                                {key.attributes.html_enabled ?
+                                    // tslint:disable-next-line:react-no-dangerous-html
+                                    <span
+                                        dangerouslySetInnerHTML={{
+                                            __html: Utils.getHTMLContentPreview(newContent)
+                                        }}
+                                    /> :
+                                    newContent
+                                }
                             </div>
-                            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginLeft: 16, fontSize: 12, color: Styles.COLOR_TEXT_DISABLED }}>
+                                {time}
+                            </div>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                            {latestTranslations[translationLanguageId] === newContent ?
+                                <span style={{ color: "#aaa" }}>Current</span> :
                                 <Popconfirm
                                     title="Are you sure you want to restore this version?"
-                                    // onConfirm={confirm}
-                                    // onCancel={cancel}
+                                    onConfirm={async () => {
+                                        const translationId = activity.attributes.object ? activity.attributes.object.id : activity.attributes.object_changes.id[1];
+                                        await TranslationsAPI.updateTranslation(
+                                            key.attributes.project_id,
+                                            translationId,
+                                            newContent
+                                        );
+                                        this.props.onTranslationRestored();
+                                        await this.reload();
+                                    }}
                                     okText="Yes"
                                     cancelText="No"
                                     placement="left"
@@ -93,19 +130,12 @@ class KeyHistory extends React.Component<IProps, IState> {
                                     {/* tslint:disable-next-line:react-a11y-anchors */}
                                     <a>Restore</a>
                                 </Popconfirm>
-                            </div>
+                            }
                         </div>
                     </div>
-                );
-            }
-
-            return activityElement;
+                </div>
+            );
         });
-    }
-
-    onChangeLanguage(event: any) {
-        const value = event.target.value;
-        console.log(`radio checked: ${value}`);
     }
 
     render() {
@@ -115,6 +145,9 @@ class KeyHistory extends React.Component<IProps, IState> {
 
         return (
             <>
+                <p>
+                    Name: <span style={{ fontWeight: "bold" }}>{this.props.keyName}</span>
+                </p>
                 <Select
                     style={{ width: "50%" }}
                     onChange={(selectedValue: string) => {

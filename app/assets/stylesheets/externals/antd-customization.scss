@@ -6,17 +6,19 @@ $color: #7977f3;
   flex-grow: 1;
   min-height: 100%;
 
-  .ant-popover-inner-content {
-    padding: 8px 0;
+  .popover-no-padding {
+    .ant-popover-inner-content {
+      padding: 8px 0;
 
-    a {
-      &:hover {
-        text-decoration: none;
+      a {
+        &:hover {
+          text-decoration: none;
+        }
       }
-    }
 
-    ul {
-      margin: 0;
+      ul {
+        margin: 0;
+      }
     }
   }
 

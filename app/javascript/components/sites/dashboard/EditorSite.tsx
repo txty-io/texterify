@@ -17,6 +17,7 @@ import { KeyComments } from "../../ui/KeyComments";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { Styles } from "../../ui/Styles";
 import { UserAvatar } from "../../ui/UserAvatar";
+import { UserProfileHeader } from "../../ui/UserProfileHeader";
 import { TranslationCard } from "./editor/TranslationCard";
 
 const Key = styled.div`
@@ -48,6 +49,8 @@ type IState = {
 
 @observer
 class EditorSite extends React.Component<IProps, IState> {
+  keyHistoryRef: any;
+
   state: IState = {
     keysResponse: null,
     keyResponse: null,
@@ -141,28 +144,16 @@ class EditorSite extends React.Component<IProps, IState> {
             color: "#fff"
           }}
         >
-          <Link to={Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId)} style={{ color: "#fff" }}>
-            <Icon type="arrow-left" />
-            <span style={{ margin: "0 16px", paddingRight: 24, borderRight: "1px solid #e8e8e8" }}>
-              Back to project
+          <div style={{ flexGrow: 1 }}>
+            <Link to={Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId)} style={{ color: "#fff" }}>
+              <Icon type="arrow-left" />
+              <span style={{ margin: "0 16px", paddingRight: 24, borderRight: "1px solid #e8e8e8" }}>
+                Back to project
             </span>
-          </Link>
-          {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
-          <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
-            <UserAvatar light user={authStore.currentUser} />
-            <div
-              style={{
-                padding: "0 16px",
-                borderRadius: Styles.DEFAULT_BORDER_RADIUS,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: "bold"
-              }}
-            >
-              {authStore.currentUser && authStore.currentUser.username}
-            </div>
+            </Link>
+            {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
           </div>
+          <UserProfileHeader />
         </div>
         <div style={{ display: "flex", flexGrow: 1 }}>
           <div
@@ -221,6 +212,11 @@ class EditorSite extends React.Component<IProps, IState> {
                   languagesResponse={this.state.languagesResponse}
                   defaultSelected={this.state.languagesResponse.data[0].id}
                   keyResponse={this.state.keyResponse}
+                  onSave={() => {
+                    if (this.keyHistoryRef) {
+                      this.keyHistoryRef.reload();
+                    }
+                  }}
                 />
               }
 
@@ -230,6 +226,11 @@ class EditorSite extends React.Component<IProps, IState> {
                   languagesResponse={this.state.languagesResponse}
                   defaultSelected={this.state.languagesResponse.data[1].id}
                   keyResponse={this.state.keyResponse}
+                  onSave={() => {
+                    if (this.keyHistoryRef) {
+                      this.keyHistoryRef.reload();
+                    }
+                  }}
                 />
               }
             </div>}
@@ -249,7 +250,10 @@ class EditorSite extends React.Component<IProps, IState> {
                 <Tabs.TabPane tab="History" key="history" style={{ padding: "0 16px" }} >
                   {this.props.match.params.projectId && this.state.keyResponse.data.id && <KeyHistory
                     projectId={this.props.match.params.projectId}
+                    keyName={this.state.keyResponse.data.attributes.name}
                     keyId={this.state.keyResponse.data.id}
+                    onTranslationRestored={() => { this.loadAndSetKey(); }}
+                    ref={(ref) => { this.keyHistoryRef = ref; }}
                   />}
                 </Tabs.TabPane>
               </Tabs>

@@ -1,20 +1,16 @@
-import { Avatar, Button, Icon, Layout, Popover } from "antd";
+import { Button, Icon, Layout } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
-import styled from "styled-components";
-import { AuthAPI } from "../api/v1/AuthAPI";
 import { ActivitySite } from "../sites/dashboard/ActivitySite";
-import { DashboardSite } from "../sites/dashboard/DashboardSite";
 import { NotFoundSite } from "../sites/dashboard/NotFoundSite";
 import { ProjectSidebar } from "../sites/dashboard/ProjectSidebar";
 import { ProjectsSite } from "../sites/dashboard/ProjectsSite";
 import { UserAccessTokensSettingsSite } from "../sites/dashboard/UserAccessTokensSettingsSite";
 import { UserAccountSettingsSite } from "../sites/dashboard/UserAccountSettingsSite";
 import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
-import { authStore } from "../stores/AuthStore";
 import { Styles } from "../ui/Styles";
-import { UserAvatar } from "../ui/UserAvatar";
+import { UserProfileHeader } from "../ui/UserProfileHeader";
 import { history } from "./history";
 import { PrivateRoute } from "./PrivateRoute";
 import { ProjectRouter } from "./ProjectRouter";
@@ -26,21 +22,6 @@ interface IState {
   hasSidebar: boolean;
   accountMenuVisible: boolean;
 }
-
-const AccountProfileContentWrapper: any = styled.div`
-  a {
-    display: block;
-    color: #888;
-    padding: 4px 16px;
-    background: #fcfcfc;
-  }
-
-  a:hover {
-    text-decoration: none;
-    background: #fcfcfc;
-    color: #333;
-  }
-`;
 
 @observer
 class DashboardRouter extends React.Component<IProps, IState> {
@@ -65,11 +46,6 @@ class DashboardRouter extends React.Component<IProps, IState> {
         hasSidebar: this.hasSidebar()
       });
     }
-  }
-
-  logout = async (): Promise<void> => {
-    await AuthAPI.logout();
-    this.props.history.push(Routes.AUTH.LOGIN);
   }
 
   hasSidebar = (): boolean => {
@@ -99,11 +75,11 @@ class DashboardRouter extends React.Component<IProps, IState> {
                 {/* <Link
                   to={Routes.DASHBOARD.ROOT}
                   style={{
-                    background: this.props.history.location.pathname === Routes.DASHBOARD.ROOT ? Styles.COLOR_PRIMARY : undefined,
-                    color: this.props.history.location.pathname === Routes.DASHBOARD.ROOT ? "#fff" : "#333",
+                    background: this.props.history.location.pathname === Routes.DASHBOARD.ROOT ? "rgba(255, 255, 255, 0.15" : undefined,
+                    color: this.props.history.location.pathname === Routes.DASHBOARD.ROOT ? "#fff" : "#fff",
                     transition: "none",
                     marginRight: 8,
-                    fontWeight: "bold"
+                    textDecoration: "none"
                   }}
                 >
                   <Icon type="appstore" style={{ marginRight: 8 }} /> Dashboard
@@ -136,9 +112,11 @@ class DashboardRouter extends React.Component<IProps, IState> {
                 <Link
                   to={Routes.OTHER.TOOLS}
                   style={{
-                    background: this.props.history.location.pathname === Routes.OTHER.TOOLS ? Styles.COLOR_PRIMARY : undefined,
-                    color: this.props.history.location.pathname === Routes.OTHER.TOOLS ? "#fff" : "#333",
-                    transition: "none"
+                    background: this.props.history.location.pathname === Routes.OTHER.TOOLS ? "rgba(255, 255, 255, 0.15" : undefined,
+                    color: this.props.history.location.pathname === Routes.OTHER.TOOLS ? "#fff" : "#fff",
+                    transition: "none",
+                    marginRight: 8,
+                    textDecoration: "none"
                   }}
                 >
                   Tools & Integrations
@@ -150,60 +128,11 @@ class DashboardRouter extends React.Component<IProps, IState> {
               onClick={() => {
                 history.push(Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId));
               }}
-              style={{ marginRight: 40, background: "rgba(255, 255, 255, 0.1)", border: "1px solid #fff" }}
+              style={{ marginRight: 40, border: "1px solid #fff", background: "transparent" }}
             >
               Translate now
             </Button>}
-            <div
-              onClick={() => { this.setState({ accountMenuVisible: true }); }}
-              role="button"
-              style={{ cursor: "pointer" }}
-            >
-              <Popover
-                title="Account"
-                placement="bottomRight"
-                trigger="click"
-                visible={this.state.accountMenuVisible}
-                onVisibleChange={() => { this.setState({ accountMenuVisible: false }); }}
-                content={
-                  <AccountProfileContentWrapper>
-                    <ul>
-                      <li role="button" onClick={(e) => { e.stopPropagation(); this.setState({ accountMenuVisible: false }); }}>
-                        <Link to={Routes.USER.SETTINGS.ACCOUNT}>
-                          <Icon type="setting" style={{ marginRight: 5, fontWeight: "bold" }} />
-                          Settings
-                          </Link>
-                      </li>
-                      <li>
-                        {/* tslint:disable-next-line:react-a11y-anchors */}
-                        <a
-                          role="button"
-                          onClick={this.logout}
-                        >
-                          <Icon type="logout" style={{ marginRight: 5, fontWeight: "bold" }} />
-                          Logout
-                        </a>
-                      </li>
-                    </ul>
-                  </AccountProfileContentWrapper>}
-              >
-                <div style={{ display: "flex" }}>
-                  <UserAvatar light user={authStore.currentUser} />
-                  <div
-                    style={{
-                      padding: "0 16px",
-                      borderRadius: Styles.DEFAULT_BORDER_RADIUS,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: "bold"
-                    }}
-                  >
-                    {authStore.currentUser && authStore.currentUser.username}
-                  </div>
-                </div>
-              </Popover>
-            </div>
+            <UserProfileHeader />
           </Header>
           <Layout>
             {this.renderSidebar()}
