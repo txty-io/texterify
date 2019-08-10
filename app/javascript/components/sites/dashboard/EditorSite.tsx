@@ -252,7 +252,7 @@ class EditorSite extends React.Component<IProps, IState> {
                     projectId={this.props.match.params.projectId}
                     keyName={this.state.keyResponse.data.attributes.name}
                     keyId={this.state.keyResponse.data.id}
-                    onTranslationRestored={() => { this.loadAndSetKey(); }}
+                    onTranslationRestored={async () => { await this.loadAndSetKey(); }}
                     ref={(ref) => { this.keyHistoryRef = ref; }}
                   />}
                 </Tabs.TabPane>
