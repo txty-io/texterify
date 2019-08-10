@@ -76,7 +76,7 @@ interface IState {
   editTranslationLanguageId: string;
   editTranslationContentChanged: boolean;
   keyToEdit: any;
-  keyToShowHistory: string;
+  keyToShowHistory: any;
   keyMenuVisible: string;
 }
 
@@ -279,6 +279,7 @@ class KeysSite extends React.Component<IProps, IState> {
             onVisibleChange={(visible) => {
               this.setState({ keyMenuVisible: visible ? key.attributes.id : null });
             }}
+            overlayClassName="popover-no-padding"
             content={
               <>
                 <div style={{ padding: "8px 16px", display: "flex", alignItems: "center" }}>
@@ -295,9 +296,9 @@ class KeysSite extends React.Component<IProps, IState> {
                 <div
                   role="button"
                   onClick={() => {
-                    this.setState({ keyToShowHistory: key.attributes.id, keyMenuVisible: null });
+                    this.setState({ keyToShowHistory: key, keyMenuVisible: null });
                   }}
-                  style={{ padding: "0 16px", borderTop: "1px solid #fcfcfc", display: "flex", alignItems: "center" }}
+                  style={{ cursor: "pointer", padding: "8px 16px", borderTop: "1px solid #fcfcfc", display: "flex", alignItems: "center" }}
                 >
                   History
                 </div>
@@ -563,7 +564,15 @@ class KeysSite extends React.Component<IProps, IState> {
           onClose={() => { this.setState({ keyToShowHistory: null }); }}
           visible={!!this.state.keyToShowHistory}
         >
-          <KeyHistory projectId={this.props.match.params.projectId} keyId={this.state.keyToShowHistory} />
+          <KeyHistory
+            projectId={this.props.match.params.projectId}
+            keyId={this.state.keyToShowHistory && this.state.keyToShowHistory.attributes.id}
+            keyName={this.state.keyToShowHistory && this.state.keyToShowHistory.attributes.name}
+            onTranslationRestored={async () => {
+              await this.reloadTable();
+              this.setState({ keyToShowHistory: null });
+            }}
+          />
         </Drawer>
 
         <Modal
