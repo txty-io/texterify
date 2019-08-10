@@ -12,7 +12,7 @@ module.exports = {
         "primary-color": "#7977f3",
         "info-color": "#7977f3",
         "btn-primary-color": "#fff",
-        "btn-primary-bg": "#7977f3",
+        "btn-primary-bg": "#2b3556",
         "font-family": "Open Sans",
         "layout-body-background": "#fff",
         "layout-header-background": "#fff",
