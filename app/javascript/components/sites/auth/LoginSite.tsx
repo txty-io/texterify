@@ -1,8 +1,6 @@
-import { Button } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { LoginForm } from "../../forms/LoginForm";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
@@ -17,7 +15,7 @@ class LoginSite extends React.Component<IProps, IState> {
     return !authStore.isAuthenticated ?
       (
         <SiteWrapper>
-          <h2>Login</h2>
+          <h2>Welcome back</h2>
           <LoginForm />
         </SiteWrapper>
       ) : (

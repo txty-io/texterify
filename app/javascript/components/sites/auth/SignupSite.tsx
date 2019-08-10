@@ -21,7 +21,7 @@ class SignupSite extends React.Component<IProps, IState> {
         <SiteWrapper>
           <h2>Create a new account</h2>
           <SignupForm onAccountCreated={this.onAccountCreated} />
-          <Link to={Routes.AUTH.LOGIN} style={{ marginTop: 10 }}>You already have an account?</Link>
+          <Link to={Routes.AUTH.LOGIN} style={{ alignSelf: "flex-start" }}>Login</Link>
         </SiteWrapper>
       ) : (
         <Redirect to={Routes.DASHBOARD.ROOT} />

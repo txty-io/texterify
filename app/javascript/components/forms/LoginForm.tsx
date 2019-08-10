@@ -1,6 +1,5 @@
-import { Alert, Button, Checkbox, Form, Icon, Input } from "antd";
+import { Alert, Button, Form, Icon, Input } from "antd";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { Link } from "react-router-dom";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { Routes } from "../routing/Routes";
@@ -51,11 +50,12 @@ class LoginFormUnwrapped extends React.Component<IProps, IState> {
             )}
           </Form.Item>
 
-          <Link to={Routes.AUTH.FORGOTT_PASSWORD} style={{ float: "right", marginBottom: 8 }}>Forgot your password?</Link>
           <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
             Log in
           </Button>
-          or <Link to={Routes.AUTH.SIGNUP}>create a new account.</Link>
+          <Link to={Routes.AUTH.SIGNUP}>Create account</Link>
+          <br />
+          <Link to={Routes.AUTH.FORGOTT_PASSWORD}>Forgot password</Link>
         </Form>
       </>
     );

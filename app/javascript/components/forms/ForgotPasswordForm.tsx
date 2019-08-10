@@ -25,16 +25,16 @@ class ForgotPasswordFormUnwrapped extends React.Component<IProps, IState> {
             )}
           </Form.Item>
 
-          <Form.Item>
+          <Form.Item style={{ marginBottom: 0 }}>
             <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
               Send password recovery instructions
-          </Button>
+            </Button>
           </Form.Item>
         </Form>
         <p>
-          <Link to={Routes.AUTH.LOGIN}>Go to login.</Link>
+          <Link to={Routes.AUTH.LOGIN}>Login</Link>
           <br />
-          <Link to={Routes.AUTH.SIGNUP}>Create a new account.</Link>
+          <Link to={Routes.AUTH.SIGNUP}>Create account</Link>
         </p>
       </>
     );
