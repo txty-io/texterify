@@ -28,7 +28,7 @@ class AddEditLanguageFormUnwrapped extends React.Component<IProps, IState> {
     };
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     try {
       this.getCountryCodesPromise = makeCancelable(CountryCodesAPI.getCountryCodes());
       const countryCodes = await this.getCountryCodesPromise.promise;
