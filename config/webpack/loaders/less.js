@@ -16,8 +16,6 @@ module.exports = {
         "font-family": "Open Sans",
         "layout-body-background": "#fff",
         "layout-header-background": "#fff",
-        "btn-danger-border": "#f5222d",
-        "btn-danger-bg": "#fff",
         "menu-item-color": "#333",
         "menu-item-active-bg": "#6772e526"
       },
