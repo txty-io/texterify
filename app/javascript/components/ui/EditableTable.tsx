@@ -162,18 +162,18 @@ interface IEditableTableState {
 }
 
 class EditableTable extends React.Component<IEditableTableProps, IEditableTableState> {
+  static getDerivedStateFromProps(props: IEditableTableProps) {
+    return {
+      dataSource: props.dataSource
+    };
+  }
+
   constructor(props: IEditableTableProps) {
     super(props);
 
     this.state = {
       dataSource: this.props.dataSource
     };
-  }
-
-  componentWillReceiveProps(props: IEditableTableProps) {
-    this.setState({
-      dataSource: props.dataSource
-    });
   }
 
   handleDelete = (key: any) => {
