@@ -4,7 +4,7 @@
   "dependencies": {
     "@editorjs/editorjs": "^2.15.0",
     "@editorjs/list": "^1.4.0",
-    "@rails/webpacker": "^4.0.2",
+    "@rails/webpacker": "^4.0.7",
     "@types/lodash": "^4.14.136",
     "@types/query-string": "^6.1.0",
     "@types/react": "^16.9.1",
@@ -14,7 +14,7 @@
     "@types/react-router-dom": "^4.3.4",
     "@uppy/core": "^1.2.0",
     "@uppy/react": "^1.2.0",
-    "antd": "^3.4.1",
+    "antd": "^3.21.4",
     "babel-plugin-module-resolver": "^3.2.0",
     "babel-preset-react": "^6.24.1",
     "flag-icon-css": "^3.0.0",
@@ -50,8 +50,8 @@
   },
   "devDependencies": {
     "less": "^3.8.1",
-    "webpack-cli": "^3.3.2",
-    "webpack-dev-server": "^3.3.1"
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.8.0"
   },
   "engines": {
     "yarn": ">=1.5.1"
