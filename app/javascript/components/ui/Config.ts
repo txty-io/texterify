@@ -1,4 +1,4 @@
-const PAGE_SIZE_OPTIONS = ["10", "20", "30", "40", "50", "100", "500"];
+const PAGE_SIZE_OPTIONS = ["10", "20", "30", "40", "50"];
 const DEFAULT_PAGE_SIZE = parseInt(PAGE_SIZE_OPTIONS[0], 10);
 
 export { PAGE_SIZE_OPTIONS, DEFAULT_PAGE_SIZE };
