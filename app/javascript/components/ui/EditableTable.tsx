@@ -30,11 +30,9 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
   input: any;
   cell: any;
 
-  constructor(props: IEditableCellProps) {
-    super(props);
-
-    this.state = { editing: false };
-  }
+  state: IEditableCellState = {
+    editing: false
+  };
 
   componentDidMount() {
     if (this.props.editable) {
@@ -50,7 +48,6 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
 
   toggleEdit = () => {
     if (this.props.record.htmlEnabled && this.props.dataIndex !== "name" && this.props.dataIndex !== "description") {
-      console.error(this.props);
       this.props.onCellEdit({
         languageId: this.props.dataIndex.substr("language-".length),
         keyId: this.props.record.key
@@ -67,7 +64,8 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
 
   handleClickOutside = (e: any) => {
     const { editing } = this.state;
-    if (editing && this.cell !== e.target && !this.cell.contains(e.target)) {
+    // Only save if clicked element is not the textarea.
+    if (editing && !(this.cell.contains(e.target) && (e.target.tagName === "TEXTAREA"))) {
       this.save();
     }
   }
