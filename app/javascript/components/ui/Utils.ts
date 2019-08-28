@@ -1,3 +1,11 @@
+import * as sanitizeHtml from "sanitize-html";
+
+function escapeContent(htmlContent: string) {
+    return sanitizeHtml(htmlContent, {
+        allowedTags: ["b", "i", "a"]
+    });
+}
+
 const Utils = {
     getHTMLContentPreview: (htmlContent: string) => {
         try {
@@ -14,7 +22,7 @@ const Utils = {
                     }
 
                     block.data.items.map((item) => {
-                        converted += `<li>${item}</li>`;
+                        converted += `<li>${escapeContent(item)}</li>`;
                     });
 
                     if (block.data.style === "ordered") {
@@ -23,7 +31,7 @@ const Utils = {
                         converted += "</ul>";
                     }
                 } else if (block.type === "paragraph") {
-                    converted += `<p>${block.data.text}</p>`;
+                    converted += `<p>${escapeContent(block.data.text)}</p>`;
                 }
             });
 
@@ -31,6 +39,27 @@ const Utils = {
         } catch (e) {
             return htmlContent;
         }
+    },
+
+    escapeEditorContent: (json: any) => {
+        if (json) {
+            const blocks = json.blocks.map((block) => {
+                if (block.type === "list") {
+                    const items = block.data.items.map((item) => {
+                        return escapeContent(item);
+                    });
+                    block.data.items = items;
+                } else if (block.type === "paragraph") {
+                    block.data.text = escapeContent(block.data.text);
+                }
+
+                return block;
+            });
+
+            json.blocks = blocks;
+        }
+
+        return json;
     }
 };
 

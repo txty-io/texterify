@@ -8,6 +8,7 @@ import { APIUtils } from "../../../api/v1/APIUtils";
 import { TranslationsAPI } from "../../../api/v1/TranslationsAPI";
 import FlagIcon from "../../../ui/FlagIcons";
 import { Styles } from "../../../ui/Styles";
+import { Utils } from "../../../ui/Utils";
 
 const EMPTY_EDITOR_HEIGHT = 108;
 
@@ -87,7 +88,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                     }
                     this.setState({ editorContentChanged: true });
                 },
-                data: isHTMLKey ? htmlData : undefined
+                data: isHTMLKey ? Utils.escapeEditorContent(htmlData) : undefined
             });
             await this.editor.isReady;
         } else {
