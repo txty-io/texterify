@@ -86,7 +86,7 @@ class NewKeyFormUnwrapped extends React.Component<IProps, IState> {
               rules: [{ required: false }],
               initialValue: (this.props.keyToEdit && this.props.keyToEdit.attributes.html_enabled) || false
             })(
-              <Checkbox>HTML enabled</Checkbox>
+              <Checkbox>HTML</Checkbox>
             )}
             <Tooltip title="If checked a editor will de used for translation. You can still change this later.">
               <Icon type="question-circle" />

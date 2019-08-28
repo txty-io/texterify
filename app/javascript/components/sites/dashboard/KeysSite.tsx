@@ -283,7 +283,9 @@ class KeysSite extends React.Component<IProps, IState> {
             content={
               <>
                 <div style={{ padding: "8px 16px", display: "flex", alignItems: "center" }}>
-                  HTML enabled
+                  <div style={{ flexGrow: 1 }}>
+                    HTML
+                  </div>
                   <Switch
                     style={{ marginLeft: 16 }}
                     checked={key.attributes.html_enabled}

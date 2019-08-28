@@ -116,7 +116,7 @@ class Activity extends React.Component<IProps, IState> {
         activityElement = (
           <ActivityItemWrapper>
             {activity.attributes.object_changes.html_enabled[1] ? "Added " : "Removed "}
-            <Tag color="magenta" style={{ margin: 0 }}>HTML enabled</Tag>
+            tag <Tag color="magenta" style={{ margin: 0 }}>HTML</Tag>
             {activity.attributes.object_changes.html_enabled[1] ? " to" : " from"} key
             <ActivityKeyElement noMarginRight color={this.getStylesForEvent(itemType, event).color} background={this.getStylesForEvent(itemType, event).background}>
               {activity.attributes.object.name}
