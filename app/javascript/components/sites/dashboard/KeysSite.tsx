@@ -264,7 +264,7 @@ class KeysSite extends React.Component<IProps, IState> {
       });
 
       return {
-        tags: key.attributes.html_enabled ? <Tag color="magenta">HTML enabled</Tag> : undefined,
+        tags: key.attributes.html_enabled ? <Tag color="magenta">HTML</Tag> : undefined,
         key: key.attributes.id,
         name: key.attributes.name,
         description: key.attributes.description,
@@ -343,13 +343,10 @@ class KeysSite extends React.Component<IProps, IState> {
       onOk: async () => {
         const response = await KeysAPI.deleteKeys(this.props.match.params.projectId, this.state.selectedRowKeys);
 
-        const newKeys = this.state.keys.filter((key) => {
-          return this.state.selectedRowKeys.indexOf(key.id) === -1;
-        });
+        await this.reloadTable();
 
         this.setState({
           isDeleting: false,
-          keys: newKeys,
           selectedRowKeys: []
         });
       },

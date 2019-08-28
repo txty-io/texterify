@@ -189,13 +189,10 @@ class LanguagesSite extends React.Component<IProps, IState> {
           return;
         }
 
-        const newLanguages = this.state.languages.filter((key) => {
-          return this.state.selectedRowLanguages.indexOf(key.id) === -1;
-        });
+        await this.reloadTable();
 
         this.setState({
           isDeleting: false,
-          languages: newLanguages,
           deleteDialogVisible: false,
           selectedRowLanguages: []
         });
