@@ -11,23 +11,20 @@ import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
-import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { KeyComments } from "../../ui/KeyComments";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { Styles } from "../../ui/Styles";
-import { UserAvatar } from "../../ui/UserAvatar";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
 import { TranslationCard } from "./editor/TranslationCard";
 
 const Key = styled.div`
-  background: ${(props) => props.index % 2 === 0 ? "#fafafa" : undefined};
   cursor: pointer;
   padding: 12px 16px;
   color: #333;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 14px;
+  font-size: 13px;
 
   &:hover {
     color: #555;
@@ -67,6 +64,8 @@ class EditorSite extends React.Component<IProps, IState> {
   }, 500, { trailing: true });
 
   async componentDidMount() {
+    window.addEventListener("resize", this.onResize);
+
     const getProjectResponse = await ProjectsAPI.getProject(this.props.match.params.projectId);
     if (getProjectResponse.errors) {
       this.props.history.push(Routes.DASHBOARD.PROJECTS);
@@ -81,6 +80,10 @@ class EditorSite extends React.Component<IProps, IState> {
     this.setState({
       languagesResponse: responseLanguages
     });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.onResize);
   }
 
   fetchKeys = async (options?: any) => {
@@ -131,6 +134,11 @@ class EditorSite extends React.Component<IProps, IState> {
     return this.props.match.params.keyId === keyId;
   }
 
+  onResize = () => {
+    // Force a rerender to update the calculated fixed height.
+    this.forceUpdate();
+  }
+
   // tslint:disable-next-line:max-func-body-length
   render(): JSX.Element {
     return (
@@ -155,9 +163,17 @@ class EditorSite extends React.Component<IProps, IState> {
           </div>
           <UserProfileHeader />
         </div>
-        <div style={{ display: "flex", flexGrow: 1 }}>
+        <div style={{ display: "flex", flexGrow: 1, height: window.innerHeight - 64, overflow: "hidden" }}>
           <div
-            style={{ background: "#fff", display: "flex", flexDirection: "column", flexGrow: 1, maxWidth: 300, borderRight: "1px solid #e8e8e8" }}
+            style={{
+              background: "#fff",
+              display: "flex",
+              flexDirection: "column",
+              flexGrow: 1,
+              maxWidth: 300,
+              borderRight: "1px solid #e8e8e8",
+              overflow: "scroll"
+            }}
           >
             <Search
               placeholder="Search keys and translations"
@@ -199,14 +215,14 @@ class EditorSite extends React.Component<IProps, IState> {
               pageSize={12}
             />
           </div>
-          <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, padding: 16 }}>
+          <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, padding: 16, overflow: "scroll" }}>
             {this.keyLoaded() && <div className="fade-in">
               <h2 style={{ fontSize: 16 }}>
                 {this.state.keyResponse && this.state.keyResponse.data.attributes.name}
               </h2>
               <p>{this.state.keyResponse && this.state.keyResponse.data.attributes.description}</p>
 
-              {this.state.languagesResponse &&
+              {this.state.languagesResponse && this.state.languagesResponse.data.length > 0 &&
                 <TranslationCard
                   projectId={this.props.match.params.projectId}
                   languagesResponse={this.state.languagesResponse}
@@ -241,13 +257,13 @@ class EditorSite extends React.Component<IProps, IState> {
 
           {this.keyLoaded() && (
             <div
-              style={{ background: "#fff", display: "flex", flexDirection: "column", flexGrow: 1, maxWidth: 400, borderLeft: "1px solid #e8e8e8" }}
+              style={{ background: "#fff", display: "flex", flexDirection: "column", flexGrow: 1, maxWidth: 400, borderLeft: "1px solid #e8e8e8", overflow: "scroll" }}
             >
-              <Tabs defaultActiveKey="chat" type="card" tabBarStyle={{ background: "#fefeff" }}>
-                <Tabs.TabPane tab="Comments" key="chat" style={{ padding: "0 16px" }} >
+              <Tabs defaultActiveKey="chat" type="card" style={{ overflow: "scroll" }} tabBarStyle={{ background: "#fefeff" }}>
+                <Tabs.TabPane tab="Comments" key="chat" style={{ padding: "0 16px", overflow: "scroll" }} >
                   <KeyComments />
                 </Tabs.TabPane>
-                <Tabs.TabPane tab="History" key="history" style={{ padding: "0 16px" }} >
+                <Tabs.TabPane tab="History" key="history" style={{ padding: "0 16px 16px" }}>
                   {this.props.match.params.projectId && this.state.keyResponse.data.id && <KeyHistory
                     projectId={this.props.match.params.projectId}
                     keyName={this.state.keyResponse.data.attributes.name}
