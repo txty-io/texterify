@@ -1,4 +1,4 @@
-import { Button, Comment } from "antd";
+import { Button, Comment, Empty } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import * as React from "react";
 import { authStore } from "../stores/AuthStore";
@@ -11,12 +11,9 @@ type IState = {};
 class KeyComments extends React.Component<IProps, IState> {
     render() {
         return (
-            <>
-                <p style={{ color: Styles.COLOR_TEXT_DISABLED, fontStyle: "italic" }}>No comments.</p>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+                <Empty description="No comments" style={{ margin: "40px 0" }} />
                 <Comment
-                    avatar={
-                        <UserAvatar user={authStore.currentUser} />
-                    }
                     author={authStore.currentUser && authStore.currentUser.username}
                     content={
                         <>
@@ -27,7 +24,7 @@ class KeyComments extends React.Component<IProps, IState> {
                         </>
                     }
                 />
-            </>
+            </div>
         );
     }
 }
