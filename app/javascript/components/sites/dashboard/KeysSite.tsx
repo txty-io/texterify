@@ -562,6 +562,8 @@ class KeysSite extends React.Component<IProps, IState> {
           closable={false}
           onClose={() => { this.setState({ keyToShowHistory: null }); }}
           visible={!!this.state.keyToShowHistory}
+          // Destroy so "componentDidMount" gets called and new key history is loaded.
+          destroyOnClose
         >
           <KeyHistory
             projectId={this.props.match.params.projectId}

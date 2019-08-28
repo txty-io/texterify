@@ -26,7 +26,7 @@ class KeyHistory extends React.Component<IProps, IState> {
         selectedLanguageId: "all-languages"
     };
 
-    async componentDidMount(): Promise<void> {
+    async componentDidMount() {
         await this.reload();
     }
 
