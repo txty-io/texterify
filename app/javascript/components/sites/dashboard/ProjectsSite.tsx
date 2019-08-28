@@ -1,4 +1,4 @@
-import { Button, Input, Layout, List, message, Pagination } from "antd";
+import { Button, Empty, Input, Layout, List, message, Pagination } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
@@ -129,6 +129,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
 
             <List
               size="small"
+              locale={{ emptyText: <Empty description="No projects found" image={Empty.PRESENTED_IMAGE_SIMPLE} /> }}
               dataSource={this.getRows()}
               renderItem={(item) => (
                 <List.Item key={item.title}>

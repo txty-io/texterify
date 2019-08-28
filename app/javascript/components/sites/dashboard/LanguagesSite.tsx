@@ -1,4 +1,4 @@
-import { Button, Icon, Input, Layout, Modal, Table } from "antd";
+import { Button, Empty, Icon, Input, Layout, Modal, Table } from "antd";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
@@ -261,6 +261,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
                   await this.reloadTable({ perPage: size });
                 }
               }}
+              locale={{ emptyText: <Empty description="No languages found" image={Empty.PRESENTED_IMAGE_SIMPLE} /> }}
             />
           </Content>
         </Layout>

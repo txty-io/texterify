@@ -12,7 +12,11 @@ class KeyComments extends React.Component<IProps, IState> {
     render() {
         return (
             <div style={{ display: "flex", flexDirection: "column" }}>
-                <Empty description="No comments" style={{ margin: "40px 0" }} />
+                <Empty
+                    description="No comments found"
+                    style={{ margin: "40px 0" }}
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                />
                 <Comment
                     author={authStore.currentUser && authStore.currentUser.username}
                     content={
