@@ -131,8 +131,16 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
                       style={{ maxWidth: 400, overflow: "scroll", display: "flex", flexDirection: "column", justifyContent: "center", wordBreak: "break-all" }}
                       onClick={this.toggleEdit}
                       role="button"
-                      dangerouslySetInnerHTML={{ __html: restProps.children[2] }}
-                    />
+                      dangerouslySetInnerHTML={
+                        this.props.record.htmlEnabled ?
+                          {
+                            __html: restProps.children[2]
+                          } :
+                          undefined
+                      }
+                    >
+                      {this.props.record.htmlEnabled ? undefined : restProps.children[2]}
+                    </div>
                   )
               );
             }}
