@@ -66,14 +66,8 @@ class Api::V1::LanguagesController < Api::V1::ApiController
         details: 'Language successfully created.'
       }, status: :ok
     else
-      errors = []
-      language.errors.each do |error|
-        errors.push(
-          details: language.errors[error][0]
-        )
-      end
       render json: {
-        errors: errors
+        errors: language.errors.full_messages.map { |error| "#{error}." }
       }, status: :bad_request
     end
   end

@@ -105,7 +105,7 @@ class AddEditLanguageFormUnwrapped extends React.Component<IProps, IState> {
           style={{ maxWidth: "100%" }}
           id="addEditLanguageForm"
         >
-          <h3>Name</h3>
+          <h3>Name *</h3>
           <Form.Item>
             {getFieldDecorator("name", {
               initialValue: this.props.languageToEdit ? this.props.languageToEdit.attributes.name : undefined,

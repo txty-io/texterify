@@ -217,10 +217,10 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
           </div>
         </Form.Item>
 
-        <h3>Name</h3>
+        <h3>Name *</h3>
         <Form.Item>
           {getFieldDecorator("name", {
-            initialValue: this.props.isEdit ? dashboardStore.currentProject.attributes.name : "",
+            initialValue: this.props.isEdit ? dashboardStore.currentProject.attributes.name : undefined,
             rules: [{ required: true, message: "Please enter the name of the project." }]
           })(
             <Input placeholder="Name" autoFocus={!this.props.isEdit} />
@@ -230,7 +230,7 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
         <h3>Description</h3>
         <Form.Item>
           {getFieldDecorator("description", {
-            initialValue: this.props.isEdit ? dashboardStore.currentProject.attributes.description : ""
+            initialValue: this.props.isEdit ? dashboardStore.currentProject.attributes.description : undefined
           })(
             <Input.TextArea autosize={{ minRows: 4, maxRows: 8 }} placeholder="Description" />
           )}

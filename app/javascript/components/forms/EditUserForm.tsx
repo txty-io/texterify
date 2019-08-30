@@ -225,7 +225,7 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
           </div>
         </Form.Item>
 
-        <h3 style={{ marginTop: 24 }}>Username</h3>
+        <h3 style={{ marginTop: 24 }}>Username *</h3>
         <p>This name will be visible to others.</p>
         <Form.Item>
           {getFieldDecorator("username", {
@@ -236,7 +236,7 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
           )}
         </Form.Item>
 
-        <h3>Email address</h3>
+        <h3>Email address *</h3>
         <p>Your email address that you also use to log in.</p>
         <Form.Item>
           {getFieldDecorator("email", {
