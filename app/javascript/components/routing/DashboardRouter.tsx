@@ -2,6 +2,7 @@ import { Button, Icon, Layout } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
+import styled from "styled-components";
 import { ActivitySite } from "../sites/dashboard/ActivitySite";
 import { NotFoundSite } from "../sites/dashboard/NotFoundSite";
 import { ProjectSidebar } from "../sites/dashboard/ProjectSidebar";
@@ -9,13 +10,23 @@ import { ProjectsSite } from "../sites/dashboard/ProjectsSite";
 import { UserAccessTokensSettingsSite } from "../sites/dashboard/UserAccessTokensSettingsSite";
 import { UserAccountSettingsSite } from "../sites/dashboard/UserAccountSettingsSite";
 import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
-import { Styles } from "../ui/Styles";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
 import { history } from "./history";
 import { PrivateRoute } from "./PrivateRoute";
 import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
-const { Header } = Layout;
+
+const TranslateButton = styled(Button)`
+  margin-right: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.95);
+
+  &:hover {
+    border-color: #fff;
+    color: #fff;
+  }
+`;
 
 type IProps = RouteComponentProps<{ projectId?: string }> & {};
 interface IState {
@@ -66,7 +77,9 @@ class DashboardRouter extends React.Component<IProps, IState> {
     return (
       <>
         <Layout>
-          <Header style={{ padding: "0 24px", display: "flex", alignItems: "center", color: "#fff", zIndex: 10, background: "linear-gradient(90deg, #2b3556 0%, #383c54 100%)" }}>
+          <Layout.Header
+            style={{ padding: "0 24px", display: "flex", alignItems: "center", color: "#fff", zIndex: 10, background: "linear-gradient(90deg, #2b3556 0%, #383c54 100%)" }}
+          >
             <Link to={Routes.DASHBOARD.ROOT} style={{ textDecoration: "none" }}>
               <h1 style={{ fontSize: 20, marginBottom: 0, marginRight: 24, textDecoration: "none", fontFamily: "Pacifico", color: "#fff" }}>Texterify</h1>
             </Link>
@@ -123,17 +136,18 @@ class DashboardRouter extends React.Component<IProps, IState> {
                 </Link>
               </li> */}
             </ul>
-            {this.props.match.params.projectId && <Button
-              type="primary"
-              onClick={() => {
-                history.push(Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId));
-              }}
-              style={{ marginRight: 40, border: "1px solid #fff", background: "transparent" }}
-            >
-              Translate now
-            </Button>}
+            {this.props.match.params.projectId &&
+              <TranslateButton
+                type="primary"
+                onClick={() => {
+                  history.push(Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId));
+                }}
+              >
+                Translate
+              </TranslateButton>
+            }
             <UserProfileHeader />
-          </Header>
+          </Layout.Header>
           <Layout>
             {this.renderSidebar()}
 
