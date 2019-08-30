@@ -71,7 +71,7 @@ class UserAvatar extends React.Component<IProps, IState> {
             ...this.props.style
           }}
         >
-          {this.props.user && this.props.user.username.substr(0, 2)}
+          {this.props.user && this.props.user.username && this.props.user.username.substr(0, 2)}
         </div>}
       </div>
     );

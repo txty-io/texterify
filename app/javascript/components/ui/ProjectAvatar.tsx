@@ -61,7 +61,7 @@ class ProjectAvatar extends React.Component<IProps, IState> {
             ...this.props.style
           }}
         >
-          {this.props.project && this.props.project.attributes.name.substr(0, 2)}
+          {this.props.project && this.props.project.attributes && this.props.project.attributes.name.substr(0, 2)}
         </div>}
       </div>
     );

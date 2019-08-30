@@ -7,7 +7,9 @@ import { APIUtils } from "../api/v1/APIUtils";
 import { Routes } from "../routing/Routes";
 import { ActivityTimeAgo } from "./ActivityTimeAgo";
 import FlagIcon from "./FlagIcons";
+import { ProjectAvatar } from "./ProjectAvatar";
 import { Styles } from "./Styles";
+import { UserAvatar } from "./UserAvatar";
 
 const ActivityItemWrapper = styled.div`
   word-break: break-all;
@@ -24,6 +26,8 @@ const ActivityKeyElement = styled.span`
 `;
 
 const ProjectElement = styled(Link)`
+  display: flex;
+  align-items: center;
   border-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
 `;
 
@@ -49,8 +53,18 @@ class Activity extends React.Component<IProps, IState> {
 
     const userElement = (
       <div style={{ fontSize: 12 }}>
-        <div><Icon type="user" style={{ marginRight: 4 }} /> {user ? user.attributes.username : <span style={{ textDecoration: "line-through" }}>Deleted user</span>}</div>
-        <div><Icon type="clock-circle" style={{ marginRight: 4 }} /> {moment.utc(activity.attributes.created_at, "YYYY-MM-DD HH:mm:ss").local().format("DD.MM.YYYY HH:mm")}</div>
+        <div style={{ display: "flex", alignItems: "center", lineHeight: 0 }}>
+          <div style={{ width: 16, marginRight: 8 }}>
+            {user ? <UserAvatar user={user.attributes} style={{ width: 16, height: 16, fontSize: 8 }} /> : <Icon type="user" />}
+          </div>
+          {user ? user.attributes.username : <span style={{ textDecoration: "line-through" }}>Deleted user</span>}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", lineHeight: 0, marginTop: 8 }}>
+          <div style={{ width: 16, marginRight: 8 }}>
+            <Icon type="clock-circle" />
+          </div>
+          {moment.utc(activity.attributes.created_at, "YYYY-MM-DD HH:mm:ss").local().format("DD.MM.YYYY HH:mm")}
+        </div>
       </div>
     );
 
@@ -161,7 +175,7 @@ class Activity extends React.Component<IProps, IState> {
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0, maxWidth: 200, wordBreak: "break-all" }}>
           {this.props.showTimeAgo && <ActivityTimeAgo duration={diffToNowDuration} />}
           {this.props.includeProjectLink && <div>
-            <ProjectElement to={Routes.DASHBOARD.PROJECT.replace(":projectId", activity.relationships.project.data.id)}>
+            <ProjectElement to={Routes.DASHBOARD.PROJECT.replace(":projectId", activity.relationships.project.data.id)} style={{ marginTop: 8 }}>
               {project.attributes.name}
             </ProjectElement>
           </div>}
