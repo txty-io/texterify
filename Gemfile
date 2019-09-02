@@ -66,8 +66,8 @@ end
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 gem 'bootsnap'
-gem 'devise'
-gem 'devise_token_auth'
+gem 'devise', '4.7.0'
+gem 'devise_token_auth', '1.1.2'
 gem 'dotenv-rails', groups: [:development, :test]
 gem 'fast_jsonapi'
 gem 'figaro'
@@ -75,5 +75,5 @@ gem 'haml'
 gem 'haml-rails', '~> 1.0'
 gem 'paper_trail'
 gem 'react-rails'
-gem 'rubyzip'
+gem 'rubyzip', '1.2.3'
 gem 'webpacker', '~> 4.x'
