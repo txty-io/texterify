@@ -46,5 +46,8 @@ DeviseTokenAuth.setup do |config|
   # do so by enabling this flag. NOTE: This feature is highly experimental!
   # config.enable_standard_devise_support = false
 
-  config.default_confirm_success_url = '/'
+  config.default_confirm_success_url = "/account-confirmation"
+  config.default_password_reset_url = "/password-reset"
+
+  config.remove_tokens_after_password_reset = true
 end
