@@ -4,7 +4,8 @@ const Routes = {
     LOGIN: "/",
     LOGOUT: "/logout",
     SIGNUP: "/signup",
-    FORGOTT_PASSWORD: "/forgot-password"
+    FORGOTT_PASSWORD: "/forgot-password",
+    ACCOUNT_CONFIRMATION: "/account-confirmation"
   },
   OTHER: {
     ROOT: "/",

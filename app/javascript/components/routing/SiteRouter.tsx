@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Route, Switch } from "react-router-dom";
+import { AccountConfirmationSite } from "../sites/auth/AccountConfirmationSite";
 import { ForgotPasswordSite } from "../sites/auth/ForgotPasswordFormSite";
 import { LoginSite } from "../sites/auth/LoginSite";
 import { SignupSite } from "../sites/auth/SignupSite";
@@ -19,6 +20,7 @@ class SiteRouter extends React.Component<IProps, null> {
           <Route exact path={Routes.AUTH.LOGIN} component={LoginSite} />
           <Route exact path={Routes.AUTH.SIGNUP} component={SignupSite} />
           <Route exact path={Routes.AUTH.FORGOTT_PASSWORD} component={ForgotPasswordSite} />
+          <Route exact path={Routes.AUTH.ACCOUNT_CONFIRMATION} component={AccountConfirmationSite} />
         </Switch>
       </>
     );
