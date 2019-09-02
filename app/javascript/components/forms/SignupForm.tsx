@@ -1,4 +1,4 @@
-import { Alert, Button, Checkbox, Form, Icon, Input } from "antd";
+import { Alert, Button, Checkbox, Form, Icon, Input, message } from "antd";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Link } from "react-router-dom";
@@ -50,6 +50,7 @@ class SignupFormUnwrapped extends React.Component<IProps, IState> {
               this.setState({ signupErrors: response.errors });
             } else {
               authStore.currentUser = response.data;
+              message.success("Account successfully created.");
               this.props.onAccountCreated();
             }
           },
@@ -80,7 +81,7 @@ class SignupFormUnwrapped extends React.Component<IProps, IState> {
             <Alert showIcon message={this.getErrorMessage(this.state.signupErrors)} type="error" />
           }
 
-          <h3>Username</h3>
+          <h3>Username *</h3>
           <Form.Item>
             {getFieldDecorator("username", {
               rules: [{ required: true, message: "Please enter your username." }]
@@ -89,7 +90,7 @@ class SignupFormUnwrapped extends React.Component<IProps, IState> {
             )}
           </Form.Item>
 
-          <h3>Email address</h3>
+          <h3>Email address *</h3>
           <Form.Item>
             {getFieldDecorator("email", {
               rules: [{ required: true, message: "Please enter your email address." }]
@@ -98,7 +99,7 @@ class SignupFormUnwrapped extends React.Component<IProps, IState> {
             )}
           </Form.Item>
 
-          <h3>Password</h3>
+          <h3>Password *</h3>
           <Form.Item>
             {getFieldDecorator("password", {
               rules: [{ required: true, message: "Please enter your password." }]
