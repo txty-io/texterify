@@ -1,6 +1,7 @@
 import * as queryString from "query-string";
 import { authStore } from "../../stores/AuthStore";
 import { APIUtils } from "../v1/APIUtils";
+import { IAuthData } from "./AuthAPI";
 
 const API_BASE_URL: string = "api";
 const API_VERSION: string = "v1";
@@ -12,7 +13,7 @@ const DEFAULT_HEADERS: HeadersInit = {
 async function request(
   options: {
     url: string;
-    authenticated: boolean;
+    authenticated: boolean | IAuthData;
     method: string;
     headers: HeadersInit;
     params?: any;
@@ -31,9 +32,15 @@ async function request(
 
   // In case it is an authenticated request add the necessary headers.
   if (options.authenticated) {
-    requestHeaders.client = authStore.client;
-    requestHeaders["access-token"] = authStore.accessToken;
-    requestHeaders.uid = authStore.currentUser && authStore.currentUser.email;
+    if (typeof options.authenticated === "boolean") {
+      requestHeaders.client = authStore.client;
+      requestHeaders["access-token"] = authStore.accessToken;
+      requestHeaders.uid = authStore.currentUser && authStore.currentUser.email;
+    } else {
+      requestHeaders.client = options.authenticated.client;
+      requestHeaders["access-token"] = options.authenticated.accessToken;
+      requestHeaders.uid = options.authenticated.uid;
+    }
   }
 
   let fullURL: string = `/${API_BASE_URL}/${API_VERSION}/${options.url}`;
@@ -82,7 +89,7 @@ const API = {
     });
   },
 
-  putRequest: (url: string, authenticated: boolean, body?: any, headers?: HeadersInit): any => {
+  putRequest: (url: string, authenticated: boolean | IAuthData, body?: any, headers?: HeadersInit): any => {
     return request({
       url: url,
       authenticated: authenticated,
