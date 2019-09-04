@@ -18,12 +18,12 @@ import { Routes } from "./Routes";
 
 const TranslateButton = styled(Button)`
   margin-right: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  background: transparent;
+  border: 0;
+  background: rgba(121, 119, 243, 0.75);
   color: rgba(255, 255, 255, 0.95);
 
   &:hover {
-    border-color: #fff;
+    background: rgba(121, 119, 243, 1);
     color: #fff;
   }
 `;
