@@ -18,6 +18,9 @@ install:
   - docker-compose exec app bundle exec rails db:create db:migrate RAILS_ENV=test
   - docker-compose exec app bundle install --with test
 
+before_script:
+  - export NODE_OPTIONS=--max_old_space_size=4096
+
 script:
   - docker-compose exec app yarn lint
   - docker-compose exec app yarn test
