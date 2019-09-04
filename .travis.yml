@@ -15,7 +15,7 @@ before_install:
 
 install:
   - docker-compose up -d
-  - docker-compose exec app bundle exec rails db:create db:migrate RAILS_ENV=test
+  - docker-compose exec app bundle exec rails db:create db:migrate db:seed RAILS_ENV=test
   - docker-compose exec app bundle install --with test
 
 script:
