@@ -4,7 +4,7 @@
 
 **Texterify is an open source localization management system.**
 
-It is completely free and open-source so you can host it on your own server or just run it locally.
+It is completely free and open source so you can host it on your own server or just run it locally.
 
 ![Example image](https://raw.github.com/chrztoph/texterify/screenshots/example.png)
 
@@ -36,6 +36,11 @@ docker-compose exec app bin/rails db:create db:migrate db:seed
 ```
 
 This will install the latest version of the service available at the time of setting up.
+
+## Tools & Integrations
+
+- Texterify VSC Extension (https://github.com/chrztoph/texterify-vsc)
+- Texterify CLI (https://github.com/chrztoph/texterify-vsc)
 
 ## Contributing
 
