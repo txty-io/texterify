@@ -40,7 +40,7 @@ This will install the latest version of the service available at the time of set
 ## Tools & Integrations
 
 - Texterify VSC Extension (https://github.com/chrztoph/texterify-vsc)
-- Texterify CLI (https://github.com/chrztoph/texterify-vsc)
+- Texterify CLI (https://github.com/chrztoph/texterify-cli)
 
 ## Contributing
 
