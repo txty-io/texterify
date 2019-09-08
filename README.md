@@ -1,4 +1,4 @@
-# Texterify
+<img src="https://raw.github.com/chrztoph/texterify/screenshots/logo.svg" width="320" alt="Texterify Logo" />
 
 [![Build Status](https://travis-ci.org/chrztoph/texterify.svg?branch=master)](https://travis-ci.org/chrztoph/texterify) [![License](https://img.shields.io/github/license/chrztoph/texterify.svg)](https://img.shields.io/github/license/chrztoph/texterify.svg) [![Open Issues](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)
 
