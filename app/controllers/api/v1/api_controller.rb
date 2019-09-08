@@ -2,6 +2,7 @@ module Api::V1
   class ApiController < ApplicationController
     before_action :authenticate_user_from_token!
     before_action :verify_signed_in
+    before_action :set_paper_trail_whodunnit
 
     # Handle record not found errors.
     rescue_from ActiveRecord::RecordNotFound do |e|
@@ -14,7 +15,9 @@ module Api::V1
       user = User.find_by(email: params[:email])
       api_secret = params[:api_secret].presence
       token_correct = api_secret && user && user.access_tokens.find_by(secret: api_secret)
-      request.headers.merge! user.create_new_auth_token if token_correct
+      if token_correct
+        request.headers.merge! user.create_new_auth_token
+      end
     end
 
     def verify_signed_in

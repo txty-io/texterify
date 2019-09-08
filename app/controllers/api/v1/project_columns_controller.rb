@@ -1,4 +1,4 @@
-class Api::V1::ProjectColumnsController < ApplicationController
+class Api::V1::ProjectColumnsController < Api::V1::ApiController
   def show
     project = current_user.projects.find(params[:project_id])
     project_column = project.project_columns.find_by(project_id: project.id, user_id: current_user.id)
