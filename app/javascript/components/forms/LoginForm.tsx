@@ -53,9 +53,11 @@ class LoginFormUnwrapped extends React.Component<IProps, IState> {
           <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
             Log in
           </Button>
-          <Link to={Routes.AUTH.SIGNUP}>Create account</Link>
-          <br />
-          <Link to={Routes.AUTH.FORGOTT_PASSWORD}>Forgot password</Link>
+          <div style={{ textAlign: "right" }}>
+            <Link to={Routes.AUTH.SIGNUP}>Create a new account</Link>
+            <br />
+            <Link to={Routes.AUTH.FORGOTT_PASSWORD}>Forgot password?</Link>
+          </div>
         </Form>
       </>
     );

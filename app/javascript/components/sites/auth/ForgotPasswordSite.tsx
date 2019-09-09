@@ -9,7 +9,7 @@ class ForgotPasswordSite extends React.Component<IProps, IState> {
   render(): JSX.Element {
     return (
       <SiteWrapper>
-        <h2>Reset password</h2>
+        <h2>Reset your password.</h2>
         <ForgotPasswordForm />
       </SiteWrapper>
     );

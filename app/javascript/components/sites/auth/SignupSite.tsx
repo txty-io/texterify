@@ -19,9 +19,12 @@ class SignupSite extends React.Component<IProps, IState> {
     return !authStore.isAuthenticated ?
       (
         <SiteWrapper>
-          <h2>Create a new account</h2>
+          <h2>Create a new account.</h2>
           <SignupForm onAccountCreated={this.onAccountCreated} />
-          <Link to={Routes.AUTH.LOGIN} style={{ alignSelf: "flex-start" }}>Login</Link>
+
+          <div style={{ textAlign: "right" }}>
+            <Link to={Routes.AUTH.LOGIN}>Already have an account?</Link>
+          </div>
         </SiteWrapper>
       ) : (
         <Redirect to={Routes.DASHBOARD.ROOT} />

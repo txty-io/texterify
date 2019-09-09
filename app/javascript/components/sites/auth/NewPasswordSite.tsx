@@ -9,7 +9,7 @@ class NewPasswordSite extends React.Component<IProps, IState> {
   render(): JSX.Element {
     return (
       <SiteWrapper>
-        <h2>Set a new password</h2>
+        <h2>Set a new password.</h2>
         <NewPasswordForm />
       </SiteWrapper>
     );

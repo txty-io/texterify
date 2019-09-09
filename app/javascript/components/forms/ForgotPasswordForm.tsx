@@ -42,11 +42,11 @@ class ForgotPasswordFormUnwrapped extends React.Component<IProps, IState> {
             </Button>
           </Form.Item>
         </Form>
-        <p>
-          <Link to={Routes.AUTH.LOGIN}>Login</Link>
+        <div style={{ textAlign: "right" }}>
+          <Link to={Routes.AUTH.LOGIN}>Back to login</Link>
           <br />
-          <Link to={Routes.AUTH.SIGNUP}>Create account</Link>
-        </p>
+          <Link to={Routes.AUTH.SIGNUP}>Create a new account</Link>
+        </div>
         <LoadingOverlay isVisible={this.state.isLoading} loadingText="Loading..." />
       </>
     );

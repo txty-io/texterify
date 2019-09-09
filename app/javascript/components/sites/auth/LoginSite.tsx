@@ -15,7 +15,7 @@ class LoginSite extends React.Component<IProps, IState> {
     return !authStore.isAuthenticated ?
       (
         <SiteWrapper>
-          <h2>Welcome back</h2>
+          <h2>Welcome back.</h2>
           <LoginForm />
         </SiteWrapper>
       ) : (

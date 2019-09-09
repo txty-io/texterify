@@ -16,7 +16,6 @@ class SiteWrapper extends React.Component<IProps, IState> {
           flexGrow: 1,
           padding: 24,
           width: "100%",
-          borderTop: `4px solid ${Styles.COLOR_PRIMARY}`,
           ...this.props.style
         }}
       >
