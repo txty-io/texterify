@@ -28,3 +28,5 @@ storage
 # Travis stuff.
 .travis/secrets.tar
 .travis/ignored
+
+texterify.json
