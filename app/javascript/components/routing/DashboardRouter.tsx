@@ -19,11 +19,11 @@ import { Routes } from "./Routes";
 const TranslateButton = styled(Button)`
   margin-right: 40px;
   border: 0;
-  background: rgba(121, 119, 243, 0.75);
+  background: rgb(66, 75, 109);
   color: rgba(255, 255, 255, 0.95);
 
   &:hover {
-    background: rgba(121, 119, 243, 1);
+    background: rgba(82, 93, 134);
     color: #fff;
   }
 `;
