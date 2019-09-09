@@ -198,7 +198,7 @@ class ExportSite extends React.Component<IProps, IState> {
               <Alert
                 type="info"
                 showIcon
-                message={<>No languages</>}
+                message={<>No languages.</>}
                 description={
                   <>
                     <p style={{ color: Styles.COLOR_TEXT_DISABLED }}>

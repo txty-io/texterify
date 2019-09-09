@@ -1,4 +1,4 @@
-import { Divider, Popconfirm, Select, Tag } from "antd";
+import { Divider, Empty, Popconfirm, Select, Tag } from "antd";
 import * as moment from "moment";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
@@ -52,7 +52,7 @@ class KeyHistory extends React.Component<IProps, IState> {
 
         const latestTranslations = {};
 
-        return this.state.keyActivityResponse.data.filter((activity) => {
+        const keyActivityElements = this.state.keyActivityResponse.data.filter((activity) => {
             const itemType = activity.attributes.item_type;
             if (itemType === "Translation") {
                 const translationLanguageId = activity.attributes.object ? activity.attributes.object.language_id : activity.attributes.object_changes.language_id[1];
@@ -64,7 +64,9 @@ class KeyHistory extends React.Component<IProps, IState> {
                 return translationLanguageId === this.state.selectedLanguageId ||
                     this.state.selectedLanguageId === "all-languages";
             }
-        }).map((activity) => {
+        });
+
+        const keyActivities = keyActivityElements.map((activity) => {
             const translationLanguageId = activity.attributes.object ? activity.attributes.object.language_id : activity.attributes.object_changes.language_id[1];
             const newContent = activity.attributes.object_changes.content[1];
             const date = moment.utc(activity.attributes.created_at, "YYYY-MM-DD HH:mm:ss").local().format("LL");
@@ -139,6 +141,16 @@ class KeyHistory extends React.Component<IProps, IState> {
                 </div>
             );
         });
+
+        return keyActivityElements.length > 0 ?
+            keyActivities :
+            (
+                <Empty
+                    description="No history found"
+                    style={{ margin: "56px 0" }}
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                />
+            );
     }
 
     render() {
