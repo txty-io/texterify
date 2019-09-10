@@ -89,7 +89,6 @@ class Api::V1::ProjectsController < Api::V1::ApiController
         current_user.user_projects << project
       end
 
-
       options = {}
       options[:params] = { current_user: current_user }
       render json: ProjectSerializer.new(project, options).serialized_json
