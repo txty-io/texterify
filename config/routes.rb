@@ -6,6 +6,12 @@ Rails.application.routes.draw do
   scope :api, module: :api, defaults: { format: :json } do
     scope :v1, module: :v1 do
       mount_devise_token_auth_for 'User', at: 'auth'
+      resources :organizations do
+        get :image, to: 'organizations#image'
+        post :image, to: 'organizations#image_create'
+        delete :image, to: 'organizations#image_destroy'
+        resources :members, only: [:create, :index, :destroy], controller: "organization_members"
+      end
 
       resources :projects, only: [:create, :index, :destroy, :show, :update] do
         post :import

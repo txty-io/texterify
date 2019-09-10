@@ -26,6 +26,7 @@ class ProjectRouter extends React.Component<IProps, IState> {
       this.props.history.push(Routes.DASHBOARD.PROJECTS);
     } else {
       dashboardStore.currentProject = getProjectResponse.data;
+      dashboardStore.currentProjectIncluded = getProjectResponse.included;
     }
   }
 

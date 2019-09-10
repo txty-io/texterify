@@ -1,19 +1,16 @@
-import { Button, Input, Layout, List, Modal } from "antd";
+import { Button, Input, Layout, Modal } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { APIUtils } from "../../api/v1/APIUtils";
-import { MembersAPI } from "../../api/v1/MembersAPI";
+import { OrganizationMembersAPI } from "../../api/v1/OrganizationMembersAPI";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { Loading } from "../../ui/Loading";
-import { Styles } from "../../ui/Styles";
 import { UserAvatar } from "../../ui/UserAvatar";
-import { makeCancelable } from "../../utilities/Promise";
 const { Content } = Layout;
 
-type IProps = RouteComponentProps<{ projectId: string }> & {};
+type IProps = RouteComponentProps<{ organizationId: string }> & {};
 interface IState {
   userAddEmail: string;
   getMembersResponse: any;
@@ -21,39 +18,30 @@ interface IState {
 }
 
 @observer
-class MembersSite extends React.Component<IProps, IState> {
-  getMembersPromise: any = null;
+class OrganizationMembersSite extends React.Component<IProps, IState> {
+  state: IState = {
+    userAddEmail: "",
+    getMembersResponse: null,
+    deleteDialogVisible: false
+  };
 
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      userAddEmail: "",
-      getMembersResponse: null,
-      deleteDialogVisible: false
-    };
-  }
-
-  async componentDidMount(): Promise<void> {
+  async componentDidMount() {
     try {
-      this.getMembersPromise = makeCancelable(MembersAPI.getMembers(this.props.match.params.projectId));
-      const responseGetMembers = await this.getMembersPromise.promise;
+      const responseGetMembers = await OrganizationMembersAPI.getMembers(this.props.match.params.organizationId);
 
       this.setState({
         getMembersResponse: responseGetMembers
       });
-    } catch (err) {
-      if (!err.isCanceled) {
-        console.error(err);
-      }
+    } catch (error) {
+      console.error(error);
     }
   }
 
-  componentWillUnmount() {
-    if (this.getMembersPromise !== null) { this.getMembersPromise.cancel(); }
-  }
+  getRows = () => {
+    if (!this.state.getMembersResponse.data) {
+      return [];
+    }
 
-  getRows = (): any[] => {
     return this.state.getMembersResponse.data.map(
       (member: any) => {
         return {
@@ -74,10 +62,10 @@ class MembersSite extends React.Component<IProps, IState> {
 
     return (
       <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
-        <Breadcrumbs breadcrumbName="projectMembers" />
+        <Breadcrumbs breadcrumbName="organizationMembers" />
         <Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
           <h1>Members</h1>
-          <p>Invite users to your project to help you localize your apps.</p>
+          <p>Invite users to your organization to help you localize your apps.</p>
           <div style={{ display: "flex" }}>
             <Input
               placeholder="Enter users email address"
@@ -93,12 +81,12 @@ class MembersSite extends React.Component<IProps, IState> {
               style={{ marginLeft: 8 }}
               type="primary"
               onClick={async () => {
-                const createMemberResponse = await MembersAPI.createMember(this.props.match.params.projectId, this.state.userAddEmail);
+                const createMemberResponse = await OrganizationMembersAPI.createMember(this.props.match.params.organizationId, this.state.userAddEmail);
                 if (createMemberResponse.errors) {
                   return;
                 }
 
-                const getMembersResponse = await MembersAPI.getMembers(this.props.match.params.projectId);
+                const getMembersResponse = await OrganizationMembersAPI.getMembers(this.props.match.params.organizationId);
 
                 this.setState({
                   getMembersResponse: getMembersResponse,
@@ -132,21 +120,21 @@ class MembersSite extends React.Component<IProps, IState> {
 
                       Modal.confirm({
                         title: item.email === authStore.currentUser.email
-                          ? "Do you really want to leave this project?"
-                          : "Do you really want to remove this user from the project?",
+                          ? "Do you really want to leave this organization?"
+                          : "Do you really want to remove this user from the organization?",
                         content: "This cannot be undone.",
                         okText: "Yes",
                         okType: "danger",
                         cancelText: "No",
                         visible: this.state.deleteDialogVisible,
                         onOk: async () => {
-                          const deleteMemberResponse = await MembersAPI.deleteMember(this.props.match.params.projectId, item.key);
+                          const deleteMemberResponse = await OrganizationMembersAPI.deleteMember(this.props.match.params.organizationId, item.key);
                           if (item.email === authStore.currentUser.email) {
                             if (!deleteMemberResponse.errors) {
-                              this.props.history.push(Routes.DASHBOARD.PROJECTS);
+                              this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
                             }
                           } else {
-                            const getMembersResponse = await MembersAPI.getMembers(this.props.match.params.projectId);
+                            const getMembersResponse = await OrganizationMembersAPI.getMembers(this.props.match.params.organizationId);
                             this.setState({
                               getMembersResponse: getMembersResponse,
                               deleteDialogVisible: false
@@ -174,4 +162,4 @@ class MembersSite extends React.Component<IProps, IState> {
   }
 }
 
-export { MembersSite };
+export { OrganizationMembersSite };

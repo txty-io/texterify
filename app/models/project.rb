@@ -1,7 +1,10 @@
 class Project < ApplicationRecord
   validates :name, presence: true
 
-  belongs_to :user
+  # A project belongs either to a user or an organization.
+  belongs_to :user, optional: true
+  belongs_to :organization, optional: true
+
   has_many :keys, dependent: :destroy
   has_many :languages, dependent: :destroy
   has_many :translations, through: :languages

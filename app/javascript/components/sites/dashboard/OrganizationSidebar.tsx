@@ -29,52 +29,27 @@ interface INavigationData {
   text: string;
 }
 
-type IProps = RouteComponentProps<{ projectId: string }> & {};
+type IProps = RouteComponentProps<{ organizationId: string }> & {};
 interface IState {
   selectedItem: number;
 }
 
 @observer
-class ProjectSidebar extends React.Component<IProps, IState> {
+class OrganizationSidebar extends React.Component<IProps, IState> {
   navigationData: INavigationData[] = [
     {
       icon: "home",
-      path: Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId),
+      path: Routes.DASHBOARD.ORGANIZATION.replace(":organizationId", this.props.match.params.organizationId),
       text: "Overview"
     },
     {
-      icon: "key",
-      path: Routes.DASHBOARD.PROJECT_KEYS.replace(":projectId", this.props.match.params.projectId),
-      text: "Keys"
-    },
-    {
-      icon: "global",
-      path: Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId),
-      text: "Languages"
-    },
-    {
-      icon: "upload",
-      path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
-      text: "Import"
-    },
-    {
-      icon: "download",
-      path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
-      text: "Export"
-    },
-    {
-      icon: "line-chart",
-      path: Routes.DASHBOARD.PROJECT_ACTIVITY.replace(":projectId", this.props.match.params.projectId),
-      text: "Activity"
-    },
-    {
       icon: "team",
-      path: Routes.DASHBOARD.PROJECT_MEMBERS.replace(":projectId", this.props.match.params.projectId),
+      path: Routes.DASHBOARD.ORGANIZATION_MEMBERS.replace(":organizationId", this.props.match.params.organizationId),
       text: "Members"
     },
     {
       icon: "tool",
-      path: Routes.DASHBOARD.PROJECT_SETTINGS.replace(":projectId", this.props.match.params.projectId),
+      path: Routes.DASHBOARD.ORGANIZATION_SETTINGS.replace(":organizationId", this.props.match.params.organizationId),
       text: "Settings"
     }
   ];
@@ -92,17 +67,17 @@ class ProjectSidebar extends React.Component<IProps, IState> {
       (
         <Menu.Item
           key={"title"}
-          title={dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
+          title={dashboardStore.currentOrganization && dashboardStore.currentOrganization.attributes.name}
           style={{ height: 48, display: "flex", alignItems: "center", padding: "0 24px", overflow: "hidden" }}
         >
           <Link
-            to={Routes.DASHBOARD.PROJECT.replace(":projectId", dashboardStore.currentProject && dashboardStore.currentProject.id)}
+            to={Routes.DASHBOARD.ORGANIZATION.replace(":organizationId", dashboardStore.currentOrganization && dashboardStore.currentOrganization.id)}
             className="nav-text"
             style={{ overflow: "hidden", textOverflow: "ellipsis" }}
           >
             <span style={{ fontWeight: "bold" }}>
-              {!dashboardStore.sidebarMinimized && dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
-              {dashboardStore.sidebarMinimized && dashboardStore.currentProject && dashboardStore.currentProject.attributes.name.substr(0, 2)}
+              {!dashboardStore.sidebarMinimized && dashboardStore.currentOrganization && dashboardStore.currentOrganization.attributes.name}
+              {dashboardStore.sidebarMinimized && dashboardStore.currentOrganization && dashboardStore.currentOrganization.attributes.name.substr(0, 2)}
             </span>
           </Link>
         </Menu.Item>
@@ -176,4 +151,4 @@ class ProjectSidebar extends React.Component<IProps, IState> {
   }
 }
 
-export { ProjectSidebar };
+export { OrganizationSidebar };

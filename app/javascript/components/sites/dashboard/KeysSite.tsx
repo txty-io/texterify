@@ -370,11 +370,11 @@ class KeysSite extends React.Component<IProps, IState> {
   }
 
   isNameColumnVisible = () => {
-    return this.state.projectColumns.data.attributes.show_name;
+    return this.state.projectColumns.data ? this.state.projectColumns.data.attributes.show_name : true;
   }
 
   isDescriptionColumnVisible = () => {
-    return this.state.projectColumns.data.attributes.show_description;
+    return this.state.projectColumns.data ? this.state.projectColumns.data.attributes.show_description : true;
   }
 
   loadProjectColumns = async () => {
@@ -386,9 +386,9 @@ class KeysSite extends React.Component<IProps, IState> {
   }
 
   getSelectedLanguageColumnIds = () => {
-    return this.state.projectColumns.data.relationships.languages.data.map((o) => {
+    return this.state.projectColumns.data && this.state.projectColumns.data.relationships.languages.data.map((o) => {
       return o.id;
-    });
+    }) || [];
   }
 
   renderColumnTags = () => {
@@ -429,7 +429,7 @@ class KeysSite extends React.Component<IProps, IState> {
 
           return <ColumnTag
             key={index}
-            defaultChecked={!!_.find(this.state.projectColumns.data.relationships.languages.data, { id: language.id })}
+            defaultChecked={!!_.find(this.state.projectColumns.data && this.state.projectColumns.data.relationships.languages.data, { id: language.id })}
             onChange={async (checked: boolean) => {
               const projectColumnLanguageIds = this.getSelectedLanguageColumnIds();
 
@@ -465,7 +465,7 @@ class KeysSite extends React.Component<IProps, IState> {
 
   // tslint:disable-next-line:max-func-body-length
   render(): JSX.Element {
-    if (!this.state.projectColumns || !this.state.projectColumns.data) {
+    if (!this.state.projectColumns) {
       return <Loading />;
     }
 

@@ -179,7 +179,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       project.user = @user
       project.save!
 
-      @user.projects << project
+      @user.user_projects << project
 
       new_name = 'New Name'
       put "/api/v1/projects/#{project.id}", params: { name: new_name }, headers: @auth_params, as: :json

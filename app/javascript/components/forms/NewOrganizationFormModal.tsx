@@ -1,37 +1,37 @@
 import { Button, Modal } from "antd";
 import * as React from "react";
-import { IProps as NewProjectFormProps, NewProjectForm } from "./NewProjectForm";
+import { IProps as NewOrganizationFormProps, NewOrganizationForm } from "./NewOrganizationForm";
 
 interface IProps {
   visible: boolean;
-  newProjectFormProps: NewProjectFormProps;
+  newOrganizationFormProps: NewOrganizationFormProps;
   onCancelRequest?(): void;
 }
 interface IState { }
 
-class NewProjectFormModal extends React.Component<IProps, IState> {
+class NewOrganizationFormModal extends React.Component<IProps, IState> {
   render(): JSX.Element {
     return (
       <Modal
         maskClosable={false}
-        title="Add a new project"
+        title="Add a new organization"
         visible={this.props.visible}
         footer={
           <div style={{ margin: "6px 0" }}>
             <Button onClick={() => { this.props.onCancelRequest(); }}>
               Cancel
             </Button>
-            <Button form="newProjectForm" type="primary" htmlType="submit">
-              Create project
+            <Button form="newOrganizationForm" type="primary" htmlType="submit">
+              Create organization
             </Button>
           </div>}
         onCancel={this.props.onCancelRequest}
         destroyOnClose
       >
-        <NewProjectForm {...this.props.newProjectFormProps} />
+        <NewOrganizationForm {...this.props.newOrganizationFormProps} />
       </Modal>
     );
   }
 }
 
-export { NewProjectFormModal };
+export { NewOrganizationFormModal };

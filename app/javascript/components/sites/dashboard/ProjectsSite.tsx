@@ -8,18 +8,12 @@ import { NewProjectFormModal } from "../../forms/NewProjectFormModal";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
+import { ListContent } from "../../ui/ListContent";
 import { PrimaryButton } from "../../ui/PrimaryButton";
 import { ProjectAvatar } from "../../ui/ProjectAvatar";
+import { ProjectsList } from "../../ui/ProjectsList";
 import { Styles } from "../../ui/Styles";
 import { makeCancelable } from "../../utilities/Promise";
-
-const ListContent = styled.div`
-  cursor: pointer;
-  color: ${Styles.COLOR_PRIMARY};
-  display: flex;
-  font-size: 16px;
-  align-items: center;
-`;
 
 type IProps = RouteComponentProps & {};
 interface IState {
@@ -84,26 +78,6 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
     await this.fetchProjects(fetchOptions);
   }
 
-  getRows = (): any[] => {
-    if (!this.state.projects) {
-      return [];
-    }
-
-    return this.state.projects.map((project: any) => {
-      return {
-        key: project.id,
-        name: project.attributes.name,
-        description: project.attributes.description
-      };
-    }, []);
-  }
-
-  openProject = (project: any): void => {
-    dashboardStore.currentProject = project;
-
-    this.props.history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", project.id));
-  }
-
   onSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.debouncedSearchReloader(event.target.value);
   }
@@ -127,49 +101,14 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
               />
             </div>
 
-            <List
-              size="small"
-              locale={{ emptyText: <Empty description="No projects found" image={Empty.PRESENTED_IMAGE_SIMPLE} /> }}
-              dataSource={this.getRows()}
-              renderItem={(item) => (
-                <List.Item key={item.title}>
-                  <List.Item.Meta
-                    title={
-                      <ListContent
-                        onClick={(): void => {
-                          this.openProject(_.find(this.state.projects, { id: item.key }));
-                        }}
-                        role="button"
-                      >
-                        <ProjectAvatar
-                          project={_.find(this.state.projects, { id: item.key })}
-                          style={{ marginRight: 16 }}
-                        />
-                        <div>
-                          {item.name}
-                          <div style={{ fontSize: 12 }}>
-                            {item.description}
-                          </div>
-                        </div>
-                      </ListContent>
-                    }
-                  />
-                  <Button
-                    onClick={(): void => {
-                      this.openProject(_.find(this.state.projects, { id: item.key }));
-                    }}
-                  >
-                    More
-                  </Button>
-                </List.Item>
-              )}
-            />
+            <ProjectsList projects={this.state.projects || []} />
+
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
               <Pagination
                 pageSizeOptions={PAGE_SIZE_OPTIONS}
                 showSizeChanger
                 pageSize={this.state.perPage}
-                total={(this.state.projectsResponse && this.state.projectsResponse.meta.total) || 0}
+                total={(this.state.projectsResponse && this.state.projectsResponse.meta && this.state.projectsResponse.meta.total) || 0}
                 onChange={
                   async (page: number, perPage: number) => {
                     this.setState({ page: page });

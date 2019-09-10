@@ -71,6 +71,7 @@ class EditorSite extends React.Component<IProps, IState> {
       this.props.history.push(Routes.DASHBOARD.PROJECTS);
     } else {
       dashboardStore.currentProject = getProjectResponse.data;
+      dashboardStore.currentProjectIncluded = getProjectResponse.included;
     }
 
     await this.fetchKeys();
@@ -259,10 +260,10 @@ class EditorSite extends React.Component<IProps, IState> {
             <div
               style={{ background: "#fff", display: "flex", flexDirection: "column", flexGrow: 1, maxWidth: 400, borderLeft: "1px solid #e8e8e8", overflow: "scroll" }}
             >
-              <Tabs defaultActiveKey="chat" type="card" style={{ overflow: "scroll" }} tabBarStyle={{ background: "#fefeff" }}>
-                <Tabs.TabPane tab="Comments" key="chat" style={{ padding: "0 16px", overflow: "scroll" }} >
+              <Tabs defaultActiveKey="history" type="card" style={{ overflow: "scroll" }} tabBarStyle={{ background: "#fefeff" }}>
+                {/* <Tabs.TabPane tab="Comments" key="chat" style={{ padding: "0 16px", overflow: "scroll" }} >
                   <KeyComments />
-                </Tabs.TabPane>
+                </Tabs.TabPane> */}
                 <Tabs.TabPane tab="History" key="history" style={{ padding: "0 16px 16px" }}>
                   {this.props.match.params.projectId && this.state.keyResponse.data.id && <KeyHistory
                     projectId={this.props.match.params.projectId}

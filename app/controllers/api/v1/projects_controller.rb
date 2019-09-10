@@ -54,16 +54,21 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     options = {}
     options[:meta] = { total: projects.count }
     options[:params] = { current_user: current_user }
+    options[:include] = [:organization]
     render json: ProjectSerializer.new(projects.offset(page * per_page).limit(per_page), options).serialized_json, status: :ok
   end
 
   def create
     project = Project.new(project_params)
-    project.user = current_user
+    if params[:organization_id]
+      project.organization = current_user.organizations.find(params[:organization_id])
+    else
+      project.user = current_user
 
-    project_column = ProjectColumn.new
-    project_column.project = project
-    project_column.user = current_user
+      project_column = ProjectColumn.new
+      project_column.project = project
+      project_column.user = current_user
+    end
 
     ActiveRecord::Base.transaction do
       unless project.save
@@ -73,14 +78,17 @@ class Api::V1::ProjectsController < Api::V1::ApiController
         raise ActiveRecord::Rollback
       end
 
-      unless project_column.save
-        render json: {
-          errors: project_column.errors.full_messages.map { |error| "#{error}." }
-        }, status: :bad_request
-        raise ActiveRecord::Rollback
+      unless params[:organization_id]
+        unless project_column.save
+          render json: {
+            errors: project_column.errors.full_messages.map { |error| "#{error}." }
+          }, status: :bad_request
+          raise ActiveRecord::Rollback
+        end
+
+        current_user.user_projects << project
       end
 
-      current_user.projects << project
 
       options = {}
       options[:params] = { current_user: current_user }
@@ -94,6 +102,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     if project.update(project_params)
       options = {}
       options[:params] = { current_user: current_user }
+      options[:include] = [:organization]
       render json: ProjectSerializer.new(project, options).serialized_json
     else
       render json: {
@@ -108,6 +117,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
     options = {}
     options[:params] = { current_user: current_user }
+    options[:include] = [:organization]
     render json: ProjectSerializer.new(project, options).serialized_json, status: :ok
   end
 

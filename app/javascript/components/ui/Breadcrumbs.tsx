@@ -2,17 +2,36 @@ import { Breadcrumb } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link, Route, RouteComponentProps, withRouter } from "react-router-dom";
+import { APIUtils } from "../api/v1/APIUtils";
 import { Routes } from "../routing/Routes";
 import { dashboardStore } from "../stores/DashboardStore";
+import { OrganizationAvatar } from "./OrganizationAvatar";
 import { Styles } from "./Styles";
 
-type IProps = RouteComponentProps<{ projectId: string }> & {
+type IProps = RouteComponentProps<{ projectId?: string; organizationId?: string; }> & {
   breadcrumbName: string;
 };
 interface IState { }
 
 @observer
 class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
+  getOrganizationId = () => {
+    return (this.getProjectOrganization() && this.getProjectOrganization().id) || this.props.match.params.organizationId;
+  }
+
+  getOrganizationName = () => {
+    if (this.getProjectOrganization()) {
+      return this.getProjectOrganization().attributes.name;
+    } else {
+      return dashboardStore.currentOrganization ? dashboardStore.currentOrganization.attributes.name : "Organization";
+    }
+  }
+
+  getProjectOrganization = () => {
+    return dashboardStore.currentProject &&
+      APIUtils.getIncludedObject(dashboardStore.currentProject.relationships.organization.data, dashboardStore.currentProjectIncluded);
+  }
+
   resolveBreadcrumbs = (): any[] => {
     const breadcrumbs: any = {
       dashboard: {
@@ -25,15 +44,36 @@ class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
         name: "Account"
       },
       projects: {
-        root: true, // TODO: Remove if a dashboard is available.
+        root: true,
         parent: "dashboard",
         name: "Projects",
         path: Routes.DASHBOARD.PROJECTS
       },
       project: {
-        parent: "projects",
+        parent: this.getProjectOrganization() ? "organization" : "projects",
         name: dashboardStore.currentProject ? dashboardStore.currentProject.attributes.name : "Project",
         path: Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId)
+      },
+      organizations: {
+        root: true,
+        parent: "dashboard",
+        name: "Organizations",
+        path: Routes.DASHBOARD.ORGANIZATIONS
+      },
+      organization: {
+        parent: "organizations",
+        name: <><OrganizationAvatar style={{ height: 16, width: 16, marginRight: 8 }} organization={dashboardStore.currentOrganization} />{this.getOrganizationName()}</>,
+        path: Routes.DASHBOARD.ORGANIZATION.replace(":organizationId", this.getOrganizationId())
+      },
+      organizationMembers: {
+        parent: "organization",
+        name: "Members",
+        path: Routes.DASHBOARD.ORGANIZATION_MEMBERS.replace(":organizationId", this.props.match.params.organizationId)
+      },
+      organizationSettings: {
+        parent: "organization",
+        name: "Settings",
+        path: Routes.DASHBOARD.ORGANIZATION_SETTINGS.replace(":organizationId", this.props.match.params.organizationId)
       },
       languages: {
         parent: "project",
@@ -55,7 +95,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
         name: "Export",
         path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId)
       },
-      members: {
+      projectMembers: {
         parent: "project",
         name: "Members",
         path: Routes.DASHBOARD.PROJECT_MEMBERS.replace(":projectId", this.props.match.params.projectId)
@@ -92,7 +132,9 @@ class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
       items.push(
         <Breadcrumb.Item key={index}>
           {breadcrumb.path && index !== (resolvedBreadcrumbs.length - 1) ?
-            <Link to={breadcrumb.path} style={{ color: Styles.COLOR_PRIMARY }}>{breadcrumb.name}</Link> :
+            <Link to={breadcrumb.path} style={{ color: Styles.COLOR_PRIMARY, display: "flex", alignItems: "center" }}>
+              {breadcrumb.name}
+            </Link> :
             breadcrumb.name
           }
         </Breadcrumb.Item>
@@ -100,7 +142,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
     });
 
     return (
-      <Breadcrumb style={{ margin: "24px 16px 0" }}>
+      <Breadcrumb style={{ margin: "24px 16px 0", display: "flex", alignItems: "center" }}>
         {items}
       </Breadcrumb>
     );

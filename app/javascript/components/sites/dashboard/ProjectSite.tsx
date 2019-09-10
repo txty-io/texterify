@@ -1,11 +1,11 @@
-import { Alert, Button, Layout, Progress } from "antd";
+import { Alert, Layout, Progress } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
+import { APIUtils } from "../../api/v1/APIUtils";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
-import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Activity } from "../../ui/Activity";
@@ -14,7 +14,6 @@ import { Loading } from "../../ui/Loading";
 import { ProjectAvatar } from "../../ui/ProjectAvatar";
 import { Styles } from "../../ui/Styles";
 import { TextBadge } from "../../ui/TextBadge";
-import { makeCancelable } from "../../utilities/Promise";
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
 interface IState {
@@ -35,10 +34,9 @@ class ProjectSite extends React.Component<IProps, IState> {
     };
   }
 
-  async componentDidMount(): Promise<void> {
+  async componentDidMount() {
     try {
-      this.getLanguagesPromise = makeCancelable(LanguagesAPI.getLanguages(this.props.match.params.projectId));
-      const responseLanguages = await this.getLanguagesPromise.promise;
+      const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
 
       const projectActivityResponse = await ProjectsAPI.getActivity({
         projectId: this.props.match.params.projectId
@@ -48,15 +46,9 @@ class ProjectSite extends React.Component<IProps, IState> {
         languagesResponse: responseLanguages,
         projectActivityResponse: projectActivityResponse
       });
-    } catch (err) {
-      if (!err.isCanceled) {
-        console.error(err);
-      }
+    } catch (error) {
+      console.error(error);
     }
-  }
-
-  componentWillUnmount() {
-    if (this.getLanguagesPromise !== null) { this.getLanguagesPromise.cancel(); }
   }
 
   renderLanguagesProgress = () => {

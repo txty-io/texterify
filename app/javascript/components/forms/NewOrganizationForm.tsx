@@ -3,15 +3,14 @@ import * as React from "react";
 import AvatarEditor from "react-avatar-editor";
 import Dropzone from "react-dropzone";
 import * as uuid from "uuid";
-import { ProjectsAPI } from "../api/v1/ProjectsAPI";
+import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 import { dashboardStore } from "../stores/DashboardStore";
 import { Styles } from "../ui/Styles";
 
 interface IProps {
   isEdit?: boolean;
-  organizationId?: string;
   onError(errors: any): void;
-  onCreated?(projectId: string): void;
+  onCreated?(organizationId: string): void;
 }
 interface IState {
   imageUrl: string;
@@ -19,7 +18,7 @@ interface IState {
   imagePosition: { x: number; y: number };
 }
 
-class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IState> {
+class NewOrganizationFormUnwrapped extends React.Component<IProps & { form: any }, IState> {
   isMovingImage: boolean = false;
   dropzone: any = React.createRef();
   avatarEditor: any = React.createRef();
@@ -32,7 +31,7 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
 
   async componentDidMount() {
     if (this.props.isEdit) {
-      const imageResponse = await ProjectsAPI.getImage({ projectId: dashboardStore.currentProject.id });
+      const imageResponse = await OrganizationsAPI.getImage({ organizationId: dashboardStore.currentOrganization.id });
       if (imageResponse.image) {
         this.setState({ imageUrl: imageResponse.image });
       }
@@ -41,30 +40,29 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
 
   handleSubmit = (e: any): void => {
     e.preventDefault();
-    this.props.form.validateFields(async (err: any, values: any) => {
-      if (!err) {
-        let project;
+    this.props.form.validateFields(async (error: any, values: any) => {
+      if (!error) {
+        let organization;
 
         if (this.props.isEdit) {
-          project = await ProjectsAPI.updateProject(dashboardStore.currentProject.id, values.name, values.description);
+          organization = await OrganizationsAPI.updateOrganization(dashboardStore.currentOrganization.id, values.name, values.description);
         } else {
-          project = await ProjectsAPI.createProject(values.name, values.description, this.props.organizationId);
+          organization = await OrganizationsAPI.createOrganization(values.name, values.description);
         }
 
-        if (!project.errors) {
+        if (!organization.errors) {
           const imageBlob = await this.getImageBlob();
           const formData = await this.createFormData(imageBlob);
           if (this.state.imageUrl) {
-            await ProjectsAPI.uploadImage({ projectId: project.data.id, formData: formData });
+            await OrganizationsAPI.uploadImage({ organizationId: organization.data.id, formData: formData });
           } else {
-            await ProjectsAPI.deleteImage({ projectId: project.data.id });
+            await OrganizationsAPI.deleteImage({ organizationId: organization.data.id });
           }
 
-          dashboardStore.currentProject = project.data;
-          dashboardStore.currentProjectIncluded = project.included;
-          this.props.onCreated(project.data.id);
+          dashboardStore.currentOrganization = organization.data;
+          this.props.onCreated(organization.data.id);
         } else {
-          this.props.onError(project.errors);
+          this.props.onError(organization.errors);
         }
       }
     });
@@ -138,8 +136,8 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
     const { getFieldDecorator } = this.props.form;
 
     return (
-      <Form id="newProjectForm" onSubmit={this.handleSubmit} style={{ maxWidth: "100%" }}>
-        <h3>Project image</h3>
+      <Form id="newOrganizationForm" onSubmit={this.handleSubmit} style={{ maxWidth: "100%" }}>
+        <h3>Organization image</h3>
         <Form.Item>
           <div style={{ display: "flex", marginTop: 4 }}>
             <Dropzone
@@ -222,19 +220,10 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
         <h3>Name *</h3>
         <Form.Item>
           {getFieldDecorator("name", {
-            initialValue: this.props.isEdit ? dashboardStore.currentProject.attributes.name : undefined,
-            rules: [{ required: true, message: "Please enter the name of the project." }]
+            initialValue: this.props.isEdit ? dashboardStore.currentOrganization.attributes.name : undefined,
+            rules: [{ required: true, message: "Please enter the name of the organization." }]
           })(
             <Input placeholder="Name" autoFocus={!this.props.isEdit} />
-          )}
-        </Form.Item>
-
-        <h3>Description</h3>
-        <Form.Item>
-          {getFieldDecorator("description", {
-            initialValue: this.props.isEdit ? dashboardStore.currentProject.attributes.description : undefined
-          })(
-            <Input.TextArea autosize={{ minRows: 4, maxRows: 8 }} placeholder="Description" />
           )}
         </Form.Item>
       </Form>
@@ -242,5 +231,5 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
   }
 }
 
-const NewProjectForm: any = Form.create()(NewProjectFormUnwrapped);
-export { NewProjectForm, IProps };
+const NewOrganizationForm: any = Form.create()(NewOrganizationFormUnwrapped);
+export { NewOrganizationForm, IProps };

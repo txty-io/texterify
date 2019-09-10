@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_08_082428) do
+ActiveRecord::Schema.define(version: 2019_09_10_133453) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -88,6 +88,22 @@ ActiveRecord::Schema.define(version: 2019_08_08_082428) do
     t.index ["project_column_id"], name: "index_languages_project_columns_on_project_column_id"
   end
 
+  create_table "organizations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_organizations_on_name", unique: true
+  end
+
+  create_table "organizations_users", id: false, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "organization_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_organizations_users_on_organization_id"
+    t.index ["user_id"], name: "index_organizations_users_on_user_id"
+  end
+
   create_table "permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "permission", null: false
     t.uuid "user_id", null: false
@@ -112,9 +128,11 @@ ActiveRecord::Schema.define(version: 2019_08_08_082428) do
   create_table "projects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "description"
-    t.uuid "user_id", null: false
+    t.uuid "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "organization_id"
+    t.index ["organization_id"], name: "index_projects_on_organization_id"
     t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
@@ -187,10 +205,13 @@ ActiveRecord::Schema.define(version: 2019_08_08_082428) do
   add_foreign_key "languages", "projects"
   add_foreign_key "languages_project_columns", "languages"
   add_foreign_key "languages_project_columns", "project_columns"
+  add_foreign_key "organizations_users", "organizations"
+  add_foreign_key "organizations_users", "users"
   add_foreign_key "permissions", "projects"
   add_foreign_key "permissions", "users"
   add_foreign_key "project_columns", "projects"
   add_foreign_key "project_columns", "users"
+  add_foreign_key "projects", "organizations"
   add_foreign_key "projects", "users"
   add_foreign_key "projects_users", "projects"
   add_foreign_key "projects_users", "users"

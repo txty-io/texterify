@@ -11,6 +11,7 @@ class Api::V1::ProjectColumnsController < Api::V1::ApiController
   def update
     project = current_user.projects.find(params[:project_id])
     project_column = project.project_columns.find_by(project_id: project.id, user_id: current_user.id)
+    project_column ||= ProjectColumn.create(project_id: project.id, user_id: current_user.id)
     project_column.languages = project.languages.find(params[:languages])
 
     if project_column.update(project_column_params)

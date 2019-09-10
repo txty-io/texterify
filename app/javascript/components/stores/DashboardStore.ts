@@ -5,6 +5,15 @@ import { create, persist } from "mobx-persist";
 interface IProject {
   id: string;
   attributes: IProjectAttributes;
+  relationships: any;
+  type: string;
+}
+
+interface IOrganization {
+  id: string;
+  attributes: IProjectAttributes;
+  relationships: any;
+  type: string;
 }
 
 interface IProjectAttributes {
@@ -15,7 +24,9 @@ interface IProjectAttributes {
 
 class DashboardStore {
   @observable currentProject: IProject = null;
-  @observable @persist projectSidebarMinimized: boolean;
+  @observable currentProjectIncluded: any = null;
+  @observable currentOrganization: IOrganization = null;
+  @observable @persist sidebarMinimized: boolean;
   @observable @persist keysPerPage: number = 10;
   @observable hydrationFinished: boolean = false;
 }

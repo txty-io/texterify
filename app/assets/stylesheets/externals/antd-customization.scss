@@ -168,4 +168,18 @@ $color: #7977f3;
     border-radius: 0;
     margin-right: 0;
   }
+
+  .ant-list-item-meta-content {
+    max-width: 100%;
+  }
+
+  .ant-breadcrumb-link {
+    display: flex;
+    align-items: center;
+  }
+
+  .ant-breadcrumb > span {
+    display: flex;
+    align-items: center;
+  }
 }

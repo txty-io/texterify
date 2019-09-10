@@ -39,7 +39,11 @@ const Routes = {
     TEAMS: "/dashboard/teams",
     TEAMS_NEW: "/dashboard/teams/new",
     MEMBERS: "/dashboard/members",
-    SETTINGS: "/dashboard/settings"
+    SETTINGS: "/dashboard/settings",
+    ORGANIZATIONS: "/dashboard/organizations",
+    ORGANIZATION: "/dashboard/organizations/:organizationId",
+    ORGANIZATION_MEMBERS: "/dashboard/organizations/:organizationId/members",
+    ORGANIZATION_SETTINGS: "/dashboard/organizations/:organizationId/settings"
   },
   USER: {
     SETTINGS: {
