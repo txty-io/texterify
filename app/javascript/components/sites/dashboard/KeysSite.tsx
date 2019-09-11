@@ -15,7 +15,6 @@ import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { Loading } from "../../ui/Loading";
 import { Utils } from "../../ui/Utils";
-import { makeCancelable } from "../../utilities/Promise";
 import { sortStrings } from "../../utilities/Sorter";
 import { TranslationCard } from "./editor/TranslationCard";
 const { Content } = Layout;
@@ -35,7 +34,7 @@ class ColumnTag extends React.Component<IColumnTagProps, IColumnTagState> {
     super(props);
 
     this.state = {
-      checked: this.props.defaultChecked
+      checked: props.defaultChecked
     };
   }
 
@@ -81,8 +80,6 @@ interface IState {
 }
 
 class KeysSite extends React.Component<IProps, IState> {
-  getKeysPromise: any = null;
-  getLanguagesPromise: any = null;
   debouncedSearchReloader: any = _.debounce((value) => {
     this.setState({ search: value, page: 0 }, this.reloadTable);
   }, 500, { trailing: true });
@@ -119,12 +116,11 @@ class KeysSite extends React.Component<IProps, IState> {
     keyMenuVisible: null
   };
 
-  async componentDidMount(): Promise<void> {
+  async componentDidMount() {
     await this.reloadTable();
 
     try {
-      this.getLanguagesPromise = makeCancelable(LanguagesAPI.getLanguages(this.props.match.params.projectId));
-      const responseLanguages = await this.getLanguagesPromise.promise;
+      const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
       const projectColumns = await ProjectColumnsAPI.getProjectColumns({
         projectId: this.props.match.params.projectId
       });
@@ -140,16 +136,10 @@ class KeysSite extends React.Component<IProps, IState> {
     }
   }
 
-  componentWillUnmount() {
-    if (this.getKeysPromise !== null) { this.getKeysPromise.cancel(); }
-    if (this.getLanguagesPromise !== null) { this.getLanguagesPromise.cancel(); }
-  }
-
   fetchKeys = async (options?: any) => {
     this.setState({ keysLoading: true });
     try {
-      this.getKeysPromise = makeCancelable(KeysAPI.getKeys(this.props.match.params.projectId, options));
-      const responseKeys = await this.getKeysPromise.promise;
+      const responseKeys = await KeysAPI.getKeys(this.props.match.params.projectId, options);
       this.setState({
         keys: responseKeys.data,
         keysResponse: responseKeys
@@ -464,7 +454,7 @@ class KeysSite extends React.Component<IProps, IState> {
   }
 
   // tslint:disable-next-line:max-func-body-length
-  render(): JSX.Element {
+  render() {
     if (!this.state.projectColumns) {
       return <Loading />;
     }

@@ -18,13 +18,9 @@ interface IState {
 
 @observer
 class ProjectSettingsSite extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      isDeletingProject: false
-    };
-  }
+  state: IState = {
+    isDeletingProject: false
+  };
 
   onDeleteProjectClick = () => {
     Modal.confirm({
@@ -45,7 +41,7 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
     });
   }
 
-  render(): JSX.Element {
+  render() {
     return (
       <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
         <Breadcrumbs breadcrumbName="projectSettings" />

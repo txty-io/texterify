@@ -15,15 +15,11 @@ type IState = {
 
 @observer
 class ProjectActivitySite extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
+  state: IState = {
+    projectActivityResponse: null
+  };
 
-    this.state = {
-      projectActivityResponse: null
-    };
-  }
-
-  async componentDidMount(): Promise<void> {
+  async componentDidMount() {
     try {
       const projectActivityResponse = await ProjectsAPI.getActivity({
         projectId: this.props.match.params.projectId,
@@ -38,7 +34,7 @@ class ProjectActivitySite extends React.Component<IProps, IState> {
     }
   }
 
-  render(): JSX.Element {
+  render() {
     if (!this.state.projectActivityResponse) {
       return <Loading />;
     }
@@ -48,7 +44,7 @@ class ProjectActivitySite extends React.Component<IProps, IState> {
         <Breadcrumbs breadcrumbName="projectActivity" />
         <Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}>
           <h1>Activity</h1>
-          <Activity activitiesResponse={this.state.projectActivityResponse} showTimeAgo />
+          <Activity activitiesResponse={this.state.projectActivityResponse} />
         </Content>
       </Layout>
     );

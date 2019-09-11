@@ -17,7 +17,7 @@ type IProps = {
 
 @observer
 class AppRouter extends React.Component<IProps, null> {
-  render(): JSX.Element {
+  render() {
     if (authStore.hydrationFinished) {
       return (
         <Router history={history}>

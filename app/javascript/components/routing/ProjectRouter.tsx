@@ -30,7 +30,12 @@ class ProjectRouter extends React.Component<IProps, IState> {
     }
   }
 
-  render(): JSX.Element {
+  componentWillUnmount() {
+    dashboardStore.currentProject = null;
+    dashboardStore.currentProjectIncluded = null;
+  }
+
+  render() {
     if (this.isInvalidProject()) {
       return <LoadingOverlay isVisible loadingText="App is loading..." />;
     }

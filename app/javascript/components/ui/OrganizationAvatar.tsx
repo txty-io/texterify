@@ -5,6 +5,7 @@ import { Styles } from "./Styles";
 
 type IProps = {
   organization: any;
+  dontRenderIfNoImage?: boolean;
   style?: React.CSSProperties;
 };
 type IState = {
@@ -14,14 +15,10 @@ type IState = {
 
 @observer
 class OrganizationAvatar extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      image: null,
-      loading: true
-    };
-  }
+  state: IState = {
+    image: null,
+    loading: true
+  };
 
   async componentDidMount() {
     const imageResponse = await OrganizationsAPI.getImage({ organizationId: this.props.organization.id });
@@ -30,6 +27,10 @@ class OrganizationAvatar extends React.Component<IProps, IState> {
 
   render() {
     const hasImage = !!this.state.image;
+
+    if (!hasImage && this.props.dontRenderIfNoImage) {
+      return null;
+    }
 
     return (
       <div style={{ display: "inline" }}>

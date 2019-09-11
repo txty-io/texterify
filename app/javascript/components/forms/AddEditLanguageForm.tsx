@@ -3,7 +3,6 @@ import * as React from "react";
 import { CountryCodesAPI } from "../api/v1/CountryCodesAPI";
 import { LanguagesAPI } from "../api/v1/LanguagesAPI";
 import FlagIcon from "../ui/FlagIcons";
-import { makeCancelable } from "../utilities/Promise";
 
 interface IProps {
   languageToEdit?: any;
@@ -18,20 +17,13 @@ interface IState {
 }
 
 class AddEditLanguageFormUnwrapped extends React.Component<IProps, IState> {
-  getCountryCodesPromise: any = null;
-
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      countryCodes: []
-    };
-  }
+  state: IState = {
+    countryCodes: []
+  };
 
   async componentDidMount() {
     try {
-      this.getCountryCodesPromise = makeCancelable(CountryCodesAPI.getCountryCodes());
-      const countryCodes = await this.getCountryCodesPromise.promise;
+      const countryCodes = await CountryCodesAPI.getCountryCodes();
       this.setState({
         countryCodes: countryCodes.data
       });
@@ -42,11 +34,7 @@ class AddEditLanguageFormUnwrapped extends React.Component<IProps, IState> {
     }
   }
 
-  componentWillUnmount() {
-    if (this.getCountryCodesPromise !== null) { this.getCountryCodesPromise.cancel(); }
-  }
-
-  handleSubmit = (e: any): void => {
+  handleSubmit = (e: any) => {
     e.preventDefault();
     this.props.form.validateFields(async (err: any, values: any) => {
       if (!err) {
@@ -80,7 +68,7 @@ class AddEditLanguageFormUnwrapped extends React.Component<IProps, IState> {
     });
   }
 
-  render(): JSX.Element {
+  render() {
     const { getFieldDecorator } = this.props.form;
 
     return (

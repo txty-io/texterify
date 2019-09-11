@@ -134,7 +134,7 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
     this.setState({ imageUrl: "" });
   }
 
-  render(): JSX.Element {
+  render() {
     const { getFieldDecorator } = this.props.form;
 
     return (

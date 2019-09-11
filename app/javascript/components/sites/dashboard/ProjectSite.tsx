@@ -1,18 +1,16 @@
-import { Alert, Layout, Progress } from "antd";
+import { Empty, Layout, Progress } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Link } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
-import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Activity } from "../../ui/Activity";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import FlagIcon from "../../ui/FlagIcons";
 import { Loading } from "../../ui/Loading";
 import { ProjectAvatar } from "../../ui/ProjectAvatar";
-import { Styles } from "../../ui/Styles";
 import { TextBadge } from "../../ui/TextBadge";
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
@@ -23,16 +21,10 @@ interface IState {
 
 @observer
 class ProjectSite extends React.Component<IProps, IState> {
-  getLanguagesPromise: any = null;
-
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      languagesResponse: null,
-      projectActivityResponse: null
-    };
-  }
+  state: IState = {
+    languagesResponse: null,
+    projectActivityResponse: null
+  };
 
   async componentDidMount() {
     try {
@@ -58,14 +50,23 @@ class ProjectSite extends React.Component<IProps, IState> {
       <>
         <h3>Progress</h3>
         {languages.length === 0 && (
-          <p style={{ color: Styles.COLOR_TEXT_DISABLED }}>
-            No languages available.
-          </p>
+          <Empty
+            description="No data available"
+            style={{ margin: "40px 0" }}
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+          />
         )}
         {languages.map((language, index) => {
+          const countryCode = APIUtils.getIncludedObject(language.relationships.country_code.data, this.state.languagesResponse.included);
+
           return (
             <div key={index}>
-              <h4 style={{ color: "#a7a7a7", margin: "24px 0 0" }}>{language.attributes.name}</h4>
+              <div style={{ display: "flex", marginTop: 24 }}>
+                {countryCode && <span style={{ marginRight: 8 }}>
+                  <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
+                </span>}
+                <h4 style={{ color: "#a7a7a7" }}>{language.attributes.name}</h4>
+              </div>
               <Progress percent={parseFloat(language.attributes.progress.toFixed(2))} />
             </div>
           );
@@ -74,7 +75,7 @@ class ProjectSite extends React.Component<IProps, IState> {
     );
   }
 
-  render(): JSX.Element {
+  render() {
     return (
       <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
         <Breadcrumbs breadcrumbName="project" />
@@ -89,39 +90,9 @@ class ProjectSite extends React.Component<IProps, IState> {
               style={{ marginLeft: 40 }}
             />
           </h1>
-          {/* <div style={{ display: "flex", alignItems: "center" }}>
-            <Button
-              type="primary"
-              onClick={() => {
-                history.push(Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId));
-              }}
-            >
-              Open translation editor
-            </Button>
-          </div> */}
           <p style={{ marginTop: 16 }}>{dashboardStore.currentProject && dashboardStore.currentProject.attributes.description}</p>
           {this.state.languagesResponse && this.state.projectActivityResponse ? (
             <>
-              {(!this.state.languagesResponse.data || this.state.languagesResponse.data.length === 0) && (
-                <>
-                  <Alert
-                    type="info"
-                    showIcon
-                    message={<>Welcome to your new project.</>}
-                    description={
-                      <>
-                        <p style={{ color: Styles.COLOR_TEXT_DISABLED }}>
-                          As a first step you should <Link to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId)}>
-                            add some languages </Link> to your project.
-                          <br />
-                          <br />
-                          Have fun translating your project. <span style={{ marginLeft: 8 }}>🎉</span>
-                        </p>
-                      </>
-                    }
-                  />
-                </>
-              )}
               <div style={{ display: "flex", marginTop: 40 }}>
                 <div style={{ width: "50%", marginRight: 40 }}>
                   {this.renderLanguagesProgress()}

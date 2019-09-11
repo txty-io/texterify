@@ -9,7 +9,6 @@ import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { ListContent } from "../../ui/ListContent";
 import { OrganizationAvatar } from "../../ui/OrganizationAvatar";
 import { PrimaryButton } from "../../ui/PrimaryButton";
-import { makeCancelable } from "../../utilities/Promise";
 
 type IProps = RouteComponentProps & {};
 interface IState {
@@ -21,23 +20,18 @@ interface IState {
 }
 
 class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
-  getOrganizationsPromise: any = null;
   debouncedSearchReloader: any = _.debounce(async (value) => {
     this.setState({ search: value, page: 0 });
     await this.reloadTable({ search: value, page: 0 });
   }, 500, { trailing: true });
 
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      organizationsResponse: null,
-      addDialogVisible: false,
-      perPage: DEFAULT_PAGE_SIZE,
-      page: 0,
-      search: ""
-    };
-  }
+  state: IState = {
+    organizationsResponse: null,
+    addDialogVisible: false,
+    perPage: DEFAULT_PAGE_SIZE,
+    page: 0,
+    search: ""
+  };
 
   async componentDidMount() {
     await this.fetchOrganizations();
@@ -45,8 +39,7 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
 
   fetchOrganizations = async (options?: any) => {
     try {
-      this.getOrganizationsPromise = makeCancelable(OrganizationsAPI.getOrganizations(options));
-      const responseOrganizations = await this.getOrganizationsPromise.promise;
+      const responseOrganizations = await OrganizationsAPI.getOrganizations(options);
 
       this.setState({
         organizationsResponse: responseOrganizations

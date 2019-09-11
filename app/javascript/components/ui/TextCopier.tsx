@@ -9,13 +9,9 @@ type IState = {
 };
 
 class TextCopier extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      copied: false
-    };
-  }
+  state: IState = {
+    copied: false
+  };
 
   // https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f
   copyToClipboard = (e: any) => {

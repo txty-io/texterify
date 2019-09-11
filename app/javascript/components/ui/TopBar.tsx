@@ -72,7 +72,7 @@ class TopBarUnwrapped extends React.Component<IProps, IState> {
     }
   ];
 
-  render(): JSX.Element {
+  render() {
     return (
       <div
         className={`component-top-bar ${this.props.white ? "white" : ""}`}

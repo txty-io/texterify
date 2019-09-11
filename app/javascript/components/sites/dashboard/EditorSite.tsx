@@ -12,7 +12,6 @@ import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
-import { KeyComments } from "../../ui/KeyComments";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { Styles } from "../../ui/Styles";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
@@ -141,7 +140,7 @@ class EditorSite extends React.Component<IProps, IState> {
   }
 
   // tslint:disable-next-line:max-func-body-length
-  render(): JSX.Element {
+  render() {
     return (
       <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, background: "#fefeff" }}>
         <div

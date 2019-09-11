@@ -16,7 +16,7 @@ class LoadingOverlay extends React.Component<IProps, IState> {
     document.body.style.overflow = "";
   }
 
-  render(): JSX.Element {
+  render() {
     if (this.props.isVisible) {
       document.body.style.overflow = "hidden";
     } else {

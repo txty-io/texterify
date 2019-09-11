@@ -16,17 +16,23 @@ interface IState { }
 @observer
 class OrganizationRouter extends React.Component<IProps, IState> {
   async componentDidMount() {
+    await this.fetchOrganization();
+  }
+
+  fetchOrganization = async () => {
     const getOrganizationResponse = await OrganizationsAPI.getOrganization(this.props.match.params.organizationId);
     if (getOrganizationResponse.errors) {
       this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
     } else {
       dashboardStore.currentOrganization = getOrganizationResponse.data;
     }
+
+    this.forceUpdate();
   }
 
-  render(): JSX.Element {
+  render() {
     if (this.isInvalidOrganization()) {
-      return <LoadingOverlay isVisible loadingText="App is loading..." />;
+      return <LoadingOverlay isVisible loadingText="Organization is loading..." />;
     }
 
     return (
@@ -41,8 +47,16 @@ class OrganizationRouter extends React.Component<IProps, IState> {
   }
 
   isInvalidOrganization = () => {
-    return !dashboardStore.currentOrganization ||
-      dashboardStore.currentOrganization.id !== this.props.match.params.organizationId;
+    if (!dashboardStore.currentOrganization ||
+      dashboardStore.currentOrganization.id !== this.props.match.params.organizationId
+    ) {
+      this.fetchOrganization();
+
+      return true;
+    } else {
+      return false;
+    }
+
   }
 }
 

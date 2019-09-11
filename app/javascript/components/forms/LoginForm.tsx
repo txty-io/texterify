@@ -15,16 +15,12 @@ interface IState {
 }
 
 class LoginFormUnwrapped extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
+  state: IState = {
+    isLoading: false,
+    loginErrors: []
+  };
 
-    this.state = {
-      isLoading: false,
-      loginErrors: []
-    };
-  }
-
-  render(): JSX.Element {
+  render() {
     const { getFieldDecorator } = this.props.form;
 
     return (

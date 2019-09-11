@@ -3,7 +3,7 @@ import * as React from "react";
 import { Styles } from "../../ui/Styles";
 
 class NotFoundSite extends React.Component {
-  render(): JSX.Element {
+  render() {
     return (
       <Layout style={{ padding: "0 24px 24px", maxWidth: 800, margin: "40px auto", width: "100%" }}>
         <p style={{ textAlign: "center", fontSize: 16, color: Styles.COLOR_PRIMARY }}>The site could not be found.</p>

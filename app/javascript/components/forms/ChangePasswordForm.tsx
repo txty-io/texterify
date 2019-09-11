@@ -16,15 +16,11 @@ interface IState {
 }
 
 class ChangePasswordFormUnwrapped extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      isLoading: false,
-      loginErrors: [],
-      success: false
-    };
-  }
+  state: IState = {
+    isLoading: false,
+    loginErrors: [],
+    success: false
+  };
 
   renderErrors = (): JSX.Element[] => {
     const errors: JSX.Element[] = [];
@@ -35,7 +31,7 @@ class ChangePasswordFormUnwrapped extends React.Component<IProps, IState> {
     return errors;
   }
 
-  render(): JSX.Element {
+  render() {
     const { getFieldDecorator } = this.props.form;
 
     return (

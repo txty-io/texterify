@@ -6,7 +6,7 @@ interface IProps { }
 interface IState { }
 
 class ForgotPasswordSite extends React.Component<IProps, IState> {
-  render(): JSX.Element {
+  render() {
     return (
       <SiteWrapper>
         <h2>Reset your password.</h2>

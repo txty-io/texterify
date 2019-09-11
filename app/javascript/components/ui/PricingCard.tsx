@@ -11,7 +11,7 @@ interface IProps {
 interface IState { }
 
 class PricingCard extends React.Component<IProps, IState> {
-  render(): JSX.Element {
+  render() {
     return (
       <div
         style={{

@@ -55,7 +55,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
     );
   }
 
-  render(): JSX.Element {
+  render() {
     if (!this.state.getMembersResponse) {
       return <Loading />;
     }

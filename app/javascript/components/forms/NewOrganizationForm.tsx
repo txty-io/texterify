@@ -132,7 +132,7 @@ class NewOrganizationFormUnwrapped extends React.Component<IProps & { form: any 
     this.setState({ imageUrl: "" });
   }
 
-  render(): JSX.Element {
+  render() {
     const { getFieldDecorator } = this.props.form;
 
     return (

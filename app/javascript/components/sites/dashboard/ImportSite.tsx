@@ -21,20 +21,15 @@ interface IState {
 }
 
 class ImportSite extends React.Component<IProps, IState> {
-  getLanguagesPromise: any;
   dropzoneRef: any;
 
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      files: [],
-      selectedLanguageId: null,
-      languages: [],
-      languagesResponse: null,
-      loading: false
-    };
-  }
+  state: IState = {
+    files: [],
+    selectedLanguageId: null,
+    languages: [],
+    languagesResponse: null,
+    loading: false
+  };
 
   async componentDidMount() {
     try {
@@ -77,7 +72,7 @@ class ImportSite extends React.Component<IProps, IState> {
     this.setState({ loading: false });
   }
 
-  render(): JSX.Element {
+  render() {
     return (
       <>
         <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>

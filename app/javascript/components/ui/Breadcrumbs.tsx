@@ -16,7 +16,8 @@ interface IState { }
 @observer
 class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
   getOrganizationId = () => {
-    return (this.getProjectOrganization() && this.getProjectOrganization().id) || this.props.match.params.organizationId;
+    return (this.getProjectOrganization() && this.getProjectOrganization().id) ||
+      this.props.match.params.organizationId;
   }
 
   getOrganizationName = () => {
@@ -62,7 +63,19 @@ class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
       },
       organization: {
         parent: "organizations",
-        name: <><OrganizationAvatar style={{ height: 16, width: 16, marginRight: 8 }} organization={dashboardStore.currentOrganization} />{this.getOrganizationName()}</>,
+        name: (
+          <>
+            {(this.getProjectOrganization() ||
+              this.getOrganizationId()) && <OrganizationAvatar
+                style={{ height: 16, width: 16, marginRight: 8 }}
+                dontRenderIfNoImage
+                organization={this.getProjectOrganization() ||
+                  (this.getOrganizationId() ? { id: this.getOrganizationId() } : undefined)
+                }
+              />}
+            {this.getOrganizationName()}
+          </>
+        ),
         path: Routes.DASHBOARD.ORGANIZATION.replace(":organizationId", this.getOrganizationId())
       },
       organizationMembers: {
@@ -124,7 +137,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
     return crumbs.reverse();
   }
 
-  render(): JSX.Element {
+  render() {
     const items: JSX.Element[] = [];
     const resolvedBreadcrumbs: any[] = this.resolveBreadcrumbs();
 

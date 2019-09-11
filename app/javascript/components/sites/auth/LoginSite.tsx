@@ -11,7 +11,7 @@ interface IState { }
 
 @observer
 class LoginSite extends React.Component<IProps, IState> {
-  render(): JSX.Element {
+  render() {
     return !authStore.isAuthenticated ?
       (
         <SiteWrapper>

@@ -10,7 +10,7 @@ interface IState { }
 
 @observer
 class UserAccountSettingsSite extends React.Component<IProps, IState> {
-  render(): JSX.Element {
+  render() {
     return (
       <Layout style={{ padding: "0 24px 24px", maxWidth: 550, margin: "0", width: "100%" }}>
         <Content style={{ margin: "24px 16px 0", minHeight: 360 }}>

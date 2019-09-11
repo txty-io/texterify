@@ -1,17 +1,13 @@
-import { Button, Input, Layout, List, Modal } from "antd";
+import { Button, Input, Layout, Modal } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { APIUtils } from "../../api/v1/APIUtils";
 import { MembersAPI } from "../../api/v1/MembersAPI";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { Loading } from "../../ui/Loading";
-import { Styles } from "../../ui/Styles";
 import { UserAvatar } from "../../ui/UserAvatar";
-import { makeCancelable } from "../../utilities/Promise";
-const { Content } = Layout;
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
 interface IState {
@@ -22,22 +18,15 @@ interface IState {
 
 @observer
 class MembersSite extends React.Component<IProps, IState> {
-  getMembersPromise: any = null;
+  state: IState = {
+    userAddEmail: "",
+    getMembersResponse: null,
+    deleteDialogVisible: false
+  };
 
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      userAddEmail: "",
-      getMembersResponse: null,
-      deleteDialogVisible: false
-    };
-  }
-
-  async componentDidMount(): Promise<void> {
+  async componentDidMount() {
     try {
-      this.getMembersPromise = makeCancelable(MembersAPI.getMembers(this.props.match.params.projectId));
-      const responseGetMembers = await this.getMembersPromise.promise;
+      const responseGetMembers = await MembersAPI.getMembers(this.props.match.params.projectId);
 
       this.setState({
         getMembersResponse: responseGetMembers
@@ -47,10 +36,6 @@ class MembersSite extends React.Component<IProps, IState> {
         console.error(err);
       }
     }
-  }
-
-  componentWillUnmount() {
-    if (this.getMembersPromise !== null) { this.getMembersPromise.cancel(); }
   }
 
   getRows = (): any[] => {
@@ -67,7 +52,7 @@ class MembersSite extends React.Component<IProps, IState> {
     );
   }
 
-  render(): JSX.Element {
+  render() {
     if (!this.state.getMembersResponse) {
       return <Loading />;
     }
@@ -75,7 +60,7 @@ class MembersSite extends React.Component<IProps, IState> {
     return (
       <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
         <Breadcrumbs breadcrumbName="projectMembers" />
-        <Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
+        <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
           <h1>Members</h1>
           <p>Invite users to your project to help you localize your apps.</p>
           <div style={{ display: "flex" }}>
@@ -168,7 +153,7 @@ class MembersSite extends React.Component<IProps, IState> {
               );
             })}
           </div>
-        </Content>
+        </Layout.Content>
       </Layout>
     );
   }

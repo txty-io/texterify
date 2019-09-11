@@ -17,16 +17,12 @@ interface IState {
 
 @observer
 class UserAccessTokensSettingsSiteUnwrapped extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
+  state: IState = {
+    getTokensResponse: null,
+    deleteDialogVisible: false
+  };
 
-    this.state = {
-      getTokensResponse: null,
-      deleteDialogVisible: false
-    };
-  }
-
-  async componentDidMount(): Promise<void> {
+  async componentDidMount() {
     const getTokensResponse = await AccessTokensAPI.getTokens();
 
     this.setState({
@@ -170,7 +166,7 @@ class UserAccessTokensSettingsSiteUnwrapped extends React.Component<IProps, ISta
     });
   }
 
-  render(): JSX.Element {
+  render() {
     return (
       <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
         <Content style={{ margin: "24px 16px 0", minHeight: 360 }}>

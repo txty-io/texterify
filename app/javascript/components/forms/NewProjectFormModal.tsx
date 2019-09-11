@@ -10,7 +10,7 @@ interface IProps {
 interface IState { }
 
 class NewProjectFormModal extends React.Component<IProps, IState> {
-  render(): JSX.Element {
+  render() {
     return (
       <Modal
         maskClosable={false}

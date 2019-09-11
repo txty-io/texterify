@@ -17,14 +17,10 @@ interface IState {
 }
 
 class SignupFormUnwrapped extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      isLoading: false,
-      signupErrors: []
-    };
-  }
+  state: IState = {
+    isLoading: false,
+    signupErrors: []
+  };
 
   handleSubmit = (e: any): void => {
     e.preventDefault();
@@ -70,7 +66,7 @@ class SignupFormUnwrapped extends React.Component<IProps, IState> {
     return messages;
   }
 
-  render(): JSX.Element {
+  render() {
     const { getFieldDecorator } = this.props.form;
 
     return (

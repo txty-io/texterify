@@ -39,14 +39,10 @@ interface IState {
 
 @observer
 class DashboardRouter extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      hasSidebar: false,
-      accountMenuVisible: false
-    };
-  }
+  state: IState = {
+    hasSidebar: false,
+    accountMenuVisible: false
+  };
 
   componentDidMount(): void {
     this.setState({
@@ -77,7 +73,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
   }
 
   // tslint:disable-next-line:max-func-body-length
-  render(): JSX.Element {
+  render() {
     return (
       <>
         <Layout>
@@ -102,18 +98,6 @@ class DashboardRouter extends React.Component<IProps, IState> {
                   <Icon type="appstore" style={{ marginRight: 8 }} /> Dashboard
                 </Link> */}
                 <Link
-                  to={Routes.DASHBOARD.ORGANIZATIONS}
-                  style={{
-                    background: this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS ? "rgba(255, 255, 255, 0.15" : undefined,
-                    color: this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS ? "#fff" : "#fff",
-                    transition: "none",
-                    marginRight: 8,
-                    textDecoration: "none"
-                  }}
-                >
-                  <Icon type="deployment-unit" style={{ marginRight: 8 }} /> Organizations
-                </Link>
-                <Link
                   to={Routes.DASHBOARD.PROJECTS}
                   style={{
                     background: this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS ? "rgba(255, 255, 255, 0.15" : undefined,
@@ -124,6 +108,18 @@ class DashboardRouter extends React.Component<IProps, IState> {
                   }}
                 >
                   <Icon type="project" style={{ marginRight: 8 }} /> Projects
+                </Link>
+                <Link
+                  to={Routes.DASHBOARD.ORGANIZATIONS}
+                  style={{
+                    background: this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS ? "rgba(255, 255, 255, 0.15" : undefined,
+                    color: this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS ? "#fff" : "#fff",
+                    transition: "none",
+                    marginRight: 8,
+                    textDecoration: "none"
+                  }}
+                >
+                  <Icon type="deployment-unit" style={{ marginRight: 8 }} /> Organizations
                 </Link>
                 <Link
                   to={Routes.DASHBOARD.ACTIVITY}

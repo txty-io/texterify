@@ -14,14 +14,10 @@ type IState = {
 
 @observer
 class ProjectAvatar extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      image: null,
-      loading: true
-    };
-  }
+  state: IState = {
+    image: null,
+    loading: true
+  };
 
   async componentDidMount() {
     const imageResponse = await ProjectsAPI.getImage({ projectId: this.props.project.id });

@@ -15,13 +15,9 @@ type IState = {
 
 @observer
 class UserAvatar extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      image: null
-    };
-  }
+  state: IState = {
+    image: null
+  };
 
   isCurrentUser = () => {
     return authStore.currentUser && authStore.currentUser.id === this.props.user.id;

@@ -10,8 +10,6 @@ import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import FlagIcon from "../../ui/FlagIcons";
 import { Styles } from "../../ui/Styles";
-import { makeCancelable } from "../../utilities/Promise";
-const { Header, Content, Footer, Sider } = Layout;
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
 interface IState {
@@ -24,25 +22,18 @@ interface IState {
 }
 
 class ExportSite extends React.Component<IProps, IState> {
-  getLanguagesPromise: any = null;
-
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      languages: [],
-      languagesIncluded: [],
-      treeData: [],
-      expandedKeys: [],
-      languagesLoaded: false,
-      selectedFormat: ""
-    };
-  }
+  state: IState = {
+    languages: [],
+    languagesIncluded: [],
+    treeData: [],
+    expandedKeys: [],
+    languagesLoaded: false,
+    selectedFormat: ""
+  };
 
   async componentDidMount() {
     try {
-      this.getLanguagesPromise = makeCancelable(LanguagesAPI.getLanguages(this.props.match.params.projectId));
-      const responseLanguages = await this.getLanguagesPromise.promise;
+      const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
       const treeData = this.buildTreeData(responseLanguages.data);
 
       const keys = [];
@@ -66,10 +57,6 @@ class ExportSite extends React.Component<IProps, IState> {
         console.error(err);
       }
     }
-  }
-
-  componentWillUnmount() {
-    if (this.getLanguagesPromise !== null) { this.getLanguagesPromise.cancel(); }
   }
 
   findElementForKey = (data: any[], key: string, callback: any, parent: any): any => {
@@ -165,7 +152,7 @@ class ExportSite extends React.Component<IProps, IState> {
   }
 
   // tslint:disable-next-line:max-func-body-length
-  render(): JSX.Element {
+  render() {
     const loop = (data) => data.map((item) => {
       const countryCode = APIUtils.getIncludedObject(
         item.relationships.country_code.data,
@@ -191,7 +178,7 @@ class ExportSite extends React.Component<IProps, IState> {
     return (
       <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
         <Breadcrumbs breadcrumbName="export" />
-        <Content style={{ margin: "24px 16px 0", minHeight: 360, maxWidth: 800 }}>
+        <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, maxWidth: 800 }}>
           <h1>Export</h1>
           {this.state.languagesLoaded && this.state.languages.length === 0 &&
             <>
@@ -290,7 +277,7 @@ class ExportSite extends React.Component<IProps, IState> {
               </div>
             </div>
           }
-        </Content>
+        </Layout.Content>
       </Layout>
     );
   }

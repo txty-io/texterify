@@ -10,19 +10,15 @@ interface IState {
 }
 
 class BottomBar extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
+  state: IState = {
+    currentLanguageKey: "en",
+    keyDisplayNameMapping: {
+      en: "English",
+      de: "German"
+    }
+  };
 
-    this.state = {
-      currentLanguageKey: "en",
-      keyDisplayNameMapping: {
-        en: "English",
-        de: "German"
-      }
-    };
-  }
-
-  render(): JSX.Element {
+  render() {
     const menu: any = (
       <Menu onClick={this.handleLanguageMenuClick}>
         <Menu.Item key="en">{this.getFlagElement("en")} English</Menu.Item>

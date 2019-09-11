@@ -7,7 +7,7 @@ interface IProps { }
 interface IState { }
 
 class AppContainer extends React.Component<IProps, IState> {
-  render(): JSX.Element {
+  render() {
     return (
       <AppRouter />
     );

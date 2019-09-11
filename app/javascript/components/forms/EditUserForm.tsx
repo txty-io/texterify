@@ -140,7 +140,7 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
     return data;
   }
 
-  render(): JSX.Element {
+  render() {
     const { getFieldDecorator } = this.props.form;
 
     return (

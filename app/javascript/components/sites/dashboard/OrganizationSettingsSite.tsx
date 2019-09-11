@@ -17,13 +17,9 @@ interface IState {
 
 @observer
 class OrganizationSettingsSite extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      isDeletingOrganization: false
-    };
-  }
+  state: IState = {
+    isDeletingOrganization: false
+  };
 
   onDeleteOrganizationClick = () => {
     Modal.confirm({
@@ -44,7 +40,7 @@ class OrganizationSettingsSite extends React.Component<IProps, IState> {
     });
   }
 
-  render(): JSX.Element {
+  render() {
     return (
       <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
         <Breadcrumbs breadcrumbName="organizationSettings" />

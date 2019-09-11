@@ -1,19 +1,13 @@
-import { Button, Empty, Input, Layout, List, message, Pagination } from "antd";
+import { Input, Layout, message, Pagination } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import styled from "styled-components";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { NewProjectFormModal } from "../../forms/NewProjectFormModal";
 import { Routes } from "../../routing/Routes";
-import { dashboardStore } from "../../stores/DashboardStore";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
-import { ListContent } from "../../ui/ListContent";
 import { PrimaryButton } from "../../ui/PrimaryButton";
-import { ProjectAvatar } from "../../ui/ProjectAvatar";
 import { ProjectsList } from "../../ui/ProjectsList";
-import { Styles } from "../../ui/Styles";
-import { makeCancelable } from "../../utilities/Promise";
 
 type IProps = RouteComponentProps & {};
 interface IState {
@@ -26,38 +20,27 @@ interface IState {
 }
 
 class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
-  getProjectsPromise: any = null;
   debouncedSearchReloader: any = _.debounce(async (value) => {
     this.setState({ search: value, page: 0 });
     await this.reloadTable({ search: value, page: 0 });
   }, 500, { trailing: true });
 
-  constructor(props: IProps) {
-    super(props);
+  state: IState = {
+    projectsResponse: null,
+    projects: [],
+    addDialogVisible: false,
+    perPage: DEFAULT_PAGE_SIZE,
+    page: 0,
+    search: ""
+  };
 
-    this.state = {
-      projectsResponse: null,
-      projects: [],
-      addDialogVisible: false,
-      perPage: DEFAULT_PAGE_SIZE,
-      page: 0,
-      search: ""
-    };
-  }
-
-  async componentDidMount(): Promise<void> {
+  async componentDidMount() {
     await this.fetchProjects();
-  }
-
-  componentWillUnmount() {
-    if (this.getProjectsPromise !== null) { this.getProjectsPromise.cancel(); }
   }
 
   fetchProjects = async (options?: any) => {
     try {
-      this.getProjectsPromise = makeCancelable(ProjectsAPI.getProjects(options));
-
-      const responseProjects = await this.getProjectsPromise.promise;
+      const responseProjects = await ProjectsAPI.getProjects(options);
 
       this.setState({
         projectsResponse: responseProjects,
@@ -82,7 +65,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
     this.debouncedSearchReloader(event.target.value);
   }
 
-  render(): JSX.Element {
+  render() {
     return (
       <>
         <Layout style={{ padding: "0 24px 24px", maxWidth: 800, margin: "0 auto", width: "100%" }}>
@@ -101,7 +84,10 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
               />
             </div>
 
-            <ProjectsList projects={this.state.projects || []} />
+            <ProjectsList
+              projects={this.state.projects || []}
+              included={this.state.projectsResponse && this.state.projectsResponse.included}
+            />
 
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
               <Pagination

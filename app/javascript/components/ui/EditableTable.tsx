@@ -178,7 +178,7 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
     super(props);
 
     this.state = {
-      dataSource: this.props.dataSource
+      dataSource: props.dataSource
     };
   }
 

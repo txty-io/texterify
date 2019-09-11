@@ -7,13 +7,13 @@ function ActivityTimeAgo(props: { duration: Duration }) {
     const isOlderThenOneMinute = props.duration.minutes() > 0;
 
     if (isOlderThenOneDay) {
-        return <>{`${props.duration.days()} days ago`}</>;
+        return <>{`${props.duration.days()} day${props.duration.days() > 1 ? "s" : ""} ago`}</>;
     } else if (isOlderThenOneHour) {
-        return <>{`${props.duration.hours()} hours ago`}</>;
+        return <>{`${props.duration.hours()} hour${props.duration.hours() > 1 ? "s" : ""} ago`}</>;
     } else if (isOlderThenOneMinute) {
-        return <>{`${props.duration.minutes()} minutes ago`}</>;
+        return <>{`${props.duration.minutes()} minute${props.duration.minutes() > 1 ? "s" : ""} ago`}</>;
     } else {
-        return <>{`${props.duration.seconds()} seconds ago`}</>;
+        return <>{`${props.duration.seconds()} second${props.duration.seconds() > 1 ? "s" : ""} ago`}</>;
     }
 }
 

@@ -6,7 +6,7 @@ interface IProps { }
 interface IState { }
 
 class NewPasswordSite extends React.Component<IProps, IState> {
-  render(): JSX.Element {
+  render() {
     return (
       <SiteWrapper>
         <h2>Set a new password.</h2>

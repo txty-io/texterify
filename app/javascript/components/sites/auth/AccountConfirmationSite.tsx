@@ -10,7 +10,7 @@ interface IProps { }
 interface IState { }
 
 class AccountConfirmationSite extends React.Component<IProps, IState> {
-  render(): JSX.Element {
+  render() {
     return (
       <SiteWrapper>
         <h2>You have successfully confirmed your account.</h2>

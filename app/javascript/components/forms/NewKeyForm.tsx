@@ -40,7 +40,7 @@ class NewKeyFormUnwrapped extends React.Component<IProps, IState> {
     });
   }
 
-  render(): JSX.Element {
+  render() {
     const { getFieldDecorator } = this.props.form;
 
     return (

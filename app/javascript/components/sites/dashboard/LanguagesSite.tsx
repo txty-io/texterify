@@ -1,16 +1,14 @@
 import { Button, Empty, Icon, Input, Layout, Modal, Table } from "antd";
+import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { AddEditLanguageForm } from "../../forms/AddEditLanguageForm";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
-import FlagIcon from "../../ui/FlagIcons";
-import { makeCancelable } from "../../utilities/Promise";
-import { sortStrings } from "../../utilities/Sorter";
-const { Header, Content, Footer, Sider } = Layout;
-import * as _ from "lodash";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
+import FlagIcon from "../../ui/FlagIcons";
+import { sortStrings } from "../../utilities/Sorter";
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
 interface IState {
@@ -28,7 +26,6 @@ interface IState {
 }
 
 class LanguagesSite extends React.Component<IProps, IState> {
-  getLanguagesPromise: any = null;
   debouncedSearchReloader: any = _.debounce(async (value) => {
     this.setState({ search: value, page: 0 });
     await this.reloadTable({ search: value, page: 0 });
@@ -42,29 +39,23 @@ class LanguagesSite extends React.Component<IProps, IState> {
     }
   };
 
-  constructor(props: IProps) {
-    super(props);
+  state: IState = {
+    languages: [],
+    selectedRowLanguages: [],
+    isDeleting: false,
+    deleteDialogVisible: false,
+    addDialogVisible: false,
+    languagesResponse: null,
+    search: "",
+    page: 0,
+    perPage: DEFAULT_PAGE_SIZE,
+    languagesLoading: false,
+    languageToEdit: null
+  };
 
-    this.state = {
-      languages: [],
-      selectedRowLanguages: [],
-      isDeleting: false,
-      deleteDialogVisible: false,
-      addDialogVisible: false,
-      languagesResponse: null,
-      search: "",
-      page: 0,
-      perPage: DEFAULT_PAGE_SIZE,
-      languagesLoading: false,
-      languageToEdit: null
-    };
-  }
-
-  async componentDidMount(): Promise<void> {
+  async componentDidMount() {
     try {
-      this.getLanguagesPromise = makeCancelable(LanguagesAPI.getLanguages(this.props.match.params.projectId));
-
-      const responseLanguages = await this.getLanguagesPromise.promise;
+      const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
 
       this.setState({
         languagesResponse: responseLanguages,
@@ -75,10 +66,6 @@ class LanguagesSite extends React.Component<IProps, IState> {
         console.error(err);
       }
     }
-  }
-
-  componentWillUnmount() {
-    if (this.getLanguagesPromise !== null) { this.getLanguagesPromise.cancel(); }
   }
 
   fetchLanguages = async (options?: any) => {
@@ -210,14 +197,14 @@ class LanguagesSite extends React.Component<IProps, IState> {
     this.debouncedSearchReloader(event.target.value);
   }
 
-  render(): JSX.Element {
+  render() {
     this.rowSelection.selectedRowKeys = this.state.selectedRowLanguages;
 
     return (
       <>
         <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
           <Breadcrumbs breadcrumbName="languages" />
-          <Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
+          <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
             <h1>Languages</h1>
             <div style={{ display: "flex" }}>
               <div style={{ flexGrow: 1 }}>
@@ -263,7 +250,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
               }}
               locale={{ emptyText: <Empty description="No languages found" image={Empty.PRESENTED_IMAGE_SIMPLE} /> }}
             />
-          </Content>
+          </Layout.Content>
         </Layout>
 
         <AddEditLanguageForm
@@ -282,8 +269,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
               languageToEdit: null
             });
 
-            this.getLanguagesPromise = makeCancelable(LanguagesAPI.getLanguages(this.props.match.params.projectId));
-            const responseLanguages = await this.getLanguagesPromise.promise;
+            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
             this.setState({
               languagesResponse: responseLanguages,
               languages: responseLanguages.data

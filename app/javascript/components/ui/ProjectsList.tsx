@@ -1,6 +1,7 @@
 import { Button, Empty, List } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
+import { APIUtils } from "../api/v1/APIUtils";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
 import { dashboardStore } from "../stores/DashboardStore";
@@ -12,7 +13,7 @@ const openProject = (project: any) => {
     history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", project.id));
 };
 
-function ProjectsList(props: { projects: any[] }) {
+function ProjectsList(props: { projects: any[]; included?: any[] }) {
     return (
         <List
             size="small"
@@ -26,6 +27,8 @@ function ProjectsList(props: { projects: any[] }) {
             }, [])}
             renderItem={(item) => {
                 const project = _.find(props.projects, { id: item.key });
+                const projectOrganization = props.included &&
+                    APIUtils.getIncludedObject(project.relationships.organization.data, props.included);
 
                 return (
                     <List.Item key={item.key}>
@@ -41,7 +44,10 @@ function ProjectsList(props: { projects: any[] }) {
                                         style={{ marginRight: 16 }}
                                     />
                                     <div style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
-                                        {item.name}
+                                        {projectOrganization ? `${projectOrganization.attributes.name} / ` : ""}
+                                        <span style={{ fontWeight: props.included ? "bold" : undefined }}>
+                                            {item.name}
+                                        </span>
                                         <div style={{ textOverflow: "ellipsis", overflow: "hidden", fontSize: 12 }}>
                                             {item.description}
                                         </div>

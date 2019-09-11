@@ -1,4 +1,4 @@
-import { Icon, Tag, Timeline } from "antd";
+import { Empty, Icon, Tag, Timeline } from "antd";
 import * as moment from "moment";
 import * as React from "react";
 import { Link } from "react-router-dom";
@@ -7,7 +7,6 @@ import { APIUtils } from "../api/v1/APIUtils";
 import { Routes } from "../routing/Routes";
 import { ActivityTimeAgo } from "./ActivityTimeAgo";
 import FlagIcon from "./FlagIcons";
-import { ProjectAvatar } from "./ProjectAvatar";
 import { Styles } from "./Styles";
 import { UserAvatar } from "./UserAvatar";
 
@@ -33,6 +32,7 @@ const ProjectElement = styled(Link)`
 
 type IProps = {
   activitiesResponse: any;
+  hideTime?: boolean;
   mode?: "left" | "alternate" | "right";
   showTimeAgo?: boolean;
   includeProjectLink?: boolean;
@@ -40,31 +40,22 @@ type IProps = {
 type IState = {};
 
 class Activity extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {};
-  }
-
   // tslint:disable-next-line:max-func-body-length cyclomatic-complexity
   getActivityElement = (activity: any) => {
     const user = APIUtils.getIncludedObject(activity.relationships.user && activity.relationships.user.data, this.props.activitiesResponse.included);
     const project = APIUtils.getIncludedObject(activity.relationships.project && activity.relationships.project.data, this.props.activitiesResponse.included);
 
     const userElement = (
-      <div style={{ fontSize: 12 }}>
+      <div style={{ fontSize: 12, display: "flex", fontWeight: "bold" }}>
         <div style={{ display: "flex", alignItems: "center", lineHeight: 0 }}>
           <div style={{ width: 16, marginRight: 8 }}>
             {user ? <UserAvatar user={user.attributes} style={{ width: 16, height: 16, fontSize: 8 }} /> : <Icon type="user" />}
           </div>
           {user ? user.attributes.username : <span style={{ textDecoration: "line-through" }}>Deleted user</span>}
         </div>
-        <div style={{ display: "flex", alignItems: "center", lineHeight: 0, marginTop: 8 }}>
-          <div style={{ width: 16, marginRight: 8 }}>
-            <Icon type="clock-circle" />
-          </div>
+        {!this.props.hideTime && <div style={{ display: "flex", alignItems: "center", lineHeight: 0, marginLeft: "auto" }}>
           {moment.utc(activity.attributes.created_at, "YYYY-MM-DD HH:mm:ss").local().format("DD.MM.YYYY HH:mm")}
-        </div>
+        </div>}
       </div>
     );
 
@@ -149,7 +140,7 @@ class Activity extends React.Component<IProps, IState> {
         <ActivityItemWrapper>
           Translation for language
           {countryCode ? <>
-            <span style={{ marginLeft: 4, marginRight: 4 }}>
+            <span style={{ marginLeft: 8, marginRight: 4, width: 16, display: "inline-block" }}>
               <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
             </span>
             <b>{language.attributes.name}</b>
@@ -219,7 +210,11 @@ class Activity extends React.Component<IProps, IState> {
   render() {
     if (this.props.activitiesResponse.data.length === 0) {
       return (
-        <p style={{ color: Styles.COLOR_TEXT_DISABLED }}>No activity available.</p>
+        <Empty
+          description="No activity available"
+          style={{ margin: "40px 0" }}
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+        />
       );
     }
 

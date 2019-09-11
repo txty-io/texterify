@@ -7,13 +7,9 @@ interface IState {
 }
 
 class RoutingManagerUnwrapped extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      lastLocation: this.props.location
-    };
-  }
+  state: IState = {
+    lastLocation: this.props.location
+  };
 
   componentDidMount(): void {
     this.props.history.listen((location: any, action: any) => {
@@ -26,13 +22,11 @@ class RoutingManagerUnwrapped extends React.Component<IProps, IState> {
     });
   }
 
-  render(): JSX.Element {
-    return (
-      <>{this.props.children}</>
-    );
+  render() {
+    return this.props.children;
   }
 }
 
-const RoutingManager: any = withRouter(RoutingManagerUnwrapped);
+const RoutingManager = withRouter(RoutingManagerUnwrapped);
 
 export { RoutingManager };

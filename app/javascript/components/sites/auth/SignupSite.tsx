@@ -15,7 +15,7 @@ class SignupSite extends React.Component<IProps, IState> {
     this.props.history.push(Routes.DASHBOARD.ROOT);
   }
 
-  render(): JSX.Element {
+  render() {
     return !authStore.isAuthenticated ?
       (
         <SiteWrapper>

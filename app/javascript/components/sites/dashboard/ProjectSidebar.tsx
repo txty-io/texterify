@@ -79,13 +79,9 @@ class ProjectSidebar extends React.Component<IProps, IState> {
     }
   ];
 
-  constructor(props: IProps) {
-    super(props);
-
-    this.state = {
-      selectedItem: 0
-    };
-  }
+  state: IState = {
+    selectedItem: 0
+  };
 
   renderMenuItems = (): JSX.Element[] => {
     return [
@@ -149,7 +145,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
     );
   }
 
-  render(): JSX.Element {
+  render() {
     return (
       <>
         <div className="logo" />

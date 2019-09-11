@@ -20,7 +20,7 @@ class ForgotPasswordFormUnwrapped extends React.Component<IProps, IState> {
     success: false
   };
 
-  render(): JSX.Element {
+  render() {
     const { getFieldDecorator } = this.props.form;
 
     return (
