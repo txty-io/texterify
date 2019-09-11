@@ -50,6 +50,7 @@ class OrganizationRouter extends React.Component<IProps, IState> {
     if (!dashboardStore.currentOrganization ||
       dashboardStore.currentOrganization.id !== this.props.match.params.organizationId
     ) {
+      // tslint:disable-next-line:no-floating-promises
       this.fetchOrganization();
 
       return true;
