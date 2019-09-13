@@ -208,6 +208,10 @@ class Activity extends React.Component<IProps, IState> {
   }
 
   render() {
+    if (!this.props.activitiesResponse || !this.props.activitiesResponse.data) {
+      return undefined;
+    }
+
     if (this.props.activitiesResponse.data.length === 0) {
       return (
         <Empty

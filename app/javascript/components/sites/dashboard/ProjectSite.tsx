@@ -44,7 +44,9 @@ class ProjectSite extends React.Component<IProps, IState> {
   }
 
   renderLanguagesProgress = () => {
-    const languages = this.state.languagesResponse ? this.state.languagesResponse.data : [];
+    const languages = this.state.languagesResponse && this.state.languagesResponse.data ?
+      this.state.languagesResponse.data :
+      [];
 
     return (
       <>

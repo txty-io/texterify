@@ -53,7 +53,7 @@ class MembersSite extends React.Component<IProps, IState> {
   }
 
   render() {
-    if (!this.state.getMembersResponse) {
+    if (!this.state.getMembersResponse || !this.state.getMembersResponse.data) {
       return <Loading />;
     }
 
