@@ -27,8 +27,9 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
 
     it 'has status code 200 if logged in and returns empty array' do
       get '/api/v1/projects', headers: @auth_params
-      body = JSON.parse(response.body)
+
       expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
       expect(body['data']).to eq([])
       expect(body['meta']['total']).to eq(0)
     end
@@ -38,8 +39,9 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       user = FactoryBot.create(:user_with_projects, projects_count: number_of_projects)
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params
-      body = JSON.parse(response.body)
+
       expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
       expect(body['data'].length).to eq(10)
       expect(body['data'][0].keys).to contain_exactly('attributes', 'id', 'relationships', 'type')
       expect(body['data'][0]['attributes'].keys).to contain_exactly('description', 'id', 'name')
@@ -52,8 +54,9 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       user = FactoryBot.create(:user_with_projects, projects_count: number_of_projects)
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { per_page: per_page }
-      body = JSON.parse(response.body)
+
       expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
       expect(body['data'].length).to eq(per_page)
       expect(body['meta']['total']).to eq(number_of_projects)
     end
@@ -64,8 +67,9 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       user = FactoryBot.create(:user_with_projects, projects_count: number_of_projects)
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { per_page: per_page }
-      body = JSON.parse(response.body)
+
       expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
       expect(body['data'].length).to eq(10)
       expect(body['meta']['total']).to eq(number_of_projects)
     end
@@ -76,10 +80,10 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       user = FactoryBot.create(:user_with_projects, projects_count: number_of_projects)
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { per_page: per_page, page: 1 }
-      body = JSON.parse(response.body)
-      user_projects_ordered = user.projects.order(:name)
 
       expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
+      user_projects_ordered = user.projects.order(:name)
       expect(body['data'].length).to eq(per_page)
       expect(body['data'][0]['id']).to eq(user_projects_ordered[0].id)
       expect(body['data'][1]['id']).to eq(user_projects_ordered[1].id)
@@ -92,10 +96,10 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       user = FactoryBot.create(:user_with_projects, projects_count: number_of_projects)
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { per_page: per_page, page: 2 }
-      body = JSON.parse(response.body)
-      user_projects_ordered = user.projects.order(:name)
 
       expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
+      user_projects_ordered = user.projects.order(:name)
       expect(body['data'].length).to eq(per_page)
       expect(body['data'][0]['id']).to eq(user_projects_ordered[2].id)
       expect(body['data'][1]['id']).to eq(user_projects_ordered[3].id)
@@ -107,9 +111,9 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       user = FactoryBot.create(:user_with_projects, projects_count: number_of_projects)
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { search: "'no project has this name--" }
-      body = JSON.parse(response.body)
 
       expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
       expect(body['data'].length).to eq(0)
       expect(body['meta']['total']).to eq(0)
     end
@@ -129,9 +133,9 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
     it 'creates a new project with name' do
       name = 'Test Name'
       post '/api/v1/projects', params: { name: name }, headers: @auth_params, as: :json
-      body = JSON.parse(response.body)
 
       expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
       expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
       expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'description')
       expect(body['data']['attributes']['name']).to eq(name)
@@ -142,9 +146,9 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       name = 'Test Name'
       description = 'Test Description'
       post '/api/v1/projects', params: { name: name, description: description }, headers: @auth_params, as: :json
-      body = JSON.parse(response.body)
 
       expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
       expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
       expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'description')
       expect(body['data']['attributes']['name']).to eq(name)
@@ -154,9 +158,9 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
 
     it 'fails to create a new project without name' do
       post '/api/v1/projects', params: {}, headers: @auth_params, as: :json
-      body = JSON.parse(response.body)
 
       expect(response.status).to eq(400)
+      body = JSON.parse(response.body)
       expect(body.keys).to contain_exactly('errors')
       expect(body['errors'].length).to eq(1)
       expect(body['errors'][0]).to eq("Name can't be blank.")
@@ -164,6 +168,13 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
   end
 
   describe 'PUT update' do
+    permissions_update = {
+      'translator' => 403,
+      'developer' => 403,
+      'manager' => 200,
+      'owner' => 200
+    }
+
     it 'responds with json by default' do
       put '/api/v1/projects/1'
       expect(response.content_type).to eq 'application/json'
@@ -174,21 +185,29 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       expect(response.content_type).to eq 'application/json'
     end
 
-    it 'updates a project with name' do
-      project = Project.new(name: 'Old Name')
-      project.save!
+    permissions_update.each do |permission, expected_response_status|
+      it "#{expected_response_status == 200 ? 'succeeds' : 'fails'} to update a projects name as #{permission} of project" do
+        project = Project.new(name: 'Old Name')
+        project.save!
 
-      @user.user_projects << project
+        project_user = ProjectUser.new
+        project_user.user_id = @user.id
+        project_user.project_id = project.id
+        project_user.role = permission
+        project_user.save!
 
-      new_name = 'New Name'
-      put "/api/v1/projects/#{project.id}", params: { name: new_name }, headers: @auth_params, as: :json
-      body = JSON.parse(response.body)
+        new_name = 'New Name'
+        put "/api/v1/projects/#{project.id}", params: { name: new_name }, headers: @auth_params, as: :json
 
-      expect(response.status).to eq(200)
-      expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
-      expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'description')
-      expect(body['data']['attributes']['name']).to eq(new_name)
-      expect(body['data']['attributes']['description']).to eq(nil)
+        expect(response.status).to eq(expected_response_status)
+        if expected_response_status == 200
+          body = JSON.parse(response.body)
+          expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
+          expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'description')
+          expect(body['data']['attributes']['name']).to eq(new_name)
+          expect(body['data']['attributes']['description']).to eq(nil)
+        end
+      end
     end
   end
 end

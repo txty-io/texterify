@@ -57,7 +57,6 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
     options = {}
     options[:meta] = { total: projects.count }
-    options[:params] = { current_user: current_user }
     options[:include] = [:organization]
     render json: ProjectSerializer.new(projects.offset(page * per_page).limit(per_page), options).serialized_json, status: :ok
   end
@@ -103,7 +102,6 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       end
 
       options = {}
-      options[:params] = { current_user: current_user }
       render json: ProjectSerializer.new(project, options).serialized_json
     end
   end
@@ -114,7 +112,6 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
     if project.update(project_params)
       options = {}
-      options[:params] = { current_user: current_user }
       options[:include] = [:organization]
       render json: ProjectSerializer.new(project, options).serialized_json
     else
@@ -130,7 +127,6 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     project = current_user.projects.find(params[:id])
 
     options = {}
-    options[:params] = { current_user: current_user }
     options[:include] = [:organization]
     render json: ProjectSerializer.new(project, options).serialized_json, status: :ok
   end

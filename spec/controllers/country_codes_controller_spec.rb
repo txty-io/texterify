@@ -26,8 +26,8 @@ RSpec.describe Api::V1::CountryCodesController, type: :request do
 
     it 'has status code 200 if logged in' do
       get '/api/v1/country_codes', headers: @auth_params
-      body = JSON.parse(response.body)
       expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
       expect(body['data'].length).to eq(249)
     end
   end

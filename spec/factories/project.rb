@@ -3,6 +3,5 @@ FactoryBot.define do
     sequence :name do |n|
       "Project #{n}"
     end
-    user
   end
 end
