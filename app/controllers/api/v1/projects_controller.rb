@@ -5,7 +5,8 @@ class Api::V1::ProjectsController < Api::V1::ApiController
   include ExportHelper
 
   def image
-    project = Project.find(params[:project_id])
+    skip_authorization
+    project = current_user.projects.find(params[:project_id])
 
     if project
       render json: {
@@ -20,16 +21,19 @@ class Api::V1::ProjectsController < Api::V1::ApiController
   end
 
   def image_create
-    project = Project.find(params[:project_id])
+    project = current_user.projects.find(params[:project_id])
+    authorize project
     project.image.attach(params[:image])
   end
 
   def image_destroy
-    project = Project.find(params[:project_id])
+    project = current_user.projects.find(params[:project_id])
+    authorize project
     project.image.purge
   end
 
   def index
+    skip_authorization
     page = 0
     if params[:page].present?
       page = (params[:page].to_i || 1) - 1
@@ -59,12 +63,12 @@ class Api::V1::ProjectsController < Api::V1::ApiController
   end
 
   def create
+    skip_authorization
     project = Project.new(project_params)
+
     if params[:organization_id]
       project.organization = current_user.organizations.find(params[:organization_id])
     else
-      project.user = current_user
-
       project_column = ProjectColumn.new
       project_column.project = project
       project_column.user = current_user
@@ -86,7 +90,16 @@ class Api::V1::ProjectsController < Api::V1::ApiController
           raise ActiveRecord::Rollback
         end
 
-        current_user.user_projects << project
+        project_user = ProjectUser.new
+        project_user.user_id = current_user.id
+        project_user.project_id = project.id
+        project_user.role = 'owner'
+        unless project_user.save
+          render json: {
+            errors: project_user.errors.full_messages.map { |error| "#{error}." }
+          }, status: :bad_request
+          raise ActiveRecord::Rollback
+        end
       end
 
       options = {}
@@ -97,6 +110,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
   def update
     project = current_user.projects.find(params[:id])
+    authorize project
 
     if project.update(project_params)
       options = {}
@@ -112,6 +126,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
   end
 
   def show
+    skip_authorization
     project = current_user.projects.find(params[:id])
 
     options = {}
@@ -122,6 +137,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
   def export
     project = current_user.projects.find(params[:project_id])
+    authorize project
 
     if project.languages.empty?
       render json: {
@@ -200,6 +216,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
   def import
     project = current_user.projects.find(params[:project_id])
+    authorize project
     language = project.languages.find(params[:language_id])
     file = params[:file]
 
@@ -260,6 +277,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
   def destroy
     project = current_user.projects.find(params[:id])
+    authorize project
     project.destroy
 
     render json: {
@@ -268,6 +286,8 @@ class Api::V1::ProjectsController < Api::V1::ApiController
   end
 
   def activity
+    skip_authorization
+
     limit = 5
     if params[:limit].present?
       limit = params[:limit].to_i || 5
@@ -276,6 +296,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     end
 
     project = current_user.projects.find(params[:project_id])
+
     versions = PaperTrail::Version
                .where(project_id: project.id)
                .limit(limit)
@@ -284,11 +305,6 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     options = {}
     options[:include] = [:user, :key, :language, :'language.country_code']
     render json: ActivitySerializer.new(versions, options).serialized_json
-  end
-
-  def columns
-    project = current_user.projects.find(params[:project_id])
-    render json: ProjectColumnSerializer.new(project.project_columns).serialized_json
   end
 
   private

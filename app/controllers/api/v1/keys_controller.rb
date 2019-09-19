@@ -4,6 +4,7 @@ class Api::V1::KeysController < Api::V1::ApiController
   end
 
   def show
+    skip_authorization
     project = current_user.projects.find(params[:project_id])
     key = project.keys.find(params[:id])
 
@@ -16,6 +17,7 @@ class Api::V1::KeysController < Api::V1::ApiController
   end
 
   def index
+    skip_authorization
     project = current_user.projects.find(params[:project_id])
 
     page = 0
@@ -60,9 +62,9 @@ class Api::V1::KeysController < Api::V1::ApiController
     end
 
     project = current_user.projects.find(params[:project_id])
-
     key = Key.new(key_params)
     key.project = project
+    authorize key
 
     if key.save
       render json: key
@@ -82,6 +84,7 @@ class Api::V1::KeysController < Api::V1::ApiController
   def update
     project = current_user.projects.find(params[:project_id])
     key = project.keys.find(params[:id])
+    authorize key
 
     if key.update(key_params)
       render json: {
@@ -98,6 +101,7 @@ class Api::V1::KeysController < Api::V1::ApiController
   def destroy
     project = current_user.projects.find(params[:project_id])
     key_to_destroy = project.keys.find(params[:key][:id])
+    authorize key_to_destroy
     key_to_destroy.destroy
 
     render json: {
@@ -108,6 +112,7 @@ class Api::V1::KeysController < Api::V1::ApiController
   def destroy_multiple
     project = current_user.projects.find(params[:project_id])
     keys_to_destroy = project.keys.find(params[:keys])
+    keys_to_destroy.each { |key| authorize key }
     project.keys.delete(keys_to_destroy)
 
     render json: {
@@ -116,6 +121,7 @@ class Api::V1::KeysController < Api::V1::ApiController
   end
 
   def activity
+    skip_authorization
     project = current_user.projects.find(params[:project_id])
     key = project.keys.find(params[:key_id])
 

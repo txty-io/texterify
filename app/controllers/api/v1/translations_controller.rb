@@ -11,6 +11,7 @@ class Api::V1::TranslationsController < Api::V1::ApiController
       render json: {
         message: 'Translation already created'
       }
+      skip_authorization
       return
     end
 
@@ -19,6 +20,7 @@ class Api::V1::TranslationsController < Api::V1::ApiController
     translation = Translation.new(translation_params)
     translation.language = language
     translation.key = key
+    authorize translation
 
     if translation.save
       render json: TranslationSerializer.new(translation).serialized_json
@@ -32,6 +34,7 @@ class Api::V1::TranslationsController < Api::V1::ApiController
 
   def update
     translation = Translation.find(params[:id])
+    authorize translation
 
     if translation.update(translation_params)
       render json: {
@@ -43,9 +46,6 @@ class Api::V1::TranslationsController < Api::V1::ApiController
         errors: translation.errors.as_json
       }, status: :bad_request
     end
-  end
-
-  def destroy
   end
 
   private

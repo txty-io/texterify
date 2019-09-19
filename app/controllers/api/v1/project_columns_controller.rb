@@ -1,5 +1,6 @@
 class Api::V1::ProjectColumnsController < Api::V1::ApiController
   def show
+    skip_authorization
     project = current_user.projects.find(params[:project_id])
     project_column = project.project_columns.find_by(project_id: project.id, user_id: current_user.id)
 
@@ -9,6 +10,7 @@ class Api::V1::ProjectColumnsController < Api::V1::ApiController
   end
 
   def update
+    skip_authorization
     project = current_user.projects.find(params[:project_id])
     project_column = project.project_columns.find_by(project_id: project.id, user_id: current_user.id)
     project_column ||= ProjectColumn.create(project_id: project.id, user_id: current_user.id)

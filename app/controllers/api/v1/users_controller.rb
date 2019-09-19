@@ -1,5 +1,6 @@
 class Api::V1::UsersController < Api::V1::ApiController
   def image
+    skip_authorization
     user = User.find(params[:userId])
 
     if user
@@ -14,11 +15,13 @@ class Api::V1::UsersController < Api::V1::ApiController
     end
   end
 
-  def create
+  def image_create
+    skip_authorization
     current_user.image.attach(params[:image])
   end
 
-  def destroy
+  def image_destroy
+    skip_authorization
     current_user.image.purge
   end
 end

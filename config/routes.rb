@@ -10,7 +10,7 @@ Rails.application.routes.draw do
         get :image, to: 'organizations#image'
         post :image, to: 'organizations#image_create'
         delete :image, to: 'organizations#image_destroy'
-        resources :members, only: [:create, :index, :destroy], controller: "organization_members"
+        resources :members, only: [:create, :index, :destroy], controller: "organization_users"
       end
 
       resources :projects, only: [:create, :index, :destroy, :show, :update] do
@@ -26,7 +26,7 @@ Rails.application.routes.draw do
         resources :languages, only: [:create, :index, :destroy, :update]
         delete 'languages', to: 'languages#destroy_multiple'
         resources :translations, only: [:create, :update]
-        resources :members, only: [:create, :index, :destroy]
+        resources :members, only: [:create, :index, :destroy, :update], controller: "project_users"
         get :image, to: 'projects#image'
         post :image, to: 'projects#image_create'
         delete :image, to: 'projects#image_destroy'
@@ -36,8 +36,8 @@ Rails.application.routes.draw do
       resources :country_codes, only: [:index]
       get 'dashboard/activity', to: 'dashboard#activity'
       get 'users/image', to: 'users#image'
-      post 'users/image', to: 'users#create'
-      delete 'users/image', to: 'users#destroy'
+      post 'users/image', to: 'users#image_create'
+      delete 'users/image', to: 'users#image_destroy'
     end
   end
 

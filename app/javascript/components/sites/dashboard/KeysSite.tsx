@@ -414,7 +414,7 @@ class KeysSite extends React.Component<IProps, IState> {
         >
           Description
         </ColumnTag>
-        {this.state.languages.map((language, index) => {
+        {this.state.languages && this.state.languages.map((language, index) => {
           const countryCode = APIUtils.getIncludedObject(language.relationships.country_code.data, this.state.languagesResponse.included);
 
           return <ColumnTag

@@ -1,10 +1,11 @@
-import { Button, Input, Layout, Modal } from "antd";
+import { Button, Input, Layout, message, Modal, Select, Tag } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { MembersAPI } from "../../api/v1/MembersAPI";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
+import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { Loading } from "../../ui/Loading";
 import { UserAvatar } from "../../ui/UserAvatar";
@@ -25,16 +26,18 @@ class MembersSite extends React.Component<IProps, IState> {
   };
 
   async componentDidMount() {
+    await this.reload();
+  }
+
+  reload = async () => {
     try {
       const responseGetMembers = await MembersAPI.getMembers(this.props.match.params.projectId);
 
       this.setState({
         getMembersResponse: responseGetMembers
       });
-    } catch (err) {
-      if (!err.isCanceled) {
-        console.error(err);
-      }
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -45,11 +48,49 @@ class MembersSite extends React.Component<IProps, IState> {
           id: member.id,
           key: member.id,
           username: member.attributes.username,
-          email: member.attributes.email
+          email: member.attributes.email,
+          role: member.attributes.role,
+          role_source: member.attributes.role_source
         };
       },
       []
     );
+  }
+
+  onRemove = async (item: any) => {
+    this.setState({
+      deleteDialogVisible: true
+    });
+
+    Modal.confirm({
+      title: item.email === authStore.currentUser.email
+        ? "Do you really want to leave this project?"
+        : "Do you really want to remove this user from the project?",
+      content: "This cannot be undone.",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      visible: this.state.deleteDialogVisible,
+      onOk: async () => {
+        const deleteMemberResponse = await MembersAPI.deleteMember(this.props.match.params.projectId, item.key);
+        if (item.email === authStore.currentUser.email) {
+          if (!deleteMemberResponse.errors) {
+            this.props.history.push(Routes.DASHBOARD.PROJECTS);
+          }
+        } else {
+          const getMembersResponse = await MembersAPI.getMembers(this.props.match.params.projectId);
+          this.setState({
+            getMembersResponse: getMembersResponse,
+            deleteDialogVisible: false
+          });
+        }
+      },
+      onCancel: () => {
+        this.setState({
+          deleteDialogVisible: false
+        });
+      }
+    });
   }
 
   render() {
@@ -58,7 +99,7 @@ class MembersSite extends React.Component<IProps, IState> {
     }
 
     return (
-      <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
+      <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%", maxWidth: 1200 }}>
         <Breadcrumbs breadcrumbName="projectMembers" />
         <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
           <h1>Members</h1>
@@ -102,50 +143,39 @@ class MembersSite extends React.Component<IProps, IState> {
             {this.getRows().map((item) => {
               return (
                 <div key={item.username} style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
-                  <div style={{ display: "flex", flexGrow: 1 }}>
+                  <div style={{ display: "flex", flexGrow: 1, alignItems: "center" }}>
                     <UserAvatar user={item} style={{ marginRight: 24 }} />
                     <div style={{ display: "flex", flexDirection: "column" }}>
                       <div style={{ fontWeight: "bold" }}>{item.username}</div>
                       <div>{item.email}</div>
                     </div>
+                    {item.role_source === "organization" &&
+                      <Tag color="geekblue" style={{ marginLeft: 24 }}>{dashboardStore.getOrganizationName()}</Tag>
+                    }
                   </div>
-                  <Button
-                    onClick={async () => {
-                      this.setState({
-                        deleteDialogVisible: true
-                      });
-
-                      Modal.confirm({
-                        title: item.email === authStore.currentUser.email
-                          ? "Do you really want to leave this project?"
-                          : "Do you really want to remove this user from the project?",
-                        content: "This cannot be undone.",
-                        okText: "Yes",
-                        okType: "danger",
-                        cancelText: "No",
-                        visible: this.state.deleteDialogVisible,
-                        onOk: async () => {
-                          const deleteMemberResponse = await MembersAPI.deleteMember(this.props.match.params.projectId, item.key);
-                          if (item.email === authStore.currentUser.email) {
-                            if (!deleteMemberResponse.errors) {
-                              this.props.history.push(Routes.DASHBOARD.PROJECTS);
-                            }
-                          } else {
-                            const getMembersResponse = await MembersAPI.getMembers(this.props.match.params.projectId);
-                            this.setState({
-                              getMembersResponse: getMembersResponse,
-                              deleteDialogVisible: false
-                            });
-                          }
-                        },
-                        onCancel: () => {
-                          this.setState({
-                            deleteDialogVisible: false
-                          });
-                        }
-                      });
+                  <Select
+                    showSearch
+                    placeholder="Select a role"
+                    optionFilterProp="children"
+                    filterOption
+                    style={{ marginRight: 24, width: 240 }}
+                    value={item.role}
+                    onChange={async (value: string) => {
+                      await MembersAPI.updateMember(this.props.match.params.projectId, item.id, value);
+                      await this.reload();
+                      message.success("User role updated");
                     }}
+                  >
+                    <Select.Option value="translator">Übersetzer</Select.Option>
+                    <Select.Option value="developer">Entwickler</Select.Option>
+                    <Select.Option value="manager">Manager</Select.Option>
+                    <Select.Option value="owner">Eigentümer</Select.Option>
+                  </Select>
+                  <Button
+                    onClick={async () => { await this.onRemove(item); }}
                     type="danger"
+                    style={{ width: 120 }}
+                    disabled={item.role_source === "organization"}
                   >
                     {item.email === authStore.currentUser.email ? "Leave" : "Remove"}
                   </Button>

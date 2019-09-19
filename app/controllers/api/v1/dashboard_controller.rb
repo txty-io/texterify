@@ -1,6 +1,7 @@
 class Api::V1::DashboardController < Api::V1::ApiController
   # Returns relevant activity for a user.
   def activity
+    skip_authorization
     limit = 5
     if params[:limit].present?
       limit = params[:limit].to_i || 5

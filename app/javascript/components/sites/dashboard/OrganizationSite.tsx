@@ -59,7 +59,7 @@ class OrganizationSite extends React.Component<IProps, IState> {
                 <h3 style={{ marginBottom: 24 }}>Projects</h3>
                 <ProjectsList
                   projects={
-                    this.state.responseOrganization ?
+                    this.state.responseOrganization && this.state.responseOrganization.included ?
                       this.state.responseOrganization.included
                         .filter((included) => included.type === "project") :
                       []

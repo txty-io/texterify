@@ -176,7 +176,6 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
 
     it 'updates a project with name' do
       project = Project.new(name: 'Old Name')
-      project.user = @user
       project.save!
 
       @user.user_projects << project

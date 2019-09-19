@@ -1,8 +1,12 @@
 module Api::V1
   class ApiController < ApplicationController
+    include Pundit
+
     before_action :authenticate_user_from_token!
     before_action :verify_signed_in
     before_action :set_paper_trail_whodunnit
+
+    after_action :verify_authorized
 
     # Handle record not found errors.
     rescue_from ActiveRecord::RecordNotFound do |e|

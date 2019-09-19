@@ -1,5 +1,6 @@
 class Api::V1::OrganizationsController < Api::V1::ApiController
   def image
+    skip_authorization
     organization = Organization.find(params[:organization_id])
 
     if organization
@@ -16,15 +17,19 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
 
   def image_create
     organization = Organization.find(params[:organization_id])
+    authorize organization
     organization.image.attach(params[:image])
   end
 
   def image_destroy
     organization = Organization.find(params[:organization_id])
+    authorize organization
     organization.image.purge
   end
 
   def index
+    skip_authorization
+
     page = 0
     if params[:page].present?
       page = (params[:page].to_i || 1) - 1
@@ -53,6 +58,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
   end
 
   def create
+    skip_authorization
     organization = Organization.new(organization_params)
 
     ActiveRecord::Base.transaction do
@@ -63,7 +69,16 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
         raise ActiveRecord::Rollback
       end
 
-      current_user.organizations << organization
+      organization_user = OrganizationUser.new
+      organization_user.user_id = current_user.id
+      organization_user.organization_id = organization.id
+      organization_user.role = 'owner'
+      unless organization_user.save
+        render json: {
+          errors: organization_user.errors.full_messages.map { |error| "#{error}." }
+        }, status: :bad_request
+        raise ActiveRecord::Rollback
+      end
 
       options = {}
       options[:params] = { current_user: current_user }
@@ -73,6 +88,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
 
   def update
     organization = current_user.organizations.find(params[:id])
+    authorize organization
 
     if organization.update(organization_params)
       options = {}
@@ -87,6 +103,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
   end
 
   def show
+    skip_authorization
     organization = current_user.organizations.find(params[:id])
 
     options = {}
@@ -97,6 +114,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
 
   def destroy
     organization = current_user.organizations.find(params[:id])
+    authorize organization
     organization.destroy
 
     render json: {

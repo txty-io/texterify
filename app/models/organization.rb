@@ -6,4 +6,8 @@ class Organization < ApplicationRecord
   has_many :projects, dependent: :destroy
 
   has_one_attached :image
+
+  def role_of(user)
+    organization_users.find_by(user_id: user.id).role
+  end
 end

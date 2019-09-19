@@ -87,7 +87,7 @@ class UserAccessTokensSettingsSiteUnwrapped extends React.Component<IProps, ISta
   }
 
   getRows = (): any[] => {
-    if (!this.state.getTokensResponse) {
+    if (!this.state.getTokensResponse || !this.state.getTokensResponse.data) {
       return [];
     }
 

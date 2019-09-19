@@ -1,7 +1,5 @@
-import { authStore } from "../../stores/AuthStore";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
-import { ProjectsAPI } from "./ProjectsAPI";
 
 const MembersAPI = {
   getMembers: async (projectId: string): Promise<any> => {
@@ -17,6 +15,13 @@ const MembersAPI = {
 
   deleteMember: async (projectId: string, userId: string): Promise<any> => {
     return API.deleteRequest(`projects/${projectId}/members/${userId}`, true)
+      .then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
+  },
+
+  updateMember: async (projectId: string, userId: string, role: string): Promise<any> => {
+    return API.putRequest(`projects/${projectId}/members/${userId}`, true, {
+      role: role
+    })
       .then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   }
 };

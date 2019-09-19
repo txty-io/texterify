@@ -1,5 +1,6 @@
 class Api::V1::LanguagesController < Api::V1::ApiController
   def index
+    skip_authorization
     project = current_user.projects.find(params[:project_id])
 
     page = 0
@@ -49,6 +50,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     language = Language.new(language_params)
     language.project = project
     language.country_code = country_code if country_code
+    authorize language
 
     if params[:parent].present?
       language.parent = project.languages.find(params[:parent])
@@ -75,6 +77,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
   def update
     project = current_user.projects.find(params[:project_id])
     language = project.languages.find(params[:id])
+    authorize language
 
     # Update country code
     country_code = CountryCode.find_by(id: params[:country_code])
@@ -105,6 +108,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
   def destroy
     project = current_user.projects.find(params[:project_id])
     language_to_destroy = project.languages.find(params[:language][:id])
+    authorize language_to_destroy
     project.languages.delete(language_to_destroy)
 
     render json: {
@@ -116,6 +120,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
   def destroy_multiple
     project = current_user.projects.find(params[:project_id])
     languages_to_destroy = project.languages.find(params[:languages])
+    languages_to_destroy.each { |language| authorize language }
     project.languages.delete(languages_to_destroy)
 
     render json: {

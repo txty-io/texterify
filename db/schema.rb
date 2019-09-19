@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_10_133453) do
+ActiveRecord::Schema.define(version: 2019_09_18_092339) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -95,11 +95,12 @@ ActiveRecord::Schema.define(version: 2019_09_10_133453) do
     t.index ["name"], name: "index_organizations_on_name", unique: true
   end
 
-  create_table "organizations_users", id: false, force: :cascade do |t|
+  create_table "organizations_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.uuid "organization_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "role", default: "translator", null: false
     t.index ["organization_id"], name: "index_organizations_users_on_organization_id"
     t.index ["user_id"], name: "index_organizations_users_on_user_id"
   end
@@ -128,19 +129,18 @@ ActiveRecord::Schema.define(version: 2019_09_10_133453) do
   create_table "projects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "description"
-    t.uuid "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "organization_id"
     t.index ["organization_id"], name: "index_projects_on_organization_id"
-    t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
-  create_table "projects_users", id: false, force: :cascade do |t|
+  create_table "projects_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.uuid "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "role", default: "translator", null: false
     t.index ["project_id"], name: "index_projects_users_on_project_id"
     t.index ["user_id"], name: "index_projects_users_on_user_id"
   end
@@ -212,7 +212,6 @@ ActiveRecord::Schema.define(version: 2019_09_10_133453) do
   add_foreign_key "project_columns", "projects"
   add_foreign_key "project_columns", "users"
   add_foreign_key "projects", "organizations"
-  add_foreign_key "projects", "users"
   add_foreign_key "projects_users", "projects"
   add_foreign_key "projects_users", "users"
   add_foreign_key "translations", "keys"

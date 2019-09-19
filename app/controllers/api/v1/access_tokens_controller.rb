@@ -1,9 +1,11 @@
 class Api::V1::AccessTokensController < Api::V1::ApiController
   def index
+    skip_authorization
     render json: AccessTokenSerializer.new(current_user.access_tokens).serialized_json
   end
 
   def create
+    skip_authorization
     access_token = AccessToken.new(access_token_params)
     access_token.secret = SecureRandom.urlsafe_base64(nil, false)
     access_token.user = current_user
@@ -23,6 +25,7 @@ class Api::V1::AccessTokensController < Api::V1::ApiController
   end
 
   def destroy
+    skip_authorization
     access_token = current_user.access_tokens.find(params[:id])
 
     if access_token.destroy

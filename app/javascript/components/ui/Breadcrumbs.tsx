@@ -15,24 +15,6 @@ interface IState { }
 
 @observer
 class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
-  getOrganizationId = () => {
-    return (this.getProjectOrganization() && this.getProjectOrganization().id) ||
-      this.props.match.params.organizationId;
-  }
-
-  getOrganizationName = () => {
-    if (this.getProjectOrganization()) {
-      return this.getProjectOrganization().attributes.name;
-    } else {
-      return dashboardStore.currentOrganization ? dashboardStore.currentOrganization.attributes.name : "Organization";
-    }
-  }
-
-  getProjectOrganization = () => {
-    return dashboardStore.currentProject &&
-      APIUtils.getIncludedObject(dashboardStore.currentProject.relationships.organization.data, dashboardStore.currentProjectIncluded);
-  }
-
   resolveBreadcrumbs = (): any[] => {
     const breadcrumbs: any = {
       dashboard: {
@@ -51,7 +33,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
         path: Routes.DASHBOARD.PROJECTS
       },
       project: {
-        parent: this.getProjectOrganization() ? "organization" : "projects",
+        parent: dashboardStore.getProjectOrganization() ? "organization" : "projects",
         name: dashboardStore.currentProject ? dashboardStore.currentProject.attributes.name : "Project",
         path: Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId)
       },
@@ -65,18 +47,24 @@ class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
         parent: "organizations",
         name: (
           <>
-            {(this.getProjectOrganization() ||
-              this.getOrganizationId()) && <OrganizationAvatar
+            {(dashboardStore.getProjectOrganization() ||
+              dashboardStore.getOrganizationId(this.props.match.params.organizationId)) && <OrganizationAvatar
                 style={{ height: 16, width: 16, marginRight: 8 }}
                 dontRenderIfNoImage
-                organization={this.getProjectOrganization() ||
-                  (this.getOrganizationId() ? { id: this.getOrganizationId() } : undefined)
+                organization={dashboardStore.getProjectOrganization() ||
+                  (dashboardStore.getOrganizationId(this.props.match.params.organizationId) ?
+                    { id: dashboardStore.getOrganizationId(this.props.match.params.organizationId) } :
+                    undefined
+                  )
                 }
               />}
-            {this.getOrganizationName()}
+            {dashboardStore.getOrganizationName()}
           </>
         ),
-        path: Routes.DASHBOARD.ORGANIZATION.replace(":organizationId", this.getOrganizationId())
+        path: Routes.DASHBOARD.ORGANIZATION.replace(
+          ":organizationId",
+          dashboardStore.getOrganizationId(this.props.match.params.organizationId)
+        )
       },
       organizationMembers: {
         parent: "organization",
