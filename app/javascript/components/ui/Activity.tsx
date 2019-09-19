@@ -209,7 +209,7 @@ class Activity extends React.Component<IProps, IState> {
 
   render() {
     if (!this.props.activitiesResponse || !this.props.activitiesResponse.data) {
-      return undefined;
+      return null;
     }
 
     if (this.props.activitiesResponse.data.length === 0) {
