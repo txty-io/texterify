@@ -27,6 +27,7 @@ echo SECRET_KEY_BASE=`openssl rand -hex 64` > secrets.env
 
 # Start the service.
 docker volume create --name=texterify-database
+docker volume create --name=texterify-assets
 docker-compose up -d
 
 # Create the database.
