@@ -18,5 +18,15 @@ FactoryBot.define do
         create_list(:project, evaluator.projects_count, users_project: [user])
       end
     end
+
+    factory :user_with_organizations do
+      transient do
+        organizations_count { 5 }
+      end
+
+      after(:create) do |user, evaluator|
+        create_list(:organization, evaluator.organizations_count, users: [user])
+      end
+    end
   end
 end
