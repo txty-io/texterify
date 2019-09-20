@@ -1,0 +1,16 @@
+DatabaseConsistencySettings:
+  color: true
+  # log_level: DEBUG
+
+# See issue for details why this checks are disabled.
+# https://github.com/djezzzl/database_consistency/issues/36
+User:
+  email:
+    ColumnPresenceChecker:
+      enabled: false
+  uid:
+    ColumnPresenceChecker:
+      enabled: false
+  email+provider:
+    MissingUniqueIndexChecker:
+      enabled: false

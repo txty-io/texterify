@@ -46,8 +46,6 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     arel (9.0.0)
     ast (2.4.0)
-    audited (4.9.0)
-      activerecord (>= 4.2, < 6.1)
     babel-source (5.8.35)
     babel-transpiler (0.7.0)
       babel-source (>= 4.0, < 6)
@@ -72,6 +70,8 @@ GEM
     connection_pool (2.2.2)
     crass (1.0.4)
     database_cleaner (1.7.0)
+    database_consistency (0.7.4)
+      activerecord (>= 3.2)
     devise (4.7.0)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -296,11 +296,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  audited (~> 4.7)
   bootsnap
   byebug
   capybara (~> 2.13)
   database_cleaner
+  database_consistency
   devise (= 4.7.0)
   devise_token_auth (= 1.1.2)
   dotenv-rails

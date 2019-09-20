@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_18_092339) do
+ActiveRecord::Schema.define(version: 2019_09_20_143236) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -105,16 +105,6 @@ ActiveRecord::Schema.define(version: 2019_09_18_092339) do
     t.index ["user_id"], name: "index_organizations_users_on_user_id"
   end
 
-  create_table "permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "permission", null: false
-    t.uuid "user_id", null: false
-    t.uuid "project_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["project_id"], name: "index_permissions_on_project_id"
-    t.index ["user_id"], name: "index_permissions_on_user_id"
-  end
-
   create_table "project_columns", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "project_id", null: false
     t.uuid "user_id", null: false
@@ -181,7 +171,7 @@ ActiveRecord::Schema.define(version: 2019_09_18_092339) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
-    t.index ["username"], name: "index_users_on_username"
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   create_table "versions", force: :cascade do |t|
@@ -207,8 +197,6 @@ ActiveRecord::Schema.define(version: 2019_09_18_092339) do
   add_foreign_key "languages_project_columns", "project_columns"
   add_foreign_key "organizations_users", "organizations"
   add_foreign_key "organizations_users", "users"
-  add_foreign_key "permissions", "projects"
-  add_foreign_key "permissions", "users"
   add_foreign_key "project_columns", "projects"
   add_foreign_key "project_columns", "users"
   add_foreign_key "projects", "organizations"
