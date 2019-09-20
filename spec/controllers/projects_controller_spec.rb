@@ -210,4 +210,46 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       end
     end
   end
+
+  describe 'DESTROY delete' do
+    permissions_destroy = {
+      'translator' => 403,
+      'developer' => 403,
+      'manager' => 200,
+      'owner' => 200
+    }
+
+    it 'responds with json by default' do
+      delete '/api/v1/projects/1'
+      expect(response.content_type).to eq 'application/json'
+    end
+
+    it 'responds with json even by set format' do
+      delete '/api/v1/projects/1', params: { format: :html }
+      expect(response.content_type).to eq 'application/json'
+    end
+
+    permissions_destroy.each do |permission, expected_response_status|
+      it "#{expected_response_status == 200 ? 'succeeds' : 'fails'} to delete a project as #{permission} of project" do
+        project = Project.new(name: 'Project name')
+        project.save!
+
+        project_user = ProjectUser.new
+        project_user.user_id = @user.id
+        project_user.project_id = project.id
+        project_user.role = permission
+        project_user.save!
+
+        expect do
+          delete "/api/v1/projects/#{project.id}", headers: @auth_params, as: :json
+        end.to change(Project, :count).by(expected_response_status == 200 ? -1 : 0)
+
+        expect(response.status).to eq(expected_response_status)
+        if expected_response_status == 200
+          body = JSON.parse(response.body)
+          expect(body['message']).to eq('Project deleted')
+        end
+      end
+    end
+  end
 end
