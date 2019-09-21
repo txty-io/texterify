@@ -42,7 +42,12 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
   def destroy
     project = current_user.projects.find(params[:project_id])
     project_user = ProjectUser.find_by!(user_id: params[:id], project_id: project.id)
-    authorize project_user
+
+    if params[:id] == current_user.id
+      skip_authorization
+    else
+      authorize project_user
+    end
 
     if current_user.id == params[:id] && project.users.count == 1
       render json: {

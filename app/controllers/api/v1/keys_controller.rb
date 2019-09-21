@@ -86,7 +86,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     key = project.keys.find(params[:id])
     authorize key
 
-    if key.update(key_params)
+    if key.update(permitted_attributes(key))
       render json: {
         message: 'key updated'
       }

@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Styles } from "../../ui/Styles";
+import { PermissionUtils, ROLES_DEVELOPER_UP, ROLES_MANAGER_UP } from "../../utilities/PermissionUtils";
 const { Sider } = Layout;
 
 const SidebarTrigger = styled.div`
@@ -27,6 +28,7 @@ interface INavigationData {
   icon: string;
   path: string;
   text: string;
+  roles?: string[];
 }
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
@@ -55,12 +57,14 @@ class ProjectSidebar extends React.Component<IProps, IState> {
     {
       icon: "upload",
       path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
-      text: "Import"
+      text: "Import",
+      roles: ROLES_DEVELOPER_UP
     },
     {
       icon: "download",
       path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
-      text: "Export"
+      text: "Export",
+      roles: ROLES_DEVELOPER_UP
     },
     {
       icon: "line-chart",
@@ -75,13 +79,24 @@ class ProjectSidebar extends React.Component<IProps, IState> {
     {
       icon: "tool",
       path: Routes.DASHBOARD.PROJECT_SETTINGS.replace(":projectId", this.props.match.params.projectId),
-      text: "Settings"
+      text: "Settings",
+      roles: ROLES_MANAGER_UP
     }
   ];
 
   state: IState = {
     selectedItem: 0
   };
+
+  isMenuItemEnabled = (requiredRoles: string[]) => {
+    if (!requiredRoles) {
+      return true;
+    }
+
+    const role = dashboardStore.getCurrentRole();
+
+    return requiredRoles.indexOf(role) !== -1;
+  }
 
   renderMenuItems = (): JSX.Element[] => {
     return [
@@ -105,7 +120,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
       ),
       ...this.navigationData.map((data: INavigationData, index: number) => {
         return (
-          <Menu.Item key={index} title={data.text}>
+          <Menu.Item key={index} title={data.text} disabled={!this.isMenuItemEnabled(data.roles)}>
             <Link to={data.path} className="nav-text">
               <Icon type={data.icon} className="nav-text" style={{ marginRight: 8 }} />
               <span>

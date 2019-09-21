@@ -22,6 +22,8 @@ interface IProjectAttributes {
   id: string;
   name: string;
   description: string;
+  current_user_role?: string;
+  current_user_role_source?: string;
 }
 
 class DashboardStore {
@@ -47,6 +49,10 @@ class DashboardStore {
   getProjectOrganization = () => {
     return dashboardStore.currentProject &&
       APIUtils.getIncludedObject(dashboardStore.currentProject.relationships.organization.data, dashboardStore.currentProjectIncluded);
+  }
+
+  getCurrentRole = () => {
+    return this.currentProject && this.currentProject.attributes.current_user_role;
   }
 }
 

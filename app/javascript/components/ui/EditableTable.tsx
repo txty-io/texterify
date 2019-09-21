@@ -2,6 +2,8 @@ import { Empty, Form, Input, message, Table } from "antd";
 import * as React from "react";
 import { KeysAPI } from "../api/v1/KeysAPI";
 import { TranslationsAPI } from "../api/v1/TranslationsAPI";
+import { dashboardStore } from "../stores/DashboardStore";
+import { PermissionUtils } from "../utilities/PermissionUtils";
 const FormItem = Form.Item;
 
 const EditableContext = React.createContext(undefined);
@@ -105,6 +107,8 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
 
               // console.error(restProps.children);
 
+              const isCellEditEnabled = this.props.dataIndex !== "name" || PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole());
+
               return (
                 editing ? (
                   <FormItem style={{ margin: 0 }}>
@@ -125,9 +129,9 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
                 ) : (
                     // tslint:disable-next-line:react-no-dangerous-html
                     <div
-                      className="editable-cell-value-wrap"
+                      className={isCellEditEnabled ? "editable-cell-value-wrap" : undefined}
                       style={{ maxWidth: 400, overflow: "scroll", display: "flex", flexDirection: "column", justifyContent: "center", wordBreak: "break-all" }}
-                      onClick={this.toggleEdit}
+                      onClick={isCellEditEnabled ? this.toggleEdit : undefined}
                       role="button"
                       dangerouslySetInnerHTML={
                         this.props.record.htmlEnabled ?

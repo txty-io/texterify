@@ -9,6 +9,7 @@ import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { Loading } from "../../ui/Loading";
 import { UserAvatar } from "../../ui/UserAvatar";
+import { PermissionUtils } from "../../utilities/PermissionUtils";
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
 interface IState {
@@ -114,6 +115,7 @@ class MembersSite extends React.Component<IProps, IState> {
               }}
               value={this.state.userAddEmail}
               style={{ maxWidth: 400 }}
+              disabled={!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())}
             />
             <Button
               style={{ marginLeft: 8 }}
@@ -131,7 +133,7 @@ class MembersSite extends React.Component<IProps, IState> {
                   userAddEmail: ""
                 });
               }}
-              disabled={this.state.userAddEmail === ""}
+              disabled={this.state.userAddEmail === "" || !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())}
             >
               Invite
             </Button>
@@ -165,6 +167,7 @@ class MembersSite extends React.Component<IProps, IState> {
                       await this.reload();
                       message.success("User role updated");
                     }}
+                    disabled={!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())}
                   >
                     <Select.Option value="translator">Übersetzer</Select.Option>
                     <Select.Option value="developer">Entwickler</Select.Option>
@@ -175,7 +178,13 @@ class MembersSite extends React.Component<IProps, IState> {
                     onClick={async () => { await this.onRemove(item); }}
                     type="danger"
                     style={{ width: 120 }}
-                    disabled={item.role_source === "organization"}
+                    disabled={
+                      item.role_source === "organization" ||
+                      (
+                        !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) &&
+                        item.email !== authStore.currentUser.email
+                      )
+                    }
                   >
                     {item.email === authStore.currentUser.email ? "Leave" : "Remove"}
                   </Button>

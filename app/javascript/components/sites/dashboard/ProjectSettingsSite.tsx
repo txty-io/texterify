@@ -7,8 +7,10 @@ import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { NewProjectForm } from "../../forms/NewProjectForm";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
+import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { SettingsSectionWrapper } from "../../ui/SettingsSectionWrapper";
+import { PermissionUtils } from "../../utilities/PermissionUtils";
 const { Content } = Layout;
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
@@ -64,7 +66,11 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                 </Button>
               </SettingsSectionWrapper>
             </Collapse.Panel>
-            <Collapse.Panel header="Advanced settings" key="advanced">
+            <Collapse.Panel
+              header="Advanced settings"
+              key="advanced"
+              disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}
+            >
               <SettingsSectionWrapper>
                 <Alert
                   message="Remove project"
@@ -81,7 +87,12 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                   type="warning"
                   showIcon
                 />
-                <Button type="danger" onClick={this.onDeleteProjectClick} style={{ alignSelf: "flex-end", marginTop: 16 }}>
+                <Button
+                  type="danger"
+                  onClick={this.onDeleteProjectClick}
+                  style={{ alignSelf: "flex-end", marginTop: 16 }}
+                  disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}
+                >
                   Remove project
                 </Button>
               </SettingsSectionWrapper>

@@ -5,9 +5,11 @@ import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { AddEditLanguageForm } from "../../forms/AddEditLanguageForm";
+import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import FlagIcon from "../../ui/FlagIcons";
+import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { sortStrings } from "../../utilities/Sorter";
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
@@ -36,6 +38,11 @@ class LanguagesSite extends React.Component<IProps, IState> {
       this.setState({
         selectedRowLanguages: selectedRowLanguages
       });
+    },
+    getCheckboxProps: () => {
+      return {
+        disabled: !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())
+      };
     }
   };
 
@@ -93,7 +100,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
   }
 
   getColumns = (): any[] => {
-    return [
+    const columns: any[] = [
       {
         title: "Flag",
         dataIndex: "code",
@@ -113,13 +120,18 @@ class LanguagesSite extends React.Component<IProps, IState> {
             true
           );
         }
-      },
-      {
+      }
+    ];
+
+    if (PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())) {
+      columns.push({
         title: "",
         dataIndex: "controls",
         width: 50
-      }
-    ];
+      });
+    }
+
+    return columns;
   }
 
   onEditLanguageClick = (language: any) => {
@@ -208,13 +220,21 @@ class LanguagesSite extends React.Component<IProps, IState> {
             <h1>Languages</h1>
             <div style={{ display: "flex" }}>
               <div style={{ flexGrow: 1 }}>
-                <Button type="default" style={{ marginRight: 10 }} onClick={() => { this.setState({ addDialogVisible: true }); }}>
+                <Button
+                  type="default"
+                  style={{ marginRight: 10 }}
+                  onClick={() => { this.setState({ addDialogVisible: true }); }}
+                  disabled={!PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())}
+                >
                   Create language
                 </Button>
                 <Button
                   type="danger"
                   onClick={this.onDeleteLanguages}
-                  disabled={this.state.selectedRowLanguages.length === 0}
+                  disabled={
+                    this.state.selectedRowLanguages.length === 0 ||
+                    !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())
+                  }
                   loading={this.state.isDeleting}
                 >
                   Delete selected

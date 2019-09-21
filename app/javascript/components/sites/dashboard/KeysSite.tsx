@@ -15,6 +15,7 @@ import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { Loading } from "../../ui/Loading";
 import { Utils } from "../../ui/Utils";
+import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { sortStrings } from "../../utilities/Sorter";
 import { TranslationCard } from "./editor/TranslationCard";
 const { Content } = Layout;
@@ -89,6 +90,11 @@ class KeysSite extends React.Component<IProps, IState> {
       this.setState({
         selectedRowKeys: selectedRowKeys
       });
+    },
+    getCheckboxProps: () => {
+      return {
+        disabled: !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())
+      };
     }
   };
 
@@ -283,6 +289,7 @@ class KeysSite extends React.Component<IProps, IState> {
                       await this.changeHTMLEnabled(key);
                       await this.reloadTable();
                     }}
+                    disabled={!PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())}
                   />
                 </div>
                 <div
@@ -469,13 +476,21 @@ class KeysSite extends React.Component<IProps, IState> {
             <h1>Keys</h1>
             <div style={{ display: "flex" }}>
               <div style={{ flexGrow: 1 }}>
-                <Button type="default" style={{ marginRight: 8 }} onClick={() => { this.setState({ addDialogVisible: true }); }}>
+                <Button
+                  type="default"
+                  style={{ marginRight: 8 }}
+                  onClick={() => { this.setState({ addDialogVisible: true }); }}
+                  disabled={!PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())}
+                >
                   Create key
                 </Button>
                 <Button
                   type="danger"
                   onClick={this.onDeleteKeys}
-                  disabled={this.state.selectedRowKeys.length === 0}
+                  disabled={
+                    this.state.selectedRowKeys.length === 0 ||
+                    !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())
+                  }
                   loading={this.state.isDeleting}
                 >
                   Delete selected
