@@ -58,15 +58,16 @@
     "yarn": ">=1.5.1"
   },
   "scripts": {
+    "check:database-consistency": "bundle exec database_consistency",
+    "lint": "yarn lint:frontend && yarn lint:backend",
     "lint:frontend": "tslint --project tsconfig.json -c tslint.json",
     "lint:backend": "bundle exec rubocop",
-    "lint": "yarn lint:frontend && yarn lint:backend",
+    "prod-local:setup": "SECRET_KEY_BASE=`bin/rails secret` RAILS_ENV=production bundle exec rails db:create db:migrate db:seed",
+    "prod-local:precompile": "SECRET_KEY_BASE=`bin/rails secret` RAILS_ENV=production bundle exec rails assets:precompile",
+    "prod-local:start": "SECRET_KEY_BASE=`bin/rails secret` RAILS_ENV=production RAILS_SERVE_STATIC_FILES=true bundle exec rails s",
     "start": "bundle exec rails server -p 3010",
     "start:watcher": "./bin/webpack-dev-server",
     "test": "yarn test:backend",
-    "test:backend": "RAILS_ENV=test bundle exec rspec",
-    "prod-local:setup": "SECRET_KEY_BASE=`bin/rails secret` RAILS_ENV=production bundle exec rails db:create db:migrate db:seed",
-    "prod-local:precompile": "SECRET_KEY_BASE=`bin/rails secret` RAILS_ENV=production bundle exec rails assets:precompile",
-    "prod-local:start": "SECRET_KEY_BASE=`bin/rails secret` RAILS_ENV=production RAILS_SERVE_STATIC_FILES=true bundle exec rails s"
+    "test:backend": "RAILS_ENV=test bundle exec rspec"
   }
 }
