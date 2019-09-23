@@ -77,9 +77,8 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
       project_user.user = User.find(params[:id])
     end
 
-    authorize project_user
-
     project_user.role = params[:role]
+    authorize project_user
     project_user.save!
 
     render json: {

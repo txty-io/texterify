@@ -7,18 +7,36 @@ class OrganizationUserPolicy
   end
 
   def create?
-    ROLES_MANAGER_UP.include? organization_user_role
+    if higher_role_or_both_highest
+      ROLES_MANAGER_UP.include? organization_user_role
+    else
+      false
+    end
   end
 
   def update?
-    ROLES_MANAGER_UP.include? project_user_role
+    if higher_role_or_both_highest
+      ROLES_MANAGER_UP.include? organization_user_role
+    else
+      false
+    end
   end
 
   def destroy?
-    ROLES_MANAGER_UP.include? organization_user_role
+    if higher_role_or_both_highest
+      ROLES_MANAGER_UP.include? organization_user_role
+    else
+      false
+    end
   end
 
   private
+
+  def higher_role_or_both_highest
+    is_higher = ROLE_PRIORITY_MAP[organization_user_role.to_sym] > ROLE_PRIORITY_MAP[organization_user.role.to_sym]
+
+    is_higher || organization_user_role == ROLE_OWNER
+  end
 
   def organization_user_role
     organization_user.organization.role_of(user)

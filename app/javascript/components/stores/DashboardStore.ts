@@ -54,6 +54,10 @@ class DashboardStore {
   getCurrentRole = () => {
     return this.currentProject && this.currentProject.attributes.current_user_role;
   }
+
+  getCurrentOrganizationRole = () => {
+    return this.currentOrganization && this.currentOrganization.attributes.current_user_role;
+  }
 }
 
 const hydrate: any = create({

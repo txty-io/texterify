@@ -2,7 +2,10 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
   def index
     skip_authorization
     organization = current_user.organizations.find(params[:organization_id])
-    render json: UserSerializer.new(organization.users).serialized_json
+
+    options = {}
+    options[:params] = { organization: organization }
+    render json: UserSerializer.new(organization.users, options).serialized_json
   end
 
   def create
@@ -33,7 +36,13 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
 
   def destroy
     organization = current_user.organizations.find(params[:organization_id])
-    authorize organization
+    organization_user = OrganizationUser.find_by!(user_id: params[:id], organization_id: organization.id)
+
+    if params[:id] == current_user.id
+      skip_authorization
+    else
+      authorize organization_user
+    end
 
     if current_user.id == params[:id] && organization.users.count == 1
       render json: {
@@ -46,11 +55,29 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
       return
     end
 
-    member_to_remove = organization.users.find(params[:id])
-    organization.users.delete(member_to_remove)
+    organization_user.destroy
 
     render json: {
       message: 'User removed from organization'
+    }
+  end
+
+  def update
+    organization = current_user.organizations.find(params[:organization_id])
+    organization_user = OrganizationUser.find_by(organization_id: organization.id, user_id: params[:id])
+
+    unless organization_user
+      organization_user = OrganizationUser.new
+      organization_user.organization = organization
+      organization_user.user = User.find(params[:id])
+    end
+
+    organization_user.role = params[:role]
+    authorize organization_user
+    organization_user.save!
+
+    render json: {
+      message: 'User role updated'
     }
   end
 end

@@ -51,7 +51,7 @@ class MembersSite extends React.Component<IProps, IState> {
           username: member.attributes.username,
           email: member.attributes.email,
           role: member.attributes.role,
-          role_source: member.attributes.role_source
+          roleSource: member.attributes.role_source
         };
       },
       []
@@ -151,7 +151,7 @@ class MembersSite extends React.Component<IProps, IState> {
                       <div style={{ fontWeight: "bold" }}>{item.username}</div>
                       <div>{item.email}</div>
                     </div>
-                    {item.role_source === "organization" &&
+                    {item.roleSource === "organization" &&
                       <Tag color="geekblue" style={{ marginLeft: 24 }}>{dashboardStore.getOrganizationName()}</Tag>
                     }
                   </div>
@@ -163,25 +163,36 @@ class MembersSite extends React.Component<IProps, IState> {
                     style={{ marginRight: 24, width: 240 }}
                     value={item.role}
                     onChange={async (value: string) => {
-                      await MembersAPI.updateMember(this.props.match.params.projectId, item.id, value);
-                      await this.reload();
-                      message.success("User role updated");
+                      try {
+                        await MembersAPI.updateMember(this.props.match.params.projectId, item.id, value);
+                        await this.reload();
+                        message.success("User role updated");
+                      } catch (e) {
+                        console.error(e);
+                        message.error("Error while updating user role.");
+                      }
                     }}
-                    disabled={!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())}
+                    disabled={
+                      !(
+                        PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) &&
+                        PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), item.role)
+                      ) &&
+                      !PermissionUtils.isOwner(dashboardStore.getCurrentRole())
+                    }
                   >
-                    <Select.Option value="translator">Übersetzer</Select.Option>
-                    <Select.Option value="developer">Entwickler</Select.Option>
-                    <Select.Option value="manager">Manager</Select.Option>
-                    <Select.Option value="owner">Eigentümer</Select.Option>
+                    <Select.Option value="translator" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), "translator")}>Übersetzer</Select.Option>
+                    <Select.Option value="developer" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), "developer")}>Entwickler</Select.Option>
+                    <Select.Option value="manager" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), "manager")}>Manager</Select.Option>
+                    <Select.Option value="owner" disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}>Eigentümer</Select.Option>
                   </Select>
                   <Button
                     onClick={async () => { await this.onRemove(item); }}
                     type="danger"
-                    style={{ width: 120 }}
                     disabled={
-                      item.role_source === "organization" ||
+                      item.roleSource === "organization" ||
                       (
                         !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) &&
+                        !PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), item.role) &&
                         item.email !== authStore.currentUser.email
                       )
                     }

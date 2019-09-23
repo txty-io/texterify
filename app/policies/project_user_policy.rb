@@ -7,18 +7,36 @@ class ProjectUserPolicy
   end
 
   def create?
-    ROLES_MANAGER_UP.include? project_user_role
+    if higher_role_or_both_highest
+      ROLES_MANAGER_UP.include? project_user_role
+    else
+      false
+    end
   end
 
   def update?
-    ROLES_MANAGER_UP.include? project_user_role
+    if higher_role_or_both_highest
+      ROLES_MANAGER_UP.include? project_user_role
+    else
+      false
+    end
   end
 
   def destroy?
-    ROLES_MANAGER_UP.include? project_user_role
+    if higher_role_or_both_highest
+      ROLES_MANAGER_UP.include? project_user_role
+    else
+      false
+    end
   end
 
   private
+
+  def higher_role_or_both_highest
+    is_higher = ROLE_PRIORITY_MAP[project_user_role.to_sym] > ROLE_PRIORITY_MAP[project_user.role.to_sym]
+
+    is_higher || project_user_role == ROLE_OWNER
+  end
 
   def project_user_role
     project_user.project.role_of(user)

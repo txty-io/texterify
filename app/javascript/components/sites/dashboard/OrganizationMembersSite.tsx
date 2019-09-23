@@ -1,13 +1,15 @@
-import { Button, Input, Layout, Modal } from "antd";
+import { Button, Input, Layout, message, Modal, Select } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { OrganizationMembersAPI } from "../../api/v1/OrganizationMembersAPI";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
+import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { Loading } from "../../ui/Loading";
 import { UserAvatar } from "../../ui/UserAvatar";
+import { PermissionUtils } from "../../utilities/PermissionUtils";
 const { Content } = Layout;
 
 type IProps = RouteComponentProps<{ organizationId: string }> & {};
@@ -26,14 +28,18 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
   };
 
   async componentDidMount() {
+    await this.reload();
+  }
+
+  reload = async () => {
     try {
       const responseGetMembers = await OrganizationMembersAPI.getMembers(this.props.match.params.organizationId);
 
       this.setState({
         getMembersResponse: responseGetMembers
       });
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -48,13 +54,15 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
           id: member.id,
           key: member.id,
           username: member.attributes.username,
-          email: member.attributes.email
+          email: member.attributes.email,
+          roleOrganization: member.attributes.role_organization
         };
       },
       []
     );
   }
 
+  // tslint:disable-next-line:max-func-body-length
   render() {
     if (!this.state.getMembersResponse) {
       return <Loading />;
@@ -76,6 +84,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
               }}
               value={this.state.userAddEmail}
               style={{ maxWidth: 400 }}
+              disabled={!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentOrganizationRole())}
             />
             <Button
               style={{ marginLeft: 8 }}
@@ -112,6 +121,36 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                       <div>{item.email}</div>
                     </div>
                   </div>
+                  <Select
+                    showSearch
+                    placeholder="Select a role"
+                    optionFilterProp="children"
+                    filterOption
+                    style={{ marginRight: 24, width: 240 }}
+                    value={item.roleOrganization}
+                    onChange={async (value: string) => {
+                      try {
+                        await OrganizationMembersAPI.updateMember(this.props.match.params.organizationId, item.id, value);
+                        await this.reload();
+                        message.success("User role updated");
+                      } catch (e) {
+                        console.error(e);
+                        message.error("Error while updating user role.");
+                      }
+                    }}
+                    disabled={
+                      !(
+                        PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentOrganizationRole()) &&
+                        PermissionUtils.isHigherRole(dashboardStore.getCurrentOrganizationRole(), item.roleOrganization)
+                      ) &&
+                      !PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole())
+                    }
+                  >
+                    <Select.Option value="translator" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentOrganizationRole(), "translator")}>Übersetzer</Select.Option>
+                    <Select.Option value="developer" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentOrganizationRole(), "developer")}>Entwickler</Select.Option>
+                    <Select.Option value="manager" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentOrganizationRole(), "manager")}>Manager</Select.Option>
+                    <Select.Option value="owner" disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole())}>Eigentümer</Select.Option>
+                  </Select>
                   <Button
                     onClick={async () => {
                       this.setState({
@@ -149,6 +188,14 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                       });
                     }}
                     type="danger"
+                    disabled={
+                      !(
+                        PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentOrganizationRole()) &&
+                        PermissionUtils.isHigherRole(dashboardStore.getCurrentOrganizationRole(), item.roleOrganization)
+                      ) &&
+                      !PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole()) &&
+                      item.email !== authStore.currentUser.email
+                    }
                   >
                     {item.email === authStore.currentUser.email ? "Leave" : "Remove"}
                   </Button>

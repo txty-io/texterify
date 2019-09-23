@@ -10,7 +10,7 @@ Rails.application.routes.draw do
         get :image, to: 'organizations#image'
         post :image, to: 'organizations#image_create'
         delete :image, to: 'organizations#image_destroy'
-        resources :members, only: [:create, :index, :destroy], controller: "organization_users"
+        resources :members, only: [:create, :index, :destroy, :update], controller: "organization_users"
       end
 
       resources :projects, only: [:create, :index, :destroy, :show, :update] do
