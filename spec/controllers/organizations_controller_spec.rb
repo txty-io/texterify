@@ -44,7 +44,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(10)
       expect(body['data'][0].keys).to contain_exactly('attributes', 'id', 'relationships', 'type')
-      expect(body['data'][0]['attributes'].keys).to contain_exactly('id', 'name')
+      expect(body['data'][0]['attributes'].keys).to contain_exactly('id', 'name', 'current_user_role')
       expect(body['meta']['total']).to eq(number_of_organizations)
     end
 
@@ -137,7 +137,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
       expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
-      expect(body['data']['attributes'].keys).to contain_exactly('id', 'name')
+      expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'current_user_role')
       expect(body['data']['attributes']['name']).to eq(name)
     end
 
@@ -149,7 +149,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
       expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
-      expect(body['data']['attributes'].keys).to contain_exactly('id', 'name')
+      expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'current_user_role')
       expect(body['data']['attributes']['name']).to eq(name)
     end
 
@@ -200,7 +200,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
         if expected_response_status == 200
           body = JSON.parse(response.body)
           expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
-          expect(body['data']['attributes'].keys).to contain_exactly('id', 'name')
+          expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'current_user_role')
           expect(body['data']['attributes']['name']).to eq(new_name)
         end
       end
