@@ -47,6 +47,9 @@ Style/IfUnlessModifier:
 Style/ConditionalAssignment:
   Enabled: false
 
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: "indented"
+
 Metrics/BlockLength:
   Enabled: false
 
