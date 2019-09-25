@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_20_143236) do
+ActiveRecord::Schema.define(version: 2019_09_25_230250) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -66,6 +66,14 @@ ActiveRecord::Schema.define(version: 2019_09_20_143236) do
     t.index ["project_id"], name: "index_keys_on_project_id"
   end
 
+  create_table "language_codes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_language_codes_on_code"
+  end
+
   create_table "languages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.citext "name"
     t.uuid "project_id", null: false
@@ -73,7 +81,9 @@ ActiveRecord::Schema.define(version: 2019_09_20_143236) do
     t.datetime "updated_at", null: false
     t.uuid "country_code_id"
     t.uuid "parent_id"
+    t.uuid "language_code_id"
     t.index ["country_code_id"], name: "index_languages_on_country_code_id"
+    t.index ["language_code_id"], name: "index_languages_on_language_code_id"
     t.index ["parent_id"], name: "index_languages_on_parent_id"
     t.index ["project_id", "name"], name: "index_languages_on_project_id_and_name", unique: true
     t.index ["project_id"], name: "index_languages_on_project_id"
@@ -191,6 +201,7 @@ ActiveRecord::Schema.define(version: 2019_09_20_143236) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "keys", "projects"
   add_foreign_key "languages", "country_codes"
+  add_foreign_key "languages", "language_codes"
   add_foreign_key "languages", "languages", column: "parent_id"
   add_foreign_key "languages", "projects"
   add_foreign_key "languages_project_columns", "languages"

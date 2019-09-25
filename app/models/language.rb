@@ -1,6 +1,7 @@
 class Language < ApplicationRecord
   belongs_to :project
   belongs_to :country_code, optional: true
+  belongs_to :language_code, optional: true
   belongs_to :parent, class_name: 'Language', optional: true
   has_many :children, class_name: 'Language', foreign_key: 'parent_id', dependent: :nullify, inverse_of: :parent
   has_many :keys, through: :project

@@ -17,15 +17,18 @@ class Api::V1::LanguagesController < Api::V1::ApiController
 
     languages = project.languages.order(:name)
     if params[:search]
-      languages = project.languages.where(
-        'name ilike :search',
-        search: "%#{params[:search]}%"
-      ).order(:name)
+      languages = project.languages
+        .where(
+          'name ilike :search',
+          search: "%#{params[:search]}%"
+        )
+        .order(:name)
+        .distinct
     end
 
     options = {}
     options[:meta] = { total: languages.count }
-    options[:include] = [:country_code]
+    options[:include] = [:country_code, :language_code]
     render json: LanguageSerializer.new(
       languages.offset(page * per_page).limit(per_page),
       options
@@ -46,10 +49,12 @@ class Api::V1::LanguagesController < Api::V1::ApiController
 
     project = current_user.projects.find(params[:project_id])
     country_code = CountryCode.find_by(id: params[:country_code])
+    language_code = LanguageCode.find_by(id: params[:language_code])
 
     language = Language.new(language_params)
     language.project = project
     language.country_code = country_code if country_code
+    language.language_code = language_code if language_code
     authorize language
 
     if params[:parent].present?
@@ -82,6 +87,10 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     # Update country code
     country_code = CountryCode.find_by(id: params[:country_code])
     language.country_code = country_code if country_code
+
+    # Update language code
+    language_code = LanguageCode.find_by(id: params[:language_code])
+    language.language_code = language_code if language_code
 
     if params.key? :parent
       if params[:parent].present?

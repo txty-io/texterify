@@ -1,6 +1,7 @@
 import { Button, Form, Input, Modal, Select } from "antd";
 import * as React from "react";
 import { CountryCodesAPI } from "../api/v1/CountryCodesAPI";
+import { LanguageCodesAPI } from "../api/v1/LanguageCodesAPI";
 import { LanguagesAPI } from "../api/v1/LanguagesAPI";
 import FlagIcon from "../ui/FlagIcons";
 
@@ -14,11 +15,13 @@ interface IProps {
 }
 interface IState {
   countryCodes: any[];
+  languageCodes: any[];
 }
 
 class AddEditLanguageFormUnwrapped extends React.Component<IProps, IState> {
   state: IState = {
-    countryCodes: []
+    countryCodes: [],
+    languageCodes: []
   };
 
   async componentDidMount() {
@@ -26,6 +29,17 @@ class AddEditLanguageFormUnwrapped extends React.Component<IProps, IState> {
       const countryCodes = await CountryCodesAPI.getCountryCodes();
       this.setState({
         countryCodes: countryCodes.data
+      });
+    } catch (err) {
+      if (!err.isCanceled) {
+        console.error(err);
+      }
+    }
+
+    try {
+      const languageCodes = await LanguageCodesAPI.getAll();
+      this.setState({
+        languageCodes: languageCodes.data
       });
     } catch (err) {
       if (!err.isCanceled) {
@@ -41,9 +55,20 @@ class AddEditLanguageFormUnwrapped extends React.Component<IProps, IState> {
         let response;
 
         if (this.props.languageToEdit) {
-          response = await LanguagesAPI.updateLanguage(this.props.projectId, this.props.languageToEdit.id, values.name, values.countryCode);
+          response = await LanguagesAPI.updateLanguage({
+            projectId: this.props.projectId,
+            languageId: this.props.languageToEdit.id,
+            name: values.name,
+            countryCode: values.countryCode,
+            languageCode: values.languageCode
+          });
         } else {
-          response = await LanguagesAPI.createLanguage(this.props.projectId, values.name, values.countryCode);
+          response = await LanguagesAPI.createLanguage({
+            projectId: this.props.projectId,
+            name: values.name,
+            countryCode: values.countryCode,
+            languageCode: values.languageCode
+          });
         }
 
         if (response.errors) {
@@ -103,7 +128,7 @@ class AddEditLanguageFormUnwrapped extends React.Component<IProps, IState> {
             )}
           </Form.Item>
 
-          <h3>Country</h3>
+          <h3>Country  <span style={{ fontSize: 12, marginLeft: 8, fontWeight: "bold" }}>(ISO 3166-1 alpha-2 code)</span></h3>
           <Form.Item>
             {getFieldDecorator("countryCode", {
               initialValue: this.props.languageToEdit &&
@@ -125,7 +150,35 @@ class AddEditLanguageFormUnwrapped extends React.Component<IProps, IState> {
                       <span style={{ marginRight: 8 }}>
                         <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
                       </span>
-                      {countryCode.attributes.name}
+                      {`${countryCode.attributes.name} (${countryCode.attributes.code})`}
+                    </Select.Option>
+                  );
+                })
+                }
+              </Select>
+            )}
+          </Form.Item>
+
+          <h3>Language <span style={{ fontSize: 12, marginLeft: 8, fontWeight: "bold" }}>(ISO 639-1 code)</span></h3>
+          <Form.Item>
+            {getFieldDecorator("languageCode", {
+              initialValue: this.props.languageToEdit &&
+                this.props.languageToEdit.relationships &&
+                this.props.languageToEdit.relationships.language_code &&
+                this.props.languageToEdit.relationships.language_code.data ? this.props.languageToEdit.relationships.language_code.data.id : undefined,
+              rules: []
+            })(
+              <Select
+                showSearch
+                placeholder="Select a language"
+                optionFilterProp="children"
+                filterOption
+                style={{ width: "100%" }}
+              >
+                {this.state.languageCodes.map((languageCode) => {
+                  return (
+                    <Select.Option key={languageCode.id}>
+                      {`${languageCode.attributes.name} (${languageCode.attributes.code})`}
                     </Select.Option>
                   );
                 })

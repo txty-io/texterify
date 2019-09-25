@@ -16,3 +16,13 @@ country_codes.each do |country|
   row.name = country['name']
   row.save!
 end
+
+# Add ISO 639-1 codes from file "seed_data/country_codes.json".
+# See https://github.com/haliaeetus/iso-639/blob/master/data/iso_639-1.json.
+language_codes = ActiveSupport::JSON.decode(File.read('db/seed_data/iso_639-1.json'))
+language_codes.each do |key, value|
+  row = LanguageCode.where(code: key).first_or_initialize
+  row.code = value['639-1']
+  row.name = value['name']
+  row.save!
+end

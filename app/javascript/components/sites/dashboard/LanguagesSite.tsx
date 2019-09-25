@@ -102,11 +102,16 @@ class LanguagesSite extends React.Component<IProps, IState> {
   getColumns = (): any[] => {
     const columns: any[] = [
       {
-        title: "Flag",
-        dataIndex: "code",
-        key: "code",
-        width: 20,
-        align: "center"
+        title: "Country Code",
+        dataIndex: "countryCode",
+        key: "countryCode",
+        width: 200
+      },
+      {
+        title: "Language Code",
+        dataIndex: "languageCode",
+        key: "languageCode",
+        width: 200
       },
       {
         title: "Name",
@@ -150,11 +155,22 @@ class LanguagesSite extends React.Component<IProps, IState> {
           this.state.languagesResponse.included
         );
 
+        const languageCode = APIUtils.getIncludedObject(
+          language.relationships.language_code.data,
+          this.state.languagesResponse.included
+        );
+
         return {
           key: language.attributes.id,
           name: language.attributes.name,
-          code: countryCode ?
-            <FlagIcon code={countryCode.attributes.code.toLowerCase()} /> : "",
+          countryCode: countryCode ?
+            (
+              <span>
+                <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
+                <span style={{ marginLeft: 8 }}>{countryCode.attributes.code}</span>
+              </span>
+            ) : "",
+          languageCode: languageCode ? languageCode.attributes.code : "",
           controls: (
             <div style={{ display: "flex", justifyContent: "center" }}>
               <Icon
@@ -241,7 +257,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
                 </Button>
               </div>
               <Input.Search
-                placeholder="Search languages"
+                placeholder="Search languages by name"
                 onChange={this.onSearch}
                 style={{ maxWidth: "50%" }}
               />

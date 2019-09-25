@@ -1,7 +1,5 @@
-import { authStore } from "../../stores/AuthStore";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
-import { ProjectsAPI } from "./ProjectsAPI";
 
 const LanguagesAPI = {
   getLanguages: async (projectId: string, options?: any): Promise<any> => {
@@ -12,19 +10,34 @@ const LanguagesAPI = {
     }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   },
 
-  createLanguage: async (projectId: string, name: string, countryCode: string, parent?: string): Promise<any> => {
-    return API.postRequest(`projects/${projectId}/languages`, true, {
-      name: name,
-      country_code: countryCode,
-      parent: parent
+  createLanguage: async (options: {
+    projectId: string;
+    name: string;
+    countryCode: string;
+    languageCode: string;
+    parent?: string
+  }) => {
+    return API.postRequest(`projects/${options.projectId}/languages`, true, {
+      name: options.name,
+      country_code: options.countryCode,
+      language_code: options.languageCode,
+      parent: options.parent
     }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   },
 
-  updateLanguage: async (projectId: string, languageId: string, name: string, countryCode: string, parent?: string): Promise<any> => {
-    return API.putRequest(`projects/${projectId}/languages/${languageId}`, true, {
-      name: name,
-      country_code: countryCode,
-      parent: parent
+  updateLanguage: async (options: {
+    projectId: string;
+    languageId: string;
+    name: string;
+    countryCode: string;
+    languageCode: string;
+    parent?: string
+  }) => {
+    return API.putRequest(`projects/${options.projectId}/languages/${options.languageId}`, true, {
+      name: options.name,
+      country_code: options.countryCode,
+      language_code: options.languageCode,
+      parent: options.parent
     }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   },
 

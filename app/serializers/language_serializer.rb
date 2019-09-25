@@ -2,6 +2,7 @@ class LanguageSerializer
   include FastJsonapi::ObjectSerializer
   attributes :id, :name
   belongs_to :country_code
+  belongs_to :language_code
   belongs_to :parent
 
   # Returns the progress in percent of the language translations.
