@@ -24,7 +24,7 @@ class ProjectExportConfig extends React.Component<IProps> {
                 <div style={{ display: "flex", flexDirection: "column", marginBottom: 16 }}>
                     <h3>{this.props.exportConfig.attributes.name}</h3>
                     <TextBadge
-                        text={this.props.exportConfig.id}
+                        text={`ID: ${this.props.exportConfig.id}`}
                         withCopy={this.props.exportConfig.id}
                     />
                 </div>

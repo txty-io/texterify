@@ -46,7 +46,7 @@ class UserProfileHeader extends React.Component<IProps, IState> {
             <div
                 onClick={() => { this.setState({ accountMenuVisible: true }); }}
                 role="button"
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", overflow: "hidden" }}
             >
                 <Popover
                     title="Account"
@@ -77,16 +77,19 @@ class UserProfileHeader extends React.Component<IProps, IState> {
                             </ul>
                         </AccountProfileContentWrapper>}
                 >
-                    <div style={{ display: "flex" }}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
                         <UserAvatar light user={authStore.currentUser} />
                         <div
                             style={{
                                 padding: "0 16px",
                                 borderRadius: Styles.DEFAULT_BORDER_RADIUS,
-                                display: "flex",
+                                lineHeight: "normal",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                fontWeight: "bold"
+                                fontWeight: "bold",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden"
                             }}
                         >
                             {authStore.currentUser && authStore.currentUser.username}

@@ -87,7 +87,7 @@ class ProjectSite extends React.Component<IProps, IState> {
             {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
 
             <TextBadge
-              text={`Project ID: ${this.props.match.params.projectId}`}
+              text={`ID: ${this.props.match.params.projectId}`}
               withCopy={this.props.match.params.projectId}
               style={{ marginLeft: 40 }}
             />

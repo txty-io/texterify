@@ -24,11 +24,20 @@ const TranslateButton = styled(Button)`
   border: 0;
   background: rgb(66, 75, 109);
   color: rgba(255, 255, 255, 0.95);
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &:hover {
     background: rgba(82, 93, 134);
     color: #fff;
   }
+`;
+
+const MenuList = styled.li`
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: flex;
 `;
 
 type IProps = RouteComponentProps<{ projectId?: string }> & {};
@@ -78,25 +87,24 @@ class DashboardRouter extends React.Component<IProps, IState> {
       <>
         <Layout>
           <Layout.Header
-            style={{ padding: "0 24px", display: "flex", alignItems: "center", color: "#fff", zIndex: 10, background: "linear-gradient(90deg, #2b3556 0%, #383c54 100%)" }}
+            style={{
+              padding: "0 24px",
+              display: "flex",
+              alignItems: "center",
+              color: "#fff",
+              zIndex: 10,
+              background: "linear-gradient(90deg, #2b3556 0%, #383c54 100%)",
+              overflow: "hidden"
+            }}
           >
             <Link to={Routes.DASHBOARD.ROOT} style={{ textDecoration: "none" }}>
               <h1 style={{ fontSize: 20, marginBottom: 0, marginRight: 24, textDecoration: "none", fontFamily: "Pacifico", color: "#fff" }}>Texterify</h1>
             </Link>
-            <ul className="dashboard-main-menu" style={{ marginBottom: 0, marginRight: 24, display: "flex", alignItems: "center", flexGrow: 1 }}>
-              <li>
-                {/* <Link
-                  to={Routes.DASHBOARD.ROOT}
-                  style={{
-                    background: this.props.history.location.pathname === Routes.DASHBOARD.ROOT ? "rgba(255, 255, 255, 0.15" : undefined,
-                    color: this.props.history.location.pathname === Routes.DASHBOARD.ROOT ? "#fff" : "#fff",
-                    transition: "none",
-                    marginRight: 8,
-                    textDecoration: "none"
-                  }}
-                >
-                  <Icon type="appstore" style={{ marginRight: 8 }} /> Dashboard
-                </Link> */}
+            <ul
+              className="dashboard-main-menu"
+              style={{ overflow: "hidden", marginBottom: 0, marginRight: 24, display: "flex", alignItems: "center", flexGrow: 1 }}
+            >
+              <MenuList>
                 <Link
                   to={Routes.DASHBOARD.PROJECTS}
                   style={{
@@ -104,11 +112,15 @@ class DashboardRouter extends React.Component<IProps, IState> {
                     color: this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS ? "#fff" : "#fff",
                     transition: "none",
                     marginRight: 8,
-                    textDecoration: "none"
+                    textDecoration: "none",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis"
                   }}
                 >
                   <Icon type="project" style={{ marginRight: 8 }} /> Projects
                 </Link>
+              </MenuList>
+              <MenuList>
                 <Link
                   to={Routes.DASHBOARD.ORGANIZATIONS}
                   style={{
@@ -116,37 +128,29 @@ class DashboardRouter extends React.Component<IProps, IState> {
                     color: this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS ? "#fff" : "#fff",
                     transition: "none",
                     marginRight: 8,
-                    textDecoration: "none"
+                    textDecoration: "none",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis"
                   }}
                 >
                   <Icon type="deployment-unit" style={{ marginRight: 8 }} /> Organizations
                 </Link>
+              </MenuList>
+              <MenuList>
                 <Link
                   to={Routes.DASHBOARD.ACTIVITY}
                   style={{
                     background: this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY ? "rgba(255, 255, 255, 0.15" : undefined,
                     color: this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY ? "#fff" : "#fff",
                     transition: "none",
-                    textDecoration: "none"
+                    textDecoration: "none",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis"
                   }}
                 >
                   <Icon type="line-chart" style={{ marginRight: 8 }} /> Activity
                 </Link>
-              </li>
-              {/* <li style={{ marginLeft: "auto" }}>
-                <Link
-                  to={Routes.OTHER.TOOLS}
-                  style={{
-                    background: this.props.history.location.pathname === Routes.OTHER.TOOLS ? "rgba(255, 255, 255, 0.15" : undefined,
-                    color: this.props.history.location.pathname === Routes.OTHER.TOOLS ? "#fff" : "#fff",
-                    transition: "none",
-                    marginRight: 8,
-                    textDecoration: "none"
-                  }}
-                >
-                  Tools & Integrations
-                </Link>
-              </li> */}
+              </MenuList>
             </ul>
             {this.props.match.params.projectId &&
               <TranslateButton
