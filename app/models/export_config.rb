@@ -35,7 +35,6 @@ class ExportConfig < ApplicationRecord
 
   private
 
-
   def json(language, export_data)
     language_file = Tempfile.new(language.id.to_s)
     language_file.puts(JSON.pretty_generate(export_data))
