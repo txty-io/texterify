@@ -102,6 +102,12 @@ class LanguagesSite extends React.Component<IProps, IState> {
   getColumns = (): any[] => {
     const columns: any[] = [
       {
+        title: "Default",
+        dataIndex: "default",
+        key: "default",
+        width: 40
+      },
+      {
         title: "Country code",
         dataIndex: "countryCode",
         key: "countryCode",
@@ -161,6 +167,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
         );
 
         return {
+          default: language.attributes.is_default ? <div style={{ textAlign: "center" }}><Icon type="crown" style={{ color: "#d6ad13", fontSize: 16 }} /></div> : null,
           key: language.attributes.id,
           name: language.attributes.name,
           countryCode: countryCode ?

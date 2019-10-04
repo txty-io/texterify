@@ -1,6 +1,6 @@
 class LanguageSerializer
   include FastJsonapi::ObjectSerializer
-  attributes :id, :name
+  attributes :id, :name, :is_default
   belongs_to :country_code
   belongs_to :language_code
   belongs_to :parent

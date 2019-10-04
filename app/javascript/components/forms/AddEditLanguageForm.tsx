@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Select } from "antd";
+import { Button, Checkbox, Form, Icon, Input, Modal, Select, Tooltip } from "antd";
 import * as React from "react";
 import { CountryCodesAPI } from "../api/v1/CountryCodesAPI";
 import { LanguageCodesAPI } from "../api/v1/LanguageCodesAPI";
@@ -60,14 +60,16 @@ class AddEditLanguageFormUnwrapped extends React.Component<IProps, IState> {
             languageId: this.props.languageToEdit.id,
             name: values.name,
             countryCode: values.countryCode,
-            languageCode: values.languageCode
+            languageCode: values.languageCode,
+            isDefault: values.is_default
           });
         } else {
           response = await LanguagesAPI.createLanguage({
             projectId: this.props.projectId,
             name: values.name,
             countryCode: values.countryCode,
-            languageCode: values.languageCode
+            languageCode: values.languageCode,
+            isDefault: values.is_default
           });
         }
 
@@ -185,6 +187,18 @@ class AddEditLanguageFormUnwrapped extends React.Component<IProps, IState> {
                 }
               </Select>
             )}
+          </Form.Item>
+          <Form.Item>
+            {getFieldDecorator("is_default", {
+              rules: [{ required: false }],
+              initialValue: (this.props.languageToEdit && this.props.languageToEdit.attributes.is_default) || false,
+              valuePropName: "checked"
+            })(
+              <Checkbox>Default language</Checkbox>
+            )}
+            <Tooltip title="Mark the language as the default language.">
+              <Icon type="question-circle" />
+            </Tooltip>
           </Form.Item>
         </Form>
       </Modal>

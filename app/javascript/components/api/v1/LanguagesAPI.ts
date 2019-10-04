@@ -15,13 +15,15 @@ const LanguagesAPI = {
     name: string;
     countryCode: string;
     languageCode: string;
-    parent?: string
+    parent?: string;
+    isDefault?: boolean;
   }) => {
     return API.postRequest(`projects/${options.projectId}/languages`, true, {
       name: options.name,
       country_code: options.countryCode,
       language_code: options.languageCode,
-      parent: options.parent
+      parent: options.parent,
+      is_default: options.isDefault
     }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   },
 
@@ -31,13 +33,15 @@ const LanguagesAPI = {
     name: string;
     countryCode: string;
     languageCode: string;
-    parent?: string
+    parent?: string;
+    isDefault?: boolean;
   }) => {
     return API.putRequest(`projects/${options.projectId}/languages/${options.languageId}`, true, {
       name: options.name,
       country_code: options.countryCode,
       language_code: options.languageCode,
-      parent: options.parent
+      parent: options.parent,
+      is_default: options.isDefault
     }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   },
 
