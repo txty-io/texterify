@@ -102,13 +102,13 @@ class LanguagesSite extends React.Component<IProps, IState> {
   getColumns = (): any[] => {
     const columns: any[] = [
       {
-        title: "Country Code",
+        title: "Country code",
         dataIndex: "countryCode",
         key: "countryCode",
         width: 200
       },
       {
-        title: "Language Code",
+        title: "Language code",
         dataIndex: "languageCode",
         key: "languageCode",
         width: 200

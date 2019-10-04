@@ -70,7 +70,7 @@ class NewPasswordFormUnwrapped extends React.Component<IProps, IState> {
           <Form.Item style={{ display: "flex", justifyContent: "flex-end" }}>
             <Button type="primary" htmlType="submit">
               Change password
-          </Button>
+            </Button>
           </Form.Item>
         </Form>
         <p>

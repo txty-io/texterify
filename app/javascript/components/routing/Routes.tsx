@@ -31,6 +31,8 @@ const Routes = {
     PROJECT_IMPORT: "/dashboard/projects/:projectId/import",
     PROJECT_EXPORT: "/dashboard/projects/:projectId/export",
     PROJECT_MEMBERS: "/dashboard/projects/:projectId/members",
+    PROJECT_EXPORT_CONFIGURATIONS: "/dashboard/projects/:projectId/export/configurations",
+    PROJECT_EXPORT_HIERARCHY: "/dashboard/projects/:projectId/export/hierarchy",
     PROJECT_SETTINGS: "/dashboard/projects/:projectId/settings",
     PROJECT_KEYS: "/dashboard/projects/:projectId/keys",
     PROJECT_ACTIVITY: "/dashboard/projects/:projectId/activity",

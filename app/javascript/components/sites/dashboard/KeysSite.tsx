@@ -233,7 +233,8 @@ class KeysSite extends React.Component<IProps, IState> {
       ...languageColumns,
       {
         dataIndex: "more",
-        key: "more"
+        key: "more",
+        width: 40
       }
     ];
   }
@@ -305,7 +306,7 @@ class KeysSite extends React.Component<IProps, IState> {
             }
             trigger="click"
           >
-            <Icon type="more" />
+            <Icon type="more" style={{ width: 40 }} />
           </Popover>
         )
       };

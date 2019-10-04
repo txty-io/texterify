@@ -15,6 +15,7 @@ interface IState { }
 
 @observer
 class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
+  // tslint:disable-next-line:max-func-body-length
   resolveBreadcrumbs = (): any[] => {
     const breadcrumbs: any = {
       dashboard: {
@@ -91,11 +92,6 @@ class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
         name: "Import",
         path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId)
       },
-      export: {
-        parent: "project",
-        name: "Export",
-        path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId)
-      },
       projectMembers: {
         parent: "project",
         name: "Members",
@@ -110,6 +106,25 @@ class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
         parent: "project",
         name: "Activity",
         path: Routes.DASHBOARD.PROJECT_ACTIVITY.replace(":projectId", this.props.match.params.projectId)
+      },
+      projectExport: {
+        parent: "project",
+        name: "Export"
+      },
+      projectExportDownload: {
+        parent: "projectExport",
+        name: "Download",
+        path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId)
+      },
+      projectExportConfigurations: {
+        parent: "projectExport",
+        name: "Configurations",
+        path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(":projectId", this.props.match.params.projectId)
+      },
+      projectExportHiearchy: {
+        parent: "projectExport",
+        name: "Hierarchy",
+        path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", this.props.match.params.projectId)
       }
     };
 

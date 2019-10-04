@@ -5,6 +5,7 @@ class Project < ApplicationRecord
 
   has_many :keys, dependent: :destroy
   has_many :languages, dependent: :destroy
+  has_many :export_configs, dependent: :destroy
   has_many :translations, through: :languages
   has_many :project_users, dependent: :delete_all
   has_many :project_columns, dependent: :delete_all

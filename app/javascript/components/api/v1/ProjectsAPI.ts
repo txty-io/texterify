@@ -42,15 +42,22 @@ const ProjectsAPI = {
     }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   },
 
-  export: async (projectId: string, fileName: string, exportType: string) => {
-    const response = await API.getRequest(`projects/${projectId}/export`, true, {
-      export_type: exportType
-    }, null, true)
-      .then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
+  export: async (options: {
+    projectId: string;
+    exportConfigId: string;
+    fileName: string;
+  }) => {
+    const response = await API.getRequest(
+      `projects/${options.projectId}/exports/${options.exportConfigId}`,
+      true,
+      null,
+      null,
+      true
+    ).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
 
     if (response.status === 200) {
       const zip = await response.blob();
-      fileDownload(zip, `${fileName}.zip`);
+      fileDownload(zip, `${options.fileName}.zip`);
     }
 
     return response;

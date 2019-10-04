@@ -2,8 +2,6 @@ require 'json'
 require 'zip'
 
 class Api::V1::ProjectsController < Api::V1::ApiController
-  include ExportHelper
-
   def image
     skip_authorization
     project = current_user.projects.find(params[:project_id])
@@ -139,6 +137,8 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     authorize project
 
+    export_config = project.export_configs.find(params[:id])
+
     if project.languages.empty?
       render json: {
         error: true,
@@ -151,7 +151,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
     begin
       Zip::File.open(file.path, Zip::File::CREATE) do |zip|
-        project.languages.each do |language|
+        project.languages.order(:id).each do |language|
           # Create the file content for a language.
           export_data = {}
           project.keys.order(:name).each do |key|
@@ -183,24 +183,18 @@ class Api::V1::ProjectsController < Api::V1::ApiController
             parent_language = parent_language.parent
           end
 
-          if params[:export_type] == 'json'
-            language_file = helpers.json(language, export_data)
-            zip.add(language.name.downcase + '.json', language_file)
-          elsif params[:export_type] == 'typescript'
-            language_file = helpers.typescript(language, export_data)
-            zip.add(language.name.downcase + '.ts', language_file)
-          elsif params[:export_type] == 'android'
-            language_file = helpers.android(language, export_data)
-            zip.add(language.name.downcase + '.xml', language_file)
-          elsif params[:export_type] == 'ios'
-            language_file = helpers.ios(language, export_data)
-            zip.add(language.name.downcase + '.strings', language_file)
-          elsif params[:export_type] == 'rails'
-            language_file = helpers.rails(language, export_data)
-            zip.add(language.name.downcase + '.yml', language_file)
-          else
-            language_file = helpers.json(language, export_data)
-            zip.add(language.name.downcase + '.json', language_file)
+          duplicate_zip_entry_count = 0
+          loop do
+            file_path = export_config.filled_file_path(language)
+
+            if duplicate_zip_entry_count > 0
+              file_path = "#{file_path}_#{duplicate_zip_entry_count}"
+            end
+
+            zip.add(file_path, export_config.file(language, export_data))
+            break
+          rescue Zip::EntryExistsError
+            duplicate_zip_entry_count += 1
           end
         end
       end

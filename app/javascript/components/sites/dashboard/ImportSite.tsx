@@ -139,7 +139,7 @@ class ImportSite extends React.Component<IProps, IState> {
                           justifyContent: "center",
                           alignItems: "center",
                           cursor: "pointer",
-                          background: "#fcfcfc",
+                          background: "#fff",
                           marginTop: 10
                         }}
                       >

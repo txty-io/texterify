@@ -46,7 +46,7 @@ class Activity extends React.Component<IProps, IState> {
     const project = APIUtils.getIncludedObject(activity.relationships.project && activity.relationships.project.data, this.props.activitiesResponse.included);
 
     const userElement = (
-      <div style={{ fontSize: 12, display: "flex", fontWeight: "bold" }}>
+      <div style={{ fontSize: 12, display: "flex", marginTop: 8 }}>
         <div style={{ display: "flex", alignItems: "center", lineHeight: 0 }}>
           <div style={{ width: 16, marginRight: 8 }}>
             {user ? <UserAvatar user={user.attributes} style={{ width: 16, height: 16, fontSize: 8 }} /> : <Icon type="user" />}

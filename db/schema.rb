@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_25_230250) do
+ActiveRecord::Schema.define(version: 2019_09_27_235946) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -54,6 +54,18 @@ ActiveRecord::Schema.define(version: 2019_09_25_230250) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_country_codes_on_code"
+  end
+
+  create_table "export_configs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "file_path", null: false
+    t.string "default_language_file_path"
+    t.uuid "project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "file_format", null: false
+    t.index ["project_id", "name"], name: "index_export_configs_on_project_id_and_name", unique: true
+    t.index ["project_id"], name: "index_export_configs_on_project_id"
   end
 
   create_table "keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -199,6 +211,7 @@ ActiveRecord::Schema.define(version: 2019_09_25_230250) do
 
   add_foreign_key "access_tokens", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "export_configs", "projects"
   add_foreign_key "keys", "projects"
   add_foreign_key "languages", "country_codes"
   add_foreign_key "languages", "language_codes"

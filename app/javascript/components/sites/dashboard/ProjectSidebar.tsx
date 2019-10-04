@@ -4,6 +4,7 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import styled from "styled-components";
+import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Styles } from "../../ui/Styles";
@@ -26,9 +27,10 @@ const SidebarTrigger = styled.div`
 
 interface INavigationData {
   icon: string;
-  path: string;
-  text: string;
+  path?: string;
+  text?: string;
   roles?: string[];
+  subItems?: INavigationData[];
 }
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
@@ -55,16 +57,34 @@ class ProjectSidebar extends React.Component<IProps, IState> {
       text: "Languages"
     },
     {
-      icon: "upload",
+      icon: "import",
       path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
       text: "Import",
       roles: ROLES_DEVELOPER_UP
     },
     {
-      icon: "download",
-      path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
+      icon: "export",
       text: "Export",
-      roles: ROLES_DEVELOPER_UP
+      subItems: [
+        {
+          icon: "download",
+          path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
+          text: "Download",
+          roles: ROLES_DEVELOPER_UP,
+        },
+        {
+          icon: "setting",
+          path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(":projectId", this.props.match.params.projectId),
+          text: "Configurations",
+          roles: ROLES_DEVELOPER_UP
+        },
+        {
+          icon: "cluster",
+          path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", this.props.match.params.projectId),
+          text: "Hierarchy",
+          roles: ROLES_DEVELOPER_UP
+        }
+      ]
     },
     {
       icon: "line-chart",
@@ -77,7 +97,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
       text: "Members"
     },
     {
-      icon: "tool",
+      icon: "setting",
       path: Routes.DASHBOARD.PROJECT_SETTINGS.replace(":projectId", this.props.match.params.projectId),
       text: "Settings",
       roles: ROLES_MANAGER_UP
@@ -104,7 +124,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
         <Menu.Item
           key={"title"}
           title={dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
-          style={{ height: 48, display: "flex", alignItems: "center", padding: "0 24px", overflow: "hidden" }}
+          style={{ height: 48, display: "flex", alignItems: "center", overflow: "hidden" }}
         >
           <Link
             to={Routes.DASHBOARD.PROJECT.replace(":projectId", dashboardStore.currentProject && dashboardStore.currentProject.id)}
@@ -119,14 +139,48 @@ class ProjectSidebar extends React.Component<IProps, IState> {
         </Menu.Item>
       ),
       ...this.navigationData.map((data: INavigationData, index: number) => {
+        const menuItem = (
+          <Link to={data.path} className="nav-text">
+            <Icon type={data.icon} className="nav-text" style={{ marginRight: 8 }} />
+            <span>
+              {data.text}
+            </span>
+          </Link>
+        );
+        if (data.subItems) {
+          return (
+            <Menu.SubMenu
+              key={index}
+              title={(
+                <div className="nav-text">
+                  <Icon type={data.icon} className="nav-text" style={{ marginRight: 8 }} />
+                  <span>
+                    {data.text}
+                  </span>
+                </div>
+              )}
+              onTitleClick={() => {
+                history.push(data.subItems[0].path);
+              }}
+            >
+              {data.subItems.map((subMenuItem, submenuIndex) => {
+                return (
+                  <Menu.Item key={`${index}-${submenuIndex}`}>
+                    <Link to={subMenuItem.path} className="nav-text">
+                      <Icon type={subMenuItem.icon} className="nav-text" style={{ marginRight: 8 }} />
+                      <span>
+                        {subMenuItem.text}
+                      </span>
+                    </Link>
+                  </Menu.Item>
+                );
+              })}
+            </Menu.SubMenu>
+          );
+        }
         return (
           <Menu.Item key={index} title={data.text} disabled={!this.isMenuItemEnabled(data.roles)}>
-            <Link to={data.path} className="nav-text">
-              <Icon type={data.icon} className="nav-text" style={{ marginRight: 8 }} />
-              <span>
-                {data.text}
-              </span>
-            </Link>
+            {menuItem}
           </Menu.Item>
         );
       })
@@ -137,6 +191,20 @@ class ProjectSidebar extends React.Component<IProps, IState> {
     return this.navigationData.map((data: INavigationData, index: number): string => {
       if (data.path === this.props.location.pathname) {
         return index.toString();
+      }
+
+      if (data.subItems) {
+        let foundIndex;
+
+        data.subItems.forEach((item, submenuIndex) => {
+          if (item.path === this.props.location.pathname) {
+            foundIndex = `${index}-${submenuIndex}`;
+          }
+        });
+
+        if (index) {
+          return foundIndex;
+        }
       }
     });
   }
@@ -174,7 +242,8 @@ class ProjectSidebar extends React.Component<IProps, IState> {
           style={{ boxShadow: "rgba(61, 172, 206, 0.05) 0px 0px 24px" }}
         >
           <Menu
-            mode="inline"
+            mode="vertical"
+            inlineIndent={40}
             selectedKeys={this.getSelectedItem()}
             style={{ height: "100%" }}
             className="dashboard-sidebar-menu"

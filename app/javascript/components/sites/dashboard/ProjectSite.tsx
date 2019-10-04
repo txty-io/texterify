@@ -81,7 +81,7 @@ class ProjectSite extends React.Component<IProps, IState> {
     return (
       <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
         <Breadcrumbs breadcrumbName="project" />
-        <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
+        <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, paddingBottom: 40 }}>
           <h1 style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
             <ProjectAvatar project={dashboardStore.currentProject} style={{ marginRight: 16 }} />
             {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
