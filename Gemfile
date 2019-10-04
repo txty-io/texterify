@@ -37,6 +37,7 @@ group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '~> 2.13'
+  gem 'database_consistency', require: false
   gem 'selenium-webdriver'
 
   gem 'pry-byebug'
@@ -48,7 +49,6 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rubocop'
   gem 'rubocop-rails'
-  gem 'database_consistency', require: false
 end
 
 group :development do

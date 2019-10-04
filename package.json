@@ -59,6 +59,7 @@
   },
   "scripts": {
     "check:database-consistency": "bundle exec database_consistency",
+    "check:database-consistency:test": "bundle exec database_consistency RAILS_ENV=test",
     "lint": "yarn lint:frontend && yarn lint:backend",
     "lint:frontend": "tslint --project tsconfig.json -c tslint.json",
     "lint:backend": "bundle exec rubocop",
