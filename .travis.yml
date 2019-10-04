@@ -21,7 +21,7 @@ install:
 script:
   - docker-compose exec app yarn lint
   - docker-compose exec app yarn test
-  # - docker-compose exec app yarn check:database-consistency
+  - docker-compose exec app yarn check:database-consistency
   - docker-compose exec app bundle exec rails db:drop RAILS_ENV=test
 
 after_success:
