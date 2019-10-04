@@ -2,6 +2,8 @@ class ExportConfig < ApplicationRecord
   include ExportHelper
 
   validates :name, presence: true
+  validates :file_path, presence: true
+  validates :file_format, presence: true
 
   belongs_to :project
 
