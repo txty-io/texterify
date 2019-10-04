@@ -8,15 +8,17 @@ class ExportConfig < ApplicationRecord
   belongs_to :project
 
   def filled_file_path(language)
-    # if language.is_default && default_language_path
-    #   default_language_file_path.sub('languageCode', language.language_code.code)
-    # else
-    if language.language_code
-      file_path.sub('{languageCode}', language.language_code.code)
-    else
-      file_path
+    path = file_path
+
+    if language.is_default && default_language_file_path
+      path = default_language_file_path
     end
-    # end
+
+    if language.language_code
+      path.sub('languageCode', language.language_code.code)
+    else
+      path
+    end
   end
 
   def file(language, export_data)
