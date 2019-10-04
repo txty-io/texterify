@@ -15,7 +15,7 @@ class ProjectExportConfig extends React.Component<IProps> {
     render() {
         return (
             <Card
-                style={{ width: 320, ...this.props.style }}
+                style={{ width: 400, ...this.props.style }}
                 actions={[
                     this.props.onEdit && <Icon type="setting" key="setting" onClick={() => this.props.onEdit(this.props.exportConfig)} />,
                     this.props.onDelete && <Icon type="delete" key="delete" onClick={() => this.props.onDelete(this.props.exportConfig)} />,

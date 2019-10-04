@@ -96,7 +96,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
         <Breadcrumbs breadcrumbName="projectExportConfigurations" />
         <Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}>
           <h1>Configurations</h1>
-          <p>Specify in which formats you can export your keys.</p>
+          <p>Specify in which formats you can export your translations.</p>
           <div style={{ marginBottom: 8 }}>
             <Button onClick={() => { this.setState({ addEditExportConfigOpen: true }); }}>
               Create new
@@ -111,7 +111,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
             />
           )}
 
-          <div style={{ display: "flex", alignItems: "flex-start" }}>
+          <div style={{ display: "flex", alignItems: "flex-start", flexWrap: "wrap" }}>
             {this.getListData().map((exportConfig) => {
               return (
                 <ProjectExportConfig

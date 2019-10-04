@@ -1,15 +1,13 @@
-import { Alert, Button, Icon, Layout, message, Select, Tree } from "antd";
+import { Alert, Button, Layout, message, Select } from "antd";
 import * as moment from "moment";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { APIUtils } from "../../api/v1/APIUtils";
 import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
-import FlagIcon from "../../ui/FlagIcons";
 import { Styles } from "../../ui/Styles";
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
@@ -70,7 +68,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
     return (
       <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
         <Breadcrumbs breadcrumbName="projectExportDownload" />
-        <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, maxWidth: 800 }}>
+        <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, maxWidth: 400 }}>
           <h1>Download</h1>
           {this.state.languagesLoaded && this.state.languages.length === 0 &&
             <>
@@ -92,10 +90,11 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
           {this.state.responseExportConfigs !== null && !this.hasExportConfigs() && this.renderNoExportConfigsInfo()}
           {this.hasExportConfigs() && this.state.languages.length > 0 &&
             <div style={{ display: "flex" }}>
-              <div style={{ display: "flex", flexDirection: "column", width: "40%", marginRight: 16 }}>
-                <h3>Export format</h3>
+              <div style={{ display: "flex", flexDirection: "column", marginRight: 16 }}>
+                <h3>Export configuration</h3>
+                <p>The configuration specifies the format of your exported files and translations.</p>
                 <Select
-                  placeholder="Select a format"
+                  placeholder="Select a configuration"
                   style={{ width: "100%" }}
                   onChange={(value: string) => {
                     this.setState({ exportConfigId: value });
@@ -108,6 +107,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                 <div style={{ marginTop: 8, display: "flex", justifyContent: "flex-end" }}>
                   <Button
                     type="primary"
+                    disabled={!this.state.exportConfigId}
                     onClick={async () => {
                       const response = await ProjectsAPI.export({
                         projectId: this.props.match.params.projectId,
