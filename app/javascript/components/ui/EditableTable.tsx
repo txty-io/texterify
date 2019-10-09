@@ -21,7 +21,7 @@ interface IEditableCellProps {
   record: any;
   index: any;
   handleSave: any;
-  onCellEdit(options: { languageId: string; keyId: string }): any;
+  onCellEdit(options: { languageId: string; keyId: string; exportConfigId?: string }): any;
 }
 interface IEditableCellState {
   editing: boolean;
@@ -52,7 +52,8 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
     if (this.props.record.htmlEnabled && this.props.dataIndex !== "name" && this.props.dataIndex !== "description") {
       this.props.onCellEdit({
         languageId: this.props.dataIndex.substr("language-".length),
-        keyId: this.props.record.key
+        keyId: this.props.record.keyId,
+        exportConfigId: this.props.record.exportConfigId,
       });
     } else {
       const editing = !this.state.editing;
@@ -167,7 +168,7 @@ interface IEditableTableProps {
   className?: string;
   showHeader?: boolean;
   onSave(oldRow: any, newRow: any): Promise<void>;
-  onCellEdit(options: { languageId: string; keyId: string }): void;
+  onCellEdit(options: { languageId: string; keyId: string; exportConfigId?: string }): void;
   onTranslationUpdated(translation: any): void;
   onKeyUpdated(key: any): void;
 }

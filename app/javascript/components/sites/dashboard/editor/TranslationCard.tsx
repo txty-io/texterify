@@ -31,6 +31,7 @@ type IProps = {
     keyResponse: any;
     hideLanguageSelection?: boolean;
     hideSaveButton?: boolean;
+    exportConfigId?: string;
     onChange?(changed: boolean);
     onSave?();
 };
@@ -107,7 +108,13 @@ class TranslationCard extends React.Component<IProps, IState> {
         this.props.keyResponse.data.relationships.translations.data.map((translationReference) => {
             const translation = APIUtils.getIncludedObject(translationReference, this.props.keyResponse.included);
             if (translation.relationships.language.data.id === languageId) {
-                translationForLanguage = translation.attributes.content;
+                if (translation.relationships.export_config.data) {
+                    if (translation.relationships.export_config.data.id === this.props.exportConfigId) {
+                        translationForLanguage = translation.attributes.content;
+                    }
+                } else {
+                    translationForLanguage = translation.attributes.content;
+                }
             }
         });
 
@@ -147,6 +154,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                 projectId: this.props.projectId,
                 languageId: this.state.selectedLanguage,
                 keyId: this.props.keyResponse.data.id,
+                exportConfigId: this.props.exportConfigId,
                 content: content
             });
 

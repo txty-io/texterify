@@ -77,6 +77,7 @@ interface IState {
   editTranslationKeyId: string;
   editTranslationKeyReponse: any;
   editTranslationLanguageId: string;
+  editTranslationExportConfigId: string;
   editTranslationContentChanged: boolean;
   keyToEdit: any;
   keyToShowHistory: any;
@@ -120,6 +121,7 @@ class KeysSite extends React.Component<IProps, IState> {
     editTranslationKeyId: "",
     editTranslationKeyReponse: null,
     editTranslationLanguageId: "",
+    editTranslationExportConfigId: "",
     editTranslationContentChanged: false,
     keyToEdit: null,
     keyToShowHistory: null,
@@ -195,7 +197,8 @@ class KeysSite extends React.Component<IProps, IState> {
             b.name,
             true
           );
-        }
+        },
+        width: 400
       });
     }
 
@@ -211,7 +214,8 @@ class KeysSite extends React.Component<IProps, IState> {
             b.description,
             true
           );
-        }
+        },
+        width: 400
       });
     }
 
@@ -275,6 +279,7 @@ class KeysSite extends React.Component<IProps, IState> {
       return {
         tags: key.attributes.html_enabled ? <Tag color="magenta">HTML</Tag> : undefined,
         key: key.attributes.id,
+        keyId: key.attributes.id,
         name: key.attributes.name,
         description: key.attributes.description,
         htmlEnabled: key.attributes.html_enabled,
@@ -625,6 +630,7 @@ class KeysSite extends React.Component<IProps, IState> {
                   data.push({
                     key: `${record.key}-${exportConfig.id}`,
                     keyId: record.key,
+                    htmlEnabled: currentKey.attributes.html_enabled,
                     exportConfigName: exportConfig.attributes.name,
                     exportConfigId: exportConfig.id,
                     ...translations,
@@ -650,9 +656,18 @@ class KeysSite extends React.Component<IProps, IState> {
                     size="small"
                     showHeader={false}
                     projectId={this.props.match.params.projectId}
-                    onCellEdit={async () => { await this.reloadTable(); }}
                     onTranslationUpdated={async () => { await this.reloadTable(); }}
                     onKeyUpdated={async () => { await this.reloadTable(); }}
+                    onCellEdit={async (options) => {
+                      const keyResponse = await KeysAPI.getKey(this.props.match.params.projectId, options.keyId);
+                      this.setState({
+                        editTranslationCellOpen: true,
+                        editTranslationKeyId: options.keyId,
+                        editTranslationKeyReponse: keyResponse,
+                        editTranslationLanguageId: options.languageId,
+                        editTranslationExportConfigId: options.exportConfigId
+                      });
+                    }}
                     onSave={async (oldRow, newRow) => {
                       const newItem = {
                         ...oldRow,
@@ -731,6 +746,9 @@ class KeysSite extends React.Component<IProps, IState> {
           onCancel={() => {
             this.setState({ editTranslationCellOpen: false });
           }}
+          afterClose={() => {
+            this.setState({ editTranslationExportConfigId: "" });
+          }}
           destroyOnClose
           footer={
             <div style={{ margin: "6px 0" }}>
@@ -759,6 +777,7 @@ class KeysSite extends React.Component<IProps, IState> {
             keyResponse={this.state.editTranslationKeyReponse}
             languagesResponse={this.state.languagesResponse}
             defaultSelected={this.state.editTranslationLanguageId}
+            exportConfigId={this.state.editTranslationExportConfigId}
             hideLanguageSelection
             hideSaveButton
             ref={(ref) => this.translationCardRef = ref}
