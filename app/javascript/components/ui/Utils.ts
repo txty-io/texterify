@@ -42,7 +42,7 @@ const Utils = {
     },
 
     escapeEditorContent: (json: any) => {
-        if (json) {
+        if (json && json.blocks) {
             const blocks = json.blocks.map((block) => {
                 if (block.type === "list") {
                     const items = block.data.items.map((item) => {
@@ -57,6 +57,8 @@ const Utils = {
             });
 
             json.blocks = blocks;
+        } else {
+            return {};
         }
 
         return json;
