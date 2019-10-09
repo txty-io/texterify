@@ -6,6 +6,10 @@ module ExportHelper
   def convert_html_translation(content)
     json_content = JSON.parse(content)
 
+    if json_content.is_a?(Numeric)
+      return json_content
+    end
+
     converted = ''
     json_content['blocks'].map do |block|
       if block['type'] == 'list'
