@@ -139,14 +139,6 @@ class ProjectSidebar extends React.Component<IProps, IState> {
         </Menu.Item>
       ),
       ...this.navigationData.map((data: INavigationData, index: number) => {
-        const menuItem = (
-          <Link to={data.path} className="nav-text">
-            <Icon type={data.icon} className="nav-text" style={{ marginRight: 8 }} />
-            <span>
-              {data.text}
-            </span>
-          </Link>
-        );
         if (data.subItems) {
           return (
             <Menu.SubMenu
@@ -178,6 +170,16 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             </Menu.SubMenu>
           );
         }
+
+        const menuItem = (
+          <Link to={data.path} className="nav-text">
+            <Icon type={data.icon} className="nav-text" style={{ marginRight: 8 }} />
+            <span>
+              {data.text}
+            </span>
+          </Link>
+        );
+
         return (
           <Menu.Item key={index} title={data.text} disabled={!this.isMenuItemEnabled(data.roles)}>
             {menuItem}
