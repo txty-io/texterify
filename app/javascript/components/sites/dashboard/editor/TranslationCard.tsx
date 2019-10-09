@@ -143,30 +143,12 @@ class TranslationCard extends React.Component<IProps, IState> {
                 content = JSON.stringify(content);
             }
 
-            let translationIdToUpdate;
-            this.props.keyResponse.data.relationships.translations.data.map((translationReference) => {
-                const translation = APIUtils.getIncludedObject(translationReference, this.props.keyResponse.included);
-                const languageId = translation.relationships.language.data.id;
-
-                if (languageId === this.state.selectedLanguage) {
-                    translationIdToUpdate = translation.id;
-                }
+            await TranslationsAPI.updateTranslation({
+                projectId: this.props.projectId,
+                languageId: this.state.selectedLanguage,
+                keyId: this.props.keyResponse.data.id,
+                content: content
             });
-
-            if (translationIdToUpdate) {
-                await TranslationsAPI.updateTranslation(
-                    this.props.projectId,
-                    translationIdToUpdate,
-                    content
-                );
-            } else {
-                await TranslationsAPI.createTranslation(
-                    this.props.projectId,
-                    this.state.selectedLanguage,
-                    this.props.keyResponse.data.id,
-                    content
-                );
-            }
 
             if (this.props.onSave) {
                 this.props.onSave();

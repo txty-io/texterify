@@ -6,6 +6,7 @@ class ExportConfig < ApplicationRecord
   validates :file_format, presence: true
 
   belongs_to :project
+  has_many :translations, dependent: :destroy
 
   def filled_file_path(language)
     path = file_path
@@ -15,7 +16,13 @@ class ExportConfig < ApplicationRecord
     end
 
     if language.language_code
-      path.sub('languageCode', language.language_code.code)
+      path = path.sub('{languageCode}', language.language_code.code)
+    else
+      path
+    end
+
+    if language.country_code
+      path.sub('{countryCode}', language.country_code.code)
     else
       path
     end

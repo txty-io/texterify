@@ -2,21 +2,20 @@ import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
 const TranslationsAPI = {
-  createTranslation: async (projectId: string, languageId: string, keyId: string, content: string): Promise<any> => {
-    return API.postRequest(`projects/${projectId}/translations`, true, {
-      language_id: languageId,
-      key_id: keyId,
+  updateTranslation: async (options: {
+    projectId: string;
+    languageId: string;
+    keyId: string;
+    content: string;
+    exportConfigId?: string;
+  }) => {
+    return API.postRequest(`projects/${options.projectId}/translations`, true, {
+      language_id: options.languageId,
+      key_id: options.keyId,
       translation: {
-        content: content
-      }
-    }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
-  },
-
-  updateTranslation: async (projectId: string, translationId: string, content: string): Promise<any> => {
-    return API.putRequest(`projects/${projectId}/translations/${translationId}`, true, {
-      translation: {
-        content: content
-      }
+        content: options.content
+      },
+      export_config_id: options.exportConfigId
     }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   }
 };

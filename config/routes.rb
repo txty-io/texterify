@@ -26,7 +26,7 @@ Rails.application.routes.draw do
         resources :export_configs, only: [:create, :index, :destroy, :update]
         resources :languages, only: [:create, :index, :destroy, :update]
         delete 'languages', to: 'languages#destroy_multiple'
-        resources :translations, only: [:create, :update]
+        resources :translations, only: [:create]
         resources :members, only: [:create, :index, :destroy, :update], controller: "project_users"
         get :image, to: 'projects#image'
         post :image, to: 'projects#image_create'

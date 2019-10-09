@@ -155,7 +155,8 @@ class Api::V1::ProjectsController < Api::V1::ApiController
           # Create the file content for a language.
           export_data = {}
           project.keys.order(:name).each do |key|
-            key_translation = key.translations.where(language_id: language.id).first
+            key_translation_export_config = key.translations.where(language_id: language.id, export_config_id: export_config.id).first
+            key_translation = key_translation_export_config || key.translations.where(language_id: language.id).first
             if key_translation.nil?
               export_data[key.name] = ''
             elsif key.html_enabled
@@ -188,7 +189,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
             file_path = export_config.filled_file_path(language)
 
             if duplicate_zip_entry_count > 0
-              file_path = "#{file_path}_#{duplicate_zip_entry_count}"
+              file_path += duplicate_zip_entry_count.to_s
             end
 
             zip.add(file_path, export_config.file(language, export_data))
