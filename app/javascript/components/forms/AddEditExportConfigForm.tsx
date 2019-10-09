@@ -1,10 +1,8 @@
-import { Button, Form, Input, Modal, Select } from "antd";
+import { Form, Input, Select } from "antd";
+import Paragraph from "antd/lib/typography/Paragraph";
 import * as React from "react";
-import { CountryCodesAPI } from "../api/v1/CountryCodesAPI";
 import { ExportConfigsAPI } from "../api/v1/ExportConfigsAPI";
-import { LanguageCodesAPI } from "../api/v1/LanguageCodesAPI";
-import { LanguagesAPI } from "../api/v1/LanguagesAPI";
-import FlagIcon from "../ui/FlagIcons";
+import { FileFormatOptions } from "../configs/FileFormatOptions";
 
 type IFormValues = {
   name: string;
@@ -72,31 +70,6 @@ class AddEditExportConfigFormUnwrapped extends React.Component<IProps, IState> {
     });
   }
 
-  getFileFormatOptions = () => {
-    return [
-      {
-        value: "json",
-        text: "JSON"
-      },
-      {
-        value: "typescript",
-        text: "TypeScript"
-      },
-      {
-        value: "android",
-        text: "Android"
-      },
-      {
-        value: "ios",
-        text: "iOS"
-      },
-      {
-        value: "rails",
-        text: "Ruby on Rails"
-      }
-    ];
-  }
-
   // tslint:disable-next-line:max-func-body-length
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -130,7 +103,7 @@ class AddEditExportConfigFormUnwrapped extends React.Component<IProps, IState> {
               filterOption
               style={{ width: "100%" }}
             >
-              {this.getFileFormatOptions().map((fileFormat, index) => {
+              {FileFormatOptions.map((fileFormat, index) => {
                 return (
                   <Select.Option value={fileFormat.value} key={index}>
                     {fileFormat.text}
@@ -144,12 +117,18 @@ class AddEditExportConfigFormUnwrapped extends React.Component<IProps, IState> {
 
         <h3>File path *</h3>
         <p>The file path specifies where files are placed in the exported folder.</p>
+
+        <p>You can make use of the following variables to create dynamic paths:</p>
+        <div style={{ display: "flex" }}>
+          <Paragraph code copyable style={{ marginRight: 24 }}>{"{languageCode}"}</Paragraph>
+          <Paragraph code copyable>{"{countryCode}"}</Paragraph>
+        </div>
         <Form.Item>
           {getFieldDecorator("filePath", {
             initialValue: this.props.exportConfigToEdit ? this.props.exportConfigToEdit.attributes.file_path : undefined,
             rules: [{ required: true, message: "Please enter the file path of the files." }]
           })(
-            <Input placeholder="File path" autoFocus />
+            <Input placeholder="File path" />
           )}
         </Form.Item>
 
@@ -160,7 +139,7 @@ class AddEditExportConfigFormUnwrapped extends React.Component<IProps, IState> {
             initialValue: this.props.exportConfigToEdit ? this.props.exportConfigToEdit.attributes.default_language_file_path : undefined,
             rules: []
           })(
-            <Input placeholder="Default language file path" autoFocus />
+            <Input placeholder="Default language file path" />
           )}
         </Form.Item>
       </Form>
