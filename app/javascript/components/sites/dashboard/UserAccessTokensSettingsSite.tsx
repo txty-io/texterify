@@ -1,11 +1,10 @@
 import { Button, Form, Input, Layout, Modal, Table } from "antd";
+import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as moment from "moment";
 import * as React from "react";
 import { AccessTokensAPI, AccessTokensAPIErrors } from "../../api/v1/AccessTokensAPI";
-import { Styles } from "../../ui/Styles";
-import { TextCopier } from "../../ui/TextCopier";
-const { Header, Content, Footer, Sider } = Layout;
+const { Content } = Layout;
 
 interface IProps {
   form: any;
@@ -131,22 +130,9 @@ class UserAccessTokensSettingsSiteUnwrapped extends React.Component<IProps, ISta
           content: (
             <>
               Your new access token is:
-              <div
-                style={{
-                  background: "#eee",
-                  borderRadius: Styles.DEFAULT_BORDER_RADIUS,
-                  padding: "4px 8px",
-                  margin: "4px 0",
-                  fontWeight: "bold",
-                  display: "flex",
-                  alignItems: "center"
-                }}
-              >
-                <div style={{ flexGrow: 1, marginRight: 8 }}>
-                  {response.data.secret}
-                </div>
-                <TextCopier textToCopy={response.data.secret} />
-              </div>
+              <Paragraph code copyable>
+                {response.data.secret}
+              </Paragraph>
               Store your token somewhere safe because you won't be able to access it again.
             </>
           )
