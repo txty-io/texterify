@@ -84,7 +84,8 @@ class NewKeyFormUnwrapped extends React.Component<IProps, IState> {
           <Form.Item>
             {getFieldDecorator("html_enabled", {
               rules: [{ required: false }],
-              initialValue: (this.props.keyToEdit && this.props.keyToEdit.attributes.html_enabled) || false
+              initialValue: (this.props.keyToEdit && this.props.keyToEdit.attributes.html_enabled) || false,
+              valuePropName: "checked"
             })(
               <Checkbox>HTML</Checkbox>
             )}
