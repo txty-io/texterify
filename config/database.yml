@@ -85,3 +85,4 @@ production:
   host: <%= ENV.fetch("DB_PROD_HOST", "db") %>
   username: <%= ENV.fetch("DB_PROD_USERNAME", "postgres") %>
   database: <%= ENV.fetch("DB_PROD_DATABASE", "texterify_production") %>
+  password: <%= ENV.fetch("DB_PROD_PASSWORD", "") %>
