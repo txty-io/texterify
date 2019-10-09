@@ -3,6 +3,7 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
+import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { AddEditExportConfigForm } from "../../forms/AddEditExportConfigForm";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { Loading } from "../../ui/Loading";
@@ -12,6 +13,7 @@ const { Content } = Layout;
 type IProps = RouteComponentProps<{ projectId: string }>;
 type IState = {
   projectExportConfigsResponse: any;
+  languagesResponse: any;
   exportConfigToEdit: any;
   addEditExportConfigOpen: boolean;
   isDeleting: boolean;
@@ -21,6 +23,7 @@ type IState = {
 class ProjectExportConfigsSite extends React.Component<IProps, IState> {
   state: IState = {
     projectExportConfigsResponse: null,
+    languagesResponse: null,
     exportConfigToEdit: null,
     addEditExportConfigOpen: false,
     isDeleting: false
@@ -36,8 +39,11 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
         projectId: this.props.match.params.projectId
       });
 
+      const languagesResponse = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
+
       this.setState({
-        projectExportConfigsResponse: projectExportConfigsResponse
+        projectExportConfigsResponse: projectExportConfigsResponse,
+        languagesResponse: languagesResponse
       });
     } catch (err) {
       console.error(err);
@@ -111,15 +117,16 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
             />
           )}
 
-          <div style={{ display: "flex", alignItems: "flex-start", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", flexWrap: "wrap" }}>
             {this.getListData().map((exportConfig) => {
               return (
                 <ProjectExportConfig
                   key={exportConfig.id}
                   exportConfig={exportConfig}
-                  style={{ margin: "0 16px 16px 0" }}
+                  style={{ margin: "0 16px 16px 0", flexGrow: 1 }}
                   onEdit={() => { this.setState({ addEditExportConfigOpen: true, exportConfigToEdit: exportConfig }); }}
                   onDelete={() => { this.setState({ exportConfigToEdit: null }, () => this.onDelete(exportConfig)); }}
+                  languagesResponse={this.state.languagesResponse}
                 />
               );
             })}

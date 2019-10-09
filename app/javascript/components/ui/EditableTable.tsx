@@ -1,4 +1,4 @@
-import { Empty, Form, Input, message, Table } from "antd";
+import { Badge, Empty, Form, Input, message, Table } from "antd";
 import * as React from "react";
 import { KeysAPI } from "../api/v1/KeysAPI";
 import { TranslationsAPI } from "../api/v1/TranslationsAPI";
@@ -163,6 +163,10 @@ interface IEditableTableProps {
   projectId: any;
   pagination?: any;
   rowSelection?: any;
+  expandedRowRender?: any;
+  className?: string;
+  showHeader?: boolean;
+  onSave(oldRow: any, newRow: any): Promise<void>;
   onCellEdit(options: { languageId: string; keyId: string }): void;
   onTranslationUpdated(translation: any): void;
   onKeyUpdated(key: any): void;
@@ -200,57 +204,7 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
       ...row
     };
 
-    if (row.name.trim() === "") {
-      message.error("Name can't be empty.");
-
-      return;
-    }
-
-    if (oldRow.name !== row.name || oldRow.description !== row.description) {
-      const response = await KeysAPI.update(
-        this.props.projectId,
-        row.key,
-        row.name,
-        row.description,
-        row.html_enabled
-      );
-      this.props.onKeyUpdated(response.data);
-      if (response.errors) {
-        return;
-      }
-    } else {
-      const keys = Object.keys(newItem);
-      let languageKey;
-      for (const key of keys) {
-        if (key.startsWith("language-")) {
-          languageKey = key.slice("language-".length);
-          const hasTranslation = keys.indexOf(`translation-exists-for-${languageKey}`) !== -1;
-
-          let response;
-          if (!hasTranslation) {
-            response = await TranslationsAPI.createTranslation(
-              this.props.projectId,
-              languageKey,
-              newItem.key,
-              newItem[`language-${languageKey}`]
-            );
-            newItem[`translation-exists-for-${languageKey}`] = response.data.id;
-          } else {
-            response = await TranslationsAPI.updateTranslation(
-              this.props.projectId,
-              newItem[`translation-exists-for-${languageKey}`],
-              newItem[`language-${languageKey}`]
-            );
-          }
-
-          this.props.onTranslationUpdated(response.data);
-
-          if (response.error) {
-            return;
-          }
-        }
-      }
-    }
+    await this.props.onSave(oldRow, row);
 
     newData.splice(index, 1, newItem);
     this.setState({ dataSource: newData });
@@ -278,8 +232,7 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
             dataIndex: col.dataIndex,
             title: col.title,
             handleSave: this.handleSave,
-            onCellEdit: this.props.onCellEdit,
-            width: 400
+            onCellEdit: this.props.onCellEdit
           };
         }
       };
@@ -287,9 +240,12 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
 
     return (
       <Table
+        expandedRowRender={this.props.expandedRowRender}
         rowSelection={this.props.rowSelection}
         components={components}
+        className={this.props.className}
         rowClassName={() => "editable-row"}
+        showHeader={this.props.showHeader}
         bordered={this.props.bordered}
         dataSource={dataSource}
         columns={columns}

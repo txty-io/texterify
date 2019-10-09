@@ -199,4 +199,31 @@ $color: #7977f3;
   .flag-icon {
     max-width: 100%;
   }
+
+  .ant-typography code {
+    margin: 0;
+  }
+
+  .ant-card {
+    display: flex;
+    flex-direction: column;
+
+    .ant-card-body {
+      flex-grow: 1;
+    }
+  }
+}
+
+.keys-table-platform-overrides {
+  .ant-table-small {
+    border: 0;
+
+    .ant-table-content > .ant-table-body {
+      margin: 0;
+    }
+  }
+
+  th:last-child {
+    border-right: 0 !important;
+  }
 }

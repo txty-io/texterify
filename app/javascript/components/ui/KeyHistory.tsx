@@ -119,12 +119,12 @@ class KeyHistory extends React.Component<IProps, IState> {
                                 <Popconfirm
                                     title="Are you sure you want to restore this version?"
                                     onConfirm={async () => {
-                                        const translationId = activity.attributes.object ? activity.attributes.object.id : activity.attributes.object_changes.id[1];
-                                        await TranslationsAPI.updateTranslation(
-                                            key.attributes.project_id,
-                                            translationId,
-                                            newContent
-                                        );
+                                        await TranslationsAPI.updateTranslation({
+                                            projectId: key.attributes.project_id,
+                                            keyId: key.id,
+                                            languageId: key.language_id,
+                                            content: newContent
+                                        });
                                         this.props.onTranslationRestored();
                                         await this.reload();
                                     }}

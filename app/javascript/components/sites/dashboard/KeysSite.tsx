@@ -1,11 +1,13 @@
-import { Button, Drawer, Icon, Input, Layout, Modal, Popover, Switch, Tag } from "antd";
+import { Button, Drawer, Icon, Input, Layout, message, Modal, Popover, Switch, Tag } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
+import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
 import { KeysAPI } from "../../api/v1/KeysAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
+import { TranslationsAPI } from "../../api/v1/TranslationsAPI";
 import { NewKeyForm } from "../../forms/NewKeyForm";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
@@ -65,6 +67,7 @@ interface IState {
   isDeleting: boolean;
   languagesResponse: any;
   keysResponse: any;
+  exportConfigsResponse: any;
   addDialogVisible: boolean;
   page: number;
   search: string | undefined;
@@ -107,6 +110,7 @@ class KeysSite extends React.Component<IProps, IState> {
     isDeleting: false,
     languagesResponse: null,
     keysResponse: null,
+    exportConfigsResponse: null,
     addDialogVisible: false,
     page: 0,
     search: undefined,
@@ -127,13 +131,17 @@ class KeysSite extends React.Component<IProps, IState> {
 
     try {
       const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
+      const exportConfigsResponse = await ExportConfigsAPI.getExportConfigs({
+        projectId: this.props.match.params.projectId
+      });
       const projectColumns = await ProjectColumnsAPI.getProjectColumns({
         projectId: this.props.match.params.projectId
       });
       this.setState({
         languages: responseLanguages.data,
         languagesResponse: responseLanguages,
-        projectColumns: projectColumns
+        projectColumns: projectColumns,
+        exportConfigsResponse: exportConfigsResponse
       });
     } catch (err) {
       if (!err.isCanceled) {
@@ -224,7 +232,8 @@ class KeysSite extends React.Component<IProps, IState> {
         ),
         dataIndex: `language-${language.id}`,
         key: `language-${language.id}`,
-        editable: true
+        editable: true,
+        width: 400
       };
     }, []);
 
@@ -234,7 +243,7 @@ class KeysSite extends React.Component<IProps, IState> {
       {
         dataIndex: "more",
         key: "more",
-        width: 40
+        width: 56
       }
     ];
   }
@@ -251,13 +260,16 @@ class KeysSite extends React.Component<IProps, IState> {
       const translationExistsFor = {};
       key.relationships.translations.data.map((translationReference) => {
         const translation = APIUtils.getIncludedObject(translationReference, this.state.keysResponse.included);
-        const languageId = translation.relationships.language.data.id;
-        let translationContent = translation.attributes.content;
-        if (key.attributes.html_enabled) {
-          translationContent = Utils.getHTMLContentPreview(translationContent);
+
+        if (!translation.relationships.export_config.data) {
+          const languageId = translation.relationships.language.data.id;
+          let translationContent = translation.attributes.content;
+          if (key.attributes.html_enabled) {
+            translationContent = Utils.getHTMLContentPreview(translationContent);
+          }
+          translations[`language-${languageId}`] = translationContent;
+          translationExistsFor[`translation-exists-for-${languageId}`] = translation.id;
         }
-        translations[`language-${languageId}`] = translationContent;
-        translationExistsFor[`translation-exists-for-${languageId}`] = translation.id;
       });
 
       return {
@@ -541,6 +553,136 @@ class KeysSite extends React.Component<IProps, IState> {
               }}
               onTranslationUpdated={async () => { await this.reloadTable(); }}
               onKeyUpdated={async () => { await this.reloadTable(); }}
+              onSave={async (oldRow, newRow) => {
+                if (newRow.name.trim() === "") {
+                  message.error("Name can't be empty.");
+
+                  return;
+                }
+
+                if (oldRow.name !== newRow.name || oldRow.description !== newRow.description) {
+                  const response = await KeysAPI.update(
+                    this.props.match.params.projectId,
+                    newRow.key,
+                    newRow.name,
+                    newRow.description,
+                    newRow.html_enabled
+                  );
+                  await this.reloadTable();
+                  if (response.errors) {
+                    return;
+                  }
+                } else {
+                  const newItem = {
+                    ...oldRow,
+                    ...newRow
+                  };
+                  const keys = Object.keys(newItem);
+                  let languageKey;
+                  for (const key of keys) {
+                    if (key.startsWith("language-")) {
+                      languageKey = key.slice("language-".length);
+
+                      const response = await TranslationsAPI.updateTranslation({
+                        projectId: this.props.match.params.projectId,
+                        languageId: languageKey,
+                        keyId: newItem.key,
+                        content: newItem[`language-${languageKey}`]
+                      });
+                      newItem[`translation-exists-for-${languageKey}`] = response.data.id;
+
+                      if (response.error) {
+                        return;
+                      }
+                    }
+                  }
+                }
+
+                await this.reloadTable();
+              }}
+              expandedRowRender={this.state.exportConfigsResponse.data.length === 0 ? undefined : (record) => {
+                const data = [];
+
+                this.state.exportConfigsResponse.data.map((exportConfig) => {
+                  const translations = {};
+                  const currentKey = this.state.keys.find((key) => record.key === key.id);
+                  currentKey.relationships.translations.data.map((translationReference) => {
+                    const translation = APIUtils.getIncludedObject(translationReference, this.state.keysResponse.included);
+                    if (
+                      translation.relationships.export_config &&
+                      translation.relationships.export_config.data &&
+                      translation.relationships.export_config.data.id === exportConfig.id
+                    ) {
+                      const languageId = translation.relationships.language.data.id;
+                      let translationContent = translation.attributes.content;
+                      if (currentKey.attributes.html_enabled) {
+                        translationContent = Utils.getHTMLContentPreview(translationContent);
+                      }
+                      translations[`language-${languageId}`] = translationContent;
+                    }
+                  });
+
+                  data.push({
+                    key: `${record.key}-${exportConfig.id}`,
+                    keyId: record.key,
+                    exportConfigName: exportConfig.attributes.name,
+                    exportConfigId: exportConfig.id,
+                    ...translations,
+                    width: 200
+                  });
+                });
+
+                console.log(data);
+
+                return (
+                  <EditableTable
+                    columns={[{
+                      title: "Export Configuration",
+                      dataIndex: "exportConfigName",
+                      key: "exportConfigName"
+                    }].concat(this.getColumns().filter((column) => {
+                      return column.key.startsWith("language-") || column.key === "more";
+                    }))}
+                    className="keys-table-platform-overrides"
+                    dataSource={data}
+                    pagination={false}
+                    bordered={false}
+                    size="small"
+                    showHeader={false}
+                    projectId={this.props.match.params.projectId}
+                    onCellEdit={async () => { await this.reloadTable(); }}
+                    onTranslationUpdated={async () => { await this.reloadTable(); }}
+                    onKeyUpdated={async () => { await this.reloadTable(); }}
+                    onSave={async (oldRow, newRow) => {
+                      const newItem = {
+                        ...oldRow,
+                        ...newRow
+                      };
+                      const keys = Object.keys(newItem);
+                      let languageKey;
+                      for (const key of keys) {
+                        if (key.startsWith("language-")) {
+                          languageKey = key.slice("language-".length);
+
+                          const response = await TranslationsAPI.updateTranslation({
+                            projectId: this.props.match.params.projectId,
+                            languageId: languageKey,
+                            keyId: newItem.keyId,
+                            content: newItem[`language-${languageKey}`],
+                            exportConfigId: oldRow.exportConfigId
+                          });
+
+                          if (response.error) {
+                            return;
+                          }
+                        }
+                      }
+
+                      await this.reloadTable();
+                    }}
+                  />
+                );
+              }}
             />
           </Content>
         </Layout>
