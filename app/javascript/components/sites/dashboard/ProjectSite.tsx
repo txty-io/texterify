@@ -1,4 +1,5 @@
 import { Empty, Layout, Progress } from "antd";
+import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -11,7 +12,6 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import FlagIcon from "../../ui/FlagIcons";
 import { Loading } from "../../ui/Loading";
 import { ProjectAvatar } from "../../ui/ProjectAvatar";
-import { TextBadge } from "../../ui/TextBadge";
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
 interface IState {
@@ -82,16 +82,15 @@ class ProjectSite extends React.Component<IProps, IState> {
       <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
         <Breadcrumbs breadcrumbName="project" />
         <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, paddingBottom: 40 }}>
-          <h1 style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
-            <ProjectAvatar project={dashboardStore.currentProject} style={{ marginRight: 16 }} />
-            {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
-
-            <TextBadge
-              text={`ID: ${this.props.match.params.projectId}`}
-              withCopy={this.props.match.params.projectId}
-              style={{ marginLeft: 40 }}
-            />
-          </h1>
+          <div style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
+            <h1 style={{ display: "flex", alignItems: "center" }}>
+              <ProjectAvatar project={dashboardStore.currentProject} style={{ marginRight: 16 }} />
+              {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
+            </h1>
+            <Paragraph code copyable={{ text: this.props.match.params.projectId }} style={{ marginLeft: 40 }}>
+              {`ID: ${this.props.match.params.projectId}`}
+            </Paragraph>
+          </div>
           <p style={{ marginTop: 16 }}>{dashboardStore.currentProject && dashboardStore.currentProject.attributes.description}</p>
           {this.state.languagesResponse && this.state.projectActivityResponse ? (
             <>
