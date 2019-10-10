@@ -182,7 +182,7 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
               padding: 16
             }}
           >
-            <Tree
+            {this.state.responseLanguages && this.state.responseLanguages.data.length > 0 && <Tree
               draggable
               onDrop={this.onDrop}
               expandedKeys={this.state.expandedKeys}
@@ -203,7 +203,9 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
               }}
             >
               {this.loop(this.state.treeData)}
-            </Tree>
+            </Tree>}
+
+            {this.state.responseLanguages && this.state.responseLanguages.data.length === 0 && "No languages available."}
           </div>
         </Content>
       </Layout>
