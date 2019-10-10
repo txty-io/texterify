@@ -123,7 +123,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                 <ProjectExportConfig
                   key={exportConfig.id}
                   exportConfig={exportConfig}
-                  style={{ margin: "0 16px 16px 0", flexGrow: 1 }}
+                  style={{ margin: "0 16px 16px 0" }}
                   onEdit={() => { this.setState({ addEditExportConfigOpen: true, exportConfigToEdit: exportConfig }); }}
                   onDelete={() => { this.setState({ exportConfigToEdit: null }, () => this.onDelete(exportConfig)); }}
                   languagesResponse={this.state.languagesResponse}

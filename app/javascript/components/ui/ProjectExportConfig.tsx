@@ -32,11 +32,11 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
             <div style={{ display: "flex", alignItems: "center" }}>
                 {splitted.map((split, index) => {
                     if (split === "{languageCode}") {
-                        return <Tag color="geekblue" key={index} style={{ margin: 0 }}>{"{languageCode}"}</Tag>;
+                        return <Tag color="geekblue" key={index} style={{ margin: "0 2px 0 0" }}>{"{languageCode}"}</Tag>;
                     } else if (split === "{countryCode}") {
-                        return <Tag color="geekblue" key={index} style={{ margin: 0 }}>{"{countryCode}"}</Tag>;
+                        return <Tag color="geekblue" key={index} style={{ margin: "0 2px 0 0" }}>{"{countryCode}"}</Tag>;
                     } else {
-                        return <Tag color="grey" key={index} style={{ margin: 0 }}>{split}</Tag>;
+                        return <Tag color="#fff" key={index} style={{ margin: "0 2px 0 0", padding: 0, color: "#000" }}>{split}</Tag>;
                     }
                 })}
             </div>
@@ -135,13 +135,11 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
                     <div>
                         <div style={{ display: "flex", flexDirection: "column", marginBottom: 16 }}>
                             <h3>{this.props.exportConfig.attributes.name}</h3>
-                            <Paragraph code copyable={{ text: this.props.exportConfig.id }}>
+                            <Paragraph code copyable={{ text: this.props.exportConfig.id }} style={{ margin: 0 }}>
                                 {`ID: ${this.props.exportConfig.id}`}
                             </Paragraph>
-                            <Button style={{ alignSelf: "flex-start" }} onClick={() => { this.setState({ visible: true }); }}>
-                                Show export structure
-                            </Button>
                         </div>
+
                         <div style={{ display: "flex", flexDirection: "column" }}>
                             <div>
                                 <h4>File format:</h4>
@@ -158,6 +156,10 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
                                 {this.prettifyFilePath(this.props.exportConfig.attributes.default_language_file_path)}
                             </div>}
                         </div>
+
+                        <Button style={{ alignSelf: "flex-start", marginTop: 16 }} onClick={() => { this.setState({ visible: true }); }}>
+                            Show export structure
+                        </Button>
                     </div>
                 </div>
 
@@ -168,12 +170,14 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
                     visible={this.state.visible}
                     width={400}
                 >
-                    <Tree.DirectoryTree selectable={false} defaultExpandAll expandAction={false}>
+                    {this.props.languagesResponse && this.props.languagesResponse.data.length > 0 && <Tree.DirectoryTree selectable={false} defaultExpandAll expandAction={false}>
                         {this.getTreePreview(
                             this.props.exportConfig.attributes.default_language_file_path,
                             this.props.exportConfig.attributes.file_path
                         )}
-                    </Tree.DirectoryTree>
+                    </Tree.DirectoryTree>}
+
+                    {this.props.languagesResponse && this.props.languagesResponse.data.length === 0 && "No languages to export available."}
                 </Drawer>
             </Card>
         );

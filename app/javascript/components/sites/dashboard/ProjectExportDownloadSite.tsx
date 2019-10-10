@@ -51,11 +51,12 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
       <Alert
         type="info"
         showIcon
-        message={<>No export configurations.</>}
+        message="No export configuration"
+        style={{ marginTop: this.state.languagesLoaded && this.state.languages.length === 0 ? 8 : 0 }}
         description={
           <p style={{ color: Styles.COLOR_TEXT_DISABLED }}>
-            You must first <Link to={Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(":projectId", this.props.match.params.projectId)}>
-              create an export configuration</Link> before you can export your keys.
+            Create an <Link to={Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(":projectId", this.props.match.params.projectId)}>
+              export configuration</Link> to export your keys.
           </p>
         }
       />
@@ -77,12 +78,12 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
               <Alert
                 type="info"
                 showIcon
-                message={<>No languages.</>}
+                message="No language"
                 description={
                   <>
                     <p style={{ color: Styles.COLOR_TEXT_DISABLED }}>
-                      You must first <Link to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId)}>
-                        create a language </Link> before you can export your keys.
+                      Create a <Link to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId)}>
+                        language </Link> to export your keys.
                       </p>
                   </>
                 }
