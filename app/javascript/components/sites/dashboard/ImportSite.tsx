@@ -3,6 +3,7 @@ import * as React from "react";
 import Dropzone from "react-dropzone";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
+import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { Routes } from "../../routing/Routes";
@@ -15,9 +16,11 @@ type IProps = RouteComponentProps<{ projectId: string }> & {};
 interface IState {
   files: any[];
   selectedLanguageId: string;
+  selectedExportConfigId: string;
   languages: any[];
   languagesResponse: any;
   loading: boolean;
+  responseExportConfigs: any;
 }
 
 class ImportSite extends React.Component<IProps, IState> {
@@ -26,21 +29,25 @@ class ImportSite extends React.Component<IProps, IState> {
   state: IState = {
     files: [],
     selectedLanguageId: null,
+    selectedExportConfigId: null,
     languages: [],
     languagesResponse: null,
-    loading: false
+    loading: false,
+    responseExportConfigs: null
   };
 
   async componentDidMount() {
     try {
       const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
+      const responseExportConfigs = await ExportConfigsAPI.getExportConfigs({ projectId: this.props.match.params.projectId });
 
       this.setState({
         languages: responseLanguages.data,
-        languagesResponse: responseLanguages
+        languagesResponse: responseLanguages,
+        responseExportConfigs
       });
-    } catch (err) {
-      console.error(err);
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -53,11 +60,12 @@ class ImportSite extends React.Component<IProps, IState> {
   upload = async () => {
     this.setState({ loading: true });
 
-    const response = await ProjectsAPI.import(
-      this.props.match.params.projectId,
-      this.state.selectedLanguageId,
-      this.state.files[0]
-    );
+    const response = await ProjectsAPI.import({
+      projectId: this.props.match.params.projectId,
+      languageId: this.state.selectedLanguageId,
+      exportConfigId: this.state.selectedExportConfigId,
+      file: this.state.files[0]
+    });
 
     if (!response.errors && response.ok) {
       message.success("Successfully imported translations.");
@@ -72,6 +80,26 @@ class ImportSite extends React.Component<IProps, IState> {
     this.setState({ loading: false });
   }
 
+  getExportConfigSelect = () => {
+    return (
+      <Select
+        style={{ flexGrow: 1 }}
+        onChange={(selectedValue: string) => {
+          this.setState({
+            selectedExportConfigId: selectedValue
+          });
+        }}
+        value={this.state.selectedExportConfigId}
+      >
+        {this.state.responseExportConfigs.data.map((exportConfig, index) => {
+          return <Select.Option value={exportConfig.id} key={exportConfig.id}>
+            {exportConfig.attributes.name}
+          </Select.Option>;
+        })}
+      </Select>
+    );
+  }
+
   render() {
     return (
       <>
@@ -79,18 +107,18 @@ class ImportSite extends React.Component<IProps, IState> {
           <Breadcrumbs breadcrumbName="import" />
           <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, maxWidth: 480 }}>
             <h1>Import</h1>
-            <p>You can select a file to import for a given language.</p>
+            <p>Select a file to import for a given language and optionally an export config.</p>
             {this.state.languagesResponse && this.state.languages.length === 0 &&
               <>
                 <Alert
                   type="info"
                   showIcon
-                  message={<>No languages.</>}
+                  message="No language"
                   description={
                     <>
                       <p style={{ color: Styles.COLOR_TEXT_DISABLED }}>
-                        You must first <Link to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId)}>
-                          create a language </Link> before you can import keys.
+                        Create a <Link to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId)}>
+                          language </Link> to import your keys.
                       </p>
                     </>
                   }
@@ -99,8 +127,8 @@ class ImportSite extends React.Component<IProps, IState> {
             }
             {this.state.languages.length > 0 &&
               <>
-                <div style={{ display: "flex" }}>
-                  <p style={{ display: "inline-block", marginRight: 8, flexShrink: 0 }}>Select a language: </p>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <span style={{ marginRight: 8 }}>Select a language:</span>
                   <Select
                     style={{ flexGrow: 1 }}
                     onChange={(selectedValue: string) => {
@@ -122,9 +150,16 @@ class ImportSite extends React.Component<IProps, IState> {
                     })}
                   </Select>
                 </div>
+                {this.state.responseExportConfigs && this.state.responseExportConfigs.data.length > 0 &&
+                  <div style={{ display: "flex", alignItems: "center", marginTop: 8 }}>
+                    <span style={{ marginRight: 8 }}>Select an export config:</span>
+                    {this.getExportConfigSelect()}
+                  </div>
+                }
                 <Dropzone
                   onDrop={this.onDrop}
                   ref={(node) => { this.dropzoneRef = node; }}
+                  accept=".json"
                 >
                   {({ getRootProps, getInputProps, isDragActive }) => {
                     return (
@@ -155,10 +190,10 @@ class ImportSite extends React.Component<IProps, IState> {
                             />
                             {this.state.files[0].name}
                           </p> :
-                          <p style={{ margin: 0 }}>Drop a file here or click to upload a file.</p>
+                          <p style={{ margin: 0 }}>Drop a <b>.json</b> file here or click to upload one.</p>
                         }
                         {/* tslint:disable-next-line:react-a11y-input-elements */}
-                        <input {...getInputProps()} />
+                        <input {...getInputProps()} accept=".json" />
                       </div>
                     );
                   }}

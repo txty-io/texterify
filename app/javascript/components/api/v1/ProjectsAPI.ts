@@ -63,11 +63,12 @@ const ProjectsAPI = {
     return response;
   },
 
-  import: async (projectId: string, languageId: string, file: any) => {
-    const fileBase64 = await getBase64(file);
+  import: async (options: { projectId: string; languageId: string; file: any; exportConfigId: string }) => {
+    const fileBase64 = await getBase64(options.file);
 
-    return API.postRequest(`projects/${projectId}/import`, true, {
-      language_id: languageId,
+    return API.postRequest(`projects/${options.projectId}/import`, true, {
+      language_id: options.languageId,
+      export_config_id: options.exportConfigId,
       file: fileBase64
     }).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
   },

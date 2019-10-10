@@ -213,6 +213,9 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     authorize project
     language = project.languages.find(params[:language_id])
+    if params[:export_config_id].present?
+      export_config = project.export_configs.find(params[:export_config_id])
+    end
     file = params[:file]
 
     unless file
@@ -247,6 +250,9 @@ class Api::V1::ProjectsController < Api::V1::ApiController
           translation.content = json_value
           translation.key_id = key.id
           translation.language_id = language.id
+          if export_config
+            translation.export_config_id = export_config.id
+          end
         end
 
         translation.save
