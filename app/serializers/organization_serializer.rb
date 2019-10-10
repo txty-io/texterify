@@ -4,6 +4,7 @@ class OrganizationSerializer
   has_many :projects
 
   attribute :current_user_role, if: proc { |_, params| params[:current_user] } do |object, params|
-    OrganizationUser.find_by(organization_id: object.id, user_id: params[:current_user].id).role
+    organization_user = OrganizationUser.find_by(organization_id: object.id, user_id: params[:current_user].id)
+    organization_user&.role
   end
 end
