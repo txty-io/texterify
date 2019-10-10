@@ -17,6 +17,7 @@ interface IState {
   languagesIncluded: any[];
   exportConfigId: string;
   responseExportConfigs: any;
+  downloadLoading: boolean;
 }
 
 class ProjectExportDownloadSite extends React.Component<IProps, IState> {
@@ -25,7 +26,8 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
     languagesIncluded: [],
     languagesLoaded: false,
     exportConfigId: "",
-    responseExportConfigs: null
+    responseExportConfigs: null,
+    downloadLoading: false
   };
 
   async componentDidMount() {
@@ -108,12 +110,15 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                   <Button
                     type="primary"
                     disabled={!this.state.exportConfigId}
+                    loading={this.state.downloadLoading}
                     onClick={async () => {
+                      this.setState({ downloadLoading: true });
                       const response = await ProjectsAPI.export({
                         projectId: this.props.match.params.projectId,
                         exportConfigId: this.state.exportConfigId,
                         fileName: `${dashboardStore.currentProject.attributes.name}-${moment().format("DD-MM-YYYY")}-${(new Date()).getTime()}`
                       });
+                      this.setState({ downloadLoading: false });
 
                       if (response.status !== 200) {
                         message.error("An error occured during the export.");
