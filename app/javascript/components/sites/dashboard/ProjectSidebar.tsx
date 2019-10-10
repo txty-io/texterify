@@ -8,7 +8,7 @@ import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Styles } from "../../ui/Styles";
-import { PermissionUtils, ROLES_DEVELOPER_UP, ROLES_MANAGER_UP } from "../../utilities/PermissionUtils";
+import { PermissionUtils, ROLES_DEVELOPER_UP, ROLES_MANAGER_UP, ROLES_TRANSLATOR_UP } from "../../utilities/PermissionUtils";
 const { Sider } = Layout;
 
 const SidebarTrigger = styled.div`
@@ -65,6 +65,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
     {
       icon: "export",
       text: "Export",
+      roles: ROLES_DEVELOPER_UP,
       subItems: [
         {
           icon: "download",
@@ -143,6 +144,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
           return (
             <Menu.SubMenu
               key={index}
+              disabled={!this.isMenuItemEnabled(data.roles)}
               title={(
                 <div className="nav-text">
                   <Icon type={data.icon} className="nav-text" style={{ marginRight: 8 }} />
@@ -157,7 +159,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             >
               {data.subItems.map((subMenuItem, submenuIndex) => {
                 return (
-                  <Menu.Item key={`${index}-${submenuIndex}`}>
+                  <Menu.Item key={`${index}-${submenuIndex}`} disabled={!this.isMenuItemEnabled(subMenuItem.roles)}>
                     <Link to={subMenuItem.path} className="nav-text">
                       <Icon type={subMenuItem.icon} className="nav-text" style={{ marginRight: 8 }} />
                       <span>
