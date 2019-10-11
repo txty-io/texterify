@@ -8,7 +8,7 @@ import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Styles } from "../../ui/Styles";
-import { PermissionUtils, ROLES_DEVELOPER_UP, ROLES_MANAGER_UP, ROLES_TRANSLATOR_UP } from "../../utilities/PermissionUtils";
+import { ROLES_DEVELOPER_UP, ROLES_MANAGER_UP } from "../../utilities/PermissionUtils";
 const { Sider } = Layout;
 
 const SidebarTrigger = styled.div`

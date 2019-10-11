@@ -1,4 +1,4 @@
-import { Divider, Empty, Popconfirm, Select, Tag } from "antd";
+import { Divider, Empty, Popconfirm, Select } from "antd";
 import * as moment from "moment";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";

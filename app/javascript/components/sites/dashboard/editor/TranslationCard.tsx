@@ -185,7 +185,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                         }}
                         value={this.state.selectedLanguage}
                     >
-                        {this.props.languagesResponse && this.props.languagesResponse.data.map((language, index) => {
+                        {this.props.languagesResponse && this.props.languagesResponse.data.map((language) => {
                             const countryCode = APIUtils.getIncludedObject(language.relationships.country_code.data, this.props.languagesResponse.included);
 
                             return <Select.Option value={language.id} key={language.attributes.name}>

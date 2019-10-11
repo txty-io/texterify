@@ -22,7 +22,7 @@ class UserAccountSettingsSite extends React.Component<IProps, IState> {
                   onCreated={() => {
                     message.success("Successfully updated account settings.");
                   }}
-                  onError={(errors: any) => {
+                  onError={(_errors: any) => {
                     message.error("Error while updating account settings.");
                   }}
                 />

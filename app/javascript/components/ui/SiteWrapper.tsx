@@ -1,12 +1,10 @@
 import * as React from "react";
-import { Styles } from "./Styles";
 
 interface IProps {
   style?: React.CSSProperties;
 }
-interface IState { }
 
-class SiteWrapper extends React.Component<IProps, IState> {
+class SiteWrapper extends React.Component<IProps> {
   render() {
     return (
       <div

@@ -51,10 +51,10 @@ class OrganizationSettingsSite extends React.Component<IProps, IState> {
               <SettingsSectionWrapper>
                 <NewOrganizationForm
                   isEdit
-                  onCreated={(organizationId: string) => {
+                  onCreated={(_organizationId: string) => {
                     message.success("Successfully updated organization settings.");
                   }}
-                  onError={(errors: any) => {
+                  onError={(_errors: any) => {
                     message.error("Error while updating organization settings.");
                   }}
                 />

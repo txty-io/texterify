@@ -45,7 +45,7 @@ class UserAccessTokensSettingsSiteUnwrapped extends React.Component<IProps, ISta
         title: "",
         key: "actions",
         width: 80,
-        render: (text: any, record: any): JSX.Element => {
+        render: (_text: any, record: any): JSX.Element => {
           return (
             <Button
               onClick={async () => {

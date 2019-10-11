@@ -1,16 +1,14 @@
-import { Button, Layout, message } from "antd";
+import { Layout, message } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
 import { NewProjectFormModal } from "../../forms/NewProjectFormModal";
-import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { OrganizationAvatar } from "../../ui/OrganizationAvatar";
 import { PrimaryButton } from "../../ui/PrimaryButton";
-import { ProjectAvatar } from "../../ui/ProjectAvatar";
 import { ProjectsList } from "../../ui/ProjectsList";
 
 type IProps = RouteComponentProps<{ organizationId: string }> & {};
@@ -80,7 +78,7 @@ class OrganizationSite extends React.Component<IProps, IState> {
             onCreated: (projectId: string) => {
               this.props.history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", projectId));
             },
-            onError: (errors: any) => {
+            onError: (_errors: any) => {
               message.error("Failed to create project.");
             }
           }}

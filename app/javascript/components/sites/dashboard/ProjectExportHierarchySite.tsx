@@ -79,7 +79,7 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
       // The element has been dropped to a gap.
       let ar;
       let i: number;
-      this.findElementForKey(data, dropKey, (item, index: number, arr, parent) => {
+      this.findElementForKey(data, dropKey, (_item, index: number, arr, parent) => {
         ar = arr;
         i = index;
         newParent = parent;

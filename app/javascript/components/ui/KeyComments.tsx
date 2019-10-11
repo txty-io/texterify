@@ -2,13 +2,8 @@ import { Button, Comment, Empty } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import * as React from "react";
 import { authStore } from "../stores/AuthStore";
-import { Styles } from "./Styles";
-import { UserAvatar } from "./UserAvatar";
 
-type IProps = {};
-type IState = {};
-
-class KeyComments extends React.Component<IProps, IState> {
+class KeyComments extends React.Component {
     render() {
         return (
             <div style={{ display: "flex", flexDirection: "column" }}>

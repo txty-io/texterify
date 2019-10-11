@@ -145,7 +145,7 @@ class NewOrganizationFormUnwrapped extends React.Component<IProps & { form: any 
               accept="image/*"
               ref={this.dropzone}
             >
-              {({ getRootProps, getInputProps, isDragActive }) => {
+              {({ getRootProps, getInputProps }) => {
                 return (
                   <div
                     {...getRootProps({

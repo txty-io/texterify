@@ -1,6 +1,5 @@
 import { Spin } from "antd";
 import * as React from "react";
-import { Styles } from "./Styles";
 
 function Loading() {
     return (

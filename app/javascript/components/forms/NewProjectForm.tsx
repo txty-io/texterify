@@ -147,7 +147,7 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
               accept="image/*"
               ref={this.dropzone}
             >
-              {({ getRootProps, getInputProps, isDragActive }) => {
+              {({ getRootProps, getInputProps }) => {
                 return (
                   <div
                     {...getRootProps({

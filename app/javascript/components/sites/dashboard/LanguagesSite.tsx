@@ -34,7 +34,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
   }, 500, { trailing: true });
 
   rowSelection: any = {
-    onChange: (selectedRowLanguages, selectedRows) => {
+    onChange: (selectedRowLanguages, _selectedRows) => {
       this.setState({
         selectedRowLanguages: selectedRowLanguages
       });
@@ -282,11 +282,11 @@ class LanguagesSite extends React.Component<IProps, IState> {
                 showSizeChanger: true,
                 pageSize: this.state.perPage,
                 total: (this.state.languagesResponse && this.state.languagesResponse.meta.total) || 0,
-                onChange: async (page: number, perPage: number) => {
+                onChange: async (page: number, _perPage: number) => {
                   this.setState({ page: page });
                   await this.reloadTable({ page: page });
                 },
-                onShowSizeChange: async (current: number, size: number) => {
+                onShowSizeChange: async (_current: number, size: number) => {
                   this.setState({ perPage: size });
                   await this.reloadTable({ perPage: size });
                 }

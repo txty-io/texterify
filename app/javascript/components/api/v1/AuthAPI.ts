@@ -26,7 +26,7 @@ const AuthAPI = {
   },
 
   logout: async (): Promise<any> => {
-    const response: any = await API.deleteRequest("auth/sign_out", true, null, null);
+    await API.deleteRequest("auth/sign_out", true, null, null);
     authStore.resetAuth();
   },
 

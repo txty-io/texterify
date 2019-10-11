@@ -50,19 +50,6 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
         }
 
         const response = await UsersAPI.updateUser({ username: values.username, email: values.email });
-        if (response.errors) {
-          response.errors.map((error) => {
-            // TODO:
-            // if (error.details === "A key with that name already exists for this project.") {
-            //   this.props.form.setFields({
-            //     name: {
-            //       value: values.name,
-            //       errors: [new Error(error.details)]
-            //     }
-            // });
-            // }
-          });
-        }
 
         // Set new user data.
         authStore.currentUser = response.data;

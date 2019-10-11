@@ -2,7 +2,6 @@ import { Alert, Button, Collapse, Layout, message, Modal } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import styled from "styled-components";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { NewProjectForm } from "../../forms/NewProjectForm";
 import { history } from "../../routing/history";
@@ -33,7 +32,7 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
       cancelText: "No",
       onOk: async () => {
         this.setState({ isDeletingProject: true });
-        const response = await ProjectsAPI.deleteProject(this.props.match.params.projectId);
+        await ProjectsAPI.deleteProject(this.props.match.params.projectId);
         this.setState({ isDeletingProject: false });
         history.push(Routes.DASHBOARD.PROJECTS);
       },
@@ -54,10 +53,10 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
               <SettingsSectionWrapper>
                 <NewProjectForm
                   isEdit
-                  onCreated={(projectId: string) => {
+                  onCreated={(_projectId: string) => {
                     message.success("Successfully updated project settings.");
                   }}
-                  onError={(errors: any) => {
+                  onError={(_errors: any) => {
                     message.error("Error while updating project settings.");
                   }}
                 />

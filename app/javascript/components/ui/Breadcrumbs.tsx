@@ -1,8 +1,7 @@
 import { Breadcrumb } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { Link, Route, RouteComponentProps, withRouter } from "react-router-dom";
-import { APIUtils } from "../api/v1/APIUtils";
+import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { Routes } from "../routing/Routes";
 import { dashboardStore } from "../stores/DashboardStore";
 import { OrganizationAvatar } from "./OrganizationAvatar";

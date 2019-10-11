@@ -2,7 +2,6 @@ import * as localforage from "localforage";
 import { observable } from "mobx";
 import { create, persist } from "mobx-persist";
 import { APIUtils } from "../api/v1/APIUtils";
-import { history } from "../routing/history";
 
 interface IProject {
   id: string;

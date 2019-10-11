@@ -1,7 +1,5 @@
-import { Badge, Empty, Form, Input, message, Table } from "antd";
+import { Empty, Form, Input, Table } from "antd";
 import * as React from "react";
-import { KeysAPI } from "../api/v1/KeysAPI";
-import { TranslationsAPI } from "../api/v1/TranslationsAPI";
 import { dashboardStore } from "../stores/DashboardStore";
 import { PermissionUtils } from "../utilities/PermissionUtils";
 const FormItem = Form.Item;

@@ -96,13 +96,13 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                 pageSize={this.state.perPage}
                 total={(this.state.projectsResponse && this.state.projectsResponse.meta && this.state.projectsResponse.meta.total) || 0}
                 onChange={
-                  async (page: number, perPage: number) => {
+                  async (page: number, _perPage: number) => {
                     this.setState({ page: page });
                     await this.reloadTable({ page: page });
                   }
                 }
                 onShowSizeChange={
-                  async (current: number, size: number) => {
+                  async (_current: number, size: number) => {
                     this.setState({ perPage: size });
                     await this.reloadTable({ perPage: size });
                   }
@@ -121,7 +121,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
             onCreated: (projectId: string) => {
               this.props.history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", projectId));
             },
-            onError: (errors: any) => {
+            onError: (_errors: any) => {
               message.error("Failed to create project.");
             }
           }}

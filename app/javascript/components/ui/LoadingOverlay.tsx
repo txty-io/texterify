@@ -1,9 +1,5 @@
 import { Icon } from "antd";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { Link } from "react-router-dom";
-
-import { Routes } from "../routing/Routes";
 
 interface IProps {
   isVisible: boolean;

@@ -1,9 +1,6 @@
-import { Alert, Button, Checkbox, Form, Icon, Input } from "antd";
+import { Alert, Button, Form, Icon, Input } from "antd";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { Link } from "react-router-dom";
 import { AuthAPI } from "../api/v1/AuthAPI";
-import { Routes } from "../routing/Routes";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 
 interface IProps {
