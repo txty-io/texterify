@@ -19,7 +19,7 @@ class SignupSite extends React.Component<IProps, IState> {
     return !authStore.isAuthenticated ?
       (
         <SiteWrapper>
-          <h2>Create a new account.</h2>
+          <h2>Create a new account</h2>
           <SignupForm onAccountCreated={this.onAccountCreated} />
 
           <div style={{ textAlign: "right" }}>

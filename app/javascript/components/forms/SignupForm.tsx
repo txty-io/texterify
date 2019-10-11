@@ -121,11 +121,6 @@ class SignupFormUnwrapped extends React.Component<IProps, IState> {
             <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
               Sign up
             </Button>
-            <p>
-              By clicking on "Sign up" you agree to
-              our <Link to={Routes.OTHER.TERMS_OF_SERVICE}>terms of service</Link> and <Link to={Routes.OTHER.PRIVACY_POLICY}>privacy
-              policy</Link>. We will never share your data with third parties.
-            </p>
           </Form.Item>
         </Form>
       </>
