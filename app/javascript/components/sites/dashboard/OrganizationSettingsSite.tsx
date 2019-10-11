@@ -30,7 +30,7 @@ class OrganizationSettingsSite extends React.Component<IProps, IState> {
       cancelText: "No",
       onOk: async () => {
         this.setState({ isDeletingOrganization: true });
-        const response = await OrganizationsAPI.deleteOrganization(this.props.match.params.organizationId);
+        await OrganizationsAPI.deleteOrganization(this.props.match.params.organizationId);
         this.setState({ isDeletingOrganization: false });
         history.push(Routes.DASHBOARD.ORGANIZATIONS);
       },
