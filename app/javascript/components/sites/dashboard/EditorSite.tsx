@@ -207,7 +207,7 @@ class EditorSite extends React.Component<IProps, IState> {
             <Pagination
               defaultCurrent={1}
               total={(this.state.keysResponse && this.state.keysResponse.meta.total) || 0}
-              onChange={async (page: number, perPage: number) => {
+              onChange={async (page: number, _perPage: number) => {
                 this.setState({ page: page }, this.fetchKeys);
               }}
               style={{ alignSelf: "center", margin: 16 }}

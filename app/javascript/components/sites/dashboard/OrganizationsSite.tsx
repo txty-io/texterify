@@ -10,7 +10,7 @@ import { ListContent } from "../../ui/ListContent";
 import { OrganizationAvatar } from "../../ui/OrganizationAvatar";
 import { PrimaryButton } from "../../ui/PrimaryButton";
 
-type IProps = RouteComponentProps & {};
+type IProps = RouteComponentProps;
 interface IState {
   organizationsResponse: any;
   addDialogVisible: boolean;
@@ -143,13 +143,13 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
                 pageSize={this.state.perPage}
                 total={(this.state.organizationsResponse && this.state.organizationsResponse.data && this.state.organizationsResponse.meta.total) || 0}
                 onChange={
-                  async (page: number, perPage: number) => {
+                  async (page: number, _perPage: number) => {
                     this.setState({ page: page });
                     await this.reloadTable({ page: page });
                   }
                 }
                 onShowSizeChange={
-                  async (current: number, size: number) => {
+                  async (_current: number, size: number) => {
                     this.setState({ perPage: size });
                     await this.reloadTable({ perPage: size });
                   }

@@ -1,18 +1,16 @@
 import { observer } from "mobx-react";
 import * as React from "react";
-import { Link, Redirect, RouteComponentProps } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { SignupForm } from "../../forms/SignupForm";
+import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { SiteWrapper } from "../../ui/SiteWrapper";
 
-type IProps = RouteComponentProps & {};
-interface IState { }
-
 @observer
-class SignupSite extends React.Component<IProps, IState> {
+class SignupSite extends React.Component {
   onAccountCreated = () => {
-    this.props.history.push(Routes.DASHBOARD.ROOT);
+    history.push(Routes.DASHBOARD.ROOT);
   }
 
   render() {

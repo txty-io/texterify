@@ -91,7 +91,7 @@ class ImportSite extends React.Component<IProps, IState> {
         }}
         value={this.state.selectedExportConfigId}
       >
-        {this.state.responseExportConfigs.data.map((exportConfig, index) => {
+        {this.state.responseExportConfigs.data.map((exportConfig) => {
           return <Select.Option value={exportConfig.id} key={exportConfig.id}>
             {exportConfig.attributes.name}
           </Select.Option>;
@@ -138,7 +138,7 @@ class ImportSite extends React.Component<IProps, IState> {
                     }}
                     value={this.state.selectedLanguageId}
                   >
-                    {this.state.languages.map((language, index) => {
+                    {this.state.languages.map((language) => {
                       const countryCode = APIUtils.getIncludedObject(language.relationships.country_code.data, this.state.languagesResponse.included);
 
                       return <Select.Option value={language.id} key={language.attributes.name}>
@@ -161,7 +161,7 @@ class ImportSite extends React.Component<IProps, IState> {
                   ref={(node) => { this.dropzoneRef = node; }}
                   accept=".json"
                 >
-                  {({ getRootProps, getInputProps, isDragActive }) => {
+                  {({ getRootProps, getInputProps }) => {
                     return (
                       <div
                         {...getRootProps()}

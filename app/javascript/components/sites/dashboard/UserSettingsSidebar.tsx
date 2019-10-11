@@ -9,7 +9,7 @@ interface INavigationData {
   text: string;
 }
 
-type IProps = RouteComponentProps & {};
+type IProps = RouteComponentProps;
 interface IState {
   selectedItem: number;
 }

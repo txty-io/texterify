@@ -9,7 +9,7 @@ import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { PrimaryButton } from "../../ui/PrimaryButton";
 import { ProjectsList } from "../../ui/ProjectsList";
 
-type IProps = RouteComponentProps & {};
+type IProps = RouteComponentProps;
 interface IState {
   projectsResponse: any;
   projects: any[];

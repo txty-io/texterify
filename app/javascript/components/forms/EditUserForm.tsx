@@ -140,7 +140,7 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
               accept="image/*"
               ref={this.dropzone}
             >
-              {({ getRootProps, getInputProps, isDragActive }) => {
+              {({ getRootProps, getInputProps }) => {
                 return (
                   <div
                     {...getRootProps({

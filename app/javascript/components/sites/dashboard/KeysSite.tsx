@@ -20,7 +20,6 @@ import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { sortStrings } from "../../utilities/Sorter";
 import { TranslationCard } from "./editor/TranslationCard";
-const { Content } = Layout;
 
 const { CheckableTag } = Tag;
 
@@ -90,7 +89,7 @@ class KeysSite extends React.Component<IProps, IState> {
   }, 500, { trailing: true });
 
   rowSelection: any = {
-    onChange: (selectedRowKeys, selectedRows) => {
+    onChange: (selectedRowKeys, _selectedRows) => {
       this.setState({
         selectedRowKeys: selectedRowKeys
       });
@@ -222,7 +221,7 @@ class KeysSite extends React.Component<IProps, IState> {
     const filteredLanguages = this.state.languages.filter((language) => _.find(this.state.projectColumns.included, (o) => {
       return o.attributes.id === language.attributes.id;
     }));
-    const languageColumns = filteredLanguages.map((language, index) => {
+    const languageColumns = filteredLanguages.map((language) => {
       const countryCode = APIUtils.getIncludedObject(language.relationships.country_code.data, this.state.languagesResponse.included);
 
       return {
@@ -358,7 +357,7 @@ class KeysSite extends React.Component<IProps, IState> {
       okType: "danger",
       cancelText: "No",
       onOk: async () => {
-        const response = await KeysAPI.deleteKeys(this.props.match.params.projectId, this.state.selectedRowKeys);
+        await KeysAPI.deleteKeys(this.props.match.params.projectId, this.state.selectedRowKeys);
 
         await this.reloadTable();
 
@@ -490,7 +489,7 @@ class KeysSite extends React.Component<IProps, IState> {
       <>
         <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
           <Breadcrumbs breadcrumbName="keys" />
-          <Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
+          <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
             <h1>Keys</h1>
             <div style={{ display: "flex" }}>
               <div style={{ flexGrow: 1 }}>
@@ -548,10 +547,10 @@ class KeysSite extends React.Component<IProps, IState> {
                 current: this.state.page,
                 pageSize: dashboardStore.keysPerPage,
                 total: (this.state.keysResponse && this.state.keysResponse.meta.total) || 0,
-                onChange: async (page: number, perPage: number) => {
+                onChange: async (page: number, _perPage: number) => {
                   this.setState({ page: page }, this.reloadTable);
                 },
-                onShowSizeChange: async (current: number, size: number) => {
+                onShowSizeChange: async (_current: number, size: number) => {
                   dashboardStore.keysPerPage = size;
                   await this.reloadTable();
                 }
@@ -699,7 +698,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 );
               }}
             />
-          </Content>
+          </Layout.Content>
         </Layout>
 
         <NewKeyForm
