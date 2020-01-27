@@ -129,7 +129,7 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
                     // tslint:disable-next-line:react-no-dangerous-html
                     <div
                       className={isCellEditEnabled ? "editable-cell-value-wrap" : undefined}
-                      style={{ maxWidth: 400, overflow: "scroll", display: "flex", flexDirection: "column", justifyContent: "center", wordBreak: "break-all" }}
+                      style={{ maxWidth: 400, overflow: "auto", display: "flex", flexDirection: "column", justifyContent: "center", wordBreak: "break-all" }}
                       onClick={isCellEditEnabled ? this.toggleEdit : undefined}
                       role="button"
                       dangerouslySetInnerHTML={

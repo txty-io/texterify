@@ -172,7 +172,7 @@ class EditorSite extends React.Component<IProps, IState> {
               flexGrow: 1,
               maxWidth: 300,
               borderRight: "1px solid #e8e8e8",
-              overflow: "scroll"
+              overflow: "auto"
             }}
           >
             <Search
@@ -215,7 +215,7 @@ class EditorSite extends React.Component<IProps, IState> {
               pageSize={12}
             />
           </div>
-          <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, padding: 16, overflow: "scroll" }}>
+          <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, padding: 16, overflow: "auto" }}>
             {this.keyLoaded() && <div className="fade-in">
               <h2 style={{ fontSize: 16 }}>
                 {this.state.keyResponse && this.state.keyResponse.data.attributes.name}
@@ -257,10 +257,10 @@ class EditorSite extends React.Component<IProps, IState> {
 
           {this.keyLoaded() && (
             <div
-              style={{ background: "#fff", display: "flex", flexDirection: "column", flexGrow: 1, maxWidth: 400, borderLeft: "1px solid #e8e8e8", overflow: "scroll" }}
+              style={{ background: "#fff", display: "flex", flexDirection: "column", flexGrow: 1, maxWidth: 400, borderLeft: "1px solid #e8e8e8", overflow: "auto" }}
             >
-              <Tabs defaultActiveKey="history" type="card" style={{ overflow: "scroll" }} tabBarStyle={{ background: "#fefeff" }}>
-                {/* <Tabs.TabPane tab="Comments" key="chat" style={{ padding: "0 16px", overflow: "scroll" }} >
+              <Tabs defaultActiveKey="history" type="card" style={{ overflow: "auto" }} tabBarStyle={{ background: "#fefeff" }}>
+                {/* <Tabs.TabPane tab="Comments" key="chat" style={{ padding: "0 16px", overflow: "auto" }} >
                   <KeyComments />
                 </Tabs.TabPane> */}
                 <Tabs.TabPane tab="History" key="history" style={{ padding: "0 16px 16px" }}>
