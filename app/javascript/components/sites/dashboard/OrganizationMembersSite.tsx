@@ -130,9 +130,11 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                     value={item.roleOrganization}
                     onChange={async (value: string) => {
                       try {
-                        await OrganizationMembersAPI.updateMember(this.props.match.params.organizationId, item.id, value);
+                        const response = await OrganizationMembersAPI.updateMember(this.props.match.params.organizationId, item.id, value);
                         await this.reload();
-                        message.success("User role updated");
+                        if (!response.errors) {
+                          message.success("User role updated successfully.");
+                        }
                       } catch (e) {
                         console.error(e);
                         message.error("Error while updating user role.");
