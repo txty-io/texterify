@@ -1,4 +1,4 @@
-import { Button, Input, Layout, message, Modal, Select, Tag } from "antd";
+import { Button, Input, Layout, message, Modal, Select, Tag, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -144,61 +144,67 @@ class MembersSite extends React.Component<IProps, IState> {
           >
             {this.getRows().map((item) => {
               return (
-                <div key={item.username} style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
+                <div key={item.username} style={{ display: "flex", alignItems: "center", paddingBottom: 16, marginBottom: 16, borderBottom: "1px solid #e8e8e8" }}>
                   <div style={{ display: "flex", flexGrow: 1, alignItems: "center" }}>
                     <UserAvatar user={item} style={{ marginRight: 24 }} />
                     <div style={{ display: "flex", flexDirection: "column" }}>
                       <div style={{ fontWeight: "bold" }}>{item.username}</div>
                       <div>{item.email}</div>
                     </div>
-                    {item.roleSource === "organization" &&
-                      <Tag color="geekblue" style={{ marginLeft: 24 }}>{dashboardStore.getOrganizationName()}</Tag>
-                    }
                   </div>
-                  <Select
-                    showSearch
-                    placeholder="Select a role"
-                    optionFilterProp="children"
-                    filterOption
-                    style={{ marginRight: 24, width: 240 }}
-                    value={item.role}
-                    onChange={async (value: string) => {
-                      try {
-                        await MembersAPI.updateMember(this.props.match.params.projectId, item.id, value);
-                        await this.reload();
-                        message.success("User role updated");
-                      } catch (e) {
-                        console.error(e);
-                        message.error("Error while updating user role.");
+                  {item.roleSource === "organization" && <Tooltip placement="left" title="Inherited from the organization.">
+                    <Tag color="geekblue">{item.role.charAt(0).toUpperCase() + item.role.slice(1)}</Tag>
+                  </Tooltip>}
+                  {item.roleSource !== "organization" && <>
+                    <Select
+                      showSearch
+                      placeholder="Select a role"
+                      optionFilterProp="children"
+                      filterOption
+                      style={{ marginRight: 24, width: 240 }}
+                      value={item.role}
+                      onChange={async (value: string) => {
+                        try {
+                          const response = await MembersAPI.updateMember(this.props.match.params.projectId, item.id, value);
+                          await this.reload();
+                          if (!response.errors) {
+                            message.success("User role updated successfully.");
+                          }
+                        } catch (e) {
+                          console.error(e);
+                          message.error("Error while updating user role.");
+                        }
+                      }}
+                      disabled={
+                        (
+                          !(
+                            PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) &&
+                            PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), item.role)
+                          ) &&
+                          !PermissionUtils.isOwner(dashboardStore.getCurrentRole())
+                        ) || this.getRows().length === 1
                       }
-                    }}
-                    disabled={
-                      !(
-                        PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) &&
-                        PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), item.role)
-                      ) &&
-                      !PermissionUtils.isOwner(dashboardStore.getCurrentRole())
-                    }
-                  >
-                    <Select.Option value="translator" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), "translator")}>Übersetzer</Select.Option>
-                    <Select.Option value="developer" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), "developer")}>Entwickler</Select.Option>
-                    <Select.Option value="manager" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), "manager")}>Manager</Select.Option>
-                    <Select.Option value="owner" disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}>Eigentümer</Select.Option>
-                  </Select>
-                  <Button
-                    onClick={async () => { await this.onRemove(item); }}
-                    type="danger"
-                    disabled={
-                      item.roleSource === "organization" ||
-                      (
-                        !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) &&
-                        !PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), item.role) &&
-                        item.email !== authStore.currentUser.email
-                      )
-                    }
-                  >
-                    {item.email === authStore.currentUser.email ? "Leave" : "Remove"}
-                  </Button>
+                    >
+                      <Select.Option value="translator" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), "translator")}>Translator</Select.Option>
+                      <Select.Option value="developer" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), "developer")}>Developer</Select.Option>
+                      <Select.Option value="manager" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), "manager")}>Manager</Select.Option>
+                      <Select.Option value="owner" disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}>Owner</Select.Option>
+                    </Select>
+                    <Button
+                      onClick={async () => { await this.onRemove(item); }}
+                      type="danger"
+                      disabled={
+                        item.roleSource === "organization" ||
+                        (
+                          !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) &&
+                          !PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), item.role) &&
+                          item.email !== authStore.currentUser.email
+                        )
+                      }
+                    >
+                      {item.email === authStore.currentUser.email ? "Leave" : "Remove"}
+                    </Button>
+                  </>}
                 </div>
               );
             })}
