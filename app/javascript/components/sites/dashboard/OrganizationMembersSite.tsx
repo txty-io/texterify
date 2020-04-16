@@ -148,10 +148,10 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                       !PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole())
                     }
                   >
-                    <Select.Option value="translator" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentOrganizationRole(), "translator")}>Übersetzer</Select.Option>
-                    <Select.Option value="developer" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentOrganizationRole(), "developer")}>Entwickler</Select.Option>
+                    <Select.Option value="translator" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentOrganizationRole(), "translator")}>Translator</Select.Option>
+                    <Select.Option value="developer" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentOrganizationRole(), "developer")}>Developer</Select.Option>
                     <Select.Option value="manager" disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentOrganizationRole(), "manager")}>Manager</Select.Option>
-                    <Select.Option value="owner" disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole())}>Eigentümer</Select.Option>
+                    <Select.Option value="owner" disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole())}>Owner</Select.Option>
                   </Select>
                   <Button
                     onClick={async () => {
