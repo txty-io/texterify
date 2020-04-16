@@ -3,6 +3,7 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { MembersAPI } from "../../api/v1/MembersAPI";
+import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
@@ -11,7 +12,7 @@ import { Loading } from "../../ui/Loading";
 import { UserAvatar } from "../../ui/UserAvatar";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 
-type IProps = RouteComponentProps<{ projectId: string }> & {};
+type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
   userAddEmail: string;
   getMembersResponse: any;
@@ -30,9 +31,20 @@ class MembersSite extends React.Component<IProps, IState> {
     await this.reload();
   }
 
-  reload = async () => {
+  reload = async (userId?: string) => {
     try {
       const responseGetMembers = await MembersAPI.getMembers(this.props.match.params.projectId);
+
+      // If the current users permission changed we reload the current project.
+      if (userId === authStore.currentUser.id) {
+        const getProjectResponse = await ProjectsAPI.getProject(this.props.match.params.projectId);
+        if (getProjectResponse.errors) {
+          this.props.history.push(Routes.DASHBOARD.PROJECTS);
+        } else {
+          dashboardStore.currentProject = getProjectResponse.data;
+          dashboardStore.currentProjectIncluded = getProjectResponse.included;
+        }
+      }
 
       this.setState({
         getMembersResponse: responseGetMembers
@@ -166,7 +178,7 @@ class MembersSite extends React.Component<IProps, IState> {
                       onChange={async (value: string) => {
                         try {
                           const response = await MembersAPI.updateMember(this.props.match.params.projectId, item.id, value);
-                          await this.reload();
+                          await this.reload(item.id);
                           if (!response.errors) {
                             message.success("User role updated successfully.");
                           }
@@ -202,7 +214,7 @@ class MembersSite extends React.Component<IProps, IState> {
                         )
                       }
                     >
-                      {item.email === authStore.currentUser.email ? "Leave" : "Remove"}
+                      {item.roleOrganization ? "Remove project permission" : "Remove from project"}
                     </Button>
                   </>}
                 </div>
