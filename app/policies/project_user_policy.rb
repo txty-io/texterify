@@ -39,6 +39,10 @@ class ProjectUserPolicy
   end
 
   def project_user_role
-    project_user.project.role_of(user)
+    if project_user.project.organization
+      project_user.project.organization.role_of(user)
+    else
+      project_user.project.role_of(user)
+    end
   end
 end
