@@ -21,13 +21,13 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
       organization_user.save!
 
       render json: {
-        message: 'User added to the organization'
+        message: 'Successfully added user to the organization.'
       }
     else
       render json: {
         errors: [
           {
-            details: 'User already in the organization'
+            details: 'User is already in the organization.'
           }
         ]
       }
@@ -72,8 +72,32 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
       organization_user.user = User.find(params[:id])
     end
 
+    old_role = organization_user.role
     organization_user.role = params[:role]
+
     authorize organization_user
+
+    # Don't allow the last owner of the organization to change his role.
+    # There should always be at least one owner.
+    if organization.organization_users.where(role: 'owner').size == 1 && organization_user.role_changed? && organization_user.role_was == 'owner'
+      render json: {
+        errors: [
+          {
+            details: 'There must always be at least one owner in an organization.'
+          }
+        ]
+      }, status: :bad_request
+      return
+    end
+
+    # Remove user project roles which are below the users organization role.
+    if helpers.higher_role?(organization_user.role, old_role)
+      organization.project_users.where(
+        user_id: organization_user.user.id,
+        role: helpers.roles_below(organization_user.role)
+      ).destroy_all
+    end
+
     organization_user.save!
 
     render json: {
