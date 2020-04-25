@@ -40,14 +40,14 @@
     "react-spinkit": "^3.0.0",
     "react_ujs": "^2.6.0",
     "sanitize-html": "^1.20.1",
-    "styled-components": "^4.3.2",
+    "styled-components": "^5.1.0",
     "stylelint-config-standard": "^18.2.0",
     "ts-loader": "^6.0.4",
     "tslint": "^5.19.0",
     "tslint-microsoft-contrib": "^6.2.0",
     "tslint-react": "^4.0.0",
     "typescript": "^3.6.2",
-    "uuid": "^3.3.3",
+    "uuid": "^7.0.3",
     "webpack-cli": "^3.3.7"
   },
   "devDependencies": {
