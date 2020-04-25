@@ -31,21 +31,20 @@ module.exports = function (api) {
           forceAllTransforms: true,
           useBuiltIns: 'entry',
           modules: false,
+          corejs: "3.0.0",
           exclude: ['transform-typeof-symbol']
         }
-      ]
+      ],
+      ['@babel/preset-typescript', { 'allExtensions': true, 'isTSX': true }],
+      ['@babel/preset-react']
     ].filter(Boolean),
     plugins: [
       require('babel-plugin-macros'),
       require('@babel/plugin-syntax-dynamic-import').default,
       isTestEnv && require('babel-plugin-dynamic-import-node'),
       require('@babel/plugin-transform-destructuring').default,
-      [
-        require('@babel/plugin-proposal-class-properties').default,
-        {
-          loose: true
-        }
-      ],
+      ["@babel/plugin-proposal-decorators", { "legacy": true }],
+      ["@babel/plugin-proposal-class-properties", { "loose": true }],
       [
         require('@babel/plugin-proposal-object-rest-spread').default,
         {
