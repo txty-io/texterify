@@ -4,6 +4,7 @@ volumes:
 services:
   db:
     image: postgres
+    restart: always
     volumes:
       - database:/var/lib/postgresql/data
     ports:
