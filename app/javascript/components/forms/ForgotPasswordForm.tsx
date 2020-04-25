@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { Routes } from "../routing/Routes";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
+import { MailOutlined } from "@ant-design/icons";
 
 interface IProps {
   form: any;
@@ -31,7 +32,7 @@ class ForgotPasswordFormUnwrapped extends React.Component<IProps, IState> {
             {getFieldDecorator("email", {
               rules: [{ required: true, message: "Please enter your email address." }]
             })(
-              <Input prefix={<Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="Email address" />
+              <Input prefix={<MailOutlined style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="Email address" />
             )}
           </Form.Item>
 

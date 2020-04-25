@@ -1,4 +1,5 @@
-import { Button, Card, Drawer, Icon, Tag, Tree } from "antd";
+import { DeleteOutlined, SettingOutlined } from "@ant-design/icons";
+import { Button, Card, Drawer, Tag, Tree } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -127,8 +128,8 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
             <Card
                 style={{ ...this.props.style }}
                 actions={[
-                    this.props.onEdit && <Icon type="setting" key="setting" onClick={() => this.props.onEdit(this.props.exportConfig)} />,
-                    this.props.onDelete && <Icon type="delete" key="delete" onClick={() => this.props.onDelete(this.props.exportConfig)} />,
+                    this.props.onEdit && <SettingOutlined type="setting" key="setting" onClick={() => this.props.onEdit(this.props.exportConfig)} />,
+                    this.props.onDelete && <DeleteOutlined type="delete" key="delete" onClick={() => this.props.onDelete(this.props.exportConfig)} />,
                 ]}
             >
                 <div style={{ display: "flex" }}>

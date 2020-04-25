@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Styles } from "../../ui/Styles";
+import { HomeOutlined, TeamOutlined, ToolOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 const { Sider } = Layout;
 
 const SidebarTrigger = styled.div`
@@ -24,7 +25,7 @@ const SidebarTrigger = styled.div`
 `;
 
 interface INavigationData {
-  icon: string;
+  icon: any;
   path: string;
   text: string;
 }
@@ -38,17 +39,17 @@ interface IState {
 class OrganizationSidebar extends React.Component<IProps, IState> {
   navigationData: INavigationData[] = [
     {
-      icon: "home",
+      icon: HomeOutlined,
       path: Routes.DASHBOARD.ORGANIZATION.replace(":organizationId", this.props.match.params.organizationId),
       text: "Overview"
     },
     {
-      icon: "team",
+      icon: TeamOutlined,
       path: Routes.DASHBOARD.ORGANIZATION_MEMBERS.replace(":organizationId", this.props.match.params.organizationId),
       text: "Members"
     },
     {
-      icon: "tool",
+      icon: ToolOutlined,
       path: Routes.DASHBOARD.ORGANIZATION_SETTINGS.replace(":organizationId", this.props.match.params.organizationId),
       text: "Settings"
     }
@@ -82,7 +83,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
         return (
           <Menu.Item key={index} title={data.text}>
             <Link to={data.path} className="nav-text">
-              <Icon type={data.icon} className="nav-text" style={{ marginRight: 8 }} />
+              <data.icon className="nav-text" style={{ marginRight: 8 }} />
               <span>
                 {data.text}
               </span>
@@ -115,7 +116,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
           color: dashboardStore.sidebarMinimized ? Styles.COLOR_PRIMARY : undefined
         }}
       >
-        <Icon type={dashboardStore.sidebarMinimized ? "menu-unfold" : "menu-fold"} />
+        {dashboardStore.sidebarMinimized ? <MenuUnfoldOutlined/> : <MenuFoldOutlined />}
       </SidebarTrigger>
     );
   }

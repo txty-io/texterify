@@ -1,4 +1,5 @@
-import { Alert, Button, Form, Icon, Input } from "antd";
+import { KeyOutlined } from "@ant-design/icons";
+import { Alert, Button, Form, Input } from "antd";
 import * as React from "react";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
@@ -49,7 +50,7 @@ class ChangePasswordFormUnwrapped extends React.Component<IProps, IState> {
             {getFieldDecorator("current_password", {
               rules: [{ required: true, message: "Please enter your current password." }]
             })(
-              <Input prefix={<Icon type="key" style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="Current password" type="password" />
+              <Input prefix={<KeyOutlined style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="Current password" type="password" />
             )}
           </Form.Item>
 
@@ -58,7 +59,7 @@ class ChangePasswordFormUnwrapped extends React.Component<IProps, IState> {
             {getFieldDecorator("new_password", {
               rules: [{ required: true, message: "Please enter your new password." }]
             })(
-              <Input prefix={<Icon type="key" style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="New password" type="password" />
+              <Input prefix={<KeyOutlined style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="New password" type="password" />
             )}
           </Form.Item>
 
@@ -68,7 +69,7 @@ class ChangePasswordFormUnwrapped extends React.Component<IProps, IState> {
               rules: [{ required: true, message: "Please confirm your new password." }]
             })(
               <Input
-                prefix={<Icon type="key" style={{ color: "rgba(0,0,0,.25)" }} />}
+                prefix={<KeyOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
                 placeholder="New password confirmation"
                 type="password"
               />

@@ -1,4 +1,4 @@
-import { Icon, Layout, Menu } from "antd";
+import { Layout, Menu } from "antd";
 import { CollapseType } from "antd/lib/layout/Sider";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -9,6 +9,7 @@ import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Styles } from "../../ui/Styles";
 import { ROLES_DEVELOPER_UP, ROLES_MANAGER_UP } from "../../utilities/PermissionUtils";
+import { KeyOutlined, HomeOutlined, GlobalOutlined, ExportOutlined, DownloadOutlined, ClusterOutlined, SettingOutlined, ImportOutlined, LineChartOutlined, TeamOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 const { Sider } = Layout;
 
 const SidebarTrigger = styled.div`
@@ -26,7 +27,7 @@ const SidebarTrigger = styled.div`
 `;
 
 interface INavigationData {
-  icon: string;
+  icon: any;
   path?: string;
   text?: string;
   roles?: string[];
@@ -42,45 +43,45 @@ interface IState {
 class ProjectSidebar extends React.Component<IProps, IState> {
   navigationData: INavigationData[] = [
     {
-      icon: "home",
+      icon: HomeOutlined,
       path: Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId),
       text: "Overview"
     },
     {
-      icon: "key",
+      icon: KeyOutlined,
       path: Routes.DASHBOARD.PROJECT_KEYS.replace(":projectId", this.props.match.params.projectId),
       text: "Keys"
     },
     {
-      icon: "global",
+      icon: GlobalOutlined,
       path: Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId),
       text: "Languages"
     },
     {
-      icon: "import",
+      icon: ImportOutlined,
       path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
       text: "Import",
       roles: ROLES_DEVELOPER_UP
     },
     {
-      icon: "export",
+      icon: ExportOutlined,
       text: "Export",
       roles: ROLES_DEVELOPER_UP,
       subItems: [
         {
-          icon: "download",
+          icon: DownloadOutlined,
           path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
           text: "Download",
           roles: ROLES_DEVELOPER_UP,
         },
         {
-          icon: "setting",
+          icon: SettingOutlined,
           path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(":projectId", this.props.match.params.projectId),
           text: "Configurations",
           roles: ROLES_DEVELOPER_UP
         },
         {
-          icon: "cluster",
+          icon: ClusterOutlined,
           path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", this.props.match.params.projectId),
           text: "Hierarchy",
           roles: ROLES_DEVELOPER_UP
@@ -88,17 +89,17 @@ class ProjectSidebar extends React.Component<IProps, IState> {
       ]
     },
     {
-      icon: "line-chart",
+      icon: LineChartOutlined,
       path: Routes.DASHBOARD.PROJECT_ACTIVITY.replace(":projectId", this.props.match.params.projectId),
       text: "Activity"
     },
     {
-      icon: "team",
+      icon: TeamOutlined,
       path: Routes.DASHBOARD.PROJECT_MEMBERS.replace(":projectId", this.props.match.params.projectId),
       text: "Members"
     },
     {
-      icon: "setting",
+      icon: SettingOutlined,
       path: Routes.DASHBOARD.PROJECT_SETTINGS.replace(":projectId", this.props.match.params.projectId),
       text: "Settings",
       roles: ROLES_MANAGER_UP
@@ -147,7 +148,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
               disabled={!this.isMenuItemEnabled(data.roles)}
               title={(
                 <div className="nav-text">
-                  <Icon type={data.icon} className="nav-text" style={{ marginRight: 8 }} />
+                  <data.icon className="nav-text" style={{ marginRight: 8 }} />
                   <span>
                     {data.text}
                   </span>
@@ -161,7 +162,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 return (
                   <Menu.Item key={`${index}-${submenuIndex}`} disabled={!this.isMenuItemEnabled(subMenuItem.roles)}>
                     <Link to={subMenuItem.path} className="nav-text">
-                      <Icon type={subMenuItem.icon} className="nav-text" style={{ marginRight: 8 }} />
+                      <subMenuItem.icon className="nav-text" style={{ marginRight: 8 }} />
                       <span>
                         {subMenuItem.text}
                       </span>
@@ -175,7 +176,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
 
         const menuItem = (
           <Link to={data.path} className="nav-text">
-            <Icon type={data.icon} className="nav-text" style={{ marginRight: 8 }} />
+            <data.icon className="nav-text" style={{ marginRight: 8 }} />
             <span>
               {data.text}
             </span>
@@ -227,7 +228,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
           color: dashboardStore.sidebarMinimized ? Styles.COLOR_PRIMARY : undefined
         }}
       >
-        <Icon type={dashboardStore.sidebarMinimized ? "menu-unfold" : "menu-fold"} />
+        {dashboardStore.sidebarMinimized ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
       </SidebarTrigger>
     );
   }

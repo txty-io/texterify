@@ -5,6 +5,7 @@ import { AuthAPI } from "../api/v1/AuthAPI";
 import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
+import { MailOutlined, LockOutlined } from "@ant-design/icons";
 
 interface IProps {
   form: any;
@@ -34,7 +35,7 @@ class LoginFormUnwrapped extends React.Component<IProps, IState> {
             {getFieldDecorator("email", {
               rules: [{ required: true, message: "Please enter your email address." }]
             })(
-              <Input prefix={<Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="Email address" autoComplete="emailsquad" />
+              <Input prefix={<MailOutlined style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="Email address" autoComplete="emailsquad" />
             )}
           </Form.Item>
 
@@ -42,7 +43,7 @@ class LoginFormUnwrapped extends React.Component<IProps, IState> {
             {getFieldDecorator("password", {
               rules: [{ required: true, message: "Please enter your password." }]
             })(
-              <Input prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />} type="password" placeholder="Password" autoComplete="current-password" />
+              <Input prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />} type="password" placeholder="Password" autoComplete="current-password" />
             )}
           </Form.Item>
 

@@ -20,6 +20,7 @@ import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { sortStrings } from "../../utilities/Sorter";
 import { TranslationCard } from "./editor/TranslationCard";
+import { MoreOutlined } from "@ant-design/icons";
 
 const { CheckableTag } = Tag;
 
@@ -322,7 +323,7 @@ class KeysSite extends React.Component<IProps, IState> {
             }
             trigger="click"
           >
-            <Icon type="more" style={{ width: 40 }} />
+            <MoreOutlined style={{ width: 40 }} />
           </Popover>
         )
       };

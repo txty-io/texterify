@@ -90,7 +90,7 @@ class NewKeyFormUnwrapped extends React.Component<IProps, IState> {
               <Checkbox>HTML</Checkbox>
             )}
             <Tooltip title="If checked a editor will de used for translation. You can still change this later.">
-              <Icon type="question-circle" />
+              <QuestionCircleOutlined />
             </Tooltip>
           </Form.Item>
         </Form>

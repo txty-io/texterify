@@ -2,6 +2,7 @@ import { Button, Dropdown, Icon, Menu } from "antd";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { Routes } from "../routing/Routes";
+import { DownOutlined } from "@ant-design/icons";
 
 interface IProps { }
 interface IState {
@@ -47,7 +48,7 @@ class BottomBar extends React.Component<IProps, IState> {
               <Button style={{ marginTop: 10 }}>
                 {this.getFlagElement(this.state.currentLanguageKey)}
                 {this.getCurrentLanguageDisplayName()}
-                <Icon type="down" />
+                <DownOutlined />
               </Button>
             </Dropdown>
           </div>

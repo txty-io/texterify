@@ -1,4 +1,5 @@
-import { Alert, Button, Icon, Layout, message, Select } from "antd";
+import { FileTextOutlined } from "@ant-design/icons";
+import { Alert, Button, Layout, message, Select } from "antd";
 import * as React from "react";
 import Dropzone from "react-dropzone";
 import { Link, RouteComponentProps } from "react-router-dom";
@@ -180,8 +181,7 @@ class ImportSite extends React.Component<IProps, IState> {
                       >
                         {this.state.files.length > 0 ?
                           <p style={{ margin: 0, display: "flex", alignItems: "center" }}>
-                            <Icon
-                              type="file-text"
+                            <FileTextOutlined
                               style={{
                                 fontSize: 26,
                                 color: "#aaa",

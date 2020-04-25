@@ -2,9 +2,10 @@ import { Icon, Layout, Menu } from "antd";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Routes } from "../../routing/Routes";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 interface INavigationData {
-  icon: string;
+  icon: any;
   path: string;
   text: string;
 }
@@ -17,12 +18,12 @@ interface IState {
 class UserSettingsSidebar extends React.Component<IProps, IState> {
   navigationData: INavigationData[] = [
     {
-      icon: "user",
+      icon: UserOutlined,
       path: Routes.USER.SETTINGS.ACCOUNT,
       text: "Account"
     },
     {
-      icon: "lock",
+      icon: LockOutlined,
       path: Routes.USER.SETTINGS.ACCESS_TOKENS,
       text: "Access tokens"
     }
@@ -36,7 +37,7 @@ class UserSettingsSidebar extends React.Component<IProps, IState> {
     return this.navigationData.map((data: INavigationData, index: number) => {
       return (
         <Menu.Item key={index}>
-          <Icon type={data.icon} className="nav-text" />
+          <data.icon className="nav-text" />
           <Link to={data.path} className="nav-text">
             {data.text}
           </Link>

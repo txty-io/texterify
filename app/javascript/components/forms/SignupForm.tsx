@@ -3,6 +3,7 @@ import * as React from "react";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { authStore } from "../stores/AuthStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
+import { UserOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
 
 interface IProps {
   form: any;
@@ -79,7 +80,7 @@ class SignupFormUnwrapped extends React.Component<IProps, IState> {
             {getFieldDecorator("username", {
               rules: [{ required: true, message: "Please enter your username." }]
             })(
-              <Input prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="Username" />
+              <Input prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="Username" />
             )}
           </Form.Item>
 
@@ -88,7 +89,7 @@ class SignupFormUnwrapped extends React.Component<IProps, IState> {
             {getFieldDecorator("email", {
               rules: [{ required: true, message: "Please enter your email address." }]
             })(
-              <Input prefix={<Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="Email address" autoComplete="email" />
+              <Input prefix={<MailOutlined style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="Email address" autoComplete="email" />
             )}
           </Form.Item>
 
@@ -97,7 +98,7 @@ class SignupFormUnwrapped extends React.Component<IProps, IState> {
             {getFieldDecorator("password", {
               rules: [{ required: true, message: "Please enter your password." }]
             })(
-              <Input prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />} type="password" placeholder="Password" autoComplete="new-password" />
+              <Input prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />} type="password" placeholder="Password" autoComplete="new-password" />
             )}
           </Form.Item>
 
@@ -106,7 +107,7 @@ class SignupFormUnwrapped extends React.Component<IProps, IState> {
               rules: [{ required: true, message: "Please confirm your password." }]
             })(
               <Input
-                prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
+                prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
                 type="password"
                 placeholder="Password confirmation"
                 autoComplete="new-password"

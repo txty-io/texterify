@@ -1,6 +1,7 @@
+import { LoadingOutlined } from "@ant-design/icons";
 import EditorJS from "@editorjs/editorjs";
 import List from "@editorjs/list";
-import { Button, Icon, message, Select } from "antd";
+import { Button, message, Select } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import * as React from "react";
 import styled from "styled-components";
@@ -132,7 +133,7 @@ class TranslationCard extends React.Component<IProps, IState> {
     getEditorLoadingOverlay = () => {
         return (
             <div style={{ width: "100%", height: "100%", position: "absolute", left: 0, top: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <Icon type="loading" style={{ fontSize: 24, margin: "auto" }} spin />
+                <LoadingOutlined style={{ fontSize: 24, margin: "auto" }} spin />
             </div>
         );
     }

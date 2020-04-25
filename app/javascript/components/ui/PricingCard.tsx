@@ -1,4 +1,4 @@
-import { Icon } from "antd";
+import { CheckOutlined } from "@ant-design/icons";
 import * as React from "react";
 
 interface IProps {
@@ -37,7 +37,7 @@ class PricingCard extends React.Component<IProps, IState> {
     return features.map((feature: string, index: number) => {
       return (
         <div key={index} style={{ textAlign: "left", fontWeight: "bold" }}>
-          <Icon type="check" style={{ marginRight: 5, color: "rgb(56, 181, 25)" }} /> {feature}
+          <CheckOutlined style={{ marginRight: 5, color: "rgb(56, 181, 25)" }} /> {feature}
         </div>
       );
     });

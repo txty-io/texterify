@@ -9,6 +9,7 @@ import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
 import { Styles } from "./Styles";
 import { UserAvatar } from "./UserAvatar";
+import { SettingOutlined, LogoutOutlined } from "@ant-design/icons";
 
 const AccountProfileContentWrapper: any = styled.div`
   a {
@@ -60,7 +61,7 @@ class UserProfileHeader extends React.Component<IProps, IState> {
                             <ul>
                                 <li role="button" onClick={(e) => { e.stopPropagation(); this.setState({ accountMenuVisible: false }); }}>
                                     <Link to={Routes.USER.SETTINGS.ACCOUNT}>
-                                        <Icon type="setting" style={{ marginRight: 5, fontWeight: "bold" }} />
+                                        <SettingOutlined style={{ marginRight: 5, fontWeight: "bold" }} />
                                         Settings
                                     </Link>
                                 </li>
@@ -70,7 +71,7 @@ class UserProfileHeader extends React.Component<IProps, IState> {
                                         role="button"
                                         onClick={this.logout}
                                     >
-                                        <Icon type="logout" style={{ marginRight: 5, fontWeight: "bold" }} />
+                                        <LogoutOutlined style={{ marginRight: 5, fontWeight: "bold" }} />
                                         Logout
                                     </a>
                                 </li>

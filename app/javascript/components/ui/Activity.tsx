@@ -1,4 +1,5 @@
-import { Empty, Icon, Tag, Timeline } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import { Empty, Tag, Timeline } from "antd";
 import * as moment from "moment";
 import * as React from "react";
 import { Link } from "react-router-dom";
@@ -49,7 +50,7 @@ class Activity extends React.Component<IProps, IState> {
       <div style={{ fontSize: 12, display: "flex", marginTop: 8 }}>
         <div style={{ display: "flex", alignItems: "center", lineHeight: 0 }}>
           <div style={{ width: 16, marginRight: 8 }}>
-            {user ? <UserAvatar user={user.attributes} style={{ width: 16, height: 16, fontSize: 8 }} /> : <Icon type="user" />}
+            {user ? <UserAvatar user={user.attributes} style={{ width: 16, height: 16, fontSize: 8 }} /> : <UserOutlined />}
           </div>
           {user ? user.attributes.username : <span style={{ textDecoration: "line-through" }}>Deleted user</span>}
         </div>

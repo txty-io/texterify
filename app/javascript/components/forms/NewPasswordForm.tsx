@@ -6,6 +6,7 @@ import { AuthAPI, IAuthData } from "../api/v1/AuthAPI";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
+import { KeyOutlined } from "@ant-design/icons";
 
 interface IProps {
   form: any;
@@ -50,7 +51,7 @@ class NewPasswordFormUnwrapped extends React.Component<IProps, IState> {
             {getFieldDecorator("new_password", {
               rules: [{ required: true, message: "Please enter your new password." }]
             })(
-              <Input prefix={<Icon type="key" style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="New password" type="password" />
+              <Input prefix={<KeyOutlined style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="New password" type="password" />
             )}
           </Form.Item>
 
@@ -60,7 +61,7 @@ class NewPasswordFormUnwrapped extends React.Component<IProps, IState> {
               rules: [{ required: true, message: "Please confirm your new password." }]
             })(
               <Input
-                prefix={<Icon type="key" style={{ color: "rgba(0,0,0,.25)" }} />}
+                prefix={<KeyOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
                 placeholder="New password confirmation"
                 type="password"
               />

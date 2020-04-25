@@ -1,4 +1,5 @@
-import { Icon, Pagination, Tabs } from "antd";
+import { ArrowLeftOutlined, LoadingOutlined } from "@ant-design/icons";
+import { Pagination, Tabs } from "antd";
 import Search from "antd/lib/input/Search";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
@@ -154,7 +155,7 @@ class EditorSite extends React.Component<IProps, IState> {
         >
           <div style={{ flexGrow: 1 }}>
             <Link to={Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId)} style={{ color: "#fff" }}>
-              <Icon type="arrow-left" />
+              <ArrowLeftOutlined />
               <span style={{ margin: "0 16px", paddingRight: 24, borderRight: "1px solid #e8e8e8" }}>
                 Back to project
             </span>
@@ -199,7 +200,7 @@ class EditorSite extends React.Component<IProps, IState> {
                   </Key>
                 );
               })}
-              {this.state.keysLoading && <Icon type="loading" style={{ fontSize: 24, margin: "auto" }} spin />}
+              {this.state.keysLoading && <LoadingOutlined style={{ fontSize: 24, margin: "auto" }} spin />}
               {!this.state.keysLoading && this.state.keysResponse.data.length === 0 && <div style={{ margin: "auto", color: Styles.COLOR_TEXT_DISABLED, fontStyle: "italic" }}>
                 No keys found.
               </div>}

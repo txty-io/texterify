@@ -1,5 +1,6 @@
 import { Icon } from "antd";
 import * as React from "react";
+import { LoadingOutlined } from "@ant-design/icons";
 
 interface IProps {
   isVisible: boolean;
@@ -38,7 +39,7 @@ class LoadingOverlay extends React.Component<IProps, IState> {
               color: "#fff"
             }}
           >
-            <Icon type="loading" style={{ fontSize: 48 }} spin />
+            <LoadingOutlined style={{ fontSize: 48 }} spin />
             <p style={{ marginTop: 16 }}>{this.props.loadingText}</p>
           </div>
         }

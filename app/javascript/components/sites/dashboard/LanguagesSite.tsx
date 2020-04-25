@@ -11,6 +11,7 @@ import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import FlagIcon from "../../ui/FlagIcons";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { sortStrings } from "../../utilities/Sorter";
+import { CrownOutlined, EditOutlined } from "@ant-design/icons";
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
 interface IState {
@@ -167,7 +168,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
         );
 
         return {
-          default: language.attributes.is_default ? <div style={{ textAlign: "center" }}><Icon type="crown" style={{ color: "#d6ad13", fontSize: 16 }} /></div> : null,
+          default: language.attributes.is_default ? <div style={{ textAlign: "center" }}><CrownOutlined style={{ color: "#d6ad13", fontSize: 16 }} /></div> : null,
           key: language.attributes.id,
           name: language.attributes.name,
           countryCode: countryCode ?
@@ -180,8 +181,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
           languageCode: languageCode ? languageCode.attributes.code : "",
           controls: (
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <Icon
-                type="edit"
+              <EditOutlined
                 style={{ cursor: "pointer" }}
                 onClick={() => { this.onEditLanguageClick(language); }}
               />

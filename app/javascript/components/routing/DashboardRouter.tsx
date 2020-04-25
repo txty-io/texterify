@@ -1,3 +1,4 @@
+import { ProjectOutlined, DeploymentUnitOutlined, LineChartOutlined } from "@ant-design/icons";
 import { Button, Icon, Layout } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -117,7 +118,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                     textOverflow: "ellipsis"
                   }}
                 >
-                  <Icon type="project" style={{ marginRight: 8 }} /> Projects
+                  <ProjectOutlined style={{ marginRight: 8 }} /> Projects
                 </Link>
               </MenuList>
               <MenuList>
@@ -133,7 +134,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                     textOverflow: "ellipsis"
                   }}
                 >
-                  <Icon type="deployment-unit" style={{ marginRight: 8 }} /> Organizations
+                  <DeploymentUnitOutlined style={{ marginRight: 8 }} /> Organizations
                 </Link>
               </MenuList>
               <MenuList>
@@ -148,7 +149,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                     textOverflow: "ellipsis"
                   }}
                 >
-                  <Icon type="line-chart" style={{ marginRight: 8 }} /> Activity
+                  <LineChartOutlined style={{ marginRight: 8 }} /> Activity
                 </Link>
               </MenuList>
             </ul>

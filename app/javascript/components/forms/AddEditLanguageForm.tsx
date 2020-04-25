@@ -4,6 +4,7 @@ import { CountryCodesAPI } from "../api/v1/CountryCodesAPI";
 import { LanguageCodesAPI } from "../api/v1/LanguageCodesAPI";
 import { LanguagesAPI } from "../api/v1/LanguagesAPI";
 import FlagIcon from "../ui/FlagIcons";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 interface IProps {
   languageToEdit?: any;
@@ -197,7 +198,7 @@ class AddEditLanguageFormUnwrapped extends React.Component<IProps, IState> {
               <Checkbox>Default language</Checkbox>
             )}
             <Tooltip title="Mark the language as the default language.">
-              <Icon type="question-circle" />
+              <QuestionCircleOutlined />
             </Tooltip>
           </Form.Item>
         </Form>
