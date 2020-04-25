@@ -19,10 +19,10 @@ const PermissionUtils = {
         return role === ROLE_OWNER;
     },
     isManagerOrHigher: (role: string) => {
-        return ROLES_MANAGER_UP.indexOf(role) !== -1;
+        return ROLES_MANAGER_UP.includes(role);
     },
     isDeveloperOrHigher: (role: string) => {
-        return ROLES_DEVELOPER_UP.indexOf(role) !== -1;
+        return ROLES_DEVELOPER_UP.includes(role);
     },
     isHigherRole: (roleA: string, roleB: string) => {
         return ROLE_PRIORITY_MAP[roleA] > ROLE_PRIORITY_MAP[roleB];

@@ -9,8 +9,8 @@ const PublicRouteRedirectDashboard: any = observer(
         return (
             <Route
                 {...rest}
-                render={(props: any): any =>
-                    !authStore.isAuthenticated ? (
+                render={(props: any): any => {
+                    return !authStore.isAuthenticated ? (
                         <Component {...props} />
                     ) : (
                         <Redirect
@@ -19,8 +19,8 @@ const PublicRouteRedirectDashboard: any = observer(
                                 state: { from: props.location }
                             }}
                         />
-                    )
-                }
+                    );}
+                }}
             />
         );
     }

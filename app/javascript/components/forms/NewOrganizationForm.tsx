@@ -21,7 +21,7 @@ interface IState {
 }
 
 class NewOrganizationFormUnwrapped extends React.Component<IProps & { form: any }, IState> {
-    isMovingImage: boolean = false;
+    isMovingImage = false;
     dropzone: any = React.createRef();
     avatarEditor: any = React.createRef();
 
@@ -165,7 +165,7 @@ class NewOrganizationFormUnwrapped extends React.Component<IProps & { form: any 
                                             display: "flex",
                                             flexDirection: "column",
                                             borderRadius: Styles.DEFAULT_BORDER_RADIUS,
-                                            border: `1px solid #d9d9d9`
+                                            border: "1px solid #d9d9d9"
                                         }}
                                     >
                                         <AvatarEditor

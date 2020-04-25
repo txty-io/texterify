@@ -6,17 +6,17 @@ import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
 import { FileFormatOptions } from "../configs/FileFormatOptions";
 
-type IProps = {
+interface IProps {
     exportConfig: any;
     languagesResponse: any;
     style?: React.CSSProperties;
     onEdit?(exportConfig: any): void;
     onDelete?(exportConfig: any): void;
-};
+}
 
-type IState = {
+interface IState {
     visible: boolean;
-};
+}
 
 @observer
 class ProjectExportConfig extends React.Component<IProps, IState> {
@@ -57,7 +57,9 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
     };
 
     getFileFormatName = (fileFormat: string) => {
-        return FileFormatOptions.find((fileFormatOption) => fileFormatOption.value === fileFormat).text;
+        return FileFormatOptions.find((fileFormatOption) => {
+            return fileFormatOption.value === fileFormat;
+        }).text;
     };
 
     resolveTree = (treeData: any, splittedPath: string[], level: number) => {
@@ -139,7 +141,9 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
                         );
                     }
                 })
-                .filter((data) => data !== undefined);
+                .filter((data) => {
+                    return data !== undefined;
+                });
         };
 
         return buildTree(treeData, "");
@@ -154,14 +158,18 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
                         <SettingOutlined
                             type="setting"
                             key="setting"
-                            onClick={() => this.props.onEdit(this.props.exportConfig)}
+                            onClick={() => {
+                                return this.props.onEdit(this.props.exportConfig);
+                            }}
                         />
                     ),
                     this.props.onDelete && (
                         <DeleteOutlined
                             type="delete"
                             key="delete"
-                            onClick={() => this.props.onDelete(this.props.exportConfig)}
+                            onClick={() => {
+                                return this.props.onDelete(this.props.exportConfig);
+                            }}
                         />
                     )
                 ]}

@@ -33,7 +33,7 @@ const Key = styled.div`
 `;
 
 type IProps = {} & RouteComponentProps<{ projectId: string; keyId?: string }>;
-type IState = {
+interface IState {
     keysResponse: any;
     keyResponse: any;
     keysLoading: boolean;
@@ -42,7 +42,7 @@ type IState = {
     selectedLanguageIdTo: string;
     search: string;
     page: number;
-};
+}
 
 @observer
 class EditorSite extends React.Component<IProps, IState> {

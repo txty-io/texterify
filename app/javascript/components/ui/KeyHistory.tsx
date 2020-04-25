@@ -9,16 +9,16 @@ import { Loading } from "./Loading";
 import { Styles } from "./Styles";
 import { Utils } from "./Utils";
 
-type IProps = {
+interface IProps {
     projectId: string;
     keyName: string;
     keyId: string;
     onTranslationRestored(): void;
-};
-type IState = {
+}
+interface IState {
     keyActivityResponse: any;
     selectedLanguageId: string;
-};
+}
 
 class KeyHistory extends React.Component<IProps, IState> {
     state: IState = {
@@ -94,7 +94,7 @@ class KeyHistory extends React.Component<IProps, IState> {
             );
 
             let showDivider = false;
-            if (discoveredDates.indexOf(date) === -1) {
+            if (!discoveredDates.includes(date)) {
                 discoveredDates.push(date);
                 showDivider = true;
             }

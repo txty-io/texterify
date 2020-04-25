@@ -11,9 +11,9 @@ import { Routes } from "./Routes";
 import { RoutingManager } from "./RoutingManager";
 import { SiteRouter } from "./SiteRouter";
 
-type IProps = {
+interface IProps {
     location?: any;
-};
+}
 
 @observer
 class AppRouter extends React.Component<IProps, null> {

@@ -211,11 +211,11 @@ class KeysSite extends React.Component<IProps, IState> {
             });
         }
 
-        const filteredLanguages = this.state.languages.filter((language) =>
-            _.find(this.state.projectColumns.included, (o) => {
+        const filteredLanguages = this.state.languages.filter((language) => {
+            return _.find(this.state.projectColumns.included, (o) => {
                 return o.attributes.id === language.attributes.id;
-            })
-        );
+            });}
+        });
         const languageColumns = filteredLanguages.map((language) => {
             const countryCode = APIUtils.getIncludedObject(
                 language.relationships.country_code.data,
@@ -650,7 +650,9 @@ class KeysSite extends React.Component<IProps, IState> {
 
                                           this.state.exportConfigsResponse.data.map((exportConfig) => {
                                               const translations = {};
-                                              const currentKey = this.state.keys.find((key) => record.key === key.id);
+                                              const currentKey = this.state.keys.find((key) => {
+                                                  return record.key === key.id;
+                                              });
                                               currentKey.relationships.translations.data.map((translationReference) => {
                                                   const translation = APIUtils.getIncludedObject(
                                                       translationReference,
@@ -850,7 +852,9 @@ class KeysSite extends React.Component<IProps, IState> {
                         exportConfigId={this.state.editTranslationExportConfigId}
                         hideLanguageSelection
                         hideSaveButton
-                        ref={(ref) => (this.translationCardRef = ref)}
+                        ref={(ref) => {
+                            return (this.translationCardRef = ref);
+                        }}
                         onChange={(changed: boolean) => {
                             this.setState({ editTranslationContentChanged: changed });
                         }}

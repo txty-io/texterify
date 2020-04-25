@@ -22,7 +22,7 @@ interface IState {
 }
 
 class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IState> {
-    isMovingImage: boolean = false;
+    isMovingImage = false;
     dropzone: any = React.createRef();
     avatarEditor: any = React.createRef();
 
@@ -166,7 +166,7 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
                                             display: "flex",
                                             flexDirection: "column",
                                             borderRadius: Styles.DEFAULT_BORDER_RADIUS,
-                                            border: `1px solid #d9d9d9`
+                                            border: "1px solid #d9d9d9"
                                         }}
                                     >
                                         <AvatarEditor

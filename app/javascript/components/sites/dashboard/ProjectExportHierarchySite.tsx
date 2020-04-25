@@ -9,11 +9,11 @@ import FlagIcon from "../../ui/FlagIcons";
 const { Content } = Layout;
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
-type IState = {
+interface IState {
     treeData: any[];
     expandedKeys: any[];
     responseLanguages: any;
-};
+}
 
 @observer
 class ProjectExportHierarchySite extends React.Component<IProps> {
@@ -29,13 +29,14 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
             const treeData = this.buildTreeData(responseLanguages.data);
 
             const keys = [];
-            const loop = (data) =>
-                data.map((item) => {
+            const loop = (data) => {
+                return data.map((item) => {
                     keys.push(item.id);
                     if (item.children && item.children.length) {
                         loop(item.children);
                     }
                 });
+            };
             loop(treeData);
 
             this.setState({

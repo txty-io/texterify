@@ -3,7 +3,7 @@ import { APIUtils } from "./APIUtils";
 
 const LanguageCodesAPI = {
     getAll: async () => {
-        return API.getRequest(`language_codes`, true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
+        return API.getRequest("language_codes", true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
     }
 };
 

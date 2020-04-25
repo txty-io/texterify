@@ -136,7 +136,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
 
         const role = dashboardStore.getCurrentRole();
 
-        return requiredRoles.indexOf(role) !== -1;
+        return requiredRoles.includes(role);
     };
 
     renderMenuItems = (): JSX.Element[] => {

@@ -8,9 +8,9 @@ import { Loading } from "../../ui/Loading";
 const { Content } = Layout;
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
-type IState = {
+interface IState {
     dashboardActivityResponse: any;
-};
+}
 
 @observer
 class ActivitySite extends React.Component<IProps, IState> {

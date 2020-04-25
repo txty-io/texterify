@@ -4,12 +4,12 @@ import * as React from "react";
 import { ExportConfigsAPI } from "../api/v1/ExportConfigsAPI";
 import { FileFormatOptions } from "../configs/FileFormatOptions";
 
-type IFormValues = {
+interface IFormValues {
     name: string;
     fileFormat: string;
     filePath: string;
     defaultLanguageFilePath: string;
-};
+}
 
 interface IProps {
     exportConfigToEdit?: any;

@@ -29,7 +29,7 @@ const ProjectsAPI = {
     },
 
     createProject: async (name: string, description: string, organizationId?: string): Promise<any> => {
-        return API.postRequest(`projects`, true, {
+        return API.postRequest("projects", true, {
             name: name,
             description: description,
             organization_id: organizationId

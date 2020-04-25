@@ -3,8 +3,8 @@ import { authStore } from "../../stores/AuthStore";
 import { APIUtils } from "../v1/APIUtils";
 import { IAuthData } from "./AuthAPI";
 
-const API_BASE_URL: string = "api";
-const API_VERSION: string = "v1";
+const API_BASE_URL = "api";
+const API_VERSION = "v1";
 
 const DEFAULT_HEADERS: HeadersInit = {
     Accept: "application/json"
@@ -41,7 +41,7 @@ async function request(options: {
         }
     }
 
-    let fullURL: string = `/${API_BASE_URL}/${API_VERSION}/${options.url}`;
+    let fullURL = `/${API_BASE_URL}/${API_VERSION}/${options.url}`;
 
     // Add query params if it is a get request.
     if (options.method === "GET" && options.params) {

@@ -15,12 +15,24 @@ const ActivityItemWrapper = styled.div`
     word-break: break-all;
 `;
 
-type IActivityKeyElementProps = { color: string; background: string; noMarginRight?: boolean };
+interface IActivityKeyElementProps {
+    color: string;
+    background: string;
+    noMarginRight?: boolean;
+}
 const ActivityKeyElement = styled.span`
     font-family: "Source Code Pro", monospace;
-    background: ${(props: IActivityKeyElementProps) => props.background};
-    margin: 0 ${(props: IActivityKeyElementProps) => (props.noMarginRight ? 0 : "4px")} 0 4px;
-    color: ${(props: IActivityKeyElementProps) => props.color};
+    background: ${(props: IActivityKeyElementProps) => {
+        return props.background;
+    }};
+    margin: 0
+        ${(props: IActivityKeyElementProps) => {
+            return props.noMarginRight ? 0 : "4px";
+        }}
+        0 4px;
+    color: ${(props: IActivityKeyElementProps) => {
+        return props.color;
+    }};
     padding: 0 6px;
     border-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
 `;
@@ -31,14 +43,14 @@ const ProjectElement = styled(Link)`
     border-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
 `;
 
-type IProps = {
+interface IProps {
     activitiesResponse: any;
     hideTime?: boolean;
     mode?: "left" | "alternate" | "right";
     showTimeAgo?: boolean;
     includeProjectLink?: boolean;
-};
-type IState = {};
+}
+interface IState {}
 
 class Activity extends React.Component<IProps, IState> {
     // tslint:disable-next-line:max-func-body-length cyclomatic-complexity

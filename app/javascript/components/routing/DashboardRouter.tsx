@@ -223,7 +223,9 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             <PrivateRoute
                                 exact
                                 path={Routes.DASHBOARD.ROOT}
-                                component={() => <Redirect to={Routes.DASHBOARD.PROJECTS} />}
+                                component={() => {
+                                    return <Redirect to={Routes.DASHBOARD.PROJECTS} />;
+                                }}
                             />
                             <PrivateRoute exact path={Routes.DASHBOARD.PROJECTS} component={ProjectsSite} />
                             <PrivateRoute exact path={Routes.DASHBOARD.ORGANIZATIONS} component={OrganizationsSite} />

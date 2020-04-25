@@ -7,11 +7,13 @@ import { PermissionUtils } from "../utilities/PermissionUtils";
 const FormItem = Form.Item;
 
 const EditableContext = React.createContext(undefined);
-const EditableRow = ({ form, index, ...props }) => (
-    <EditableContext.Provider value={form}>
-        <tr {...props} />
-    </EditableContext.Provider>
-);
+const EditableRow = ({ form, index, ...props }) => {
+    return (
+        <EditableContext.Provider value={form}>
+            <tr {...props} />
+        </EditableContext.Provider>
+    );
+};
 const EditableFormRow = Form.create()(EditableRow);
 
 interface IEditableCellProps {
@@ -95,7 +97,12 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
         const { editable, dataIndex, title, record, index, handleSave, onCellEdit, ...restProps } = this.props;
 
         return (
-            <td ref={(node) => (this.cell = node)} {...restProps}>
+            <td
+                ref={(node) => {
+                    return (this.cell = node);
+                }}
+                {...restProps}
+            >
                 {editable ? (
                     <EditableContext.Consumer>
                         {(form: any) => {
@@ -119,7 +126,9 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
                                         initialValue: record[dataIndex]
                                     })(
                                         <Input.TextArea
-                                            ref={(node) => (this.input = node)}
+                                            ref={(node) => {
+                                                return (this.input = node);
+                                            }}
                                             onPressEnter={this.save}
                                             autoSize
                                         />
@@ -199,12 +208,18 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
 
     handleDelete = (key: any) => {
         const dataSource = [...this.state.dataSource];
-        this.setState({ dataSource: dataSource.filter((item) => item.key !== key) });
+        this.setState({
+            dataSource: dataSource.filter((item) => {
+                return item.key !== key;
+            })
+        });
     };
 
     handleSave = async (row: any) => {
         const newData = [...this.state.dataSource];
-        const index = newData.findIndex((data) => row.key === data.key);
+        const index = newData.findIndex((data) => {
+            return row.key === data.key;
+        });
         const oldRow = newData[index];
         const newItem = {
             ...oldRow,
@@ -251,7 +266,9 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
                 rowSelection={this.props.rowSelection}
                 components={components}
                 className={this.props.className}
-                rowClassName={() => "editable-row"}
+                rowClassName={() => {
+                    return "editable-row";
+                }}
                 showHeader={this.props.showHeader}
                 bordered={this.props.bordered}
                 dataSource={dataSource}

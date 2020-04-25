@@ -19,7 +19,7 @@ const OrganizationsAPI = {
     },
 
     createOrganization: async (name: string, description: string): Promise<any> => {
-        return API.postRequest(`organizations`, true, {
+        return API.postRequest("organizations", true, {
             name: name,
             description: description
         })

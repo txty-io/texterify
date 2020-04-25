@@ -2,11 +2,11 @@ import { authStore } from "../../stores/AuthStore";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
-export type IAuthData = {
+export interface IAuthData {
     client: string;
     accessToken: string;
     uid: string;
-};
+}
 
 const AuthAPI = {
     signup: async (username: string, email: string, password: string, passwordConfirmation: string): Promise<any> => {

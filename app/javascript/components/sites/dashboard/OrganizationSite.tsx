@@ -12,10 +12,10 @@ import { PrimaryButton } from "../../ui/PrimaryButton";
 import { ProjectsList } from "../../ui/ProjectsList";
 
 type IProps = RouteComponentProps<{ organizationId: string }> & {};
-type IState = {
+interface IState {
     addDialogVisible: boolean;
     responseOrganization: any;
-};
+}
 
 @observer
 class OrganizationSite extends React.Component<IProps, IState> {
@@ -63,9 +63,9 @@ class OrganizationSite extends React.Component<IProps, IState> {
                                 <ProjectsList
                                     projects={
                                         this.state.responseOrganization && this.state.responseOrganization.included
-                                            ? this.state.responseOrganization.included.filter(
-                                                  (included) => included.type === "project"
-                                              )
+                                            ? this.state.responseOrganization.included.filter((included) => {
+                                                  return included.type === "project";
+                                              })
                                             : []
                                     }
                                 />

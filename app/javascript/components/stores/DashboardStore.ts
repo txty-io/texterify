@@ -30,8 +30,8 @@ class DashboardStore {
     @observable currentProjectIncluded: any = null;
     @observable currentOrganization: IOrganization = null;
     @observable @persist sidebarMinimized: boolean;
-    @observable @persist keysPerPage: number = 10;
-    @observable hydrationFinished: boolean = false;
+    @observable @persist keysPerPage = 10;
+    @observable hydrationFinished = false;
 
     getOrganizationId = (organizationId?: string) => {
         return (this.getProjectOrganization() && this.getProjectOrganization().id) || organizationId;

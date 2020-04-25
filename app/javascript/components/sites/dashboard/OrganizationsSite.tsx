@@ -118,42 +118,46 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
                                 )
                             }}
                             dataSource={this.getRows()}
-                            renderItem={(item) => (
-                                <List.Item key={item.title}>
-                                    <List.Item.Meta
-                                        title={
-                                            <ListContent
-                                                onClick={(): void => {
-                                                    this.openOrganization(
-                                                        _.find(this.state.organizationsResponse.data, { id: item.key })
-                                                    );
-                                                }}
-                                                role="button"
-                                            >
-                                                <OrganizationAvatar
-                                                    organization={_.find(this.state.organizationsResponse.data, {
-                                                        id: item.key
-                                                    })}
-                                                    style={{ marginRight: 16 }}
-                                                />
-                                                <div>
-                                                    {item.name}
-                                                    <div style={{ fontSize: 12 }}>{item.description}</div>
-                                                </div>
-                                            </ListContent>
-                                        }
-                                    />
-                                    <Button
-                                        onClick={(): void => {
-                                            this.openOrganization(
-                                                _.find(this.state.organizationsResponse.data, { id: item.key })
-                                            );
-                                        }}
-                                    >
-                                        More
-                                    </Button>
-                                </List.Item>
-                            )}
+                            renderItem={(item) => {
+                                return (
+                                    <List.Item key={item.title}>
+                                        <List.Item.Meta
+                                            title={
+                                                <ListContent
+                                                    onClick={(): void => {
+                                                        this.openOrganization(
+                                                            _.find(this.state.organizationsResponse.data, {
+                                                                id: item.key
+                                                            })
+                                                        );
+                                                    }}
+                                                    role="button"
+                                                >
+                                                    <OrganizationAvatar
+                                                        organization={_.find(this.state.organizationsResponse.data, {
+                                                            id: item.key
+                                                        })}
+                                                        style={{ marginRight: 16 }}
+                                                    />
+                                                    <div>
+                                                        {item.name}
+                                                        <div style={{ fontSize: 12 }}>{item.description}</div>
+                                                    </div>
+                                                </ListContent>
+                                            }
+                                        />
+                                        <Button
+                                            onClick={(): void => {
+                                                this.openOrganization(
+                                                    _.find(this.state.organizationsResponse.data, { id: item.key })
+                                                );
+                                            }}
+                                        >
+                                            More
+                                        </Button>
+                                    </List.Item>
+                                );
+                            }}
                         />
                         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
                             <Pagination

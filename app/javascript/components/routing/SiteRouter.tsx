@@ -8,9 +8,9 @@ import { SignupSite } from "../sites/auth/SignupSite";
 import { PublicRouteRedirectDashboard } from "./PublicRouteRedirectDashboard";
 import { Routes } from "./Routes";
 
-type IProps = {
+interface IProps {
     location?: any;
-};
+}
 
 class SiteRouter extends React.Component<IProps, null> {
     renderRoutes(): JSX.Element {

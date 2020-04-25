@@ -26,10 +26,10 @@ const AccountProfileContentWrapper: any = styled.div`
     }
 `;
 
-type IProps = {};
-type IState = {
+interface IProps {}
+interface IState {
     accountMenuVisible: boolean;
-};
+}
 
 @observer
 class UserProfileHeader extends React.Component<IProps, IState> {

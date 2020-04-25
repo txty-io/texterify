@@ -3,15 +3,15 @@ import * as React from "react";
 import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 import { Styles } from "./Styles";
 
-type IProps = {
+interface IProps {
     organization: any;
     dontRenderIfNoImage?: boolean;
     style?: React.CSSProperties;
-};
-type IState = {
+}
+interface IState {
     image: any;
     loading: boolean;
-};
+}
 
 @observer
 class OrganizationAvatar extends React.Component<IProps, IState> {

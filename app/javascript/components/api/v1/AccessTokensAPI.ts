@@ -5,17 +5,17 @@ enum AccessTokensAPIErrors {
     NAME_ALREADY_TAKEN = "has already been taken"
 }
 
-type ICreateTokenOptions = {
+interface ICreateTokenOptions {
     name: string;
-};
+}
 
 const AccessTokensAPI = {
     getTokens: async () => {
-        return API.getRequest(`access_tokens`, true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
+        return API.getRequest("access_tokens", true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
     },
 
     createToken: async (options: ICreateTokenOptions): Promise<any> => {
-        return API.postRequest(`access_tokens`, true, {
+        return API.postRequest("access_tokens", true, {
             name: options.name
         })
             .then(APIUtils.handleErrors)

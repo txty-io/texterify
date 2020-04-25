@@ -4,14 +4,14 @@ import { UsersAPI } from "../api/v1/UsersAPI";
 import { authStore } from "../stores/AuthStore";
 import { Styles } from "./Styles";
 
-type IProps = {
+interface IProps {
     user: any;
     light?: boolean;
     style?: React.CSSProperties;
-};
-type IState = {
+}
+interface IState {
     image: any;
-};
+}
 
 @observer
 class UserAvatar extends React.Component<IProps, IState> {

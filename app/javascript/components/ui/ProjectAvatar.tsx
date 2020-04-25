@@ -3,14 +3,14 @@ import * as React from "react";
 import { ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { Styles } from "./Styles";
 
-type IProps = {
+interface IProps {
     project: any;
     style?: React.CSSProperties;
-};
-type IState = {
+}
+interface IState {
     image: any;
     loading: boolean;
-};
+}
 
 @observer
 class ProjectAvatar extends React.Component<IProps, IState> {

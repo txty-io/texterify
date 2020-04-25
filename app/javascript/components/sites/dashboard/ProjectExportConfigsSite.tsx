@@ -11,13 +11,13 @@ import { ProjectExportConfig } from "../../ui/ProjectExportConfig";
 const { Content } = Layout;
 
 type IProps = RouteComponentProps<{ projectId: string }>;
-type IState = {
+interface IState {
     projectExportConfigsResponse: any;
     languagesResponse: any;
     exportConfigToEdit: any;
     addEditExportConfigOpen: boolean;
     isDeleting: boolean;
-};
+}
 
 @observer
 class ProjectExportConfigsSite extends React.Component<IProps, IState> {
@@ -135,7 +135,9 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                                         });
                                     }}
                                     onDelete={() => {
-                                        this.setState({ exportConfigToEdit: null }, () => this.onDelete(exportConfig));
+                                        this.setState({ exportConfigToEdit: null }, () => {
+                                            return this.onDelete(exportConfig);
+                                        });
                                     }}
                                     languagesResponse={this.state.languagesResponse}
                                 />

@@ -27,7 +27,7 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
         imagePosition: { x: 0.5, y: 0.5 }
     };
 
-    isMovingImage: boolean = false;
+    isMovingImage = false;
     dropzone: any = React.createRef();
     avatarEditor: any = React.createRef();
 
@@ -151,7 +151,7 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
                                             display: "flex",
                                             flexDirection: "column",
                                             borderRadius: Styles.DEFAULT_BORDER_RADIUS,
-                                            border: `1px solid #d9d9d9`
+                                            border: "1px solid #d9d9d9"
                                         }}
                                     >
                                         <AvatarEditor

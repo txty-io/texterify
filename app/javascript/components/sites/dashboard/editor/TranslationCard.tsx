@@ -25,7 +25,7 @@ const EditorWrapper = styled.div`
     }
 `;
 
-type IProps = {
+interface IProps {
     projectId: string;
     languagesResponse: any;
     defaultSelected: any;
@@ -35,8 +35,8 @@ type IProps = {
     exportConfigId?: string;
     onChange?(changed: boolean);
     onSave?();
-};
-type IState = {
+}
+interface IState {
     selectedLanguage: string;
     editorContentChanged: boolean;
     editorLoaded: boolean;
@@ -44,7 +44,7 @@ type IState = {
     isHTMLKey: boolean;
     translationForLanguage: string;
     content: string;
-};
+}
 
 class TranslationCard extends React.Component<IProps, IState> {
     state: IState = {
