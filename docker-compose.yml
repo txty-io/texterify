@@ -7,6 +7,8 @@ services:
     volumes:
       - database:/var/lib/postgresql/data
   app:
+    # The container is running running but the database won't be ready to accept connections.
+    restart: always
     environment:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - EMAIL_CONFIRMATION_REQUIRED=${EMAIL_CONFIRMATION_REQUIRED}
