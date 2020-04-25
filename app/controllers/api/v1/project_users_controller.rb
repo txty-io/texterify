@@ -15,9 +15,17 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
     project_user = ProjectUser.new
     project_user.project = project
     project_user.user = user
+
+    # The default role of a user for a project that belongs to an organization
+    # is the role the user has in the organization.
+    user_organization_role = project.organization ? project.organization.role_of(user) : nil
+    if user_organization_role
+      project_user.role = user_organization_role
+    end
+
     authorize project_user
 
-    if !project.users.include?(user)
+    if !project.project_users.include?(user)
       project_user.save!
 
       project_column = ProjectColumn.new
@@ -26,13 +34,13 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
       project_column.save!
 
       render json: {
-        message: 'User added to the project'
+        message: 'Successfully added user to the project.'
       }
     else
       render json: {
         errors: [
           {
-            details: 'User already in the project'
+            details: 'User is already in the project.'
           }
         ]
       }
@@ -72,13 +80,45 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
     project_user = ProjectUser.find_by(project_id: project.id, user_id: params[:id])
 
     unless project_user
+      user = User.find(params[:id])
       project_user = ProjectUser.new
       project_user.project = project
-      project_user.user = User.find(params[:id])
+      project_user.user = user
+    end
+
+    # The least privileged role of a user for a project that belongs to an organization
+    # is the role the user has in the organization.
+    user_organization_role = project.organization ? project.organization.role_of(project_user.user) : nil
+    if user_organization_role && helpers.higher_role?(user_organization_role, params[:role])
+      render json: {
+        errors: [
+          {
+            details: 'The role of a user for a project must not be lower than the role the user has in the organization.'
+          }
+        ]
+      }, status: :bad_request
+      skip_authorization
+      return
     end
 
     project_user.role = params[:role]
     authorize project_user
+
+    project_organization_has_owner = project.organization ? project.organization.organization_users.where(role: 'owner').size >= 1 : false
+
+    # Don't allow the last owner of the project to change his role.
+    # There should always be at least one owner.
+    if project.project_users.where(role: 'owner').size == 1 && project_user.role_changed? && project_user.role_was == 'owner' && !project_organization_has_owner
+      render json: {
+        errors: [
+          {
+            details: 'There must always be at least one owner in a project.'
+          }
+        ]
+      }, status: :bad_request
+      return
+    end
+
     project_user.save!
 
     render json: {
