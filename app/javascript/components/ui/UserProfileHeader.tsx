@@ -1,4 +1,4 @@
-import { Icon, Popover } from "antd";
+import { Popover } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link } from "react-router-dom";

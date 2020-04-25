@@ -1,4 +1,4 @@
-import { Icon, Layout, Menu } from "antd";
+import { Layout, Menu } from "antd";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Routes } from "../../routing/Routes";

@@ -1,4 +1,6 @@
-import { Button, Form, Input, Slider } from "antd";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Input, Slider } from "antd";
 import * as React from "react";
 import AvatarEditor from "react-avatar-editor";
 import Dropzone from "react-dropzone";

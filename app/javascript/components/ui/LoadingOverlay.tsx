@@ -1,4 +1,3 @@
-import { Icon } from "antd";
 import * as React from "react";
 import { LoadingOutlined } from "@ant-design/icons";
 

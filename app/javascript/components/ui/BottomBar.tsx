@@ -1,4 +1,4 @@
-import { Button, Dropdown, Icon, Menu } from "antd";
+import { Button, Dropdown, Menu } from "antd";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { Routes } from "../routing/Routes";

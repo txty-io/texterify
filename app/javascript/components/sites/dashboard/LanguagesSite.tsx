@@ -1,4 +1,4 @@
-import { Button, Empty, Icon, Input, Layout, Modal, Table } from "antd";
+import { Button, Empty, Input, Layout, Modal, Table } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";

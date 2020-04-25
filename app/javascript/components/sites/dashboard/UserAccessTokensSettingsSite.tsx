@@ -1,4 +1,6 @@
-import { Button, Form, Input, Layout, Modal, Table } from "antd";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Input, Layout, Modal, Table } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as moment from "moment";

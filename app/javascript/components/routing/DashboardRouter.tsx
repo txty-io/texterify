@@ -1,5 +1,5 @@
 import { ProjectOutlined, DeploymentUnitOutlined, LineChartOutlined } from "@ant-design/icons";
-import { Button, Icon, Layout } from "antd";
+import { Button, Layout } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";

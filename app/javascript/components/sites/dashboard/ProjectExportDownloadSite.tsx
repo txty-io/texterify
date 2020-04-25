@@ -1,3 +1,4 @@
+import { DownloadOutlined } from '@ant-design/icons';
 import { Alert, Button, Layout, message, Select } from "antd";
 import * as moment from "moment";
 import * as React from "react";
@@ -125,7 +126,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                         message.error("An error occured during the export.");
                       }
                     }}
-                    icon="download"
+                    icon={<DownloadOutlined />}
                   >
                     Export
                   </Button>

@@ -1,4 +1,4 @@
-import { Icon, Layout, Menu } from "antd";
+import { Layout, Menu } from "antd";
 import { CollapseType } from "antd/lib/layout/Sider";
 import { observer } from "mobx-react";
 import * as React from "react";

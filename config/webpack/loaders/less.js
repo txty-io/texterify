@@ -7,19 +7,21 @@ module.exports = {
   }, {
     loader: "less-loader", // compiles Less to CSS
     options: {
-      modifyVars: {
-        // https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less
-        "primary-color": "#7977f3",
-        "info-color": "#7977f3",
-        "btn-primary-color": "#fff",
-        "btn-primary-bg": "#2b3556",
-        "font-family": "Open Sans",
-        "layout-body-background": "#fff",
-        "layout-header-background": "#fff",
-        "menu-item-color": "#333",
-        "menu-item-active-bg": "#6772e526"
-      },
-      javascriptEnabled: true
+      lessOptions: {
+        modifyVars: {
+          // https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less
+          "primary-color": "#7977f3",
+          "info-color": "#7977f3",
+          "btn-primary-color": "#fff",
+          "btn-primary-bg": "#2b3556",
+          "font-family": "Open Sans",
+          "layout-body-background": "#fff",
+          "layout-header-background": "#fff",
+          "menu-item-color": "#333",
+          "menu-item-active-bg": "#6772e526"
+        },
+        javascriptEnabled: true
+      }
     }
   }]
 }

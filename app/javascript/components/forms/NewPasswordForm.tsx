@@ -1,4 +1,6 @@
-import { Alert, Button, Form, Icon, Input } from "antd";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Alert, Button, Input } from "antd";
 import * as queryString from "query-string";
 import * as React from "react";
 import { Link } from "react-router-dom";

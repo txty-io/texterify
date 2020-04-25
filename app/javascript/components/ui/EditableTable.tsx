@@ -1,4 +1,6 @@
-import { Empty, Form, Input, Table } from "antd";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Empty, Input, Table } from "antd";
 import * as React from "react";
 import { dashboardStore } from "../stores/DashboardStore";
 import { PermissionUtils } from "../utilities/PermissionUtils";

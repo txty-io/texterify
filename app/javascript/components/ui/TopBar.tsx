@@ -1,3 +1,4 @@
+import { RocketOutlined } from '@ant-design/icons';
 import { Button } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -54,7 +55,7 @@ class TopBarUnwrapped extends React.Component<IProps, IState> {
       name: (
         <Button
           type="primary"
-          icon="rocket"
+          icon={<RocketOutlined />}
           style={{ boxShadow: "0 0 10px 0 rgba(0, 0, 0, .15)" }}
         >
           Get started

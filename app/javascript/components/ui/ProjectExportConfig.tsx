@@ -171,7 +171,11 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
                     visible={this.state.visible}
                     width={400}
                 >
-                    {this.props.languagesResponse && this.props.languagesResponse.data.length > 0 && <Tree.DirectoryTree selectable={false} defaultExpandAll expandAction={false}>
+                    {this.props.languagesResponse && this.props.languagesResponse.data.length > 0 && <Tree.DirectoryTree
+                        selectable={false}
+                        defaultExpandAll
+                        expandAction={false}
+                    >
                         {this.getTreePreview(
                             this.props.exportConfig.attributes.default_language_file_path,
                             this.props.exportConfig.attributes.file_path

@@ -1,4 +1,6 @@
-import { Alert, Button, Form, Icon, Input, message } from "antd";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Alert, Button, Input, message } from "antd";
 import * as React from "react";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { authStore } from "../stores/AuthStore";

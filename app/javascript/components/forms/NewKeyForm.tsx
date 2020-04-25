@@ -1,6 +1,9 @@
-import { Button, Checkbox, Form, Icon, Input, Modal, Tooltip } from "antd";
+import { Form } from "@ant-design/compatible";
+import "@ant-design/compatible/assets/index.css";
+import { Button, Checkbox, Input, Modal, Tooltip } from "antd";
 import * as React from "react";
 import { KeysAPI } from "../api/v1/KeysAPI";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 interface IProps {
   form: any;

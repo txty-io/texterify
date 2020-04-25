@@ -1,4 +1,4 @@
-import { Button, Drawer, Icon, Input, Layout, message, Modal, Popover, Switch, Tag } from "antd";
+import { Button, Drawer, Input, Layout, message, Modal, Popover, Switch, Tag } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
