@@ -6,6 +6,8 @@ services:
     image: postgres
     volumes:
       - database:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
   app:
     # The container is running running but the database won't be ready to accept connections.
     restart: always
