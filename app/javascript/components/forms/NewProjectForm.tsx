@@ -234,7 +234,7 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
           {getFieldDecorator("description", {
             initialValue: this.props.isEdit ? dashboardStore.currentProject.attributes.description : undefined
           })(
-            <Input.TextArea autosize={{ minRows: 4, maxRows: 8 }} placeholder="Description" />
+            <Input.TextArea autoSize={{ minRows: 4, maxRows: 8 }} placeholder="Description" />
           )}
         </Form.Item>
       </Form>

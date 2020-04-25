@@ -121,7 +121,7 @@ class EditableCell extends React.Component<IEditableCellProps, IEditableCellStat
                       <Input.TextArea
                         ref={(node) => (this.input = node)}
                         onPressEnter={this.save}
-                        autosize
+                        autoSize
                       />
                     )}
                   </FormItem>

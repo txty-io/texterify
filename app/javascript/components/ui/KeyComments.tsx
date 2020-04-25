@@ -16,7 +16,7 @@ class KeyComments extends React.Component {
                     author={authStore.currentUser && authStore.currentUser.username}
                     content={
                         <>
-                            <TextArea autosize={{ minRows: 2, maxRows: 6 }} />
+                            <TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
                             <Button htmlType="submit" type="primary" style={{ marginTop: 8 }}>
                                 Send message
                             </Button>
