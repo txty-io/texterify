@@ -14,3 +14,8 @@ User:
   email+provider:
     MissingUniqueIndexChecker:
       enabled: false
+
+ActiveStorage::Blob:
+  enabled: false
+ActiveStorage::Attachment:
+  enabled: false
