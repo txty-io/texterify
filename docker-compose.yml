@@ -4,14 +4,9 @@ volumes:
 services:
   db:
     image: postgres
-    restart: always
     volumes:
       - database:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
   app:
-    # The container is running running but the database won't be ready to accept connections.
-    restart: always
     environment:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - EMAIL_CONFIRMATION_REQUIRED=${EMAIL_CONFIRMATION_REQUIRED}
