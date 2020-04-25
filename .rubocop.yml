@@ -10,6 +10,7 @@ AllCops:
     - 'script/**/*'
     - 'node_modules/**/*'
     - 'bin/**/*'
+  TargetRubyVersion: 2.7.1
 
 Rails:
   Enabled: true
@@ -47,8 +48,26 @@ Style/IfUnlessModifier:
 Style/ConditionalAssignment:
   Enabled: false
 
+Style/HashEachMethods:
+  Enabled: false
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
+Style/ExponentialNotation:
+  Enabled: true
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: "indented"
+
+Layout/LineLength:
+  Enabled: false
+
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
 
 Metrics/BlockLength:
   Enabled: false
@@ -68,8 +87,11 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Enabled: false
 
-Metrics/LineLength:
-  Enabled: false
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
 
 Naming/FileName:
   Exclude:

@@ -71,9 +71,10 @@
     "prod-local:setup": "SECRET_KEY_BASE=`bin/rails secret` RAILS_ENV=production bundle exec rails db:create db:migrate db:seed",
     "prod-local:precompile": "SECRET_KEY_BASE=`bin/rails secret` RAILS_ENV=production bundle exec rails assets:precompile",
     "prod-local:start": "SECRET_KEY_BASE=`bin/rails secret` RAILS_ENV=production RAILS_SERVE_STATIC_FILES=true bundle exec rails s",
-    "start": "bundle exec rails server -p 3000",
+    "start": "RUBYOPT='-W:no-deprecated' bundle exec rails server -p 3000",
     "start:watcher": "./bin/webpack-dev-server",
-    "test": "yarn test:backend",
-    "test:backend": "RAILS_ENV=test bundle exec rspec"
+    "test": "RUBYOPT='-W:no-deprecated' yarn test:backend",
+    "test:backend": "RAILS_ENV=test bundle exec rspec",
+    "dangerous:recreate-database": "RUBYOPT='-W:no-deprecated' bundle exec rails db:drop; RUBYOPT='-W:no-deprecated' bundle exec rails db:create; RUBYOPT='-W:no-deprecated' bundle exec rails db:migrate; RUBYOPT='-W:no-deprecated' bundle exec rails db:seed"
   }
 }

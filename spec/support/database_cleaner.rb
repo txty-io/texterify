@@ -1,7 +1,7 @@
 RSpec.configure do |config|
   config.before(:suite) do
     DatabaseCleaner.clean_with(:truncation)
-    load Rails.root.join('db', 'seeds.rb')
+    load Rails.root.join('db/seeds.rb')
   end
 
   config.before(:each) do

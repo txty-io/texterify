@@ -1,7 +1,7 @@
 # Required environment variables:
 # - SECRET_KEY_BASE
 
-FROM ruby:2.5.0
+FROM ruby:2.7.1
 SHELL ["/bin/bash", "-c"]
 
 EXPOSE 3000

@@ -1,9 +1,9 @@
 class CreateProjectColumnsLanguages < ActiveRecord::Migration[5.1]
   def change
-    create_join_table :project_columns, :languages, id: :uuid do |t|
-      t.references :project_column, index: true, null: false, type: :uuid, foreign_key: true
-      t.references :language, index: true, null: false, type: :uuid, foreign_key: true
+    create_join_table :project_columns, :languages, id: :uuid, column_options: { type: :uuid, foreign_key: true } do |t|
       t.timestamps null: false
+      t.index [:project_column_id]
+      t.index [:language_id]
     end
   end
 end

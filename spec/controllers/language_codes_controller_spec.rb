@@ -9,12 +9,12 @@ RSpec.describe Api::V1::LanguageCodesController, type: :request do
   describe 'responds with' do
     it 'responds with json by default' do
       get '/api/v1/language_codes'
-      expect(response.content_type).to eq 'application/json'
+      expect(response.content_type).to eq 'application/json; charset=utf-8'
     end
 
     it 'responds with json even by set format' do
       get '/api/v1/language_codes', params: { format: :html }
-      expect(response.content_type).to eq 'application/json'
+      expect(response.content_type).to eq 'application/json; charset=utf-8'
     end
   end
 

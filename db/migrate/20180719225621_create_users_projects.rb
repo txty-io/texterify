@@ -1,9 +1,9 @@
 class CreateUsersProjects < ActiveRecord::Migration[5.1]
   def change
-    create_join_table :users, :projects, id: :uuid do |t|
-      t.references :user, index: true, null: false, type: :uuid, foreign_key: true
-      t.references :project, index: true, null: false, type: :uuid, foreign_key: true
+    create_join_table :users, :projects, id: :uuid, column_options: { type: :uuid, foreign_key: true } do |t|
       t.timestamps null: false
+      t.index [:user_id]
+      t.index [:project_id]
     end
   end
 end

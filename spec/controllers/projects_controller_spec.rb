@@ -12,12 +12,12 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
   describe 'GET index' do
     it 'responds with json by default' do
       get '/api/v1/projects'
-      expect(response.content_type).to eq 'application/json'
+      expect(response.content_type).to eq 'application/json; charset=utf-8'
     end
 
     it 'responds with json even by set format' do
       get '/api/v1/projects', params: { format: :html }
-      expect(response.content_type).to eq 'application/json'
+      expect(response.content_type).to eq 'application/json; charset=utf-8'
     end
 
     it 'has status code 403 if not logged in', :skip_before do
@@ -122,12 +122,12 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
   describe 'POST create' do
     it 'responds with json by default' do
       post '/api/v1/projects'
-      expect(response.content_type).to eq 'application/json'
+      expect(response.content_type).to eq 'application/json; charset=utf-8'
     end
 
     it 'responds with json even by set format' do
       post '/api/v1/projects', params: { format: :html }
-      expect(response.content_type).to eq 'application/json'
+      expect(response.content_type).to eq 'application/json; charset=utf-8'
     end
 
     it 'creates a new project with name' do
@@ -177,12 +177,12 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
 
     it 'responds with json by default' do
       put '/api/v1/projects/1'
-      expect(response.content_type).to eq 'application/json'
+      expect(response.content_type).to eq 'application/json; charset=utf-8'
     end
 
     it 'responds with json even by set format' do
       put '/api/v1/projects/1', params: { format: :html }
-      expect(response.content_type).to eq 'application/json'
+      expect(response.content_type).to eq 'application/json; charset=utf-8'
     end
 
     permissions_update.each do |permission, expected_response_status|
@@ -221,12 +221,12 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
 
     it 'responds with json by default' do
       delete '/api/v1/projects/1'
-      expect(response.content_type).to eq 'application/json'
+      expect(response.content_type).to eq 'application/json; charset=utf-8'
     end
 
     it 'responds with json even by set format' do
       delete '/api/v1/projects/1', params: { format: :html }
-      expect(response.content_type).to eq 'application/json'
+      expect(response.content_type).to eq 'application/json; charset=utf-8'
     end
 
     permissions_destroy.each do |permission, expected_response_status|
