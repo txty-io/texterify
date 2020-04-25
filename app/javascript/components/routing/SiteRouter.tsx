@@ -9,32 +9,28 @@ import { PublicRouteRedirectDashboard } from "./PublicRouteRedirectDashboard";
 import { Routes } from "./Routes";
 
 type IProps = {
-  location?: any;
+    location?: any;
 };
 
 class SiteRouter extends React.Component<IProps, null> {
-  renderRoutes(): JSX.Element {
-    return (
-      <>
-        <Switch>
-          <PublicRouteRedirectDashboard exact path={Routes.OTHER.ROOT} component={LoginSite} />
-          <Route exact path={Routes.AUTH.LOGIN} component={LoginSite} />
-          <Route exact path={Routes.AUTH.SIGNUP} component={SignupSite} />
-          <Route exact path={Routes.AUTH.FORGOTT_PASSWORD} component={ForgotPasswordSite} />
-          <Route exact path={Routes.AUTH.ACCOUNT_CONFIRMATION} component={AccountConfirmationSite} />
-          <Route exact path={Routes.AUTH.NEW_PASSWORD_SITE} component={NewPasswordSite} />
-        </Switch>
-      </>
-    );
-  }
+    renderRoutes(): JSX.Element {
+        return (
+            <>
+                <Switch>
+                    <PublicRouteRedirectDashboard exact path={Routes.OTHER.ROOT} component={LoginSite} />
+                    <Route exact path={Routes.AUTH.LOGIN} component={LoginSite} />
+                    <Route exact path={Routes.AUTH.SIGNUP} component={SignupSite} />
+                    <Route exact path={Routes.AUTH.FORGOTT_PASSWORD} component={ForgotPasswordSite} />
+                    <Route exact path={Routes.AUTH.ACCOUNT_CONFIRMATION} component={AccountConfirmationSite} />
+                    <Route exact path={Routes.AUTH.NEW_PASSWORD_SITE} component={NewPasswordSite} />
+                </Switch>
+            </>
+        );
+    }
 
-  render() {
-    return (
-      <>
-        {this.renderRoutes()}
-      </>
-    );
-  }
+    render() {
+        return <>{this.renderRoutes()}</>;
+    }
 }
 
 export { SiteRouter };

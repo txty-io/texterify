@@ -102,7 +102,7 @@ class TranslationCard extends React.Component<IProps, IState> {
             isHTMLKey: isHTMLKey,
             translationForLanguage: translationForLanguage
         });
-    }
+    };
 
     getTranslationForLanguage = (languageId: string) => {
         let translationForLanguage;
@@ -120,23 +120,34 @@ class TranslationCard extends React.Component<IProps, IState> {
         });
 
         return translationForLanguage;
-    }
+    };
 
     isHTMLKey = () => {
         return this.state.isHTMLKey;
-    }
+    };
 
     contentChanged = () => {
         return this.state.editorContentChanged || this.state.textareaContentChanged;
-    }
+    };
 
     getEditorLoadingOverlay = () => {
         return (
-            <div style={{ width: "100%", height: "100%", position: "absolute", left: 0, top: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <div
+                style={{
+                    width: "100%",
+                    height: "100%",
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+            >
                 <LoadingOutlined style={{ fontSize: 24, margin: "auto" }} spin />
             </div>
         );
-    }
+    };
 
     saveChanges = async () => {
         let promise;
@@ -146,74 +157,97 @@ class TranslationCard extends React.Component<IProps, IState> {
             promise = Promise.resolve(this.state.content);
         }
 
-        return promise.then(async (content) => {
-            if (this.state.isHTMLKey) {
-                content = JSON.stringify(content);
-            }
+        return promise
+            .then(async (content) => {
+                if (this.state.isHTMLKey) {
+                    content = JSON.stringify(content);
+                }
 
-            await TranslationsAPI.updateTranslation({
-                projectId: this.props.projectId,
-                languageId: this.state.selectedLanguage,
-                keyId: this.props.keyResponse.data.id,
-                exportConfigId: this.props.exportConfigId,
-                content: content
+                await TranslationsAPI.updateTranslation({
+                    projectId: this.props.projectId,
+                    languageId: this.state.selectedLanguage,
+                    keyId: this.props.keyResponse.data.id,
+                    exportConfigId: this.props.exportConfigId,
+                    content: content
+                });
+
+                if (this.props.onSave) {
+                    this.props.onSave();
+                }
+
+                this.setState({
+                    editorContentChanged: false,
+                    textareaContentChanged: false
+                });
+            })
+            .catch((error) => {
+                console.error(error);
+                message.error("Failed to save changes.");
             });
-
-            if (this.props.onSave) {
-                this.props.onSave();
-            }
-
-            this.setState({
-                editorContentChanged: false,
-                textareaContentChanged: false
-            });
-        }).catch((error) => {
-            console.error(error);
-            message.error("Failed to save changes.");
-        });
-    }
+    };
 
     render() {
         return (
             <div style={{ marginBottom: 24, width: "100%" }}>
                 <div style={{ marginBottom: 8, display: "flex" }}>
-                    {!this.props.hideLanguageSelection && <Select
-                        style={{ flexGrow: 1, maxWidth: 200 }}
-                        onChange={async (selectedValue: string) => {
-                            this.setState({
-                                selectedLanguage: selectedValue
-                            }, this.loadData);
-                        }}
-                        value={this.state.selectedLanguage}
-                    >
-                        {this.props.languagesResponse && this.props.languagesResponse.data.map((language) => {
-                            const countryCode = APIUtils.getIncludedObject(language.relationships.country_code.data, this.props.languagesResponse.included);
+                    {!this.props.hideLanguageSelection && (
+                        <Select
+                            style={{ flexGrow: 1, maxWidth: 200 }}
+                            onChange={async (selectedValue: string) => {
+                                this.setState(
+                                    {
+                                        selectedLanguage: selectedValue
+                                    },
+                                    this.loadData
+                                );
+                            }}
+                            value={this.state.selectedLanguage}
+                        >
+                            {this.props.languagesResponse &&
+                                this.props.languagesResponse.data.map((language) => {
+                                    const countryCode = APIUtils.getIncludedObject(
+                                        language.relationships.country_code.data,
+                                        this.props.languagesResponse.included
+                                    );
 
-                            return <Select.Option value={language.id} key={language.attributes.name}>
-                                {countryCode && <span style={{ marginRight: 8 }}>
-                                    <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
-                                </span>}
-                                {language.attributes.name}
-                            </Select.Option>;
-                        })}
-                    </Select>}
-                    {!this.props.hideSaveButton && <Button
-                        type="primary"
-                        disabled={!this.contentChanged()}
-                        style={{ marginLeft: "auto" }}
-                        onClick={this.saveChanges}
-                    >
-                        Save changes
-                    </Button>}
+                                    return (
+                                        <Select.Option value={language.id} key={language.attributes.name}>
+                                            {countryCode && (
+                                                <span style={{ marginRight: 8 }}>
+                                                    <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
+                                                </span>
+                                            )}
+                                            {language.attributes.name}
+                                        </Select.Option>
+                                    );
+                                })}
+                        </Select>
+                    )}
+                    {!this.props.hideSaveButton && (
+                        <Button
+                            type="primary"
+                            disabled={!this.contentChanged()}
+                            style={{ marginLeft: "auto" }}
+                            onClick={this.saveChanges}
+                        >
+                            Save changes
+                        </Button>
+                    )}
                 </div>
 
-                {this.isHTMLKey() ?
+                {this.isHTMLKey() ? (
                     <div style={{ position: "relative" }}>
-                        <EditorWrapper style={{ opacity: this.state.editorLoaded ? 1 : 0, height: this.state.editorLoaded ? undefined : EMPTY_EDITOR_HEIGHT }}>
+                        <EditorWrapper
+                            style={{
+                                opacity: this.state.editorLoaded ? 1 : 0,
+                                height: this.state.editorLoaded ? undefined : EMPTY_EDITOR_HEIGHT
+                            }}
+                        >
                             <div id={`codex-editor-${this.state.selectedLanguage}`} />
                         </EditorWrapper>
                         {!this.state.editorLoaded && this.getEditorLoadingOverlay()}
-                    </div> :
+                    </div>
+                ) : (
                     <TextArea
                         autoSize={{ minRows: 4, maxRows: 6 }}
                         placeholder="Language translation content"
@@ -230,7 +264,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                         }}
                         value={this.state.content}
                     />
-                }
+                )}
             </div>
         );
     }

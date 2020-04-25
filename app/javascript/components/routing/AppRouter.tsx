@@ -12,35 +12,33 @@ import { RoutingManager } from "./RoutingManager";
 import { SiteRouter } from "./SiteRouter";
 
 type IProps = {
-  location?: any;
+    location?: any;
 };
 
 @observer
 class AppRouter extends React.Component<IProps, null> {
-  render() {
-    if (authStore.hydrationFinished) {
-      return (
-        <Router history={history}>
-          <RoutingManager>
-            <Switch>
-              <PrivateRoute path={Routes.DASHBOARD.PROJECT_EDITOR_KEY} component={EditorSite} />
-              <PrivateRoute path={Routes.DASHBOARD.PROJECT_EDITOR} component={EditorSite} />
+    render() {
+        if (authStore.hydrationFinished) {
+            return (
+                <Router history={history}>
+                    <RoutingManager>
+                        <Switch>
+                            <PrivateRoute path={Routes.DASHBOARD.PROJECT_EDITOR_KEY} component={EditorSite} />
+                            <PrivateRoute path={Routes.DASHBOARD.PROJECT_EDITOR} component={EditorSite} />
 
-              {/* Additional route if the project id is needed in the dashboard router. */}
-              <PrivateRoute path={Routes.DASHBOARD.PROJECT} component={DashboardRouter} />
+                            {/* Additional route if the project id is needed in the dashboard router. */}
+                            <PrivateRoute path={Routes.DASHBOARD.PROJECT} component={DashboardRouter} />
 
-              <PrivateRoute path={Routes.DASHBOARD.ROOT} component={DashboardRouter} />
-              <Route path={Routes.OTHER.ROOT} component={SiteRouter} />
-            </Switch>
-          </RoutingManager>
-        </Router >
-      );
-    } else {
-      return (
-        <LoadingOverlay isVisible loadingText="App is loading..." />
-      );
+                            <PrivateRoute path={Routes.DASHBOARD.ROOT} component={DashboardRouter} />
+                            <Route path={Routes.OTHER.ROOT} component={SiteRouter} />
+                        </Switch>
+                    </RoutingManager>
+                </Router>
+            );
+        } else {
+            return <LoadingOverlay isVisible loadingText="App is loading..." />;
+        }
     }
-  }
 }
 
 export { AppRouter };

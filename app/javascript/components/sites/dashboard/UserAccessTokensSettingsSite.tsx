@@ -1,5 +1,5 @@
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
+import { Form } from "@ant-design/compatible";
+import "@ant-design/compatible/assets/index.css";
 import { Button, Input, Layout, Modal, Table } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
@@ -9,193 +9,189 @@ import { AccessTokensAPI, AccessTokensAPIErrors } from "../../api/v1/AccessToken
 const { Content } = Layout;
 
 interface IProps {
-  form: any;
+    form: any;
 }
 interface IState {
-  getTokensResponse: any;
-  deleteDialogVisible: boolean;
+    getTokensResponse: any;
+    deleteDialogVisible: boolean;
 }
 
 @observer
 class UserAccessTokensSettingsSiteUnwrapped extends React.Component<IProps, IState> {
-  state: IState = {
-    getTokensResponse: null,
-    deleteDialogVisible: false
-  };
+    state: IState = {
+        getTokensResponse: null,
+        deleteDialogVisible: false
+    };
 
-  async componentDidMount() {
-    const getTokensResponse = await AccessTokensAPI.getTokens();
+    async componentDidMount() {
+        const getTokensResponse = await AccessTokensAPI.getTokens();
 
-    this.setState({
-      getTokensResponse: getTokensResponse
-    });
-  }
-
-  getColumns = (): any[] => {
-    return [
-      {
-        title: "Name",
-        dataIndex: "name",
-        key: "name"
-      },
-      {
-        title: "Created",
-        dataIndex: "created",
-        key: "created"
-      },
-      {
-        title: "",
-        key: "actions",
-        width: 80,
-        render: (_text: any, record: any): JSX.Element => {
-          return (
-            <Button
-              onClick={async () => {
-                this.setState({
-                  deleteDialogVisible: true
-                });
-
-                Modal.confirm({
-                  title: "Do you really want to remove this access token?",
-                  content: "This cannot be undone.",
-                  okText: "Yes",
-                  okType: "danger",
-                  cancelText: "No",
-                  visible: this.state.deleteDialogVisible,
-                  onOk: async () => {
-                    await AccessTokensAPI.deleteToken(record.key);
-                    const getTokensResponse = await AccessTokensAPI.getTokens();
-                    this.setState({
-                      getTokensResponse: getTokensResponse,
-                      deleteDialogVisible: false
-                    });
-                  },
-                  onCancel: () => {
-                    this.setState({
-                      deleteDialogVisible: false
-                    });
-                  }
-                });
-              }}
-              type="danger"
-            >
-              Revoke
-            </Button>
-          );
-        }
-      }
-    ];
-  }
-
-  getRows = (): any[] => {
-    if (!this.state.getTokensResponse || !this.state.getTokensResponse.data) {
-      return [];
+        this.setState({
+            getTokensResponse: getTokensResponse
+        });
     }
 
-    return this.state.getTokensResponse.data.map(
-      (token: any) => {
-        return {
-          key: token.id,
-          name: token.attributes.name,
-          created: moment(token.attributes.created_at, "YYYY-MM-DD HH:mm:ss").format("DD.MM.YYYY")
-        };
-      },
-      []
-    );
-  }
+    getColumns = (): any[] => {
+        return [
+            {
+                title: "Name",
+                dataIndex: "name",
+                key: "name"
+            },
+            {
+                title: "Created",
+                dataIndex: "created",
+                key: "created"
+            },
+            {
+                title: "",
+                key: "actions",
+                width: 80,
+                render: (_text: any, record: any): JSX.Element => {
+                    return (
+                        <Button
+                            onClick={async () => {
+                                this.setState({
+                                    deleteDialogVisible: true
+                                });
 
-  handleSubmit = async (e: any) => {
-    e.preventDefault();
-    this.props.form.validateFields(async (err: any, values: { name: string }) => {
-      if (!err) {
-        const response = await AccessTokensAPI.createToken({
-          name: values.name
-        });
-
-        if (response.errors) {
-          response.errors.map((error) => {
-            if (error.details === AccessTokensAPIErrors.NAME_ALREADY_TAKEN) {
-              this.props.form.setFields({
-                name: {
-                  value: values.name,
-                  errors: [new Error(error.details)]
+                                Modal.confirm({
+                                    title: "Do you really want to remove this access token?",
+                                    content: "This cannot be undone.",
+                                    okText: "Yes",
+                                    okType: "danger",
+                                    cancelText: "No",
+                                    visible: this.state.deleteDialogVisible,
+                                    onOk: async () => {
+                                        await AccessTokensAPI.deleteToken(record.key);
+                                        const getTokensResponse = await AccessTokensAPI.getTokens();
+                                        this.setState({
+                                            getTokensResponse: getTokensResponse,
+                                            deleteDialogVisible: false
+                                        });
+                                    },
+                                    onCancel: () => {
+                                        this.setState({
+                                            deleteDialogVisible: false
+                                        });
+                                    }
+                                });
+                            }}
+                            type="danger"
+                        >
+                            Revoke
+                        </Button>
+                    );
                 }
-              });
             }
-          });
+        ];
+    };
 
-          return;
+    getRows = (): any[] => {
+        if (!this.state.getTokensResponse || !this.state.getTokensResponse.data) {
+            return [];
         }
 
-        Modal.success({
-          title: "Success",
-          content: (
-            <>
-              Your new access token is:
-              <Paragraph code copyable>
-                {response.data.secret}
-              </Paragraph>
-              Store your token somewhere safe because you won't be able to access it again.
-            </>
-          )
+        return this.state.getTokensResponse.data.map((token: any) => {
+            return {
+                key: token.id,
+                name: token.attributes.name,
+                created: moment(token.attributes.created_at, "YYYY-MM-DD HH:mm:ss").format("DD.MM.YYYY")
+            };
+        }, []);
+    };
+
+    handleSubmit = async (e: any) => {
+        e.preventDefault();
+        this.props.form.validateFields(async (err: any, values: { name: string }) => {
+            if (!err) {
+                const response = await AccessTokensAPI.createToken({
+                    name: values.name
+                });
+
+                if (response.errors) {
+                    response.errors.map((error) => {
+                        if (error.details === AccessTokensAPIErrors.NAME_ALREADY_TAKEN) {
+                            this.props.form.setFields({
+                                name: {
+                                    value: values.name,
+                                    errors: [new Error(error.details)]
+                                }
+                            });
+                        }
+                    });
+
+                    return;
+                }
+
+                Modal.success({
+                    title: "Success",
+                    content: (
+                        <>
+                            Your new access token is:
+                            <Paragraph code copyable>
+                                {response.data.secret}
+                            </Paragraph>
+                            Store your token somewhere safe because you won't be able to access it again.
+                        </>
+                    )
+                });
+
+                const getTokensResponse = await AccessTokensAPI.getTokens();
+                this.setState({
+                    getTokensResponse: getTokensResponse
+                });
+
+                this.props.form.setFields({
+                    name: {
+                        value: undefined
+                    }
+                });
+            }
         });
+    };
 
-        const getTokensResponse = await AccessTokensAPI.getTokens();
-        this.setState({
-          getTokensResponse: getTokensResponse
-        });
-
-        this.props.form.setFields({
-          name: {
-            value: undefined
-          }
-        });
-      }
-    });
-  }
-
-  render() {
-    return (
-      <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
-        <Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
-          <h1>Access tokens</h1>
-          <p>Access tokens can be used to perform actions against the API without first logging in.</p>
-          <div style={{ display: "flex" }}>
-            <div style={{ display: "flex", flexDirection: "column", width: "40%", marginRight: 16 }}>
-              <h3>Create access token</h3>
-              <Form id="newProjectForm" onSubmit={this.handleSubmit} style={{ maxWidth: "100%" }}>
-                <h3>Name</h3>
-                <p>The name of the access token for later identification.</p>
-                <Form.Item>
-                  {this.props.form.getFieldDecorator("name", {
-                    rules: [{ required: true, message: "Please enter a name for the access token." }]
-                  })(
-                    <Input placeholder="Name" />
-                  )}
-                </Form.Item>
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                  <Button type="primary" htmlType="submit">
-                    Create access token
-                  </Button>
-                </div>
-              </Form>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", width: "60%", marginLeft: 16 }}>
-              <h3>Active access tokens</h3>
-              <Table
-                dataSource={this.getRows()}
-                columns={this.getColumns()}
-                loading={!this.state.getTokensResponse}
-                size="middle"
-                pagination={false}
-              />
-            </div>
-          </div>
-
-        </Content>
-      </Layout>
-    );
-  }
+    render() {
+        return (
+            <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
+                <Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
+                    <h1>Access tokens</h1>
+                    <p>Access tokens can be used to perform actions against the API without first logging in.</p>
+                    <div style={{ display: "flex" }}>
+                        <div style={{ display: "flex", flexDirection: "column", width: "40%", marginRight: 16 }}>
+                            <h3>Create access token</h3>
+                            <Form id="newProjectForm" onSubmit={this.handleSubmit} style={{ maxWidth: "100%" }}>
+                                <h3>Name</h3>
+                                <p>The name of the access token for later identification.</p>
+                                <Form.Item>
+                                    {this.props.form.getFieldDecorator("name", {
+                                        rules: [
+                                            { required: true, message: "Please enter a name for the access token." }
+                                        ]
+                                    })(<Input placeholder="Name" />)}
+                                </Form.Item>
+                                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                    <Button type="primary" htmlType="submit">
+                                        Create access token
+                                    </Button>
+                                </div>
+                            </Form>
+                        </div>
+                        <div style={{ display: "flex", flexDirection: "column", width: "60%", marginLeft: 16 }}>
+                            <h3>Active access tokens</h3>
+                            <Table
+                                dataSource={this.getRows()}
+                                columns={this.getColumns()}
+                                loading={!this.state.getTokensResponse}
+                                size="middle"
+                                pagination={false}
+                            />
+                        </div>
+                    </div>
+                </Content>
+            </Layout>
+        );
+    }
 }
 
 const UserAccessTokensSettingsSite = Form.create()(UserAccessTokensSettingsSiteUnwrapped);

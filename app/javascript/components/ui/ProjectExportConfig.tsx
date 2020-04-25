@@ -33,20 +33,32 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
             <div style={{ display: "flex", alignItems: "center" }}>
                 {splitted.map((split, index) => {
                     if (split === "{languageCode}") {
-                        return <Tag color="geekblue" key={index} style={{ margin: "0 2px 0 0" }}>{"{languageCode}"}</Tag>;
+                        return (
+                            <Tag color="geekblue" key={index} style={{ margin: "0 2px 0 0" }}>
+                                {"{languageCode}"}
+                            </Tag>
+                        );
                     } else if (split === "{countryCode}") {
-                        return <Tag color="geekblue" key={index} style={{ margin: "0 2px 0 0" }}>{"{countryCode}"}</Tag>;
+                        return (
+                            <Tag color="geekblue" key={index} style={{ margin: "0 2px 0 0" }}>
+                                {"{countryCode}"}
+                            </Tag>
+                        );
                     } else {
-                        return <Tag color="#fff" key={index} style={{ margin: "0 2px 0 0", padding: 0, color: "#000" }}>{split}</Tag>;
+                        return (
+                            <Tag color="#fff" key={index} style={{ margin: "0 2px 0 0", padding: 0, color: "#000" }}>
+                                {split}
+                            </Tag>
+                        );
                     }
                 })}
             </div>
         );
-    }
+    };
 
     getFileFormatName = (fileFormat: string) => {
         return FileFormatOptions.find((fileFormatOption) => fileFormatOption.value === fileFormat).text;
-    }
+    };
 
     resolveTree = (treeData: any, splittedPath: string[], level: number) => {
         const currentPathElement = splittedPath[level];
@@ -75,30 +87,38 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
         if (!isLast) {
             this.resolveTree(treeData[currentPathElement], splittedPath, level + 1);
         }
-    }
+    };
 
     getTreePreview = (defaultLanguageFilePath: string, filePath: string) => {
-        const resolvedPaths = this.props.languagesResponse && this.props.languagesResponse.data.map((language) => {
-            const countryCode = APIUtils.getIncludedObject(language.relationships.country_code.data, this.props.languagesResponse.included);
-            const languageCode = APIUtils.getIncludedObject(language.relationships.language_code.data, this.props.languagesResponse.included);
+        const resolvedPaths =
+            this.props.languagesResponse &&
+            this.props.languagesResponse.data.map((language) => {
+                const countryCode = APIUtils.getIncludedObject(
+                    language.relationships.country_code.data,
+                    this.props.languagesResponse.included
+                );
+                const languageCode = APIUtils.getIncludedObject(
+                    language.relationships.language_code.data,
+                    this.props.languagesResponse.included
+                );
 
-            let title;
-            if (language.attributes.is_default && defaultLanguageFilePath) {
-                title = defaultLanguageFilePath;
-            } else {
-                title = filePath;
-            }
+                let title;
+                if (language.attributes.is_default && defaultLanguageFilePath) {
+                    title = defaultLanguageFilePath;
+                } else {
+                    title = filePath;
+                }
 
-            if (countryCode) {
-                title = title.split("{countryCode}").join(countryCode.attributes.code);
-            }
+                if (countryCode) {
+                    title = title.split("{countryCode}").join(countryCode.attributes.code);
+                }
 
-            if (languageCode) {
-                title = title.split("{languageCode}").join(languageCode.attributes.code);
-            }
+                if (languageCode) {
+                    title = title.split("{languageCode}").join(languageCode.attributes.code);
+                }
 
-            return title;
-        });
+                return title;
+            });
 
         const treeData = {};
         resolvedPaths.sort().forEach((path) => {
@@ -107,29 +127,43 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
         });
 
         const buildTree = (buildTreeData, pathSoFar) => {
-            return Object.keys(buildTreeData).map((treeKey) => {
-                if (typeof buildTreeData[treeKey] === "string") {
-                    return <Tree.TreeNode key={pathSoFar + treeKey} title={treeKey} />;
-                } else {
-                    return (
-                        <Tree.TreeNode key={pathSoFar + treeKey} title={treeKey}>
-                            {buildTree(buildTreeData[treeKey], pathSoFar + treeKey)}
-                        </Tree.TreeNode>
-                    );
-                }
-            }).filter((data) => data !== undefined);
+            return Object.keys(buildTreeData)
+                .map((treeKey) => {
+                    if (typeof buildTreeData[treeKey] === "string") {
+                        return <Tree.TreeNode key={pathSoFar + treeKey} title={treeKey} />;
+                    } else {
+                        return (
+                            <Tree.TreeNode key={pathSoFar + treeKey} title={treeKey}>
+                                {buildTree(buildTreeData[treeKey], pathSoFar + treeKey)}
+                            </Tree.TreeNode>
+                        );
+                    }
+                })
+                .filter((data) => data !== undefined);
         };
 
         return buildTree(treeData, "");
-    }
+    };
 
     render() {
         return (
             <Card
                 style={{ ...this.props.style }}
                 actions={[
-                    this.props.onEdit && <SettingOutlined type="setting" key="setting" onClick={() => this.props.onEdit(this.props.exportConfig)} />,
-                    this.props.onDelete && <DeleteOutlined type="delete" key="delete" onClick={() => this.props.onDelete(this.props.exportConfig)} />,
+                    this.props.onEdit && (
+                        <SettingOutlined
+                            type="setting"
+                            key="setting"
+                            onClick={() => this.props.onEdit(this.props.exportConfig)}
+                        />
+                    ),
+                    this.props.onDelete && (
+                        <DeleteOutlined
+                            type="delete"
+                            key="delete"
+                            onClick={() => this.props.onDelete(this.props.exportConfig)}
+                        />
+                    )
                 ]}
             >
                 <div style={{ display: "flex" }}>
@@ -152,13 +186,22 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
                                 <h4>File path:</h4>
                                 {this.prettifyFilePath(this.props.exportConfig.attributes.file_path)}
                             </div>
-                            {this.props.exportConfig.attributes.default_language_file_path && <div style={{ marginTop: 8 }}>
-                                <h4>Default language file path:</h4>
-                                {this.prettifyFilePath(this.props.exportConfig.attributes.default_language_file_path)}
-                            </div>}
+                            {this.props.exportConfig.attributes.default_language_file_path && (
+                                <div style={{ marginTop: 8 }}>
+                                    <h4>Default language file path:</h4>
+                                    {this.prettifyFilePath(
+                                        this.props.exportConfig.attributes.default_language_file_path
+                                    )}
+                                </div>
+                            )}
                         </div>
 
-                        <Button style={{ alignSelf: "flex-start", marginTop: 16 }} onClick={() => { this.setState({ visible: true }); }}>
+                        <Button
+                            style={{ alignSelf: "flex-start", marginTop: 16 }}
+                            onClick={() => {
+                                this.setState({ visible: true });
+                            }}
+                        >
                             Show export structure
                         </Button>
                     </div>
@@ -167,22 +210,24 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
                 <Drawer
                     title="Export structure preview"
                     placement="right"
-                    onClose={() => { this.setState({ visible: false }); }}
+                    onClose={() => {
+                        this.setState({ visible: false });
+                    }}
                     visible={this.state.visible}
                     width={400}
                 >
-                    {this.props.languagesResponse && this.props.languagesResponse.data.length > 0 && <Tree.DirectoryTree
-                        selectable={false}
-                        defaultExpandAll
-                        expandAction={false}
-                    >
-                        {this.getTreePreview(
-                            this.props.exportConfig.attributes.default_language_file_path,
-                            this.props.exportConfig.attributes.file_path
-                        )}
-                    </Tree.DirectoryTree>}
+                    {this.props.languagesResponse && this.props.languagesResponse.data.length > 0 && (
+                        <Tree.DirectoryTree selectable={false} defaultExpandAll expandAction={false}>
+                            {this.getTreePreview(
+                                this.props.exportConfig.attributes.default_language_file_path,
+                                this.props.exportConfig.attributes.file_path
+                            )}
+                        </Tree.DirectoryTree>
+                    )}
 
-                    {this.props.languagesResponse && this.props.languagesResponse.data.length === 0 && "No languages to export available."}
+                    {this.props.languagesResponse &&
+                        this.props.languagesResponse.data.length === 0 &&
+                        "No languages to export available."}
                 </Drawer>
             </Card>
         );

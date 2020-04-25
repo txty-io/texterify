@@ -18,52 +18,59 @@ import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
-interface IState { }
+interface IState {}
 
 @observer
 class ProjectRouter extends React.Component<IProps, IState> {
-  async componentDidMount() {
-    const getProjectResponse = await ProjectsAPI.getProject(this.props.match.params.projectId);
-    if (getProjectResponse.errors) {
-      this.props.history.push(Routes.DASHBOARD.PROJECTS);
-    } else {
-      dashboardStore.currentProject = getProjectResponse.data;
-      dashboardStore.currentProjectIncluded = getProjectResponse.included;
-    }
-  }
-
-  componentWillUnmount() {
-    dashboardStore.currentProject = null;
-    dashboardStore.currentProjectIncluded = null;
-  }
-
-  render() {
-    if (this.isInvalidProject()) {
-      return <LoadingOverlay isVisible loadingText="App is loading..." />;
+    async componentDidMount() {
+        const getProjectResponse = await ProjectsAPI.getProject(this.props.match.params.projectId);
+        if (getProjectResponse.errors) {
+            this.props.history.push(Routes.DASHBOARD.PROJECTS);
+        } else {
+            dashboardStore.currentProject = getProjectResponse.data;
+            dashboardStore.currentProjectIncluded = getProjectResponse.included;
+        }
     }
 
-    return (
-      <>
-        <Switch>
-          <PrivateRoute exact path={Routes.DASHBOARD.PROJECT} component={ProjectSite} />
-          <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_KEYS} component={KeysSite} />
-          <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_IMPORT} component={ImportSite} />
-          <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_EXPORT} component={ProjectExportDownloadSite} />
-          <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_MEMBERS} component={MembersSite} />
-          <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_SETTINGS} component={ProjectSettingsSite} />
-          <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_LANGUAGES} component={LanguagesSite} />
-          <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_ACTIVITY} component={ProjectActivitySite} />
-          <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS} component={ProjectExportConfigsSite} />
-          <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY} component={ProjectExportHierarchySite} />
-        </Switch>
-      </>
-    );
-  }
+    componentWillUnmount() {
+        dashboardStore.currentProject = null;
+        dashboardStore.currentProjectIncluded = null;
+    }
 
-  isInvalidProject = () => {
-    return !dashboardStore.currentProject ||
-      dashboardStore.currentProject.id !== this.props.match.params.projectId;
-  }
+    render() {
+        if (this.isInvalidProject()) {
+            return <LoadingOverlay isVisible loadingText="App is loading..." />;
+        }
+
+        return (
+            <>
+                <Switch>
+                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT} component={ProjectSite} />
+                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_KEYS} component={KeysSite} />
+                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_IMPORT} component={ImportSite} />
+                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_EXPORT} component={ProjectExportDownloadSite} />
+                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_MEMBERS} component={MembersSite} />
+                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_SETTINGS} component={ProjectSettingsSite} />
+                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_LANGUAGES} component={LanguagesSite} />
+                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_ACTIVITY} component={ProjectActivitySite} />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS}
+                        component={ProjectExportConfigsSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY}
+                        component={ProjectExportHierarchySite}
+                    />
+                </Switch>
+            </>
+        );
+    }
+
+    isInvalidProject = () => {
+        return !dashboardStore.currentProject || dashboardStore.currentProject.id !== this.props.match.params.projectId;
+    };
 }
 
 export { ProjectRouter };

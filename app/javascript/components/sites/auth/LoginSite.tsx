@@ -6,22 +6,21 @@ import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { SiteWrapper } from "../../ui/SiteWrapper";
 
-interface IProps { }
-interface IState { }
+interface IProps {}
+interface IState {}
 
 @observer
 class LoginSite extends React.Component<IProps, IState> {
-  render() {
-    return !authStore.isAuthenticated ?
-      (
-        <SiteWrapper>
-          <h2>Welcome back</h2>
-          <LoginForm />
-        </SiteWrapper>
-      ) : (
-        <Redirect to={Routes.DASHBOARD.ROOT} />
-      );
-  }
+    render() {
+        return !authStore.isAuthenticated ? (
+            <SiteWrapper>
+                <h2>Welcome back</h2>
+                <LoginForm />
+            </SiteWrapper>
+        ) : (
+            <Redirect to={Routes.DASHBOARD.ROOT} />
+        );
+    }
 }
 
 export { LoginSite };

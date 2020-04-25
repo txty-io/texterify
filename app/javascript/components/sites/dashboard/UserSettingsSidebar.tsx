@@ -5,77 +5,77 @@ import { Routes } from "../../routing/Routes";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 interface INavigationData {
-  icon: any;
-  path: string;
-  text: string;
+    icon: any;
+    path: string;
+    text: string;
 }
 
 type IProps = RouteComponentProps;
 interface IState {
-  selectedItem: number;
+    selectedItem: number;
 }
 
 class UserSettingsSidebar extends React.Component<IProps, IState> {
-  navigationData: INavigationData[] = [
-    {
-      icon: UserOutlined,
-      path: Routes.USER.SETTINGS.ACCOUNT,
-      text: "Account"
-    },
-    {
-      icon: LockOutlined,
-      path: Routes.USER.SETTINGS.ACCESS_TOKENS,
-      text: "Access tokens"
+    navigationData: INavigationData[] = [
+        {
+            icon: UserOutlined,
+            path: Routes.USER.SETTINGS.ACCOUNT,
+            text: "Account"
+        },
+        {
+            icon: LockOutlined,
+            path: Routes.USER.SETTINGS.ACCESS_TOKENS,
+            text: "Access tokens"
+        }
+    ];
+
+    state: IState = {
+        selectedItem: 0
+    };
+
+    renderMenuItems = (): JSX.Element[] => {
+        return this.navigationData.map((data: INavigationData, index: number) => {
+            return (
+                <Menu.Item key={index}>
+                    <data.icon className="nav-text" />
+                    <Link to={data.path} className="nav-text">
+                        {data.text}
+                    </Link>
+                </Menu.Item>
+            );
+        });
+    };
+
+    getSelectedItem = (): string[] => {
+        return this.navigationData.map((data: INavigationData, index: number): string => {
+            if (data.path === this.props.location.pathname) {
+                return index.toString();
+            }
+        });
+    };
+
+    render() {
+        return (
+            <>
+                <div className="logo" />
+                <Layout.Sider
+                    breakpoint="md"
+                    collapsedWidth="0"
+                    id="sidebar"
+                    style={{ boxShadow: "rgba(61, 172, 206, 0.05) 0px 0px 24px" }}
+                >
+                    <Menu
+                        mode="inline"
+                        selectedKeys={this.getSelectedItem()}
+                        style={{ height: "100%" }}
+                        className="dashboard-sidebar-menu"
+                    >
+                        {this.renderMenuItems()}
+                    </Menu>
+                </Layout.Sider>
+            </>
+        );
     }
-  ];
-
-  state: IState = {
-    selectedItem: 0
-  };
-
-  renderMenuItems = (): JSX.Element[] => {
-    return this.navigationData.map((data: INavigationData, index: number) => {
-      return (
-        <Menu.Item key={index}>
-          <data.icon className="nav-text" />
-          <Link to={data.path} className="nav-text">
-            {data.text}
-          </Link>
-        </Menu.Item>
-      );
-    });
-  }
-
-  getSelectedItem = (): string[] => {
-    return this.navigationData.map((data: INavigationData, index: number): string => {
-      if (data.path === this.props.location.pathname) {
-        return index.toString();
-      }
-    });
-  }
-
-  render() {
-    return (
-      <>
-        <div className="logo" />
-        <Layout.Sider
-          breakpoint="md"
-          collapsedWidth="0"
-          id="sidebar"
-          style={{ boxShadow: "rgba(61, 172, 206, 0.05) 0px 0px 24px" }}
-        >
-          <Menu
-            mode="inline"
-            selectedKeys={this.getSelectedItem()}
-            style={{ height: "100%" }}
-            className="dashboard-sidebar-menu"
-          >
-            {this.renderMenuItems()}
-          </Menu>
-        </Layout.Sider>
-      </>
-    );
-  }
 }
 
 export { UserSettingsSidebar };

@@ -12,18 +12,18 @@ import { UserAvatar } from "./UserAvatar";
 import { SettingOutlined, LogoutOutlined } from "@ant-design/icons";
 
 const AccountProfileContentWrapper: any = styled.div`
-  a {
-    display: block;
-    color: #888;
-    padding: 4px 16px;
-    background: #fcfcfc;
-  }
+    a {
+        display: block;
+        color: #888;
+        padding: 4px 16px;
+        background: #fcfcfc;
+    }
 
-  a:hover {
-    text-decoration: none;
-    background: #fcfcfc;
-    color: #333;
-  }
+    a:hover {
+        text-decoration: none;
+        background: #fcfcfc;
+        color: #333;
+    }
 `;
 
 type IProps = {};
@@ -40,12 +40,14 @@ class UserProfileHeader extends React.Component<IProps, IState> {
     logout = async (): Promise<void> => {
         await AuthAPI.logout();
         history.push(Routes.AUTH.LOGIN);
-    }
+    };
 
     render() {
         return (
             <div
-                onClick={() => { this.setState({ accountMenuVisible: true }); }}
+                onClick={() => {
+                    this.setState({ accountMenuVisible: true });
+                }}
                 role="button"
                 style={{ cursor: "pointer", overflow: "hidden" }}
             >
@@ -54,12 +56,20 @@ class UserProfileHeader extends React.Component<IProps, IState> {
                     placement="bottomRight"
                     trigger="click"
                     visible={this.state.accountMenuVisible}
-                    onVisibleChange={() => { this.setState({ accountMenuVisible: false }); }}
+                    onVisibleChange={() => {
+                        this.setState({ accountMenuVisible: false });
+                    }}
                     overlayClassName="popover-no-padding"
                     content={
                         <AccountProfileContentWrapper>
                             <ul>
-                                <li role="button" onClick={(e) => { e.stopPropagation(); this.setState({ accountMenuVisible: false }); }}>
+                                <li
+                                    role="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        this.setState({ accountMenuVisible: false });
+                                    }}
+                                >
                                     <Link to={Routes.USER.SETTINGS.ACCOUNT}>
                                         <SettingOutlined style={{ marginRight: 5, fontWeight: "bold" }} />
                                         Settings
@@ -67,16 +77,14 @@ class UserProfileHeader extends React.Component<IProps, IState> {
                                 </li>
                                 <li>
                                     {/* tslint:disable-next-line:react-a11y-anchors */}
-                                    <a
-                                        role="button"
-                                        onClick={this.logout}
-                                    >
+                                    <a role="button" onClick={this.logout}>
                                         <LogoutOutlined style={{ marginRight: 5, fontWeight: "bold" }} />
                                         Logout
                                     </a>
                                 </li>
                             </ul>
-                        </AccountProfileContentWrapper>}
+                        </AccountProfileContentWrapper>
+                    }
                 >
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <UserAvatar light user={authStore.currentUser} />

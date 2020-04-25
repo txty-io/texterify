@@ -27,7 +27,8 @@ function ProjectsList(props: { projects: any[]; included?: any[] }) {
             }, [])}
             renderItem={(item) => {
                 const project = _.find(props.projects, { id: item.key });
-                const projectOrganization = props.included &&
+                const projectOrganization =
+                    props.included &&
                     APIUtils.getIncludedObject(project.relationships.organization.data, props.included);
 
                 return (
@@ -36,13 +37,12 @@ function ProjectsList(props: { projects: any[]; included?: any[] }) {
                             style={{ overflow: "hidden" }}
                             title={
                                 <ListContent
-                                    onClick={() => { openProject(project); }}
+                                    onClick={() => {
+                                        openProject(project);
+                                    }}
                                     role="button"
                                 >
-                                    <ProjectAvatar
-                                        project={project}
-                                        style={{ marginRight: 16 }}
-                                    />
+                                    <ProjectAvatar project={project} style={{ marginRight: 16 }} />
                                     <div style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
                                         {projectOrganization ? `${projectOrganization.attributes.name} / ` : ""}
                                         <span style={{ fontWeight: props.included ? "bold" : undefined }}>
@@ -55,7 +55,11 @@ function ProjectsList(props: { projects: any[]; included?: any[] }) {
                                 </ListContent>
                             }
                         />
-                        <Button onClick={() => { openProject(project); }}>
+                        <Button
+                            onClick={() => {
+                                openProject(project);
+                            }}
+                        >
                             More
                         </Button>
                     </List.Item>

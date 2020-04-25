@@ -3,15 +3,13 @@ import "antd/dist/antd.less";
 import * as React from "react";
 import { AppRouter } from "./routing/AppRouter";
 
-interface IProps { }
-interface IState { }
+interface IProps {}
+interface IState {}
 
 class AppContainer extends React.Component<IProps, IState> {
-  render() {
-    return (
-      <AppRouter />
-    );
-  }
+    render() {
+        return <AppRouter />;
+    }
 }
 
 // Export the app container per default because otherwise the

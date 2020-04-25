@@ -43,7 +43,7 @@ class KeyHistory extends React.Component<IProps, IState> {
         } catch (err) {
             console.error(err);
         }
-    }
+    };
 
     renderActivityElements = () => {
         // Remember discovered dates so the day divider is not
@@ -55,28 +55,43 @@ class KeyHistory extends React.Component<IProps, IState> {
         const keyActivityElements = this.state.keyActivityResponse.data.filter((activity) => {
             const itemType = activity.attributes.item_type;
             if (itemType === "Translation") {
-                const translationLanguageId = activity.attributes.object ? activity.attributes.object.language_id : activity.attributes.object_changes.language_id[1];
+                const translationLanguageId = activity.attributes.object
+                    ? activity.attributes.object.language_id
+                    : activity.attributes.object_changes.language_id[1];
 
                 if (!latestTranslations[translationLanguageId]) {
                     latestTranslations[translationLanguageId] = activity.attributes.object_changes.content[1];
                 }
 
-                return translationLanguageId === this.state.selectedLanguageId ||
-                    this.state.selectedLanguageId === "all-languages";
+                return (
+                    translationLanguageId === this.state.selectedLanguageId ||
+                    this.state.selectedLanguageId === "all-languages"
+                );
             }
         });
 
         const keyActivities = keyActivityElements.map((activity) => {
-            const translationLanguageId = activity.attributes.object ? activity.attributes.object.language_id : activity.attributes.object_changes.language_id[1];
+            const translationLanguageId = activity.attributes.object
+                ? activity.attributes.object.language_id
+                : activity.attributes.object_changes.language_id[1];
             const newContent = activity.attributes.object_changes.content[1];
             const date = moment.utc(activity.attributes.created_at, "YYYY-MM-DD HH:mm:ss").local().format("LL");
             const time = moment.utc(activity.attributes.created_at, "YYYY-MM-DD HH:mm:ss").local().format("HH:mm");
-            const key = APIUtils.getIncludedObject(activity.relationships.key.data, this.state.keyActivityResponse.included);
-            const language = APIUtils.getIncludedObject({
-                id: translationLanguageId,
-                type: "language"
-            }, this.state.keyActivityResponse.included);
-            const countryCode = APIUtils.getIncludedObject(language.relationships.country_code.data, this.state.keyActivityResponse.included);
+            const key = APIUtils.getIncludedObject(
+                activity.relationships.key.data,
+                this.state.keyActivityResponse.included
+            );
+            const language = APIUtils.getIncludedObject(
+                {
+                    id: translationLanguageId,
+                    type: "language"
+                },
+                this.state.keyActivityResponse.included
+            );
+            const countryCode = APIUtils.getIncludedObject(
+                language.relationships.country_code.data,
+                this.state.keyActivityResponse.included
+            );
 
             let showDivider = false;
             if (discoveredDates.indexOf(date) === -1) {
@@ -85,37 +100,47 @@ class KeyHistory extends React.Component<IProps, IState> {
             }
 
             return (
-                <div
-                    style={{ display: "flex", flexDirection: "column" }}
-                    key={activity.id}
-                >
+                <div style={{ display: "flex", flexDirection: "column" }} key={activity.id}>
                     {showDivider && <Divider style={{ fontSize: 14 }}>{date}</Divider>}
                     <div style={{ padding: 8 }}>
                         <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
                             <div style={{ wordBreak: "break-word", flexGrow: 1 }}>
                                 <div style={{ fontWeight: "bold", marginBottom: 4 }}>
-                                    {countryCode && <span style={{ marginRight: 8 }}>
-                                        <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
-                                    </span>}
+                                    {countryCode && (
+                                        <span style={{ marginRight: 8 }}>
+                                            <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
+                                        </span>
+                                    )}
                                     {`${language.attributes.name} content changed`}
                                 </div>
-                                {key.attributes.html_enabled ?
+                                {key.attributes.html_enabled ? (
                                     // tslint:disable-next-line:react-no-dangerous-html
                                     <span
                                         dangerouslySetInnerHTML={{
                                             __html: Utils.getHTMLContentPreview(newContent)
                                         }}
-                                    /> :
+                                    />
+                                ) : (
                                     newContent
-                                }
+                                )}
                             </div>
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginLeft: 16, fontSize: 12, color: Styles.COLOR_TEXT_DISABLED }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    marginLeft: 16,
+                                    fontSize: 12,
+                                    color: Styles.COLOR_TEXT_DISABLED
+                                }}
+                            >
                                 {time}
                             </div>
                         </div>
                         <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                            {latestTranslations[translationLanguageId] === newContent ?
-                                <span style={{ color: "#aaa" }}>Current</span> :
+                            {latestTranslations[translationLanguageId] === newContent ? (
+                                <span style={{ color: "#aaa" }}>Current</span>
+                            ) : (
                                 <Popconfirm
                                     title="Are you sure you want to restore this version?"
                                     onConfirm={async () => {
@@ -135,23 +160,19 @@ class KeyHistory extends React.Component<IProps, IState> {
                                     {/* tslint:disable-next-line:react-a11y-anchors */}
                                     <a>Restore</a>
                                 </Popconfirm>
-                            }
+                            )}
                         </div>
                     </div>
                 </div>
             );
         });
 
-        return keyActivityElements.length > 0 ?
-            keyActivities :
-            (
-                <Empty
-                    description="No history found"
-                    style={{ margin: "56px 0" }}
-                    image={Empty.PRESENTED_IMAGE_SIMPLE}
-                />
-            );
-    }
+        return keyActivityElements.length > 0 ? (
+            keyActivities
+        ) : (
+            <Empty description="No history found" style={{ margin: "56px 0" }} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        );
+    };
 
     render() {
         if (!this.state.keyActivityResponse) {
@@ -172,23 +193,28 @@ class KeyHistory extends React.Component<IProps, IState> {
                     }}
                     value={this.state.selectedLanguageId}
                 >
-                    <Select.Option value="all-languages">
-                        All languages
-                    </Select.Option>
-                    {this.state.keyActivityResponse.included.filter((included) => {
-                        return included.type === "language";
-                    }).map((language) => {
-                        const countryCode = APIUtils.getIncludedObject(language.relationships.country_code.data, this.state.keyActivityResponse.included);
+                    <Select.Option value="all-languages">All languages</Select.Option>
+                    {this.state.keyActivityResponse.included
+                        .filter((included) => {
+                            return included.type === "language";
+                        })
+                        .map((language) => {
+                            const countryCode = APIUtils.getIncludedObject(
+                                language.relationships.country_code.data,
+                                this.state.keyActivityResponse.included
+                            );
 
-                        return (
-                            <Select.Option value={language.id} key={language.attributes.name}>
-                                {countryCode && <span style={{ marginRight: 8 }}>
-                                    <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
-                                </span>}
-                                {language.attributes.name}
-                            </Select.Option>
-                        );
-                    })}
+                            return (
+                                <Select.Option value={language.id} key={language.attributes.name}>
+                                    {countryCode && (
+                                        <span style={{ marginRight: 8 }}>
+                                            <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
+                                        </span>
+                                    )}
+                                    {language.attributes.name}
+                                </Select.Option>
+                            );
+                        })}
                 </Select>
                 {this.renderActivityElements()}
             </>

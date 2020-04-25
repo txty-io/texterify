@@ -4,24 +4,26 @@ import { Redirect, Route } from "react-router-dom";
 import { authStore } from "../stores/AuthStore";
 import { Routes } from "./Routes";
 
-const PublicRouteRedirectDashboard: any = observer(({ component: Component, ...rest }: any): JSX.Element => {
-  return (
-    <Route
-      {...rest}
-      render={(props: any): any =>
-        !authStore.isAuthenticated ? (
-          <Component {...props} />
-        ) : (
-            <Redirect
-              to={{
-                pathname: Routes.DASHBOARD.ROOT,
-                state: { from: props.location }
-              }}
+const PublicRouteRedirectDashboard: any = observer(
+    ({ component: Component, ...rest }: any): JSX.Element => {
+        return (
+            <Route
+                {...rest}
+                render={(props: any): any =>
+                    !authStore.isAuthenticated ? (
+                        <Component {...props} />
+                    ) : (
+                        <Redirect
+                            to={{
+                                pathname: Routes.DASHBOARD.ROOT,
+                                state: { from: props.location }
+                            }}
+                        />
+                    )
+                }
             />
-          )
-      }
-    />
-  );
-});
+        );
+    }
+);
 
 export { PublicRouteRedirectDashboard };

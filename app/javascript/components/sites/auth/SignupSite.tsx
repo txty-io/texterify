@@ -9,25 +9,24 @@ import { SiteWrapper } from "../../ui/SiteWrapper";
 
 @observer
 class SignupSite extends React.Component {
-  onAccountCreated = () => {
-    history.push(Routes.DASHBOARD.ROOT);
-  }
+    onAccountCreated = () => {
+        history.push(Routes.DASHBOARD.ROOT);
+    };
 
-  render() {
-    return !authStore.isAuthenticated ?
-      (
-        <SiteWrapper>
-          <h2>Create a new account</h2>
-          <SignupForm onAccountCreated={this.onAccountCreated} />
+    render() {
+        return !authStore.isAuthenticated ? (
+            <SiteWrapper>
+                <h2>Create a new account</h2>
+                <SignupForm onAccountCreated={this.onAccountCreated} />
 
-          <div style={{ textAlign: "right" }}>
-            <Link to={Routes.AUTH.LOGIN}>Already have an account?</Link>
-          </div>
-        </SiteWrapper>
-      ) : (
-        <Redirect to={Routes.DASHBOARD.ROOT} />
-      );
-  }
+                <div style={{ textAlign: "right" }}>
+                    <Link to={Routes.AUTH.LOGIN}>Already have an account?</Link>
+                </div>
+            </SiteWrapper>
+        ) : (
+            <Redirect to={Routes.DASHBOARD.ROOT} />
+        );
+    }
 }
 
 export { SignupSite };

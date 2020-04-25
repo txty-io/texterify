@@ -10,45 +10,45 @@ const { Content } = Layout;
 
 type IProps = RouteComponentProps<{ projectId: string }> & {};
 type IState = {
-  projectActivityResponse: any;
+    projectActivityResponse: any;
 };
 
 @observer
 class ProjectActivitySite extends React.Component<IProps, IState> {
-  state: IState = {
-    projectActivityResponse: null
-  };
+    state: IState = {
+        projectActivityResponse: null
+    };
 
-  async componentDidMount() {
-    try {
-      const projectActivityResponse = await ProjectsAPI.getActivity({
-        projectId: this.props.match.params.projectId,
-        limit: 20
-      });
+    async componentDidMount() {
+        try {
+            const projectActivityResponse = await ProjectsAPI.getActivity({
+                projectId: this.props.match.params.projectId,
+                limit: 20
+            });
 
-      this.setState({
-        projectActivityResponse: projectActivityResponse
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  render() {
-    if (!this.state.projectActivityResponse) {
-      return <Loading />;
+            this.setState({
+                projectActivityResponse: projectActivityResponse
+            });
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    return (
-      <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
-        <Breadcrumbs breadcrumbName="projectActivity" />
-        <Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}>
-          <h1>Activity</h1>
-          <Activity activitiesResponse={this.state.projectActivityResponse} />
-        </Content>
-      </Layout>
-    );
-  }
+    render() {
+        if (!this.state.projectActivityResponse) {
+            return <Loading />;
+        }
+
+        return (
+            <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
+                <Breadcrumbs breadcrumbName="projectActivity" />
+                <Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}>
+                    <h1>Activity</h1>
+                    <Activity activitiesResponse={this.state.projectActivityResponse} />
+                </Content>
+            </Layout>
+        );
+    }
 }
 
 export { ProjectActivitySite };

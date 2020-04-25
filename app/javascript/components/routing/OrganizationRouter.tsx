@@ -11,54 +11,62 @@ import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
 
 type IProps = RouteComponentProps<{ organizationId: string }> & {};
-interface IState { }
+interface IState {}
 
 @observer
 class OrganizationRouter extends React.Component<IProps, IState> {
-  async componentDidMount() {
-    await this.fetchOrganization();
-  }
-
-  fetchOrganization = async () => {
-    const getOrganizationResponse = await OrganizationsAPI.getOrganization(this.props.match.params.organizationId);
-    if (getOrganizationResponse.errors) {
-      this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
-    } else {
-      dashboardStore.currentOrganization = getOrganizationResponse.data;
+    async componentDidMount() {
+        await this.fetchOrganization();
     }
 
-    this.forceUpdate();
-  }
+    fetchOrganization = async () => {
+        const getOrganizationResponse = await OrganizationsAPI.getOrganization(this.props.match.params.organizationId);
+        if (getOrganizationResponse.errors) {
+            this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
+        } else {
+            dashboardStore.currentOrganization = getOrganizationResponse.data;
+        }
 
-  render() {
-    if (this.isInvalidOrganization()) {
-      return <LoadingOverlay isVisible loadingText="Organization is loading..." />;
+        this.forceUpdate();
+    };
+
+    render() {
+        if (this.isInvalidOrganization()) {
+            return <LoadingOverlay isVisible loadingText="Organization is loading..." />;
+        }
+
+        return (
+            <>
+                <Switch>
+                    <PrivateRoute exact path={Routes.DASHBOARD.ORGANIZATION} component={OrganizationSite} />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.ORGANIZATION_MEMBERS}
+                        component={OrganizationMembersSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.ORGANIZATION_SETTINGS}
+                        component={OrganizationSettingsSite}
+                    />
+                </Switch>
+            </>
+        );
     }
 
-    return (
-      <>
-        <Switch>
-          <PrivateRoute exact path={Routes.DASHBOARD.ORGANIZATION} component={OrganizationSite} />
-          <PrivateRoute exact path={Routes.DASHBOARD.ORGANIZATION_MEMBERS} component={OrganizationMembersSite} />
-          <PrivateRoute exact path={Routes.DASHBOARD.ORGANIZATION_SETTINGS} component={OrganizationSettingsSite} />
-        </Switch>
-      </>
-    );
-  }
+    isInvalidOrganization = () => {
+        if (
+            !dashboardStore.currentOrganization ||
+            dashboardStore.currentOrganization.id !== this.props.match.params.organizationId
+        ) {
+            // tslint:disable-next-line:no-floating-promises
+            this.fetchOrganization();
 
-  isInvalidOrganization = () => {
-    if (!dashboardStore.currentOrganization ||
-      dashboardStore.currentOrganization.id !== this.props.match.params.organizationId
-    ) {
-      // tslint:disable-next-line:no-floating-promises
-      this.fetchOrganization();
-
-      return true;
-    } else {
-      return false;
-    }
-
-  }
+            return true;
+        } else {
+            return false;
+        }
+    };
 }
 
 export { OrganizationRouter };
