@@ -31,10 +31,10 @@ $color: #7977f3;
   }
 
   .editable-cell-value-wrap {
-    border: 0;
-    padding: 5px 12px;
+    padding: 4px 11px;
     cursor: pointer;
-    min-height: 33px;
+    border: 1px solid transparent;
+    min-height: 32px;
 
     li {
       list-style-position: inside;
@@ -51,12 +51,15 @@ $color: #7977f3;
         list-style-type: decimal;
       }
     }
+
+    // Hide the margin of the last <p> in HTML key translations.
+    p:last-child {
+      margin-bottom: 0;
+    }
   }
 
   .editable-row:hover .editable-cell-value-wrap {
-    border: 1px solid #d9d9d9;
-    border-radius: 4px;
-    padding: 4px 11px;
+    border-color: #d9d9d9;
   }
 
   .ant-table td {
@@ -206,6 +209,11 @@ $color: #7977f3;
     .ant-card-body {
       flex-grow: 1;
     }
+  }
+
+  // Show expand icon in the middle of the column also for smaller table sizes.
+  .ant-table-row-expand-icon-cell {
+    padding: 12px 16px;
   }
 }
 
