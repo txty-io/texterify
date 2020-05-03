@@ -4,9 +4,22 @@ class ExportConfig < ApplicationRecord
   validates :name, presence: true
   validates :file_path, presence: true
   validates :file_format, presence: true
+  validate :no_duplicate_export_configs_for_project
 
   belongs_to :project
   has_many :translations, dependent: :destroy
+
+  def name=(name)
+    self[:name] = name.strip
+  end
+
+  def file_path=(file_path)
+    self[:file_path] = file_path.strip
+  end
+
+  def file_format=(file_format)
+    self[:file_format] = file_format.strip
+  end
 
   def filled_file_path(language)
     path = file_path
@@ -41,6 +54,18 @@ class ExportConfig < ApplicationRecord
       rails(language, export_data)
     else
       json(language, export_data)
+    end
+  end
+
+  # Validates that there are no export configs with the same name for a project.
+  def no_duplicate_export_configs_for_project
+    project = Project.find(project_id)
+    export_config = project.export_configs.find_by(name: name)
+
+    if export_config.present?
+      updating_export_config = export_config.id == id
+
+      errors.add(:name, :taken) if !updating_export_config
     end
   end
 
