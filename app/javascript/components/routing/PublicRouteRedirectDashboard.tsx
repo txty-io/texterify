@@ -19,7 +19,7 @@ const PublicRouteRedirectDashboard: any = observer(
                                 state: { from: props.location }
                             }}
                         />
-                    );}
+                    );
                 }}
             />
         );

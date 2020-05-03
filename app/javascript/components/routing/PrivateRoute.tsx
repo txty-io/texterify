@@ -17,7 +17,7 @@ const PrivateRoute: any = ({ component: Component, ...rest }: any): JSX.Element 
                             state: { from: props.location }
                         }}
                     />
-                );}
+                );
             }}
         />
     );
