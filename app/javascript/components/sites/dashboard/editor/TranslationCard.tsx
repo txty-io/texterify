@@ -163,7 +163,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                     content = JSON.stringify(content);
                 }
 
-                await TranslationsAPI.updateTranslation({
+                await TranslationsAPI.createTranslation({
                     projectId: this.props.projectId,
                     languageId: this.state.selectedLanguage,
                     keyId: this.props.keyResponse.data.id,
@@ -198,6 +198,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                                     {
                                         selectedLanguage: selectedValue
                                     },
+                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                     this.loadData
                                 );
                             }}

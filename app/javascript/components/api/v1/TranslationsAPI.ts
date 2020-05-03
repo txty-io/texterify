@@ -2,7 +2,7 @@ import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
 const TranslationsAPI = {
-    updateTranslation: async (options: {
+    createTranslation: async (options: {
         projectId: string;
         languageId: string;
         keyId: string;
