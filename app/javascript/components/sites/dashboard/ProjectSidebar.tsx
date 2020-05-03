@@ -47,7 +47,7 @@ interface INavigationData {
     subItems?: INavigationData[];
 }
 
-type IProps = RouteComponentProps<{ projectId: string }> & {};
+type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     selectedItem: number;
 }

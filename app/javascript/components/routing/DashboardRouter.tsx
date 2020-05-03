@@ -82,7 +82,6 @@ class DashboardRouter extends React.Component<IProps, IState> {
         );
     };
 
-    // tslint:disable-next-line:max-func-body-length
     render() {
         return (
             <>

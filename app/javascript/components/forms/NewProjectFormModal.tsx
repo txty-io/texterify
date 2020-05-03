@@ -7,9 +7,8 @@ interface IProps {
     newProjectFormProps: NewProjectFormProps;
     onCancelRequest?(): void;
 }
-interface IState {}
 
-class NewProjectFormModal extends React.Component<IProps, IState> {
+class NewProjectFormModal extends React.Component<IProps> {
     render() {
         return (
             <Modal

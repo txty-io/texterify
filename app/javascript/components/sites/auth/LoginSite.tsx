@@ -6,11 +6,8 @@ import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { SiteWrapper } from "../../ui/SiteWrapper";
 
-interface IProps {}
-interface IState {}
-
 @observer
-class LoginSite extends React.Component<IProps, IState> {
+class LoginSite extends React.Component {
     render() {
         return !authStore.isAuthenticated ? (
             <SiteWrapper>

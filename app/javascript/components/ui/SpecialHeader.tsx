@@ -6,9 +6,8 @@ interface IProps {
     backgroundImageURL: string;
     Header: any;
 }
-interface IState {}
 
-class SpecialHeader extends React.Component<IProps, IState> {
+class SpecialHeader extends React.Component<IProps> {
     render() {
         return (
             <div

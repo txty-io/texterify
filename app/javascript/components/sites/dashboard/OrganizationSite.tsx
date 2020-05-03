@@ -11,7 +11,7 @@ import { OrganizationAvatar } from "../../ui/OrganizationAvatar";
 import { PrimaryButton } from "../../ui/PrimaryButton";
 import { ProjectsList } from "../../ui/ProjectsList";
 
-type IProps = RouteComponentProps<{ organizationId: string }> & {};
+type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {
     addDialogVisible: boolean;
     responseOrganization: any;

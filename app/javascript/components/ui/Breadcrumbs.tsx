@@ -10,12 +10,10 @@ import { Styles } from "./Styles";
 type IProps = RouteComponentProps<{ projectId?: string; organizationId?: string }> & {
     breadcrumbName: string;
 };
-interface IState {}
 
 @observer
-class BreadcrumbsUnwrapped extends React.Component<IProps, IState> {
-    // tslint:disable-next-line:max-func-body-length
-    resolveBreadcrumbs = (): any[] => {
+class BreadcrumbsUnwrapped extends React.Component<IProps> {
+    resolveBreadcrumbs = () => {
         const breadcrumbs: any = {
             dashboard: {
                 root: true,

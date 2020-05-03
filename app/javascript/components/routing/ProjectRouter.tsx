@@ -17,11 +17,10 @@ import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
 
-type IProps = RouteComponentProps<{ projectId: string }> & {};
-interface IState {}
+type IProps = RouteComponentProps<{ projectId: string }>;
 
 @observer
-class ProjectRouter extends React.Component<IProps, IState> {
+class ProjectRouter extends React.Component<IProps> {
     async componentDidMount() {
         const getProjectResponse = await ProjectsAPI.getProject(this.props.match.params.projectId);
         if (getProjectResponse.errors) {

@@ -7,9 +7,8 @@ interface IProps {
     newOrganizationFormProps: NewOrganizationFormProps;
     onCancelRequest?(): void;
 }
-interface IState {}
 
-class NewOrganizationFormModal extends React.Component<IProps, IState> {
+class NewOrganizationFormModal extends React.Component<IProps> {
     render() {
         return (
             <Modal

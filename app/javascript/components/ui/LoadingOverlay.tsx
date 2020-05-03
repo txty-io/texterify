@@ -5,9 +5,8 @@ interface IProps {
     isVisible: boolean;
     loadingText: string;
 }
-interface IState {}
 
-class LoadingOverlay extends React.Component<IProps, IState> {
+class LoadingOverlay extends React.Component<IProps> {
     componentWillUnmount(): void {
         document.body.style.overflow = "";
     }

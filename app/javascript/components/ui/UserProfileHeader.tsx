@@ -26,13 +26,12 @@ const AccountProfileContentWrapper: any = styled.div`
     }
 `;
 
-interface IProps {}
 interface IState {
     accountMenuVisible: boolean;
 }
 
 @observer
-class UserProfileHeader extends React.Component<IProps, IState> {
+class UserProfileHeader extends React.Component<{}, IState> {
     state: IState = {
         accountMenuVisible: false
     };
@@ -76,7 +75,6 @@ class UserProfileHeader extends React.Component<IProps, IState> {
                                     </Link>
                                 </li>
                                 <li>
-                                    {/* tslint:disable-next-line:react-a11y-anchors */}
                                     <a role="button" onClick={this.logout}>
                                         <LogoutOutlined style={{ marginRight: 5, fontWeight: "bold" }} />
                                         Logout

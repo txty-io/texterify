@@ -29,7 +29,7 @@ class SiteRouter extends React.Component<IProps, null> {
     }
 
     render() {
-        return <>{this.renderRoutes()}</>;
+        return this.renderRoutes();
     }
 }
 

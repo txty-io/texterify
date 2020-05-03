@@ -7,7 +7,7 @@ import { Activity } from "../../ui/Activity";
 import { Loading } from "../../ui/Loading";
 const { Content } = Layout;
 
-type IProps = RouteComponentProps<{ projectId: string }> & {};
+type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     dashboardActivityResponse: any;
 }

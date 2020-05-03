@@ -10,11 +10,10 @@ import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
 
-type IProps = RouteComponentProps<{ organizationId: string }> & {};
-interface IState {}
+type IProps = RouteComponentProps<{ organizationId: string }>;
 
 @observer
-class OrganizationRouter extends React.Component<IProps, IState> {
+class OrganizationRouter extends React.Component<IProps> {
     async componentDidMount() {
         await this.fetchOrganization();
     }
@@ -59,7 +58,6 @@ class OrganizationRouter extends React.Component<IProps, IState> {
             !dashboardStore.currentOrganization ||
             dashboardStore.currentOrganization.id !== this.props.match.params.organizationId
         ) {
-            // tslint:disable-next-line:no-floating-promises
             this.fetchOrganization();
 
             return true;

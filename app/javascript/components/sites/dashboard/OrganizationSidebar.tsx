@@ -30,7 +30,7 @@ interface INavigationData {
     text: string;
 }
 
-type IProps = RouteComponentProps<{ organizationId: string }> & {};
+type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {
     selectedItem: number;
 }

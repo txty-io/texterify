@@ -4,13 +4,12 @@ import { Link } from "react-router-dom";
 import { Routes } from "../routing/Routes";
 import { DownOutlined } from "@ant-design/icons";
 
-interface IProps {}
 interface IState {
     currentLanguageKey: string;
     keyDisplayNameMapping: object;
 }
 
-class BottomBar extends React.Component<IProps, IState> {
+class BottomBar extends React.Component<{}, IState> {
     state: IState = {
         currentLanguageKey: "en",
         keyDisplayNameMapping: {

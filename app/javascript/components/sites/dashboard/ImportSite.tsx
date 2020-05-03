@@ -13,7 +13,7 @@ import FlagIcon from "../../ui/FlagIcons";
 import { LoadingOverlay } from "../../ui/LoadingOverlay";
 import { Styles } from "../../ui/Styles";
 
-type IProps = RouteComponentProps<{ projectId: string }> & {};
+type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     files: any[];
     selectedLanguageId: string;
@@ -218,7 +218,6 @@ class ImportSite extends React.Component<IProps, IState> {
                                                         Drop a <b>.json</b> file here or click to upload one.
                                                     </p>
                                                 )}
-                                                {/* tslint:disable-next-line:react-a11y-input-elements */}
                                                 <input {...getInputProps()} accept=".json" />
                                             </div>
                                         );

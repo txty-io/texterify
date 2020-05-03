@@ -2,10 +2,9 @@ import { Layout } from "antd";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 
-type IProps = RouteComponentProps<{ projectId: string }> & {};
-interface IState {}
+type IProps = RouteComponentProps<{ projectId: string }>;
 
-class DashboardSite extends React.Component<IProps, IState> {
+class DashboardSite extends React.Component<IProps> {
     render() {
         return (
             <Layout style={{ padding: "0 24px 24px", maxWidth: 800, margin: "0 auto", width: "100%" }}>

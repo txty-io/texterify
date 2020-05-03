@@ -5,11 +5,8 @@ import { EditUserForm } from "../../forms/EditUserForm";
 import { SettingsSectionWrapper } from "../../ui/SettingsSectionWrapper";
 const { Content } = Layout;
 
-interface IProps {}
-interface IState {}
-
 @observer
-class UserAccountSettingsSite extends React.Component<IProps, IState> {
+class UserAccountSettingsSite extends React.Component {
     render() {
         return (
             <Layout style={{ padding: "0 24px 24px", maxWidth: 550, margin: "0", width: "100%" }}>

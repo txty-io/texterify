@@ -1,4 +1,3 @@
-// tslint:disable-next-line:typedef
 const Routes = {
     AUTH: {
         LOGIN: "/",

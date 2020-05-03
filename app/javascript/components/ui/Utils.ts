@@ -9,7 +9,6 @@ function escapeContent(htmlContent: string) {
 const Utils = {
     getHTMLContentPreview: (htmlContent: string) => {
         try {
-            // tslint:disable-next-line:no-unnecessary-local-variable
             const json = JSON.parse(htmlContent);
 
             let converted = "";

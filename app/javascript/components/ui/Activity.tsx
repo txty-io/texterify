@@ -50,10 +50,8 @@ interface IProps {
     showTimeAgo?: boolean;
     includeProjectLink?: boolean;
 }
-interface IState {}
 
-class Activity extends React.Component<IProps, IState> {
-    // tslint:disable-next-line:max-func-body-length cyclomatic-complexity
+class Activity extends React.Component<IProps> {
     getActivityElement = (activity: any) => {
         const user = APIUtils.getIncludedObject(
             activity.relationships.user && activity.relationships.user.data,

@@ -3,10 +3,7 @@ import { Link } from "react-router-dom";
 import { Routes } from "../../routing/Routes";
 import { SiteWrapper } from "../../ui/SiteWrapper";
 
-interface IProps {}
-interface IState {}
-
-class AccountConfirmationSite extends React.Component<IProps, IState> {
+class AccountConfirmationSite extends React.Component {
     render() {
         return (
             <SiteWrapper>

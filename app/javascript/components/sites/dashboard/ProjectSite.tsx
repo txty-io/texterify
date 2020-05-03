@@ -13,7 +13,7 @@ import FlagIcon from "../../ui/FlagIcons";
 import { Loading } from "../../ui/Loading";
 import { ProjectAvatar } from "../../ui/ProjectAvatar";
 
-type IProps = RouteComponentProps<{ projectId: string }> & {};
+type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     languagesResponse: any;
     projectActivityResponse: any;

@@ -14,10 +14,9 @@ type IProps = RouteComponentProps & {
     history?: any;
     location?: any;
 };
-interface IState {}
 
 @observer
-class TopBarUnwrapped extends React.Component<IProps, IState> {
+class TopBarUnwrapped extends React.Component<IProps> {
     routes: any[] = [
         {
             route: Routes.DASHBOARD.ROOT,

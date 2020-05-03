@@ -8,9 +8,8 @@ interface IProps {
     features: string[];
     style?: object;
 }
-interface IState {}
 
-class PricingCard extends React.Component<IProps, IState> {
+class PricingCard extends React.Component<IProps> {
     render() {
         return (
             <div
