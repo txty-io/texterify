@@ -22,8 +22,8 @@ interface IState {
 class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
     debouncedSearchReloader: any = _.debounce(
         async (value) => {
-            this.setState({ search: value, page: 0 });
-            await this.reloadTable({ search: value, page: 0 });
+            this.setState({ search: value, page: 1 });
+            await this.reloadTable({ search: value, page: 1 });
         },
         500,
         { trailing: true }
@@ -34,7 +34,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
         projects: [],
         addDialogVisible: false,
         perPage: DEFAULT_PAGE_SIZE,
-        page: 0,
+        page: 1,
         search: ""
     };
 
@@ -129,9 +129,6 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                     newProjectFormProps={{
                         onCreated: (projectId: string) => {
                             this.props.history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", projectId));
-                        },
-                        onError: (_errors: any) => {
-                            message.error("Failed to create project.");
                         }
                     }}
                 />

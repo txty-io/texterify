@@ -22,8 +22,8 @@ interface IState {
 class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
     debouncedSearchReloader: any = _.debounce(
         async (value) => {
-            this.setState({ search: value, page: 0 });
-            await this.reloadTable({ search: value, page: 0 });
+            this.setState({ search: value, page: 1 });
+            await this.reloadTable({ search: value, page: 1 });
         },
         500,
         { trailing: true }
@@ -33,7 +33,7 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
         organizationsResponse: null,
         addDialogVisible: false,
         perPage: DEFAULT_PAGE_SIZE,
-        page: 0,
+        page: 1,
         search: ""
     };
 

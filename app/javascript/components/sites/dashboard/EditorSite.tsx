@@ -61,7 +61,8 @@ class EditorSite extends React.Component<IProps, IState> {
 
     debouncedSearchReloader: any = _.debounce(
         (value) => {
-            this.setState({ search: value, page: 0 }, this.fetchKeys);
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            this.setState({ search: value, page: 1 }, this.fetchKeys);
         },
         500,
         { trailing: true }
@@ -147,7 +148,6 @@ class EditorSite extends React.Component<IProps, IState> {
         this.forceUpdate();
     };
 
-    // tslint:disable-next-line:max-func-body-length
     render() {
         return (
             <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, background: "#fefeff" }}>
@@ -230,6 +230,7 @@ class EditorSite extends React.Component<IProps, IState> {
                             defaultCurrent={1}
                             total={(this.state.keysResponse && this.state.keysResponse.meta.total) || 0}
                             onChange={async (page: number, _perPage: number) => {
+                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                 this.setState({ page: page }, this.fetchKeys);
                             }}
                             style={{ alignSelf: "center", margin: 16 }}
