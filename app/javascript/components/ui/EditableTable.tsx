@@ -1,173 +1,8 @@
-import { Form } from "@ant-design/compatible";
-import "@ant-design/compatible/assets/index.css";
-import { Empty, Input, Table } from "antd";
+import { Empty, Table } from "antd";
+import { SizeType } from "antd/lib/config-provider/SizeContext";
 import * as React from "react";
-import { dashboardStore } from "../stores/DashboardStore";
-import { PermissionUtils } from "../utilities/PermissionUtils";
-const FormItem = Form.Item;
-
-const EditableContext = React.createContext(undefined);
-const EditableRow = ({ form, index, ...props }) => {
-    return (
-        <EditableContext.Provider value={form}>
-            <tr {...props} />
-        </EditableContext.Provider>
-    );
-};
-const EditableFormRow = Form.create()(EditableRow);
-
-interface IEditableCellProps {
-    editable: boolean;
-    dataIndex: string;
-    title: any;
-    record: any;
-    index: any;
-    handleSave: any;
-    onCellEdit(options: { languageId: string; keyId: string; exportConfigId?: string }): any;
-}
-interface IEditableCellState {
-    editing: boolean;
-}
-
-class EditableCell extends React.Component<IEditableCellProps, IEditableCellState> {
-    form: any;
-    input: any;
-    cell: any;
-
-    state: IEditableCellState = {
-        editing: false
-    };
-
-    componentDidMount() {
-        if (this.props.editable) {
-            document.addEventListener("click", this.handleClickOutside, true);
-        }
-    }
-
-    componentWillUnmount() {
-        if (this.props.editable) {
-            document.removeEventListener("click", this.handleClickOutside, true);
-        }
-    }
-
-    toggleEdit = () => {
-        if (
-            this.props.record.htmlEnabled &&
-            this.props.dataIndex !== "name" &&
-            this.props.dataIndex !== "description"
-        ) {
-            this.props.onCellEdit({
-                languageId: this.props.dataIndex.substr("language-".length),
-                keyId: this.props.record.keyId,
-                exportConfigId: this.props.record.exportConfigId
-            });
-        } else {
-            const editing = !this.state.editing;
-            this.setState({ editing }, () => {
-                if (editing) {
-                    this.input.focus();
-                }
-            });
-        }
-    };
-
-    handleClickOutside = (e: any) => {
-        const { editing } = this.state;
-        // Only save if clicked element is not the textarea.
-        if (editing && !(this.cell.contains(e.target) && e.target.tagName === "TEXTAREA")) {
-            this.save();
-        }
-    };
-
-    save = () => {
-        const { record, handleSave } = this.props;
-        this.form.validateFields((error, values) => {
-            if (error) {
-                console.error("Cell error");
-
-                return;
-            }
-            this.toggleEdit();
-            handleSave({ ...record, ...values });
-        });
-    };
-
-    render() {
-        const { editing } = this.state;
-        const { editable, dataIndex, title, record, index, handleSave, onCellEdit, ...restProps } = this.props;
-
-        return (
-            <td
-                ref={(node) => {
-                    return (this.cell = node);
-                }}
-                {...restProps}
-            >
-                {editable ? (
-                    <EditableContext.Consumer>
-                        {(form: any) => {
-                            this.form = form;
-
-                            // console.error(restProps.children);
-
-                            const isCellEditEnabled =
-                                this.props.dataIndex !== "name" ||
-                                PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole());
-
-                            return editing ? (
-                                <FormItem style={{ margin: 0 }}>
-                                    {form.getFieldDecorator(dataIndex, {
-                                        rules: [
-                                            {
-                                                // required: true,
-                                                message: `${title} is required.`
-                                            }
-                                        ],
-                                        initialValue: record[dataIndex]
-                                    })(
-                                        <Input.TextArea
-                                            ref={(node) => {
-                                                return (this.input = node);
-                                            }}
-                                            onPressEnter={this.save}
-                                            autoSize
-                                        />
-                                    )}
-                                </FormItem>
-                            ) : (
-                                // tslint:disable-next-line:react-no-dangerous-html
-                                <div
-                                    className={isCellEditEnabled ? "editable-cell-value-wrap" : undefined}
-                                    style={{
-                                        maxWidth: 400,
-                                        overflow: "auto",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "center",
-                                        wordBreak: "break-all"
-                                    }}
-                                    onClick={isCellEditEnabled ? this.toggleEdit : undefined}
-                                    role="button"
-                                    dangerouslySetInnerHTML={
-                                        this.props.record.htmlEnabled
-                                            ? {
-                                                  __html: restProps.children[2]
-                                              }
-                                            : undefined
-                                    }
-                                >
-                                    {this.props.record.htmlEnabled ? undefined : restProps.children[2]}
-                                </div>
-                            );
-                        }}
-                    </EditableContext.Consumer>
-                ) : (
-                    restProps.children
-                )}
-            </td>
-        );
-    }
-}
+import { EditableRow, EditableCell } from "./EditableCell";
+import { TablePaginationConfig } from "antd/lib/table";
 
 interface IEditableTableProps {
     dataSource: any;
@@ -175,9 +10,9 @@ interface IEditableTableProps {
     style?: React.CSSProperties;
     bordered?: boolean;
     loading?: boolean;
-    size?: "default" | "small" | "middle";
+    size?: SizeType;
     projectId: any;
-    pagination?: any;
+    pagination?: false | TablePaginationConfig;
     rowSelection?: any;
     expandedRowRender?: any;
     className?: string;
@@ -192,16 +27,16 @@ interface IEditableTableState {
 }
 
 class EditableTable extends React.Component<IEditableTableProps, IEditableTableState> {
-    static getDerivedStateFromProps(props: IEditableTableProps) {
-        return {
-            dataSource: props.dataSource
-        };
-    }
-
     constructor(props: IEditableTableProps) {
         super(props);
 
         this.state = {
+            dataSource: props.dataSource
+        };
+    }
+
+    static getDerivedStateFromProps(props: IEditableTableProps) {
+        return {
             dataSource: props.dataSource
         };
     }
@@ -236,7 +71,7 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
         const { dataSource } = this.state;
         const components = {
             body: {
-                row: EditableFormRow,
+                row: EditableRow,
                 cell: EditableCell
             }
         };
@@ -275,7 +110,7 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
                 columns={columns}
                 style={this.props.style}
                 loading={this.props.loading}
-                size={this.props.size}
+                // size={this.props.size}
                 pagination={this.props.pagination}
                 locale={{ emptyText: <Empty description="No keys found" image={Empty.PRESENTED_IMAGE_SIMPLE} /> }}
             />
