@@ -5,10 +5,11 @@ import { LanguageCodesAPI } from "../api/v1/LanguageCodesAPI";
 import { LanguagesAPI } from "../api/v1/LanguagesAPI";
 import FlagIcon from "../ui/FlagIcons";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import { FormInstance } from "antd/lib/form";
+import { ErrorUtils, ERRORS } from "../ui/ErrorUtils";
 
 interface IProps {
     languageToEdit?: any;
-    form: any;
     projectId: string;
     visible: boolean;
     onCancelRequest();
@@ -20,6 +21,8 @@ interface IState {
 }
 
 class AddEditLanguageForm extends React.Component<IProps, IState> {
+    formRef = React.createRef<FormInstance>();
+
     state: IState = {
         countryCodes: [],
         languageCodes: []
@@ -72,16 +75,23 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
         }
 
         if (response.errors) {
-            response.errors.map((error) => {
-                if (error.details === "A language with that name already exists for this project.") {
-                    this.props.form.setFields({
-                        name: {
-                            value: values.name,
-                            errors: [new Error(error.details)]
-                        }
-                    });
-                }
-            });
+            if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
+                this.formRef.current.setFields([
+                    {
+                        name: "name",
+                        errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
+                    }
+                ]);
+            } else if (ErrorUtils.hasError("name", ERRORS.INVALID, response.errors)) {
+                this.formRef.current.setFields([
+                    {
+                        name: "name",
+                        errors: [ErrorUtils.getErrorMessage("name", ERRORS.INVALID)]
+                    }
+                ]);
+            } else {
+                ErrorUtils.showErrors(response.errors);
+            }
 
             return;
         }
@@ -115,6 +125,7 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
                 destroyOnClose
             >
                 <Form
+                    ref={this.formRef}
                     onFinish={this.handleSubmit}
                     style={{ maxWidth: "100%" }}
                     id="addEditLanguageForm"
@@ -161,7 +172,7 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
                         >
                             {this.state.countryCodes.map((countryCode) => {
                                 return (
-                                    <Select.Option key={countryCode.id}>
+                                    <Select.Option key={countryCode.id} value={undefined}>
                                         <span style={{ marginRight: 8 }}>
                                             <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
                                         </span>
@@ -186,7 +197,7 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
                         >
                             {this.state.languageCodes.map((languageCode) => {
                                 return (
-                                    <Select.Option key={languageCode.id}>
+                                    <Select.Option key={languageCode.id} value={undefined}>
                                         {`${languageCode.attributes.name} (${languageCode.attributes.code})`}
                                     </Select.Option>
                                 );

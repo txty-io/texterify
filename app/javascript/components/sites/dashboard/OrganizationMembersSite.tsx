@@ -12,7 +12,7 @@ import { UserAvatar } from "../../ui/UserAvatar";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 const { Content } = Layout;
 
-type IProps = RouteComponentProps<{ organizationId: string }> & {};
+type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {
     userAddEmail: string;
     getMembersResponse: any;
@@ -59,7 +59,6 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
         }, []);
     };
 
-    // tslint:disable-next-line:max-func-body-length
     render() {
         if (!this.state.getMembersResponse) {
             return <Loading />;
@@ -214,7 +213,9 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                                         : "Do you really want to remove this user from the organization?",
                                                 content: "This cannot be undone.",
                                                 okText: "Yes",
-                                                okType: "danger",
+                                                okButtonProps: {
+                                                    danger: true
+                                                },
                                                 cancelText: "No",
                                                 visible: this.state.deleteDialogVisible,
                                                 onOk: async () => {
@@ -243,7 +244,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                                 }
                                             });
                                         }}
-                                        type="danger"
+                                        danger
                                         disabled={
                                             !(
                                                 PermissionUtils.isManagerOrHigher(

@@ -1,33 +1,34 @@
-import { Form } from "@ant-design/compatible";
-import "@ant-design/compatible/assets/index.css";
-import { Alert, Button, Input } from "antd";
+import { Alert, Button, Input, Form } from "antd";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { Routes } from "../routing/Routes";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { MailOutlined } from "@ant-design/icons";
+import { authStore } from "../stores/AuthStore";
+import { FormInstance } from "antd/lib/form";
 
-interface IProps {
-    form: any;
-}
 interface IState {
     isLoading: boolean;
     success: boolean;
 }
 
-class ForgotPasswordFormUnwrapped extends React.Component<IProps, IState> {
+class ForgotPasswordForm extends React.Component<{}, IState> {
+    formRef = React.createRef<FormInstance>();
+
     state: IState = {
         isLoading: false,
         success: false
     };
 
     render() {
-        const { getFieldDecorator } = this.props.form;
-
         return (
             <>
-                <Form onSubmit={this.handleSubmit}>
+                <Form
+                    ref={this.formRef}
+                    onFinish={this.handleSubmit}
+                    initialValues={{ email: authStore.currentUser.email }}
+                >
                     {this.state.success && (
                         <Alert
                             showIcon
@@ -36,15 +37,11 @@ class ForgotPasswordFormUnwrapped extends React.Component<IProps, IState> {
                         />
                     )}
                     <p>Enter your email address and we will send you the instructions to reset your password.</p>
-                    <Form.Item>
-                        {getFieldDecorator("email", {
-                            rules: [{ required: true, message: "Please enter your email address." }]
-                        })(
-                            <Input
-                                prefix={<MailOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-                                placeholder="Email address"
-                            />
-                        )}
+                    <Form.Item name="email" rules={[{ required: true, message: "Please enter your email address." }]}>
+                        <Input
+                            prefix={<MailOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
+                            placeholder="Email address"
+                        />
                     </Form.Item>
 
                     <Form.Item style={{ marginBottom: 0 }}>
@@ -63,36 +60,28 @@ class ForgotPasswordFormUnwrapped extends React.Component<IProps, IState> {
         );
     }
 
-    handleSubmit = (e: any): void => {
+    handleSubmit = async (values: any) => {
         this.setState({ success: false });
+        console.log("Received values of form: ", values);
 
-        e.preventDefault();
-        this.props.form.validateFields(async (err: any, values: any) => {
-            if (!err) {
-                console.log("Received values of form: ", values);
+        this.setState({ isLoading: true });
 
-                this.setState({ isLoading: true });
+        try {
+            const response = await AuthAPI.sendPasswordRecoveryInstructions(values.email);
 
-                try {
-                    const response = await AuthAPI.sendPasswordRecoveryInstructions(values.email);
+            if (response.success) {
+                this.formRef.current.setFieldsValue({
+                    email: undefined
+                });
 
-                    if (response.success) {
-                        this.props.form.setFieldsValue({
-                            email: undefined
-                        });
-
-                        this.setState({ success: true });
-                    }
-                } catch (e) {
-                    console.error(e);
-                }
-
-                this.setState({ isLoading: false });
+                this.setState({ success: true });
             }
-        });
+        } catch (e) {
+            console.error(e);
+        }
+
+        this.setState({ isLoading: false });
     };
 }
-
-const ForgotPasswordForm: any = Form.create()(ForgotPasswordFormUnwrapped);
 
 export { ForgotPasswordForm };

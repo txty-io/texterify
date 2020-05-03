@@ -13,7 +13,7 @@ import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { sortStrings } from "../../utilities/Sorter";
 import { CrownOutlined, EditOutlined } from "@ant-design/icons";
 
-type IProps = RouteComponentProps<{ projectId: string }> & {};
+type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     languages: any[];
     selectedRowLanguages: any[];
@@ -31,8 +31,8 @@ interface IState {
 class LanguagesSite extends React.Component<IProps, IState> {
     debouncedSearchReloader: any = _.debounce(
         async (value) => {
-            this.setState({ search: value, page: 0 });
-            await this.reloadTable({ search: value, page: 0 });
+            this.setState({ search: value, page: 1 });
+            await this.reloadTable({ search: value, page: 1 });
         },
         500,
         { trailing: true }
@@ -59,7 +59,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
         addDialogVisible: false,
         languagesResponse: null,
         search: "",
-        page: 0,
+        page: 1,
         perPage: DEFAULT_PAGE_SIZE,
         languagesLoading: false,
         languageToEdit: null
@@ -206,7 +206,9 @@ class LanguagesSite extends React.Component<IProps, IState> {
             title: "Do you really want to delete this language?",
             content: "This cannot be undone and all translations for this language will also be deleted.",
             okText: "Yes",
-            okType: "danger",
+            okButtonProps: {
+                danger: true
+            },
             cancelText: "No",
             visible: this.state.deleteDialogVisible,
             onOk: async () => {
@@ -261,7 +263,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
                                     Create language
                                 </Button>
                                 <Button
-                                    type="danger"
+                                    danger
                                     onClick={this.onDeleteLanguages}
                                     disabled={
                                         this.state.selectedRowLanguages.length === 0 ||

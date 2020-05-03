@@ -1,6 +1,4 @@
-import { Form } from "@ant-design/compatible";
-import "@ant-design/compatible/assets/index.css";
-import { Button, Input, Slider } from "antd";
+import { Button, Input, Slider, Form } from "antd";
 import * as React from "react";
 import AvatarEditor from "react-avatar-editor";
 import Dropzone from "react-dropzone";
@@ -8,11 +6,12 @@ import * as uuid from "uuid";
 import { ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { dashboardStore } from "../stores/DashboardStore";
 import { Styles } from "../ui/Styles";
+import { ErrorUtils, ERRORS } from "../ui/ErrorUtils";
+import { FormInstance } from "antd/lib/form";
 
 interface IProps {
     isEdit?: boolean;
     organizationId?: string;
-    onError(errors: any): void;
     onCreated?(projectId: string): void;
 }
 interface IState {
@@ -21,10 +20,11 @@ interface IState {
     imagePosition: { x: number; y: number };
 }
 
-class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IState> {
+class NewProjectForm extends React.Component<IProps, IState> {
     isMovingImage = false;
     dropzone: any = React.createRef();
     avatarEditor: any = React.createRef();
+    formRef = React.createRef<FormInstance>();
 
     state: IState = {
         imageUrl: "",
@@ -41,43 +41,47 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
         }
     }
 
-    handleSubmit = (e: any): void => {
-        e.preventDefault();
-        this.props.form.validateFields(async (err: any, values: any) => {
-            if (!err) {
-                let project;
+    handleSubmit = async (values: any) => {
+        let response;
 
-                if (this.props.isEdit) {
-                    project = await ProjectsAPI.updateProject(
-                        dashboardStore.currentProject.id,
-                        values.name,
-                        values.description
-                    );
-                } else {
-                    project = await ProjectsAPI.createProject(
-                        values.name,
-                        values.description,
-                        this.props.organizationId
-                    );
-                }
+        if (this.props.isEdit) {
+            response = await ProjectsAPI.updateProject(
+                dashboardStore.currentProject.id,
+                values.name,
+                values.description
+            );
+        } else {
+            response = await ProjectsAPI.createProject(values.name, values.description, this.props.organizationId);
+        }
 
-                if (!project.errors) {
-                    const imageBlob = await this.getImageBlob();
-                    const formData = await this.createFormData(imageBlob);
-                    if (this.state.imageUrl) {
-                        await ProjectsAPI.uploadImage({ projectId: project.data.id, formData: formData });
-                    } else {
-                        await ProjectsAPI.deleteImage({ projectId: project.data.id });
+        if (response.errors) {
+            if (ErrorUtils.hasError("name", ERRORS.BLANK, response.errors)) {
+                this.formRef.current.setFields([
+                    {
+                        name: "name",
+                        errors: [ErrorUtils.getErrorMessage("name", ERRORS.BLANK)]
                     }
-
-                    dashboardStore.currentProject = project.data;
-                    dashboardStore.currentProjectIncluded = project.included;
-                    this.props.onCreated(project.data.id);
-                } else {
-                    this.props.onError(project.errors);
-                }
+                ]);
+            } else {
+                ErrorUtils.showErrors(response.errors);
             }
-        });
+
+            this.props.onError(response.errors);
+
+            return;
+        }
+
+        const imageBlob = await this.getImageBlob();
+        const formData = await this.createFormData(imageBlob);
+        if (this.state.imageUrl) {
+            await ProjectsAPI.uploadImage({ projectId: response.data.id, formData: formData });
+        } else {
+            await ProjectsAPI.deleteImage({ projectId: response.data.id });
+        }
+
+        dashboardStore.currentProject = response.data;
+        dashboardStore.currentProjectIncluded = response.included;
+        this.props.onCreated(response.data.id);
     };
 
     /**
@@ -116,7 +120,6 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
             let blob;
             if (canvas.toBlob) {
                 // Chrome goes here.
-                // tslint:disable-next-line:promise-must-complete
                 blob = await new Promise((resolve, _reject) => {
                     canvas.toBlob(resolve as any);
                 });
@@ -145,10 +148,17 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
     };
 
     render() {
-        const { getFieldDecorator } = this.props.form;
-
         return (
-            <Form id="newProjectForm" onSubmit={this.handleSubmit} style={{ maxWidth: "100%" }}>
+            <Form
+                id="newProjectForm"
+                onFinish={this.handleSubmit}
+                initialValues={{
+                    name: this.props.isEdit ? dashboardStore.currentProject.attributes.name : undefined,
+                    description: this.props.isEdit ? dashboardStore.currentProject.attributes.description : undefined
+                }}
+                style={{ maxWidth: "100%" }}
+                ref={this.formRef}
+            >
                 <h3>Project image</h3>
                 <Form.Item>
                     <div style={{ display: "flex", marginTop: 4 }}>
@@ -197,7 +207,6 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
                                                 }
                                             }}
                                         />
-                                        {/* tslint:disable-next-line:react-a11y-input-elements */}
                                         <input {...getInputProps()} />
                                     </div>
                                 );
@@ -223,7 +232,7 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
                             <Button
                                 onClick={this.deleteImage}
                                 disabled={!this.state.imageUrl}
-                                type="danger"
+                                danger
                                 style={{ marginBottom: 0, width: "100%" }}
                             >
                                 Delete image
@@ -233,25 +242,17 @@ class NewProjectFormUnwrapped extends React.Component<IProps & { form: any }, IS
                 </Form.Item>
 
                 <h3>Name *</h3>
-                <Form.Item>
-                    {getFieldDecorator("name", {
-                        initialValue: this.props.isEdit ? dashboardStore.currentProject.attributes.name : undefined,
-                        rules: [{ required: true, message: "Please enter the name of the project." }]
-                    })(<Input placeholder="Name" autoFocus={!this.props.isEdit} />)}
+                <Form.Item name="name" rules={[{ required: true, message: "Please enter the name of the project." }]}>
+                    <Input placeholder="Name" autoFocus={!this.props.isEdit} />
                 </Form.Item>
 
                 <h3>Description</h3>
-                <Form.Item>
-                    {getFieldDecorator("description", {
-                        initialValue: this.props.isEdit
-                            ? dashboardStore.currentProject.attributes.description
-                            : undefined
-                    })(<Input.TextArea autoSize={{ minRows: 4, maxRows: 8 }} placeholder="Description" />)}
+                <Form.Item name="description">
+                    <Input.TextArea autoSize={{ minRows: 4, maxRows: 8 }} placeholder="Description" />
                 </Form.Item>
             </Form>
         );
     }
 }
 
-const NewProjectForm: any = Form.create()(NewProjectFormUnwrapped);
 export { NewProjectForm, IProps };

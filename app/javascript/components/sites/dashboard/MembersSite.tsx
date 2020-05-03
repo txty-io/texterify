@@ -1,4 +1,4 @@
-import { Button, Input, Layout, message, Modal, Select, Tag, Tooltip } from "antd";
+import { Button, Input, Layout, message, Modal, Select, Tag, Tooltip, Form } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -11,6 +11,8 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { Loading } from "../../ui/Loading";
 import { UserAvatar } from "../../ui/UserAvatar";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
+import { FormInstance } from "antd/lib/form";
+import { ErrorUtils, ERRORS } from "../../ui/ErrorUtils";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -21,6 +23,8 @@ interface IState {
 
 @observer
 class MembersSite extends React.Component<IProps, IState> {
+    formRef = React.createRef<FormInstance>();
+
     state: IState = {
         userAddEmail: "",
         getMembersResponse: null,
@@ -79,7 +83,9 @@ class MembersSite extends React.Component<IProps, IState> {
                     : "Do you really want to remove this user from the project?",
             content: "This cannot be undone.",
             okText: "Yes",
-            okType: "danger",
+            okButtonProps: {
+                danger: true
+            },
             cancelText: "No",
             visible: this.state.deleteDialogVisible,
             onOk: async () => {
@@ -115,18 +121,21 @@ class MembersSite extends React.Component<IProps, IState> {
                 <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                     <h1>Members</h1>
                     <p>Invite users to your project to help you localize your apps.</p>
-                    <div style={{ display: "flex" }}>
-                        <Input
-                            placeholder="Enter users email address"
-                            onChange={async (event) => {
-                                this.setState({
-                                    userAddEmail: event.target.value
-                                });
-                            }}
-                            value={this.state.userAddEmail}
-                            style={{ maxWidth: 400 }}
-                            disabled={!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())}
-                        />
+                    <div style={{ display: "flex", width: "100%" }}>
+                        <Form ref={this.formRef} style={{ width: "100%", maxWidth: 480 }}>
+                            <Form.Item name="name">
+                                <Input
+                                    placeholder="Enter users email address"
+                                    onChange={async (event) => {
+                                        this.setState({
+                                            userAddEmail: event.target.value
+                                        });
+                                    }}
+                                    value={this.state.userAddEmail}
+                                    disabled={!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())}
+                                />
+                            </Form.Item>
+                        </Form>
                         <Button
                             style={{ marginLeft: 8 }}
                             type="primary"
@@ -135,7 +144,15 @@ class MembersSite extends React.Component<IProps, IState> {
                                     this.props.match.params.projectId,
                                     this.state.userAddEmail
                                 );
+
                                 if (createMemberResponse.errors) {
+                                    this.formRef.current.setFields([
+                                        {
+                                            name: "name",
+                                            errors: [ErrorUtils.getErrorMessage("name", ERRORS.NOT_FOUND)]
+                                        }
+                                    ]);
+
                                     return;
                                 }
 
@@ -267,7 +284,7 @@ class MembersSite extends React.Component<IProps, IState> {
                                                 onClick={async () => {
                                                     await this.onRemove(item);
                                                 }}
-                                                type="danger"
+                                                danger
                                                 disabled={
                                                     item.roleSource === "organization" ||
                                                     (!PermissionUtils.isManagerOrHigher(

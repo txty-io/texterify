@@ -1,6 +1,4 @@
-import { Form } from "@ant-design/compatible";
-import "@ant-design/compatible/assets/index.css";
-import { Button, Input, Slider } from "antd";
+import { Button, Input, Slider, Form } from "antd";
 import * as React from "react";
 import AvatarEditor from "react-avatar-editor";
 import Dropzone from "react-dropzone";
@@ -10,7 +8,6 @@ import { authStore } from "../stores/AuthStore";
 import { Styles } from "../ui/Styles";
 
 interface IProps {
-    form: any;
     onError(errors: any): void;
     onCreated?(): void;
 }
@@ -20,7 +17,7 @@ interface IState {
     imagePosition: { x: number; y: number };
 }
 
-class EditUserFormUnwrapped extends React.Component<IProps, IState> {
+class EditUserForm extends React.Component<IProps, IState> {
     state: IState = {
         imageUrl: "",
         imageScale: 100,
@@ -38,31 +35,26 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
         }
     }
 
-    handleSubmit = async (e: any) => {
-        e.preventDefault();
-        this.props.form.validateFields(async (errors: any, values: { username: string; email: string }) => {
-            if (!errors) {
-                const imageBlob = await this.getImageBlob();
-                const formData = await this.createFormData(imageBlob);
-                if (this.state.imageUrl) {
-                    await UsersAPI.uploadImage(formData);
-                } else {
-                    await UsersAPI.deleteImage();
-                    authStore.userImageUrl = null;
-                }
+    handleSubmit = async (values: { username: string; email: string }) => {
+        const imageBlob = await this.getImageBlob();
+        const formData = await this.createFormData(imageBlob);
+        if (this.state.imageUrl) {
+            await UsersAPI.uploadImage(formData);
+        } else {
+            await UsersAPI.deleteImage();
+            authStore.userImageUrl = null;
+        }
 
-                const response = await UsersAPI.updateUser({ username: values.username, email: values.email });
+        const response = await UsersAPI.updateUser({ username: values.username, email: values.email });
 
-                // Set new user data.
-                authStore.currentUser = response.data;
+        // Set new user data.
+        authStore.currentUser = response.data;
 
-                if (this.props.onCreated) {
-                    this.props.onCreated();
-                }
+        if (this.props.onCreated) {
+            this.props.onCreated();
+        }
 
-                await authStore.refetchCurrentUserImage();
-            }
-        });
+        await authStore.refetchCurrentUserImage();
     };
 
     handleDrop = (dropped: any) => {
@@ -85,7 +77,6 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
             let blob;
             if (canvas.toBlob) {
                 // Chrome goes here.
-                // tslint:disable-next-line:promise-must-complete
                 blob = await new Promise((resolve, _reject) => {
                     canvas.toBlob(resolve as any);
                 });
@@ -130,10 +121,16 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
     };
 
     render() {
-        const { getFieldDecorator } = this.props.form;
-
         return (
-            <Form id="editUserForm" onSubmit={this.handleSubmit} style={{ maxWidth: "100%" }}>
+            <Form
+                id="editUserForm"
+                onFinish={this.handleSubmit}
+                initialValues={{
+                    username: authStore.currentUser.username,
+                    email: authStore.currentUser.email
+                }}
+                style={{ maxWidth: "100%" }}
+            >
                 <h3>Profile image</h3>
                 <Form.Item>
                     <div style={{ display: "flex", marginTop: 4 }}>
@@ -182,7 +179,6 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
                                                 }
                                             }}
                                         />
-                                        {/* tslint:disable-next-line:react-a11y-input-elements */}
                                         <input {...getInputProps()} />
                                     </div>
                                 );
@@ -208,7 +204,7 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
                             <Button
                                 onClick={this.deleteImage}
                                 disabled={!this.state.imageUrl}
-                                type="danger"
+                                danger
                                 style={{ marginBottom: 0, width: "100%" }}
                             >
                                 Delete image
@@ -219,25 +215,18 @@ class EditUserFormUnwrapped extends React.Component<IProps, IState> {
 
                 <h3 style={{ marginTop: 24 }}>Username *</h3>
                 <p>This name will be visible to others.</p>
-                <Form.Item>
-                    {getFieldDecorator("username", {
-                        initialValue: authStore.currentUser.username,
-                        rules: [{ required: true, message: "Please enter your username." }]
-                    })(<Input placeholder="Username" />)}
+                <Form.Item name="username" rules={[{ required: true, message: "Please enter your username." }]}>
+                    <Input placeholder="Username" />
                 </Form.Item>
 
                 <h3>Email address *</h3>
                 <p>Your email address that you also use to log in.</p>
-                <Form.Item>
-                    {getFieldDecorator("email", {
-                        initialValue: authStore.currentUser.email,
-                        rules: [{ required: true, message: "Please enter your email address." }]
-                    })(<Input placeholder="E-Mail" />)}
+                <Form.Item name="email" rules={[{ required: true, message: "Please enter your email address." }]}>
+                    <Input placeholder="E-Mail" />
                 </Form.Item>
             </Form>
         );
     }
 }
 
-const EditUserForm: any = Form.create()(EditUserFormUnwrapped);
 export { EditUserForm };

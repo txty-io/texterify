@@ -114,7 +114,6 @@ class KeyHistory extends React.Component<IProps, IState> {
                                     {`${language.attributes.name} content changed`}
                                 </div>
                                 {key.attributes.html_enabled ? (
-                                    // tslint:disable-next-line:react-no-dangerous-html
                                     <span
                                         dangerouslySetInnerHTML={{
                                             __html: Utils.getHTMLContentPreview(newContent)
@@ -144,7 +143,7 @@ class KeyHistory extends React.Component<IProps, IState> {
                                 <Popconfirm
                                     title="Are you sure you want to restore this version?"
                                     onConfirm={async () => {
-                                        await TranslationsAPI.updateTranslation({
+                                        await TranslationsAPI.createTranslation({
                                             projectId: key.attributes.project_id,
                                             keyId: key.id,
                                             languageId: key.language_id,
@@ -157,7 +156,6 @@ class KeyHistory extends React.Component<IProps, IState> {
                                     cancelText="No"
                                     placement="left"
                                 >
-                                    {/* tslint:disable-next-line:react-a11y-anchors */}
                                     <a>Restore</a>
                                 </Popconfirm>
                             )}

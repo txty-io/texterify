@@ -1,6 +1,4 @@
-import { Form } from "@ant-design/compatible";
-import "@ant-design/compatible/assets/index.css";
-import { Button, Input, Slider } from "antd";
+import { Button, Input, Slider, Form } from "antd";
 import * as React from "react";
 import AvatarEditor from "react-avatar-editor";
 import Dropzone from "react-dropzone";
@@ -8,6 +6,8 @@ import * as uuid from "uuid";
 import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 import { dashboardStore } from "../stores/DashboardStore";
 import { Styles } from "../ui/Styles";
+import { FormInstance } from "antd/lib/form";
+import { ErrorUtils, ERRORS } from "../ui/ErrorUtils";
 
 interface IProps {
     isEdit?: boolean;
@@ -20,10 +20,11 @@ interface IState {
     imagePosition: { x: number; y: number };
 }
 
-class NewOrganizationFormUnwrapped extends React.Component<IProps & { form: any }, IState> {
+class NewOrganizationForm extends React.Component<IProps, IState> {
     isMovingImage = false;
     dropzone: any = React.createRef();
     avatarEditor: any = React.createRef();
+    formRef = React.createRef<FormInstance>();
 
     state: IState = {
         imageUrl: "",
@@ -42,41 +43,47 @@ class NewOrganizationFormUnwrapped extends React.Component<IProps & { form: any 
         }
     }
 
-    handleSubmit = (e: any): void => {
-        e.preventDefault();
-        this.props.form.validateFields(async (error: any, values: any) => {
-            if (!error) {
-                let organization;
+    handleSubmit = async (values: any) => {
+        let response;
 
-                if (this.props.isEdit) {
-                    organization = await OrganizationsAPI.updateOrganization(
-                        dashboardStore.currentOrganization.id,
-                        values.name,
-                        values.description
-                    );
-                } else {
-                    organization = await OrganizationsAPI.createOrganization(values.name, values.description);
-                }
+        if (this.props.isEdit) {
+            response = await OrganizationsAPI.updateOrganization(
+                dashboardStore.currentOrganization.id,
+                values.name,
+                values.description
+            );
+        } else {
+            response = await OrganizationsAPI.createOrganization(values.name, values.description);
+        }
 
-                if (!organization.errors) {
-                    const imageBlob = await this.getImageBlob();
-                    const formData = await this.createFormData(imageBlob);
-                    if (this.state.imageUrl) {
-                        await OrganizationsAPI.uploadImage({
-                            organizationId: organization.data.id,
-                            formData: formData
-                        });
-                    } else {
-                        await OrganizationsAPI.deleteImage({ organizationId: organization.data.id });
+        if (response.errors) {
+            if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
+                this.formRef.current.setFields([
+                    {
+                        name: "name",
+                        errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
                     }
-
-                    dashboardStore.currentOrganization = organization.data;
-                    this.props.onCreated(organization.data.id);
-                } else {
-                    this.props.onError(organization.errors);
-                }
+                ]);
+            } else {
+                ErrorUtils.showErrors(response.errors);
             }
-        });
+
+            return;
+        }
+
+        const imageBlob = await this.getImageBlob();
+        const formData = await this.createFormData(imageBlob);
+        if (this.state.imageUrl) {
+            await OrganizationsAPI.uploadImage({
+                organizationId: response.data.id,
+                formData: formData
+            });
+        } else {
+            await OrganizationsAPI.deleteImage({ organizationId: response.data.id });
+        }
+
+        dashboardStore.currentOrganization = response.data;
+        this.props.onCreated(response.data.id);
     };
 
     /**
@@ -115,7 +122,6 @@ class NewOrganizationFormUnwrapped extends React.Component<IProps & { form: any 
             let blob;
             if (canvas.toBlob) {
                 // Chrome goes here.
-                // tslint:disable-next-line:promise-must-complete
                 blob = await new Promise((resolve, _reject) => {
                     canvas.toBlob(resolve as any);
                 });
@@ -144,10 +150,16 @@ class NewOrganizationFormUnwrapped extends React.Component<IProps & { form: any 
     };
 
     render() {
-        const { getFieldDecorator } = this.props.form;
-
         return (
-            <Form id="newOrganizationForm" onSubmit={this.handleSubmit} style={{ maxWidth: "100%" }}>
+            <Form
+                id="newOrganizationForm"
+                onFinish={this.handleSubmit}
+                initialValues={{
+                    name: this.props.isEdit ? dashboardStore.currentOrganization.attributes.name : undefined
+                }}
+                style={{ maxWidth: "100%" }}
+                ref={this.formRef}
+            >
                 <h3>Organization image</h3>
                 <Form.Item>
                     <div style={{ display: "flex", marginTop: 4 }}>
@@ -196,7 +208,6 @@ class NewOrganizationFormUnwrapped extends React.Component<IProps & { form: any 
                                                 }
                                             }}
                                         />
-                                        {/* tslint:disable-next-line:react-a11y-input-elements */}
                                         <input {...getInputProps()} />
                                     </div>
                                 );
@@ -222,7 +233,7 @@ class NewOrganizationFormUnwrapped extends React.Component<IProps & { form: any 
                             <Button
                                 onClick={this.deleteImage}
                                 disabled={!this.state.imageUrl}
-                                type="danger"
+                                danger
                                 style={{ marginBottom: 0, width: "100%" }}
                             >
                                 Delete image
@@ -232,18 +243,15 @@ class NewOrganizationFormUnwrapped extends React.Component<IProps & { form: any 
                 </Form.Item>
 
                 <h3>Name *</h3>
-                <Form.Item>
-                    {getFieldDecorator("name", {
-                        initialValue: this.props.isEdit
-                            ? dashboardStore.currentOrganization.attributes.name
-                            : undefined,
-                        rules: [{ required: true, message: "Please enter the name of the organization." }]
-                    })(<Input placeholder="Name" autoFocus={!this.props.isEdit} />)}
+                <Form.Item
+                    name="name"
+                    rules={[{ required: true, message: "Please enter the name of the organization." }]}
+                >
+                    <Input placeholder="Name" autoFocus={!this.props.isEdit} />
                 </Form.Item>
             </Form>
         );
     }
 }
 
-const NewOrganizationForm: any = Form.create()(NewOrganizationFormUnwrapped);
 export { NewOrganizationForm, IProps };

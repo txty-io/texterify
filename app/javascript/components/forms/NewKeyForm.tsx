@@ -1,56 +1,49 @@
-import { Form } from "@ant-design/compatible";
-import "@ant-design/compatible/assets/index.css";
-import { Button, Checkbox, Input, Modal, Tooltip } from "antd";
+import { Button, Checkbox, Input, Modal, Tooltip, Form } from "antd";
 import * as React from "react";
 import { KeysAPI } from "../api/v1/KeysAPI";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import { FormInstance } from "antd/lib/form";
+import { ErrorUtils, ERRORS } from "../ui/ErrorUtils";
 
 interface IProps {
-    form: any;
     projectId: string;
     visible: boolean;
     keyToEdit?: any;
     onCancelRequest(): void;
     onCreated?(): void;
 }
-interface IState {}
 
-class NewKeyFormUnwrapped extends React.Component<IProps, IState> {
-    handleSubmit = (e: any): void => {
-        e.preventDefault();
-        this.props.form.validateFields(async (err: any, values: any) => {
-            if (!err) {
-                const response = await KeysAPI.createKey(
-                    this.props.projectId,
-                    values.name,
-                    values.description,
-                    values.html_enabled
-                );
-                if (response.errors) {
-                    response.errors.map((error) => {
-                        if (error.details === "A key with that name already exists for this project.") {
-                            this.props.form.setFields({
-                                name: {
-                                    value: values.name,
-                                    errors: [new Error(error.details)]
-                                }
-                            });
-                        }
-                    });
+class NewKeyForm extends React.Component<IProps> {
+    formRef = React.createRef<FormInstance>();
 
-                    return;
-                }
-
-                if (this.props.onCreated) {
-                    this.props.onCreated();
-                }
+    handleSubmit = async (values: any) => {
+        const response = await KeysAPI.createKey(
+            this.props.projectId,
+            values.name,
+            values.description,
+            values.html_enabled
+        );
+        if (response.errors) {
+            if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
+                this.formRef.current.setFields([
+                    {
+                        name: "name",
+                        errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
+                    }
+                ]);
+            } else {
+                ErrorUtils.showErrors(response.errors);
             }
-        });
+
+            return;
+        }
+
+        if (this.props.onCreated) {
+            this.props.onCreated();
+        }
     };
 
     render() {
-        const { getFieldDecorator } = this.props.form;
-
         return (
             <Modal
                 maskClosable={false}
@@ -73,39 +66,46 @@ class NewKeyFormUnwrapped extends React.Component<IProps, IState> {
                 onCancel={this.props.onCancelRequest}
                 destroyOnClose
             >
-                <Form id="newKeyForm" onSubmit={this.handleSubmit} style={{ maxWidth: "100%" }}>
+                <Form
+                    ref={this.formRef}
+                    id="newKeyForm"
+                    onFinish={this.handleSubmit}
+                    style={{ maxWidth: "100%" }}
+                    initialValues={
+                        this.props.keyToEdit && {
+                            name: this.props.keyToEdit.attributes.name,
+                            description: this.props.keyToEdit.attributes.description,
+                            html_enabled: this.props.keyToEdit.attributes.html_enabled || false
+                        }
+                    }
+                >
                     <h3>Name *</h3>
-                    <Form.Item>
-                        {getFieldDecorator("name", {
-                            rules: [{ required: true, message: "Please enter the name of the key." }],
-                            initialValue: this.props.keyToEdit && this.props.keyToEdit.attributes.name
-                        })(<Input placeholder="Name" autoFocus />)}
+                    <Form.Item name="name" rules={[{ required: true, message: "Please enter the name of the key." }]}>
+                        <Input placeholder="Name" autoFocus />
                     </Form.Item>
 
                     <h3>Description</h3>
-                    <Form.Item>
-                        {getFieldDecorator("description", {
-                            rules: [{ required: false }],
-                            initialValue: this.props.keyToEdit && this.props.keyToEdit.attributes.description
-                        })(<Input placeholder="Description" />)}
+                    <Form.Item name="description" rules={[{ required: false }]}>
+                        <Input placeholder="Description" />
                     </Form.Item>
 
-                    <Form.Item>
-                        {getFieldDecorator("html_enabled", {
-                            rules: [{ required: false }],
-                            initialValue:
-                                (this.props.keyToEdit && this.props.keyToEdit.attributes.html_enabled) || false,
-                            valuePropName: "checked"
-                        })(<Checkbox>HTML</Checkbox>)}
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <Form.Item
+                            name="html_enabled"
+                            rules={[{ required: false }]}
+                            valuePropName="checked"
+                            style={{ marginBottom: 0 }}
+                        >
+                            <Checkbox>HTML</Checkbox>
+                        </Form.Item>
                         <Tooltip title="If checked a editor will de used for translation. You can still change this later.">
                             <QuestionCircleOutlined />
                         </Tooltip>
-                    </Form.Item>
+                    </div>
                 </Form>
             </Modal>
         );
     }
 }
 
-const NewKeyForm: any = Form.create()(NewKeyFormUnwrapped);
 export { NewKeyForm };

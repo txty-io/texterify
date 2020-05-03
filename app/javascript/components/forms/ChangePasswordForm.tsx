@@ -4,16 +4,13 @@ import * as React from "react";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 
-interface IProps {
-    form: any;
-}
 interface IState {
     isLoading: boolean;
     loginErrors: string[];
     success: boolean;
 }
 
-class ChangePasswordFormUnwrapped extends React.Component<IProps, IState> {
+class ChangePasswordForm extends React.Component<{}, IState> {
     state: IState = {
         isLoading: false,
         loginErrors: [],
@@ -30,8 +27,6 @@ class ChangePasswordFormUnwrapped extends React.Component<IProps, IState> {
     };
 
     render() {
-        const { getFieldDecorator } = this.props.form;
-
         return (
             <>
                 <LoadingOverlay isVisible={this.state.isLoading} loadingText="We are changing your password..." />
@@ -56,29 +51,27 @@ class ChangePasswordFormUnwrapped extends React.Component<IProps, IState> {
                     </Form.Item>
 
                     <h4>New password</h4>
-                    <Form.Item>
-                        {getFieldDecorator("new_password", {
-                            rules: [{ required: true, message: "Please enter your new password." }]
-                        })(
-                            <Input
-                                prefix={<KeyOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-                                placeholder="New password"
-                                type="password"
-                            />
-                        )}
+                    <Form.Item
+                        name="new_password"
+                        rules={[{ required: true, message: "Please enter your new password." }]}
+                    >
+                        <Input
+                            prefix={<KeyOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
+                            placeholder="New password"
+                            type="password"
+                        />
                     </Form.Item>
 
                     <h4>New password confirmation</h4>
-                    <Form.Item>
-                        {getFieldDecorator("new_password_confirmation", {
-                            rules: [{ required: true, message: "Please confirm your new password." }]
-                        })(
-                            <Input
-                                prefix={<KeyOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-                                placeholder="New password confirmation"
-                                type="password"
-                            />
-                        )}
+                    <Form.Item
+                        name="new_password_confirmation"
+                        rules={[{ required: true, message: "Please confirm your new password." }]}
+                    >
+                        <Input
+                            prefix={<KeyOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
+                            placeholder="New password confirmation"
+                            type="password"
+                        />
                     </Form.Item>
 
                     <Form.Item style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -91,56 +84,49 @@ class ChangePasswordFormUnwrapped extends React.Component<IProps, IState> {
         );
     }
 
-    handleSubmit = (e: any): void => {
-        e.preventDefault();
+    handleSubmit = async (values: any) => {
         this.setState({
             loginErrors: [],
             success: false
         });
-        this.props.form.validateFields(async (err: any, values: any) => {
-            if (!err) {
-                const start: number = new Date().getTime();
-                this.setState({ isLoading: true });
+        const start: number = new Date().getTime();
+        this.setState({ isLoading: true });
 
-                let response: any;
+        let response: any;
 
-                try {
-                    response = await AuthAPI.changePassword(
-                        values.current_password,
-                        values.new_password,
-                        values.new_password_confirmation
-                    );
-                } catch (e) {
-                    this.setState({
-                        loginErrors: ["Ein unbekannter Fehler ist aufgetreten."],
-                        isLoading: false
-                    });
+        try {
+            response = await AuthAPI.changePassword(
+                values.current_password,
+                values.new_password,
+                values.new_password_confirmation
+            );
+        } catch (e) {
+            this.setState({
+                loginErrors: ["Ein unbekannter Fehler ist aufgetreten."],
+                isLoading: false
+            });
 
-                    return;
-                }
+            return;
+        }
 
-                const elapsed: number = new Date().getTime() - start;
-                setTimeout(() => {
-                    if (!response.success) {
-                        this.setState({
-                            loginErrors:
-                                response.errors && response.errors.full_messages
-                                    ? response.errors.full_messages
-                                    : ["Ein unbekannter Fehler ist aufgetreten."],
-                            isLoading: false
-                        });
-                    } else {
-                        this.setState({
-                            isLoading: false,
-                            success: true
-                        });
-                    }
-                }, 500 - elapsed);
+        const elapsed: number = new Date().getTime() - start;
+        setTimeout(() => {
+            if (!response.success) {
+                this.setState({
+                    loginErrors:
+                        response.errors && response.errors.full_messages
+                            ? response.errors.full_messages
+                            : ["Ein unbekannter Fehler ist aufgetreten."],
+                    isLoading: false
+                });
+            } else {
+                this.setState({
+                    isLoading: false,
+                    success: true
+                });
             }
-        });
+        }, 500 - elapsed);
     };
 }
-
-const ChangePasswordForm: any = Form.create()(ChangePasswordFormUnwrapped);
 
 export { ChangePasswordForm };

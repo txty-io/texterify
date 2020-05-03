@@ -136,7 +136,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                                     }}
                                     onDelete={() => {
                                         this.setState({ exportConfigToEdit: null }, () => {
-                                            return this.onDelete(exportConfig);
+                                            this.onDelete(exportConfig);
                                         });
                                     }}
                                     languagesResponse={this.state.languagesResponse}

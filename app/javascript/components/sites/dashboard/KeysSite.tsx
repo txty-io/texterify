@@ -1,3 +1,4 @@
+import { MoreOutlined } from "@ant-design/icons";
 import { Button, Drawer, Input, Layout, message, Modal, Popover, Switch, Tag } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
@@ -20,42 +21,10 @@ import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { sortStrings } from "../../utilities/Sorter";
 import { TranslationCard } from "./editor/TranslationCard";
-import { MoreOutlined } from "@ant-design/icons";
+import { ColumnTag } from "../../ui/ColumnTag";
+import { ErrorUtils, ERRORS } from "../../ui/ErrorUtils";
 
-const { CheckableTag } = Tag;
-
-interface IColumnTagProps {
-    defaultChecked?: boolean;
-    onChange(checked: boolean): void;
-}
-interface IColumnTagState {
-    checked: boolean;
-}
-
-class ColumnTag extends React.Component<IColumnTagProps, IColumnTagState> {
-    constructor(props: IColumnTagProps) {
-        super(props);
-
-        this.state = {
-            checked: props.defaultChecked
-        };
-    }
-
-    handleChange = (checked: boolean) => {
-        this.setState({ checked: checked });
-        this.props.onChange(checked);
-    };
-
-    render() {
-        return (
-            <div style={{ margin: "2px 0" }}>
-                <CheckableTag {...this.props} checked={this.state.checked} onChange={this.handleChange} />
-            </div>
-        );
-    }
-}
-
-type IProps = RouteComponentProps<{ projectId: string }> & {};
+type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     keys: any[];
     languages: any[];
@@ -83,7 +52,8 @@ interface IState {
 class KeysSite extends React.Component<IProps, IState> {
     debouncedSearchReloader: any = _.debounce(
         (value) => {
-            this.setState({ search: value, page: 0 }, this.reloadTable);
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            this.setState({ search: value, page: 1 }, this.reloadTable);
         },
         500,
         { trailing: true }
@@ -113,7 +83,7 @@ class KeysSite extends React.Component<IProps, IState> {
         keysResponse: null,
         exportConfigsResponse: null,
         addDialogVisible: false,
-        page: 0,
+        page: 1,
         search: undefined,
         keysLoading: false,
         projectColumns: null,
@@ -172,7 +142,7 @@ class KeysSite extends React.Component<IProps, IState> {
         this.debouncedSearchReloader(event.target.value);
     };
 
-    getColumns = (): any[] => {
+    getColumns = () => {
         const columns = [];
 
         columns.push({
@@ -214,8 +184,9 @@ class KeysSite extends React.Component<IProps, IState> {
         const filteredLanguages = this.state.languages.filter((language) => {
             return _.find(this.state.projectColumns.included, (o) => {
                 return o.attributes.id === language.attributes.id;
-            });}
+            });
         });
+
         const languageColumns = filteredLanguages.map((language) => {
             const countryCode = APIUtils.getIncludedObject(
                 language.relationships.country_code.data,
@@ -363,7 +334,9 @@ class KeysSite extends React.Component<IProps, IState> {
                     : "Do you really want to delete this keys?",
             content: "This cannot be undone.",
             okText: "Yes",
-            okType: "danger",
+            okButtonProps: {
+                danger: true
+            },
             cancelText: "No",
             onOk: async () => {
                 await KeysAPI.deleteKeys(this.props.match.params.projectId, this.state.selectedRowKeys);
@@ -506,7 +479,6 @@ class KeysSite extends React.Component<IProps, IState> {
         );
     };
 
-    // tslint:disable-next-line:max-func-body-length
     render() {
         if (!this.state.projectColumns) {
             return <Loading />;
@@ -533,7 +505,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                     Create key
                                 </Button>
                                 <Button
-                                    type="danger"
+                                    danger
                                     onClick={this.onDeleteKeys}
                                     disabled={
                                         this.state.selectedRowKeys.length === 0 ||
@@ -578,10 +550,11 @@ class KeysSite extends React.Component<IProps, IState> {
                             pagination={{
                                 pageSizeOptions: PAGE_SIZE_OPTIONS,
                                 showSizeChanger: true,
-                                current: this.state.page,
+                                // current: this.state.page,
                                 pageSize: dashboardStore.keysPerPage,
-                                total: (this.state.keysResponse && this.state.keysResponse.meta.total) || 0,
+                                total: this.state.keysResponse?.meta.total || 0,
                                 onChange: async (page: number, _perPage: number) => {
+                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                     this.setState({ page: page }, this.reloadTable);
                                 },
                                 onShowSizeChange: async (_current: number, size: number) => {
@@ -596,12 +569,6 @@ class KeysSite extends React.Component<IProps, IState> {
                                 await this.reloadTable();
                             }}
                             onSave={async (oldRow, newRow) => {
-                                if (newRow.name.trim() === "") {
-                                    message.error("Name can't be empty.");
-
-                                    return;
-                                }
-
                                 if (oldRow.name !== newRow.name || oldRow.description !== newRow.description) {
                                     const response = await KeysAPI.update(
                                         this.props.match.params.projectId,
@@ -610,8 +577,12 @@ class KeysSite extends React.Component<IProps, IState> {
                                         newRow.description,
                                         newRow.html_enabled
                                     );
+
                                     await this.reloadTable();
+
                                     if (response.errors) {
+                                        ErrorUtils.showErrors(response.errors);
+
                                         return;
                                     }
                                 } else {
@@ -625,16 +596,22 @@ class KeysSite extends React.Component<IProps, IState> {
                                         if (key.startsWith("language-")) {
                                             languageKey = key.slice("language-".length);
 
-                                            const response = await TranslationsAPI.updateTranslation({
-                                                projectId: this.props.match.params.projectId,
-                                                languageId: languageKey,
-                                                keyId: newItem.key,
-                                                content: newItem[`language-${languageKey}`]
-                                            });
-                                            newItem[`translation-exists-for-${languageKey}`] = response.data.id;
+                                            const content = newItem[`language-${languageKey}`];
 
-                                            if (response.error) {
-                                                return;
+                                            if (content !== undefined) {
+                                                const response = await TranslationsAPI.createTranslation({
+                                                    projectId: this.props.match.params.projectId,
+                                                    languageId: languageKey,
+                                                    keyId: newItem.key,
+                                                    content: content
+                                                });
+                                                newItem[`translation-exists-for-${languageKey}`] = response.data.id;
+
+                                                if (response.errors) {
+                                                    ErrorUtils.showErrors(response.errors);
+
+                                                    return;
+                                                }
                                             }
                                         }
                                     }
@@ -686,8 +663,6 @@ class KeysSite extends React.Component<IProps, IState> {
                                               });
                                           });
 
-                                          console.log(data);
-
                                           return (
                                               <EditableTable
                                                   columns={[
@@ -737,20 +712,29 @@ class KeysSite extends React.Component<IProps, IState> {
                                                       };
                                                       const keys = Object.keys(newItem);
                                                       let languageKey;
+
                                                       for (const key of keys) {
                                                           if (key.startsWith("language-")) {
                                                               languageKey = key.slice("language-".length);
 
-                                                              const response = await TranslationsAPI.updateTranslation({
-                                                                  projectId: this.props.match.params.projectId,
-                                                                  languageId: languageKey,
-                                                                  keyId: newItem.keyId,
-                                                                  content: newItem[`language-${languageKey}`],
-                                                                  exportConfigId: oldRow.exportConfigId
-                                                              });
+                                                              const content = newItem[`language-${languageKey}`];
 
-                                                              if (response.error) {
-                                                                  return;
+                                                              if (content !== undefined) {
+                                                                  const response = await TranslationsAPI.createTranslation(
+                                                                      {
+                                                                          projectId: this.props.match.params.projectId,
+                                                                          languageId: languageKey,
+                                                                          keyId: newItem.keyId,
+                                                                          content: content,
+                                                                          exportConfigId: oldRow.exportConfigId
+                                                                      }
+                                                                  );
+
+                                                                  if (response.errors) {
+                                                                      ErrorUtils.showErrors(response.errors);
+
+                                                                      return;
+                                                                  }
                                                               }
                                                           }
                                                       }

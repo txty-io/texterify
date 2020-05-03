@@ -1,23 +1,21 @@
-import { Form } from "@ant-design/compatible";
-import "@ant-design/compatible/assets/index.css";
-import { Button, Input, Layout, Modal, Table } from "antd";
+import { Button, Input, Layout, Modal, Table, Form } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as moment from "moment";
 import * as React from "react";
 import { AccessTokensAPI, AccessTokensAPIErrors } from "../../api/v1/AccessTokensAPI";
+import { FormInstance } from "antd/lib/form";
 const { Content } = Layout;
 
-interface IProps {
-    form: any;
-}
 interface IState {
     getTokensResponse: any;
     deleteDialogVisible: boolean;
 }
 
 @observer
-class UserAccessTokensSettingsSiteUnwrapped extends React.Component<IProps, IState> {
+class UserAccessTokensSettingsSite extends React.Component<{}, IState> {
+    formRef = React.createRef<FormInstance>();
+
     state: IState = {
         getTokensResponse: null,
         deleteDialogVisible: false
@@ -59,7 +57,9 @@ class UserAccessTokensSettingsSiteUnwrapped extends React.Component<IProps, ISta
                                     title: "Do you really want to remove this access token?",
                                     content: "This cannot be undone.",
                                     okText: "Yes",
-                                    okType: "danger",
+                                    okButtonProps: {
+                                        danger: true
+                                    },
                                     cancelText: "No",
                                     visible: this.state.deleteDialogVisible,
                                     onOk: async () => {
@@ -77,7 +77,7 @@ class UserAccessTokensSettingsSiteUnwrapped extends React.Component<IProps, ISta
                                     }
                                 });
                             }}
-                            type="danger"
+                            danger
                         >
                             Revoke
                         </Button>
@@ -101,52 +101,47 @@ class UserAccessTokensSettingsSiteUnwrapped extends React.Component<IProps, ISta
         }, []);
     };
 
-    handleSubmit = async (e: any) => {
-        e.preventDefault();
-        this.props.form.validateFields(async (err: any, values: { name: string }) => {
-            if (!err) {
-                const response = await AccessTokensAPI.createToken({
-                    name: values.name
-                });
+    handleSubmit = async (values: { name: string }) => {
+        const response = await AccessTokensAPI.createToken({
+            name: values.name
+        });
 
-                if (response.errors) {
-                    response.errors.map((error) => {
-                        if (error.details === AccessTokensAPIErrors.NAME_ALREADY_TAKEN) {
-                            this.props.form.setFields({
-                                name: {
-                                    value: values.name,
-                                    errors: [new Error(error.details)]
-                                }
-                            });
+        if (response.errors) {
+            response.errors.map((error) => {
+                if (error.details === AccessTokensAPIErrors.NAME_ALREADY_TAKEN) {
+                    this.formRef.current.setFieldsValue({
+                        name: {
+                            value: values.name,
+                            errors: [new Error(error.details)]
                         }
                     });
-
-                    return;
                 }
+            });
 
-                Modal.success({
-                    title: "Success",
-                    content: (
-                        <>
-                            Your new access token is:
-                            <Paragraph code copyable>
-                                {response.data.secret}
-                            </Paragraph>
-                            Store your token somewhere safe because you won't be able to access it again.
-                        </>
-                    )
-                });
+            return;
+        }
 
-                const getTokensResponse = await AccessTokensAPI.getTokens();
-                this.setState({
-                    getTokensResponse: getTokensResponse
-                });
+        Modal.success({
+            title: "Success",
+            content: (
+                <>
+                    Your new access token is:
+                    <Paragraph code copyable>
+                        {response.data.secret}
+                    </Paragraph>
+                    Store your token somewhere safe because you won't be able to access it again.
+                </>
+            )
+        });
 
-                this.props.form.setFields({
-                    name: {
-                        value: undefined
-                    }
-                });
+        const getTokensResponse = await AccessTokensAPI.getTokens();
+        this.setState({
+            getTokensResponse: getTokensResponse
+        });
+
+        this.formRef.current.setFieldsValue({
+            name: {
+                value: undefined
             }
         });
     };
@@ -160,15 +155,19 @@ class UserAccessTokensSettingsSiteUnwrapped extends React.Component<IProps, ISta
                     <div style={{ display: "flex" }}>
                         <div style={{ display: "flex", flexDirection: "column", width: "40%", marginRight: 16 }}>
                             <h3>Create access token</h3>
-                            <Form id="newProjectForm" onSubmit={this.handleSubmit} style={{ maxWidth: "100%" }}>
+                            <Form
+                                ref={this.formRef}
+                                id="newProjectForm"
+                                onFinish={this.handleSubmit}
+                                style={{ maxWidth: "100%" }}
+                            >
                                 <h3>Name</h3>
                                 <p>The name of the access token for later identification.</p>
-                                <Form.Item>
-                                    {this.props.form.getFieldDecorator("name", {
-                                        rules: [
-                                            { required: true, message: "Please enter a name for the access token." }
-                                        ]
-                                    })(<Input placeholder="Name" />)}
+                                <Form.Item
+                                    name="name"
+                                    rules={[{ required: true, message: "Please enter a name for the access token." }]}
+                                >
+                                    <Input placeholder="Name" />
                                 </Form.Item>
                                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                                     <Button type="primary" htmlType="submit">
@@ -194,5 +193,4 @@ class UserAccessTokensSettingsSiteUnwrapped extends React.Component<IProps, ISta
     }
 }
 
-const UserAccessTokensSettingsSite = Form.create()(UserAccessTokensSettingsSiteUnwrapped);
 export { UserAccessTokensSettingsSite };

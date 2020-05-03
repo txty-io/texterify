@@ -28,40 +28,21 @@ const APIUtils = {
     /**
      * Handles errors like an invalid access token.
      */
-    handleErrors: (response: any): any => {
-        // Check if the used access token is still valid.
-        if (response.errors && Array.isArray(response.errors)) {
-            response.errors.forEach((error) => {
-                if (error.code === APIErrors.INVALID_ACCESS_TOKEN) {
-                    authStore.resetAuth();
-                    history.push(Routes.AUTH.LOGIN);
+    handleErrors: (response: any) => {
+        if (response.errors) {
+            console.error("API Errors:", response.errors);
 
-                    return;
-                }
-            });
-        }
+            // Check if the used access token is still valid.
+            if (Array.isArray(response.errors)) {
+                response.errors.forEach((error) => {
+                    if (error.code === APIErrors.INVALID_ACCESS_TOKEN) {
+                        authStore.resetAuth();
+                        history.push(Routes.AUTH.LOGIN);
 
-        // Display the error messages.
-        if (response.errors && Array.isArray(response.errors)) {
-            response.errors.map((error) => {
-                // TODO: Remove if when possible.
-                if (error.message) {
-                    message.error(error.message);
-                } else if (error.details) {
-                    message.error(error.details);
-                } else {
-                    message.error(error);
-                }
-            });
-        } else if (response.errors) {
-            const keys = Object.keys(response.errors);
-            let errorMessage = "";
-            keys.forEach((key) => {
-                response.errors[key].forEach((keyError) => {
-                    errorMessage += `${key.charAt(0).toUpperCase() + key.slice(1)} ${keyError}. `;
+                        return;
+                    }
                 });
-            });
-            message.error(errorMessage.trim());
+            }
         }
 
         return response;

@@ -12,7 +12,7 @@ import { SettingsSectionWrapper } from "../../ui/SettingsSectionWrapper";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 const { Content } = Layout;
 
-type IProps = RouteComponentProps<{ projectId: string }> & {};
+type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     isDeletingProject: boolean;
 }
@@ -28,7 +28,9 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
             title: "Do you really want to delete this project?",
             content: "This cannot be undone.",
             okText: "Yes",
-            okType: "danger",
+            okButtonProps: {
+                danger: true
+            },
             cancelText: "No",
             onOk: async () => {
                 this.setState({ isDeletingProject: true });
@@ -93,7 +95,7 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                                     showIcon
                                 />
                                 <Button
-                                    type="danger"
+                                    danger
                                     onClick={this.onDeleteProjectClick}
                                     style={{ alignSelf: "flex-end", marginTop: 16 }}
                                     disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}

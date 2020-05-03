@@ -10,7 +10,7 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { SettingsSectionWrapper } from "../../ui/SettingsSectionWrapper";
 const { Content } = Layout;
 
-type IProps = RouteComponentProps<{ organizationId: string }> & {};
+type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {
     isDeletingOrganization: boolean;
 }
@@ -26,7 +26,9 @@ class OrganizationSettingsSite extends React.Component<IProps, IState> {
             title: "Do you really want to delete this organization?",
             content: "This cannot be undone.",
             okText: "Yes",
-            okType: "danger",
+            okButtonProps: {
+                danger: true
+            },
             cancelText: "No",
             onOk: async () => {
                 this.setState({ isDeletingOrganization: true });
@@ -87,7 +89,7 @@ class OrganizationSettingsSite extends React.Component<IProps, IState> {
                                     showIcon
                                 />
                                 <Button
-                                    type="danger"
+                                    danger
                                     onClick={this.onDeleteOrganizationClick}
                                     style={{ alignSelf: "flex-end", marginTop: 16 }}
                                 >

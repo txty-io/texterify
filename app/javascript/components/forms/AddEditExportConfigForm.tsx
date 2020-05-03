@@ -3,6 +3,8 @@ import Paragraph from "antd/lib/typography/Paragraph";
 import * as React from "react";
 import { ExportConfigsAPI } from "../api/v1/ExportConfigsAPI";
 import { FileFormatOptions } from "../configs/FileFormatOptions";
+import { ErrorUtils, ERRORS } from "../ui/ErrorUtils";
+import { FormInstance } from "antd/lib/form";
 
 interface IFormValues {
     name: string;
@@ -13,7 +15,6 @@ interface IFormValues {
 
 interface IProps {
     exportConfigToEdit?: any;
-    form: any;
     projectId: string;
     visible: boolean;
     onCreated?(): void;
@@ -23,6 +24,8 @@ interface IState {
 }
 
 class AddEditExportConfigForm extends React.Component<IProps, IState> {
+    formRef = React.createRef<FormInstance>();
+
     async componentDidMount() {
         try {
             const exportConfigsResponse = await ExportConfigsAPI.getExportConfigs({ projectId: this.props.projectId });
@@ -57,6 +60,17 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
         }
 
         if (response.errors) {
+            if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
+                this.formRef.current.setFields([
+                    {
+                        name: "name",
+                        errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
+                    }
+                ]);
+            } else {
+                ErrorUtils.showErrors(response.errors);
+            }
+
             return;
         }
 
@@ -65,10 +79,10 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
         }
     };
 
-    // tslint:disable-next-line:max-func-body-length
     render() {
         return (
             <Form
+                ref={this.formRef}
                 onFinish={this.handleSubmit}
                 style={{ maxWidth: "100%" }}
                 id="addEditExportConfigForm"
