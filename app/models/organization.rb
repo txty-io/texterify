@@ -8,6 +8,10 @@ class Organization < ApplicationRecord
 
   has_one_attached :image
 
+  def name=(name)
+    self[:name] = name.strip
+  end
+
   def role_of(user)
     organization_user = organization_users.find_by(user_id: user.id)
     organization_user ? organization_user.role : nil

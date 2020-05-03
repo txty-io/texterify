@@ -14,6 +14,10 @@ class Project < ApplicationRecord
 
   has_one_attached :image
 
+  def name=(name)
+    self[:name] = name.strip
+  end
+
   def users
     if organization
       User.where(id: users_project.pluck(:id) + organization.users.pluck(:id))
