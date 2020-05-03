@@ -10,5 +10,6 @@
 // console.log('Hello World from Webpacker')
 // Support component names relative to this directory:
 const componentRequireContext = require.context("components", true);
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const ReactRailsUJS = require("react_ujs");
 ReactRailsUJS.useContext(componentRequireContext);
