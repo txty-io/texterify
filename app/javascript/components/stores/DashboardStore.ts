@@ -41,19 +41,14 @@ class DashboardStore {
         if (this.getProjectOrganization()) {
             return this.getProjectOrganization().attributes.name;
         } else {
-            return dashboardStore.currentOrganization
-                ? dashboardStore.currentOrganization.attributes.name
-                : "Organization";
+            return this.currentOrganization ? this.currentOrganization.attributes.name : "Organization";
         }
     };
 
     getProjectOrganization = () => {
         return (
-            dashboardStore.currentProject &&
-            APIUtils.getIncludedObject(
-                dashboardStore.currentProject.relationships.organization.data,
-                dashboardStore.currentProjectIncluded
-            )
+            this.currentProject &&
+            APIUtils.getIncludedObject(this.currentProject.relationships.organization.data, this.currentProjectIncluded)
         );
     };
 
