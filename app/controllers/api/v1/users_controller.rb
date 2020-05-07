@@ -1,18 +1,11 @@
 class Api::V1::UsersController < Api::V1::ApiController
   def image
     skip_authorization
-    user = User.find(params[:userId])
+    user = User.find!(params[:userId])
 
-    if user
-      render json: {
-        image: user.image.attached? ? url_for(user.image) : nil
-      }
-    else
-      render json: {
-        error: true,
-        message: 'User could not be found.'
-      }, status: :bad_request
-    end
+    render json: {
+      image: user.image.attached? ? url_for(user.image) : nil
+    }
   end
 
   def image_create
