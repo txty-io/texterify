@@ -9,21 +9,20 @@ class Language < ApplicationRecord
   has_many :language_project_columns, dependent: :delete_all
   has_many :project_columns, through: :language_project_columns
 
-  validate :no_duplicate_language_name_for_project
+  validate :no_duplicate_languages_for_project
   validates :name, format: { with: /\A[A-Za-z_][A-Za-z0-9_]*\z/ }
 
   before_validation :strip_leading_and_trailing_whitespace
 
-  # Validates that there no languages with the same name
-  # for a project.
-  def no_duplicate_language_name_for_project
+  # Validates that there are no languages with the same name for a project.
+  def no_duplicate_languages_for_project
     project = Project.find(project_id)
     language = project.languages.find_by(name: name)
 
     if language.present?
       updating_language = language.id == id
 
-      errors.add(:name, 'Name is already in use.') if !updating_language
+      errors.add(:name, :taken) if !updating_language
     end
   end
 
