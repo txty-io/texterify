@@ -80,7 +80,10 @@ class NewKeyForm extends React.Component<IProps> {
                     }
                 >
                     <h3>Name *</h3>
-                    <Form.Item name="name" rules={[{ required: true, message: "Please enter the name of the key." }]}>
+                    <Form.Item
+                        name="name"
+                        rules={[{ required: true, whitespace: true, message: "Please enter the name of the key." }]}
+                    >
                         <Input placeholder="Name" autoFocus />
                     </Form.Item>
 

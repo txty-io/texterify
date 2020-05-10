@@ -37,7 +37,10 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
                         />
                     )}
                     <p>Enter your email address and we will send you the instructions to reset your password.</p>
-                    <Form.Item name="email" rules={[{ required: true, message: "Please enter your email address." }]}>
+                    <Form.Item
+                        name="email"
+                        rules={[{ required: true, whitespace: true, message: "Please enter your email address." }]}
+                    >
                         <Input
                             prefix={<MailOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
                             placeholder="Email address"

@@ -42,7 +42,7 @@ class NewPasswordForm extends React.Component<{}, IState> {
                     <h4>New password</h4>
                     <Form.Item
                         name="new_password"
-                        rules={[{ required: true, message: "Please enter your new password." }]}
+                        rules={[{ required: true, whitespace: true, message: "Please enter your new password." }]}
                     >
                         <Input
                             prefix={<KeyOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
@@ -54,7 +54,7 @@ class NewPasswordForm extends React.Component<{}, IState> {
                     <h4>New password confirmation</h4>
                     <Form.Item
                         name="new_password_confirmation"
-                        rules={[{ required: true, message: "Please confirm your new password." }]}
+                        rules={[{ required: true, whitespace: true, message: "Please confirm your new password." }]}
                     >
                         <Input
                             prefix={<KeyOutlined style={{ color: "rgba(0,0,0,.25)" }} />}

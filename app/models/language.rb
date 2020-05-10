@@ -10,7 +10,7 @@ class Language < ApplicationRecord
   has_many :project_columns, through: :language_project_columns
 
   validate :no_duplicate_languages_for_project
-  validates :name, format: { with: /\A[A-Za-z_][A-Za-z0-9_]*\z/ }
+  validates :name, presence: true, format: { with: /\A[A-Za-z_][A-Za-z0-9_]*\z/ }
 
   before_validation :strip_leading_and_trailing_whitespace
 

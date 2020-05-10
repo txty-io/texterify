@@ -26,7 +26,10 @@ class LoginForm extends React.Component<{}, IState> {
                     {this.state.loginErrors.length > 0 && (
                         <Alert showIcon message={this.state.loginErrors.join()} type="error" />
                     )}
-                    <Form.Item name="email" rules={[{ required: true, message: "Please enter your email address." }]}>
+                    <Form.Item
+                        name="email"
+                        rules={[{ required: true, whitespace: true, message: "Please enter your email address." }]}
+                    >
                         <Input
                             prefix={<MailOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
                             placeholder="Email address"
@@ -34,7 +37,10 @@ class LoginForm extends React.Component<{}, IState> {
                         />
                     </Form.Item>
 
-                    <Form.Item name="password" rules={[{ required: true, message: "Please enter your password." }]}>
+                    <Form.Item
+                        name="password"
+                        rules={[{ required: true, whitespace: true, message: "Please enter your password." }]}
+                    >
                         <Input
                             prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
                             type="password"

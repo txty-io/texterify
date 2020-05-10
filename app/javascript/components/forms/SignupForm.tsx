@@ -68,12 +68,18 @@ class SignupForm extends React.Component<IProps, IState> {
                     )}
 
                     <h3>Username *</h3>
-                    <Form.Item name="username" rules={[{ required: true, message: "Please enter your username." }]}>
+                    <Form.Item
+                        name="username"
+                        rules={[{ required: true, whitespace: true, message: "Please enter your username." }]}
+                    >
                         <Input prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="Username" />
                     </Form.Item>
 
                     <h3>Email address *</h3>
-                    <Form.Item name="email" rules={[{ required: true, message: "Please enter your email address." }]}>
+                    <Form.Item
+                        name="email"
+                        rules={[{ required: true, whitespace: true, message: "Please enter your email address." }]}
+                    >
                         <Input
                             prefix={<MailOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
                             placeholder="Email address"
@@ -82,7 +88,10 @@ class SignupForm extends React.Component<IProps, IState> {
                     </Form.Item>
 
                     <h3>Password *</h3>
-                    <Form.Item name="password" rules={[{ required: true, message: "Please enter your password." }]}>
+                    <Form.Item
+                        name="password"
+                        rules={[{ required: true, whitespace: true, message: "Please enter your password." }]}
+                    >
                         <Input
                             prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
                             type="password"
@@ -93,7 +102,7 @@ class SignupForm extends React.Component<IProps, IState> {
 
                     <Form.Item
                         name="passwordConfirmation"
-                        rules={[{ required: true, message: "Please confirm your password." }]}
+                        rules={[{ required: true, whitespace: true, message: "Please confirm your password." }]}
                     >
                         <Input
                             prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}

@@ -215,13 +215,19 @@ class EditUserForm extends React.Component<IProps, IState> {
 
                 <h3 style={{ marginTop: 24 }}>Username *</h3>
                 <p>This name will be visible to others.</p>
-                <Form.Item name="username" rules={[{ required: true, message: "Please enter your username." }]}>
+                <Form.Item
+                    name="username"
+                    rules={[{ required: true, whitespace: true, message: "Please enter your username." }]}
+                >
                     <Input placeholder="Username" />
                 </Form.Item>
 
                 <h3>Email address *</h3>
                 <p>Your email address that you also use to log in.</p>
-                <Form.Item name="email" rules={[{ required: true, message: "Please enter your email address." }]}>
+                <Form.Item
+                    name="email"
+                    rules={[{ required: true, whitespace: true, message: "Please enter your email address." }]}
+                >
                     <Input placeholder="E-Mail" />
                 </Form.Item>
             </Form>

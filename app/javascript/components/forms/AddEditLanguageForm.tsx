@@ -151,7 +151,9 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
                     <h3>Name *</h3>
                     <Form.Item
                         name="name"
-                        rules={[{ required: true, message: "Please enter the name of the language." }]}
+                        rules={[
+                            { required: true, whitespace: true, message: "Please enter the name of the language." }
+                        ]}
                     >
                         <Input placeholder="Name" autoFocus />
                     </Form.Item>

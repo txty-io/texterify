@@ -98,7 +98,9 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                 <h3>Name *</h3>
                 <Form.Item
                     name="name"
-                    rules={[{ required: true, message: "Please enter the name of the export config." }]}
+                    rules={[
+                        { required: true, whitespace: true, message: "Please enter the name of the export config." }
+                    ]}
                 >
                     <Input placeholder="Name" autoFocus />
                 </Form.Item>
@@ -106,7 +108,9 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                 <h3>File format *</h3>
                 <Form.Item
                     name="fileFormat"
-                    rules={[{ required: true, message: "Please enter the file format of the files." }]}
+                    rules={[
+                        { required: true, whitespace: true, message: "Please enter the file format of the files." }
+                    ]}
                 >
                     <Select
                         showSearch
@@ -139,7 +143,7 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                 </div>
                 <Form.Item
                     name="filePath"
-                    rules={[{ required: true, message: "Please enter the file path of the files." }]}
+                    rules={[{ required: true, whitespace: true, message: "Please enter the file path of the files." }]}
                 >
                     <Input placeholder="File path" />
                 </Form.Item>

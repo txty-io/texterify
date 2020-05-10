@@ -245,7 +245,9 @@ class NewOrganizationForm extends React.Component<IProps, IState> {
                 <h3>Name *</h3>
                 <Form.Item
                     name="name"
-                    rules={[{ required: true, message: "Please enter the name of the organization." }]}
+                    rules={[
+                        { required: true, whitespace: true, message: "Please enter the name of the organization." }
+                    ]}
                 >
                     <Input placeholder="Name" autoFocus={!this.props.isEdit} />
                 </Form.Item>

@@ -165,7 +165,13 @@ class UserAccessTokensSettingsSite extends React.Component<{}, IState> {
                                 <p>The name of the access token for later identification.</p>
                                 <Form.Item
                                     name="name"
-                                    rules={[{ required: true, message: "Please enter a name for the access token." }]}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            whitespace: true,
+                                            message: "Please enter a name for the access token."
+                                        }
+                                    ]}
                                 >
                                     <Input placeholder="Name" />
                                 </Form.Item>

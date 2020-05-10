@@ -242,7 +242,10 @@ class NewProjectForm extends React.Component<IProps, IState> {
                 </Form.Item>
 
                 <h3>Name *</h3>
-                <Form.Item name="name" rules={[{ required: true, message: "Please enter the name of the project." }]}>
+                <Form.Item
+                    name="name"
+                    rules={[{ required: true, whitespace: true, message: "Please enter the name of the project." }]}
+                >
                     <Input placeholder="Name" autoFocus={!this.props.isEdit} />
                 </Form.Item>
 

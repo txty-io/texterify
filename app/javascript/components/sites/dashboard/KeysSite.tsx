@@ -1,5 +1,5 @@
 import { MoreOutlined } from "@ant-design/icons";
-import { Button, Drawer, Input, Layout, message, Modal, Popover, Switch, Tag } from "antd";
+import { Button, Drawer, Input, Layout, Modal, Popover, Switch, Tag } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
@@ -12,8 +12,10 @@ import { TranslationsAPI } from "../../api/v1/TranslationsAPI";
 import { NewKeyForm } from "../../forms/NewKeyForm";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { ColumnTag } from "../../ui/ColumnTag";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { EditableTable } from "../../ui/EditableTable";
+import { ErrorUtils } from "../../ui/ErrorUtils";
 import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { Loading } from "../../ui/Loading";
@@ -21,8 +23,6 @@ import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { sortStrings } from "../../utilities/Sorter";
 import { TranslationCard } from "./editor/TranslationCard";
-import { ColumnTag } from "../../ui/ColumnTag";
-import { ErrorUtils, ERRORS } from "../../ui/ErrorUtils";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
