@@ -20,8 +20,7 @@ class Api::V1::TranslationsController < Api::V1::ApiController
         render json: TranslationSerializer.new(translation).serialized_json
       else
         render json: {
-          error: true,
-          errors: translation.errors.as_json
+          errors: translation.errors.details
         }, status: :bad_request
       end
     else
@@ -41,8 +40,7 @@ class Api::V1::TranslationsController < Api::V1::ApiController
         render json: TranslationSerializer.new(translation).serialized_json
       else
         render json: {
-          error: true,
-          message: 'Error while creating translation'
+          errors: translation.errors.details
         }, status: :bad_request
       end
     end

@@ -80,7 +80,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
       }, status: :ok
     else
       render json: {
-        errors: language.errors.full_messages.map { |error| "#{error}." }
+        errors: language.errors.details
       }, status: :bad_request
     end
   end
@@ -123,8 +123,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
       }
     else
       render json: {
-        error: true,
-        errors: language.errors.full_messages
+        errors: language.errors.details
       }, status: :bad_request
     end
   end

@@ -64,7 +64,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
     ActiveRecord::Base.transaction do
       unless organization.save
         render json: {
-          errors: organization.errors.full_messages.map { |error| "#{error}." }
+          errors: organization.errors.details
         }, status: :bad_request
         raise ActiveRecord::Rollback
       end
@@ -75,7 +75,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
       organization_user.role = 'owner'
       unless organization_user.save
         render json: {
-          errors: organization_user.errors.full_messages.map { |error| "#{error}." }
+          errors: organization_user.errors.details
         }, status: :bad_request
         raise ActiveRecord::Rollback
       end
@@ -96,8 +96,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
       render json: OrganizationSerializer.new(organization, options).serialized_json
     else
       render json: {
-        error: true,
-        errors: organization.errors.as_json
+        errors: organization.errors.details
       }, status: :bad_request
     end
   end

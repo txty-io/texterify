@@ -12,8 +12,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       }
     else
       render json: {
-        error: true,
-        message: 'Project could not be found.'
+        errors: project.errors.details
       }, status: :bad_request
     end
   end
@@ -75,7 +74,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     ActiveRecord::Base.transaction do
       unless project.save
         render json: {
-          errors: project.errors.full_messages.map { |error| "#{error}." }
+          errors: project.errors.details
         }, status: :bad_request
         raise ActiveRecord::Rollback
       end
@@ -83,7 +82,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       unless params[:organization_id]
         unless project_column.save
           render json: {
-            errors: project_column.errors.full_messages.map { |error| "#{error}." }
+            errors: project_column.errors.details
           }, status: :bad_request
           raise ActiveRecord::Rollback
         end
@@ -94,7 +93,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
         project_user.role = 'owner'
         unless project_user.save
           render json: {
-            errors: project_user.errors.full_messages.map { |error| "#{error}." }
+            errors: project_user.errors.details
           }, status: :bad_request
           raise ActiveRecord::Rollback
         end
@@ -117,8 +116,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       render json: ProjectSerializer.new(project, options).serialized_json
     else
       render json: {
-        error: true,
-        errors: project.errors.as_json
+        errors: project.errors.details
       }, status: :bad_request
     end
   end

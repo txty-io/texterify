@@ -62,15 +62,8 @@ class Api::V1::KeysController < Api::V1::ApiController
   end
 
   def create
-    if params[:name].blank?
-      render json: {
-        error: true,
-        message: 'Missing required parameters'
-      }, status: :bad_request
-      return
-    end
-
     project = current_user.projects.find(params[:project_id])
+
     key = Key.new(key_params)
     key.project = project
     authorize key
@@ -78,14 +71,8 @@ class Api::V1::KeysController < Api::V1::ApiController
     if key.save
       render json: key
     else
-      errors = []
-      key.errors.each do |error|
-        errors.push(
-          details: key.errors[error][0]
-        )
-      end
       render json: {
-        errors: errors
+        errors: key.errors.details
       }, status: :bad_request
     end
   end
@@ -101,8 +88,7 @@ class Api::V1::KeysController < Api::V1::ApiController
       }
     else
       render json: {
-        error: true,
-        errors: key.errors.as_json
+        errors: key.errors.details
       }, status: :bad_request
     end
   end

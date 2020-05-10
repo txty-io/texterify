@@ -18,8 +18,7 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
       render json: ExportConfigSerializer.new(export_config).serialized_json
     else
       render json: {
-        error: true,
-        message: 'Error while creating export config'
+        errors: export_config.errors.details
       }, status: :bad_request
     end
   end
@@ -35,8 +34,7 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
       }
     else
       render json: {
-        error: true,
-        errors: export_config.errors.as_json
+        errors: export_config.errors.details
       }, status: :bad_request
     end
   end
@@ -52,8 +50,7 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
       }
     else
       render json: {
-        error: true,
-        errors: export_config.errors.as_json
+        errors: export_config.errors.details
       }, status: :bad_request
     end
   end
