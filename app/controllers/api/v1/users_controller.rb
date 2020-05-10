@@ -1,7 +1,7 @@
 class Api::V1::UsersController < Api::V1::ApiController
   def image
     skip_authorization
-    user = User.find!(params[:userId])
+    user = User.find(params[:userId])
 
     render json: {
       image: user.image.attached? ? url_for(user.image) : nil
