@@ -1,14 +1,10 @@
-$color: #7977f3;
+$color: #4170ff;
 
 #app-root {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   min-height: 100%;
-
-  a:hover {
-    text-decoration: underline;
-  }
 
   .popover-no-padding {
     .ant-popover-inner-content {
@@ -110,6 +106,7 @@ $color: #7977f3;
   }
 
   .ant-layout-header {
+    height: 58px;
     line-height: 0;
   }
 
@@ -137,8 +134,12 @@ $color: #7977f3;
   }
 
   .ant-btn {
-    padding: 6px 21px 8px;
-    line-height: initial;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .ant-layout-sider-trigger {
+    background: #fff;
   }
 
   .ce-block__content {

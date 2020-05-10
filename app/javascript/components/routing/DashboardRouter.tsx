@@ -1,5 +1,5 @@
-import { ProjectOutlined, DeploymentUnitOutlined, LineChartOutlined } from "@ant-design/icons";
-import { Button, Layout } from "antd";
+import { DeploymentUnitOutlined, LineChartOutlined, ProjectOutlined } from "@ant-design/icons";
+import { Layout } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
@@ -14,24 +14,15 @@ import { UserAccessTokensSettingsSite } from "../sites/dashboard/UserAccessToken
 import { UserAccountSettingsSite } from "../sites/dashboard/UserAccountSettingsSite";
 import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
+import { WhiteButton } from "../ui/WhiteButton";
 import { history } from "./history";
 import { OrganizationRouter } from "./OrganizationRouter";
 import { PrivateRoute } from "./PrivateRoute";
 import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
 
-const TranslateButton = styled(Button)`
+const TranslateButton = styled(WhiteButton)`
     margin-right: 40px;
-    border: 0;
-    background: rgb(66, 75, 109);
-    color: rgba(255, 255, 255, 0.95);
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    &:hover {
-        background: rgba(82, 93, 134);
-        color: #fff;
-    }
 `;
 
 const MenuList = styled.li`
@@ -39,6 +30,20 @@ const MenuList = styled.li`
     white-space: nowrap;
     text-overflow: ellipsis;
     display: flex;
+`;
+
+const MenuLink = styled<{ active: boolean }>(Link)`
+    transition: none;
+    margin-right: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: ${(props) => {
+        return props.active ? "rgba(255, 255, 255, 0.25" : undefined;
+    }};
+
+    &:hover {
+        text-decoration: none;
+    }
 `;
 
 type IProps = RouteComponentProps<{ projectId?: string }> & {};
@@ -93,7 +98,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             alignItems: "center",
                             color: "#fff",
                             zIndex: 10,
-                            background: "linear-gradient(90deg, #2b3556 0%, #383c54 100%)",
+                            background: "#000",
                             overflow: "hidden"
                         }}
                     >
@@ -104,11 +109,11 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     marginBottom: 0,
                                     marginRight: 24,
                                     textDecoration: "none",
-                                    fontFamily: "Pacifico",
+                                    fontFamily: "Ubuntu",
                                     color: "#fff"
                                 }}
                             >
-                                Texterify
+                                texterify
                             </h1>
                         </Link>
                         <ul
@@ -123,69 +128,28 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             }}
                         >
                             <MenuList>
-                                <Link
+                                <MenuLink
                                     to={Routes.DASHBOARD.PROJECTS}
-                                    style={{
-                                        background:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS
-                                                ? "rgba(255, 255, 255, 0.15"
-                                                : undefined,
-                                        color:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS
-                                                ? "#fff"
-                                                : "#fff",
-                                        transition: "none",
-                                        marginRight: 8,
-                                        textDecoration: "none",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis"
-                                    }}
+                                    active={this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS}
                                 >
                                     <ProjectOutlined style={{ marginRight: 8 }} /> Projects
-                                </Link>
+                                </MenuLink>
                             </MenuList>
                             <MenuList>
-                                <Link
+                                <MenuLink
                                     to={Routes.DASHBOARD.ORGANIZATIONS}
-                                    style={{
-                                        background:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS
-                                                ? "rgba(255, 255, 255, 0.15"
-                                                : undefined,
-                                        color:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS
-                                                ? "#fff"
-                                                : "#fff",
-                                        transition: "none",
-                                        marginRight: 8,
-                                        textDecoration: "none",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis"
-                                    }}
+                                    active={this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS}
                                 >
                                     <DeploymentUnitOutlined style={{ marginRight: 8 }} /> Organizations
-                                </Link>
+                                </MenuLink>
                             </MenuList>
                             <MenuList>
-                                <Link
+                                <MenuLink
                                     to={Routes.DASHBOARD.ACTIVITY}
-                                    style={{
-                                        background:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY
-                                                ? "rgba(255, 255, 255, 0.15"
-                                                : undefined,
-                                        color:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY
-                                                ? "#fff"
-                                                : "#fff",
-                                        transition: "none",
-                                        textDecoration: "none",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis"
-                                    }}
+                                    active={this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY}
                                 >
                                     <LineChartOutlined style={{ marginRight: 8 }} /> Activity
-                                </Link>
+                                </MenuLink>
                             </MenuList>
                         </ul>
                         {this.props.match.params.projectId && (

@@ -284,7 +284,7 @@ class Activity extends React.Component<IProps> {
         } else if (event === "update" || itemType === "Translation") {
             return {
                 iconColor: "#333",
-                color: Styles.COLOR_SECONDARY_GREY,
+                color: Styles.COLOR_SECONDARY,
                 background: Styles.COLOR_SECONDARY_LIGHT
             };
         } else if (event === "destroy") {

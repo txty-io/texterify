@@ -185,12 +185,13 @@ class LanguagesSite extends React.Component<IProps, IState> {
                 languageCode: languageCode ? languageCode.attributes.code : "",
                 controls: (
                     <div style={{ display: "flex", justifyContent: "center" }}>
-                        <EditOutlined
-                            style={{ cursor: "pointer" }}
+                        <Button
                             onClick={() => {
                                 this.onEditLanguageClick(language);
                             }}
-                        />
+                        >
+                            Edit
+                        </Button>
                     </div>
                 )
             };

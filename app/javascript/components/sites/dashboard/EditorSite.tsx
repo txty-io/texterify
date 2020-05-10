@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined, LoadingOutlined } from "@ant-design/icons";
-import { Pagination, Tabs } from "antd";
+import { Pagination, Tabs, Button } from "antd";
 import Search from "antd/lib/input/Search";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
@@ -17,6 +17,7 @@ import { KeyHistory } from "../../ui/KeyHistory";
 import { Styles } from "../../ui/Styles";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
 import { TranslationCard } from "./editor/TranslationCard";
+import { WhiteButton } from "../../ui/WhiteButton";
 
 const Key = styled.div`
     cursor: pointer;
@@ -155,21 +156,25 @@ class EditorSite extends React.Component<IProps, IState> {
                     style={{
                         display: "flex",
                         alignItems: "center",
-                        padding: "12px 24px",
-                        background: "linear-gradient(90deg, #2b3556 0%, #383c54 100%)",
+                        padding: "9px 24px",
+                        background: "#000",
                         color: "#fff"
                     }}
                 >
                     <div style={{ flexGrow: 1 }}>
-                        <Link
-                            to={Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId)}
-                            style={{ color: "#fff" }}
+                        <WhiteButton
+                            style={{
+                                marginRight: 24
+                            }}
+                            onClick={() => {
+                                history.push(
+                                    Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId)
+                                );
+                            }}
                         >
                             <ArrowLeftOutlined />
-                            <span style={{ margin: "0 16px", paddingRight: 24, borderRight: "1px solid #e8e8e8" }}>
-                                Back to project
-                            </span>
-                        </Link>
+                            <span style={{ marginLeft: 16 }}>Back</span>
+                        </WhiteButton>
                         {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
                     </div>
                     <UserProfileHeader />

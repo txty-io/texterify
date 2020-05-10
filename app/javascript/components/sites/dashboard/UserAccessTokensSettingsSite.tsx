@@ -151,7 +151,7 @@ class UserAccessTokensSettingsSite extends React.Component<{}, IState> {
             <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
                 <Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                     <h1>Access tokens</h1>
-                    <p>Access tokens can be used to perform actions against the API without first logging in.</p>
+                    <p>Access tokens can be used to perform actions against the API.</p>
                     <div style={{ display: "flex" }}>
                         <div style={{ display: "flex", flexDirection: "column", width: "40%", marginRight: 16 }}>
                             <h3>Create access token</h3>

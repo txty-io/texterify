@@ -28,7 +28,7 @@ class SiteWrapper extends React.Component<IProps> {
                         maxWidth: 320
                     }}
                 >
-                    <h1 style={{ marginBottom: 24, fontSize: 32, fontFamily: "Pacifico" }}>Texterify</h1>
+                    <h1 style={{ marginBottom: 24, fontSize: 32, fontFamily: "Ubuntu" }}>texterify</h1>
                     {this.props.children}
                 </div>
             </div>

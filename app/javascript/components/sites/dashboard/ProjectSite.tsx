@@ -87,17 +87,20 @@ class ProjectSite extends React.Component<IProps, IState> {
                 <Breadcrumbs breadcrumbName="project" />
                 <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, paddingBottom: 40 }}>
                     <div style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
-                        <h1 style={{ display: "flex", alignItems: "center" }}>
+                        <h1 style={{ display: "flex", alignItems: "center", marginBottom: 0 }}>
                             <ProjectAvatar project={dashboardStore.currentProject} style={{ marginRight: 16 }} />
                             {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
                         </h1>
-                        <Paragraph
-                            code
-                            copyable={{ text: this.props.match.params.projectId }}
-                            style={{ marginLeft: 40 }}
-                        >
-                            {`ID: ${this.props.match.params.projectId}`}
-                        </Paragraph>
+                        <div style={{ marginLeft: 80, display: "flex", flexDirection: "column", fontSize: 13 }}>
+                            <span style={{ fontWeight: "bold" }}>Project ID:</span>
+                            <Paragraph
+                                style={{ marginBottom: 0 }}
+                                code
+                                copyable={{ text: this.props.match.params.projectId }}
+                            >
+                                {`${this.props.match.params.projectId}`}
+                            </Paragraph>
+                        </div>
                     </div>
                     <p style={{ marginTop: 16 }}>
                         {dashboardStore.currentProject && dashboardStore.currentProject.attributes.description}

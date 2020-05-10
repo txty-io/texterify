@@ -246,7 +246,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             <SidebarTrigger
                 style={{
                     background: dashboardStore.sidebarMinimized ? Styles.COLOR_PRIMARY_LIGHT : undefined,
-                    color: dashboardStore.sidebarMinimized ? Styles.COLOR_PRIMARY : undefined
+                    color: dashboardStore.sidebarMinimized ? Styles.COLOR_SECONDARY : undefined
                 }}
             >
                 {dashboardStore.sidebarMinimized ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
