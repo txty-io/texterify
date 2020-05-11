@@ -37,28 +37,12 @@ module Api::V1
       end
     end
 
-    def render_error(status, error_code, extra = {})
-      I18n.with_locale(:en) do
-        error = {
-          message: I18n.t("error_messages.#{error_code}.message"),
-          code: I18n.t("error_messages.#{error_code}.code")
-        }.merge(extra)
-
-        render json: { errors: [error] }, status: Rack::Utils.status_code(status)
-      end
-    end
-
     def render_not_found_error(model_name)
-      message = I18n.t('error_messages.not_found.message', item: model_name)
-
-      message = I18n.t('error_messages.not_found.message_generic') if model_name.nil?
-
       error = {
-        message: message,
-        code: I18n.t('error_messages.not_found.code')
+        error: :not_found
       }
 
-      render json: { errors: [error] }, status: :not_found
+      render json: { errors: { "#{model_name.downcase}": [error] } }, status: :not_found
     end
   end
 end

@@ -1,9 +1,0 @@
-en:
-  error_messages:
-    not_found:
-      message: "%{item} could not be found."
-      message_generic: "Object could not be found."
-      code: "NOT_FOUND"
-    error_while_creating_object:
-      message: "Error while creating object."
-      code: "CREATE_ERROR"
