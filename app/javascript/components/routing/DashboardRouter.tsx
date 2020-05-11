@@ -32,21 +32,18 @@ const MenuList = styled.li`
     display: flex;
 `;
 
-const MenuLink = styled<{ active: boolean }>(Link)`
+const MenuLink = styled(Link)`
     transition: none;
     margin-right: 8px;
     overflow: hidden;
     text-overflow: ellipsis;
-    background: ${(props) => {
-        return props.active ? "rgba(255, 255, 255, 0.25" : undefined;
-    }};
 
     &:hover {
         text-decoration: none;
     }
 `;
 
-type IProps = RouteComponentProps<{ projectId?: string }> & {};
+type IProps = RouteComponentProps<{ projectId?: string }>;
 interface IState {
     hasSidebar: boolean;
     accountMenuVisible: boolean;
@@ -130,7 +127,12 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             <MenuList>
                                 <MenuLink
                                     to={Routes.DASHBOARD.PROJECTS}
-                                    active={this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS}
+                                    style={{
+                                        background:
+                                            this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS
+                                                ? "rgba(255, 255, 255, 0.25"
+                                                : undefined
+                                    }}
                                 >
                                     <ProjectOutlined style={{ marginRight: 8 }} /> Projects
                                 </MenuLink>
@@ -138,7 +140,12 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             <MenuList>
                                 <MenuLink
                                     to={Routes.DASHBOARD.ORGANIZATIONS}
-                                    active={this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS}
+                                    style={{
+                                        background:
+                                            this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS
+                                                ? "rgba(255, 255, 255, 0.25"
+                                                : undefined
+                                    }}
                                 >
                                     <DeploymentUnitOutlined style={{ marginRight: 8 }} /> Organizations
                                 </MenuLink>
@@ -146,7 +153,12 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             <MenuList>
                                 <MenuLink
                                     to={Routes.DASHBOARD.ACTIVITY}
-                                    active={this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY}
+                                    style={{
+                                        background:
+                                            this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY
+                                                ? "rgba(255, 255, 255, 0.25"
+                                                : undefined
+                                    }}
                                 >
                                     <LineChartOutlined style={{ marginRight: 8 }} /> Activity
                                 </MenuLink>
