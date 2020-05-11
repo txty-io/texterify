@@ -159,8 +159,8 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
       expect(response.status).to eq(400)
       body = JSON.parse(response.body)
       expect(body.keys).to contain_exactly('errors')
-      expect(body['errors'].length).to eq(1)
-      expect(body['errors'][0]).to eq("Name can't be blank.")
+      expect(body['errors']['name'].length).to eq(1)
+      expect(body['errors']['name'][0]['error']).to eq('blank')
     end
   end
 
