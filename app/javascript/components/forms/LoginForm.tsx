@@ -1,11 +1,11 @@
-import { Alert, Button, Input, Form } from "antd";
+import { Alert, Button, Form, Input } from "antd";
 import * as React from "react";
-import { Link } from "react-router-dom";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
-import { MailOutlined, LockOutlined } from "@ant-design/icons";
+import { SiteWrapperLink } from "../ui/SiteWrapperLink";
+import { history } from "../routing/history";
 
 interface IState {
     isLoading: boolean;
@@ -26,36 +26,40 @@ class LoginForm extends React.Component<{}, IState> {
                     {this.state.loginErrors.length > 0 && (
                         <Alert showIcon message={this.state.loginErrors.join()} type="error" />
                     )}
+
+                    <h3>Email</h3>
                     <Form.Item
                         name="email"
                         rules={[{ required: true, whitespace: true, message: "Please enter your email address." }]}
                     >
-                        <Input
-                            prefix={<MailOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-                            placeholder="Email address"
-                            autoComplete="emailsquad"
-                        />
+                        <Input placeholder="Email address" autoComplete="emailsquad" />
                     </Form.Item>
 
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <h3>Password</h3>
+                        <SiteWrapperLink to={Routes.AUTH.FORGOTT_PASSWORD}>Forgot password?</SiteWrapperLink>
+                    </div>
                     <Form.Item
                         name="password"
                         rules={[{ required: true, whitespace: true, message: "Please enter your password." }]}
                     >
-                        <Input
-                            prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-                            type="password"
-                            placeholder="Password"
-                            autoComplete="current-password"
-                        />
+                        <Input type="password" placeholder="Password" autoComplete="current-password" />
                     </Form.Item>
 
-                    <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
-                        Log in
-                    </Button>
-                    <div style={{ textAlign: "right" }}>
-                        <Link to={Routes.AUTH.SIGNUP}>Create a new account</Link>
-                        <br />
-                        <Link to={Routes.AUTH.FORGOTT_PASSWORD}>Forgot password?</Link>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            paddingTop: 8
+                        }}
+                    >
+                        <SiteWrapperLink to={Routes.AUTH.SIGNUP} style={{ fontWeight: 600 }}>
+                            Create new account
+                        </SiteWrapperLink>
+                        <Button type="primary" htmlType="submit" style={{ marginBottom: 0 }}>
+                            Log in
+                        </Button>
                     </div>
                 </Form>
             </>

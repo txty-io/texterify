@@ -58,14 +58,13 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                 style={{ marginTop: this.state.languagesLoaded && this.state.languages.length === 0 ? 8 : 0 }}
                 description={
                     <p style={{ color: Styles.COLOR_TEXT_DISABLED }}>
-                        Create an{" "}
                         <Link
                             to={Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
                                 ":projectId",
                                 this.props.match.params.projectId
                             )}
                         >
-                            export configuration
+                            Create an export configuration
                         </Link>{" "}
                         to export your keys.
                     </p>
@@ -93,14 +92,13 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                                 description={
                                     <>
                                         <p style={{ color: Styles.COLOR_TEXT_DISABLED }}>
-                                            Create a{" "}
                                             <Link
                                                 to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
                                                     ":projectId",
                                                     this.props.match.params.projectId
                                                 )}
                                             >
-                                                language{" "}
+                                                Create a language
                                             </Link>{" "}
                                             to export your keys.
                                         </p>

@@ -9,7 +9,8 @@ export const WhiteButton = styled(Button)`
     border: 1px solid rgba(255, 255, 255, 1);
     transition: none;
 
-    &:hover {
+    &:hover,
+    &:focus {
         border: 1px solid rgba(255, 255, 255, 1);
         background: rgba(255, 255, 255, 0.25);
         color: #fff;

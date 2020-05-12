@@ -5,13 +5,14 @@ import { LoginForm } from "../../forms/LoginForm";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { SiteWrapper } from "../../ui/SiteWrapper";
+import { SiteWrapperHeader } from "../../ui/SiteWrapperHeader";
 
 @observer
 class LoginSite extends React.Component {
     render() {
         return !authStore.isAuthenticated ? (
             <SiteWrapper>
-                <h2>Welcome back</h2>
+                <SiteWrapperHeader>Log in</SiteWrapperHeader>
                 <LoginForm />
             </SiteWrapper>
         ) : (

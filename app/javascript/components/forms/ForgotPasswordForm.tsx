@@ -1,12 +1,11 @@
-import { Alert, Button, Input, Form } from "antd";
+import { Alert, Button, Form, Input } from "antd";
+import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { Routes } from "../routing/Routes";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
-import { MailOutlined } from "@ant-design/icons";
-import { authStore } from "../stores/AuthStore";
-import { FormInstance } from "antd/lib/form";
+import { SiteWrapperLink } from "../ui/SiteWrapperLink";
 
 interface IState {
     isLoading: boolean;
@@ -24,11 +23,11 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
     render() {
         return (
             <>
-                <Form
-                    ref={this.formRef}
-                    onFinish={this.handleSubmit}
-                    initialValues={{ email: authStore.currentUser.email }}
-                >
+                <p style={{ marginBottom: 16 }}>
+                    Enter your email address and we will send you an email to reset your password.
+                </p>
+
+                <Form ref={this.formRef} onFinish={this.handleSubmit}>
                     {this.state.success && (
                         <Alert
                             showIcon
@@ -36,27 +35,23 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
                             type="success"
                         />
                     )}
-                    <p>Enter your email address and we will send you the instructions to reset your password.</p>
+
+                    <h3>Email</h3>
                     <Form.Item
                         name="email"
                         rules={[{ required: true, whitespace: true, message: "Please enter your email address." }]}
                     >
-                        <Input
-                            prefix={<MailOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-                            placeholder="Email address"
-                        />
+                        <Input placeholder="Email address" />
                     </Form.Item>
 
-                    <Form.Item style={{ marginBottom: 0 }}>
-                        <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
-                            Send password recovery instructions
+                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                        <Button type="primary" htmlType="submit">
+                            Reset password
                         </Button>
-                    </Form.Item>
+                    </div>
                 </Form>
                 <div style={{ textAlign: "right" }}>
-                    <Link to={Routes.AUTH.LOGIN}>Back to login</Link>
-                    <br />
-                    <Link to={Routes.AUTH.SIGNUP}>Create a new account</Link>
+                    <SiteWrapperLink to={Routes.AUTH.LOGIN}>Back to login</SiteWrapperLink>
                 </div>
                 <LoadingOverlay isVisible={this.state.isLoading} loadingText="Loading..." />
             </>

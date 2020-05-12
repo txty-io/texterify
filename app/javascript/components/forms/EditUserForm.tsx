@@ -228,7 +228,7 @@ class EditUserForm extends React.Component<IProps, IState> {
                     name="email"
                     rules={[{ required: true, whitespace: true, message: "Please enter your email address." }]}
                 >
-                    <Input placeholder="E-Mail" />
+                    <Input placeholder="Email address" />
                 </Form.Item>
             </Form>
         );

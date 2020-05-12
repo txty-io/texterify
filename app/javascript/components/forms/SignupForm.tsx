@@ -4,6 +4,8 @@ import { AuthAPI } from "../api/v1/AuthAPI";
 import { authStore } from "../stores/AuthStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { UserOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
+import { SiteWrapperLink } from "../ui/SiteWrapperLink";
+import { Routes } from "../routing/Routes";
 
 interface IProps {
     onAccountCreated(): any;
@@ -21,7 +23,6 @@ class SignupForm extends React.Component<IProps, IState> {
 
     handleSubmit = async (values: any) => {
         this.setState({ signupErrors: [] });
-        console.info("Received values of form:", values);
 
         const start: number = new Date().getTime();
         this.setState({ isLoading: true });
@@ -32,7 +33,6 @@ class SignupForm extends React.Component<IProps, IState> {
             values.password,
             values.passwordConfirmation
         );
-        console.info("Received response:", response);
 
         const elapsed: number = new Date().getTime() - start;
         setTimeout(() => {
@@ -67,56 +67,47 @@ class SignupForm extends React.Component<IProps, IState> {
                         <Alert showIcon message={this.getErrorMessage(this.state.signupErrors)} type="error" />
                     )}
 
-                    <h3>Username *</h3>
+                    <h3>Username</h3>
                     <Form.Item
                         name="username"
                         rules={[{ required: true, whitespace: true, message: "Please enter your username." }]}
                     >
-                        <Input prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="Username" />
+                        <Input placeholder="Username" />
                     </Form.Item>
 
-                    <h3>Email address *</h3>
+                    <h3>Email</h3>
                     <Form.Item
                         name="email"
                         rules={[{ required: true, whitespace: true, message: "Please enter your email address." }]}
                     >
-                        <Input
-                            prefix={<MailOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-                            placeholder="Email address"
-                            autoComplete="email"
-                        />
+                        <Input placeholder="Email address" autoComplete="email" />
                     </Form.Item>
 
-                    <h3>Password *</h3>
+                    <h3>Password</h3>
                     <Form.Item
                         name="password"
                         rules={[{ required: true, whitespace: true, message: "Please enter your password." }]}
                     >
-                        <Input
-                            prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-                            type="password"
-                            placeholder="Password"
-                            autoComplete="new-password"
-                        />
+                        <Input type="password" placeholder="Password" autoComplete="new-password" />
                     </Form.Item>
 
+                    <h3>Password confirmation</h3>
                     <Form.Item
                         name="passwordConfirmation"
                         rules={[{ required: true, whitespace: true, message: "Please confirm your password." }]}
                     >
-                        <Input
-                            prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-                            type="password"
-                            placeholder="Password confirmation"
-                            autoComplete="new-password"
-                        />
+                        <Input type="password" placeholder="Password confirmation" autoComplete="new-password" />
                     </Form.Item>
 
-                    <Form.Item style={{ marginBottom: 0 }}>
-                        <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                        <Button type="primary" htmlType="submit">
                             Sign up
                         </Button>
-                    </Form.Item>
+                    </div>
+
+                    <div style={{ textAlign: "right" }}>
+                        <SiteWrapperLink to={Routes.AUTH.LOGIN}>Already have an account?</SiteWrapperLink>
+                    </div>
                 </Form>
             </>
         );
