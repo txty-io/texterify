@@ -83,7 +83,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
 
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
-      user_projects_ordered = user.projects.order(:name)
+      user_projects_ordered = user.projects.order('lower(name) ASC')
       expect(body['data'].length).to eq(per_page)
       expect(body['data'][0]['id']).to eq(user_projects_ordered[0].id)
       expect(body['data'][1]['id']).to eq(user_projects_ordered[1].id)
@@ -99,7 +99,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
 
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
-      user_projects_ordered = user.projects.order(:name)
+      user_projects_ordered = user.projects.order('lower(name) ASC')
       expect(body['data'].length).to eq(per_page)
       expect(body['data'][0]['id']).to eq(user_projects_ordered[2].id)
       expect(body['data'][1]['id']).to eq(user_projects_ordered[3].id)

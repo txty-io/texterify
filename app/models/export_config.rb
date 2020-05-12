@@ -1,6 +1,8 @@
 class ExportConfig < ApplicationRecord
   include ExportHelper
 
+  default_scope { order('lower(export_configs.name) ASC') }
+
   validates :name, presence: true
   validates :file_path, presence: true
   validates :file_format, presence: true

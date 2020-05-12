@@ -46,9 +46,9 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
                       current_user.organizations.where(
                         'name ilike :search',
                         search: "%#{params[:search]}%"
-                      ).order(:name)
+                      )
                     else
-                      current_user.organizations.order(:name)
+                      current_user.organizations
                     end
 
     options = {}

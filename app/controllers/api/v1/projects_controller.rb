@@ -47,9 +47,9 @@ class Api::V1::ProjectsController < Api::V1::ApiController
                  current_user.projects.where(
                    'name ilike :search',
                    search: "%#{params[:search]}%"
-                 ).order(:name)
+                 )
                else
-                 current_user.projects.order(:name)
+                 current_user.projects
                end
 
     options = {}
@@ -149,10 +149,10 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
     begin
       Zip::File.open(file.path, Zip::File::CREATE) do |zip|
-        project.languages.order(:id).each do |language|
+        project.languages.each do |language|
           # Create the file content for a language.
           export_data = {}
-          project.keys.order(:name).each do |key|
+          project.keys.each do |key|
             key_translation_export_config = key.translations.where(language_id: language.id, export_config_id: export_config.id).first
             key_translation = key_translation_export_config || key.translations.where(language_id: language.id).first
             if key_translation.nil?

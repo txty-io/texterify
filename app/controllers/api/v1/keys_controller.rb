@@ -32,7 +32,7 @@ class Api::V1::KeysController < Api::V1::ApiController
       per_page = 10 if per_page < 1
     end
 
-    keys = project.keys.order(:name)
+    keys = project.keys
     if params[:search]
       keys = project.keys
         .left_outer_joins(:translations)
@@ -48,7 +48,6 @@ class Api::V1::KeysController < Api::V1::ApiController
             search: "%#{params[:search]}%"
           )
         )
-        .order(:name)
         .distinct
     end
 

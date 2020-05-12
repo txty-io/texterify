@@ -15,14 +15,13 @@ class Api::V1::LanguagesController < Api::V1::ApiController
       per_page = project.languages.size if per_page < 1
     end
 
-    languages = project.languages.order(:name)
+    languages = project.languages
     if params[:search]
       languages = project.languages
         .where(
           'name ilike :search',
           search: "%#{params[:search]}%"
         )
-        .order(:name)
         .distinct
     end
 

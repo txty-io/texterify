@@ -1,4 +1,6 @@
 class Project < ApplicationRecord
+  default_scope { order('lower(projects.name) ASC') }
+
   validates :name, presence: true
 
   belongs_to :organization, optional: true

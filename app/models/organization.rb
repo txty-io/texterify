@@ -1,4 +1,6 @@
 class Organization < ApplicationRecord
+  default_scope { order('lower(organizations.name) ASC') }
+
   validates :name, uniqueness: true, presence: true
 
   has_many :organization_users, dependent: :delete_all

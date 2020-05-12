@@ -1,4 +1,6 @@
 class Language < ApplicationRecord
+  default_scope { order('lower(languages.name) ASC') }
+
   belongs_to :project
   belongs_to :country_code, optional: true
   belongs_to :language_code, optional: true
