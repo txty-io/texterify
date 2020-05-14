@@ -32,7 +32,7 @@ class LoginForm extends React.Component<{}, IState> {
                         name="email"
                         rules={[{ required: true, whitespace: true, message: "Please enter your email address." }]}
                     >
-                        <Input placeholder="Email address" autoComplete="emailsquad" />
+                        <Input tabIndex={1} placeholder="Email address" autoComplete="emailsquad" />
                     </Form.Item>
 
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -43,7 +43,7 @@ class LoginForm extends React.Component<{}, IState> {
                         name="password"
                         rules={[{ required: true, whitespace: true, message: "Please enter your password." }]}
                     >
-                        <Input type="password" placeholder="Password" autoComplete="current-password" />
+                        <Input tabIndex={2} type="password" placeholder="Password" autoComplete="current-password" />
                     </Form.Item>
 
                     <div
@@ -57,7 +57,7 @@ class LoginForm extends React.Component<{}, IState> {
                         <SiteWrapperLink to={Routes.AUTH.SIGNUP} style={{ fontWeight: 600 }}>
                             Create new account
                         </SiteWrapperLink>
-                        <Button type="primary" htmlType="submit" style={{ marginBottom: 0 }}>
+                        <Button tabIndex={3} type="primary" htmlType="submit" style={{ marginBottom: 0 }}>
                             Log in
                         </Button>
                     </div>
