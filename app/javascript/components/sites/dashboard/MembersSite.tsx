@@ -110,6 +110,14 @@ class MembersSite extends React.Component<IProps, IState> {
         });
     };
 
+    hasOnlyOneOwner = () => {
+        const ownerRows = this.getRows().filter((row) => {
+            return PermissionUtils.isOwner(row.role);
+        });
+
+        return ownerRows.length === 1;
+    };
+
     render() {
         if (!this.state.getMembersResponse || !this.state.getMembersResponse.data) {
             return <Loading />;
@@ -120,7 +128,7 @@ class MembersSite extends React.Component<IProps, IState> {
                 <Breadcrumbs breadcrumbName="projectMembers" />
                 <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                     <h1>Members</h1>
-                    <p>Invite users to your project to help you localize your apps.</p>
+                    <p>Add users to your project.</p>
                     <div style={{ display: "flex", width: "100%" }}>
                         <Form ref={this.formRef} style={{ width: "100%", maxWidth: 480 }}>
                             <Form.Item name="name">
@@ -149,12 +157,16 @@ class MembersSite extends React.Component<IProps, IState> {
                                     this.formRef.current.setFields([
                                         {
                                             name: "name",
-                                            errors: [ErrorUtils.getErrorMessage("name", ERRORS.NOT_FOUND)]
+                                            errors: [
+                                                ErrorUtils.getErrorMessage("user with that email", ERRORS.NOT_FOUND)
+                                            ]
                                         }
                                     ]);
 
                                     return;
                                 }
+
+                                this.formRef.current.resetFields();
 
                                 const getMembersResponse = await MembersAPI.getMembers(
                                     this.props.match.params.projectId
@@ -237,7 +249,8 @@ class MembersSite extends React.Component<IProps, IState> {
                                                         )
                                                     ) &&
                                                         !PermissionUtils.isOwner(dashboardStore.getCurrentRole())) ||
-                                                    this.getRows().length === 1
+                                                    this.getRows().length === 1 ||
+                                                    (PermissionUtils.isOwner(item.role) && this.hasOnlyOneOwner())
                                                 }
                                             >
                                                 <Select.Option
