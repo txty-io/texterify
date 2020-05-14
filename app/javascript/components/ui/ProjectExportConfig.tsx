@@ -178,25 +178,27 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
                     <div>
                         <div style={{ display: "flex", flexDirection: "column", marginBottom: 16 }}>
                             <h3>{this.props.exportConfig.attributes.name}</h3>
+
+                            <h4 style={{ fontWeight: "bold" }}>Configuration ID:</h4>
                             <Paragraph code copyable={{ text: this.props.exportConfig.id }} style={{ margin: 0 }}>
-                                {`ID: ${this.props.exportConfig.id}`}
+                                {`${this.props.exportConfig.id}`}
                             </Paragraph>
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column" }}>
                             <div>
-                                <h4>File format:</h4>
-                                <span style={{ fontWeight: "bold" }}>
-                                    {this.getFileFormatName(this.props.exportConfig.attributes.file_format)}
-                                </span>
+                                <h4 style={{ fontWeight: "bold" }}>File format:</h4>
+                                {this.getFileFormatName(this.props.exportConfig.attributes.file_format)}
                             </div>
-                            <div style={{ marginTop: 8 }}>
-                                <h4>File path:</h4>
+
+                            <div style={{ marginTop: 16 }}>
+                                <h4 style={{ fontWeight: "bold" }}>File path:</h4>
                                 {this.prettifyFilePath(this.props.exportConfig.attributes.file_path)}
                             </div>
+
                             {this.props.exportConfig.attributes.default_language_file_path && (
-                                <div style={{ marginTop: 8 }}>
-                                    <h4>Default language file path:</h4>
+                                <div style={{ marginTop: 16 }}>
+                                    <h4 style={{ fontWeight: "bold" }}>Default language file path:</h4>
                                     {this.prettifyFilePath(
                                         this.props.exportConfig.attributes.default_language_file_path
                                     )}
@@ -204,14 +206,16 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
                             )}
                         </div>
 
-                        <Button
-                            style={{ alignSelf: "flex-start", marginTop: 16 }}
-                            onClick={() => {
-                                this.setState({ visible: true });
-                            }}
-                        >
-                            Show export structure
-                        </Button>
+                        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Button
+                                style={{ alignSelf: "flex-start", marginTop: 16 }}
+                                onClick={() => {
+                                    this.setState({ visible: true });
+                                }}
+                            >
+                                Preview export
+                            </Button>
+                        </div>
                     </div>
                 </div>
 
