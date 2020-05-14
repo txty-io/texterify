@@ -13,10 +13,11 @@ const openProject = (project: any) => {
     history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", project.id));
 };
 
-function ProjectsList(props: { projects: any[]; included?: any[] }) {
+function ProjectsList(props: { loading: boolean; projects: any[]; included?: any[] }) {
     return (
         <List
-            size="small"
+            size="default"
+            loading={props.loading}
             locale={{ emptyText: <Empty description="No projects found" image={Empty.PRESENTED_IMAGE_SIMPLE} /> }}
             dataSource={props.projects.map((project: any) => {
                 return {

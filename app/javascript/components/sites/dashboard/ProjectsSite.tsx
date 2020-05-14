@@ -1,4 +1,4 @@
-import { Input, Layout, message, Pagination } from "antd";
+import { Input, Layout, Pagination } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
@@ -11,6 +11,7 @@ import { ProjectsList } from "../../ui/ProjectsList";
 
 type IProps = RouteComponentProps;
 interface IState {
+    projectsLoading: boolean;
     projectsResponse: any;
     projects: any[];
     addDialogVisible: boolean;
@@ -30,6 +31,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
     );
 
     state: IState = {
+        projectsLoading: true,
         projectsResponse: null,
         projects: [],
         addDialogVisible: false,
@@ -44,16 +46,16 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
 
     fetchProjects = async (options?: any) => {
         try {
+            this.setState({ projectsLoading: true });
             const responseProjects = await ProjectsAPI.getProjects(options);
 
             this.setState({
+                projectsLoading: false,
                 projectsResponse: responseProjects,
                 projects: responseProjects.data
             });
-        } catch (err) {
-            if (!err.isCanceled) {
-                console.error(err);
-            }
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -93,6 +95,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                         </div>
 
                         <ProjectsList
+                            loading={this.state.projectsLoading}
                             projects={this.state.projects || []}
                             included={this.state.projectsResponse && this.state.projectsResponse.included}
                         />
