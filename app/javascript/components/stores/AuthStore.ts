@@ -48,11 +48,11 @@ const authStore: AuthStore = new AuthStore();
 
 hydrate("currentUser", authStore)
     .then(() => {
-        console.log("Hydrated from store successfully.");
+        console.log("[AuthStore] Hydrated from store successfully.");
         authStore.hydrationFinished = true;
     })
     .catch((error: any) => {
-        console.error("Error while hydrating:", error);
+        console.error("[AuthStore] Error while hydrating:", error);
         authStore.hydrationFinished = true;
     });
 

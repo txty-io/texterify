@@ -7,11 +7,21 @@ import { Routes } from "../routing/Routes";
 import { dashboardStore } from "../stores/DashboardStore";
 import { ListContent } from "./ListContent";
 import { ProjectAvatar } from "./ProjectAvatar";
+import styled from "styled-components";
 
 const openProject = (project: any) => {
     dashboardStore.currentProject = project;
     history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", project.id));
 };
+
+const ProjectInfoWrapper = styled.div`
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    .dark-theme & {
+        color: #fff;
+    }
+`;
 
 function ProjectsList(props: { loading: boolean; projects: any[]; included?: any[] }) {
     return (
@@ -44,7 +54,7 @@ function ProjectsList(props: { loading: boolean; projects: any[]; included?: any
                                     role="button"
                                 >
                                     <ProjectAvatar project={project} style={{ marginRight: 16 }} />
-                                    <div style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
+                                    <ProjectInfoWrapper>
                                         {projectOrganization ? `${projectOrganization.attributes.name} / ` : ""}
                                         <span style={{ fontWeight: props.included ? "bold" : undefined }}>
                                             {item.name}
@@ -52,7 +62,7 @@ function ProjectsList(props: { loading: boolean; projects: any[]; included?: any
                                         <div style={{ textOverflow: "ellipsis", overflow: "hidden", fontSize: 12 }}>
                                             {item.description}
                                         </div>
-                                    </div>
+                                    </ProjectInfoWrapper>
                                 </ListContent>
                             }
                         />

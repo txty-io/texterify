@@ -1,6 +1,7 @@
 import * as React from "react";
 import GitHubMarkLight from "images/GitHub-Mark-Light-120px-plus.png";
 import { WhiteButton } from "./WhiteButton";
+import { DarkModeToggle } from "./DarkModeToggle";
 
 interface IProps {
     style?: React.CSSProperties;
@@ -50,6 +51,9 @@ class SiteWrapper extends React.Component<IProps> {
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <img src={GitHubMarkLight} style={{ maxWidth: 56, marginRight: 40 }} />
                             <WhiteButton>Show on GitHub</WhiteButton>
+                        </div>
+                        <div style={{ marginTop: 40 }}>
+                            <DarkModeToggle text="Toggle light/dark theme" disableTooltip style={{ marginLeft: 16 }} />
                         </div>
                     </div>
                 </div>

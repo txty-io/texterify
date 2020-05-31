@@ -174,11 +174,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
         });
 
         return (
-            <Breadcrumb
-                style={{ margin: "32px 16px 0", display: "flex", alignItems: "center", color: Styles.COLOR_PRIMARY }}
-            >
-                {items}
-            </Breadcrumb>
+            <Breadcrumb style={{ margin: "32px 16px 0", display: "flex", alignItems: "center" }}>{items}</Breadcrumb>
         );
     }
 }

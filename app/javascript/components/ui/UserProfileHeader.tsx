@@ -17,12 +17,21 @@ const AccountProfileContentWrapper: any = styled.div`
         color: #888;
         padding: 4px 16px;
         background: #fcfcfc;
+
+        .dark-theme & {
+            background: none;
+        }
     }
 
     a:hover {
         text-decoration: none;
         background: #fcfcfc;
         color: #333;
+
+        .dark-theme & {
+            background: #2a2a2a;
+            color: #fff;
+        }
     }
 `;
 
@@ -85,7 +94,7 @@ class UserProfileHeader extends React.Component<{}, IState> {
                     }
                 >
                     <div style={{ display: "flex", alignItems: "center" }}>
-                        <UserAvatar light user={authStore.currentUser} />
+                        <UserAvatar forceDark user={authStore.currentUser} />
                         <div
                             style={{
                                 padding: "0 16px",

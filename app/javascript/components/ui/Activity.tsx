@@ -10,6 +10,7 @@ import { ActivityTimeAgo } from "./ActivityTimeAgo";
 import FlagIcon from "./FlagIcons";
 import { Styles } from "./Styles";
 import { UserAvatar } from "./UserAvatar";
+import { generalStore } from "../stores/GeneralStore";
 
 const ActivityItemWrapper = styled.div`
     word-break: break-all;
@@ -284,8 +285,8 @@ class Activity extends React.Component<IProps> {
         } else if (event === "update" || itemType === "Translation") {
             return {
                 iconColor: "#333",
-                color: Styles.COLOR_SECONDARY,
-                background: Styles.COLOR_SECONDARY_LIGHT
+                color: generalStore.theme === "light" ? Styles.COLOR_SECONDARY : "#fff",
+                background: generalStore.theme === "light" ? Styles.COLOR_SECONDARY_LIGHT : "#303030"
             };
         } else if (event === "destroy") {
             return {

@@ -3,7 +3,6 @@
 
   li {
     a {
-      color: #333;
       text-decoration: none;
       padding: 8px 20px;
       border-radius: 4px;
@@ -11,17 +10,8 @@
 
       &:hover {
         background: rgba(255, 255, 255, 0.15);
+        color: #fff;
       }
     }
-  }
-}
-
-.dashboard-sidebar-menu {
-  .nav-text {
-    display: inline-block;
-  }
-
-  a {
-    text-decoration: none;
   }
 }

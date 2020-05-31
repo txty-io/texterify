@@ -1,11 +1,10 @@
-import { Alert, Button, Input, message, Form } from "antd";
+import { Alert, Button, Form, Input, message } from "antd";
 import * as React from "react";
 import { AuthAPI } from "../api/v1/AuthAPI";
+import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
-import { UserOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
 import { SiteWrapperLink } from "../ui/SiteWrapperLink";
-import { Routes } from "../routing/Routes";
 
 interface IProps {
     onAccountCreated(): any;
@@ -99,14 +98,20 @@ class SignupForm extends React.Component<IProps, IState> {
                         <Input type="password" placeholder="Password confirmation" autoComplete="new-password" />
                     </Form.Item>
 
-                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                        <Button type="primary" htmlType="submit">
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            paddingTop: 8
+                        }}
+                    >
+                        <SiteWrapperLink to={Routes.AUTH.LOGIN} style={{ fontWeight: 600 }}>
+                            Already have an account?
+                        </SiteWrapperLink>
+                        <Button type="primary" htmlType="submit" style={{ marginBottom: 0 }}>
                             Sign up
                         </Button>
-                    </div>
-
-                    <div style={{ textAlign: "right" }}>
-                        <SiteWrapperLink to={Routes.AUTH.LOGIN}>Already have an account?</SiteWrapperLink>
                     </div>
                 </Form>
             </>

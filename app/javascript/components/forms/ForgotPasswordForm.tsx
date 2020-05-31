@@ -44,15 +44,23 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
                         <Input placeholder="Email address" />
                     </Form.Item>
 
-                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                        <Button type="primary" htmlType="submit">
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            paddingTop: 8
+                        }}
+                    >
+                        <SiteWrapperLink to={Routes.AUTH.LOGIN} style={{ fontWeight: 600 }}>
+                            Back to login
+                        </SiteWrapperLink>
+                        <Button type="primary" htmlType="submit" style={{ marginBottom: 0 }}>
                             Reset password
                         </Button>
                     </div>
                 </Form>
-                <div style={{ textAlign: "right" }}>
-                    <SiteWrapperLink to={Routes.AUTH.LOGIN}>Back to login</SiteWrapperLink>
-                </div>
+
                 <LoadingOverlay isVisible={this.state.isLoading} loadingText="Loading..." />
             </>
         );

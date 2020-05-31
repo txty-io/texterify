@@ -205,9 +205,8 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
 
                     <div
                         style={{
-                            border: "1px solid #d9d9d9",
+                            border: "1px solid var(--border-color)",
                             borderRadius: 3,
-                            background: "#fff",
                             padding: 16
                         }}
                     >

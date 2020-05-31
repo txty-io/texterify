@@ -5,7 +5,6 @@ import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { SiteWrapperLink } from "../ui/SiteWrapperLink";
-import { history } from "../routing/history";
 
 interface IState {
     isLoading: boolean;

@@ -1,28 +1,13 @@
+import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined, TeamOutlined, ToolOutlined } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { CollapseType } from "antd/lib/layout/Sider";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import styled from "styled-components";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
-import { Styles } from "../../ui/Styles";
-import { HomeOutlined, TeamOutlined, ToolOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
+import { SidebarTrigger } from "../../ui/SidebarTrigger";
 const { Sider } = Layout;
-
-const SidebarTrigger = styled.div`
-    width: 100%;
-    height: 100%;
-    background: #fff;
-    color: #333;
-    border-right: 1px solid #e8e8e8;
-    transition: 0.2s all;
-
-    &:hover {
-        color: ${Styles.COLOR_PRIMARY};
-        background: ${Styles.COLOR_PRIMARY_LIGHT};
-    }
-`;
 
 interface INavigationData {
     icon: any;
@@ -77,7 +62,6 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                         ":organizationId",
                         dashboardStore.currentOrganization && dashboardStore.currentOrganization.id
                     )}
-                    className="nav-text"
                     style={{ overflow: "hidden", textOverflow: "ellipsis" }}
                 >
                     <span style={{ fontWeight: "bold" }}>
@@ -93,8 +77,8 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
             ...this.navigationData.map((data: INavigationData, index: number) => {
                 return (
                     <Menu.Item key={index} title={data.text}>
-                        <Link to={data.path} className="nav-text">
-                            <data.icon className="nav-text" style={{ marginRight: 8 }} />
+                        <Link to={data.path}>
+                            <data.icon />
                             <span>{data.text}</span>
                         </Link>
                     </Menu.Item>
@@ -119,12 +103,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
 
     renderSidebarTrigger = () => {
         return (
-            <SidebarTrigger
-                style={{
-                    background: dashboardStore.sidebarMinimized ? Styles.COLOR_PRIMARY_LIGHT : undefined,
-                    color: dashboardStore.sidebarMinimized ? Styles.COLOR_PRIMARY : undefined
-                }}
-            >
+            <SidebarTrigger>
                 {dashboardStore.sidebarMinimized ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             </SidebarTrigger>
         );
@@ -143,12 +122,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                     trigger={this.renderSidebarTrigger()}
                     style={{ boxShadow: "rgba(61, 172, 206, 0.05) 0px 0px 24px" }}
                 >
-                    <Menu
-                        mode="inline"
-                        selectedKeys={this.getSelectedItem()}
-                        style={{ height: "100%" }}
-                        className="dashboard-sidebar-menu"
-                    >
+                    <Menu mode="inline" selectedKeys={this.getSelectedItem()} style={{ height: "100%" }}>
                         {this.renderMenuItems()}
                     </Menu>
                 </Sider>

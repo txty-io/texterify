@@ -1,5 +1,5 @@
 import { DeploymentUnitOutlined, LineChartOutlined, ProjectOutlined } from "@ant-design/icons";
-import { Layout } from "antd";
+import * as antd from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
@@ -13,6 +13,7 @@ import { ProjectsSite } from "../sites/dashboard/ProjectsSite";
 import { UserAccessTokensSettingsSite } from "../sites/dashboard/UserAccessTokensSettingsSite";
 import { UserAccountSettingsSite } from "../sites/dashboard/UserAccountSettingsSite";
 import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
+import { DarkModeToggle } from "../ui/DarkModeToggle";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
 import { WhiteButton } from "../ui/WhiteButton";
 import { history } from "./history";
@@ -22,7 +23,9 @@ import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
 
 const TranslateButton = styled(WhiteButton)`
-    margin-right: 40px;
+    && {
+        margin-right: 40px;
+    }
 `;
 
 const MenuList = styled.li`
@@ -87,15 +90,14 @@ class DashboardRouter extends React.Component<IProps, IState> {
     render() {
         return (
             <>
-                <Layout>
-                    <Layout.Header
+                <antd.Layout>
+                    <antd.Layout.Header
                         style={{
-                            padding: "0 24px",
+                            padding: "0 16px",
                             display: "flex",
                             alignItems: "center",
                             color: "#fff",
                             zIndex: 10,
-                            background: "#000",
                             overflow: "hidden"
                         }}
                     >
@@ -130,7 +132,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     style={{
                                         background:
                                             this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS
-                                                ? "rgba(255, 255, 255, 0.25"
+                                                ? "#303030"
                                                 : undefined
                                     }}
                                 >
@@ -143,7 +145,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     style={{
                                         background:
                                             this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS
-                                                ? "rgba(255, 255, 255, 0.25"
+                                                ? "#303030"
                                                 : undefined
                                     }}
                                 >
@@ -156,7 +158,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     style={{
                                         background:
                                             this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY
-                                                ? "rgba(255, 255, 255, 0.25"
+                                                ? "#303030"
                                                 : undefined
                                     }}
                                 >
@@ -164,6 +166,9 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 </MenuLink>
                             </MenuList>
                         </ul>
+
+                        <DarkModeToggle style={{ marginRight: 40 }} />
+
                         {this.props.match.params.projectId && (
                             <TranslateButton
                                 type="primary"
@@ -180,8 +185,8 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             </TranslateButton>
                         )}
                         <UserProfileHeader />
-                    </Layout.Header>
-                    <Layout>
+                    </antd.Layout.Header>
+                    <antd.Layout>
                         {this.renderSidebar()}
 
                         <Switch>
@@ -209,8 +214,8 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             <PrivateRoute path={Routes.DASHBOARD.ORGANIZATION} component={OrganizationRouter} />
                             <PrivateRoute component={NotFoundSite} />
                         </Switch>
-                    </Layout>
-                </Layout>
+                    </antd.Layout>
+                </antd.Layout>
             </>
         );
     }

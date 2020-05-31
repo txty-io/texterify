@@ -10,6 +10,7 @@ import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
 import { RoutingManager } from "./RoutingManager";
 import { SiteRouter } from "./SiteRouter";
+import { generalStore } from "../stores/GeneralStore";
 
 interface IProps {
     location?: any;
@@ -18,7 +19,7 @@ interface IProps {
 @observer
 class AppRouter extends React.Component<IProps, null> {
     render() {
-        if (authStore.hydrationFinished) {
+        if (authStore.hydrationFinished && generalStore.hasLoaded) {
             return (
                 <Router history={history}>
                     <RoutingManager>

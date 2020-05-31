@@ -195,8 +195,7 @@ class MembersSite extends React.Component<IProps, IState> {
                                         display: "flex",
                                         alignItems: "center",
                                         paddingBottom: 16,
-                                        marginBottom: 16,
-                                        borderBottom: "1px solid #e8e8e8"
+                                        marginBottom: 16
                                     }}
                                 >
                                     <div style={{ display: "flex", flexGrow: 1, alignItems: "center" }}>

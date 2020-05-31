@@ -148,7 +148,7 @@ class EditUserForm extends React.Component<IProps, IState> {
                                             display: "flex",
                                             flexDirection: "column",
                                             borderRadius: Styles.DEFAULT_BORDER_RADIUS,
-                                            border: "1px solid #d9d9d9"
+                                            border: "1px solid var(--border-color)"
                                         }}
                                     >
                                         <AvatarEditor

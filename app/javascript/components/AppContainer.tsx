@@ -1,5 +1,6 @@
-import "antd/dist/antd.less";
 import * as React from "react";
+import "../../assets/stylesheets/externals/antd-dark.less";
+import "../../assets/stylesheets/externals/antd.less";
 import { AppRouter } from "./routing/AppRouter";
 
 class AppContainer extends React.Component {

@@ -1,0 +1,151 @@
+
+.dark-theme {
+  @import '~antd/dist/antd.dark.less';
+
+  // Fix wrong flex direction of main layout.
+  .ant-layout.ant-layout-has-sider {
+    flex-direction: row;
+  }
+
+  // Change selected menu item background color.
+  .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+    background-color: #1c1c1c;
+  }
+
+  // Change select item background color.
+  .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+    background-color: #2a2a2a;
+  }
+
+  .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+    color: rgba(151, 151, 151, 0.65);
+    background-color: #2a2a2a;
+  }
+
+  // Set content area background.
+  .ant-layout {
+    background: #141414;
+  }
+
+  // Remove white hover background of empty tables.
+  .ant-table-tbody > tr.ant-table-placeholder:hover > td {
+    background: transparent;
+  }
+
+  tr.ant-table-expanded-row > td, tr.ant-table-expanded-row:hover > td {
+    background: none;
+  }
+
+  // Remove right padding of search input field icon.
+  .ant-input-search:not(.ant-input-search-enter-button) {
+    padding-right: 0;
+  }
+
+  // Fix hidden alert descriptions.
+  .ant-alert-description {
+    display: block;
+  }
+
+  .ant-alert-with-description .ant-alert-message {
+    color: inherit;
+  }
+
+  // Remove background color of collapse component.
+  .ant-collapse-borderless {
+    background-color: transparent;
+  }
+
+  .ant-collapse-borderless > .ant-collapse-item {
+    border-bottom-color: #303030;
+  }
+
+  // Remove white background of sortable table columns.
+  td.ant-table-column-sort {
+    background: none;
+  }
+
+  // Fix arrow color.
+  .ant-popover-arrow {
+    border-top-color: #1f1f1f !important;
+    border-left-color: #1f1f1f !important;
+  }
+
+  // Sidebar collapse trigger styling.
+  .ant-layout-sider-trigger {
+    background: #141414;
+    border-right: 1px solid #303030;
+    border-top: 1px solid #303030;
+
+    :hover, :active {
+      background: #1f1f1f;
+      color: #fff;
+    }
+  }
+
+  .ant-layout-sider-collapsed {
+    .ant-layout-sider-trigger {
+      background: #1f1f1f;
+      color: #fff;
+    }
+  }
+
+  // Fix collapse header color.
+  .ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    color: #fff;
+  }
+
+  // Fix progress bar status icon on the next line.
+  .ant-progress-show-info .ant-progress-outer {
+    margin-right: calc(-2em - 8px);
+    padding-right: calc(2em + 8px);
+  }
+
+  // Adjus list items separator.
+  .ant-list-split .ant-list-item {
+    border-bottom: 1px solid #303030;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  // Fix disabled select color.
+  .ant-select-disabled.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+    background: none;
+    color: #434343;
+  }
+
+  .ant-tag-checkable-checked {
+    border-color: #fff;
+  }
+
+  // Fix tree hover and selected elements.
+  .ant-tree .ant-tree-node-content-wrapper:hover,
+  .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected {
+    background: #1f1f1f;
+  }
+
+  .ant-typography code {
+    background: #303030;
+  }
+
+  // Fix tabs design.
+  .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-active {
+    background: transparent;
+    border-color: var(--border-color);
+    color: #fff;
+  }
+
+  // Fix divider styling.
+  .ant-divider-horizontal.ant-divider-with-text {
+    color: #777;
+  }
+
+  .ant-divider-horizontal.ant-divider-with-text::before, .ant-divider-horizontal.ant-divider-with-text::after {
+    border-color: var(--border-color);
+  }
+
+  .ant-progress-success-bg, .ant-progress-bg {
+    background: var(--blue-color);
+  }
+}

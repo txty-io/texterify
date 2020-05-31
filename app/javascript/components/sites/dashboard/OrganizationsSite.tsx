@@ -9,6 +9,16 @@ import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { ListContent } from "../../ui/ListContent";
 import { OrganizationAvatar } from "../../ui/OrganizationAvatar";
 import { PrimaryButton } from "../../ui/PrimaryButton";
+import styled from "styled-components";
+
+const OrganizationInfoWrapper = styled.div`
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    .dark-theme & {
+        color: #fff;
+    }
+`;
 
 type IProps = RouteComponentProps;
 interface IState {
@@ -139,10 +149,10 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
                                                         })}
                                                         style={{ marginRight: 16 }}
                                                     />
-                                                    <div>
+                                                    <OrganizationInfoWrapper>
                                                         {item.name}
                                                         <div style={{ fontSize: 12 }}>{item.description}</div>
-                                                    </div>
+                                                    </OrganizationInfoWrapper>
                                                 </ListContent>
                                             }
                                         />

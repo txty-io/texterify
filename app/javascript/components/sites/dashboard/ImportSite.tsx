@@ -12,6 +12,23 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import FlagIcon from "../../ui/FlagIcons";
 import { LoadingOverlay } from "../../ui/LoadingOverlay";
 import { Styles } from "../../ui/Styles";
+import styled from "styled-components";
+
+const DropZoneWrapper = styled.div`
+    width: 100%;
+    height: 128px;
+    border: 1px dashed #bbb;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-top: 8px;
+
+    .dark-theme & {
+        border-color: #303030;
+    }
+`;
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -186,21 +203,7 @@ class ImportSite extends React.Component<IProps, IState> {
                                 >
                                     {({ getRootProps, getInputProps }) => {
                                         return (
-                                            <div
-                                                {...getRootProps()}
-                                                style={{
-                                                    width: "100%",
-                                                    height: 125,
-                                                    border: "1px dashed #bbb",
-                                                    borderRadius: 3,
-                                                    display: "flex",
-                                                    justifyContent: "center",
-                                                    alignItems: "center",
-                                                    cursor: "pointer",
-                                                    background: "#fff",
-                                                    marginTop: 10
-                                                }}
-                                            >
+                                            <DropZoneWrapper {...getRootProps()}>
                                                 {this.state.files.length > 0 ? (
                                                     <p style={{ margin: 0, display: "flex", alignItems: "center" }}>
                                                         <FileTextOutlined
@@ -218,7 +221,7 @@ class ImportSite extends React.Component<IProps, IState> {
                                                     </p>
                                                 )}
                                                 <input {...getInputProps()} accept=".json" />
-                                            </div>
+                                            </DropZoneWrapper>
                                         );
                                     }}
                                 </Dropzone>

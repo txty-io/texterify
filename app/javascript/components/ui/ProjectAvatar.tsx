@@ -2,6 +2,7 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { Styles } from "./Styles";
+import styled from "styled-components";
 
 interface IProps {
     project: any;
@@ -11,6 +12,16 @@ interface IState {
     image: any;
     loading: boolean;
 }
+
+const Avatar = styled.div`
+    background: ${Styles.COLOR_PRIMARY_LIGHT};
+    color: ${Styles.COLOR_PRIMARY};
+
+    .dark-theme & {
+        background: #88a5ff26;
+        color: #fff;
+    }
+`;
 
 @observer
 class ProjectAvatar extends React.Component<IProps, IState> {
@@ -45,12 +56,10 @@ class ProjectAvatar extends React.Component<IProps, IState> {
                     />
                 )}
                 {!hasImage && (
-                    <div
+                    <Avatar
                         style={{
                             height: 40,
                             width: 40,
-                            background: Styles.COLOR_PRIMARY_LIGHT,
-                            color: Styles.COLOR_PRIMARY,
                             borderRadius: Styles.DEFAULT_BORDER_RADIUS,
                             lineHeight: 0,
                             display: "flex",
@@ -64,7 +73,7 @@ class ProjectAvatar extends React.Component<IProps, IState> {
                         {this.props.project &&
                             this.props.project.attributes &&
                             this.props.project.attributes.name.substr(0, 2)}
-                    </div>
+                    </Avatar>
                 )}
             </div>
         );

@@ -3,10 +3,34 @@ import * as React from "react";
 import { UsersAPI } from "../api/v1/UsersAPI";
 import { authStore } from "../stores/AuthStore";
 import { Styles } from "./Styles";
+import styled from "styled-components";
+
+const DARK_BACKGROUND = "rgba(255, 255, 255, 0.15)";
+const DARK_COLOR = "#fff";
+
+const UserAvatarWrapper = styled.div`
+    height: 40px;
+    width: 40px;
+    background: ${Styles.COLOR_PRIMARY_LIGHT};
+    color: #000;
+
+    .dark-theme & {
+        background: ${DARK_BACKGROUND};
+        color: ${DARK_COLOR};
+    }
+
+    border-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
+    line-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    font-size: 14px;
+`;
 
 interface IProps {
     user: any;
-    light?: boolean;
+    forceDark?: boolean;
     style?: React.CSSProperties;
 }
 interface IState {
@@ -52,24 +76,15 @@ class UserAvatar extends React.Component<IProps, IState> {
                     />
                 )}
                 {!hasImage && (
-                    <div
+                    <UserAvatarWrapper
                         style={{
-                            height: 40,
-                            width: 40,
-                            background: this.props.light ? "rgba(255, 255, 255, 0.15)" : Styles.COLOR_PRIMARY_LIGHT,
-                            color: this.props.light ? "#fff" : Styles.COLOR_PRIMARY,
-                            borderRadius: Styles.DEFAULT_BORDER_RADIUS,
-                            lineHeight: 0,
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            textTransform: "uppercase",
-                            fontSize: 14,
+                            background: this.props.forceDark ? DARK_BACKGROUND : undefined,
+                            color: this.props.forceDark ? DARK_COLOR : undefined,
                             ...this.props.style
                         }}
                     >
                         {this.props.user && this.props.user.username && this.props.user.username.substr(0, 2)}
-                    </div>
+                    </UserAvatarWrapper>
                 )}
             </div>
         );

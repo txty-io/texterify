@@ -37,10 +37,8 @@ class UserSettingsSidebar extends React.Component<IProps, IState> {
         return this.navigationData.map((data: INavigationData, index: number) => {
             return (
                 <Menu.Item key={index}>
-                    <data.icon className="nav-text" />
-                    <Link to={data.path} className="nav-text">
-                        {data.text}
-                    </Link>
+                    <data.icon />
+                    <Link to={data.path}>{data.text}</Link>
                 </Menu.Item>
             );
         });
@@ -64,12 +62,7 @@ class UserSettingsSidebar extends React.Component<IProps, IState> {
                     id="sidebar"
                     style={{ boxShadow: "rgba(61, 172, 206, 0.05) 0px 0px 24px" }}
                 >
-                    <Menu
-                        mode="inline"
-                        selectedKeys={this.getSelectedItem()}
-                        style={{ height: "100%" }}
-                        className="dashboard-sidebar-menu"
-                    >
+                    <Menu mode="inline" selectedKeys={this.getSelectedItem()} style={{ height: "100%" }}>
                         {this.renderMenuItems()}
                     </Menu>
                 </Layout.Sider>

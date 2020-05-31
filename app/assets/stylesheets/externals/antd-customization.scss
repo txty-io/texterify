@@ -6,6 +6,11 @@ $color: #4170ff;
   flex-grow: 1;
   min-height: 100%;
 
+  .ant-layout-header {
+    background: #141414;
+    border-bottom: 1px solid #303030;
+  }
+
   .popover-no-padding {
     .ant-popover-inner-content {
       padding: 8px 0;
@@ -99,12 +104,6 @@ $color: #4170ff;
     text-decoration: none;
   }
 
-  .ant-menu-inline-collapsed {
-    .nav-text {
-      overflow: visible !important;
-    }
-  }
-
   .ant-layout-header {
     height: 58px;
     line-height: 0;
@@ -124,11 +123,6 @@ $color: #4170ff;
     line-height: 40px;
   }
 
-  /* Set background color of content area. */
-  .ant-layout, .ant-timeline-item-head, .ant-collapse-borderless {
-    background: #fefeff;
-  }
-
   .ant-table-tbody .ant-form-item-control {
     line-height: 0;
   }
@@ -136,10 +130,6 @@ $color: #4170ff;
   .ant-btn {
     padding-left: 18px;
     padding-right: 18px;
-  }
-
-  .ant-layout-sider-trigger {
-    background: #fff;
   }
 
   .ce-block__content {
@@ -160,10 +150,6 @@ $color: #4170ff;
 
   .cdx-list--ordered {
     list-style: decimal;
-  }
-
-  .ant-progress-bg {
-    background: #000;
   }
 
   .ant-progress-status-success .ant-progress-bg {
@@ -215,6 +201,10 @@ $color: #4170ff;
   // Show expand icon in the middle of the column also for smaller table sizes.
   .ant-table-row-expand-icon-cell {
     padding: 12px 16px;
+  }
+
+  .ant-collapse-borderless {
+    background: transparent;
   }
 }
 

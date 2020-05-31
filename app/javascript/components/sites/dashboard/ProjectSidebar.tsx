@@ -1,43 +1,28 @@
+import {
+    ClusterOutlined,
+    DownloadOutlined,
+    ExportOutlined,
+    GlobalOutlined,
+    HomeOutlined,
+    ImportOutlined,
+    KeyOutlined,
+    LineChartOutlined,
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
+    SettingOutlined,
+    TeamOutlined
+} from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { CollapseType } from "antd/lib/layout/Sider";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import styled from "styled-components";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
-import { Styles } from "../../ui/Styles";
 import { ROLES_DEVELOPER_UP, ROLES_MANAGER_UP } from "../../utilities/PermissionUtils";
-import {
-    KeyOutlined,
-    HomeOutlined,
-    GlobalOutlined,
-    ExportOutlined,
-    DownloadOutlined,
-    ClusterOutlined,
-    SettingOutlined,
-    ImportOutlined,
-    LineChartOutlined,
-    TeamOutlined,
-    MenuUnfoldOutlined,
-    MenuFoldOutlined
-} from "@ant-design/icons";
+import { SidebarTrigger } from "../../ui/SidebarTrigger";
 const { Sider } = Layout;
-
-const SidebarTrigger = styled.div`
-    width: 100%;
-    height: 100%;
-    background: #fff;
-    color: #333;
-    border-right: 1px solid #e8e8e8;
-    transition: 0.2s all;
-
-    &:hover {
-        color: ${Styles.COLOR_PRIMARY};
-        background: ${Styles.COLOR_PRIMARY_LIGHT};
-    }
-`;
 
 interface INavigationData {
     icon: any;
@@ -151,7 +136,6 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                         ":projectId",
                         dashboardStore.currentProject && dashboardStore.currentProject.id
                     )}
-                    className="nav-text"
                     style={{ overflow: "hidden", textOverflow: "ellipsis" }}
                 >
                     <span style={{ fontWeight: "bold" }}>
@@ -171,8 +155,8 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                             key={index}
                             disabled={!this.isMenuItemEnabled(data.roles)}
                             title={
-                                <div className="nav-text">
-                                    <data.icon className="nav-text" style={{ marginRight: 8 }} />
+                                <div>
+                                    <data.icon />
                                     <span>{data.text}</span>
                                 </div>
                             }
@@ -186,8 +170,8 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                                         key={`${index}-${submenuIndex}`}
                                         disabled={!this.isMenuItemEnabled(subMenuItem.roles)}
                                     >
-                                        <Link to={subMenuItem.path} className="nav-text">
-                                            <subMenuItem.icon className="nav-text" style={{ marginRight: 8 }} />
+                                        <Link to={subMenuItem.path}>
+                                            <subMenuItem.icon />
                                             <span>{subMenuItem.text}</span>
                                         </Link>
                                     </Menu.Item>
@@ -198,8 +182,8 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 }
 
                 const menuItem = (
-                    <Link to={data.path} className="nav-text">
-                        <data.icon className="nav-text" style={{ marginRight: 8 }} />
+                    <Link to={data.path}>
+                        <data.icon />
                         <span>{data.text}</span>
                     </Link>
                 );
@@ -243,12 +227,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
 
     renderSidebarTrigger = () => {
         return (
-            <SidebarTrigger
-                style={{
-                    background: dashboardStore.sidebarMinimized ? Styles.COLOR_PRIMARY_LIGHT : undefined,
-                    color: dashboardStore.sidebarMinimized ? Styles.COLOR_SECONDARY : undefined
-                }}
-            >
+            <SidebarTrigger>
                 {dashboardStore.sidebarMinimized ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             </SidebarTrigger>
         );
@@ -265,15 +244,9 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     collapsed={dashboardStore.sidebarMinimized}
                     onCollapse={this.onCollapse}
                     trigger={this.renderSidebarTrigger()}
-                    style={{ boxShadow: "rgba(61, 172, 206, 0.05) 0px 0px 24px" }}
+                    style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 24px" }}
                 >
-                    <Menu
-                        mode="vertical"
-                        inlineIndent={40}
-                        selectedKeys={this.getSelectedItem()}
-                        style={{ height: "100%" }}
-                        className="dashboard-sidebar-menu"
-                    >
+                    <Menu mode="inline" selectedKeys={this.getSelectedItem()} style={{ height: "100%" }}>
                         {this.renderMenuItems()}
                     </Menu>
                 </Sider>
