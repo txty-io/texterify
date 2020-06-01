@@ -250,7 +250,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                     </div>
                 ) : (
                     <TextArea
-                        autoSize={{ minRows: 4, maxRows: 6 }}
+                        autoSize={{ minRows: 4, maxRows: 12 }}
                         placeholder="Language translation content"
                         onChange={(event) => {
                             const changed = event.target.value !== this.state.translationForLanguage;
