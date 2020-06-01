@@ -115,10 +115,8 @@ class KeysSite extends React.Component<IProps, IState> {
                 projectColumns: projectColumns,
                 exportConfigsResponse: exportConfigsResponse
             });
-        } catch (err) {
-            if (!err.isCanceled) {
-                console.error(err);
-            }
+        } catch (error) {
+            console.error(error);
         }
     }
 
@@ -130,10 +128,8 @@ class KeysSite extends React.Component<IProps, IState> {
                 keys: responseKeys.data,
                 keysResponse: responseKeys
             });
-        } catch (err) {
-            if (!err.isCanceled) {
-                console.error(err);
-            }
+        } catch (error) {
+            console.error(error);
         }
         this.setState({ keysLoading: false });
     };
@@ -143,12 +139,22 @@ class KeysSite extends React.Component<IProps, IState> {
     };
 
     getColumns = () => {
+        const filteredLanguages = this.state.languages.filter((language) => {
+            return _.find(this.state.projectColumns.included, (o) => {
+                return o.attributes.id === language.attributes.id;
+            });
+        });
+
         const columns = [];
 
         columns.push({
             title: "Tags",
             dataIndex: "tags",
-            key: "tags"
+            key: "tags",
+            width:
+                filteredLanguages.length > 0 || this.isNameColumnVisible() || this.isDescriptionColumnVisible()
+                    ? 80
+                    : undefined
         });
 
         if (this.isNameColumnVisible()) {
@@ -164,7 +170,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 sorter: (a, b) => {
                     return sortStrings(a.name, b.name, true);
                 },
-                width: 400
+                width: filteredLanguages.length > 0 || this.isDescriptionColumnVisible() ? 400 : undefined
             });
         }
 
@@ -176,16 +182,9 @@ class KeysSite extends React.Component<IProps, IState> {
                 editable: true,
                 sorter: (a, b) => {
                     return sortStrings(a.description, b.description, true);
-                },
-                width: 400
+                }
             });
         }
-
-        const filteredLanguages = this.state.languages.filter((language) => {
-            return _.find(this.state.projectColumns.included, (o) => {
-                return o.attributes.id === language.attributes.id;
-            });
-        });
 
         const languageColumns = filteredLanguages.map((language) => {
             const countryCode = APIUtils.getIncludedObject(
@@ -208,8 +207,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 ),
                 dataIndex: `language-${language.id}`,
                 key: `language-${language.id}`,
-                editable: true,
-                width: 400
+                editable: true
             };
         }, []);
 
@@ -249,7 +247,11 @@ class KeysSite extends React.Component<IProps, IState> {
             });
 
             return {
-                tags: key.attributes.html_enabled ? <Tag color="magenta">HTML</Tag> : undefined,
+                tags: key.attributes.html_enabled ? (
+                    <Tag color="magenta" style={{ margin: 0 }}>
+                        HTML
+                    </Tag>
+                ) : undefined,
                 key: key.attributes.id,
                 keyId: key.attributes.id,
                 name: key.attributes.name,
@@ -288,7 +290,6 @@ class KeysSite extends React.Component<IProps, IState> {
                                     style={{
                                         cursor: "pointer",
                                         padding: "8px 16px",
-                                        borderTop: "1px solid #fcfcfc",
                                         display: "flex",
                                         alignItems: "center"
                                     }}
@@ -783,7 +784,6 @@ class KeysSite extends React.Component<IProps, IState> {
                         keyName={this.state.keyToShowHistory && this.state.keyToShowHistory.attributes.name}
                         onTranslationRestored={async () => {
                             await this.reloadTable();
-                            this.setState({ keyToShowHistory: null });
                         }}
                     />
                 </Drawer>
