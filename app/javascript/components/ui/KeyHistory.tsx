@@ -146,7 +146,7 @@ class KeyHistory extends React.Component<IProps, IState> {
                                         await TranslationsAPI.createTranslation({
                                             projectId: key.attributes.project_id,
                                             keyId: key.id,
-                                            languageId: key.language_id,
+                                            languageId: translationLanguageId,
                                             content: newContent
                                         });
                                         this.props.onTranslationRestored();
