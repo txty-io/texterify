@@ -1,7 +1,7 @@
 class Key < ApplicationRecord
   has_paper_trail
 
-  default_scope { order('lower(keys.name) ASC') }
+  default_scope { order(arel_table['name'].lower.asc) }
 
   belongs_to :project
   has_many :translations, dependent: :destroy

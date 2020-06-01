@@ -1,5 +1,5 @@
 class Project < ApplicationRecord
-  default_scope { order('lower(projects.name) ASC') }
+  default_scope { order(arel_table['name'].lower.asc) }
 
   validates :name, presence: true
 
