@@ -2,7 +2,7 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
   def index
     skip_authorization
     project = current_user.projects.find(params[:project_id])
-    export_configs = project.export_configs
+    export_configs = project.export_configs.order_by_name
     render json: ExportConfigSerializer.new(export_configs).serialized_json
   end
 

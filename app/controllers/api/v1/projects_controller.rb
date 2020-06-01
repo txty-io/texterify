@@ -56,7 +56,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     options[:meta] = { total: projects.count }
     options[:include] = [:organization]
     options[:params] = { current_user: current_user }
-    render json: ProjectSerializer.new(projects.offset(page * per_page).limit(per_page), options).serialized_json, status: :ok
+    render json: ProjectSerializer.new(projects.order_by_name.offset(page * per_page).limit(per_page), options).serialized_json, status: :ok
   end
 
   def create
@@ -149,10 +149,10 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
     begin
       Zip::File.open(file.path, Zip::File::CREATE) do |zip|
-        project.languages.each do |language|
+        project.languages.order_by_name.each do |language|
           # Create the file content for a language.
           export_data = {}
-          project.keys.each do |key|
+          project.keys.order_by_name.each do |key|
             key_translation_export_config = key.translations.where(language_id: language.id, export_config_id: export_config.id).first
             key_translation = key_translation_export_config || key.translations.where(language_id: language.id).first
             if key_translation.nil?

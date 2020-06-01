@@ -55,7 +55,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     options[:meta] = { total: keys.count }
     options[:include] = [:translations, :'translations.language']
     render json: KeySerializer.new(
-      keys.offset(page * per_page).limit(per_page),
+      keys.order_by_name.offset(page * per_page).limit(per_page),
       options
     ).serialized_json
   end

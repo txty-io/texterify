@@ -1,5 +1,5 @@
 class Organization < ApplicationRecord
-  default_scope { order(arel_table['name'].lower.asc) }
+  scope :order_by_name, -> { order(arel_table['name'].lower.asc) }
 
   validates :name, uniqueness: true, presence: true
 

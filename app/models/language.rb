@@ -1,5 +1,5 @@
 class Language < ApplicationRecord
-  default_scope { order(arel_table['name'].lower.asc) }
+  scope :order_by_name, -> { order(arel_table['name'].lower.asc) }
 
   belongs_to :project
   belongs_to :country_code, optional: true

@@ -29,7 +29,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     options[:meta] = { total: languages.count }
     options[:include] = [:country_code, :language_code]
     render json: LanguageSerializer.new(
-      languages.offset(page * per_page).limit(per_page),
+      languages.order_by_name.offset(page * per_page).limit(per_page),
       options
     ).serialized_json
   end
