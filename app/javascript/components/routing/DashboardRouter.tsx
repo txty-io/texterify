@@ -167,8 +167,6 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             </MenuList>
                         </ul>
 
-                        <DarkModeToggle style={{ marginRight: 40 }} />
-
                         {this.props.match.params.projectId && (
                             <TranslateButton
                                 type="primary"
@@ -184,6 +182,9 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 Translate
                             </TranslateButton>
                         )}
+
+                        <DarkModeToggle style={{ marginRight: 40 }} />
+
                         <UserProfileHeader />
                     </antd.Layout.Header>
                     <antd.Layout>

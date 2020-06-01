@@ -82,7 +82,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
             <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
                 <Breadcrumbs breadcrumbName="projectExportDownload" />
                 <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, maxWidth: 400 }}>
-                    <h1>Download</h1>
+                    <h1>Download translations</h1>
                     {this.state.languagesLoaded && this.state.languages.length === 0 && (
                         <>
                             <Alert
@@ -113,7 +113,6 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                     {this.hasExportConfigs() && this.state.languages.length > 0 && (
                         <div style={{ display: "flex" }}>
                             <div style={{ display: "flex", flexDirection: "column", marginRight: 16 }}>
-                                <h3>Export configuration</h3>
                                 <p>The configuration specifies the format of your exported files and translations.</p>
                                 <Select
                                     placeholder="Select a configuration"

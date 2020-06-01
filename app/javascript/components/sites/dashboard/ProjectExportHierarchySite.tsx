@@ -196,7 +196,7 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
                         maxWidth: 800
                     }}
                 >
-                    <h1>Hierarchy</h1>
+                    <h1>Export Hierarchy</h1>
                     <p>
                         Build a hierarchy by making use of drag and drop to specify which translations should be used
                         when there is no translation for the key available. If a translation is not found the hierarchy

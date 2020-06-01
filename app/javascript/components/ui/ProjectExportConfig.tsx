@@ -5,6 +5,7 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
 import { FileFormatOptions } from "../configs/FileFormatOptions";
+import { Styles } from "./Styles";
 
 interface IProps {
     exportConfig: any;
@@ -30,26 +31,30 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
         });
 
         return (
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    fontSize: 14,
+                    flexWrap: "wrap",
+                    wordBreak: "break-word"
+                }}
+            >
                 {splitted.map((split, index) => {
                     if (split === "{languageCode}") {
                         return (
-                            <Tag color="geekblue" key={index} style={{ margin: "0 2px 0 0" }}>
+                            <span key={index} style={{ color: Styles.COLOR_SECONDARY }}>
                                 {"{languageCode}"}
-                            </Tag>
+                            </span>
                         );
                     } else if (split === "{countryCode}") {
                         return (
-                            <Tag color="geekblue" key={index} style={{ margin: "0 2px 0 0" }}>
+                            <span key={index} style={{ color: Styles.COLOR_SECONDARY }}>
                                 {"{countryCode}"}
-                            </Tag>
+                            </span>
                         );
                     } else {
-                        return (
-                            <Tag color="#fff" key={index} style={{ margin: "0 2px 0 0", padding: 0, color: "#000" }}>
-                                {split}
-                            </Tag>
-                        );
+                        return <span key={index}>{split}</span>;
                     }
                 })}
             </div>
@@ -198,7 +203,7 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
 
                             {this.props.exportConfig.attributes.default_language_file_path && (
                                 <div style={{ marginTop: 16 }}>
-                                    <h4 style={{ fontWeight: "bold" }}>Default language file path:</h4>
+                                    <h4 style={{ fontWeight: "bold" }}>Default language export file path:</h4>
                                     {this.prettifyFilePath(
                                         this.props.exportConfig.attributes.default_language_file_path
                                     )}

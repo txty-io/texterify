@@ -101,7 +101,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
             <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
                 <Breadcrumbs breadcrumbName="projectExportConfigurations" />
                 <Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}>
-                    <h1>Configurations</h1>
+                    <h1>Export Configurations</h1>
                     <p>Specify in which formats you can export your translations.</p>
                     <div style={{ marginBottom: 8 }}>
                         <Button
