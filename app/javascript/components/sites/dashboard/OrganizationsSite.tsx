@@ -121,7 +121,7 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
                         </div>
 
                         <List
-                            size="small"
+                            size="default"
                             locale={{
                                 emptyText: (
                                     <Empty description="No organizations found" image={Empty.PRESENTED_IMAGE_SIMPLE} />
