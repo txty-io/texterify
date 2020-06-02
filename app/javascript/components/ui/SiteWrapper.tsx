@@ -22,7 +22,7 @@ class SiteWrapper extends React.Component<IProps> {
                     style={{
                         background: "#000",
                         width: "50%",
-                        height: "100%",
+                        minHeight: "100%",
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
