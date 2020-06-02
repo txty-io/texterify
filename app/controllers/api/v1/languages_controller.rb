@@ -22,11 +22,10 @@ class Api::V1::LanguagesController < Api::V1::ApiController
           'name ilike :search',
           search: "%#{params[:search]}%"
         )
-        .distinct
     end
 
     options = {}
-    options[:meta] = { total: languages.count }
+    options[:meta] = { total: languages.size }
     options[:include] = [:country_code, :language_code]
     render json: LanguageSerializer.new(
       languages.order_by_name.offset(page * per_page).limit(per_page),

@@ -53,7 +53,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
                end
 
     options = {}
-    options[:meta] = { total: projects.count }
+    options[:meta] = { total: projects.size }
     options[:include] = [:organization]
     options[:params] = { current_user: current_user }
     render json: ProjectSerializer.new(projects.order_by_name.offset(page * per_page).limit(per_page), options).serialized_json, status: :ok

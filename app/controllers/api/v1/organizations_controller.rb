@@ -52,7 +52,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
                     end
 
     options = {}
-    options[:meta] = { total: organizations.count }
+    options[:meta] = { total: organizations.size }
     options[:params] = { current_user: current_user }
     render json: OrganizationSerializer.new(organizations.order_by_name.offset(page * per_page).limit(per_page), options).serialized_json, status: :ok
   end
