@@ -32,7 +32,7 @@ class Api::V1::KeysController < Api::V1::ApiController
       per_page = 10 if per_page < 1
     end
 
-    keys = project.keys
+    keys = project.keys.order_by_name
     if params[:search]
       keys = project.keys
         .left_outer_joins(:translations)
@@ -48,14 +48,15 @@ class Api::V1::KeysController < Api::V1::ApiController
             search: "%#{params[:search]}%"
           )
         )
-        .distinct
+        .order_by_name
+        .select('distinct on (lower("keys"."name")) keys.*')
     end
 
     options = {}
-    options[:meta] = { total: keys.count }
+    options[:meta] = { total: keys.size }
     options[:include] = [:translations, :'translations.language']
     render json: KeySerializer.new(
-      keys.order_by_name.offset(page * per_page).limit(per_page),
+      keys.offset(page * per_page).limit(per_page),
       options
     ).serialized_json
   end
