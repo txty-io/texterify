@@ -60,7 +60,7 @@ $color: #4170ff;
   }
 
   .editable-row:hover .editable-cell-value-wrap {
-    border-color: #d9d9d9;
+    border-color: var(--border-color-flashier);
   }
 
   .ant-table td {
@@ -201,18 +201,12 @@ $color: #4170ff;
   .ant-collapse-borderless {
     background: transparent;
   }
-}
 
-.keys-table-platform-overrides {
-  .ant-table-small {
-    border: 0;
-
-    .ant-table-content > .ant-table-body {
-      margin: 0;
-    }
+  .ant-table-tbody > tr .ant-table-wrapper:only-child .ant-table-tbody > tr > td:last-child {
+    border-right: 0;
   }
 
-  th:last-child {
-    border-right: 0 !important;
+  .ant-table .ant-table .ant-table-container {
+    border-top: 0;
   }
 }
