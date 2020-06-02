@@ -93,7 +93,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                 <antd.Layout>
                     <antd.Layout.Header
                         style={{
-                            padding: "0 16px",
+                            padding: "0 24px",
                             display: "flex",
                             alignItems: "center",
                             color: "#fff",
@@ -112,6 +112,16 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     color: "#fff"
                                 }}
                             >
+                                <div
+                                    style={{
+                                        width: 12,
+                                        height: 12,
+                                        border: "2px solid #fff",
+                                        borderRadius: 100,
+                                        display: "inline-block",
+                                        marginRight: 12
+                                    }}
+                                />
                                 texterify
                             </h1>
                         </Link>
