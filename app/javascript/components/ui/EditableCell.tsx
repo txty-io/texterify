@@ -68,12 +68,16 @@ export const EditableCell: React.FC<IEditableCellProps> = ({
         }
     };
 
-    const save = async (e) => {
+    const save = async () => {
         try {
             const values = await form.validateFields();
 
             toggleEdit();
-            handleSave({ ...record, ...values });
+
+            // Only save changes if content changed.
+            if (values[dataIndex] !== children[1]) {
+                handleSave({ ...record, ...values });
+            }
         } catch (errInfo) {
             console.log("Save failed:", errInfo);
         }
