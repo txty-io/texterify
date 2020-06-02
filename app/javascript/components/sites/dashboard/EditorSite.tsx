@@ -162,7 +162,7 @@ class EditorSite extends React.Component<IProps, IState> {
             <Layout>
                 <Layout.Header
                     style={{
-                        padding: "0 16px",
+                        padding: "0 24px",
                         display: "flex",
                         alignItems: "center",
                         color: "#fff",
