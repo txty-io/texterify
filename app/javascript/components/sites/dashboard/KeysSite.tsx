@@ -91,7 +91,7 @@ class KeysSite extends React.Component<IProps, IState> {
         editTranslationKeyId: "",
         editTranslationKeyReponse: null,
         editTranslationLanguageId: "",
-        editTranslationExportConfigId: "",
+        editTranslationExportConfigId: null,
         editTranslationContentChanged: false,
         keyToEdit: null,
         keyToShowHistory: null,
@@ -118,6 +118,11 @@ class KeysSite extends React.Component<IProps, IState> {
         } catch (error) {
             console.error(error);
         }
+
+        // On resize redraw the table so the width of the columns get recalculated.
+        window.addEventListener("resize", () => {
+            this.setState(this.state);
+        });
     }
 
     fetchKeys = async (options?: any) => {
@@ -163,9 +168,6 @@ class KeysSite extends React.Component<IProps, IState> {
                 dataIndex: "name",
                 key: "name",
                 editable: true,
-                // render: (value) => {
-                //   return <span style={{ fontFamily: "'Source Code Pro', monospace", display: "flex" }}>{value}</span>;
-                // },
                 defaultSortOrder: "ascend",
                 sorter: (a, b) => {
                     return sortStrings(a.name, b.name, true);
@@ -194,7 +196,7 @@ class KeysSite extends React.Component<IProps, IState> {
 
             return {
                 title: (
-                    <span>
+                    <span data-language-column={language.id}>
                         {countryCode ? (
                             <span style={{ marginRight: 8 }}>
                                 <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
@@ -215,9 +217,10 @@ class KeysSite extends React.Component<IProps, IState> {
             ...columns,
             ...languageColumns,
             {
+                title: <span data-more-column />,
                 dataIndex: "more",
                 key: "more",
-                width: 56
+                width: 72
             }
         ];
     };
@@ -380,6 +383,11 @@ class KeysSite extends React.Component<IProps, IState> {
         });
 
         this.setState({ projectColumns: projectColumns || [] });
+
+        // Set the whole state because otherwise the subtable column widths are not calculated correctly.
+        setTimeout(() => {
+            this.setState(this.state);
+        });
     };
 
     getSelectedLanguageColumnIds = () => {
@@ -659,28 +667,56 @@ class KeysSite extends React.Component<IProps, IState> {
                                                   htmlEnabled: currentKey.attributes.html_enabled,
                                                   exportConfigName: exportConfig.attributes.name,
                                                   exportConfigId: exportConfig.id,
-                                                  ...translations,
-                                                  width: 200
+                                                  ...translations
+                                                  //   more: <MoreOutlined style={{ width: 40 }} />
                                               });
                                           });
 
+                                          const columns: any = [
+                                              {
+                                                  title: "Export Configuration",
+                                                  dataIndex: "exportConfigName",
+                                                  key: "exportConfigName"
+                                              }
+                                          ]
+                                              .concat(
+                                                  this.getColumns().filter((column) => {
+                                                      return (
+                                                          column.key.startsWith("language-") || column.key === "more"
+                                                      );
+                                                  })
+                                              )
+                                              .map((column) => {
+                                                  if (column.key.startsWith("language-")) {
+                                                      return {
+                                                          ...column,
+                                                          width: document
+                                                              .querySelector(
+                                                                  `[data-language-column="${column.key.slice(
+                                                                      "language-".length
+                                                                  )}"]`
+                                                              )
+                                                              ?.parentElement.getBoundingClientRect().width
+                                                      };
+                                                  } else if (column.key === "more") {
+                                                      return {
+                                                          ...column,
+                                                          width: document
+                                                              .querySelector("[data-more-column]")
+                                                              ?.parentElement.getBoundingClientRect().width
+                                                      };
+                                                  } else {
+                                                      return column;
+                                                  }
+                                              });
+
+                                          // Remove one 1px width from the last column.
+                                          // Otherwise the borders do not align.
+                                          columns[columns.length - 1].width = columns[columns.length - 1].width - 1;
+
                                           return (
                                               <EditableTable
-                                                  columns={[
-                                                      {
-                                                          title: "Export Configuration",
-                                                          dataIndex: "exportConfigName",
-                                                          key: "exportConfigName"
-                                                      }
-                                                  ].concat(
-                                                      this.getColumns().filter((column) => {
-                                                          return (
-                                                              column.key.startsWith("language-") ||
-                                                              column.key === "more"
-                                                          );
-                                                      })
-                                                  )}
-                                                  className="keys-table-platform-overrides"
+                                                  columns={columns}
                                                   dataSource={data}
                                                   pagination={false}
                                                   bordered={false}
