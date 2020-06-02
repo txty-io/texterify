@@ -9,7 +9,7 @@ class AccountConfirmationSite extends React.Component {
         return (
             <SiteWrapper>
                 <SiteWrapperHeader>You have successfully confirmed your account.</SiteWrapperHeader>
-                <p>Everything is set up</p>
+                <p>Everything is set up.</p>
                 <Link to={Routes.AUTH.LOGIN}>Go to login</Link>
             </SiteWrapper>
         );
