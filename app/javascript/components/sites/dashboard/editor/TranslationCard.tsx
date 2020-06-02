@@ -15,13 +15,13 @@ const EMPTY_EDITOR_HEIGHT = 108;
 
 const EditorWrapper = styled.div`
     background: #fff;
-    border: 1px solid #e8e8e8;
+    border: 1px solid var(--border-color-flashier);
     padding: 12px 24px 12px 40px;
     border-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
     transition: all 0.3s;
 
-    &:hover {
-        border: 1px solid ${Styles.COLOR_PRIMARY};
+    .dark-theme & {
+        background: transparent;
     }
 `;
 
