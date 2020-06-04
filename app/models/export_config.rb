@@ -111,7 +111,11 @@ class ExportConfig < ApplicationRecord
 
   def ios(language, export_data)
     language_file = Tempfile.new(language.id.to_s)
-    export_data.each { |key, value| language_file.puts('"' + key.to_s + '" = "' + value.to_s + '";') }
+    export_data.each do |key, value|
+      # Replace " with \" but don't escape \" again.
+      escaped_value = value.gsub(/(?<!\\)"/, '\\"')
+      language_file.puts('"' + key.to_s + '" = "' + escaped_value + '";')
+    end
     language_file.close
 
     language_file
