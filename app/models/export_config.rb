@@ -96,7 +96,8 @@ class ExportConfig < ApplicationRecord
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.resources do
         export_data.each do |key, value|
-          xml.string value, name: key
+          # Replace ' with \' but don't escape \' again.
+          xml.string value.gsub(/(?<!\\)'/, "\\\\'"), name: key
         end
       end
     end
