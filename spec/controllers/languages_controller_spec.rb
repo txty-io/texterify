@@ -9,7 +9,7 @@ RSpec.describe Api::V1::LanguagesController, type: :request do
     project_user = ProjectUser.new
     project_user.project = @project
     project_user.user = @user
-    project_user.role = "owner"
+    project_user.role = 'owner'
     project_user.save!
   end
 
