@@ -82,6 +82,29 @@ class Api::V1::KeysController < Api::V1::ApiController
     key = project.keys.find(params[:id])
     authorize key
 
+    # If the type of the key changes we also update the translations and convert between the
+    # text and HTML editor format.
+    if params.key?(:html_enabled) && params[:html_enabled] != key.html_enabled
+      key.translations.each do |translation|
+        if params[:html_enabled]
+          translation.content = {
+            "blocks": [
+              {
+                "type": 'paragraph',
+                "data": {
+                  "text": translation.content
+                }
+              }
+            ]
+          }.to_json
+        else
+          translation.content = helpers.convert_html_translation(translation.content)
+        end
+
+        translation.save!
+      end
+    end
+
     if key.update(permitted_attributes(key))
       render json: {
         message: 'key updated'
