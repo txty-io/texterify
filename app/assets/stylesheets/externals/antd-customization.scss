@@ -209,4 +209,9 @@ $color: #4170ff;
   .ant-table .ant-table .ant-table-container {
     border-top: 0;
   }
+
+  // Make tables scrollable if they are too big to be displayed.
+  .ant-table-content {
+    overflow-x: auto;
+  }
 }

@@ -203,7 +203,7 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
 
                             {this.props.exportConfig.attributes.default_language_file_path && (
                                 <div style={{ marginTop: 16 }}>
-                                    <h4 style={{ fontWeight: "bold" }}>Default language export file path:</h4>
+                                    <h4 style={{ fontWeight: "bold" }}>File path default language:</h4>
                                     {this.prettifyFilePath(
                                         this.props.exportConfig.attributes.default_language_file_path
                                     )}

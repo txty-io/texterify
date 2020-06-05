@@ -196,7 +196,7 @@ class KeysSite extends React.Component<IProps, IState> {
 
             return {
                 title: (
-                    <span data-language-column={language.id}>
+                    <div data-language-column={language.id} style={{ minWidth: 160 }}>
                         {countryCode ? (
                             <span style={{ marginRight: 8 }}>
                                 <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
@@ -205,7 +205,7 @@ class KeysSite extends React.Component<IProps, IState> {
                             ""
                         )}
                         {language.attributes.name}
-                    </span>
+                    </div>
                 ),
                 dataIndex: `language-${language.id}`,
                 key: `language-${language.id}`,
