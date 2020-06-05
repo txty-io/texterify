@@ -167,7 +167,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                     projectId: this.props.projectId,
                     languageId: this.state.selectedLanguage,
                     keyId: this.props.keyResponse.data.id,
-                    exportConfigId: this.props.exportConfigId,
+                    exportConfigId: this.props.exportConfigId ? this.props.exportConfigId : undefined,
                     content: content
                 });
 
