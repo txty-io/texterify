@@ -195,10 +195,11 @@ class EditorSite extends React.Component<IProps, IState> {
                             style={{
                                 display: "flex",
                                 flexDirection: "column",
-                                flexGrow: 1,
-                                maxWidth: 300,
                                 borderRight: "1px solid var(--border-color)",
-                                overflow: "auto"
+                                overflow: "auto",
+                                flexBasis: 300,
+                                flexShrink: 0,
+                                flexGrow: 0
                             }}
                         >
                             <Search
@@ -270,10 +271,10 @@ class EditorSite extends React.Component<IProps, IState> {
                         >
                             {this.keyLoaded() && (
                                 <div className="fade-in">
-                                    <h2 style={{ fontSize: 16 }}>
+                                    <h2 style={{ fontSize: 16, wordBreak: "break-word" }}>
                                         {this.state.keyResponse && this.state.keyResponse.data.attributes.name}
                                     </h2>
-                                    <p>
+                                    <p style={{ wordBreak: "break-word" }}>
                                         {this.state.keyResponse && this.state.keyResponse.data.attributes.description}
                                     </p>
 
@@ -318,10 +319,11 @@ class EditorSite extends React.Component<IProps, IState> {
                                 style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    flexGrow: 1,
-                                    maxWidth: 400,
                                     borderLeft: "1px solid var(--border-color)",
-                                    overflow: "auto"
+                                    overflow: "auto",
+                                    flexBasis: 300,
+                                    flexShrink: 0,
+                                    flexGrow: 0
                                 }}
                             >
                                 <Tabs defaultActiveKey="history" type="card" style={{ overflow: "auto" }}>
