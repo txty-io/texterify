@@ -26,7 +26,7 @@ class ExportConfig < ApplicationRecord
   def filled_file_path(language)
     path = file_path
 
-    if language.is_default && default_language_file_path
+    if language.is_default && default_language_file_path.present?
       path = default_language_file_path
     end
 
