@@ -109,7 +109,8 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     marginRight: 24,
                                     textDecoration: "none",
                                     fontFamily: "Ubuntu",
-                                    color: "#fff"
+                                    color: "#fff",
+                                    whiteSpace: "nowrap"
                                 }}
                             >
                                 <div
