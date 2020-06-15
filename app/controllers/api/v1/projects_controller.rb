@@ -169,7 +169,8 @@ class Api::V1::ProjectsController < Api::V1::ApiController
           while parent_language.present?
             parent_language.keys.each do |key|
               if export_data[key.name].blank?
-                key_translation = key.translations.where(language_id: parent_language.id).first
+                key_translation_export_config = key.translations.where(language_id: parent_language.id, export_config_id: export_config.id).first
+                key_translation = key_translation_export_config || key.translations.where(language_id: parent_language.id).first
                 if key_translation.nil?
                   export_data[key.name] = ''
                 elsif key.html_enabled
