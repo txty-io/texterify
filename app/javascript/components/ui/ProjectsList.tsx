@@ -29,13 +29,17 @@ function ProjectsList(props: { loading: boolean; projects: any[]; included?: any
             size="default"
             loading={props.loading}
             locale={{ emptyText: <Empty description="No projects found" image={Empty.PRESENTED_IMAGE_SIMPLE} /> }}
-            dataSource={props.projects.map((project: any) => {
-                return {
-                    key: project.id,
-                    name: project.attributes.name,
-                    description: project.attributes.description
-                };
-            }, [])}
+            dataSource={props.projects
+                .sort((a, b) => {
+                    return a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : 1;
+                })
+                .map((project: any) => {
+                    return {
+                        key: project.id,
+                        name: project.attributes.name,
+                        description: project.attributes.description
+                    };
+                }, [])}
             renderItem={(item) => {
                 const project = _.find(props.projects, { id: item.key });
                 const projectOrganization =
