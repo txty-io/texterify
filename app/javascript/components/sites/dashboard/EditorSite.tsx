@@ -68,7 +68,7 @@ class EditorSite extends React.Component<IProps, IState> {
         page: 1
     };
 
-    debouncedSearchReloader: any = _.debounce(
+    debouncedSearchReloader = _.debounce(
         (value) => {
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
             this.setState({ search: value, page: 1 }, this.fetchKeys);

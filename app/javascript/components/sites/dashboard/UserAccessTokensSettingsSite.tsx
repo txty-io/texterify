@@ -140,9 +140,7 @@ class UserAccessTokensSettingsSite extends React.Component<{}, IState> {
         });
 
         this.formRef.current.setFieldsValue({
-            name: {
-                value: undefined
-            }
+            name: ""
         });
     };
 
