@@ -13,7 +13,7 @@ import { UserAvatar } from "./UserAvatar";
 import { generalStore } from "../stores/GeneralStore";
 
 const ActivityItemWrapper = styled.div`
-    word-break: break-all;
+    word-break: break-word;
 `;
 
 interface IActivityKeyElementProps {
@@ -243,7 +243,7 @@ class Activity extends React.Component<IProps> {
                         alignItems: "flex-end",
                         flexShrink: 0,
                         maxWidth: 200,
-                        wordBreak: "break-all"
+                        wordBreak: "break-word"
                     }}
                 >
                     {this.props.showTimeAgo && <ActivityTimeAgo duration={diffToNowDuration} />}

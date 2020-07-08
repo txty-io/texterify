@@ -124,19 +124,24 @@ class ProjectSidebar extends React.Component<IProps, IState> {
         return requiredRoles.includes(role);
     };
 
-    renderMenuItems = (): JSX.Element[] => {
+    renderMenuItems = () => {
         return [
             <Menu.Item
-                key={"title"}
+                key="title"
                 title={dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
-                style={{ height: 48, display: "flex", alignItems: "center", overflow: "hidden" }}
+                style={{
+                    height: 48,
+                    display: "flex",
+                    alignItems: "center",
+                    overflow: "hidden"
+                }}
             >
                 <Link
                     to={Routes.DASHBOARD.PROJECT.replace(
                         ":projectId",
                         dashboardStore.currentProject && dashboardStore.currentProject.id
                     )}
-                    style={{ overflow: "hidden", textOverflow: "ellipsis" }}
+                    style={{ overflow: "hidden", textOverflow: "ellipsis", color: "var(--highlight-color)" }}
                 >
                     <span style={{ fontWeight: "bold" }}>
                         {!dashboardStore.sidebarMinimized &&

@@ -3,11 +3,11 @@ import { Redirect, Route } from "react-router-dom";
 import { authStore } from "../stores/AuthStore";
 import { Routes } from "./Routes";
 
-const PrivateRoute: any = ({ component: Component, ...rest }: any): JSX.Element => {
+const PrivateRoute = ({ component: Component, ...rest }) => {
     return (
         <Route
             {...rest}
-            render={(props: any): any => {
+            render={(props) => {
                 return authStore.isAuthenticated ? (
                     <Component {...props} />
                 ) : (

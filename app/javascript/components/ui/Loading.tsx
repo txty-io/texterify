@@ -6,11 +6,11 @@ function Loading() {
         <div
             style={{
                 width: "100%",
-                height: "100%",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                alignItems: "center"
+                alignItems: "center",
+                flexGrow: 1
             }}
         >
             <Spin size="large" />

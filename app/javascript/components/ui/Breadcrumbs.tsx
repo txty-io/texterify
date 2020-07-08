@@ -5,7 +5,6 @@ import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { Routes } from "../routing/Routes";
 import { dashboardStore } from "../stores/DashboardStore";
 import { OrganizationAvatar } from "./OrganizationAvatar";
-import { Styles } from "./Styles";
 
 type IProps = RouteComponentProps<{ projectId?: string; organizationId?: string }> & {
     breadcrumbName: string;
@@ -14,7 +13,7 @@ type IProps = RouteComponentProps<{ projectId?: string; organizationId?: string 
 @observer
 class BreadcrumbsUnwrapped extends React.Component<IProps> {
     resolveBreadcrumbs = () => {
-        const breadcrumbs: any = {
+        const breadcrumbs = {
             dashboard: {
                 root: true,
                 name: "Dashboard",
@@ -160,10 +159,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
             items.push(
                 <Breadcrumb.Item key={index}>
                     {breadcrumb.path && index !== resolvedBreadcrumbs.length - 1 ? (
-                        <Link
-                            to={breadcrumb.path}
-                            style={{ color: Styles.COLOR_SECONDARY, display: "flex", alignItems: "center" }}
-                        >
+                        <Link to={breadcrumb.path} style={{ display: "flex", alignItems: "center" }}>
                             {breadcrumb.name}
                         </Link>
                     ) : (
@@ -174,7 +170,9 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
         });
 
         return (
-            <Breadcrumb style={{ margin: "32px 16px 0", display: "flex", alignItems: "center" }}>{items}</Breadcrumb>
+            <Breadcrumb style={{ margin: "32px 16px 0", display: "flex", alignItems: "center", flexShrink: 0 }}>
+                {items}
+            </Breadcrumb>
         );
     }
 }

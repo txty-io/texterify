@@ -1,5 +1,3 @@
-$color: #4170ff;
-
 #app-root {
   display: flex;
   flex-direction: column;
@@ -68,23 +66,27 @@ $color: #4170ff;
   }
 
   .ant-menu-vertical .ant-menu-item:after, .ant-menu-vertical-left .ant-menu-item:after, .ant-menu-vertical-right .ant-menu-item:after, .ant-menu-inline .ant-menu-item:after {
-    border-right-color: $color;
+    border-right-color: var(--blue-color);
   }
 
   .ant-menu-item > a:hover {
-    color: $color;
+    color: var(--blue-color);
   }
 
   .ant-menu-item-selected > a, .ant-menu-item-selected > a:hover {
-    color: $color;
+    color: var(--blue-color);
   }
 
   .ant-menu-item-selected {
-    color: $color;
+    color: var(--blue-color);
   }
 
   .ant-menu-item:hover, .ant-menu-item-active, .ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open, .ant-menu-submenu-active, .ant-menu-submenu-title:hover {
-    color: $color;
+    color: var(--blue-color);
+  }
+
+  .ant-menu-submenu-selected {
+    color: var(--blue-color);
   }
 
   .ant-menu-submenu-title > a {
@@ -92,16 +94,30 @@ $color: #4170ff;
   }
 
   .ant-menu-submenu-selected .ant-menu-submenu-title > a {
-    color: $color;
+    color: var(--blue-color);
+  }
+
+  .ant-menu-submenu-inline > .ant-menu-submenu-title:hover .ant-menu-submenu-arrow::before,
+  .ant-menu-submenu-inline > .ant-menu-submenu-title:hover .ant-menu-submenu-arrow::after {
+    transition-property: transform, top;
+    background: var(--blue-color);
   }
 
   .ant-menu-submenu-selected > a {
-    color: $color;
+    color: var(--blue-color);
     background: #f00;
   }
 
   .ant-menu-item > a, .ant-menu-submenu-title > a {
     text-decoration: none;
+  }
+
+  .ant-breadcrumb a {
+    color: var(--blue-color);
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   .ant-layout-header {

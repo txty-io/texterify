@@ -99,7 +99,7 @@ export const EditableCell: React.FC<IEditableCellProps> = ({
                             display: "flex",
                             flexDirection: "column",
                             justifyContent: "center",
-                            wordBreak: "break-all"
+                            wordBreak: "break-word"
                         }}
                         onClick={isCellEditEnabled ? toggleEdit : undefined}
                         role="button"
