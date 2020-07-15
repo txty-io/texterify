@@ -1,4 +1,3 @@
-
 .dark-theme {
   @import '~antd/dist/antd.dark.less';
 
@@ -171,14 +170,17 @@
   }
 
   // Fix button color
-  .ant-btn:hover, .ant-btn:focus {
+  .ant-btn:hover:not(.ant-btn-dangerous),
+  .ant-btn:focus:not(.ant-btn-dangerous) {
     color: var(--blue-color);
     border-color: var(--blue-color);
   }
 
-  .ant-btn-primary:hover, .ant-btn-primary:focus {
+  .ant-btn.ant-btn-primary:hover:not(.ant-btn-dangerous),
+  .ant-btn.ant-btn-primary:focus:not(.ant-btn-dangerous) {
     color: #fff;
     background-color: #095cb5;
+    border-color: #095cb5;
   }
 
   // Fix checkbox color
@@ -218,6 +220,7 @@
   .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
   .ant-select-focused.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
     border-color: var(--blue-color);
+    color: var(--blue-color);
   }
 
   // Fix erros
@@ -228,6 +231,7 @@
   .ant-form-item-has-error .ant-input,
   .ant-form-item-has-error .ant-input-affix-wrapper,
   .ant-form-item-has-error .ant-input:hover,
+  .ant-form-item-has-error .ant-input-group-addon,
   .ant-form-item-has-error .ant-input-affix-wrapper:hover {
     border-color: #ff4d4f;
   }
