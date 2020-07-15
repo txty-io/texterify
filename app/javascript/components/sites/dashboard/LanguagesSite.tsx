@@ -1,3 +1,4 @@
+import { CrownOutlined } from "@ant-design/icons";
 import { Button, Empty, Input, Layout, Modal, Table } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
@@ -11,7 +12,6 @@ import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import FlagIcon from "../../ui/FlagIcons";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { sortStrings } from "../../utilities/Sorter";
-import { CrownOutlined, EditOutlined } from "@ant-design/icons";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -29,7 +29,7 @@ interface IState {
 }
 
 class LanguagesSite extends React.Component<IProps, IState> {
-    debouncedSearchReloader: any = _.debounce(
+    debouncedSearchReloader = _.debounce(
         async (value) => {
             this.setState({ search: value, page: 1 });
             await this.reloadTable({ search: value, page: 1 });
@@ -38,7 +38,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
         { trailing: true }
     );
 
-    rowSelection: any = {
+    rowSelection = {
         onChange: (selectedRowLanguages, _selectedRows) => {
             this.setState({
                 selectedRowLanguages: selectedRowLanguages
@@ -73,10 +73,8 @@ class LanguagesSite extends React.Component<IProps, IState> {
                 languagesResponse: responseLanguages,
                 languages: responseLanguages.data
             });
-        } catch (err) {
-            if (!err.isCanceled) {
-                console.error(err);
-            }
+        } catch (error) {
+            console.error(error);
         }
     }
 
@@ -104,7 +102,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
         await this.fetchLanguages(fetchOptions);
     };
 
-    getColumns = (): any[] => {
+    getColumns = () => {
         const columns: any[] = [
             {
                 title: "Default",
@@ -150,7 +148,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
         this.setState({ addDialogVisible: true, languageToEdit: language });
     };
 
-    getRows = (): any[] => {
+    getRows = () => {
         if (!this.state.languages) {
             return [];
         }

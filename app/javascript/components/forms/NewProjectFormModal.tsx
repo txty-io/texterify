@@ -1,5 +1,6 @@
-import { Button, Modal } from "antd";
+import { Button } from "antd";
 import * as React from "react";
+import { TexterifyModal } from "../ui/TexterifyModal";
 import { IProps as NewProjectFormProps, NewProjectForm } from "./NewProjectForm";
 
 interface IProps {
@@ -11,8 +12,7 @@ interface IProps {
 class NewProjectFormModal extends React.Component<IProps> {
     render() {
         return (
-            <Modal
-                maskClosable={false}
+            <TexterifyModal
                 title="Add a new project"
                 visible={this.props.visible}
                 footer={
@@ -30,10 +30,9 @@ class NewProjectFormModal extends React.Component<IProps> {
                     </div>
                 }
                 onCancel={this.props.onCancelRequest}
-                destroyOnClose
             >
                 <NewProjectForm {...this.props.newProjectFormProps} />
-            </Modal>
+            </TexterifyModal>
         );
     }
 }

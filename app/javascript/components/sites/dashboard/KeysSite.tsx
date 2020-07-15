@@ -19,6 +19,7 @@ import { ErrorUtils } from "../../ui/ErrorUtils";
 import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { Loading } from "../../ui/Loading";
+import { TexterifyModal } from "../../ui/TexterifyModal";
 import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { sortStrings } from "../../utilities/Sorter";
@@ -824,9 +825,8 @@ class KeysSite extends React.Component<IProps, IState> {
                     />
                 </Drawer>
 
-                <Modal
-                    maskClosable={false}
-                    title={"Edit content"}
+                <TexterifyModal
+                    title="Edit content"
                     visible={this.state.editTranslationCellOpen}
                     onCancel={() => {
                         this.setState({ editTranslationCellOpen: false });
@@ -834,7 +834,6 @@ class KeysSite extends React.Component<IProps, IState> {
                     afterClose={() => {
                         this.setState({ editTranslationExportConfigId: "" });
                     }}
-                    destroyOnClose
                     footer={
                         <div style={{ margin: "6px 0" }}>
                             <Button
@@ -879,7 +878,7 @@ class KeysSite extends React.Component<IProps, IState> {
                             this.setState({ editTranslationContentChanged: changed });
                         }}
                     />
-                </Modal>
+                </TexterifyModal>
             </>
         );
     }
