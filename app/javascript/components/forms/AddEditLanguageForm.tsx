@@ -1,5 +1,5 @@
 import { QuestionCircleOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input, Modal, Select, Tooltip } from "antd";
+import { Button, Checkbox, Form, Input, Select, Tooltip } from "antd";
 import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import { CountryCodesAPI } from "../api/v1/CountryCodesAPI";
@@ -7,6 +7,7 @@ import { LanguageCodesAPI } from "../api/v1/LanguageCodesAPI";
 import { LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import FlagIcon from "../ui/FlagIcons";
+import { TexterifyModal } from "../ui/TexterifyModal";
 
 interface IProps {
     languageToEdit?: any;
@@ -117,8 +118,7 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
 
     render() {
         return (
-            <Modal
-                maskClosable={false}
+            <TexterifyModal
                 title={this.props.languageToEdit ? "Edit language" : "Add a new language"}
                 visible={this.props.visible}
                 footer={
@@ -136,7 +136,6 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
                     </div>
                 }
                 onCancel={this.props.onCancelRequest}
-                destroyOnClose
                 afterClose={() => {
                     this.setState({ userChangedName: false });
                 }}
@@ -234,7 +233,7 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
                         </Tooltip>
                     </div>
                 </Form>
-            </Modal>
+            </TexterifyModal>
         );
     }
 }

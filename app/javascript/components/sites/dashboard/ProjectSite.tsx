@@ -85,14 +85,22 @@ class ProjectSite extends React.Component<IProps, IState> {
         return (
             <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
                 <Breadcrumbs breadcrumbName="project" />
-                <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, paddingBottom: 40 }}>
+                <Layout.Content
+                    style={{
+                        margin: "24px 16px 0",
+                        minHeight: 360,
+                        paddingBottom: 40,
+                        display: "flex",
+                        flexDirection: "column"
+                    }}
+                >
                     <div style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
                         <h1 style={{ display: "flex", alignItems: "center", marginBottom: 0 }}>
                             <ProjectAvatar project={dashboardStore.currentProject} style={{ marginRight: 16 }} />
                             {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
                         </h1>
                         <div style={{ marginLeft: 80, display: "flex", flexDirection: "column", fontSize: 13 }}>
-                            <span style={{ fontWeight: "bold" }}>Project ID:</span>
+                            <span style={{ fontWeight: "bold", color: "var(--highlight-color)" }}>Project ID:</span>
                             <Paragraph
                                 style={{ marginBottom: 0 }}
                                 code

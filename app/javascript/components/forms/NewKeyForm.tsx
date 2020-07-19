@@ -1,9 +1,10 @@
-import { Button, Checkbox, Input, Modal, Tooltip, Form } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+import { Button, Checkbox, Form, Input, Tooltip } from "antd";
+import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import { KeysAPI } from "../api/v1/KeysAPI";
-import { QuestionCircleOutlined } from "@ant-design/icons";
-import { FormInstance } from "antd/lib/form";
-import { ErrorUtils, ERRORS } from "../ui/ErrorUtils";
+import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
+import { TexterifyModal } from "../ui/TexterifyModal";
 
 interface IProps {
     projectId: string;
@@ -45,8 +46,7 @@ class NewKeyForm extends React.Component<IProps> {
 
     render() {
         return (
-            <Modal
-                maskClosable={false}
+            <TexterifyModal
                 title="Add a new key"
                 visible={this.props.visible}
                 footer={
@@ -64,7 +64,6 @@ class NewKeyForm extends React.Component<IProps> {
                     </div>
                 }
                 onCancel={this.props.onCancelRequest}
-                destroyOnClose
             >
                 <Form
                     ref={this.formRef}
@@ -106,7 +105,7 @@ class NewKeyForm extends React.Component<IProps> {
                         </Tooltip>
                     </div>
                 </Form>
-            </Modal>
+            </TexterifyModal>
         );
     }
 }

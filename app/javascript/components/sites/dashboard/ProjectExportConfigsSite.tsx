@@ -8,6 +8,7 @@ import { AddEditExportConfigForm } from "../../forms/AddEditExportConfigForm";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { Loading } from "../../ui/Loading";
 import { ProjectExportConfig } from "../../ui/ProjectExportConfig";
+import { TexterifyModal } from "../../ui/TexterifyModal";
 const { Content } = Layout;
 
 type IProps = RouteComponentProps<{ projectId: string }>;
@@ -101,7 +102,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
             <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
                 <Breadcrumbs breadcrumbName="projectExportConfigurations" />
                 <Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}>
-                    <h1>Export Configurations</h1>
+                    <h1>Export configurations</h1>
                     <p>Specify in which formats you can export your translations.</p>
                     <div style={{ marginBottom: 8 }}>
                         <Button
@@ -146,8 +147,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                     </div>
                 </Content>
 
-                <Modal
-                    maskClosable={false}
+                <TexterifyModal
                     title={this.state.exportConfigToEdit ? "Edit export config" : "Add a new export config"}
                     visible={this.state.addEditExportConfigOpen}
                     footer={
@@ -167,7 +167,6 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                     onCancel={() => {
                         this.setState({ addEditExportConfigOpen: false, exportConfigToEdit: null });
                     }}
-                    destroyOnClose
                 >
                     <AddEditExportConfigForm
                         projectId={this.props.match.params.projectId}
@@ -181,7 +180,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                             await this.fetchData();
                         }}
                     />
-                </Modal>
+                </TexterifyModal>
             </Layout>
         );
     }

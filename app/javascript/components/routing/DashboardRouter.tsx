@@ -16,16 +16,21 @@ import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
 import { DarkModeToggle } from "../ui/DarkModeToggle";
 import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
-import { WhiteButton } from "../ui/WhiteButton";
 import { history } from "./history";
 import { OrganizationRouter } from "./OrganizationRouter";
 import { PrivateRoute } from "./PrivateRoute";
 import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
 
-const TranslateButton = styled(WhiteButton)`
-    && {
-        margin-right: 40px;
+const TranslateButton = styled(antd.Button)`
+    margin-right: 40px;
+    color: #fff;
+    background-color: #177ddc;
+    border-color: #177ddc;
+
+    &:hover {
+        background-color: #095cb5;
+        border-color: #095cb5;
     }
 `;
 
@@ -110,7 +115,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                         <Link to={Routes.DASHBOARD.ROOT} style={{ textDecoration: "none" }}>
                             <h1
                                 style={{
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     marginBottom: 0,
                                     marginRight: 24,
                                     textDecoration: "none",
@@ -119,16 +124,6 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     whiteSpace: "nowrap"
                                 }}
                             >
-                                <div
-                                    style={{
-                                        width: 12,
-                                        height: 12,
-                                        border: "2px solid #fff",
-                                        borderRadius: 100,
-                                        display: "inline-block",
-                                        marginRight: 12
-                                    }}
-                                />
                                 texterify
                             </h1>
                         </Link>
@@ -207,8 +202,9 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                         )
                                     );
                                 }}
+                                style={{ marginRight: 40 }}
                             >
-                                Translate
+                                Open editor
                             </TranslateButton>
                         )}
 

@@ -2,9 +2,13 @@
   --border-color: #d9d9d9;
   --border-color-flashier: #d9d9d9;
   --blue-color: #568aea;
+  --highlight-color: #000;
 }
 
 .dark-theme {
   --border-color: #303030;
   --border-color-flashier: #434343;
+  --blue-color: #61b6ff;
+  --blue-color-light: #61b6ffbf;
+  --highlight-color: rgba(255, 255, 255, 0.85);
 }
