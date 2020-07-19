@@ -116,6 +116,16 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                 name: "Activity",
                 path: Routes.DASHBOARD.PROJECT_ACTIVITY.replace(":projectId", this.props.match.params.projectId)
             },
+            projectValidations: {
+                parent: "project",
+                name: "Validations",
+                path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId)
+            },
+            projectPostProcessing: {
+                parent: "project",
+                name: "Post processing",
+                path: Routes.DASHBOARD.PROJECT_POST_PROCESSING.replace(":projectId", this.props.match.params.projectId)
+            },
             projectExport: {
                 parent: "project",
                 name: "Export"

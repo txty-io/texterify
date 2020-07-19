@@ -1,4 +1,4 @@
-import { DeploymentUnitOutlined, LineChartOutlined, ProjectOutlined } from "@ant-design/icons";
+import { DeploymentUnitOutlined, LineChartOutlined, MessageOutlined, ProjectOutlined } from "@ant-design/icons";
 import * as antd from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -14,6 +14,7 @@ import { UserAccessTokensSettingsSite } from "../sites/dashboard/UserAccessToken
 import { UserAccountSettingsSite } from "../sites/dashboard/UserAccountSettingsSite";
 import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
 import { DarkModeToggle } from "../ui/DarkModeToggle";
+import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
 import { WhiteButton } from "../ui/WhiteButton";
 import { history } from "./history";
@@ -50,22 +51,24 @@ type IProps = RouteComponentProps<{ projectId?: string }>;
 interface IState {
     hasSidebar: boolean;
     accountMenuVisible: boolean;
+    searchOverlayVisible: boolean;
 }
 
 @observer
 class DashboardRouter extends React.Component<IProps, IState> {
     state: IState = {
         hasSidebar: false,
-        accountMenuVisible: false
+        accountMenuVisible: false,
+        searchOverlayVisible: false
     };
 
-    componentDidMount(): void {
+    componentDidMount() {
         this.setState({
             hasSidebar: this.hasSidebar()
         });
     }
 
-    componentDidUpdate(): void {
+    componentDidUpdate() {
         if (this.state.hasSidebar !== this.hasSidebar()) {
             this.setState({
                 hasSidebar: this.hasSidebar()
@@ -73,11 +76,11 @@ class DashboardRouter extends React.Component<IProps, IState> {
         }
     }
 
-    hasSidebar = (): boolean => {
+    hasSidebar = () => {
         return !!document.getElementById("sidebar");
     };
 
-    renderSidebar = (): JSX.Element => {
+    renderSidebar = () => {
         return (
             <Switch>
                 <PrivateRoute path={Routes.USER.SETTINGS.ROOT} component={UserSettingsSidebar} />
@@ -100,6 +103,9 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             zIndex: 10,
                             overflow: "hidden"
                         }}
+                        // Apply the dark-theme class because the
+                        // main menu bar is always in dark mode.
+                        className="dark-theme"
                     >
                         <Link to={Routes.DASHBOARD.ROOT} style={{ textDecoration: "none" }}>
                             <h1
@@ -133,8 +139,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 marginBottom: 0,
                                 marginRight: 24,
                                 display: "flex",
-                                alignItems: "center",
-                                flexGrow: 1
+                                alignItems: "center"
                             }}
                         >
                             <MenuList>
@@ -178,6 +183,19 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             </MenuList>
                         </ul>
 
+                        <antd.Input
+                            style={{ width: "auto", maxWidth: 320, margin: "0 auto", flexGrow: 1, marginRight: 40 }}
+                            placeholder="Search projects (Ctrl + Shift + P)"
+                            onClick={(e) => {
+                                e.preventDefault();
+
+                                this.setState({
+                                    searchOverlayVisible: true
+                                });
+                            }}
+                            value=""
+                        />
+
                         {this.props.match.params.projectId && (
                             <TranslateButton
                                 type="primary"
@@ -193,6 +211,8 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 Translate
                             </TranslateButton>
                         )}
+
+                        <MessageOutlined style={{ marginRight: 40 }} />
 
                         <DarkModeToggle style={{ marginRight: 40 }} />
 
@@ -222,12 +242,24 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             <PrivateRoute exact path={Routes.DASHBOARD.PROJECTS} component={ProjectsSite} />
                             <PrivateRoute exact path={Routes.DASHBOARD.ORGANIZATIONS} component={OrganizationsSite} />
                             <PrivateRoute exact path={Routes.DASHBOARD.ACTIVITY} component={ActivitySite} />
-                            <PrivateRoute path={Routes.DASHBOARD.PROJECT} component={ProjectRouter} />
+                            <PrivateRoute
+                                path={Routes.DASHBOARD.PROJECT}
+                                component={ProjectRouter}
+                                key={this.props.match.params.projectId}
+                            />
                             <PrivateRoute path={Routes.DASHBOARD.ORGANIZATION} component={OrganizationRouter} />
                             <PrivateRoute component={NotFoundSite} />
                         </Switch>
                     </antd.Layout>
                 </antd.Layout>
+
+                {this.state.searchOverlayVisible && (
+                    <SearchOverlay
+                        onClose={() => {
+                            this.setState({ searchOverlayVisible: false });
+                        }}
+                    />
+                )}
             </>
         );
     }

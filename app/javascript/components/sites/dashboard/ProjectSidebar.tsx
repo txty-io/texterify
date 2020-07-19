@@ -10,7 +10,9 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     SettingOutlined,
-    TeamOutlined
+    TeamOutlined,
+    OneToOneOutlined,
+    MonitorOutlined
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { CollapseType } from "antd/lib/layout/Sider";
@@ -96,6 +98,16 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             icon: LineChartOutlined,
             path: Routes.DASHBOARD.PROJECT_ACTIVITY.replace(":projectId", this.props.match.params.projectId),
             text: "Activity"
+        },
+        {
+            icon: MonitorOutlined,
+            path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
+            text: "Validations"
+        },
+        {
+            icon: OneToOneOutlined,
+            path: Routes.DASHBOARD.PROJECT_POST_PROCESSING.replace(":projectId", this.props.match.params.projectId),
+            text: "Post processing"
         },
         {
             icon: TeamOutlined,

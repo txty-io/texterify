@@ -52,7 +52,6 @@ class ProjectAvatar extends React.Component<IProps, IState> {
                             ...this.props.style
                         }}
                         src={this.state.image}
-                        alt="project image"
                     />
                 )}
                 {!hasImage && (
