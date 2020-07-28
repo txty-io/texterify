@@ -1,4 +1,4 @@
-# README
+# Welcome
 
 ![Texterify Logo](https://raw.github.com/chrztoph/texterify/screenshots/logo.svg?sanitize=true)
 
