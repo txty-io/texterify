@@ -27,7 +27,7 @@ class AddEditValidationRuleForm extends React.Component<IProps> {
     formRef = React.createRef<FormInstance>();
 
     state: IState = {
-        type: "containsNot"
+        type: "contains"
     };
 
     handleSubmit = async (values: IFormValues) => {
@@ -70,8 +70,8 @@ class AddEditValidationRuleForm extends React.Component<IProps> {
                     this.setState({ type: value });
                 }}
             >
-                <Select.Option value="containsNot">contains not</Select.Option>
                 <Select.Option value="contains">contains</Select.Option>
+                <Select.Option value="equals">equals</Select.Option>
             </Select>
         );
 
@@ -124,8 +124,8 @@ class AddEditValidationRuleForm extends React.Component<IProps> {
                         name="content"
                         rules={[{ required: true, whitespace: true, message: "Please enter a validation." }]}
                     >
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                            Text <Input addonBefore={selectBefore} style={{ marginLeft: 8 }} />
+                        <div style={{ display: "flex", alignItems: "center", whiteSpace: "nowrap" }}>
+                            Report if text <Input addonBefore={selectBefore} style={{ marginLeft: 8 }} />
                         </div>
                     </Form.Item>
                 </Form>

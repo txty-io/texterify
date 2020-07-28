@@ -131,7 +131,7 @@ class AddEditPostProcessingRuleForm extends React.Component<IProps> {
                             ]}
                             style={{ margin: "0 8px", flexGrow: 1, minHeight: 80, width: 200 }}
                         >
-                            <Input placeholder="Text" />
+                            <Input placeholder="text" />
                         </Form.Item>
                         with
                         <Form.Item
@@ -141,7 +141,7 @@ class AddEditPostProcessingRuleForm extends React.Component<IProps> {
                             ]}
                             style={{ margin: "0 0 0 8px", flexGrow: 1, minHeight: 80, width: 200 }}
                         >
-                            <Input placeholder="Text" />
+                            <Input placeholder="text" />
                         </Form.Item>
                     </div>
 

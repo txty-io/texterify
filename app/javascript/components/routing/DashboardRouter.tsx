@@ -21,6 +21,7 @@ import { OrganizationRouter } from "./OrganizationRouter";
 import { PrivateRoute } from "./PrivateRoute";
 import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
+import Hotkeys from "react-hot-keys";
 
 const TranslateButton = styled(antd.Button)`
     margin-right: 40px;
@@ -98,6 +99,16 @@ class DashboardRouter extends React.Component<IProps, IState> {
     render() {
         return (
             <>
+                <Hotkeys
+                    keyName="command+shift+p,ctrl+shift+p"
+                    onKeyDown={() => {
+                        this.setState({ searchOverlayVisible: !this.state.searchOverlayVisible });
+                    }}
+                    filter={() => {
+                        return true;
+                    }}
+                    allowRepeat
+                />
                 <antd.Layout>
                     <antd.Layout.Header
                         style={{
@@ -180,7 +191,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
 
                         <antd.Input
                             style={{ width: "auto", maxWidth: 320, margin: "0 auto", flexGrow: 1, marginRight: 40 }}
-                            placeholder="Search projects (Ctrl + Shift + P)"
+                            placeholder="Search projects        ⌘ + ⇧ + P"
                             onClick={(e) => {
                                 e.preventDefault();
 
