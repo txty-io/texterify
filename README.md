@@ -1,4 +1,6 @@
-<img src="https://raw.github.com/chrztoph/texterify/screenshots/logo.svg?sanitize=true" width="240" alt="Texterify Logo" />
+# README
+
+![Texterify Logo](https://raw.github.com/chrztoph/texterify/screenshots/logo.svg?sanitize=true)
 
 [![Build Status](https://travis-ci.org/chrztoph/texterify.svg?branch=master)](https://travis-ci.org/chrztoph/texterify) [![License](https://img.shields.io/github/license/chrztoph/texterify.svg)](https://img.shields.io/github/license/chrztoph/texterify.svg) [![Open Issues](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)
 
@@ -16,7 +18,7 @@ You only need to have `docker` and `docker-compose` installed on the system wher
 
 The process of starting the application is the following:
 
-```sh
+```bash
 # Clone the docker-compose configuration.
 git clone https://github.com/chrztoph/texterify-docker-compose-setup.git
 cd texterify-docker-compose-setup
@@ -40,8 +42,8 @@ This will install the latest version of the service available at the time of set
 
 ## Tools & Integrations
 
-- Texterify VSC Extension (https://github.com/chrztoph/texterify-vsc)
-- Texterify CLI (https://github.com/chrztoph/texterify-cli)
+* Texterify VSC Extension \([https://github.com/chrztoph/texterify-vsc](https://github.com/chrztoph/texterify-vsc)\)
+* Texterify CLI \([https://github.com/chrztoph/texterify-cli](https://github.com/chrztoph/texterify-cli)\)
 
 ## Contributing
 
@@ -53,4 +55,5 @@ We are happy about every help.
 
 [![License](https://img.shields.io/github/license/chrztoph/texterify.svg)](https://img.shields.io/github/license/chrztoph/texterify.svg)
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/chrztoph/texterify/tree/44c604163f37fb6ebbf9cfaf449d39659bf7c3be/LICENSE/README.md) file for details.
+
