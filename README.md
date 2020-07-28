@@ -1,56 +1,62 @@
-<img src="https://raw.github.com/chrztoph/texterify/screenshots/logo.svg?sanitize=true" width="240" alt="Texterify Logo" />
+# Initial page
 
-[![Build Status](https://travis-ci.org/chrztoph/texterify.svg?branch=master)](https://travis-ci.org/chrztoph/texterify) [![License](https://img.shields.io/github/license/chrztoph/texterify.svg)](https://img.shields.io/github/license/chrztoph/texterify.svg) [![Open Issues](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)
+{% api-method method="get" host="https://api.cakes.com" path="/v1/cakes/:id" %}
+{% api-method-summary %}
+Get Cakes
+{% endapi-method-summary %}
 
-**Texterify is an open source localization management system.**
+{% api-method-description %}
+This endpoint allows you to get free cakes.
+{% endapi-method-description %}
 
-It is completely free and open source so you can host it on your own server or just run it locally.
+{% api-method-spec %}
+{% api-method-request %}
+{% api-method-path-parameters %}
+{% api-method-parameter name="id" type="string" %}
+ID of the cake to get, for free of course.
+{% endapi-method-parameter %}
+{% endapi-method-path-parameters %}
 
-![Example image](https://raw.github.com/chrztoph/texterify/screenshots/example.png)
+{% api-method-headers %}
+{% api-method-parameter name="Authentication" type="string" required=true %}
+Authentication token to track down who is emptying our stocks.
+{% endapi-method-parameter %}
+{% endapi-method-headers %}
 
-## Installation
+{% api-method-query-parameters %}
+{% api-method-parameter name="recipe" type="string" %}
+The API will do its best to find a cake matching the provided recipe.
+{% endapi-method-parameter %}
 
-The easiest way to get the software up and running is by using the official Docker image. We already have a ready to go `docker-compose` configuration for starting Texterify locally or on your server within seconds.
+{% api-method-parameter name="gluten" type="boolean" %}
+Whether the cake should be gluten-free or not.
+{% endapi-method-parameter %}
+{% endapi-method-query-parameters %}
+{% endapi-method-request %}
 
-You only need to have `docker` and `docker-compose` installed on the system where Texterify will be running.
+{% api-method-response %}
+{% api-method-response-example httpCode=200 %}
+{% api-method-response-example-description %}
+Cake successfully retrieved.
+{% endapi-method-response-example-description %}
 
-The process of starting the application is the following:
-
-```sh
-# Clone the docker-compose configuration.
-git clone https://github.com/chrztoph/texterify-docker-compose-setup.git
-cd texterify-docker-compose-setup
-
-# Generate a secret key for the app.
-# Make sure to keep this private.
-echo SECRET_KEY_BASE=`openssl rand -hex 64` > secrets.env
-
-# Start the service.
-docker volume create --name=texterify-database
-docker volume create --name=texterify-assets
-docker-compose up -d
-
-# Create the database.
-docker-compose exec app bin/rails db:create db:migrate db:seed
-
-# Service should now be available on http://localhost.
 ```
+{    "name": "Cake's name",    "recipe": "Cake's recipe name",    "cake": "Binary cake"}
+```
+{% endapi-method-response-example %}
 
-This will install the latest version of the service available at the time of setting up.
+{% api-method-response-example httpCode=404 %}
+{% api-method-response-example-description %}
+Could not find a cake matching this query.
+{% endapi-method-response-example-description %}
 
-## Tools & Integrations
+```
+{    "message": "Ain't no cake like that."}
+```
+{% endapi-method-response-example %}
+{% endapi-method-response %}
+{% endapi-method-spec %}
+{% endapi-method %}
 
-- Texterify VSC Extension (https://github.com/chrztoph/texterify-vsc)
-- Texterify CLI (https://github.com/chrztoph/texterify-cli)
 
-## Contributing
 
-Want to help build Texterify?
-
-We are happy about every help.
-
-## License
-
-[![License](https://img.shields.io/github/license/chrztoph/texterify.svg)](https://img.shields.io/github/license/chrztoph/texterify.svg)
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
