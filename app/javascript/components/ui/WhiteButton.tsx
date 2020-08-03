@@ -4,17 +4,10 @@ import { Button } from "antd";
 export const WhiteButton = styled(Button)`
     &&& {
         background: transparent;
-        color: rgba(255, 255, 255, 0.95);
+        color: #fff;
         overflow: hidden;
         text-overflow: ellipsis;
         border: 1px solid rgba(255, 255, 255, 1);
         transition: none;
-
-        &:hover,
-        &:focus {
-            border: 1px solid rgba(255, 255, 255, 1);
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
     }
 `;

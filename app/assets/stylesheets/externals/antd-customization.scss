@@ -6,7 +6,7 @@
 
   .ant-layout-header {
     background: #141414;
-    border-bottom: 1px solid #303030;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .popover-no-padding {
@@ -170,10 +170,6 @@
 
   .ant-progress-status-success .ant-progress-bg {
     background-color: #52c41a;
-  }
-
-  .ant-tag-checkable-checked {
-    background: #000;
   }
 
   .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab {

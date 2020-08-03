@@ -120,7 +120,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                     collapsed={dashboardStore.sidebarMinimized}
                     onCollapse={this.onCollapse}
                     trigger={this.renderSidebarTrigger()}
-                    style={{ boxShadow: "rgba(61, 172, 206, 0.05) 0px 0px 24px" }}
+                    style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 24px" }}
                 >
                     <Menu mode="inline" selectedKeys={this.getSelectedItem()} style={{ height: "100%" }}>
                         {this.renderMenuItems()}

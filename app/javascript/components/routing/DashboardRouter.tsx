@@ -26,12 +26,12 @@ import Hotkeys from "react-hot-keys";
 const TranslateButton = styled(antd.Button)`
     margin-right: 40px;
     color: #fff;
-    background-color: #177ddc;
-    border-color: #177ddc;
+    background-color: var(--topbar-color) !important;
+    border-color: var(--topbar-color) !important;
 
     &:hover {
-        background-color: #095cb5;
-        border-color: #095cb5;
+        background-color: #095cb5 !important;
+        border-color: #095cb5 !important;
     }
 `;
 
@@ -50,6 +50,18 @@ const MenuLink = styled(Link)`
 
     &:hover {
         text-decoration: none;
+    }
+`;
+
+const SearchInputWrapper = styled.div`
+    width: auto;
+    max-width: 320px;
+    margin: 0 auto;
+    flex-grow: 1;
+    margin-right: 40px;
+
+    input::placeholder {
+        color: #bbb !important;
     }
 `;
 
@@ -154,7 +166,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     style={{
                                         background:
                                             this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS
-                                                ? "#303030"
+                                                ? "var(--topbar-color)"
                                                 : undefined
                                     }}
                                 >
@@ -167,7 +179,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     style={{
                                         background:
                                             this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS
-                                                ? "#303030"
+                                                ? "var(--topbar-color)"
                                                 : undefined
                                     }}
                                 >
@@ -180,7 +192,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     style={{
                                         background:
                                             this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY
-                                                ? "#303030"
+                                                ? "var(--topbar-color)"
                                                 : undefined
                                     }}
                                 >
@@ -189,18 +201,19 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             </MenuList>
                         </ul>
 
-                        <antd.Input
-                            style={{ width: "auto", maxWidth: 320, margin: "0 auto", flexGrow: 1, marginRight: 40 }}
-                            placeholder="Search projects        ⌘ + ⇧ + P"
-                            onClick={(e) => {
-                                e.preventDefault();
+                        <SearchInputWrapper>
+                            <antd.Input
+                                placeholder="Search projects        ⌘ + ⇧ + P"
+                                onClick={(e) => {
+                                    e.preventDefault();
 
-                                this.setState({
-                                    searchOverlayVisible: true
-                                });
-                            }}
-                            value=""
-                        />
+                                    this.setState({
+                                        searchOverlayVisible: true
+                                    });
+                                }}
+                                value=""
+                            />
+                        </SearchInputWrapper>
 
                         {this.props.match.params.projectId && (
                             <TranslateButton

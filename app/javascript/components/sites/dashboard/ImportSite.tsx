@@ -26,7 +26,7 @@ const DropZoneWrapper = styled.div`
     margin-top: 8px;
 
     .dark-theme & {
-        border-color: #303030;
+        border-color: var(--border-color);
     }
 `;
 
