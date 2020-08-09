@@ -71,8 +71,11 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
             title: "Do you really want to delete this export configuration?",
             content: "This cannot be undone.",
             okText: "Yes",
-            okType: "danger",
+            okButtonProps: {
+                danger: true
+            },
             cancelText: "No",
+            autoFocusButton: "cancel",
             onOk: async () => {
                 await ExportConfigsAPI.deleteExportConfig({
                     projectId: this.props.match.params.projectId,

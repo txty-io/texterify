@@ -343,6 +343,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 danger: true
             },
             cancelText: "No",
+            autoFocusButton: "cancel",
             onOk: async () => {
                 await KeysAPI.deleteKeys(this.props.match.params.projectId, this.state.selectedRowKeys);
 

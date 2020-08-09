@@ -217,6 +217,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                                     danger: true
                                                 },
                                                 cancelText: "No",
+                                                autoFocusButton: "cancel",
                                                 visible: this.state.deleteDialogVisible,
                                                 onOk: async () => {
                                                     const deleteMemberResponse = await OrganizationMembersAPI.deleteMember(

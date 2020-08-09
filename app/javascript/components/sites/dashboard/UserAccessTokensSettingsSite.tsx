@@ -61,6 +61,7 @@ class UserAccessTokensSettingsSite extends React.Component<{}, IState> {
                                         danger: true
                                     },
                                     cancelText: "No",
+                                    autoFocusButton: "cancel",
                                     visible: this.state.deleteDialogVisible,
                                     onOk: async () => {
                                         await AccessTokensAPI.deleteToken(record.key);

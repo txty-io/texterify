@@ -87,6 +87,7 @@ class MembersSite extends React.Component<IProps, IState> {
                 danger: true
             },
             cancelText: "No",
+            autoFocusButton: "cancel",
             visible: this.state.deleteDialogVisible,
             onOk: async () => {
                 const deleteMemberResponse = await MembersAPI.deleteMember(this.props.match.params.projectId, item.key);

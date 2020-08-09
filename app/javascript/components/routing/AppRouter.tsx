@@ -12,12 +12,8 @@ import { RoutingManager } from "./RoutingManager";
 import { SiteRouter } from "./SiteRouter";
 import { generalStore } from "../stores/GeneralStore";
 
-interface IProps {
-    location?: any;
-}
-
 @observer
-class AppRouter extends React.Component<IProps, null> {
+class AppRouter extends React.Component {
     render() {
         if (authStore.hydrationFinished && generalStore.hasLoaded) {
             return (

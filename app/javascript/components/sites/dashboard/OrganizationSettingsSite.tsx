@@ -30,6 +30,7 @@ class OrganizationSettingsSite extends React.Component<IProps, IState> {
                 danger: true
             },
             cancelText: "No",
+            autoFocusButton: "cancel",
             onOk: async () => {
                 this.setState({ isDeletingOrganization: true });
                 await OrganizationsAPI.deleteOrganization(this.props.match.params.organizationId);
