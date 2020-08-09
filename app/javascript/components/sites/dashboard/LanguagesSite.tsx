@@ -1,5 +1,6 @@
 import { CrownOutlined } from "@ant-design/icons";
 import { Button, Empty, Input, Layout, Modal, Table } from "antd";
+import { TableRowSelection } from "antd/lib/table/interface";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
@@ -11,8 +12,6 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import FlagIcon from "../../ui/FlagIcons";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
-import { sortStrings } from "../../utilities/Sorter";
-import { TableRowSelection } from "antd/lib/table/interface";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -133,11 +132,11 @@ class LanguagesSite extends React.Component<IProps, IState> {
             {
                 title: "Name",
                 dataIndex: "name",
-                key: "name",
-                defaultSortOrder: "ascend",
-                sorter: (a, b) => {
-                    return sortStrings(a.name, b.name, true);
-                }
+                key: "name"
+                // defaultSortOrder: "ascend",
+                // sorter: (a, b) => {
+                //     return sortStrings(a.name, b.name, true);
+                // }
             }
         ];
 
