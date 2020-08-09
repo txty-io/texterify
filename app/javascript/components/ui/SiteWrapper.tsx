@@ -42,16 +42,6 @@ class SiteWrapper extends React.Component<IProps> {
                         }}
                     >
                         <h1 style={{ marginBottom: 24, fontSize: 48, fontFamily: "Ubuntu", color: "#fff" }}>
-                            <div
-                                style={{
-                                    width: 32,
-                                    height: 32,
-                                    border: "4px solid #fff",
-                                    borderRadius: 100,
-                                    display: "inline-block",
-                                    marginRight: 24
-                                }}
-                            />
                             texterify
                         </h1>
                         <p style={{ marginBottom: 40 }}>

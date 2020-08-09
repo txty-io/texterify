@@ -232,7 +232,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             </TranslateButton>
                         )}
 
-                        <MessageOutlined style={{ marginRight: 40 }} />
+                        {/* <MessageOutlined style={{ marginRight: 40 }} /> */}
 
                         <DarkModeToggle style={{ marginRight: 40 }} />
 
