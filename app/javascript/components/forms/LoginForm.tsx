@@ -23,7 +23,12 @@ class LoginForm extends React.Component<{}, IState> {
                 <LoadingOverlay isVisible={this.state.isLoading} loadingText="We are logging you in..." />
                 <Form onFinish={this.handleSubmit}>
                     {this.state.loginErrors.length > 0 && (
-                        <Alert showIcon message={this.state.loginErrors.join()} type="error" />
+                        <Alert
+                            showIcon
+                            message={this.state.loginErrors.join()}
+                            type="error"
+                            style={{ marginBottom: 24 }}
+                        />
                     )}
 
                     <h3>Email</h3>

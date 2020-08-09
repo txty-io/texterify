@@ -146,9 +146,18 @@
   .ant-btn {
     padding-left: 18px;
     padding-right: 18px;
+  }
 
+  // Hide the loading indicator container because otherwise it still takes some
+  // space after the loading indicator has been shown.
+  .ant-btn-loading-icon {
+    display: none;
+  }
+
+  .ant-btn-loading {
     .ant-btn-loading-icon {
       margin-right: 8px;
+      display: inline;
     }
   }
 

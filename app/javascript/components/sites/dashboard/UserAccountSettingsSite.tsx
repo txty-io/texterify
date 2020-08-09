@@ -9,7 +9,7 @@ const { Content } = Layout;
 class UserAccountSettingsSite extends React.Component {
     render() {
         return (
-            <Layout style={{ padding: "0 24px 24px", maxWidth: 550, margin: "0", width: "100%" }}>
+            <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
                 <Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                     <h1>Account settings</h1>
                     <Collapse bordered={false} defaultActiveKey={["general"]}>

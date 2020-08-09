@@ -50,8 +50,8 @@ class SignupForm extends React.Component<IProps, IState> {
     getErrorMessage = (errors: any) => {
         const messages = [];
 
-        errors.full_messages.map((error: string) => {
-            messages.push(<div>{error}.</div>);
+        errors.full_messages.map((error: string, index) => {
+            messages.push(<div key={index}>{error}.</div>);
         });
 
         return messages;
@@ -63,7 +63,12 @@ class SignupForm extends React.Component<IProps, IState> {
                 <LoadingOverlay isVisible={this.state.isLoading} loadingText="We are creating your account..." />
                 <Form onFinish={this.handleSubmit}>
                     {(this.state.signupErrors.length > 0 || Object.keys(this.state.signupErrors).length > 0) && (
-                        <Alert showIcon message={this.getErrorMessage(this.state.signupErrors)} type="error" />
+                        <Alert
+                            showIcon
+                            message={this.getErrorMessage(this.state.signupErrors)}
+                            type="error"
+                            style={{ marginBottom: 24 }}
+                        />
                     )}
 
                     <h3>Username</h3>
@@ -77,7 +82,14 @@ class SignupForm extends React.Component<IProps, IState> {
                     <h3>Email</h3>
                     <Form.Item
                         name="email"
-                        rules={[{ required: true, whitespace: true, message: "Please enter your email address." }]}
+                        rules={[
+                            {
+                                required: true,
+                                whitespace: true,
+                                message: "Please enter your email address.",
+                                type: "email"
+                            }
+                        ]}
                     >
                         <Input placeholder="Email address" autoComplete="email" />
                     </Form.Item>
