@@ -3,12 +3,12 @@ import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import { ErrorUtils } from "../ui/ErrorUtils";
 import { TexterifyModal } from "../ui/TexterifyModal";
-import { PostProcessingRulesAPI } from "../api/v1/PostProcessingRulesAPI";
+import { PostProcessingRulesAPI, IPostProcessingRule } from "../api/v1/PostProcessingRulesAPI";
 import { ExportConfigsAPI } from "../api/v1/ExportConfigsAPI";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
 interface IProps {
-    ruleToEdit?: any;
+    ruleToEdit?: IPostProcessingRule;
     projectId: string;
     visible: boolean;
     onCancelRequest();
@@ -23,6 +23,7 @@ interface IFormValues {
     name: string;
     searchFor: string;
     replaceWith: string;
+    exportConfig: string;
 }
 
 class AddEditPostProcessingRuleForm extends React.Component<IProps> {
@@ -55,14 +56,16 @@ class AddEditPostProcessingRuleForm extends React.Component<IProps> {
                 ruleId: this.props.ruleToEdit.id,
                 name: values.name,
                 searchFor: values.searchFor,
-                replaceWith: values.replaceWith
+                replaceWith: values.replaceWith,
+                exportConfigId: values.exportConfig
             });
         } else {
             response = await PostProcessingRulesAPI.createPostProcessingRule({
                 projectId: this.props.projectId,
                 name: values.name,
                 searchFor: values.searchFor,
-                replaceWith: values.replaceWith
+                replaceWith: values.replaceWith,
+                exportConfigId: values.exportConfig
             });
         }
 
@@ -104,9 +107,13 @@ class AddEditPostProcessingRuleForm extends React.Component<IProps> {
                     style={{ maxWidth: "100%" }}
                     id="addEditPostProcessingRuleForm"
                     initialValues={
-                        this.props.ruleToEdit && {
-                            name: this.props.ruleToEdit.attributes.name
-                        }
+                        this.props.ruleToEdit &&
+                        ({
+                            name: this.props.ruleToEdit.attributes.name,
+                            searchFor: this.props.ruleToEdit.attributes.search_for,
+                            replaceWith: this.props.ruleToEdit.attributes.replace_with,
+                            exportConfig: this.props.ruleToEdit.relationships.export_config.data?.id
+                        } as IFormValues)
                     }
                 >
                     <h3>Name *</h3>
@@ -151,22 +158,25 @@ class AddEditPostProcessingRuleForm extends React.Component<IProps> {
                             <QuestionCircleOutlined style={{ marginLeft: 8 }} />
                         </Tooltip>
                     </h3>
-                    <Select
-                        placeholder="Select a configuration"
-                        style={{ width: "100%" }}
-                        onChange={(value: string) => {
-                            this.setState({ exportConfigId: value });
-                        }}
-                    >
-                        {this.state.responseExportConfigs &&
-                            this.state.responseExportConfigs.data.map((exportConfig) => {
-                                return (
-                                    <Select.Option value={exportConfig.id} key={exportConfig.id}>
-                                        {exportConfig.attributes.name}
-                                    </Select.Option>
-                                );
-                            })}
-                    </Select>
+                    <Form.Item name="exportConfig" rules={[]}>
+                        <Select
+                            placeholder="Select a configuration"
+                            style={{ width: "100%" }}
+                            onChange={(value: string) => {
+                                this.setState({ exportConfigId: value });
+                            }}
+                            allowClear
+                        >
+                            {this.state.responseExportConfigs &&
+                                this.state.responseExportConfigs.data.map((exportConfig) => {
+                                    return (
+                                        <Select.Option value={exportConfig.id} key={exportConfig.id}>
+                                            {exportConfig.attributes.name}
+                                        </Select.Option>
+                                    );
+                                })}
+                        </Select>
+                    </Form.Item>
                 </Form>
             </TexterifyModal>
         );

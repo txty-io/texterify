@@ -10,6 +10,7 @@ class ExportConfig < ApplicationRecord
 
   belongs_to :project
   has_many :translations, dependent: :destroy
+  has_many :post_processing_rules, dependent: :destroy
 
   def name=(name)
     self[:name] = name.strip

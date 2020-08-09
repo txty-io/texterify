@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_27_231750) do
+ActiveRecord::Schema.define(version: 2020_08_03_171432) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -128,6 +128,19 @@ ActiveRecord::Schema.define(version: 2020_07_27_231750) do
     t.index ["user_id"], name: "index_organizations_users_on_user_id"
   end
 
+  create_table "post_processing_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "search_for", null: false
+    t.string "replace_with", null: false
+    t.uuid "project_id", null: false
+    t.uuid "export_config_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["export_config_id"], name: "index_post_processing_rules_on_export_config_id"
+    t.index ["project_id", "name"], name: "index_post_processing_rules_on_project_id_and_name", unique: true
+    t.index ["project_id"], name: "index_post_processing_rules_on_project_id"
+  end
+
   create_table "project_columns", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "project_id", null: false
     t.uuid "user_id", null: false
@@ -224,6 +237,8 @@ ActiveRecord::Schema.define(version: 2020_07_27_231750) do
   add_foreign_key "languages_project_columns", "project_columns"
   add_foreign_key "organizations_users", "organizations"
   add_foreign_key "organizations_users", "users"
+  add_foreign_key "post_processing_rules", "export_configs"
+  add_foreign_key "post_processing_rules", "projects"
   add_foreign_key "project_columns", "projects"
   add_foreign_key "project_columns", "users"
   add_foreign_key "projects", "organizations"
