@@ -1,6 +1,10 @@
 class PostProcessingRule < ApplicationRecord
   scope :order_by_name, -> { order(arel_table['name'].lower.asc) }
 
+  validates :name, presence: true
+  validates :search_for, presence: true
+  validates :replace_with, presence: true
+
   before_validation :strip_leading_and_trailing_whitespace
   validate :no_duplicate_rules_for_project
 
