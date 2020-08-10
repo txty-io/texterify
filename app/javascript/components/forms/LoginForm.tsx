@@ -82,7 +82,7 @@ class LoginForm extends React.Component<{}, IState> {
         } catch (e) {
             authStore.resetAuth();
             this.setState({
-                loginErrors: ["Ein unbekannter Fehler ist aufgetreten."],
+                loginErrors: ["An unknown error occurred."],
                 isLoading: false
             });
 
@@ -93,7 +93,7 @@ class LoginForm extends React.Component<{}, IState> {
         setTimeout(() => {
             if (!response.data) {
                 this.setState({
-                    loginErrors: response.errors ? response.errors : ["Ein unbekannter Fehler ist aufgetreten."],
+                    loginErrors: response.errors ? response.errors : ["An unknown error occurred."],
                     isLoading: false
                 });
             } else {
