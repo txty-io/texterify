@@ -110,9 +110,9 @@ class ProjectSite extends React.Component<IProps, IState> {
                             </Paragraph>
                         </div>
                     </div>
-                    <p style={{ marginTop: 16 }}>
-                        {dashboardStore.currentProject && dashboardStore.currentProject.attributes.description}
-                    </p>
+                    {dashboardStore.currentProject?.attributes.description && (
+                        <p style={{ marginTop: 16 }}>{dashboardStore.currentProject?.attributes.description}</p>
+                    )}
                     {this.state.languagesResponse && this.state.projectActivityResponse ? (
                         <>
                             <div style={{ display: "flex", marginTop: 40 }}>

@@ -102,7 +102,7 @@ class ChangePasswordForm extends React.Component<{}, IState> {
             );
         } catch (e) {
             this.setState({
-                loginErrors: ["Ein unbekannter Fehler ist aufgetreten."],
+                loginErrors: ["An unknown error occurred."],
                 isLoading: false
             });
 
@@ -116,7 +116,7 @@ class ChangePasswordForm extends React.Component<{}, IState> {
                     loginErrors:
                         response.errors && response.errors.full_messages
                             ? response.errors.full_messages
-                            : ["Ein unbekannter Fehler ist aufgetreten."],
+                            : ["An unknown error occurred."],
                     isLoading: false
                 });
             } else {

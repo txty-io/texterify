@@ -6,7 +6,7 @@
 
   .ant-layout-header {
     background: #141414;
-    border-bottom: 1px solid #303030;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .popover-no-padding {
@@ -148,6 +148,19 @@
     padding-right: 18px;
   }
 
+  // Hide the loading indicator container because otherwise it still takes some
+  // space after the loading indicator has been shown.
+  .ant-btn-loading-icon {
+    display: none;
+  }
+
+  .ant-btn-loading {
+    .ant-btn-loading-icon {
+      margin-right: 8px;
+      display: inline;
+    }
+  }
+
   .ce-block__content {
     max-width: 100%;
   }
@@ -170,10 +183,6 @@
 
   .ant-progress-status-success .ant-progress-bg {
     background-color: #52c41a;
-  }
-
-  .ant-tag-checkable-checked {
-    background: #000;
   }
 
   .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab {

@@ -114,9 +114,7 @@ class EditorSite extends React.Component<IProps, IState> {
                 keysResponse: responseKeys
             });
         } catch (err) {
-            if (!err.isCanceled) {
-                console.error(err);
-            }
+            console.error(err);
         }
         this.setState({ keysLoading: false });
     };

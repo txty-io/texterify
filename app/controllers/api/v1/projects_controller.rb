@@ -145,6 +145,10 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       return
     end
 
+    post_processing_rules = project.post_processing_rules
+      .where(export_config_id: [export_config.id, nil])
+      .order_by_name
+
     file = Tempfile.new(project.id)
 
     begin
@@ -155,29 +159,45 @@ class Api::V1::ProjectsController < Api::V1::ApiController
           project.keys.order_by_name.each do |key|
             key_translation_export_config = key.translations.where(language_id: language.id, export_config_id: export_config.id).order(created_at: :desc).first
             key_translation = key_translation_export_config || key.translations.where(language_id: language.id, export_config_id: nil).order(created_at: :desc).first
+
+            content = ''
             if key_translation.nil?
-              export_data[key.name] = ''
+              content = ''
             elsif key.html_enabled
-              export_data[key.name] = helpers.convert_html_translation(key_translation.content)
+              content = helpers.convert_html_translation(key_translation.content)
             else
-              export_data[key.name] = key_translation.content
+              content = key_translation.content
             end
+
+            post_processing_rules.each do |post_processing_rule|
+              content = content.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
+            end
+
+            export_data[key.name] = content
           end
 
-          # Add translations of parent languages.
+          # Use translations of parent languages if translation is missing.
           parent_language = language.parent
           while parent_language.present?
             parent_language.keys.each do |key|
               if export_data[key.name].blank?
                 key_translation_export_config = key.translations.where(language_id: parent_language.id, export_config_id: export_config.id).order(created_at: :desc).first
                 key_translation = key_translation_export_config || key.translations.where(language_id: parent_language.id, export_config_id: nil).order(created_at: :desc).first
+
+                content = ''
                 if key_translation.nil?
-                  export_data[key.name] = ''
+                  content = ''
                 elsif key.html_enabled
-                  export_data[key.name] = helpers.convert_html_translation(key_translation.content)
+                  content = helpers.convert_html_translation(key_translation.content)
                 else
-                  export_data[key.name] = key_translation.content
+                  content = key_translation.content
                 end
+
+                post_processing_rules.each do |post_processing_rule|
+                  content = content.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
+                end
+
+                export_data[key.name] = content
               end
             end
             parent_language = parent_language.parent

@@ -36,20 +36,9 @@ class Api::V1::KeysController < Api::V1::ApiController
     if params[:search]
       keys = project.keys
         .left_outer_joins(:translations)
-        .where(
-          'name ilike :search or description ilike :search',
-          search: "%#{params[:search]}%"
-        )
-        .or(
-          project.keys
-          .left_outer_joins(:translations)
-          .where(
-            'translations.content ilike :search',
-            search: "%#{params[:search]}%"
-          )
-        )
+        .ilike_name_or_description_or_translation_content(params[:search])
         .order_by_name
-        .select('distinct on (lower("keys"."name")) keys.*')
+        .distinct_on_lower_name
     end
 
     options = {}

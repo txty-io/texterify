@@ -16,6 +16,8 @@ import { dashboardStore } from "../stores/DashboardStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
+import { ProjectPostProcessingSite } from "../sites/dashboard/ProjectPostProcessingSite";
+import { ProjectValidationsSite } from "../sites/dashboard/ProjectValidationsSite";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 
@@ -52,6 +54,16 @@ class ProjectRouter extends React.Component<IProps> {
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_SETTINGS} component={ProjectSettingsSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_LANGUAGES} component={LanguagesSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_ACTIVITY} component={ProjectActivitySite} />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_POST_PROCESSING}
+                        component={ProjectPostProcessingSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_VALIDATIONS}
+                        component={ProjectValidationsSite}
+                    />
                     <PrivateRoute
                         exact
                         path={Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS}

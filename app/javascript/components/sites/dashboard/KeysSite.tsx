@@ -22,7 +22,6 @@ import { Loading } from "../../ui/Loading";
 import { TexterifyModal } from "../../ui/TexterifyModal";
 import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
-import { sortStrings } from "../../utilities/Sorter";
 import { TranslationCard } from "./editor/TranslationCard";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
@@ -169,10 +168,10 @@ class KeysSite extends React.Component<IProps, IState> {
                 dataIndex: "name",
                 key: "name",
                 editable: true,
-                defaultSortOrder: "ascend",
-                sorter: (a, b) => {
-                    return sortStrings(a.name, b.name, true);
-                },
+                // defaultSortOrder: "ascend",
+                // sorter: (a, b) => {
+                //     return sortStrings(a.name, b.name, true);
+                // },
                 width: filteredLanguages.length > 0 || this.isDescriptionColumnVisible() ? 400 : undefined
             });
         }
@@ -182,10 +181,10 @@ class KeysSite extends React.Component<IProps, IState> {
                 title: "Description",
                 dataIndex: "description",
                 key: "description",
-                editable: true,
-                sorter: (a, b) => {
-                    return sortStrings(a.description, b.description, true);
-                }
+                editable: true
+                // sorter: (a, b) => {
+                //     return sortStrings(a.description, b.description, true);
+                // }
             });
         }
 
@@ -343,6 +342,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 danger: true
             },
             cancelText: "No",
+            autoFocusButton: "cancel",
             onOk: async () => {
                 await KeysAPI.deleteKeys(this.props.match.params.projectId, this.state.selectedRowKeys);
 

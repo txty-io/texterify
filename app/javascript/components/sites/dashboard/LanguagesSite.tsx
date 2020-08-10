@@ -1,5 +1,6 @@
 import { CrownOutlined } from "@ant-design/icons";
 import { Button, Empty, Input, Layout, Modal, Table } from "antd";
+import { TableRowSelection } from "antd/lib/table/interface";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
@@ -11,7 +12,6 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import FlagIcon from "../../ui/FlagIcons";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
-import { sortStrings } from "../../utilities/Sorter";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -28,29 +28,16 @@ interface IState {
     languageToEdit: any;
 }
 
+interface ITableRow {
+    key: string;
+    default: React.ReactNode;
+    name: string;
+    countryCode: React.ReactNode;
+    languageCode: string;
+    controls: React.ReactNode;
+}
+
 class LanguagesSite extends React.Component<IProps, IState> {
-    debouncedSearchReloader = _.debounce(
-        async (value) => {
-            this.setState({ search: value, page: 1 });
-            await this.reloadTable({ search: value, page: 1 });
-        },
-        500,
-        { trailing: true }
-    );
-
-    rowSelection = {
-        onChange: (selectedRowLanguages, _selectedRows) => {
-            this.setState({
-                selectedRowLanguages: selectedRowLanguages
-            });
-        },
-        getCheckboxProps: () => {
-            return {
-                disabled: !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())
-            };
-        }
-    };
-
     state: IState = {
         languages: [],
         selectedRowLanguages: [],
@@ -63,6 +50,28 @@ class LanguagesSite extends React.Component<IProps, IState> {
         perPage: DEFAULT_PAGE_SIZE,
         languagesLoading: false,
         languageToEdit: null
+    };
+
+    debouncedSearchReloader = _.debounce(
+        async (value) => {
+            this.setState({ search: value, page: 1 });
+            await this.reloadTable({ search: value, page: 1 });
+        },
+        500,
+        { trailing: true }
+    );
+
+    rowSelection: TableRowSelection<ITableRow> = {
+        onChange: (selectedRowLanguages, _selectedRows) => {
+            this.setState({
+                selectedRowLanguages: selectedRowLanguages
+            });
+        },
+        getCheckboxProps: () => {
+            return {
+                disabled: !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())
+            };
+        }
     };
 
     async componentDidMount() {
@@ -87,9 +96,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
                 languages: responseLanguages.data
             });
         } catch (err) {
-            if (!err.isCanceled) {
-                console.error(err);
-            }
+            console.error(err);
         }
         this.setState({ languagesLoading: false });
     };
@@ -125,11 +132,11 @@ class LanguagesSite extends React.Component<IProps, IState> {
             {
                 title: "Name",
                 dataIndex: "name",
-                key: "name",
-                defaultSortOrder: "ascend",
-                sorter: (a, b) => {
-                    return sortStrings(a.name, b.name, true);
-                }
+                key: "name"
+                // defaultSortOrder: "ascend",
+                // sorter: (a, b) => {
+                //     return sortStrings(a.name, b.name, true);
+                // }
             }
         ];
 
@@ -165,12 +172,12 @@ class LanguagesSite extends React.Component<IProps, IState> {
             );
 
             return {
+                key: language.attributes.id,
                 default: language.attributes.is_default ? (
                     <div style={{ textAlign: "center" }}>
                         <CrownOutlined style={{ color: "#d6ad13", fontSize: 16 }} />
                     </div>
                 ) : null,
-                key: language.attributes.id,
                 name: language.attributes.name,
                 countryCode: countryCode ? (
                     <span>
@@ -209,6 +216,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
                 danger: true
             },
             cancelText: "No",
+            autoFocusButton: "cancel",
             visible: this.state.deleteDialogVisible,
             onOk: async () => {
                 const response = await LanguagesAPI.deleteLanguages(
@@ -226,6 +234,8 @@ class LanguagesSite extends React.Component<IProps, IState> {
                     deleteDialogVisible: false,
                     selectedRowLanguages: []
                 });
+
+                this.rowSelection.selectedRowKeys = [];
             },
             onCancel: () => {
                 this.setState({
@@ -241,8 +251,6 @@ class LanguagesSite extends React.Component<IProps, IState> {
     };
 
     render() {
-        this.rowSelection.selectedRowKeys = this.state.selectedRowLanguages;
-
         return (
             <>
                 <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>

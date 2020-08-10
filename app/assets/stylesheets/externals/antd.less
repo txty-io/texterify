@@ -10,14 +10,27 @@
     border-right: 1px solid #f0f0f0;
 
     &:hover {
-        color: rgb(43, 53, 86);
-        background: rgb(232, 239, 255);
+        color: var(--blue-color);
     }
 }
 
 .ant-layout-sider-collapsed {
     .ant-layout-sider-trigger {
-        color: rgb(43, 53, 86);
-        background: rgb(232, 239, 255);
+        color: var(--blue-color);
+        background: #4170ff26;
     }
+}
+
+
+// Fix button color
+.ant-btn:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
+.ant-btn:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled) {
+    color: var(--blue-color);
+    border-color: var(--blue-color);
+}
+
+.ant-btn.ant-btn-primary:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
+.ant-btn.ant-btn-primary:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled) {
+    color: #fff;
+    border-color: #095cb5;
 }

@@ -2,6 +2,7 @@ import * as React from "react";
 import "../../assets/stylesheets/externals/antd-dark.less";
 import "../../assets/stylesheets/externals/antd.less";
 import { AppRouter } from "./routing/AppRouter";
+import "mobx-react-lite/batchingForReactDom";
 
 class AppContainer extends React.Component {
     render() {

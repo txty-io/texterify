@@ -98,7 +98,7 @@ class NewPasswordForm extends React.Component<{}, IState> {
             response = await AuthAPI.setNewPassword(values.new_password, values.new_password_confirmation, header);
         } catch (e) {
             this.setState({
-                loginErrors: ["Ein unbekannter Fehler ist aufgetreten."],
+                loginErrors: ["An unknown error occurred."],
                 isLoading: false
             });
 
@@ -112,7 +112,7 @@ class NewPasswordForm extends React.Component<{}, IState> {
                     loginErrors:
                         response.errors && response.errors.full_messages
                             ? response.errors.full_messages
-                            : ["Ein unbekannter Fehler ist aufgetreten."],
+                            : ["An unknown error occurred."],
                     isLoading: false
                 });
             } else {

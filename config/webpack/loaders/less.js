@@ -16,7 +16,7 @@ module.exports = {
                         "primary-color": "#4170ff",
                         "info-color": "#4170ff",
                         "btn-primary-color": "#fff",
-                        "btn-primary-bg": "#000",
+                        "btn-primary-bg": "#333",
                         "layout-body-background": "#fff",
                         "layout-header-background": "#fff",
                         "menu-item-color": "#333",

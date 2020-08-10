@@ -32,6 +32,7 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                 danger: true
             },
             cancelText: "No",
+            autoFocusButton: "cancel",
             onOk: async () => {
                 this.setState({ isDeletingProject: true });
                 await ProjectsAPI.deleteProject(this.props.match.params.projectId);

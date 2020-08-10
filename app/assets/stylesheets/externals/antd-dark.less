@@ -1,6 +1,14 @@
 .dark-theme {
   @import '~antd/dist/antd.dark.less';
 
+  body {
+    color: #fff;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #fff;
+  }
+
   a {
     color: var(--blue-color-light);
 
@@ -63,7 +71,7 @@
   }
 
   .ant-collapse-borderless > .ant-collapse-item {
-    border-bottom-color: #303030;
+    border-bottom-color: var(--border-color);
   }
 
   // Remove white background of sortable table columns.
@@ -79,19 +87,17 @@
   // Sidebar collapse trigger styling.
   .ant-layout-sider-trigger {
     background: #141414;
-    border-right: 1px solid #303030;
-    border-top: 1px solid #303030;
+    border-right: 1px solid var(--border-color);
 
     &:hover, &:active {
-      background: #1f1f1f;
-      color: #fff;
+      color: var(--blue-color);
     }
   }
 
   .ant-layout-sider-collapsed {
     .ant-layout-sider-trigger {
-      background: #1f1f1f;
-      color: #fff;
+      background: #1c1c1c;
+      color: var(--blue-color);
     }
   }
 
@@ -108,7 +114,7 @@
 
   // Adjus list items separator.
   .ant-list-split .ant-list-item {
-    border-bottom: 1px solid #303030;
+    border-bottom: 1px solid var(--border-color);
 
     &:last-child {
       border-bottom: none;
@@ -119,10 +125,6 @@
   .ant-select-disabled.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
     background: none;
     color: #434343;
-  }
-
-  .ant-tag-checkable-checked {
-    border-color: #fff;
   }
 
   // Fix tree hover and selected elements.
@@ -167,20 +169,6 @@
 
   .ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused, .ant-input:focus, .ant-input-focused {
     border-color: var(--blue-color);
-  }
-
-  // Fix button color
-  .ant-btn:hover:not(.ant-btn-dangerous),
-  .ant-btn:focus:not(.ant-btn-dangerous) {
-    color: var(--blue-color);
-    border-color: var(--blue-color);
-  }
-
-  .ant-btn.ant-btn-primary:hover:not(.ant-btn-dangerous),
-  .ant-btn.ant-btn-primary:focus:not(.ant-btn-dangerous) {
-    color: #fff;
-    background-color: #095cb5;
-    border-color: #095cb5;
   }
 
   // Fix checkbox color
@@ -233,6 +221,65 @@
   .ant-form-item-has-error .ant-input:hover,
   .ant-form-item-has-error .ant-input-group-addon,
   .ant-form-item-has-error .ant-input-affix-wrapper:hover {
+    border-color: #ff4d4f;
+  }
+
+  .ant-empty-normal {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  // Fix slider
+  .ant-slider-track, .ant-slider:hover .ant-slider-track {
+    background: var(--blue-color);
+  }
+
+  .ant-slider-handle {
+    border-color: var(--blue-color) !important;
+  }
+
+  .ant-input {
+    color: #fff;
+  }
+
+  .ant-tag-checkable:not(.ant-tag-checkable-checked):hover {
+    color: #fff;
+  }
+
+  .ant-tag:hover {
+    opacity: 1;
+  }
+
+  .ant-pagination-item-active {
+    border-color: var(--blue-color);
+
+    a {
+      color: var(--blue-color);
+    }
+  }
+
+  .ant-alert-info .ant-alert-icon {
+    color: var(--blue-color);
+  }
+
+  .ant-btn-dangerous {
+    color: #cc3d3f;
+    border-color: #cc3d3f;
+  }
+
+  .ant-btn-dangerous.ant-btn-primary {
+    background: #cc3d3f;
+    color: #fff;
+    border-color: #cc3d3f;
+
+    &:hover {
+      background: #dd4345;
+      border-color: #dd4345;
+    }
+  }
+
+  .ant-btn-dangerous:hover,
+  .ant-btn-dangerous:focus {
+    color: #ff4d4f;
     border-color: #ff4d4f;
   }
 }

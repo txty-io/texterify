@@ -23,7 +23,12 @@ class LoginForm extends React.Component<{}, IState> {
                 <LoadingOverlay isVisible={this.state.isLoading} loadingText="We are logging you in..." />
                 <Form onFinish={this.handleSubmit}>
                     {this.state.loginErrors.length > 0 && (
-                        <Alert showIcon message={this.state.loginErrors.join()} type="error" />
+                        <Alert
+                            showIcon
+                            message={this.state.loginErrors.join()}
+                            type="error"
+                            style={{ marginBottom: 24 }}
+                        />
                     )}
 
                     <h3>Email</h3>
@@ -77,7 +82,7 @@ class LoginForm extends React.Component<{}, IState> {
         } catch (e) {
             authStore.resetAuth();
             this.setState({
-                loginErrors: ["Ein unbekannter Fehler ist aufgetreten."],
+                loginErrors: ["An unknown error occurred."],
                 isLoading: false
             });
 
@@ -88,7 +93,7 @@ class LoginForm extends React.Component<{}, IState> {
         setTimeout(() => {
             if (!response.data) {
                 this.setState({
-                    loginErrors: response.errors ? response.errors : ["Ein unbekannter Fehler ist aufgetreten."],
+                    loginErrors: response.errors ? response.errors : ["An unknown error occurred."],
                     isLoading: false
                 });
             } else {

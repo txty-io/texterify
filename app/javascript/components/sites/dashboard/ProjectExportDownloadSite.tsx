@@ -16,9 +16,8 @@ interface IState {
     languagesLoaded: boolean;
     languages: any[];
     languagesIncluded: any[];
-    exportConfigId: string;
     responseExportConfigs: any;
-    downloadLoading: boolean;
+    downloadLoading: string;
 }
 
 class ProjectExportDownloadSite extends React.Component<IProps, IState> {
@@ -26,9 +25,8 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
         languages: [],
         languagesIncluded: [],
         languagesLoaded: false,
-        exportConfigId: "",
         responseExportConfigs: null,
-        downloadLoading: false
+        downloadLoading: null
     };
 
     async componentDidMount() {
@@ -81,7 +79,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
         return (
             <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
                 <Breadcrumbs breadcrumbName="projectExportDownload" />
-                <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, maxWidth: 400 }}>
+                <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, maxWidth: 800 }}>
                     <h1>Download translations</h1>
                     {this.state.languagesLoaded && this.state.languages.length === 0 && (
                         <>
@@ -114,7 +112,48 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                         <div style={{ display: "flex" }}>
                             <div style={{ display: "flex", flexDirection: "column", marginRight: 16 }}>
                                 <p>The configuration specifies the format of your exported files and translations.</p>
-                                <Select
+                                {this.state.responseExportConfigs?.data.map((exportConfig) => {
+                                    return (
+                                        <div
+                                            key={exportConfig.id}
+                                            style={{
+                                                padding: "8px 0",
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                                alignItems: "center"
+                                            }}
+                                        >
+                                            {exportConfig.attributes.name}
+                                            <Button
+                                                type="primary"
+                                                loading={this.state.downloadLoading === exportConfig.attributes.id}
+                                                disabled={
+                                                    this.state.downloadLoading &&
+                                                    this.state.downloadLoading !== exportConfig.attributes.id
+                                                }
+                                                onClick={async () => {
+                                                    this.setState({ downloadLoading: exportConfig.attributes.id });
+                                                    const response = await ProjectsAPI.export({
+                                                        projectId: this.props.match.params.projectId,
+                                                        exportConfigId: exportConfig.attributes.id,
+                                                        fileName: `${
+                                                            dashboardStore.currentProject.attributes.name
+                                                        }-${moment().format("DD-MM-YYYY")}-${new Date().getTime()}`
+                                                    });
+                                                    this.setState({ downloadLoading: null });
+
+                                                    if (response.status !== 200) {
+                                                        message.error("An error occured during the export.");
+                                                    }
+                                                }}
+                                                icon={<DownloadOutlined />}
+                                            >
+                                                Download
+                                            </Button>
+                                        </div>
+                                    );
+                                })}
+                                {/* <Select
                                     placeholder="Select a configuration"
                                     style={{ width: "100%" }}
                                     onChange={(value: string) => {
@@ -154,7 +193,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                                     >
                                         Export
                                     </Button>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     )}

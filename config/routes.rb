@@ -24,6 +24,8 @@ Rails.application.routes.draw do
         end
         delete 'keys', to: 'keys#destroy_multiple'
         resources :export_configs, only: [:create, :index, :destroy, :update]
+        resources :post_processing_rules, only: [:create, :index, :destroy, :update]
+        delete 'post_processing_rules', to: 'post_processing_rules#destroy_multiple'
         resources :languages, only: [:create, :index, :destroy, :update]
         delete 'languages', to: 'languages#destroy_multiple'
         resources :translations, only: [:create]
