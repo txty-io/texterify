@@ -9,10 +9,9 @@ import {
     LineChartOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    SettingOutlined,
-    TeamOutlined,
     OneToOneOutlined,
-    MonitorOutlined
+    SettingOutlined,
+    TeamOutlined
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { CollapseType } from "antd/lib/layout/Sider";
@@ -22,8 +21,8 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
-import { ROLES_DEVELOPER_UP, ROLES_MANAGER_UP } from "../../utilities/PermissionUtils";
 import { SidebarTrigger } from "../../ui/SidebarTrigger";
+import { ROLES_DEVELOPER_UP, ROLES_MANAGER_UP } from "../../utilities/PermissionUtils";
 const { Sider } = Layout;
 
 interface INavigationData {
@@ -41,90 +40,92 @@ interface IState {
 
 @observer
 class ProjectSidebar extends React.Component<IProps, IState> {
-    navigationData: INavigationData[] = [
-        {
-            icon: HomeOutlined,
-            path: Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId),
-            text: "Overview"
-        },
-        {
-            icon: KeyOutlined,
-            path: Routes.DASHBOARD.PROJECT_KEYS.replace(":projectId", this.props.match.params.projectId),
-            text: "Keys"
-        },
-        {
-            icon: GlobalOutlined,
-            path: Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId),
-            text: "Languages"
-        },
-        {
-            icon: ImportOutlined,
-            path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
-            text: "Import",
-            roles: ROLES_DEVELOPER_UP
-        },
-        {
-            icon: ExportOutlined,
-            text: "Export",
-            roles: ROLES_DEVELOPER_UP,
-            subItems: [
-                {
-                    icon: DownloadOutlined,
-                    path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
-                    text: "Download",
-                    roles: ROLES_DEVELOPER_UP
-                },
-                {
-                    icon: SettingOutlined,
-                    path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
-                        ":projectId",
-                        this.props.match.params.projectId
-                    ),
-                    text: "Configurations",
-                    roles: ROLES_DEVELOPER_UP
-                },
-                {
-                    icon: ClusterOutlined,
-                    path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(
-                        ":projectId",
-                        this.props.match.params.projectId
-                    ),
-                    text: "Hierarchy",
-                    roles: ROLES_DEVELOPER_UP
-                }
-            ]
-        },
-        {
-            icon: LineChartOutlined,
-            path: Routes.DASHBOARD.PROJECT_ACTIVITY.replace(":projectId", this.props.match.params.projectId),
-            text: "Activity"
-        },
-        // {
-        //     icon: MonitorOutlined,
-        //     path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
-        //     text: "Validations"
-        // },
-        {
-            icon: OneToOneOutlined,
-            path: Routes.DASHBOARD.PROJECT_POST_PROCESSING.replace(":projectId", this.props.match.params.projectId),
-            text: "Post processing"
-        },
-        {
-            icon: TeamOutlined,
-            path: Routes.DASHBOARD.PROJECT_MEMBERS.replace(":projectId", this.props.match.params.projectId),
-            text: "Members"
-        },
-        {
-            icon: SettingOutlined,
-            path: Routes.DASHBOARD.PROJECT_SETTINGS.replace(":projectId", this.props.match.params.projectId),
-            text: "Settings",
-            roles: ROLES_MANAGER_UP
-        }
-    ];
-
     state: IState = {
         selectedItem: 0
     };
+
+    getNavigationData(): INavigationData[] {
+        return [
+            {
+                icon: HomeOutlined,
+                path: Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId),
+                text: "Overview"
+            },
+            {
+                icon: KeyOutlined,
+                path: Routes.DASHBOARD.PROJECT_KEYS.replace(":projectId", this.props.match.params.projectId),
+                text: "Keys"
+            },
+            {
+                icon: GlobalOutlined,
+                path: Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId),
+                text: "Languages"
+            },
+            {
+                icon: ImportOutlined,
+                path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
+                text: "Import",
+                roles: ROLES_DEVELOPER_UP
+            },
+            {
+                icon: ExportOutlined,
+                text: "Export",
+                roles: ROLES_DEVELOPER_UP,
+                subItems: [
+                    {
+                        icon: DownloadOutlined,
+                        path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
+                        text: "Download",
+                        roles: ROLES_DEVELOPER_UP
+                    },
+                    {
+                        icon: SettingOutlined,
+                        path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
+                            ":projectId",
+                            this.props.match.params.projectId
+                        ),
+                        text: "Configurations",
+                        roles: ROLES_DEVELOPER_UP
+                    },
+                    {
+                        icon: ClusterOutlined,
+                        path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(
+                            ":projectId",
+                            this.props.match.params.projectId
+                        ),
+                        text: "Hierarchy",
+                        roles: ROLES_DEVELOPER_UP
+                    }
+                ]
+            },
+            {
+                icon: LineChartOutlined,
+                path: Routes.DASHBOARD.PROJECT_ACTIVITY.replace(":projectId", this.props.match.params.projectId),
+                text: "Activity"
+            },
+            // {
+            //     icon: MonitorOutlined,
+            //     path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
+            //     text: "Validations"
+            // },
+            {
+                icon: OneToOneOutlined,
+                path: Routes.DASHBOARD.PROJECT_POST_PROCESSING.replace(":projectId", this.props.match.params.projectId),
+                text: "Post processing"
+            },
+            {
+                icon: TeamOutlined,
+                path: Routes.DASHBOARD.PROJECT_MEMBERS.replace(":projectId", this.props.match.params.projectId),
+                text: "Members"
+            },
+            {
+                icon: SettingOutlined,
+                path: Routes.DASHBOARD.PROJECT_SETTINGS.replace(":projectId", this.props.match.params.projectId),
+                text: "Settings",
+                roles: ROLES_MANAGER_UP
+            }
+        ];
+    }
 
     isMenuItemEnabled = (requiredRoles: string[]) => {
         if (!requiredRoles) {
@@ -165,7 +166,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     </span>
                 </Link>
             </Menu.Item>,
-            ...this.navigationData.map((data: INavigationData, index: number) => {
+            ...this.getNavigationData().map((data: INavigationData, index: number) => {
                 if (data.subItems) {
                     return (
                         <Menu.SubMenu
@@ -215,7 +216,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
     };
 
     getSelectedItem = (): string[] => {
-        return this.navigationData.map((data: INavigationData, index: number): string => {
+        return this.getNavigationData().map((data: INavigationData, index: number): string => {
             if (data.path === this.props.location.pathname) {
                 return index.toString();
             }
