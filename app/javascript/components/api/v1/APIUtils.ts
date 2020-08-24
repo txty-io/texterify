@@ -37,6 +37,7 @@ const APIUtils = {
                 response.errors.forEach((error) => {
                     if (error.code === APIErrors.INVALID_ACCESS_TOKEN) {
                         authStore.resetAuth();
+                        message.info("Your session expired. Please log in again.");
                         history.push(Routes.AUTH.LOGIN);
 
                         return;
