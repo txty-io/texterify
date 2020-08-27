@@ -49,6 +49,63 @@ const ExportConfigsAPI = {
         return API.deleteRequest(`projects/${options.projectId}/export_configs/${options.exportConfigId}`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
+    },
+
+    getExportConfigLanguageConfigs: async (options: { projectId: string; exportConfigId: string }) => {
+        return API.getRequest(
+            `projects/${options.projectId}/export_configs/${options.exportConfigId}/language_configs`,
+            true
+        )
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    createExportConfigLanguageConfig: async (options: {
+        projectId: string;
+        exportConfigId: string;
+        languageId: string;
+        languageCode: string;
+    }) => {
+        return API.postRequest(
+            `projects/${options.projectId}/export_configs/${options.exportConfigId}/language_configs`,
+            true,
+            {
+                language_id: options.languageId,
+                language_code: options.languageCode
+            }
+        )
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    updateExportConfigLanguageConfig: async (options: {
+        projectId: string;
+        exportConfigId: string;
+        languageSettingId: string;
+        languageCode: string;
+    }) => {
+        return API.postRequest(
+            `projects/${options.projectId}/export_configs/${options.exportConfigId}/language_configs/${options.languageSettingId}`,
+            true,
+            {
+                language_code: options.languageCode
+            }
+        )
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    deleteExportConfigLanguageConfig: async (options: {
+        projectId: string;
+        exportConfigId: string;
+        languageSettingId: string;
+    }) => {
+        return API.deleteRequest(
+            `projects/${options.projectId}/export_configs/${options.exportConfigId}/language_configs/${options.languageSettingId}`,
+            true
+        )
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
     }
 };
 
