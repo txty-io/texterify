@@ -6,9 +6,11 @@ import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
 import { FileFormatOptions } from "../configs/FileFormatOptions";
 import { Styles } from "./Styles";
+import { IExportConfig, IGetExportConfigsResponse } from "../api/v1/ExportConfigsAPI";
 
 interface IProps {
-    exportConfig: any;
+    exportConfig: IExportConfig;
+    exportConfigsResponse: IGetExportConfigsResponse;
     languagesResponse: any;
     style?: React.CSSProperties;
     onEdit?(exportConfig: any): void;
@@ -109,6 +111,19 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
                     this.props.languagesResponse.included
                 );
 
+                const languageConfig = this.props.exportConfigsResponse.included
+                    .filter((includedItem) => {
+                        return this.props.exportConfig.relationships.language_configs.data.find((item) => {
+                            return item.id === includedItem.id;
+                        });
+                    })
+                    .find((includedItem) => {
+                        return (
+                            includedItem.attributes.language_id === language.id &&
+                            includedItem.type === "language_config"
+                        );
+                    });
+
                 let title;
                 if (language.attributes.is_default && defaultLanguageFilePath) {
                     title = defaultLanguageFilePath;
@@ -121,7 +136,9 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
                 }
 
                 if (languageCode) {
-                    title = title.split("{languageCode}").join(languageCode.attributes.code);
+                    title = title
+                        .split("{languageCode}")
+                        .join(languageConfig ? languageConfig.attributes.language_code : languageCode.attributes.code);
                 }
 
                 return title;
@@ -179,48 +196,51 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
                     )
                 ]}
             >
-                <div style={{ display: "flex" }}>
-                    <div>
-                        <div style={{ display: "flex", flexDirection: "column", marginBottom: 16 }}>
-                            <h3>{this.props.exportConfig.attributes.name}</h3>
+                <div style={{ display: "flex", height: "100%", flexDirection: "column" }}>
+                    <div style={{ display: "flex", flexDirection: "column", marginBottom: 16 }}>
+                        <h3>{this.props.exportConfig.attributes.name}</h3>
 
-                            <h4 style={{ fontWeight: "bold" }}>Configuration ID:</h4>
-                            <Paragraph code copyable={{ text: this.props.exportConfig.id }} style={{ margin: 0 }}>
-                                {`${this.props.exportConfig.id}`}
-                            </Paragraph>
+                        <h4 style={{ fontWeight: "bold" }}>Configuration ID:</h4>
+                        <Paragraph code copyable={{ text: this.props.exportConfig.id }} style={{ margin: 0 }}>
+                            {`${this.props.exportConfig.id}`}
+                        </Paragraph>
+                    </div>
+
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                        <div>
+                            <h4 style={{ fontWeight: "bold" }}>File format:</h4>
+                            {this.getFileFormatName(this.props.exportConfig.attributes.file_format)}
                         </div>
 
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                            <div>
-                                <h4 style={{ fontWeight: "bold" }}>File format:</h4>
-                                {this.getFileFormatName(this.props.exportConfig.attributes.file_format)}
-                            </div>
+                        <div style={{ marginTop: 16 }}>
+                            <h4 style={{ fontWeight: "bold" }}>File path:</h4>
+                            {this.prettifyFilePath(this.props.exportConfig.attributes.file_path)}
+                        </div>
 
+                        {this.props.exportConfig.relationships.language_configs.data.length > 0 && (
                             <div style={{ marginTop: 16 }}>
-                                <h4 style={{ fontWeight: "bold" }}>File path:</h4>
-                                {this.prettifyFilePath(this.props.exportConfig.attributes.file_path)}
+                                <h4 style={{ fontWeight: "bold" }}>Number of language configs:</h4>
+                                {this.props.exportConfig.relationships.language_configs.data.length}
                             </div>
+                        )}
 
-                            {this.props.exportConfig.attributes.default_language_file_path && (
-                                <div style={{ marginTop: 16 }}>
-                                    <h4 style={{ fontWeight: "bold" }}>File path default language:</h4>
-                                    {this.prettifyFilePath(
-                                        this.props.exportConfig.attributes.default_language_file_path
-                                    )}
-                                </div>
-                            )}
-                        </div>
+                        {this.props.exportConfig.attributes.default_language_file_path && (
+                            <div style={{ marginTop: 16 }}>
+                                <h4 style={{ fontWeight: "bold" }}>File path default language:</h4>
+                                {this.prettifyFilePath(this.props.exportConfig.attributes.default_language_file_path)}
+                            </div>
+                        )}
+                    </div>
 
-                        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                            <Button
-                                style={{ alignSelf: "flex-start", marginTop: 16 }}
-                                onClick={() => {
-                                    this.setState({ visible: true });
-                                }}
-                            >
-                                Preview export
-                            </Button>
-                        </div>
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "auto" }}>
+                        <Button
+                            style={{ alignSelf: "flex-start", marginTop: 16 }}
+                            onClick={() => {
+                                this.setState({ visible: true });
+                            }}
+                        >
+                            Preview export
+                        </Button>
                     </div>
                 </div>
 

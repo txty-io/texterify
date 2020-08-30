@@ -131,6 +131,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                                 <ProjectExportConfig
                                     key={exportConfig.id}
                                     exportConfig={exportConfig}
+                                    exportConfigsResponse={this.state.projectExportConfigsResponse}
                                     style={{ margin: "0 16px 16px 0" }}
                                     onEdit={() => {
                                         this.setState({
@@ -167,7 +168,8 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                             </Button>
                         </div>
                     }
-                    onCancel={() => {
+                    onCancel={async () => {
+                        await this.fetchData();
                         this.setState({ addEditExportConfigOpen: false, exportConfigToEdit: null });
                     }}
                 >

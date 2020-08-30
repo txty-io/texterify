@@ -10,6 +10,7 @@ class Language < ApplicationRecord
   has_many :translations, dependent: :destroy
   has_many :language_project_columns, dependent: :delete_all
   has_many :project_columns, through: :language_project_columns
+  has_many :language_configs, dependent: :destroy
 
   validate :no_duplicate_languages_for_project
   validates :name, presence: true, format: { with: /\A[A-Za-z_][A-Za-z0-9_]*\z/ }

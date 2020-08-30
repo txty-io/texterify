@@ -1,9 +1,13 @@
 class Api::V1::ExportConfigsController < Api::V1::ApiController
   def index
-    skip_authorization
     project = current_user.projects.find(params[:project_id])
+
+    authorize ExportConfig.new(project_id: project.id)
+
     export_configs = project.export_configs.order_by_name
-    render json: ExportConfigSerializer.new(export_configs).serialized_json
+    options = {}
+    options[:include] = [:language_configs]
+    render json: ExportConfigSerializer.new(export_configs, options).serialized_json
   end
 
   def create
@@ -24,14 +28,13 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
   end
 
   def update
-    export_config = ExportConfig.find(params[:id])
+    project = current_user.projects.find(params[:project_id])
+    export_config = project.export_configs.find(params[:id])
 
     authorize export_config
 
     if export_config.update(export_config_params)
-      render json: {
-        message: 'Export config updated'
-      }
+      render json: ExportConfigSerializer.new(export_config).serialized_json
     else
       render json: {
         errors: export_config.errors.details
@@ -40,13 +43,14 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
   end
 
   def destroy
-    export_config = ExportConfig.find(params[:id])
+    project = current_user.projects.find(params[:project_id])
+    export_config = project.export_configs.find(params[:id])
 
     authorize export_config
 
     if export_config.destroy
       render json: {
-        message: 'Export config updated'
+        success: true
       }
     else
       render json: {

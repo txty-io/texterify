@@ -1,9 +1,9 @@
-class ExportConfigPolicy
-  attr_reader :user, :export_config
+class LanguageConfigPolicy
+  attr_reader :user, :language_config
 
-  def initialize(user, export_config)
+  def initialize(user, language_config)
     @user = user
-    @export_config = export_config
+    @language_config = language_config
   end
 
   def index?
@@ -25,6 +25,6 @@ class ExportConfigPolicy
   private
 
   def project_user_role
-    export_config.project.role_of(user)
+    language_config.export_config.project.role_of(user)
   end
 end

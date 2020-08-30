@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_03_171432) do
+ActiveRecord::Schema.define(version: 2020_08_27_231740) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -84,6 +84,17 @@ ActiveRecord::Schema.define(version: 2020_08_03_171432) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_language_codes_on_code"
+  end
+
+  create_table "language_configs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "language_code", null: false
+    t.uuid "language_id"
+    t.uuid "export_config_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["export_config_id"], name: "index_language_configs_on_export_config_id"
+    t.index ["language_id", "export_config_id"], name: "index_language_configs_on_language_id_and_export_config_id", unique: true
+    t.index ["language_id"], name: "index_language_configs_on_language_id"
   end
 
   create_table "languages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -229,6 +240,8 @@ ActiveRecord::Schema.define(version: 2020_08_03_171432) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "export_configs", "projects"
   add_foreign_key "keys", "projects"
+  add_foreign_key "language_configs", "export_configs"
+  add_foreign_key "language_configs", "languages"
   add_foreign_key "languages", "country_codes"
   add_foreign_key "languages", "language_codes"
   add_foreign_key "languages", "languages", column: "parent_id"

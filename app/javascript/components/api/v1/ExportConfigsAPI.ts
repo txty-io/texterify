@@ -1,8 +1,39 @@
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
+import { ILanguageConfig } from "./LanguageConfigsAPI";
+
+export interface IExportConfigRelationships {
+    language_configs: {
+        data: {
+            id: string;
+            type: "language_config";
+        }[];
+    };
+}
+
+export interface IExportConfig {
+    id: string;
+    type: string;
+    attributes: {
+        id: string;
+        name: string;
+        file_format: string;
+        file_path: string;
+        default_language_file_path: string;
+    };
+    relationships: IExportConfigRelationships;
+}
+
+export interface IGetExportConfigsResponse {
+    data: IExportConfig[];
+    included: ILanguageConfig[];
+    meta: {
+        total: number;
+    };
+}
 
 const ExportConfigsAPI = {
-    getExportConfigs: async (options: { projectId: string }) => {
+    getExportConfigs: async (options: { projectId: string }): Promise<IGetExportConfigsResponse> => {
         return API.getRequest(`projects/${options.projectId}/export_configs`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
@@ -47,63 +78,6 @@ const ExportConfigsAPI = {
 
     deleteExportConfig: async (options: { projectId: string; exportConfigId: string }) => {
         return API.deleteRequest(`projects/${options.projectId}/export_configs/${options.exportConfigId}`, true)
-            .then(APIUtils.handleErrors)
-            .catch(APIUtils.handleErrors);
-    },
-
-    getExportConfigLanguageConfigs: async (options: { projectId: string; exportConfigId: string }) => {
-        return API.getRequest(
-            `projects/${options.projectId}/export_configs/${options.exportConfigId}/language_configs`,
-            true
-        )
-            .then(APIUtils.handleErrors)
-            .catch(APIUtils.handleErrors);
-    },
-
-    createExportConfigLanguageConfig: async (options: {
-        projectId: string;
-        exportConfigId: string;
-        languageId: string;
-        languageCode: string;
-    }) => {
-        return API.postRequest(
-            `projects/${options.projectId}/export_configs/${options.exportConfigId}/language_configs`,
-            true,
-            {
-                language_id: options.languageId,
-                language_code: options.languageCode
-            }
-        )
-            .then(APIUtils.handleErrors)
-            .catch(APIUtils.handleErrors);
-    },
-
-    updateExportConfigLanguageConfig: async (options: {
-        projectId: string;
-        exportConfigId: string;
-        languageSettingId: string;
-        languageCode: string;
-    }) => {
-        return API.postRequest(
-            `projects/${options.projectId}/export_configs/${options.exportConfigId}/language_configs/${options.languageSettingId}`,
-            true,
-            {
-                language_code: options.languageCode
-            }
-        )
-            .then(APIUtils.handleErrors)
-            .catch(APIUtils.handleErrors);
-    },
-
-    deleteExportConfigLanguageConfig: async (options: {
-        projectId: string;
-        exportConfigId: string;
-        languageSettingId: string;
-    }) => {
-        return API.deleteRequest(
-            `projects/${options.projectId}/export_configs/${options.exportConfigId}/language_configs/${options.languageSettingId}`,
-            true
-        )
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     }

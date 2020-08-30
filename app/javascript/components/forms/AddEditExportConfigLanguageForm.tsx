@@ -1,9 +1,11 @@
-import { Button, Form, Input, Select } from "antd";
+import { Button, Form, Input, Select, Tooltip } from "antd";
 import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
 import FlagIcon from "../ui/FlagIcons";
 import { TexterifyModal } from "../ui/TexterifyModal";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+import { IGetLanguageConfigsResponse } from "../api/v1/LanguageConfigsAPI";
 
 export interface ICreateUpdateLanguageConfig {
     id?: string;
@@ -15,6 +17,8 @@ export interface ICreateUpdateLanguageConfig {
 
 interface IProps {
     languagesResponse: any;
+    languageConfigsResponse: IGetLanguageConfigsResponse;
+    languageConfigsToCreate: ICreateUpdateLanguageConfig[];
     exportConfigLanguageConfigToEdit?: ICreateUpdateLanguageConfig;
     projectId: string;
     visible: boolean;
@@ -104,23 +108,35 @@ class AddEditExportConfigLanguageForm extends React.Component<IProps> {
                             filterOption
                             style={{ width: "100%" }}
                         >
-                            {this.props.languagesResponse?.data.map((language, index) => {
-                                const countryCode = APIUtils.getIncludedObject(
-                                    language.relationships.country_code.data,
-                                    this.props.languagesResponse.included
-                                );
+                            {this.props.languagesResponse?.data
+                                .filter((language) => {
+                                    return (
+                                        this.props.exportConfigLanguageConfigToEdit?.languageId === language.id ||
+                                        (!this.props.languageConfigsResponse?.data.find((languageConfig) => {
+                                            return languageConfig.attributes.language_id === language.id;
+                                        }) &&
+                                            !this.props.languageConfigsToCreate.find((languageConfig) => {
+                                                return languageConfig.languageId === language.id;
+                                            }))
+                                    );
+                                })
+                                .map((language, index) => {
+                                    const countryCode = APIUtils.getIncludedObject(
+                                        language.relationships.country_code.data,
+                                        this.props.languagesResponse.included
+                                    );
 
-                                return (
-                                    <Select.Option value={language.attributes.id} key={index}>
-                                        {countryCode && (
-                                            <span style={{ marginRight: 8 }}>
-                                                <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
-                                            </span>
-                                        )}
-                                        {language.attributes.name}
-                                    </Select.Option>
-                                );
-                            })}
+                                    return (
+                                        <Select.Option value={language.attributes.id} key={index}>
+                                            {countryCode && (
+                                                <span style={{ marginRight: 8 }}>
+                                                    <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
+                                                </span>
+                                            )}
+                                            {language.attributes.name}
+                                        </Select.Option>
+                                    );
+                                })}
                         </Select>
                     </Form.Item>
 
@@ -131,7 +147,18 @@ class AddEditExportConfigLanguageForm extends React.Component<IProps> {
                             {
                                 required: true,
                                 whitespace: true,
-                                message: "Please enter the new language code of the language."
+                                message: (
+                                    <>
+                                        <span style={{ marginRight: 8 }}>Please enter a valid language code.</span>
+                                        <Tooltip
+                                            title="The language code must start with a letter and must not contain anything other
+                                        than letters and numbers."
+                                        >
+                                            <QuestionCircleOutlined />
+                                        </Tooltip>
+                                    </>
+                                ),
+                                pattern: new RegExp(/^[A-Za-z_][A-Za-z0-9_]*$/)
                             }
                         ]}
                     >
