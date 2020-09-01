@@ -36,7 +36,7 @@ class LoginForm extends React.Component<{}, IState> {
                         name="email"
                         rules={[{ required: true, whitespace: true, message: "Please enter your email address." }]}
                     >
-                        <Input tabIndex={1} placeholder="Email address" autoComplete="emailsquad" />
+                        <Input tabIndex={1} placeholder="Email address" autoComplete="email" />
                     </Form.Item>
 
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
