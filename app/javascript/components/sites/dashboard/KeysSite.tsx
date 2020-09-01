@@ -44,7 +44,6 @@ interface IState {
     editTranslationLanguageId: string;
     editTranslationExportConfigId: string;
     editTranslationContentChanged: boolean;
-    keyToEdit: any;
     keyToShowHistory: any;
     keyMenuVisible: string;
 }
@@ -93,7 +92,6 @@ class KeysSite extends React.Component<IProps, IState> {
         editTranslationLanguageId: "",
         editTranslationExportConfigId: null,
         editTranslationContentChanged: false,
-        keyToEdit: null,
         keyToShowHistory: null,
         keyMenuVisible: null
     };
@@ -318,13 +316,6 @@ class KeysSite extends React.Component<IProps, IState> {
             key.attributes.description,
             !key.attributes.html_enabled
         );
-    };
-
-    openKeyEditDialog = (key: any) => {
-        this.setState({
-            addDialogVisible: true,
-            keyToEdit: key
-        });
     };
 
     onDeleteKeys = async () => {
@@ -788,11 +779,11 @@ class KeysSite extends React.Component<IProps, IState> {
                 </Layout>
 
                 <NewKeyForm
-                    keyToEdit={this.state.keyToEdit}
                     visible={this.state.addDialogVisible}
                     projectId={this.props.match.params.projectId}
+                    languagesResponse={this.state.languagesResponse}
                     onCancelRequest={() => {
-                        this.setState({ addDialogVisible: false, keyToEdit: null });
+                        this.setState({ addDialogVisible: false });
                     }}
                     onCreated={async () => {
                         this.setState({

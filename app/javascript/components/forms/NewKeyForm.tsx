@@ -5,25 +5,38 @@ import * as React from "react";
 import { KeysAPI } from "../api/v1/KeysAPI";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import { TexterifyModal } from "../ui/TexterifyModal";
+import { TranslationCard } from "../sites/dashboard/editor/TranslationCard";
+import { APIUtils } from "../api/v1/APIUtils";
+import FlagIcon from "../ui/FlagIcons";
+import { TranslationsAPI } from "../api/v1/TranslationsAPI";
 
 interface IProps {
     projectId: string;
     visible: boolean;
-    keyToEdit?: any;
+    languagesResponse: any;
     onCancelRequest(): void;
     onCreated?(): void;
+}
+
+interface IFormValues {
+    name: string;
+    description: string;
+    htmlEnabled: boolean;
+    defaultLanguageContent: string;
+    defaultLanguageHTMLContent: string;
 }
 
 class NewKeyForm extends React.Component<IProps> {
     formRef = React.createRef<FormInstance>();
 
-    handleSubmit = async (values: any) => {
+    handleSubmit = async (values: IFormValues) => {
         const response = await KeysAPI.createKey(
             this.props.projectId,
             values.name,
             values.description,
-            values.html_enabled
+            values.htmlEnabled
         );
+
         if (response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
                 this.formRef.current.setFields([
@@ -39,12 +52,43 @@ class NewKeyForm extends React.Component<IProps> {
             return;
         }
 
+        const translationParams = {
+            projectId: this.props.projectId,
+            keyId: response.data.id,
+            languageId: this.getDefaultLanguage().id
+        };
+
+        if (values.htmlEnabled && values.defaultLanguageHTMLContent) {
+            await TranslationsAPI.createTranslation({
+                ...translationParams,
+                content: values.defaultLanguageHTMLContent
+            });
+        } else if (!values.htmlEnabled && values.defaultLanguageContent) {
+            await TranslationsAPI.createTranslation({
+                ...translationParams,
+                content: values.defaultLanguageContent
+            });
+        }
+
         if (this.props.onCreated) {
             this.props.onCreated();
         }
     };
 
+    getDefaultLanguage = () => {
+        return this.props.languagesResponse.data.find((language) => {
+            return language.attributes.is_default;
+        });
+    };
+
     render() {
+        const defaultLanguage = this.getDefaultLanguage();
+
+        const countryCode = APIUtils.getIncludedObject(
+            defaultLanguage.relationships.country_code.data,
+            this.props.languagesResponse.included
+        );
+
         return (
             <TexterifyModal
                 title="Add a new key"
@@ -70,13 +114,7 @@ class NewKeyForm extends React.Component<IProps> {
                     id="newKeyForm"
                     onFinish={this.handleSubmit}
                     style={{ maxWidth: "100%" }}
-                    initialValues={
-                        this.props.keyToEdit && {
-                            name: this.props.keyToEdit.attributes.name,
-                            description: this.props.keyToEdit.attributes.description,
-                            html_enabled: this.props.keyToEdit.attributes.html_enabled || false
-                        }
-                    }
+                    initialValues={{ htmlEnabled: false }}
                 >
                     <h3>Name *</h3>
                     <Form.Item
@@ -91,19 +129,69 @@ class NewKeyForm extends React.Component<IProps> {
                         <Input placeholder="Description" />
                     </Form.Item>
 
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <Form.Item
-                            name="html_enabled"
-                            rules={[{ required: false }]}
-                            valuePropName="checked"
-                            style={{ marginBottom: 0 }}
-                        >
-                            <Checkbox>HTML</Checkbox>
-                        </Form.Item>
-                        <Tooltip title="If checked a editor will de used for translation. You can still change this later.">
-                            <QuestionCircleOutlined />
-                        </Tooltip>
-                    </div>
+                    <Form.Item noStyle shouldUpdate>
+                        {({ getFieldValue, setFieldsValue }) => {
+                            return (
+                                <>
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        <Form.Item
+                                            name="htmlEnabled"
+                                            rules={[{ required: false }]}
+                                            valuePropName="checked"
+                                            style={{ marginBottom: 0 }}
+                                        >
+                                            <Checkbox>HTML</Checkbox>
+                                        </Form.Item>
+                                        <Tooltip title="If checked a editor will be used for translation that helps you to create HTML content. You can always change this later.">
+                                            <QuestionCircleOutlined />
+                                        </Tooltip>
+                                    </div>
+
+                                    {defaultLanguage && (
+                                        <>
+                                            <h3 style={{ marginTop: 24 }}>
+                                                {countryCode && (
+                                                    <span style={{ marginRight: 8 }}>
+                                                        <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
+                                                    </span>
+                                                )}
+                                                {defaultLanguage.attributes.name}
+                                            </h3>
+                                            {getFieldValue("htmlEnabled") ? (
+                                                <Form.Item
+                                                    name="defaultLanguageHTMLContent"
+                                                    rules={[{ required: false }]}
+                                                >
+                                                    <TranslationCard
+                                                        projectId={this.props.projectId}
+                                                        languagesResponse={this.props.languagesResponse}
+                                                        defaultSelected={defaultLanguage}
+                                                        isHTMLKey
+                                                        hideLanguageSelection
+                                                        hideSaveButton
+                                                        onChange={(_changed, content) => {
+                                                            setFieldsValue({
+                                                                defaultLanguageHTMLContent: content
+                                                            });
+                                                        }}
+                                                        initialValue={getFieldValue("defaultLanguageHTMLContent")}
+                                                    />
+                                                </Form.Item>
+                                            ) : (
+                                                <Form.Item name="defaultLanguageContent" rules={[{ required: false }]}>
+                                                    <Input.TextArea
+                                                        style={{ resize: "none" }}
+                                                        placeholder="Translation"
+                                                        autoSize={{ minRows: 4, maxRows: 4 }}
+                                                    />
+                                                </Form.Item>
+                                            )}
+                                        </>
+                                    )}
+                                </>
+                            );
+                        }}
+                    </Form.Item>
                 </Form>
             </TexterifyModal>
         );

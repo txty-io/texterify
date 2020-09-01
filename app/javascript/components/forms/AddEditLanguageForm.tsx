@@ -228,7 +228,7 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
                         >
                             <Checkbox>Default language</Checkbox>
                         </Form.Item>
-                        <Tooltip title="Mark the language as the default language.">
+                        <Tooltip title="Mark the language as the default language. You can specify custom export settings and directly add a translation for new keys in the default language.">
                             <QuestionCircleOutlined />
                         </Tooltip>
                     </div>

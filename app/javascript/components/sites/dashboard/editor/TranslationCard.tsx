@@ -29,11 +29,13 @@ interface IProps {
     projectId: string;
     languagesResponse: any;
     defaultSelected: any;
-    keyResponse: any;
+    keyResponse?: any;
+    isHTMLKey?: boolean;
     hideLanguageSelection?: boolean;
     hideSaveButton?: boolean;
     exportConfigId?: string;
-    onChange?(changed: boolean);
+    initialValue?: string;
+    onChange?(changed: boolean, content: string);
     onSave?();
 }
 interface IState {
@@ -64,13 +66,15 @@ class TranslationCard extends React.Component<IProps, IState> {
     }
 
     loadData = async () => {
-        const translationForLanguage = await this.getTranslationForLanguage(this.state.selectedLanguage);
-        const isHTMLKey = this.props.keyResponse.data.attributes.html_enabled;
+        const translationForLanguage = this.getTranslationForLanguage(this.state.selectedLanguage);
+        const isHTMLKey = this.props.keyResponse
+            ? this.props.keyResponse.data.attributes.html_enabled
+            : this.props.isHTMLKey;
 
         if (isHTMLKey) {
             let htmlData;
             try {
-                htmlData = JSON.parse(translationForLanguage);
+                htmlData = JSON.parse(this.props.initialValue || translationForLanguage);
             } catch (e) {
                 //
             }
@@ -84,9 +88,10 @@ class TranslationCard extends React.Component<IProps, IState> {
                         inlineToolbar: true
                     }
                 },
-                onChange: () => {
+                onChange: async () => {
                     if (this.props.onChange) {
-                        this.props.onChange(true);
+                        const content = await this.editor.save();
+                        this.props.onChange(true, JSON.stringify(content));
                     }
                     this.setState({ editorContentChanged: true });
                 },
@@ -105,19 +110,22 @@ class TranslationCard extends React.Component<IProps, IState> {
     };
 
     getTranslationForLanguage = (languageId: string) => {
-        let translationForLanguage;
-        this.props.keyResponse.data.relationships.translations.data.map((translationReference) => {
-            const translation = APIUtils.getIncludedObject(translationReference, this.props.keyResponse.included);
-            if (translation.relationships.language.data.id === languageId) {
-                if (translation.relationships.export_config.data) {
-                    if (translation.relationships.export_config.data.id === this.props.exportConfigId) {
+        let translationForLanguage = "";
+
+        if (this.props.keyResponse) {
+            this.props.keyResponse.data.relationships.translations.data.map((translationReference) => {
+                const translation = APIUtils.getIncludedObject(translationReference, this.props.keyResponse.included);
+                if (translation.relationships.language.data.id === languageId) {
+                    if (translation.relationships.export_config.data) {
+                        if (translation.relationships.export_config.data.id === this.props.exportConfigId) {
+                            translationForLanguage = translation.attributes.content;
+                        }
+                    } else {
                         translationForLanguage = translation.attributes.content;
                     }
-                } else {
-                    translationForLanguage = translation.attributes.content;
                 }
-            }
-        });
+            });
+        }
 
         return translationForLanguage;
     };
@@ -189,52 +197,54 @@ class TranslationCard extends React.Component<IProps, IState> {
     render() {
         return (
             <div style={{ marginBottom: 24, width: "100%" }}>
-                <div style={{ marginBottom: 8, display: "flex" }}>
-                    {!this.props.hideLanguageSelection && (
-                        <Select
-                            style={{ flexGrow: 1, maxWidth: 200 }}
-                            onChange={async (selectedValue: string) => {
-                                this.setState(
-                                    {
-                                        selectedLanguage: selectedValue
-                                    },
-                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                    this.loadData
-                                );
-                            }}
-                            value={this.state.selectedLanguage}
-                        >
-                            {this.props.languagesResponse &&
-                                this.props.languagesResponse.data.map((language) => {
-                                    const countryCode = APIUtils.getIncludedObject(
-                                        language.relationships.country_code.data,
-                                        this.props.languagesResponse.included
+                {(!this.props.hideLanguageSelection || !this.props.hideSaveButton) && (
+                    <div style={{ marginBottom: 8, display: "flex" }}>
+                        {!this.props.hideLanguageSelection && (
+                            <Select
+                                style={{ flexGrow: 1, maxWidth: 200 }}
+                                onChange={async (selectedValue: string) => {
+                                    this.setState(
+                                        {
+                                            selectedLanguage: selectedValue
+                                        },
+                                        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                        this.loadData
                                     );
+                                }}
+                                value={this.state.selectedLanguage}
+                            >
+                                {this.props.languagesResponse &&
+                                    this.props.languagesResponse.data.map((language) => {
+                                        const countryCode = APIUtils.getIncludedObject(
+                                            language.relationships.country_code.data,
+                                            this.props.languagesResponse.included
+                                        );
 
-                                    return (
-                                        <Select.Option value={language.id} key={language.attributes.name}>
-                                            {countryCode && (
-                                                <span style={{ marginRight: 8 }}>
-                                                    <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
-                                                </span>
-                                            )}
-                                            {language.attributes.name}
-                                        </Select.Option>
-                                    );
-                                })}
-                        </Select>
-                    )}
-                    {!this.props.hideSaveButton && (
-                        <Button
-                            type="primary"
-                            disabled={!this.contentChanged()}
-                            style={{ marginLeft: "auto" }}
-                            onClick={this.saveChanges}
-                        >
-                            Save changes
-                        </Button>
-                    )}
-                </div>
+                                        return (
+                                            <Select.Option value={language.id} key={language.attributes.name}>
+                                                {countryCode && (
+                                                    <span style={{ marginRight: 8 }}>
+                                                        <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
+                                                    </span>
+                                                )}
+                                                {language.attributes.name}
+                                            </Select.Option>
+                                        );
+                                    })}
+                            </Select>
+                        )}
+                        {!this.props.hideSaveButton && (
+                            <Button
+                                type="primary"
+                                disabled={!this.contentChanged()}
+                                style={{ marginLeft: "auto" }}
+                                onClick={this.saveChanges}
+                            >
+                                Save changes
+                            </Button>
+                        )}
+                    </div>
+                )}
 
                 {this.isHTMLKey() ? (
                     <div style={{ position: "relative" }}>
@@ -258,7 +268,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                             this.setState({ textareaContentChanged: changed });
 
                             if (this.props.onChange) {
-                                this.props.onChange(changed);
+                                this.props.onChange(changed, event.target.value);
                             }
 
                             this.setState({ content: event.target.value });
