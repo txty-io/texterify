@@ -32,7 +32,12 @@ class ExportConfig < ApplicationRecord
       path = default_language_file_path
     end
 
-    if language.language_code
+    language_config_code = language_configs.find_by(language_id: language.id)
+
+    # Use the language code from the language config if available.
+    if language_config_code
+      path = path.sub('{languageCode}', language_config_code.language_code)
+    elsif language.language_code
       path = path.sub('{languageCode}', language.language_code.code)
     else
       path
