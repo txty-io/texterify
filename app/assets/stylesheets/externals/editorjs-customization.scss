@@ -1,0 +1,53 @@
+.dark-theme {
+  .ce-toolbar__settings-btn {
+    color: #bdbdbd;
+    background: #313131;
+  }
+
+  .ce-toolbar__settings-btn:hover {
+    color: #fff;
+  }
+
+  .codex-editor--narrow .ce-toolbox {
+    background: #2a2a2a;
+  }
+
+  .ce-settings {
+    background: #2a2a2a;
+    border: 0;
+  }
+
+  .ce-settings__button {
+    color: #707684;
+  }
+
+  .ce-settings__button:hover {
+    color: #388ae5;
+    background: #313131;
+  }
+
+  .ce-settings__button--confirm {
+    color: #fff;
+  }
+
+  .ce-settings__button:hover.ce-settings__button--confirm {
+    color: #fff;
+  }
+
+  .ce-block--selected .ce-block__content {
+    background: #2a2a2a;
+  }
+
+  .cdx-settings-button {
+    color: #7d7d7d;
+  }
+
+  .cdx-settings-button--active {
+    color: #ccc;
+    background-color: #313131
+  }
+
+  .cdx-settings-button:hover {
+    background-color: #313131;
+  }
+}
