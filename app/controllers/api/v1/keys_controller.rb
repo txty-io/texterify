@@ -58,7 +58,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     authorize key
 
     if key.save
-      render json: key
+      render json: KeySerializer.new(key).serialized_json
     else
       render json: {
         errors: key.errors.details
