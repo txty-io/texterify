@@ -111,8 +111,9 @@ class Api::V1::LanguagesController < Api::V1::ApiController
       if current_default_language&.id != language.id
         current_default_language&.update(is_default: false)
       end
-      language.is_default = params[:is_default]
     end
+
+    language.is_default = params[:is_default]
 
     if params.key? :parent
       if params[:parent].present?
