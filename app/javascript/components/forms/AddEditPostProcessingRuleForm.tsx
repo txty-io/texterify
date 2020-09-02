@@ -1,7 +1,7 @@
 import { Button, Form, Input, Select, Tooltip } from "antd";
 import { FormInstance } from "antd/lib/form";
 import * as React from "react";
-import { ErrorUtils } from "../ui/ErrorUtils";
+import { ErrorUtils, ERRORS } from "../ui/ErrorUtils";
 import { TexterifyModal } from "../ui/TexterifyModal";
 import { PostProcessingRulesAPI, IPostProcessingRule } from "../api/v1/PostProcessingRulesAPI";
 import { ExportConfigsAPI } from "../api/v1/ExportConfigsAPI";
@@ -70,7 +70,16 @@ class AddEditPostProcessingRuleForm extends React.Component<IProps> {
         }
 
         if (response.errors) {
-            ErrorUtils.showErrors(response.errors);
+            if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
+                this.formRef.current.setFields([
+                    {
+                        name: "name",
+                        errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
+                    }
+                ]);
+            } else {
+                ErrorUtils.showErrors(response.errors);
+            }
 
             return;
         }
