@@ -52,22 +52,24 @@ class NewKeyForm extends React.Component<IProps> {
             return;
         }
 
-        const translationParams = {
-            projectId: this.props.projectId,
-            keyId: response.data.id,
-            languageId: this.getDefaultLanguage().id
-        };
+        if (values.defaultLanguageContent || values.defaultLanguageHTMLContent) {
+            const translationParams = {
+                projectId: this.props.projectId,
+                keyId: response.data.id,
+                languageId: this.getDefaultLanguage().id
+            };
 
-        if (values.htmlEnabled && values.defaultLanguageHTMLContent) {
-            await TranslationsAPI.createTranslation({
-                ...translationParams,
-                content: values.defaultLanguageHTMLContent
-            });
-        } else if (!values.htmlEnabled && values.defaultLanguageContent) {
-            await TranslationsAPI.createTranslation({
-                ...translationParams,
-                content: values.defaultLanguageContent
-            });
+            if (values.htmlEnabled) {
+                await TranslationsAPI.createTranslation({
+                    ...translationParams,
+                    content: values.defaultLanguageHTMLContent
+                });
+            } else if (!values.htmlEnabled) {
+                await TranslationsAPI.createTranslation({
+                    ...translationParams,
+                    content: values.defaultLanguageContent
+                });
+            }
         }
 
         if (this.props.onCreated) {
@@ -85,7 +87,7 @@ class NewKeyForm extends React.Component<IProps> {
         const defaultLanguage = this.getDefaultLanguage();
 
         const countryCode = APIUtils.getIncludedObject(
-            defaultLanguage.relationships.country_code.data,
+            defaultLanguage?.relationships.country_code.data,
             this.props.languagesResponse.included
         );
 
