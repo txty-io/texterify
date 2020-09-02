@@ -247,7 +247,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                 )}
                             </div>
                             <Pagination
-                                defaultCurrent={1}
+                                current={this.state.page}
                                 total={(this.state.keysResponse && this.state.keysResponse.meta.total) || 0}
                                 onChange={async (page: number, _perPage: number) => {
                                     // eslint-disable-next-line @typescript-eslint/no-misused-promises

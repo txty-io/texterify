@@ -2,6 +2,7 @@ import * as localforage from "localforage";
 import { observable } from "mobx";
 import { create, persist } from "mobx-persist";
 import { APIUtils } from "../api/v1/APIUtils";
+import { DEFAULT_PAGE_SIZE } from "../ui/Config";
 
 interface IProject {
     id: string;
@@ -30,7 +31,7 @@ class DashboardStore {
     @observable currentProjectIncluded: any = null;
     @observable currentOrganization: IOrganization = null;
     @observable @persist sidebarMinimized: boolean;
-    @observable @persist keysPerPage = 10;
+    @observable @persist keysPerPage = DEFAULT_PAGE_SIZE;
     @observable hydrationFinished = false;
 
     getOrganizationId = (organizationId?: string) => {

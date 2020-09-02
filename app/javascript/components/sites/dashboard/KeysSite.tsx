@@ -560,7 +560,8 @@ class KeysSite extends React.Component<IProps, IState> {
                                 },
                                 onShowSizeChange: async (_current: number, size: number) => {
                                     dashboardStore.keysPerPage = size;
-                                    await this.reloadTable();
+                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                    this.setState({ page: 1 }, this.reloadTable);
                                 }
                             }}
                             onTranslationUpdated={async () => {

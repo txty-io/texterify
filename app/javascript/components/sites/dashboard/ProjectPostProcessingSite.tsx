@@ -272,8 +272,8 @@ class ProjectPostProcessingSite extends React.Component<IProps, IState> {
                                     await this.reloadTable({ page: page });
                                 },
                                 onShowSizeChange: async (_current: number, size: number) => {
-                                    this.setState({ perPage: size });
-                                    await this.reloadTable({ perPage: size });
+                                    this.setState({ page: 1, perPage: size });
+                                    await this.reloadTable({ page: 1, perPage: size });
                                 }
                             }}
                             locale={{

@@ -41,7 +41,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
     };
 
     async componentDidMount() {
-        await this.fetchProjects();
+        await this.reloadTable();
     }
 
     fetchProjects = async (options?: any) => {
@@ -105,6 +105,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                                 pageSizeOptions={PAGE_SIZE_OPTIONS}
                                 showSizeChanger
                                 pageSize={this.state.perPage}
+                                current={this.state.page}
                                 total={
                                     (this.state.projectsResponse &&
                                         this.state.projectsResponse.meta &&
@@ -116,8 +117,8 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                                     await this.reloadTable({ page: page });
                                 }}
                                 onShowSizeChange={async (_current: number, size: number) => {
-                                    this.setState({ perPage: size });
-                                    await this.reloadTable({ perPage: size });
+                                    this.setState({ page: 1, perPage: size });
+                                    await this.reloadTable({ page: 1, perPage: size });
                                 }}
                             />
                         </div>
