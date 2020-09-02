@@ -180,7 +180,7 @@ class KeyHistory extends React.Component<IProps, IState> {
         return (
             <>
                 <p>
-                    Name: <span style={{ fontWeight: "bold" }}>{this.props.keyName}</span>
+                    Name: <span style={{ fontWeight: "bold", wordBreak: "break-word" }}>{this.props.keyName}</span>
                 </p>
                 <Select
                     style={{ width: "50%" }}
