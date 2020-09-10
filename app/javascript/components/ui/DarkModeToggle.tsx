@@ -1,4 +1,4 @@
-import { BulbFilled, BulbOutlined } from "@ant-design/icons";
+import { BulbFilled, BulbOutlined, AlertFilled, AlertOutlined, FireFilled, FireOutlined } from "@ant-design/icons";
 import { Tooltip } from "antd";
 import * as React from "react";
 import { generalStore } from "../stores/GeneralStore";
@@ -14,10 +14,10 @@ function toggleLightDarkTheme() {
 
 export const DarkModeToggle = observer(
     (props: { text?: string; disableTooltip?: boolean; style?: React.CSSProperties }) => {
-        let Element = BulbFilled;
+        let Element = FireFilled;
 
         if (generalStore.theme === "dark") {
-            Element = BulbOutlined;
+            Element = FireOutlined;
         }
 
         const toggle = (
