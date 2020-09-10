@@ -75,7 +75,7 @@ class SearchOverlay extends React.Component<IProps, IState> {
                 <div
                     style={{
                         position: "fixed",
-                        background: generalStore.theme === "dark" ? "rgba(70, 70, 70, 0.1)" : "rgba(0, 0, 0, 0.5)",
+                        background: "rgba(0, 0, 0, 0.5)",
                         width: "100%",
                         height: "100%",
                         zIndex: 9998
@@ -95,9 +95,9 @@ class SearchOverlay extends React.Component<IProps, IState> {
                 >
                     <div
                         style={{
-                            border: generalStore.theme === "dark" ? "1px solid rgb(94, 94, 94)" : undefined,
+                            border: generalStore.theme === "dark" ? "1px solid #2d2d2d" : undefined,
                             position: "relative",
-                            background: "rgba(12, 12, 12, 0.9)",
+                            background: "#141414",
                             left: "-50%",
                             borderRadius: 4,
                             margin: "0 40px",

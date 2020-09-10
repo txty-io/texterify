@@ -41,6 +41,9 @@ const ProjectInfoWrapper = styled.div`
     }
 `;
 
+const KEY_UP = 38;
+const KEY_DOWN = 40;
+
 function SearchOverlayResults(props: { loading: boolean; projects: any[]; included?: any[]; onSelected(): void }) {
     const [selectedIndex, setSelectedIndex] = React.useState(0);
 
@@ -49,12 +52,28 @@ function SearchOverlayResults(props: { loading: boolean; projects: any[]; includ
     });
 
     React.useEffect(() => {
+        setSelectedIndex(0);
+    }, [props.projects]);
+
+    React.useEffect(() => {
         const onKeyDown = (e) => {
+            if (props.projects.length === 0) {
+                return;
+            }
+
             // arrow up/down button should select next/previous list element
-            if (e.keyCode === 38 && selectedIndex > 0) {
-                setSelectedIndex(selectedIndex - 1);
-            } else if (e.keyCode === 40 && selectedIndex < props.projects.length - 1) {
-                setSelectedIndex(selectedIndex + 1);
+            if (e.keyCode === KEY_UP) {
+                if (selectedIndex > 0) {
+                    setSelectedIndex(selectedIndex - 1);
+                } else {
+                    setSelectedIndex(props.projects.length - 1);
+                }
+            } else if (e.keyCode === KEY_DOWN) {
+                if (selectedIndex === props.projects.length - 1) {
+                    setSelectedIndex(0);
+                } else {
+                    setSelectedIndex(selectedIndex + 1);
+                }
             } else if (e.keyCode === KeyCodes.ENTER) {
                 openProject(sortedProjects[selectedIndex]);
                 props.onSelected();
@@ -76,46 +95,59 @@ function SearchOverlayResults(props: { loading: boolean; projects: any[]; includ
         return <Empty description="No projects found" image={Empty.PRESENTED_IMAGE_SIMPLE} />;
     }
 
-    return sortedProjects.map((project, index) => {
-        const ref = React.createRef<HTMLDivElement>();
+    return (
+        <>
+            {sortedProjects.map((project, index) => {
+                const ref = React.createRef<HTMLDivElement>();
 
-        const isSelected = selectedIndex === index;
+                const isSelected = selectedIndex === index;
 
-        if (isSelected) {
-            setTimeout(() => {
-                // eslint-disable-next-line no-unused-expressions
-                ref.current?.scrollIntoView({
-                    behavior: "smooth",
-                    block: "end"
-                });
-            });
-        }
+                if (isSelected) {
+                    setTimeout(() => {
+                        // eslint-disable-next-line no-unused-expressions
+                        ref.current?.scrollIntoView({
+                            behavior: "smooth",
+                            block: "end"
+                        });
+                    });
+                }
 
-        const projectOrganization =
-            props.included && APIUtils.getIncludedObject(project.relationships.organization.data, props.included);
+                const projectOrganization =
+                    props.included &&
+                    APIUtils.getIncludedObject(project.relationships.organization.data, props.included);
 
-        return (
-            <ProjectWrapper
-                onClick={() => {
-                    if (isSelected) {
-                        openProject(project);
-                        props.onSelected();
-                    } else {
-                        setSelectedIndex(index);
-                    }
-                }}
-                ref={ref}
-                key={project.id}
-                style={{ background: isSelected ? "#177ddc" : undefined, borderRadius: Styles.DEFAULT_BORDER_RADIUS }}
-            >
-                <ProjectAvatar project={project} style={{ marginRight: 16, width: 32, height: 32, fontSize: "10px" }} />
-                <ProjectInfoWrapper>
-                    {projectOrganization ? `${projectOrganization.attributes.name} / ` : ""}
-                    <span style={{ fontWeight: props.included ? "bold" : undefined }}>{project.attributes.name}</span>
-                </ProjectInfoWrapper>
-            </ProjectWrapper>
-        );
-    });
+                return (
+                    <ProjectWrapper
+                        onClick={() => {
+                            if (isSelected) {
+                                openProject(project);
+                                props.onSelected();
+                            } else {
+                                setSelectedIndex(index);
+                            }
+                        }}
+                        ref={ref}
+                        key={project.id}
+                        style={{
+                            background: isSelected ? "#177ddc" : undefined,
+                            borderRadius: Styles.DEFAULT_BORDER_RADIUS
+                        }}
+                    >
+                        <ProjectAvatar
+                            project={project}
+                            style={{ marginRight: 16, width: 32, height: 32, fontSize: "10px" }}
+                        />
+                        <ProjectInfoWrapper>
+                            {projectOrganization ? `${projectOrganization.attributes.name} / ` : ""}
+                            <span style={{ fontWeight: props.included ? "bold" : undefined }}>
+                                {project.attributes.name}
+                            </span>
+                        </ProjectInfoWrapper>
+                    </ProjectWrapper>
+                );
+            })}
+        </>
+    );
 }
 
 export { SearchOverlayResults };
