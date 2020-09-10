@@ -1,4 +1,4 @@
-import { Empty, Layout, Progress } from "antd";
+import { Empty, Layout, Progress, Button } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -12,6 +12,10 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import FlagIcon from "../../ui/FlagIcons";
 import { Loading } from "../../ui/Loading";
 import { ProjectAvatar } from "../../ui/ProjectAvatar";
+import { WhiteButton } from "../../ui/WhiteButton";
+import { history } from "../../routing/history";
+import { Routes } from "../../routing/Routes";
+import { ArrowRightOutlined, PicRightOutlined } from "@ant-design/icons";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -109,6 +113,19 @@ class ProjectSite extends React.Component<IProps, IState> {
                                 {`${this.props.match.params.projectId}`}
                             </Paragraph>
                         </div>
+                        <Button
+                            onClick={() => {
+                                history.push(
+                                    Routes.DASHBOARD.PROJECT_EDITOR.replace(
+                                        ":projectId",
+                                        this.props.match.params.projectId
+                                    )
+                                );
+                            }}
+                            style={{ marginLeft: 80 }}
+                        >
+                            <PicRightOutlined /> Open editor
+                        </Button>
                     </div>
                     {dashboardStore.currentProject?.attributes.description && (
                         <p style={{ marginTop: 16 }}>{dashboardStore.currentProject?.attributes.description}</p>

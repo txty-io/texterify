@@ -2,6 +2,7 @@ import * as React from "react";
 import GitHubMarkLight from "images/GitHub-Mark-Light-120px-plus.png";
 import { WhiteButton } from "./WhiteButton";
 import { DarkModeToggle } from "./DarkModeToggle";
+import Logo from "images/logo.svg";
 
 interface IProps {
     style?: React.CSSProperties;
@@ -41,7 +42,18 @@ class SiteWrapper extends React.Component<IProps> {
                             padding: 40
                         }}
                     >
-                        <h1 style={{ marginBottom: 24, fontSize: 48, fontFamily: "Ubuntu", color: "#fff" }}>
+                        <h1
+                            style={{
+                                marginBottom: 24,
+                                fontSize: 48,
+                                fontFamily: "Ubuntu",
+                                color: "#fff",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}
+                        >
+                            <img src={Logo} style={{ maxWidth: 120, marginRight: 16 }} />
                             texterify
                         </h1>
                         <p style={{ marginBottom: 40 }}>
@@ -49,7 +61,7 @@ class SiteWrapper extends React.Component<IProps> {
                             apps and websites.
                         </p>
                         <div style={{ display: "flex", alignItems: "center" }}>
-                            <img src={GitHubMarkLight} style={{ maxWidth: 56, marginRight: 40 }} />
+                            <img src={GitHubMarkLight} style={{ maxWidth: 32, marginRight: 40 }} />
                             <WhiteButton
                                 onClick={() => {
                                     window.open("https://github.com/chrztoph/texterify", "_blank", "noopener");

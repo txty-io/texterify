@@ -1,7 +1,15 @@
-import { DeploymentUnitOutlined, LineChartOutlined, MessageOutlined, ProjectOutlined } from "@ant-design/icons";
+import {
+    DeploymentUnitOutlined,
+    LineChartOutlined,
+    ProjectOutlined,
+    ArrowRightOutlined,
+    MessageOutlined
+} from "@ant-design/icons";
 import * as antd from "antd";
+import Logo from "images/logo.svg";
 import { observer } from "mobx-react";
 import * as React from "react";
+import Hotkeys from "react-hot-keys";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { ActivitySite } from "../sites/dashboard/ActivitySite";
@@ -21,7 +29,7 @@ import { OrganizationRouter } from "./OrganizationRouter";
 import { PrivateRoute } from "./PrivateRoute";
 import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
-import Hotkeys from "react-hot-keys";
+import { WhiteButton } from "../ui/WhiteButton";
 
 const TranslateButton = styled(antd.Button)`
     margin-right: 40px;
@@ -30,8 +38,8 @@ const TranslateButton = styled(antd.Button)`
     border-color: var(--topbar-color) !important;
 
     &:hover {
-        background-color: #095cb5 !important;
-        border-color: #095cb5 !important;
+        background-color: #4275e4 !important;
+        border-color: #4275e4 !important;
     }
 `;
 
@@ -135,7 +143,11 @@ class DashboardRouter extends React.Component<IProps, IState> {
                         // main menu bar is always in dark mode.
                         className="dark-theme"
                     >
-                        <Link to={Routes.DASHBOARD.ROOT} style={{ textDecoration: "none" }}>
+                        <Link
+                            to={Routes.DASHBOARD.ROOT}
+                            style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
+                        >
+                            <img src={Logo} style={{ width: 32, marginRight: 16 }} />
                             <h1
                                 style={{
                                     fontSize: 18,
@@ -212,25 +224,9 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     });
                                 }}
                                 value=""
+                                style={{ borderTop: 0, borderRight: 0, borderLeft: 0, boxShadow: "none" }}
                             />
                         </SearchInputWrapper>
-
-                        {this.props.match.params.projectId && (
-                            <TranslateButton
-                                type="primary"
-                                onClick={() => {
-                                    history.push(
-                                        Routes.DASHBOARD.PROJECT_EDITOR.replace(
-                                            ":projectId",
-                                            this.props.match.params.projectId
-                                        )
-                                    );
-                                }}
-                                style={{ marginRight: 40 }}
-                            >
-                                Open editor
-                            </TranslateButton>
-                        )}
 
                         {/* <MessageOutlined style={{ marginRight: 40 }} /> */}
 
