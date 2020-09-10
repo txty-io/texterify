@@ -1,3 +1,24 @@
+.ce-toolbar__actions {
+  right: -28px !important;
+}
+
+.codex-editor__redactor {
+  margin-right: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.ce-toolbar__plus {
+  left: 5px !important;
+}
+
+.ce-settings {
+  border: 0;
+}
+
+.cdx-list-settings div:last-child {
+  margin-right: 0;
+}
+
 .dark-theme {
   .ce-toolbar__settings-btn {
     color: #bdbdbd;
@@ -14,7 +35,6 @@
 
   .ce-settings {
     background: #2a2a2a;
-    border: 0;
   }
 
   .ce-settings__button {
@@ -49,5 +69,23 @@
 
   .cdx-settings-button:hover {
     background-color: #313131;
+  }
+
+  .ce-inline-toolbar, .ce-conversion-toolbar {
+    background: #2a2a2a;
+    border-color: #2a2a2a;
+  }
+
+  .ce-inline-tool:hover, .ce-inline-toolbar__dropdown:hover {
+    background-color: #313131
+  }
+
+  .ce-conversion-tool__icon {
+    background: transparent;
+  }
+
+  .ce-inline-tool-input {
+    background-color: #313131;
+    border-color: #313131;
   }
 }
