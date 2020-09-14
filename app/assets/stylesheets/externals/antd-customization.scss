@@ -239,4 +239,12 @@
   .ant-table-content {
     overflow-x: auto;
   }
+
+  .ant-alert {
+    color: #fff;
+
+    p {
+      color: #fff !important;
+    }
+  }
 }
