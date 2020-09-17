@@ -94,7 +94,17 @@ class ImportSite extends React.Component<IProps, IState> {
                 selectedLanguageId: null
             });
         } else {
-            message.error("Failed to import translations.");
+            if (response.message === "NO_OR_EMPTY_FILE") {
+                message.error("Please select a file with content.");
+            } else if (response.message === "INVALID_JSON") {
+                message.error("The content of the file is invalid JSON.");
+            } else if (response.message === "NOTHING_IMPORTED") {
+                message.error("No data in file found to import.");
+            } else if (response.message === "INVALID_FILE_EXTENSION") {
+                message.error("The file has an invalid file extension.");
+            } else {
+                message.error("Failed to import translations.");
+            }
         }
 
         this.setState({ loading: false });
@@ -199,7 +209,7 @@ class ImportSite extends React.Component<IProps, IState> {
                                     ref={(node) => {
                                         this.dropzoneRef = node;
                                     }}
-                                    accept=".json"
+                                    accept={[".json", ".strings"]}
                                 >
                                     {({ getRootProps, getInputProps }) => {
                                         return (
@@ -217,10 +227,11 @@ class ImportSite extends React.Component<IProps, IState> {
                                                     </p>
                                                 ) : (
                                                     <p style={{ margin: 0 }}>
-                                                        Drop a <b>.json</b> file here or click to upload one.
+                                                        Drop a <b>.json</b> or <b>.strings</b> file here or click to
+                                                        upload one.
                                                     </p>
                                                 )}
-                                                <input {...getInputProps()} accept=".json" />
+                                                <input {...getInputProps()} accept=".json,.strings" />
                                             </DropZoneWrapper>
                                         );
                                     }}

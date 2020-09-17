@@ -72,6 +72,7 @@ const ProjectsAPI = {
         return API.postRequest(`projects/${options.projectId}/import`, true, {
             language_id: options.languageId,
             export_config_id: options.exportConfigId,
+            name: options.file.name,
             file: fileBase64
         })
             .then(APIUtils.handleErrors)

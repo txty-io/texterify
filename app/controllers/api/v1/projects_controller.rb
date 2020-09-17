@@ -240,18 +240,20 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     unless file
       render json: {
         error: true,
-        message: 'Missing required parameter'
+        message: 'NO_OR_EMPTY_FILE'
       }, status: :bad_request
       return
     end
 
-    file_content = Base64.decode64(file)
+    file_name = params[:name]
+    file_content = Base64.decode64(file).force_encoding('UTF-8')
+
     begin
-      json = JSON.parse(file_content)
-    rescue JSON::ParserError
+      json = helpers.json_file_content(file_name, file_content)
+    rescue RuntimeError => e
       render json: {
-        ok: false,
-        message: 'Invalid JSON.'
+        error: true,
+        message: e.message
       }, status: :bad_request
       return
     end
