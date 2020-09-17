@@ -60,6 +60,9 @@ Style/HashTransformValues:
 Style/ExponentialNotation:
   Enabled: true
 
+Style/RedundantReturn:
+  Enabled: false
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: "indented"
 
