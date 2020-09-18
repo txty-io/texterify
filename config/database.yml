@@ -23,6 +23,8 @@ default: &default
 
 development:
   <<: *default
+  host: <%= ENV.fetch("DB_DEV_HOST", "db") %>
+  username: <%= ENV.fetch("DB_DEV_USERNAME", "postgres") %>
   database: texterify_development
 
   # The specified database role being used to connect to postgres.
