@@ -24,7 +24,20 @@ class Api::V1::TranslationsController < Api::V1::ApiController
         }, status: :bad_request
       end
     else
-      language = project.languages.find(params[:language_id])
+      if params[:language_id].present?
+        language = project.languages.find(params[:language_id])
+      else
+        language = project.languages.find_by(is_default: true)
+
+        if !language
+          skip_authorization
+
+          render json: {
+            error: 'NO_DEFAULT_LANGUAGE_SPECIFIED'
+          }, status: :bad_request
+          return
+        end
+      end
 
       translation = Translation.new(translation_params)
       translation.language = language
