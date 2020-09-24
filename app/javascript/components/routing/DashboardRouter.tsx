@@ -1,10 +1,4 @@
-import {
-    DeploymentUnitOutlined,
-    LineChartOutlined,
-    ProjectOutlined,
-    ArrowRightOutlined,
-    MessageOutlined
-} from "@ant-design/icons";
+import { DeploymentUnitOutlined, LineChartOutlined, ProjectOutlined } from "@ant-design/icons";
 import * as antd from "antd";
 import Logo from "images/logo.svg";
 import { observer } from "mobx-react";
@@ -24,24 +18,10 @@ import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
 import { DarkModeToggle } from "../ui/DarkModeToggle";
 import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
-import { history } from "./history";
 import { OrganizationRouter } from "./OrganizationRouter";
 import { PrivateRoute } from "./PrivateRoute";
 import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
-import { WhiteButton } from "../ui/WhiteButton";
-
-const TranslateButton = styled(antd.Button)`
-    margin-right: 40px;
-    color: #fff;
-    background-color: var(--topbar-color) !important;
-    border-color: var(--topbar-color) !important;
-
-    &:hover {
-        background-color: #4275e4 !important;
-        border-color: #4275e4 !important;
-    }
-`;
 
 const MenuList = styled.li`
     overflow: hidden;
