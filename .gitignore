@@ -30,3 +30,5 @@ storage
 .travis/ignored
 
 texterify.json
+
+.DS_Store

@@ -21,6 +21,9 @@ const Routes = {
         PRICING: "/pricing",
         API_DOCS: "/documentation"
     },
+    PAYMENT: {
+        SUCCESS: "/payment/success"
+    },
     DASHBOARD: {
         ROOT: "/dashboard",
         PROJECTS: "/dashboard/projects",
