@@ -4,6 +4,12 @@
 #-------------------------------------------------------------------------------------------------------------
 
 version: '3'
+
+networks:
+  default:
+    external:
+      name: texterify-network
+
 services:
   db:
     expose:
