@@ -55,7 +55,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                 message="No export configuration"
                 style={{ marginTop: this.state.languagesLoaded && this.state.languages.length === 0 ? 8 : 0 }}
                 description={
-                    <p style={{ color: Styles.COLOR_TEXT_DISABLED }}>
+                    <p>
                         <Link
                             to={Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
                                 ":projectId",
@@ -88,19 +88,17 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                                 showIcon
                                 message="No language"
                                 description={
-                                    <>
-                                        <p style={{ color: Styles.COLOR_TEXT_DISABLED }}>
-                                            <Link
-                                                to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
-                                                    ":projectId",
-                                                    this.props.match.params.projectId
-                                                )}
-                                            >
-                                                Create a language
-                                            </Link>{" "}
-                                            to export your keys.
-                                        </p>
-                                    </>
+                                    <p>
+                                        <Link
+                                            to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
+                                                ":projectId",
+                                                this.props.match.params.projectId
+                                            )}
+                                        >
+                                            Create a language
+                                        </Link>{" "}
+                                        to export your keys.
+                                    </p>
                                 }
                             />
                         </>

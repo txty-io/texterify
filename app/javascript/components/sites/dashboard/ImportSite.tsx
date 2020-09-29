@@ -147,19 +147,17 @@ class ImportSite extends React.Component<IProps, IState> {
                                     showIcon
                                     message="No language"
                                     description={
-                                        <>
-                                            <p style={{ color: Styles.COLOR_TEXT_DISABLED }}>
-                                                <Link
-                                                    to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
-                                                        ":projectId",
-                                                        this.props.match.params.projectId
-                                                    )}
-                                                >
-                                                    Create a language
-                                                </Link>{" "}
-                                                to import your keys.
-                                            </p>
-                                        </>
+                                        <p>
+                                            <Link
+                                                to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
+                                                    ":projectId",
+                                                    this.props.match.params.projectId
+                                                )}
+                                            >
+                                                Create a language
+                                            </Link>{" "}
+                                            to import your keys.
+                                        </p>
                                     }
                                 />
                             </>

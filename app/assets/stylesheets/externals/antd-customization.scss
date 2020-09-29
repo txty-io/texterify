@@ -5,8 +5,12 @@
   min-height: 100%;
 
   .ant-layout-header {
-    background: #141414;
+    background: var(--header-background-color);
     border-bottom: 1px solid var(--border-color);
+  }
+
+  .ant-popover-inner {
+    background: var(--background-color);
   }
 
   .popover-no-padding {
@@ -79,6 +83,7 @@
 
   .ant-menu-item-selected {
     color: var(--blue-color);
+    background: var(--primary-light-color);
   }
 
   .ant-menu-item:hover, .ant-menu-item-active, .ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open, .ant-menu-submenu-active, .ant-menu-submenu-title:hover {
@@ -90,7 +95,7 @@
   }
 
   .ant-menu-submenu-title > a {
-    color: #333;
+    color: var(--background-color);
   }
 
   .ant-menu-submenu-selected .ant-menu-submenu-title > a {

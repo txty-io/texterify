@@ -16,11 +16,10 @@ module.exports = {
                         "primary-color": "#4170ff",
                         "info-color": "#4170ff",
                         "btn-primary-color": "#fff",
-                        "btn-primary-bg": "#333",
+                        "btn-primary-bg": "var(--background-color)",
                         "layout-body-background": "#fff",
                         "layout-header-background": "#fff",
-                        "menu-item-color": "#333",
-                        "menu-item-active-bg": "#4170ff26"
+                        "menu-item-color": "#333"
                     },
                     javascriptEnabled: true
                 }

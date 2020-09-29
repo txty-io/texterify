@@ -4,12 +4,17 @@
   --blue-color: #568aea;
   --highlight-color: #000;
   --topbar-color: rgba(255, 255, 255, 0.25);
+  --header-background-color: #0c1216;
+  --primary-light-color: #4170ff26;
 }
 
 .dark-theme {
-  --border-color: #303030;
-  --border-color-flashier: #303030;
+  // --background-color: #121b21;
+  --background-color: #0c1216;
+  --border-color: #4e4e4e;
+  --border-color-flashier: #4e4e4e;
   --blue-color: #61b6ff;
   --blue-color-light: #61b6ffbf;
   --highlight-color: rgba(255, 255, 255, 0.85);
+  --primary-light-color: #4170ff26;
 }

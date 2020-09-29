@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined, LoadingOutlined } from "@ant-design/icons";
-import { Pagination, Tabs, Layout } from "antd";
+import { Layout, Pagination, Tabs } from "antd";
 import Search from "antd/lib/input/Search";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
@@ -12,31 +12,46 @@ import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
+import { DarkModeToggle } from "../../ui/DarkModeToggle";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { Styles } from "../../ui/Styles";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
 import { WhiteButton } from "../../ui/WhiteButton";
 import { TranslationCard } from "./editor/TranslationCard";
-import { DarkModeToggle } from "../../ui/DarkModeToggle";
 
-const Key = styled.div`
+const Key = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
     padding: 12px 16px;
-    color: #333;
+    color: var(--background-color);
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 13px;
 
+    background: ${(props) => {
+        return props.isSelected ? "rgba(255, 255, 255, 0.05)" : "none";
+    }};
+
+    color: ${(props) => {
+        return props.isSelected ? "var(--blue-color)" : "none";
+    }};
+
     &:hover {
-        color: #555;
-        background: #f0f1ff;
+        color: var(--blue-color);
     }
 
     .dark-theme & {
         color: #fff;
 
+        background: ${(props) => {
+            return props.isSelected ? "rgba(255, 255, 255, 0.05)" : "none";
+        }};
+
+        color: ${(props) => {
+            return props.isSelected ? "var(--blue-color)" : "none";
+        }};
+
         &:hover {
-            background: #1c1c1c;
+            color: var(--blue-color);
         }
     }
 `;
@@ -221,11 +236,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                                         ).replace(":keyId", key.id)
                                                     );
                                                 }}
-                                                style={{
-                                                    background: this.isSelectedKey(key.id)
-                                                        ? Styles.COLOR_PRIMARY_LIGHT
-                                                        : undefined
-                                                }}
+                                                isSelected={this.isSelectedKey(key.id)}
                                             >
                                                 {key.attributes.name}
                                             </Key>

@@ -19,7 +19,6 @@ const Avatar = styled.div`
     color: ${Styles.COLOR_PRIMARY};
 
     .dark-theme & {
-        background: #88a5ff26;
         color: #fff;
     }
 `;

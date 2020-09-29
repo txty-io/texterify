@@ -95,9 +95,9 @@ class SearchOverlay extends React.Component<IProps, IState> {
                 >
                     <div
                         style={{
-                            border: generalStore.theme === "dark" ? "1px solid #2d2d2d" : undefined,
+                            border: generalStore.theme === "dark" ? "1px solid var(--border-color)" : undefined,
                             position: "relative",
-                            background: "#141414",
+                            background: "var(--background-color)",
                             left: "-50%",
                             borderRadius: 4,
                             margin: "0 40px",

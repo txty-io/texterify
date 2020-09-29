@@ -22,9 +22,13 @@
     flex-direction: row;
   }
 
+  .ant-menu, .ant-menu-submenu-popup > .ant-menu {
+    background: var(--background-color);
+  }
+
   // Change selected menu item background color.
   .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
-    background-color: #1c1c1c;
+    background-color: rgba(255, 255, 255, 0.05);
   }
 
   // Change select item background color.
@@ -39,7 +43,11 @@
 
   // Set content area background.
   .ant-layout {
-    background: #141414;
+    background: var(--background-color);
+  }
+
+  .ant-table {
+    background: transparent;
   }
 
   // Remove white hover background of empty tables.
@@ -49,6 +57,10 @@
 
   tr.ant-table-expanded-row > td, tr.ant-table-expanded-row:hover > td {
     background: none;
+  }
+
+  .ant-table-thead > tr > th {
+    background: rgba(255, 255, 255, 0.05);
   }
 
   // Remove right padding of search input field icon.
@@ -85,18 +97,15 @@
   }
 
   // Sidebar collapse trigger styling.
+  .ant-layout-sider {
+    background: transparent;
+  }
+
   .ant-layout-sider-trigger {
-    background: #141414;
+    background: var(--background-color);
     border-right: 1px solid var(--border-color);
 
     &:hover, &:active {
-      color: var(--blue-color);
-    }
-  }
-
-  .ant-layout-sider-collapsed {
-    .ant-layout-sider-trigger {
-      background: #1c1c1c;
       color: var(--blue-color);
     }
   }
@@ -293,5 +302,17 @@
     p {
       color: #fff;
     }
+  }
+
+  .ant-menu-inline, .ant-menu-inline-collapsed {
+    border-right: 1px solid var(--border-color);
+  }
+
+  .ant-modal-header, .ant-modal-content {
+    background: var(--background-color);
+  }
+
+  .ant-breadcrumb > span:last-child {
+    color: #fff;
   }
 }

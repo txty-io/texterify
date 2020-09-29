@@ -5,9 +5,6 @@ import { authStore } from "../stores/AuthStore";
 import { Styles } from "./Styles";
 import styled from "styled-components";
 
-const DARK_BACKGROUND = "rgba(255, 255, 255, 0.15)";
-const DARK_COLOR = "#fff";
-
 const UserAvatarWrapper = styled.div`
     height: 40px;
     width: 40px;
@@ -15,8 +12,7 @@ const UserAvatarWrapper = styled.div`
     color: #000;
 
     .dark-theme & {
-        background: ${DARK_BACKGROUND};
-        color: ${DARK_COLOR};
+        color: #fff;
     }
 
     border-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
@@ -78,8 +74,6 @@ class UserAvatar extends React.Component<IProps, IState> {
                 {!hasImage && (
                     <UserAvatarWrapper
                         style={{
-                            background: this.props.forceDark ? DARK_BACKGROUND : undefined,
-                            color: this.props.forceDark ? DARK_COLOR : undefined,
                             ...this.props.style
                         }}
                     >
