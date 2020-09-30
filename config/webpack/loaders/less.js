@@ -15,8 +15,6 @@ module.exports = {
                         // https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less
                         "primary-color": "#4170ff",
                         "info-color": "#4170ff",
-                        "btn-primary-color": "#fff",
-                        "btn-primary-bg": "var(--background-color)",
                         "layout-body-background": "#fff",
                         "layout-header-background": "#fff",
                         "menu-item-color": "#333"

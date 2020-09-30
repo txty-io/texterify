@@ -129,7 +129,7 @@ function SearchOverlayResults(props: { loading: boolean; projects: any[]; includ
                         ref={ref}
                         key={project.id}
                         style={{
-                            background: isSelected ? "#177ddc" : undefined,
+                            background: isSelected ? "var(--primary-btn-color)" : undefined,
                             borderRadius: Styles.DEFAULT_BORDER_RADIUS
                         }}
                     >

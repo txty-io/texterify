@@ -21,7 +21,7 @@ class SiteWrapper extends React.Component<IProps> {
             >
                 <div
                     style={{
-                        background: "var(--background-color)",
+                        background: "var(--dark-color)",
                         width: "50%",
                         minHeight: "100%",
                         display: "flex",
