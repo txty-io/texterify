@@ -22,7 +22,9 @@ const Routes = {
         API_DOCS: "/documentation"
     },
     PAYMENT: {
-        SUCCESS: "/payment/success"
+        NEW: "/checkout",
+        SUCCESS: "/checkout/success",
+        ERROR: "/checkout/error"
     },
     DASHBOARD: {
         ROOT: "/dashboard",
