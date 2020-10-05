@@ -1,3 +1,18 @@
+class AndroidTemplateData
+  attr_accessor :data
+
+  def initialize(data)
+    @data = data
+  end
+
+  # Expose private binding() method.
+  # rubocop:disable Naming/AccessorMethodName
+  def get_binding
+    binding
+  end
+  # rubocop:enable Naming/AccessorMethodName
+end
+
 class ExportConfig < ApplicationRecord
   include ExportHelper
 
@@ -100,17 +115,19 @@ class ExportConfig < ApplicationRecord
   end
 
   def android(language, export_data)
-    builder = Nokogiri::XML::Builder.new do |xml|
-      xml.resources do
-        export_data.each do |key, value|
-          # Replace ' with \' but don't escape \' again.
-          xml.string value.gsub(/(?<!\\)'/, "\\\\'"), name: key
-        end
-      end
-    end
+    template = ERB.new(File.read('app/views/templates/android.xml.erb'))
+    data = AndroidTemplateData.new(export_data.transform_values { |v|
+      # https://developer.android.com/guide/topics/resources/string-resource#escaping_quotes
+      # & and < must be escaped manually if necessary.
+      v.gsub(/(?<!\\)'/, "\\\\'")
+        .gsub(/(?<!\\)"/, '\\\\"')
+        .gsub(/(?<!\\)@/, '\\\\@')
+        .gsub(/(?<!\\)\?/, '\\\\?')
+    })
+    output = template.result(data.get_binding)
 
     language_file = Tempfile.new(language.id.to_s)
-    language_file.puts(builder.to_xml)
+    language_file.puts(output)
     language_file.close
 
     language_file
