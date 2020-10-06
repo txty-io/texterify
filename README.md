@@ -1,10 +1,23 @@
-<img src="https://raw.github.com/chrztoph/texterify/screenshots/logo.svg?sanitize=true" width="240" alt="Texterify Logo" />
+<img src="" width="240" alt="Texterify Logo" />
 
-[![Build Status](https://travis-ci.org/chrztoph/texterify.svg?branch=master)](https://travis-ci.org/chrztoph/texterify) [![License](https://img.shields.io/github/license/chrztoph/texterify.svg)](https://img.shields.io/github/license/chrztoph/texterify.svg) [![Open Issues](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)
+<p align="center">
+  <p align="center">
+    <a href="https://texterify.com/?utm_source=github&utm_medium=logo" target="_blank">
+      <img src="https://raw.github.com/chrztoph/texterify/screenshots/logo.png?sanitize=true" alt="Texterify" height="72">
+    </a>
+  </p>
+  <p align="center">
+    The modern localization management system.
+  </p>
+</p>
 
-**Texterify is a modern localization management system.**
+[![Build Status](https://travis-ci.org/chrztoph/texterify.svg?branch=master)](https://travis-ci.org/chrztoph/texterify) [![Open Issues](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)
 
-![Example image](https://raw.github.com/chrztoph/texterify/screenshots/example.png)
+<p align="center">
+  <img src="https://raw.github.com/chrztoph/texterify/screenshots/example_1.png" width="290">
+  <img src="https://raw.github.com/chrztoph/texterify/screenshots/example_2.png" width="290">
+  <img src="https://raw.github.com/chrztoph/texterify/screenshots/example_3.png" width="290">
+</p>
 
 ## Installation
 
@@ -49,6 +62,4 @@ We are happy about every help.
 
 ## License
 
-[![License](https://img.shields.io/github/license/chrztoph/texterify.svg)](https://img.shields.io/github/license/chrztoph/texterify.svg)
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+See the [LICENSE](LICENSE) file for details.
