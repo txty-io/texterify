@@ -2,9 +2,7 @@
 
 [![Build Status](https://travis-ci.org/chrztoph/texterify.svg?branch=master)](https://travis-ci.org/chrztoph/texterify) [![License](https://img.shields.io/github/license/chrztoph/texterify.svg)](https://img.shields.io/github/license/chrztoph/texterify.svg) [![Open Issues](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)
 
-**Texterify is an open source localization management system.**
-
-It is completely free and open source so you can host it on your own server or just run it locally.
+**Texterify is a modern localization management system.**
 
 ![Example image](https://raw.github.com/chrztoph/texterify/screenshots/example.png)
 

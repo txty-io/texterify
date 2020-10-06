@@ -116,14 +116,16 @@ class ExportConfig < ApplicationRecord
 
   def android(language, export_data)
     template = ERB.new(File.read('app/views/templates/android.xml.erb'))
-    data = AndroidTemplateData.new(export_data.transform_values { |v|
-      # https://developer.android.com/guide/topics/resources/string-resource#escaping_quotes
-      # & and < must be escaped manually if necessary.
-      v.gsub(/(?<!\\)'/, "\\\\'")
-        .gsub(/(?<!\\)"/, '\\\\"')
-        .gsub(/(?<!\\)@/, '\\\\@')
-        .gsub(/(?<!\\)\?/, '\\\\?')
-    })
+    data = AndroidTemplateData.new(
+      export_data.transform_values do |v|
+        # https://developer.android.com/guide/topics/resources/string-resource#escaping_quotes
+        # & and < must be escaped manually if necessary.
+        v.gsub(/(?<!\\)'/, "\\\\'")
+          .gsub(/(?<!\\)"/, '\\\\"')
+          .gsub(/(?<!\\)@/, '\\\\@')
+          .gsub(/(?<!\\)\?/, '\\\\?')
+      end
+    )
     output = template.result(data.get_binding)
 
     language_file = Tempfile.new(language.id.to_s)
