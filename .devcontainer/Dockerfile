@@ -32,7 +32,7 @@ RUN apt-get update \
 # Install nvm.
 ENV NVM_DIR /usr/local/nvm
 RUN mkdir -p $NVM_DIR
-ENV NODE_VERSION 12.18.4
+ENV NODE_VERSION 14.13.1
 ENV NODE_ENV="development"
 ENV NODE_OPTIONS="--max_old_space_size=8192"
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
