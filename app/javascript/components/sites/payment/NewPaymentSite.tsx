@@ -3,8 +3,13 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Button, Switch, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
+import { history } from "../../routing/history";
+import { Routes } from "../../routing/Routes";
 
-const stripePromise = loadStripe("");
+let stripePromise;
+if (process.env.STRIPE_PUBLIC_API_KEY) {
+    stripePromise = loadStripe(process.env.STRIPE_PUBLIC_API_KEY);
+}
 
 interface IPlan {
     id: "basic" | "gold" | "premium";
@@ -174,6 +179,12 @@ function PaymentPlan(props: { plan: IPlan; hostingType: "cloud" | "self-managed"
 
 const NewPaymentSite = observer(() => {
     const [hostingType, setHostingType] = React.useState<"cloud" | "self-managed">("cloud");
+
+    if (!stripePromise) {
+        console.error("Payment is not initialized.");
+        history.push(Routes.AUTH.LOGIN);
+        return;
+    }
 
     return (
         <div
