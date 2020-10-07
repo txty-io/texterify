@@ -19,7 +19,7 @@ WORKDIR $RAILS_ROOT
 # Install gems.
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
-RUN gem install bundler:1.16.1
+RUN gem install bundler:2.1.4
 RUN bundle install --jobs 20 --retry 5 --without development test
 
 # Update the repository sources list
