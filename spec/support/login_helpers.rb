@@ -26,13 +26,12 @@ module LoginHelper
     token_type = response.headers['token-type']
     uid = response.headers['uid']
 
-    auth_params = {
+    {
       'access-token' => token,
       'client' => client,
       'uid' => uid,
       'expiry' => expiry,
       'token_type' => token_type
     }
-    auth_params
   end
 end
