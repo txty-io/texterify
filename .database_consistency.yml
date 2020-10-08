@@ -11,7 +11,7 @@ User:
   uid:
     ColumnPresenceChecker:
       enabled: false
-  email+provider:
+  lower(email)+provider:
     MissingUniqueIndexChecker:
       enabled: false
 
