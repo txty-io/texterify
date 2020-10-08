@@ -65,11 +65,12 @@ end
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 gem 'bootsnap'
-gem 'devise', '4.7.1'
-gem 'devise_token_auth', '1.1.3'
+gem 'devise', '4.7.3'
+gem 'devise_token_auth', '1.1.4'
 gem 'dotenv-rails', groups: [:development, :test]
 gem 'fast_jsonapi'
 gem 'figaro'
+gem 'google-cloud-storage', '~> 1.11', require: false
 gem 'haml'
 gem 'haml-rails'
 gem 'paper_trail'
