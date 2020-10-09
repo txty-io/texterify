@@ -82,6 +82,6 @@
     "start:watcher": "./bin/webpack-dev-server",
     "test": "yarn test:backend",
     "test:backend": "RAILS_ENV=test bundle exec rspec",
-    "dangerous:recreate-database": "bundle exec rails db:drop; bundle exec rails db:create; bundle exec rails db:migrate; bundle exec rails db:seed"
+    "dangerous:recreate-database": "bundle exec rails db:drop && bundle exec rails db:create && bundle exec rails db:migrate && bundle exec rails db:seed"
   }
 }
