@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_27_231740) do
+ActiveRecord::Schema.define(version: 2020_10_08_002621) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -113,7 +113,7 @@ ActiveRecord::Schema.define(version: 2020_08_27_231740) do
     t.index ["project_id"], name: "index_languages_on_project_id"
   end
 
-  create_table "languages_project_columns", id: false, force: :cascade do |t|
+  create_table "languages_project_columns", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "project_column_id", null: false
     t.uuid "language_id", null: false
     t.datetime "created_at", null: false
@@ -180,6 +180,17 @@ ActiveRecord::Schema.define(version: 2020_08_27_231740) do
     t.string "role", default: "translator", null: false
     t.index ["project_id"], name: "index_projects_users_on_project_id"
     t.index ["user_id"], name: "index_projects_users_on_user_id"
+  end
+
+  create_table "releases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "from_version", null: false
+    t.integer "to_version", null: false
+    t.string "url", null: false
+    t.uuid "export_config_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["export_config_id", "from_version", "to_version"], name: "index_releases_unique", unique: true
+    t.index ["export_config_id"], name: "index_releases_on_export_config_id"
   end
 
   create_table "translations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -257,6 +268,7 @@ ActiveRecord::Schema.define(version: 2020_08_27_231740) do
   add_foreign_key "projects", "organizations"
   add_foreign_key "projects_users", "projects"
   add_foreign_key "projects_users", "users"
+  add_foreign_key "releases", "export_configs"
   add_foreign_key "translations", "export_configs"
   add_foreign_key "translations", "keys"
   add_foreign_key "translations", "languages"

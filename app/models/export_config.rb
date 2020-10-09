@@ -27,6 +27,11 @@ class ExportConfig < ApplicationRecord
   has_many :translations, dependent: :destroy
   has_many :post_processing_rules, dependent: :destroy
   has_many :language_configs, dependent: :destroy
+  has_many :releases, dependent: :destroy
+
+  def latest_release
+    releases.order('from_version DESC, to_version DESC').first
+  end
 
   def name=(name)
     self[:name] = name.strip
@@ -106,7 +111,7 @@ class ExportConfig < ApplicationRecord
   def typescript(language, export_data)
     language_file = Tempfile.new(language.id.to_s)
     language_file.print("const #{language.name.downcase} = ")
-    language_file.puts(JSON.pretty_generate(export_data) + ';')
+    language_file.puts("#{JSON.pretty_generate(export_data)};")
     language_file.puts
     language_file.puts("export { #{language.name.downcase} };")
     language_file.close
@@ -140,7 +145,7 @@ class ExportConfig < ApplicationRecord
     export_data.each do |key, value|
       # Replace " with \" but don't escape \" again.
       escaped_value = value.gsub(/(?<!\\)"/, '\\"')
-      language_file.puts('"' + key.to_s + '" = "' + escaped_value + '";')
+      language_file.puts("\"#{key}\" = \"#{escaped_value}\";")
     end
     language_file.close
 
