@@ -224,7 +224,7 @@ class ProjectPostProcessingSite extends React.Component<IProps, IState> {
                     <Layout.Content
                         style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}
                     >
-                        <h1>Post processing</h1>
+                        <h1>Post Processing</h1>
                         <p style={{ maxWidth: 560 }}>
                             Create modification rules that are applied on your translations at export time. The rules
                             are applied ordered by name as shown in the table below.
