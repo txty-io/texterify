@@ -28,6 +28,8 @@ Rails.application.routes.draw do
           resources :releases, only: [:create]
           get :release, to: 'releases#release'
         end
+        get 'releases', to: 'releases#index'
+
         resources :post_processing_rules, only: [:create, :index, :destroy, :update]
         delete 'post_processing_rules', to: 'post_processing_rules#destroy_multiple'
         resources :languages, only: [:create, :index, :destroy, :update]

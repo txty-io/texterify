@@ -38,18 +38,35 @@ module ExportHelper
     ''
   end
 
-  def create_export(project, export_config, file)
-    post_processing_rules = project.post_processing_rules
-      .where(export_config_id: [export_config.id, nil])
-      .order_by_name
+  def create_language_export_data(project, export_config, language, post_processing_rules, skip_timestamp)
+    export_data = {}
+    project.keys.order_by_name.each do |key|
+      key_translation_export_config = key.translations.where(language_id: language.id, export_config_id: export_config.id).order(created_at: :desc).first
+      key_translation = key_translation_export_config || key.translations.where(language_id: language.id, export_config_id: nil).order(created_at: :desc).first
 
-    Zip::File.open(file.path, Zip::File::CREATE) do |zip|
-      project.languages.order_by_name.each do |language|
-        # Create the file content for a language.
-        export_data = {}
-        project.keys.order_by_name.each do |key|
-          key_translation_export_config = key.translations.where(language_id: language.id, export_config_id: export_config.id).order(created_at: :desc).first
-          key_translation = key_translation_export_config || key.translations.where(language_id: language.id, export_config_id: nil).order(created_at: :desc).first
+      content = ''
+      if key_translation.nil?
+        content = ''
+      elsif key.html_enabled
+        content = helpers.convert_html_translation(key_translation.content)
+      else
+        content = key_translation.content
+      end
+
+      post_processing_rules.each do |post_processing_rule|
+        content = content.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
+      end
+
+      export_data[key.name] = content
+    end
+
+    # Use translations of parent languages if translation is missing.
+    parent_language = language.parent
+    while parent_language.present?
+      parent_language.keys.each do |key|
+        if export_data[key.name].blank?
+          key_translation_export_config = key.translations.where(language_id: parent_language.id, export_config_id: export_config.id).order(created_at: :desc).first
+          key_translation = key_translation_export_config || key.translations.where(language_id: parent_language.id, export_config_id: nil).order(created_at: :desc).first
 
           content = ''
           if key_translation.nil?
@@ -66,33 +83,26 @@ module ExportHelper
 
           export_data[key.name] = content
         end
+      end
+      parent_language = parent_language.parent
+    end
 
-        # Use translations of parent languages if translation is missing.
-        parent_language = language.parent
-        while parent_language.present?
-          parent_language.keys.each do |key|
-            if export_data[key.name].blank?
-              key_translation_export_config = key.translations.where(language_id: parent_language.id, export_config_id: export_config.id).order(created_at: :desc).first
-              key_translation = key_translation_export_config || key.translations.where(language_id: parent_language.id, export_config_id: nil).order(created_at: :desc).first
+    if !skip_timestamp
+      export_data[:texterify_timestamp] = Time.now.utc.iso8601
+    end
 
-              content = ''
-              if key_translation.nil?
-                content = ''
-              elsif key.html_enabled
-                content = helpers.convert_html_translation(key_translation.content)
-              else
-                content = key_translation.content
-              end
+    export_data
+  end
 
-              post_processing_rules.each do |post_processing_rule|
-                content = content.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
-              end
+  def create_export(project, export_config, file)
+    post_processing_rules = project.post_processing_rules
+      .where(export_config_id: [export_config.id, nil])
+      .order_by_name
 
-              export_data[key.name] = content
-            end
-          end
-          parent_language = parent_language.parent
-        end
+    Zip::File.open(file.path, Zip::File::CREATE) do |zip|
+      project.languages.order_by_name.each do |language|
+        # Create the file content for a language.
+        export_data = create_language_export_data(project, export_config, language, post_processing_rules, false)
 
         duplicate_zip_entry_count = 0
         loop do

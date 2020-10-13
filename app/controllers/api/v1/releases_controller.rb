@@ -10,12 +10,47 @@ end
 class Api::V1::ReleasesController < Api::V1::ApiController
   skip_before_action :verify_signed_in, only: :release
 
+  def index
+    project = current_user.projects.find(params[:project_id])
+
+    release = Release.new
+    release.export_config = project.export_configs.first
+    authorize release
+
+    releases = project.releases
+
+    page = 0
+    if params[:page].present?
+      page = (params[:page].to_i || 1) - 1
+      page = 0 if page < 0
+    end
+
+    per_page = 10
+    if params[:per_page].present?
+      per_page = params[:per_page].to_i || 10
+      per_page = 10 if per_page < 1
+    end
+
+    options = {}
+    options[:meta] = { total: releases.size }
+    options[:include] = [:export_config]
+    render json: ReleaseSerializer.new(
+      releases
+        .where('from_version = to_version')
+        .order('to_version DESC')
+        .offset(page * per_page)
+        .limit(per_page),
+      options
+    ).serialized_json
+  end
+
   def release
     # This endpoint can be called by everyone.
     skip_authorization
 
     project = Project.find(params[:project_id])
     export_config = project.export_configs.find(params[:export_config_id])
+
     latest_release = export_config.latest_release
 
     if !latest_release
@@ -33,10 +68,8 @@ class Api::V1::ReleasesController < Api::V1::ApiController
 
     if !version
       redirect_to latest_release.url
-      return
     elsif version == latest_release.to_version
       head :not_modified
-      return
     elsif version > latest_release.to_version || version < 1
       render json: {
         errors: [
@@ -45,17 +78,18 @@ class Api::V1::ReleasesController < Api::V1::ApiController
           }
         ]
       }, status: :bad_request
-      return
-    end
-
-    existing_release = export_config.releases.find_by(from_version: version, to_version: latest_release.to_version)
-
-    if existing_release
-      redirect_to existing_release.url
     else
-      new_release = helpers.create_release(project, export_config, version, latest_release.to_version)
-      redirect_to new_release.url
+      redirect_to latest_release.url
     end
+
+    # existing_release = export_config.releases.find_by(from_version: version, to_version: latest_release.to_version)
+
+    # if existing_release
+    #   redirect_to existing_release.url
+    # else
+    #   new_release = helpers.create_release(project, export_config, version, latest_release.to_version)
+    #   redirect_to new_release.url
+    # end
   end
 
   def create
@@ -70,14 +104,6 @@ class Api::V1::ReleasesController < Api::V1::ApiController
       latest_release = export_config.latest_release
     end
 
-    file = Tempfile.new(project.id)
-
-    begin
-      helpers.create_export(project, export_config, file)
-    ensure
-      file.close
-    end
-
     if latest_release
       version = latest_release.to_version + 1
     else
@@ -85,6 +111,7 @@ class Api::V1::ReleasesController < Api::V1::ApiController
     end
 
     helpers.create_release(project, export_config, version, version)
+
     render json: {
       success: true
     }
