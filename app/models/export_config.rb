@@ -129,7 +129,7 @@ class ExportConfig < ApplicationRecord
           .gsub(/(?<!\\)"/, '\\\\"')
           .gsub(/(?<!\\)@/, '\\\\@')
           .gsub(/(?<!\\)\?/, '\\\\?')
-          .gsub(/&/, '&amp;')
+          .gsub(/&(?!amp;)/, '&amp;')
       end
     )
     output = template.result(data.get_binding)
