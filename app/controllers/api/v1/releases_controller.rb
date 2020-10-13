@@ -64,7 +64,7 @@ class Api::V1::ReleasesController < Api::V1::ApiController
       return
     end
 
-    version = params[:version].to_i
+    version = params[:version].present? && params[:version].to_i
 
     if !version
       redirect_to latest_release.url
