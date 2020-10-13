@@ -48,7 +48,7 @@ module ExportHelper
       if key_translation.nil?
         content = ''
       elsif key.html_enabled
-        content = helpers.convert_html_translation(key_translation.content)
+        content = convert_html_translation(key_translation.content)
       else
         content = key_translation.content
       end
@@ -72,7 +72,7 @@ module ExportHelper
           if key_translation.nil?
             content = ''
           elsif key.html_enabled
-            content = helpers.convert_html_translation(key_translation.content)
+            content = convert_html_translation(key_translation.content)
           else
             content = key_translation.content
           end
