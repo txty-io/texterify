@@ -4,6 +4,7 @@ require:
   - rubocop-rails
 
 AllCops:
+  NewCops: enable
   Exclude:
     - 'db/**/*'
     - 'config/**/*'
@@ -61,6 +62,9 @@ Style/ExponentialNotation:
   Enabled: true
 
 Style/RedundantReturn:
+  Enabled: false
+
+Style/CaseLikeIf:
   Enabled: false
 
 Layout/MultilineMethodCallIndentation:

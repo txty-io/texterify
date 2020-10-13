@@ -3,7 +3,7 @@ require 'nokogiri'
 require 'yaml'
 
 module ImportHelper
-  REGEX_CONTENT = /\"((\\\"|[^\"])+)\"/.freeze
+  REGEX_CONTENT = /"((\\"|[^"])+)"/.freeze
   REGEX_KEY_VALUE = /#{REGEX_CONTENT}\s*=\s*#{REGEX_CONTENT}*/.freeze
 
   def json_file_content(file_name, file_content)

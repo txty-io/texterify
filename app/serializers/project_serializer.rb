@@ -6,6 +6,7 @@ class ProjectSerializer
   has_many :keys
   has_many :languages
   has_many :project_columns
+  has_many :releases
 
   attribute :current_user_role, if: proc { |_, params| params[:current_user] } do |object, params|
     project_user = ProjectUser.find_by(project_id: object.id, user_id: params[:current_user].id)

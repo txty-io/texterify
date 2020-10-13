@@ -1,4 +1,5 @@
 import {
+    BlockOutlined,
     ClusterOutlined,
     DownloadOutlined,
     ExportOutlined,
@@ -9,8 +10,10 @@ import {
     LineChartOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
+    MonitorOutlined,
     OneToOneOutlined,
     SettingOutlined,
+    SwapOutlined,
     TeamOutlined
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
@@ -108,15 +111,26 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             //     path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
             //     text: "Validations"
             // },
+            // {
+            //     icon: SwapOutlined,
+            //     path: Routes.DASHBOARD.PROJECT_OTA.replace(":projectId", this.props.match.params.projectId),
+            //     text: "Over the Air"
+            // },
             {
                 icon: OneToOneOutlined,
                 path: Routes.DASHBOARD.PROJECT_POST_PROCESSING.replace(":projectId", this.props.match.params.projectId),
-                text: "Post processing"
+                text: "Post Processing"
             },
             {
                 icon: TeamOutlined,
                 path: Routes.DASHBOARD.PROJECT_MEMBERS.replace(":projectId", this.props.match.params.projectId),
                 text: "Members"
+            },
+            {
+                icon: BlockOutlined,
+                path: Routes.DASHBOARD.PROJECT_INTEGRATIONS.replace(":projectId", this.props.match.params.projectId),
+                text: "Integrations",
+                roles: ROLES_DEVELOPER_UP
             },
             {
                 icon: SettingOutlined,

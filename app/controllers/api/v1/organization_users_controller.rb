@@ -17,7 +17,7 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     organization_user.user = user
     authorize organization_user
 
-    if !organization.users.include?(user)
+    if organization.users.exclude?(user)
       organization_user.save!
 
       render json: {

@@ -1,4 +1,5 @@
 :root {
+  --full-color: #000;
   --dark-color: #080b0d;
   --border-color: #d9d9d9;
   --border-color-flashier: #d9d9d9;
@@ -12,6 +13,7 @@
 }
 
 .dark-theme {
+  --full-color: #fff;
   --background-color: var(--dark-color);
   --border-color: rgba(255, 255, 255, 0.08);
   --border-color-flashier: #4e4e4e;

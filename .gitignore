@@ -33,3 +33,5 @@ storage
 texterify.json
 
 .DS_Store
+
+database_consistency_*

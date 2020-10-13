@@ -96,7 +96,7 @@ class Api::V1::KeysController < Api::V1::ApiController
 
     if key.update(permitted_attributes(key))
       render json: {
-        message: 'key updated'
+        message: 'Key updated'
       }
     else
       render json: {

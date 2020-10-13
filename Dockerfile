@@ -19,7 +19,7 @@ WORKDIR $RAILS_ROOT
 # Install gems.
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
-RUN gem install bundler:1.16.1
+RUN gem install bundler:2.1.4
 RUN bundle install --jobs 20 --retry 5 --without development test
 
 # Update the repository sources list
@@ -31,7 +31,7 @@ RUN apt-get update \
 # Install nvm.
 ENV NVM_DIR /usr/local/nvm
 RUN mkdir -p $NVM_DIR
-ENV NODE_VERSION 10.15.3
+ENV NODE_VERSION 14.13.1
 ENV NODE_ENV="production"
 ENV NODE_OPTIONS=--max_old_space_size=8192
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash

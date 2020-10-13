@@ -8,11 +8,11 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '6.0.2.2'
+gem 'rails', '6.0.3.4'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
-gem 'puma'
+gem 'puma', '< 6'
 # Use SCSS for stylesheets
 gem 'sass-rails'
 # Use Uglifier as compressor for JavaScript assets
@@ -65,11 +65,12 @@ end
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 gem 'bootsnap'
-gem 'devise', '4.7.1'
-gem 'devise_token_auth', '1.1.3'
+gem 'devise', '4.7.3'
+gem 'devise_token_auth', '1.1.4'
 gem 'dotenv-rails', groups: [:development, :test]
 gem 'fast_jsonapi'
 gem 'figaro'
+gem 'google-cloud-storage', '~> 1.11', require: false
 gem 'haml'
 gem 'haml-rails'
 gem 'paper_trail'

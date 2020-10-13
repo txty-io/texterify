@@ -25,7 +25,7 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
 
     authorize project_user
 
-    if !project.project_users.include?(user)
+    if project.project_users.exclude?(user)
       project_user.save!
 
       project_column = ProjectColumn.new

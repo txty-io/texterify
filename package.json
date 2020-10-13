@@ -78,13 +78,10 @@
     "lint:frontend": "eslint 'app/javascript/**/*.{js,ts,tsx}'",
     "lint:backend": "bundle exec rubocop",
     "format": "prettier --write 'app/javascript/**/*.{js,ts,tsx}'",
-    "prod-local:setup": "SECRET_KEY_BASE=`bin/rails secret` RAILS_ENV=production bundle exec rails db:create db:migrate db:seed",
-    "prod-local:precompile": "SECRET_KEY_BASE=`bin/rails secret` RAILS_ENV=production bundle exec rails assets:precompile",
-    "prod-local:start": "SECRET_KEY_BASE=`bin/rails secret` RAILS_ENV=production RAILS_SERVE_STATIC_FILES=true bundle exec rails s",
     "start": "bundle exec rails server -p 3000 -b \"0.0.0.0\"",
     "start:watcher": "./bin/webpack-dev-server",
     "test": "yarn test:backend",
     "test:backend": "RAILS_ENV=test bundle exec rspec",
-    "dangerous:recreate-database": "bundle exec rails db:drop; bundle exec rails db:create; bundle exec rails db:migrate; bundle exec rails db:seed"
+    "dangerous:recreate-database": "bundle exec rails db:drop && bundle exec rails db:create && bundle exec rails db:migrate && bundle exec rails db:seed"
   }
 }
