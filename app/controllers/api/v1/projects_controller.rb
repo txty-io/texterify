@@ -31,17 +31,9 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
   def index
     skip_authorization
-    page = 0
-    if params[:page].present?
-      page = (params[:page].to_i || 1) - 1
-      page = 0 if page < 0
-    end
 
-    per_page = 10
-    if params[:per_page].present?
-      per_page = params[:per_page].to_i || 10
-      per_page = 10 if per_page < 1
-    end
+    page = parse_page(params[:page])
+    per_page = parse_per_page(params[:per_page])
 
     projects = if params[:search]
                  current_user.projects.where(

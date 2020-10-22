@@ -3,17 +3,8 @@ class Api::V1::PostProcessingRulesController < Api::V1::ApiController
     skip_authorization
     project = current_user.projects.find(params[:project_id])
 
-    page = 0
-    if params[:page].present?
-      page = (params[:page].to_i || 1) - 1
-      page = 0 if page < 0
-    end
-
-    per_page = 10
-    if params[:per_page].present?
-      per_page = params[:per_page].to_i || 10
-      per_page = 10 if per_page < 1
-    end
+    page = parse_page(params[:page])
+    per_page = parse_per_page(params[:per_page])
 
     post_processing_rules = project.post_processing_rules.order_by_name
 

@@ -3,17 +3,8 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     skip_authorization
     project = current_user.projects.find(params[:project_id])
 
-    page = 0
-    if params[:page].present?
-      page = (params[:page].to_i || 1) - 1
-      page = 0 if page < 0
-    end
-
-    per_page = project.languages.size
-    if params[:per_page].present?
-      per_page = params[:per_page].to_i || project.languages.size
-      per_page = project.languages.size if per_page < 1
-    end
+    page = parse_page(params[:page])
+    per_page = parse_per_page(params[:per_page])
 
     languages = project.languages
     if params[:search]

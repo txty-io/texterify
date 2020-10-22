@@ -44,5 +44,35 @@ module Api::V1
 
       render json: { errors: { "#{model_name.downcase}": [error] } }, status: :not_found
     end
+
+    def parse_page(params_page)
+      if params_page.present?
+        page = (params_page.to_i || 1) - 1
+
+        if page < 1
+          0
+        else
+          page
+        end
+      else
+        0
+      end
+    end
+
+    def parse_per_page(params_per_page)
+      if params_per_page.present?
+        per_page = params_per_page.to_i || 10
+
+        if per_page < 1
+          10
+        elsif per_page > 50
+          50
+        else
+          per_page
+        end
+      else
+        10
+      end
+    end
   end
 end
