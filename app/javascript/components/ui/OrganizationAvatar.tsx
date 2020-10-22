@@ -46,15 +46,20 @@ class OrganizationAvatar extends React.Component<IProps, IState> {
             <div style={{ display: "inline" }}>
                 <div
                     className={this.state.loading ? undefined : "fade-in-fast"}
-                    style={{ display: "flex", opacity: this.state.loading ? 0 : 1 }}
+                    style={{
+                        display: "flex",
+                        opacity: this.state.loading ? 0 : 1,
+                        height: 40,
+                        width: 40,
+                        ...this.props.style
+                    }}
                 >
                     {hasImage && (
                         <img
                             style={{
-                                height: 40,
-                                width: 40,
-                                borderRadius: Styles.DEFAULT_BORDER_RADIUS,
-                                ...this.props.style
+                                height: "100%",
+                                width: "100%",
+                                borderRadius: Styles.DEFAULT_BORDER_RADIUS
                             }}
                             src={this.state.image}
                             alt="organization image"
@@ -63,16 +68,15 @@ class OrganizationAvatar extends React.Component<IProps, IState> {
                     {!hasImage && (
                         <Avatar
                             style={{
-                                height: 40,
-                                width: 40,
+                                height: "100%",
+                                width: "100%",
                                 borderRadius: Styles.DEFAULT_BORDER_RADIUS,
                                 lineHeight: 0,
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center",
                                 textTransform: "uppercase",
-                                fontSize: 14,
-                                ...this.props.style
+                                fontSize: 14
                             }}
                         >
                             {this.props.organization &&

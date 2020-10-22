@@ -1,8 +1,12 @@
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
+export interface IGetOrganizationsOptions {
+    search?: string; page?: number; perPage?: number
+}
+
 const OrganizationsAPI = {
-    getOrganizations: async (options: any): Promise<any> => {
+    getOrganizations: async (options?: IGetOrganizationsOptions): Promise<any> => {
         return API.getRequest("organizations", true, {
             search: options && options.search,
             page: options && options.page,

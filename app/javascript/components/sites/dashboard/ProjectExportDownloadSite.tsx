@@ -1,5 +1,5 @@
 import { DownloadOutlined } from "@ant-design/icons";
-import { Alert, Button, Layout, message, Select } from "antd";
+import { Alert, Button, Layout, message } from "antd";
 import * as moment from "moment";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
@@ -9,7 +9,6 @@ import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
-import { Styles } from "../../ui/Styles";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {

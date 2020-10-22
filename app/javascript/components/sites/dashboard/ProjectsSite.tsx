@@ -21,7 +21,7 @@ interface IState {
 }
 
 class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
-    debouncedSearchReloader: any = _.debounce(
+    debouncedSearchReloader = _.debounce(
         async (value) => {
             this.setState({ search: value, page: 1 });
             await this.reloadTable({ search: value, page: 1 });

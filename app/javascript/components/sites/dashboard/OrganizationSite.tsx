@@ -33,6 +33,7 @@ class OrganizationSite extends React.Component<IProps, IState> {
             });
         } catch (error) {
             console.error(error);
+            message.error("Failed to load organization.");
         }
     }
 
@@ -61,6 +62,7 @@ class OrganizationSite extends React.Component<IProps, IState> {
                             <div style={{ width: "100%" }}>
                                 <h3 style={{ marginBottom: 24 }}>Projects</h3>
                                 <ProjectsList
+                                    loading={!this.state.responseOrganization}
                                     projects={
                                         this.state.responseOrganization && this.state.responseOrganization.included
                                             ? this.state.responseOrganization.included.filter((included) => {
@@ -75,6 +77,7 @@ class OrganizationSite extends React.Component<IProps, IState> {
                 </Layout>
 
                 <NewProjectFormModal
+                    organization={dashboardStore.currentOrganization}
                     visible={this.state.addDialogVisible}
                     onCancelRequest={() => {
                         this.setState({ addDialogVisible: false });
