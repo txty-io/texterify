@@ -158,7 +158,11 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     style={{
                                         background:
                                             this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS
-                                                ? "var(--topbar-color)"
+                                                ? "var(--primary-light-color)"
+                                                : undefined,
+                                        color:
+                                            this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS
+                                                ? "var(--blue-color)"
                                                 : undefined
                                     }}
                                 >
@@ -171,7 +175,11 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     style={{
                                         background:
                                             this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS
-                                                ? "var(--topbar-color)"
+                                                ? "var(--primary-light-color)"
+                                                : undefined,
+                                        color:
+                                            this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS
+                                                ? "var(--blue-color)"
                                                 : undefined
                                     }}
                                 >
@@ -184,7 +192,11 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     style={{
                                         background:
                                             this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY
-                                                ? "var(--topbar-color)"
+                                                ? "var(--primary-light-color)"
+                                                : undefined,
+                                        color:
+                                            this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY
+                                                ? "var(--blue-color)"
                                                 : undefined
                                     }}
                                 >
