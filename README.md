@@ -58,6 +58,19 @@ Want to help build Texterify?
 
 We are happy about every help.
 
+## Troubleshooting
+
+### Why is the watcher command failing randomly with exit code 137?
+
+If you receive the error below try to increase the memory (e.g. `8 GB`) that docker can use.
+
+```sh
+> yarn start:watcher
+...
+Killed
+error Command failed with exit code 137.
+```
+
 ## License
 
 See the [LICENSE](LICENSE) file for details.
