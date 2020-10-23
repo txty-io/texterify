@@ -217,6 +217,8 @@ class ProjectPostProcessingSite extends React.Component<IProps, IState> {
     };
 
     render() {
+        this.rowSelection.selectedRowKeys = this.state.selectedRowRules;
+
         return (
             <>
                 <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>

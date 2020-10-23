@@ -251,6 +251,8 @@ class LanguagesSite extends React.Component<IProps, IState> {
     };
 
     render() {
+        this.rowSelection.selectedRowKeys = this.state.selectedRowLanguages;
+
         return (
             <>
                 <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
