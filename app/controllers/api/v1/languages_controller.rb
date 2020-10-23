@@ -135,7 +135,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     language_to_destroy = project.languages.find(params[:language][:id])
     authorize language_to_destroy
-    project.languages.delete(language_to_destroy)
+    project.languages.destroy(language_to_destroy)
 
     render json: {
       success: true,
@@ -147,10 +147,10 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     languages_to_destroy = project.languages.find(params[:languages])
     languages_to_destroy.each { |language| authorize language }
-    project.languages.delete(languages_to_destroy)
+    project.languages.destroy(languages_to_destroy)
 
     render json: {
-      sucess: true,
+      success: true,
       details: 'Languages deleted'
     }
   end

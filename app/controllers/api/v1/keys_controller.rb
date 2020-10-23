@@ -111,7 +111,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     keys_to_destroy = project.keys.find(params[:keys])
     keys_to_destroy.each { |key| authorize key }
-    project.keys.delete(keys_to_destroy)
+    project.keys.destroy(keys_to_destroy)
 
     render json: {
       message: 'Keys deleted'

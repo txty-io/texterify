@@ -40,7 +40,7 @@ class Api::V1::PostProcessingRulesController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     post_processing_rule_to_destroy = project.post_processing_rules.find(params[:post_processing_rule][:id])
     authorize post_processing_rule_to_destroy
-    project.post_processing_rules.delete(post_processing_rules_to_destroy)
+    project.post_processing_rules.destroy(post_processing_rules_to_destroy)
 
     render json: {
       success: true,
@@ -52,10 +52,10 @@ class Api::V1::PostProcessingRulesController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     post_processing_rules_to_destroy = project.post_processing_rules.find(params[:rules])
     post_processing_rules_to_destroy.each { |post_processing_rule| authorize post_processing_rule }
-    project.post_processing_rules.delete(post_processing_rules_to_destroy)
+    project.post_processing_rules.destroy(post_processing_rules_to_destroy)
 
     render json: {
-      sucess: true,
+      success: true,
       details: 'OK'
     }
   end
