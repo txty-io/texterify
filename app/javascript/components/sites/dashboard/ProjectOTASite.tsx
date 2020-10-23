@@ -1,4 +1,4 @@
-import { Button, Empty, Layout, Table } from "antd";
+import { Button, Empty, Layout, Modal, Table } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -11,12 +11,16 @@ import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import * as _ from "lodash";
 import { TableRowSelection } from "antd/lib/table/interface";
+import FlagIcon from "../../ui/FlagIcons";
+import * as moment from "moment";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     addDialogVisible: boolean;
     releasesResponse: IGetReleasesResponse;
     releasesLoading: boolean;
+    isDeleting: boolean;
+    deleteDialogVisible: boolean;
     search: string;
     page: number;
     perPage: number;
@@ -25,9 +29,8 @@ interface IState {
 
 interface ITableRow {
     key: string;
-    fromVersion: string;
-    toVersion: string;
-    url: JSX.Element;
+    version: string;
+    urls: JSX.Element;
     exportConfigName: string;
 }
 
@@ -37,6 +40,8 @@ class ProjectOTASite extends React.Component<IProps, IState> {
         addDialogVisible: false,
         releasesResponse: null,
         releasesLoading: false,
+        isDeleting: false,
+        deleteDialogVisible: false,
         search: "",
         page: 1,
         perPage: DEFAULT_PAGE_SIZE,
@@ -89,19 +94,24 @@ class ProjectOTASite extends React.Component<IProps, IState> {
     getColumns = () => {
         return [
             {
-                title: "Export Config",
+                title: "Export configuration",
                 dataIndex: "exportConfigName",
                 key: "exportConfigName"
             },
             {
                 title: "Version",
-                dataIndex: "toVersion",
-                key: "toVersion"
+                dataIndex: "version",
+                key: "version"
             },
             {
-                title: "URL",
-                dataIndex: "url",
-                key: "url",
+                title: "Release time",
+                dataIndex: "date",
+                key: "date"
+            },
+            {
+                title: "File previews",
+                dataIndex: "urls",
+                key: "urls",
                 width: 400
             }
         ];
@@ -120,21 +130,107 @@ class ProjectOTASite extends React.Component<IProps, IState> {
 
             return {
                 key: release.attributes.id,
-                fromVersion: release.attributes.from_version,
-                toVersion: release.attributes.to_version,
-                url: (
+                exportConfigName: exportConfig?.attributes.name,
+                date: moment(release.attributes.timestamp).format("YYYY-MM-DD HH:mm"),
+                version: release.attributes.version,
+                urls: (
                     <div style={{ whiteSpace: "nowrap", maxWidth: 400, overflow: "hidden", textOverflow: "ellipsis" }}>
-                        <a href={release.attributes.url} rel="noopener noreferrer" target="_blank">
-                            {release.attributes.url}
-                        </a>
+                        {release.relationships.release_files.data
+                            .sort((a, b) => {
+                                const releaseFileA = APIUtils.getIncludedObject(
+                                    a,
+                                    this.state.releasesResponse.included
+                                );
+
+                                const releaseFileB = APIUtils.getIncludedObject(
+                                    b,
+                                    this.state.releasesResponse.included
+                                );
+
+                                return releaseFileA.attributes.language_code > releaseFileB.attributes.language_code
+                                    ? 1
+                                    : -1;
+                            })
+                            .map((releaseFileIncluded) => {
+                                const releaseFile = APIUtils.getIncludedObject(
+                                    releaseFileIncluded,
+                                    this.state.releasesResponse.included
+                                );
+
+                                return (
+                                    <a
+                                        href={releaseFile.attributes.preview_url}
+                                        rel="noopener noreferrer"
+                                        target="_blank"
+                                        style={{ marginRight: 16 }}
+                                        key={releaseFile.attributes.id}
+                                    >
+                                        {releaseFile.attributes.country_code ? (
+                                            <>
+                                                <FlagIcon code={releaseFile.attributes.country_code.toLowerCase()} />
+                                                <span style={{ marginLeft: 8, whiteSpace: "nowrap" }}>
+                                                    {releaseFile.attributes.language_code}-
+                                                    {releaseFile.attributes.country_code}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            releaseFile.attributes.language_code
+                                        )}
+                                    </a>
+                                );
+                            })}
                     </div>
-                ),
-                exportConfigName: exportConfig?.attributes.name
+                )
             };
         }, []);
     };
 
+    onDelete = async () => {
+        this.setState({
+            isDeleting: true,
+            deleteDialogVisible: true
+        });
+        Modal.confirm({
+            title: "Do you really want to delete the releases?",
+            content: "This cannot be undone.",
+            okText: "Yes",
+            okButtonProps: {
+                danger: true
+            },
+            cancelText: "No",
+            autoFocusButton: "cancel",
+            visible: this.state.deleteDialogVisible,
+            onOk: async () => {
+                const response = await ReleasesAPI.deleteReleases(
+                    this.props.match.params.projectId,
+                    this.state.selectedReleases
+                );
+                if (response.errors) {
+                    return;
+                }
+
+                await this.reloadTable();
+
+                this.setState({
+                    isDeleting: false,
+                    deleteDialogVisible: false,
+                    selectedReleases: []
+                });
+
+                this.rowSelection.selectedRowKeys = [];
+            },
+            onCancel: () => {
+                this.setState({
+                    isDeleting: false,
+                    deleteDialogVisible: false
+                });
+            }
+        });
+    };
+
     render() {
+        this.rowSelection.selectedRowKeys = this.state.selectedReleases;
+
         return (
             <>
                 <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
@@ -155,9 +251,22 @@ class ProjectOTASite extends React.Component<IProps, IState> {
                                     onClick={() => {
                                         this.setState({ addDialogVisible: true });
                                     }}
+                                    style={{ marginRight: 8 }}
                                     disabled={!PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())}
                                 >
                                     Create release
+                                </Button>
+
+                                <Button
+                                    danger
+                                    onClick={this.onDelete}
+                                    disabled={
+                                        this.state.selectedReleases.length === 0 ||
+                                        !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())
+                                    }
+                                    loading={this.state.isDeleting}
+                                >
+                                    Delete selected
                                 </Button>
                             </div>
                         </div>

@@ -13,8 +13,10 @@ class Api::V1::ReleasesController < Api::V1::ApiController
   def index
     project = current_user.projects.find(params[:project_id])
 
+    export_config = ExportConfig.new
+    export_config.project = project
     release = Release.new
-    release.export_config = project.export_configs.first
+    release.export_config = export_config
     authorize release
 
     releases = project.releases
@@ -24,11 +26,10 @@ class Api::V1::ReleasesController < Api::V1::ApiController
 
     options = {}
     options[:meta] = { total: releases.size }
-    options[:include] = [:export_config]
+    options[:include] = [:export_config, :release_files]
     render json: ReleaseSerializer.new(
       releases
-        .where('from_version = to_version')
-        .order('to_version DESC')
+        .order('timestamp DESC')
         .offset(page * per_page)
         .limit(per_page),
       options
@@ -55,15 +56,36 @@ class Api::V1::ReleasesController < Api::V1::ApiController
       return
     end
 
-    version = params[:version].present? && params[:version].to_i
+    locale = params[:locale]
+    if !locale
+      render json: {
+        errors: [
+          {
+            code: 'NO_LOCALE_GIVEN'
+          }
+        ]
+      }, status: :bad_request
+      return
+    end
+
+    timestamp = params[:timestamp]
+    version = version_from_timestamp(export_config, timestamp)
 
     response.set_header('Cache-Control', 'public, max-age=120')
 
-    if !version
-      redirect_to latest_release.url
-    elsif version == latest_release.to_version
+    if !version && timestamp && timestamp > latest_release.timestamp
+      # Skip in case the texts of the app are newer than the texts of the latest release.
       head :not_modified
-    elsif version > latest_release.to_version || version < 1
+    elsif !version
+      release_file = latest_release.latest_release_file_for_locale(locale)
+      if release_file
+        redirect_to release_file.url
+      else
+        head :not_modified
+      end
+    elsif version == latest_release.version
+      head :not_modified
+    elsif version > latest_release.version || version < 1
       render json: {
         errors: [
           {
@@ -72,17 +94,13 @@ class Api::V1::ReleasesController < Api::V1::ApiController
         ]
       }, status: :bad_request
     else
-      redirect_to latest_release.url
+      release_file = latest_release.latest_release_file_for_locale(locale)
+      if release_file
+        redirect_to release_file.url
+      else
+        head :not_modified
+      end
     end
-
-    # existing_release = export_config.releases.find_by(from_version: version, to_version: latest_release.to_version)
-
-    # if existing_release
-    #   redirect_to existing_release.url
-    # else
-    #   new_release = helpers.create_release(project, export_config, version, latest_release.to_version)
-    #   redirect_to new_release.url
-    # end
   end
 
   def create
@@ -93,20 +111,50 @@ class Api::V1::ReleasesController < Api::V1::ApiController
     release.export_config = export_config
     authorize release
 
+    if project.languages.where.not(language_code: nil).empty?
+      render json: {
+        errors: [
+          {
+            code: 'NO_LANGUAGES_WITH_LANGUAGE_CODE'
+          }
+        ]
+      }, status: :bad_request
+      return
+    end
+
     if !project.releases.where(export_config: export_config).empty?
       latest_release = export_config.latest_release
     end
 
     if latest_release
-      version = latest_release.to_version + 1
+      version = latest_release.version + 1
     else
       version = 1
     end
 
-    helpers.create_release(project, export_config, version, version)
+    helpers.create_release(project, export_config, version)
 
     render json: {
       success: true
     }
+  end
+
+  def destroy_multiple
+    project = current_user.projects.find(params[:project_id])
+    releases_to_destroy = project.releases.find(params[:releases])
+    releases_to_destroy.each { |release| authorize release }
+    # binding.pry
+    project.releases.where(id: releases_to_destroy.map(&:id)).destroy_all
+
+    render json: {
+      success: true,
+      details: 'Releases deleted'
+    }
+  end
+
+  private
+
+  def version_from_timestamp(export_config, timestamp)
+    export_config.releases.find_by(timestamp: timestamp)
   end
 end

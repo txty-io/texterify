@@ -30,7 +30,7 @@ class ExportConfig < ApplicationRecord
   has_many :releases, dependent: :destroy
 
   def latest_release
-    releases.order('from_version DESC, to_version DESC').first
+    releases.order('version DESC').first
   end
 
   def name=(name)

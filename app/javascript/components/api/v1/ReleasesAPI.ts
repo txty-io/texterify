@@ -8,6 +8,12 @@ export interface IReleaseRelationships {
             type: "export_config";
         };
     };
+    release_files: {
+        data: {
+            id: string;
+            type: "release_file";
+        }[];
+    };
 }
 
 export interface IRelease {
@@ -15,9 +21,8 @@ export interface IRelease {
     type: string;
     attributes: {
         id: string;
-        from_version: string;
-        to_version: string;
-        url: string;
+        version: string;
+        timestamp: string;
     };
     relationships: IReleaseRelationships;
 }
@@ -53,6 +58,14 @@ const ReleasesAPI = {
             search: options.search,
             page: options.page,
             per_page: options.perPage
+        })
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    deleteReleases: async (projectId: string, releases: any[]): Promise<any> => {
+        return API.deleteRequest(`projects/${projectId}/releases`, true, {
+            releases: releases
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);

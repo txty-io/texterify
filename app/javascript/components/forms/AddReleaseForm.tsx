@@ -1,8 +1,10 @@
-import { Button, Form, Select } from "antd";
+import { Alert, Button, Form, Select } from "antd";
 import { FormInstance } from "antd/lib/form";
 import * as React from "react";
-import { ExportConfigsAPI, IExportConfig, IGetExportConfigsResponse } from "../api/v1/ExportConfigsAPI";
+import { Link } from "react-router-dom";
+import { ExportConfigsAPI, IGetExportConfigsResponse } from "../api/v1/ExportConfigsAPI";
 import { ReleasesAPI } from "../api/v1/ReleasesAPI";
+import { Routes } from "../routing/Routes";
 import { ErrorUtils } from "../ui/ErrorUtils";
 import { TexterifyModal } from "../ui/TexterifyModal";
 
@@ -25,7 +27,7 @@ class AddReleaseForm extends React.Component<IProps, IState> {
     state: IState = {
         exportConfigId: null,
         exportConfigsResponse: null,
-        exportConfigsLoading: false
+        exportConfigsLoading: true
     };
 
     async componentDidMount() {
@@ -48,7 +50,18 @@ class AddReleaseForm extends React.Component<IProps, IState> {
         });
 
         if (response.errors) {
-            ErrorUtils.showErrors(response.errors);
+            if (response.errors[0]?.code === "NO_LANGUAGES_WITH_LANGUAGE_CODE") {
+                this.formRef.current.setFields([
+                    {
+                        name: "exportConfig",
+                        errors: [
+                            "You need to specify the language code for at least one of your languages before you can create releases."
+                        ]
+                    }
+                ]);
+            } else {
+                ErrorUtils.showErrors(response.errors);
+            }
 
             return;
         }
@@ -56,6 +69,10 @@ class AddReleaseForm extends React.Component<IProps, IState> {
         if (this.props.onCreated) {
             this.props.onCreated();
         }
+    };
+
+    hasExportConfigs = () => {
+        return this.state.exportConfigsLoading || this.state.exportConfigsResponse.data.length > 0;
     };
 
     render() {
@@ -72,7 +89,12 @@ class AddReleaseForm extends React.Component<IProps, IState> {
                         >
                             Cancel
                         </Button>
-                        <Button form="addReleaseForm" type="primary" htmlType="submit">
+                        <Button
+                            form="addReleaseForm"
+                            type="primary"
+                            htmlType="submit"
+                            disabled={!this.hasExportConfigs()}
+                        >
                             Create release
                         </Button>
                     </div>
@@ -81,25 +103,55 @@ class AddReleaseForm extends React.Component<IProps, IState> {
             >
                 <Form ref={this.formRef} onFinish={this.handleSubmit} style={{ maxWidth: "100%" }} id="addReleaseForm">
                     <h3>Export config</h3>
-                    <Form.Item name="exportConfig" rules={[]}>
-                        <Select
-                            placeholder="Select a configuration"
-                            style={{ width: "100%" }}
-                            onChange={(value: string) => {
-                                this.setState({ exportConfigId: value });
-                            }}
-                            allowClear
+                    {!this.hasExportConfigs() && (
+                        <Alert
+                            type="info"
+                            showIcon
+                            message="No export configuration"
+                            description={
+                                <p>
+                                    <Link
+                                        to={Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
+                                            ":projectId",
+                                            this.props.projectId
+                                        )}
+                                    >
+                                        Create an export configuration
+                                    </Link>{" "}
+                                    to create releases.
+                                </p>
+                            }
+                        />
+                    )}
+                    {this.hasExportConfigs() && (
+                        <Form.Item
+                            name="exportConfig"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please select an export configuration."
+                                }
+                            ]}
                         >
-                            {this.state.exportConfigsResponse &&
-                                this.state.exportConfigsResponse.data.map((exportConfig) => {
-                                    return (
-                                        <Select.Option value={exportConfig.id} key={exportConfig.id}>
-                                            {exportConfig.attributes.name}
-                                        </Select.Option>
-                                    );
-                                })}
-                        </Select>
-                    </Form.Item>
+                            <Select
+                                placeholder="Select a configuration"
+                                style={{ width: "100%" }}
+                                onChange={(value: string) => {
+                                    this.setState({ exportConfigId: value });
+                                }}
+                                allowClear
+                            >
+                                {this.state.exportConfigsResponse &&
+                                    this.state.exportConfigsResponse.data.map((exportConfig) => {
+                                        return (
+                                            <Select.Option value={exportConfig.id} key={exportConfig.id}>
+                                                {exportConfig.attributes.name}
+                                            </Select.Option>
+                                        );
+                                    })}
+                            </Select>
+                        </Form.Item>
+                    )}
                 </Form>
             </TexterifyModal>
         );

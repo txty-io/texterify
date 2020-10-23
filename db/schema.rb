@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_08_002621) do
+ActiveRecord::Schema.define(version: 2020_10_23_142103) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -182,14 +182,25 @@ ActiveRecord::Schema.define(version: 2020_10_08_002621) do
     t.index ["user_id"], name: "index_projects_users_on_user_id"
   end
 
-  create_table "releases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.integer "from_version", null: false
-    t.integer "to_version", null: false
+  create_table "release_files", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "language_code", null: false
+    t.string "country_code"
     t.string "url", null: false
+    t.uuid "release_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "preview_url", null: false
+    t.index ["language_code", "country_code", "url", "release_id"], name: "index_release_files_unique", unique: true
+    t.index ["release_id"], name: "index_release_files_on_release_id"
+  end
+
+  create_table "releases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "version", null: false
     t.uuid "export_config_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["export_config_id", "from_version", "to_version"], name: "index_releases_unique", unique: true
+    t.datetime "timestamp", null: false
+    t.index ["export_config_id", "version"], name: "index_releases_on_export_config_id_and_version", unique: true
     t.index ["export_config_id"], name: "index_releases_on_export_config_id"
   end
 
@@ -268,6 +279,7 @@ ActiveRecord::Schema.define(version: 2020_10_08_002621) do
   add_foreign_key "projects", "organizations"
   add_foreign_key "projects_users", "projects"
   add_foreign_key "projects_users", "users"
+  add_foreign_key "release_files", "releases"
   add_foreign_key "releases", "export_configs"
   add_foreign_key "translations", "export_configs"
   add_foreign_key "translations", "keys"
