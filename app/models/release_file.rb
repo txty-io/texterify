@@ -3,6 +3,7 @@ class ReleaseFile < ApplicationRecord
 
   validates :language_code, presence: true
   validates :url, presence: true
+  validates :preview_url, presence: true
 
   after_destroy :remove_from_storage
 

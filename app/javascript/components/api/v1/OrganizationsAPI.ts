@@ -2,7 +2,9 @@ import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
 export interface IGetOrganizationsOptions {
-    search?: string; page?: number; perPage?: number
+    search?: string;
+    page?: number;
+    perPage?: number;
 }
 
 const OrganizationsAPI = {

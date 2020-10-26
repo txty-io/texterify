@@ -5,6 +5,7 @@ class Release < ApplicationRecord
   delegate :project, to: :export_config
 
   validates :version, presence: true
+  validates :timestamp, presence: true
 
   def latest_release_file_for_locale(locale)
     splitted = locale.split('-')
