@@ -8,6 +8,6 @@ class ReleaseFile < ApplicationRecord
   after_destroy :remove_from_storage
 
   def remove_from_storage
-    # TODO:
+    # TODO: Remove file from storage
   end
 end
