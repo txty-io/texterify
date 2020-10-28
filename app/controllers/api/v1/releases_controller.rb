@@ -68,7 +68,12 @@ class Api::V1::ReleasesController < Api::V1::ApiController
       return
     end
 
-    timestamp = params[:timestamp]
+    begin
+      timestamp = DateTime.parse(params[:timestamp])
+    rescue Date::Error
+      timestamp = nil
+    end
+
     version = version_from_timestamp(export_config, timestamp)
 
     response.set_header('Cache-Control', 'public, max-age=120')
