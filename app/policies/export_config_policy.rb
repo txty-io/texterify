@@ -7,7 +7,7 @@ class ExportConfigPolicy
   end
 
   def index?
-    ROLES_DEVELOPER_UP.include? project_user_role
+    ROLES_TRANSLATOR_UP.include? project_user_role
   end
 
   def create?
