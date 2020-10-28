@@ -13,11 +13,13 @@ class Release < ApplicationRecord
     language_code = splitted[0]
 
     if splitted.length == 1
-      release_files.find_by(language_code: language_code, country_code: nil)
+      release_files.find_by(language_code: language_code)
     else
       country_code = splitted[1]
 
-      release_files.find_by(language_code: language_code, country_code: country_code)
+      release = release_files.find_by(language_code: language_code, country_code: country_code)
+      release ||= release_files.find_by(language_code: language_code)
+      release
     end
   end
 end
