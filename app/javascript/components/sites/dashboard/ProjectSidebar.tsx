@@ -111,11 +111,11 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             //     path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
             //     text: "Validations"
             // },
-            // {
-            //     icon: SwapOutlined,
-            //     path: Routes.DASHBOARD.PROJECT_OTA.replace(":projectId", this.props.match.params.projectId),
-            //     text: "Over the Air"
-            // },
+            {
+                icon: SwapOutlined,
+                path: Routes.DASHBOARD.PROJECT_OTA.replace(":projectId", this.props.match.params.projectId),
+                text: "Over the Air"
+            },
             {
                 icon: OneToOneOutlined,
                 path: Routes.DASHBOARD.PROJECT_POST_PROCESSING.replace(":projectId", this.props.match.params.projectId),
