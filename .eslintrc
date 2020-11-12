@@ -61,7 +61,7 @@
         "no-unused-labels": "error",
         "one-var": ["error", "never"],
         "radix": "error",
-        "spaced-comment": "error",
+        "spaced-comment": ["error", "always", { "markers": ["/"] }],
         "use-isnan": "error"
     }
 }
