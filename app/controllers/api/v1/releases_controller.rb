@@ -68,10 +68,14 @@ class Api::V1::ReleasesController < Api::V1::ApiController
       return
     end
 
-    begin
-      timestamp = DateTime.parse(params[:timestamp])
-    rescue Date::Error
-      timestamp = nil
+    timestamp = nil
+
+    if params[:timestamp].present?
+      begin
+        timestamp = DateTime.parse(params[:timestamp])
+      rescue Date::Error
+        # Do not handle
+      end
     end
 
     version = version_from_timestamp(export_config, timestamp)
