@@ -37,18 +37,21 @@ class NewPasswordForm extends React.Component<{}, IState> {
                 <Form onFinish={this.handleSubmit} style={{ maxWidth: "100%" }}>
                     {this.state.loginErrors.length > 0 && <Alert showIcon message={this.renderErrors()} type="error" />}
 
-                    {this.state.success && <Alert showIcon message="Password changed successfully." type="success" />}
+                    {this.state.success && (
+                        <Alert
+                            showIcon
+                            message="Password changed successfully."
+                            type="success"
+                            style={{ marginBottom: 16 }}
+                        />
+                    )}
 
                     <h4>New password</h4>
                     <Form.Item
                         name="new_password"
                         rules={[{ required: true, whitespace: true, message: "Please enter your new password." }]}
                     >
-                        <Input
-                            prefix={<KeyOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-                            placeholder="New password"
-                            type="password"
-                        />
+                        <Input placeholder="New password" type="password" />
                     </Form.Item>
 
                     <h4>New password confirmation</h4>
@@ -56,11 +59,7 @@ class NewPasswordForm extends React.Component<{}, IState> {
                         name="new_password_confirmation"
                         rules={[{ required: true, whitespace: true, message: "Please confirm your new password." }]}
                     >
-                        <Input
-                            prefix={<KeyOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-                            placeholder="New password confirmation"
-                            type="password"
-                        />
+                        <Input placeholder="New password confirmation" type="password" />
                     </Form.Item>
 
                     <Form.Item style={{ display: "flex", justifyContent: "flex-end" }}>
