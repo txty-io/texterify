@@ -33,6 +33,7 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
                             showIcon
                             message="We sent you an email. Follow the instructions in the email to reset your password."
                             type="success"
+                            style={{ marginBottom: 16 }}
                         />
                     )}
 
