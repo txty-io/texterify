@@ -31,7 +31,7 @@
 		"misogi.ruby-rubocop"
 	],
 
-	// "postCreateCommand": "bundle exec rails db:create db:migrate db:seed"
+	"postCreateCommand": "bundle exec rails db:create db:migrate db:seed"
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
