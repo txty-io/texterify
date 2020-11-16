@@ -1,5 +1,22 @@
-<p><%= t(:welcome).capitalize + ' ' + @email %>!</p>
+<% content_for :title do %>Confirmation instructions<% end %>
+<% content_for :preheader do %>Instructions to confirm your account<% end %>
+
+<h1><%= t(:welcome).capitalize + ' ' + @resource.username %>!</h1>
 
 <p><%= t '.confirm_link_msg' %> </p>
 
-<p><%= link_to t('.confirm_account_link'), confirmation_url(@resource, {confirmation_token: @token, config: message['client-config'].to_s, redirect_url: "#{root_url}account-confirmation"}).html_safe %></p>
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
+  <tbody>
+    <tr>
+      <td align="left">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td><%= link_to t('.confirm_account_link'), confirmation_url(@resource, {confirmation_token: @token, config: message['client-config'].to_s, redirect_url: "#{root_url}account-confirmation"}).html_safe %></td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
