@@ -37,5 +37,9 @@ module Texterify
       # Use UUID per default as id.
       g.orm :active_record, primary_key_type: :uuid
     end
+
+    config.to_prepare do
+      Devise::Mailer.layout "email"
+    end
   end
 end
