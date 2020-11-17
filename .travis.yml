@@ -21,11 +21,6 @@ script:
   - docker-compose exec app bundle exec rails db:drop RAILS_ENV=test
 
 after_success:
-  # Setup ssh.
-  - eval "$(ssh-agent -s)"
-  - chmod 600 .travis/deploy_key
-  - ssh-add .travis/deploy_key
-
   # Tag the master as latest.
   - |
     if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then

@@ -16,7 +16,11 @@ environment.plugins.append(
         errorHandler: (err, invokeErr, compilation) => {
             compilation.warnings.push("Sentry CLI Plugin: " + err.message);
         },
-        release: process.env.COMMIT_HASH
+        release: process.env.COMMIT_HASH,
+        setCommits: {
+            commit: process.env.COMMIT_HASH,
+            auto: true
+        }
     })
 );
 
