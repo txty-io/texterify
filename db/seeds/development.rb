@@ -8,7 +8,7 @@ user_1 = User.find_by(id: USER_1_ID)
 if user_1
   puts "User '#{user_1.email}' with password 'password' already created."
 else
-  user_1 = User.create!(id: USER_1_ID, username: 'Test User 1', email: 'test1@texterify.com', password: 'password', password_confirmation: 'password')
+  user_1 = User.create!(id: USER_1_ID, username: 'Test User 1', email: 'test1@texterify.com', password: 'password', password_confirmation: 'password', confirmed_at: Time.now)
   user_1.skip_confirmation!
   puts "User '#{user_1.email}' with password 'password' created."
 end
@@ -17,7 +17,7 @@ user_2 = User.find_by(id: USER_2_ID)
 if user_2
   puts "User '#{user_2.email}' with password 'password' already created."
 else
-  user_2 = User.create!(id: USER_2_ID, username: 'Test User 2', email: 'test2@texterify.com', password: 'password', password_confirmation: 'password')
+  user_2 = User.create!(id: USER_2_ID, username: 'Test User 2', email: 'test2@texterify.com', password: 'password', password_confirmation: 'password', confirmed_at: Time.now)
   user_2.skip_confirmation!
   puts "User '#{user_2.email}' with password 'password' created."
 end
@@ -26,7 +26,7 @@ user_3 = User.find_by(id: USER_3_ID)
 if user_3
   puts "User '#{user_3.email}' with password 'password' already created."
 else
-  user_3 = User.create!(id: USER_3_ID, username: 'Test User 3', email: 'test3@texterify.com', password: 'password', password_confirmation: 'password')
+  user_3 = User.create!(id: USER_3_ID, username: 'Test User 3', email: 'test3@texterify.com', password: 'password', password_confirmation: 'password', confirmed_at: Time.now)
   user_3.skip_confirmation!
   puts "User '#{user_3.email}' with password 'password' created."
 end
