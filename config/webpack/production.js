@@ -5,6 +5,8 @@ const environment = require("./environment");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const SentryWebpackPlugin = require("@sentry/webpack-plugin");
 
+console.error("HELP", process.env.COMMIT_HASH);
+
 environment.plugins.append(
     "sentry",
     new SentryWebpackPlugin({
