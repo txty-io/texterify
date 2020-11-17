@@ -12,7 +12,10 @@ environment.plugins.append(
         org: process.env.SENTRY_ORGANIZATION_BACKEND,
         project: process.env.SENTRY_PROJECT_BACKEND,
         include: ["app/javascript", "public/assets"],
-        ignore: ["node_modules", "webpack.config.js", "vendor"]
+        ignore: ["node_modules", "webpack.config.js", "vendor"],
+        errorHandler: (err, invokeErr, compilation) => {
+            compilation.warnings.push("Sentry CLI Plugin: " + err.message);
+        }
     })
 );
 
