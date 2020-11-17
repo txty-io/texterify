@@ -15,7 +15,8 @@ environment.plugins.append(
         ignore: ["node_modules", "webpack.config.js", "vendor"],
         errorHandler: (err, invokeErr, compilation) => {
             compilation.warnings.push("Sentry CLI Plugin: " + err.message);
-        }
+        },
+        release: process.env.TRAVIS_COMMIT
     })
 );
 
