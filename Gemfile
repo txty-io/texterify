@@ -78,3 +78,4 @@ gem 'pundit'
 gem 'react-rails'
 gem 'rubyzip'
 gem 'webpacker'
+gem "sentry-raven"

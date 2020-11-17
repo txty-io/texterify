@@ -8,6 +8,12 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+if ENV["SENTRY_DSN"].present?
+  Raven.configure do |config|
+    config.dsn = ENV["SENTRY_DSN"]
+  end
+end
+
 module Texterify
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
