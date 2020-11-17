@@ -3,6 +3,15 @@ import "../../assets/stylesheets/externals/antd-dark.less";
 import "../../assets/stylesheets/externals/antd.less";
 import { AppRouter } from "./routing/AppRouter";
 import "mobx-react-lite/batchingForReactDom";
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
+
+if (process.env.SENTRY_DSN_FRONTEND) {
+    Sentry.init({
+        dsn: process.env.SENTRY_DSN_FRONTEND,
+        integrations: [new Integrations.BrowserTracing()]
+    });
+}
 
 function setFavicon(type: "dark" | "light") {
     const darkModeIconLink = document.querySelector<HTMLLinkElement>('link[rel="dark-mode-icon"]');

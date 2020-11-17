@@ -72,7 +72,7 @@ Rails.application.configure do
     :address => ENV["SMTP_ADDRESS"].blank? ? nil : ENV["SMTP_ADDRESS"],
     :port => ENV["SMTP_PORT"].blank? ? nil : ENV["SMTP_PORT"],
     :domain => ENV["SMTP_DOMAIN"].blank? ? nil : ENV["SMTP_DOMAIN"],
-    :user_name => ENV["SMTP_USER_NAME"].blank? ? nil : ENV["SMTP_USER_NAME"],
+    :user_name => ENV["SMTP_USERNAME"].blank? ? nil : ENV["SMTP_USERNAME"],
     :password => ENV["SMTP_PASSWORD"].blank? ? nil : ENV["SMTP_PASSWORD"],
     :enable_starttls_auto => ENV["SMTP_ENABLE_STARTTLS_AUTO"].blank? ? nil : ENV["SMTP_ENABLE_STARTTLS_AUTO"],
     :openssl_verify_mode => ENV["SMTP_OPENSSL_VERIFY_MODE"].blank? ? nil : ENV["SMTP_OPENSSL_VERIFY_MODE"]

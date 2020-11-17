@@ -8,9 +8,9 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-if ENV["SENTRY_DSN"].present?
+if ENV["SENTRY_DSN_BACKEND"].present?
   Raven.configure do |config|
-    config.dsn = ENV["SENTRY_DSN"]
+    config.dsn = ENV["SENTRY_DSN_BACKEND"]
   end
 end
 

@@ -77,5 +77,5 @@ gem 'paper_trail'
 gem 'pundit'
 gem 'react-rails'
 gem 'rubyzip'
+gem 'sentry-raven'
 gem 'webpacker'
-gem "sentry-raven"
