@@ -67,6 +67,7 @@
     "webpack-cli": "^3.3.7"
   },
   "devDependencies": {
+    "@sentry/webpack-plugin": "^1.13.0",
     "less": "^3.10.3",
     "webpack-dev-server": "^3.8.0"
   },

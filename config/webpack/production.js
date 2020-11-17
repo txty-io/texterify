@@ -1,5 +1,19 @@
-process.env.NODE_ENV = process.env.NODE_ENV || 'production'
+process.env.NODE_ENV = process.env.NODE_ENV || "production";
 
-const environment = require('./environment')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const environment = require("./environment");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const SentryWebpackPlugin = require("@sentry/webpack-plugin");
 
-module.exports = environment.toWebpackConfig()
+environment.plugins.append(
+    "sentry",
+    new SentryWebpackPlugin({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        org: process.env.SENTRY_ORGANIZATION_BACKEND,
+        project: process.env.SENTRY_PROJECT_BACKEND,
+        include: ["app/javascript", "public/assets"],
+        ignore: ["node_modules", "webpack.config.js", "vendor"]
+    })
+);
+
+module.exports = environment.toWebpackConfig();
