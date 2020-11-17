@@ -57,8 +57,8 @@ class SiteWrapper extends React.Component<IProps> {
                             texterify
                         </h1>
                         <p style={{ marginBottom: 40 }}>
-                            Texterify is a localization management system that helps you translating your
-                            software efficient and fast.
+                            Texterify is a localization management system that helps you translating your software
+                            efficient and fast.
                         </p>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <img src={GitHubMarkLight} style={{ maxWidth: 32, marginRight: 40 }} />
