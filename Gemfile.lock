@@ -321,6 +321,8 @@ GEM
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
     semantic_range (2.3.0)
+    sentry-raven (3.1.1)
+      faraday (>= 1.0)
     sexp_processor (4.15.1)
     signet (0.14.0)
       addressable (~> 2.3)
@@ -401,6 +403,7 @@ DEPENDENCIES
   rubyzip
   sass-rails
   selenium-webdriver
+  sentry-raven
   spring
   spring-watcher-listen
   tzinfo-data
