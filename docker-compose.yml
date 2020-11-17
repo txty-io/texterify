@@ -20,6 +20,8 @@ services:
     image: chrztoph/texterify:${TRAVIS_COMMIT}
     build:
       context: .
+      args:
+        COMMIT_HASH: ${COMMIT_HASH}
       dockerfile: Dockerfile
     depends_on:
       - db

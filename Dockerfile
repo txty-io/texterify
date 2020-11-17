@@ -6,6 +6,8 @@ SHELL ["/bin/bash", "-c"]
 
 EXPOSE 3000
 
+ARG COMMIT_HASH
+
 ENV RAILS_ENV="production"
 ENV RAILS_ROOT /var/www/texterify
 
@@ -56,6 +58,6 @@ RUN apt-get update && apt-get install yarn -y
 COPY . .
 
 # Compile assets.
-RUN SECRET_KEY_BASE=`bin/rails secret` RAILS_ENV=production bundle exec rails assets:precompile
+RUN SECRET_KEY_BASE=`bin/rails secret` RAILS_ENV=production COMMIT_HASH=$COMMIT_HASH bundle exec rails assets:precompile
 
 CMD ["bundle", "exec", "rails", "server"]
