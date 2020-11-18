@@ -55,11 +55,10 @@ async function request(options: {
             headers: requestHeaders,
             body: options.method === "GET" ? null : options.isFormData ? options.params : JSON.stringify(options.params)
         });
+        APIUtils.saveTokenFromResponseIfAvailable(response);
     } catch (error) {
         console.error("Error while fetching:", error);
     }
-
-    APIUtils.saveTokenFromResponseIfAvailable(response);
 
     return response && !options.isFileDownload ? response.json() : response;
 }
