@@ -78,6 +78,13 @@ Rails.application.configure do
     :openssl_verify_mode => ENV["SMTP_OPENSSL_VERIFY_MODE"].blank? ? nil : ENV["SMTP_OPENSSL_VERIFY_MODE"]
   }
 
+  # Set host so asset_path returns a full URL instead of a relative path.
+  # Otherwise images in emails don't work.
+  config.action_controller.asset_host = ENV['ASSET_HOST']
+  config.action_mailer.asset_host = config.action_controller.asset_host
+
+  config.action_mailer.default_url_options = { host: ENV['ASSET_HOST'] }
+
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true
