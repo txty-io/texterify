@@ -8,9 +8,9 @@ const SentryWebpackPlugin = require("@sentry/webpack-plugin");
 environment.plugins.append(
     "sentry",
     new SentryWebpackPlugin({
-        authToken: process.env.SENTRY_AUTH_TOKEN,
-        org: process.env.SENTRY_ORGANIZATION_BACKEND,
-        project: process.env.SENTRY_PROJECT_BACKEND,
+        authToken: process.env.SENTRY_SOURCE_MAPS_AUTH_TOKEN,
+        org: process.env.SENTRY_SOURCE_MAPS_ORGANIZATION,
+        project: process.env.SENTRY_SOURCE_MAPS_PROJECT,
         include: ["app/javascript", "public/assets"],
         ignore: ["node_modules", "webpack.config.js", "vendor"],
         errorHandler: (err, invokeErr, compilation) => {
