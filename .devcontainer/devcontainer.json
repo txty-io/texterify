@@ -28,7 +28,8 @@
 	"extensions": [
 		"dbaeumer.vscode-eslint",
 		"eamodio.gitlens",
-		"misogi.ruby-rubocop"
+		"misogi.ruby-rubocop",
+		"esbenp.prettier-vscode"
 	],
 
 	"postCreateCommand": "bundle exec rails db:create db:migrate db:seed"
