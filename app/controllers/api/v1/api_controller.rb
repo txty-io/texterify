@@ -20,7 +20,11 @@ module Api::V1
       api_secret = params[:api_secret].presence
       token_correct = api_secret && user && user.access_tokens.find_by(secret: api_secret)
       if token_correct
-        request.headers.merge! user.create_new_auth_token
+        client_id = 'auth-from-access-token'
+
+        user.tokens.delete(client_id)
+
+        request.headers.merge! user.create_new_auth_token(client_id)
       end
     end
 
