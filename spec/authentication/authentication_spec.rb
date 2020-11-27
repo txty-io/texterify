@@ -48,8 +48,8 @@ describe 'Whether authentication is working correctly', type: :request do
     include_examples 'use authentication tokens of different ages', 4.days, :success
     include_examples 'use authentication tokens of different ages', 5.days, :success
     include_examples 'use authentication tokens of different ages', 13.days, :success
-    include_examples 'use authentication tokens of different ages', 14.days - 1.hour, :success
-    include_examples 'use authentication tokens of different ages', 14.days + 1.hour, :unauthorized
+    include_examples 'use authentication tokens of different ages', 28.days - 1.hour, :success
+    include_examples 'use authentication tokens of different ages', 28.days + 1.hour, :unauthorized
     include_examples 'use authentication tokens of different ages', 5.years, :unauthorized
   end
 end
