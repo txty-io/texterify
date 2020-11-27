@@ -1,5 +1,4 @@
 import * as React from "react";
-import GitHubMarkLight from "images/GitHub-Mark-Light-120px-plus.png";
 import { WhiteButton } from "./WhiteButton";
 import { DarkModeToggle } from "./DarkModeToggle";
 import Logo from "images/logo.svg";
@@ -57,11 +56,10 @@ class SiteWrapper extends React.Component<IProps> {
                             texterify
                         </h1>
                         <p style={{ marginBottom: 40 }}>
-                            Texterify is a localization management system that helps you translating your software
+                            Texterify is a localization management system that helps you to translate your software
                             efficient and fast.
                         </p>
                         <div style={{ display: "flex", alignItems: "center" }}>
-                            <img src={GitHubMarkLight} style={{ maxWidth: 32, marginRight: 40 }} />
                             <WhiteButton
                                 onClick={() => {
                                     window.open("https://github.com/chrztoph/texterify", "_blank", "noopener");

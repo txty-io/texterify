@@ -22,6 +22,16 @@ class ApplicationController < ActionController::Base
     head(:not_acceptable)
   end
 
+  rescue_from(ActionController::RoutingError) do
+    if controller_name == 'passwords' && action_name == 'edit'
+      redirect_to '/invalid-password-reset-link'
+    elsif controller_name == 'confirmations' && action_name == 'show'
+      redirect_to '/invalid-account-confirmation-link'
+    else
+      raise
+    end
+  end
+
   private
 
   def user_not_authorized

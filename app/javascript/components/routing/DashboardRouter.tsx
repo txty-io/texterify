@@ -7,7 +7,7 @@ import Hotkeys from "react-hot-keys";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { ActivitySite } from "../sites/dashboard/ActivitySite";
-import { NotFoundSite } from "../sites/dashboard/NotFoundSite";
+import { DashboardNotFoundSite } from "../sites/dashboard/DashboardNotFoundSite";
 import { OrganizationSidebar } from "../sites/dashboard/OrganizationSidebar";
 import { OrganizationsSite } from "../sites/dashboard/OrganizationsSite";
 import { ProjectSidebar } from "../sites/dashboard/ProjectSidebar";
@@ -256,7 +256,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 key={this.props.match.params.projectId}
                             />
                             <PrivateRoute path={Routes.DASHBOARD.ORGANIZATION} component={OrganizationRouter} />
-                            <PrivateRoute component={NotFoundSite} />
+                            <PrivateRoute component={DashboardNotFoundSite} />
                         </Switch>
                     </antd.Layout>
                 </antd.Layout>

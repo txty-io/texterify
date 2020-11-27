@@ -7,6 +7,10 @@ const Routes = {
         ACCOUNT_CONFIRMATION: "/account-confirmation",
         NEW_PASSWORD_SITE: "/new-password"
     },
+    ERRORS: {
+        INVALID_PASSWORD_RESET_LINK: "/invalid-password-reset-link",
+        INVALID_ACCOUNT_CONFIRMATION_LINK: "/invalid-account-confirmation-link"
+    },
     OTHER: {
         ROOT: "/",
         TERMS_OF_SERVICE: "/terms-of-service",
