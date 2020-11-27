@@ -43,6 +43,7 @@ Rails.application.routes.draw do
       end
 
       resources :access_tokens, only: [:create, :index, :destroy]
+      resources :licenses, only: [:create, :index, :destroy]
       resources :country_codes, only: [:index]
       resources :language_codes, only: [:index]
       get 'dashboard/activity', to: 'dashboard#activity'
