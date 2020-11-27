@@ -18,10 +18,12 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:account_update, keys: [:username, :email, :password, :password_confirmation])
   end
 
+  # Handle unsupported formats.
   rescue_from(ActionController::UnknownFormat) do
     head(:not_acceptable)
   end
 
+  # Handle expired/used password reset and account confirmation links.
   rescue_from(ActionController::RoutingError) do
     if controller_name == 'passwords' && action_name == 'edit'
       redirect_to '/invalid-password-reset-link'
