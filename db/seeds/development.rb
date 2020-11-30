@@ -54,3 +54,7 @@ ProjectUser.find_or_create_by!(project_id: project_3.id, user_id: user_3.id, rol
 USER_1_ACCESS_TOKEN_ID = '4551b2e2-5c0d-4948-bb1f-adf999ae2e49'
 
 user_1_access_token = AccessToken.find_or_create_by!(id: USER_1_ACCESS_TOKEN_ID, user_id: user_1.id, name: "Access Token User 1", secret: 'SECRET')
+
+if License.count == 0
+  FactoryBot.create(:license)
+end

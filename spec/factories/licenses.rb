@@ -1,9 +1,8 @@
 FactoryBot.define do
   factory :license do
     sequence :data do |n|
-      key_pair = OpenSSL::PKey::RSA.generate(2048)
-      public_key = key_pair.public_key
-      Gitlab::License.encryption_key = key_pair
+      private_key = OpenSSL::PKey::RSA.new(File.read('test_license_key'))
+      Gitlab::License.encryption_key = private_key
       license = Gitlab::License.new
       license.licensee = {
         'name': 'name',
@@ -11,8 +10,8 @@ FactoryBot.define do
       }
       license.starts_at = Date.new(2015, 4, 24)
       license.expires_at = Date.new(2016, 4, 23)
-      license.restrictions  = {
-        active_user_count: 10
+      license.restrictions = {
+        active_users_count: 10
       }
       data = license.export
       data
