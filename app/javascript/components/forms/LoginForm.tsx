@@ -1,6 +1,6 @@
 import { Alert, Button, Form, Input } from "antd";
 import * as React from "react";
-import { AuthAPI } from "../api/v1/AuthAPI";
+import { AuthAPI, ILoginResponse } from "../api/v1/AuthAPI";
 import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
@@ -9,6 +9,11 @@ import { SiteWrapperLink } from "../ui/SiteWrapperLink";
 interface IState {
     isLoading: boolean;
     loginErrors: string[];
+}
+
+interface IFormValues {
+    email: string;
+    password: string;
 }
 
 class LoginForm extends React.Component<{}, IState> {
@@ -70,12 +75,12 @@ class LoginForm extends React.Component<{}, IState> {
         );
     }
 
-    handleSubmit = async (values: any) => {
+    handleSubmit = async (values: IFormValues) => {
         this.setState({ loginErrors: [] });
         const start: number = new Date().getTime();
         this.setState({ isLoading: true });
 
-        let response: any;
+        let response: ILoginResponse;
 
         try {
             response = await AuthAPI.login(values.email, values.password);
