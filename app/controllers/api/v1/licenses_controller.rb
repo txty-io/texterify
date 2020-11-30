@@ -1,8 +1,8 @@
 class Api::V1::LicensesController < Api::V1::ApiController
   def index
-    authorize License.new
+    authorize License
 
-    licenses = License.all
+    licenses = License.all.order(created_at: :desc)
 
     options = {}
     options[:meta] = { total: licenses.size }
@@ -13,7 +13,7 @@ class Api::V1::LicensesController < Api::V1::ApiController
   end
 
   def create
-    authorize License.new
+    authorize License
 
     license = License.new(license_params)
     license.save
@@ -24,7 +24,7 @@ class Api::V1::LicensesController < Api::V1::ApiController
   end
 
   def destroy
-    authorize License.new
+    authorize License
 
     license = License.find(params[:id])
     license.destroy
