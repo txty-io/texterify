@@ -82,8 +82,10 @@ RSpec.describe Api::V1::LicensesController, type: :request do
     end
 
     it 'creates a new license from data' do
+      license = FactoryBot.build(:license)
+
       post '/api/v1/licenses', params: {
-        data: 'my_data'
+        data: license.data
       }, headers: @auth_params_superadmin, as: :json
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
