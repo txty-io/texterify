@@ -2,16 +2,8 @@ import * as localforage from "localforage";
 import * as _ from "lodash";
 import { computed, observable } from "mobx";
 import { create, persist } from "mobx-persist";
+import { IUserProfile } from "../api/v1/AuthAPI";
 import { UsersAPI } from "../api/v1/UsersAPI";
-
-interface IUserProfile {
-    allow_password_change: boolean;
-    email: string;
-    id: string;
-    provider: string;
-    uid: string;
-    username: string;
-}
 
 class AuthStore {
     @persist("object") @observable currentUser: IUserProfile = null;

@@ -8,6 +8,21 @@ export interface IAuthData {
     uid: string;
 }
 
+export interface IUserProfile {
+    id: string;
+    email: string;
+    provider: "email";
+    username: string;
+    uid: string;
+    allow_password_change: boolean;
+    is_superadmin: boolean;
+}
+
+export interface ILoginResponse {
+    data?: IUserProfile;
+    errors?: any[];
+}
+
 const AuthAPI = {
     signup: async (username: string, email: string, password: string, passwordConfirmation: string): Promise<any> => {
         return API.postRequest("auth", false, {
@@ -18,7 +33,7 @@ const AuthAPI = {
         });
     },
 
-    login: async (email: string, password: string): Promise<any> => {
+    login: async (email: string, password: string): Promise<ILoginResponse> => {
         return API.postRequest("auth/sign_in", false, null, {
             email: email,
             password: password
