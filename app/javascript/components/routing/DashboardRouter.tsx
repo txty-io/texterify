@@ -1,4 +1,4 @@
-import { DeploymentUnitOutlined, LineChartOutlined, ProjectOutlined } from "@ant-design/icons";
+import { DeploymentUnitOutlined, LineChartOutlined, ProjectOutlined, SettingOutlined } from "@ant-design/icons";
 import * as antd from "antd";
 import Logo from "images/logo.svg";
 import { observer } from "mobx-react";
@@ -8,6 +8,7 @@ import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { ActivitySite } from "../sites/dashboard/ActivitySite";
 import { DashboardNotFoundSite } from "../sites/dashboard/DashboardNotFoundSite";
+import { InstanceSidebar } from "../sites/dashboard/InstanceSidebar";
 import { OrganizationSidebar } from "../sites/dashboard/OrganizationSidebar";
 import { OrganizationsSite } from "../sites/dashboard/OrganizationsSite";
 import { ProjectSidebar } from "../sites/dashboard/ProjectSidebar";
@@ -15,13 +16,17 @@ import { ProjectsSite } from "../sites/dashboard/ProjectsSite";
 import { UserAccessTokensSettingsSite } from "../sites/dashboard/UserAccessTokensSettingsSite";
 import { UserAccountSettingsSite } from "../sites/dashboard/UserAccountSettingsSite";
 import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
+import { authStore } from "../stores/AuthStore";
 import { DarkModeToggle } from "../ui/DarkModeToggle";
 import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
+import { history } from "./history";
+import { InstanceRouter } from "./InstanceRouter";
 import { OrganizationRouter } from "./OrganizationRouter";
 import { PrivateRoute } from "./PrivateRoute";
 import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
+import { SuperadminRoute } from "./SuperadminRoute";
 
 const MenuList = styled.li`
     overflow: hidden;
@@ -92,6 +97,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                 <PrivateRoute path={Routes.USER.SETTINGS.ROOT} component={UserSettingsSidebar} />
                 <PrivateRoute path={Routes.DASHBOARD.PROJECT} component={ProjectSidebar} />
                 <PrivateRoute path={Routes.DASHBOARD.ORGANIZATION} component={OrganizationSidebar} />
+                <PrivateRoute path={Routes.DASHBOARD.INSTANCE.ROOT} component={InstanceSidebar} />
             </Switch>
         );
     };
@@ -220,6 +226,15 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             />
                         </SearchInputWrapper>
 
+                        {authStore.currentUser.is_superadmin && (
+                            <SettingOutlined
+                                style={{ marginRight: 40 }}
+                                onClick={() => {
+                                    history.push(Routes.DASHBOARD.INSTANCE.ROOT);
+                                }}
+                            />
+                        )}
+
                         {/* <MessageOutlined style={{ marginRight: 40 }} /> */}
 
                         <DarkModeToggle style={{ marginRight: 40 }} />
@@ -256,6 +271,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 key={this.props.match.params.projectId}
                             />
                             <PrivateRoute path={Routes.DASHBOARD.ORGANIZATION} component={OrganizationRouter} />
+                            <SuperadminRoute path={Routes.DASHBOARD.INSTANCE.ROOT} component={InstanceRouter} />
                             <PrivateRoute component={DashboardNotFoundSite} />
                         </Switch>
                     </antd.Layout>

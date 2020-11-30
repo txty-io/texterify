@@ -13,6 +13,8 @@ Rails.application.routes.draw do
         resources :members, only: [:create, :index, :destroy, :update], controller: "organization_users"
       end
 
+      get 'instance', to: 'instance#show'
+
       resources :projects, only: [:create, :index, :destroy, :show, :update] do
         post :import
         get 'exports/:id', to: 'projects#export'
