@@ -64,6 +64,7 @@ export const InstanceLicensesSite = observer(() => {
                     onClick={() => {
                         // this.setState({ addDialogVisible: true });
                     }}
+                    style={{ marginBottom: 40 }}
                 >
                     Upload license
                 </PrimaryButton>
