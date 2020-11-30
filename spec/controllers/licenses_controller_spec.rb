@@ -92,6 +92,7 @@ RSpec.describe Api::V1::LicensesController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
       expect(body['message']).to eq('License deleted')
+      expect(License.all.size).to eq(0)
     end
   end
 end
