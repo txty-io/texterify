@@ -26,7 +26,7 @@ class Api::V1::LicensesController < Api::V1::ApiController
   def destroy
     authorize License.new
 
-    license = License.find(params[:license_id])
+    license = License.find(params[:id])
     license.destroy
 
     render json: {

@@ -211,7 +211,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
     end
   end
 
-  describe 'DESTROY delete' do
+  describe 'DELETE destroy' do
     permissions_destroy = {
       'translator' => 403,
       'developer' => 403,

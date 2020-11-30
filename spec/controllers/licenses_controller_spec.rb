@@ -10,6 +10,8 @@ RSpec.describe Api::V1::LicensesController, type: :request do
       @user_superadmin.is_superadmin = true
       @user_superadmin.save!
       @auth_params_superadmin = sign_in(@user_superadmin)
+
+      @license = FactoryBot.create(:license)
     end
   end
 
@@ -44,29 +46,7 @@ RSpec.describe Api::V1::LicensesController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
       expect(body['data']).to be_a(Array)
-      expect(body['meta']['total']).to eq(2)
-    end
-  end
-
-  describe 'POST create' do
-    it 'has status code 403 if not logged in', :skip_before do
-      post '/api/v1/licenses'
-      expect(response.status).to eq(403)
-    end
-
-    it 'has status code 403 if not logged in as superadmin' do
-      post '/api/v1/licenses', headers: @auth_params
-      expect(response.status).to eq(403)
-    end
-
-    it 'creates a new license from data' do
-      post '/api/v1/licenses', params: {
-        data: 'my_data'
-      }, headers: @auth_params_superadmin, as: :json
-      expect(response.status).to eq(200)
-      body = JSON.parse(response.body)
-      expect(body['data']['id']).to be_a(String)
-      expect(body['data']['attributes']['data']).to be_a(String)
+      expect(body['meta']['total']).to eq(3)
     end
   end
 
@@ -91,6 +71,27 @@ RSpec.describe Api::V1::LicensesController, type: :request do
       body = JSON.parse(response.body)
       expect(body['data']['id']).to be_a(String)
       expect(body['data']['attributes']['data']).to be_a(String)
+    end
+  end
+
+  describe 'DELETE destroy' do
+    it 'has status code 403 if not logged in', :skip_before do
+      license = FactoryBot.create(:license)
+      delete "/api/v1/licenses/#{license.id}"
+      expect(response.status).to eq(403)
+    end
+
+    it 'has status code 403 if not logged in as superadmin' do
+      delete "/api/v1/licenses/#{@license.id}", headers: @auth_params
+      expect(response.status).to eq(403)
+    end
+
+    it 'deletes a license' do
+      expect(License.all.size).to eq(1)
+      delete "/api/v1/licenses/#{@license.id}", headers: @auth_params_superadmin
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
+      expect(body['message']).to eq('License deleted')
     end
   end
 end
