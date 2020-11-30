@@ -35,3 +35,5 @@ texterify.json
 .DS_Store
 
 database_consistency_*
+
+license_key
