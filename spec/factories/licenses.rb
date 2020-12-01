@@ -5,8 +5,8 @@ FactoryBot.define do
       Gitlab::License.encryption_key = private_key
       license = Gitlab::License.new
       license.licensee = {
-        'name': 'name',
-        'email': 'test@texterify.com'
+        'name': "Name #{n}",
+        'email': "test#{n}@texterify.com"
       }
       license.starts_at = Date.new(2015, 4, 24)
       license.expires_at = Date.new(2016, 4, 23)

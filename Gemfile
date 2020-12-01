@@ -75,11 +75,11 @@ gem 'haml'
 gem 'haml-rails'
 gem 'paper_trail'
 gem 'pundit'
+gem 'rails-settings-cached'
 gem 'react-rails'
 gem 'rubyzip'
 gem 'sentry-raven'
 gem 'webpacker'
-gem 'rails-settings-cached'
 
 # https://rubygems.org/gems/gitlab-license/versions/0.0.2
 # https://www.rubydoc.info/gems/gitlab-license/
