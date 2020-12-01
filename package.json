@@ -76,8 +76,8 @@
     "yarn": ">=1.5.1"
   },
   "scripts": {
-    "check:database-consistency": "bundle exec database_consistency",
-    "check:database-consistency:test": "RAILS_ENV=test bundle exec database_consistency",
+    "check:database-consistency": "./bin/database_consistency",
+    "check:database-consistency:test": "RAILS_ENV=test ./bin/database_consistency",
     "lint": "yarn lint:frontend && yarn lint:backend",
     "lint:frontend": "eslint 'app/javascript/**/*.{js,ts,tsx}'",
     "lint:backend": "bundle exec rubocop",
