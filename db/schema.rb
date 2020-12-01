@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_23_142103) do
+ActiveRecord::Schema.define(version: 2020_11_27_151454) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -122,6 +122,12 @@ ActiveRecord::Schema.define(version: 2020_10_23_142103) do
     t.index ["project_column_id"], name: "index_languages_project_columns_on_project_column_id"
   end
 
+  create_table "licenses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "data", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "organizations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -204,6 +210,33 @@ ActiveRecord::Schema.define(version: 2020_10_23_142103) do
     t.index ["export_config_id"], name: "index_releases_on_export_config_id"
   end
 
+  create_table "settings", force: :cascade do |t|
+    t.string "var", null: false
+    t.text "value"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["var"], name: "index_settings_on_var", unique: true
+  end
+
+  create_table "subscriptions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "stripe_id", null: false
+    t.datetime "stripe_cancel_at"
+    t.boolean "stripe_cancel_at_period_end", null: false
+    t.datetime "stripe_canceled_at"
+    t.datetime "stripe_created", null: false
+    t.datetime "stripe_current_period_start", null: false
+    t.datetime "stripe_current_period_end", null: false
+    t.string "stripe_customer", null: false
+    t.datetime "stripe_ended_at"
+    t.string "stripe_status", null: false
+    t.datetime "stripe_start_date", null: false
+    t.string "stripe_latest_invoice", null: false
+    t.uuid "organization_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["organization_id"], name: "index_subscriptions_on_organization_id"
+  end
+
   create_table "translations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "content"
     t.uuid "key_id", null: false
@@ -238,6 +271,7 @@ ActiveRecord::Schema.define(version: 2020_10_23_142103) do
     t.json "tokens"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_superadmin"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -281,6 +315,7 @@ ActiveRecord::Schema.define(version: 2020_10_23_142103) do
   add_foreign_key "projects_users", "users"
   add_foreign_key "release_files", "releases"
   add_foreign_key "releases", "export_configs"
+  add_foreign_key "subscriptions", "organizations"
   add_foreign_key "translations", "export_configs"
   add_foreign_key "translations", "keys"
   add_foreign_key "translations", "languages"
