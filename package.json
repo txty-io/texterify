@@ -68,6 +68,7 @@
     "webpack-cli": "^3.3.7"
   },
   "devDependencies": {
+    "husky": "^4.3.0",
     "less": "^3.10.3",
     "webpack-dev-server": "^3.8.0"
   },
@@ -88,5 +89,10 @@
     "test": "yarn test:backend",
     "test:backend": "RAILS_ENV=test bundle exec rspec",
     "dangerous:recreate-database": "bundle exec rails db:drop && bundle exec rails db:create && bundle exec rails db:migrate && bundle exec rails db:seed"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn test && yarn lint"
+    }
   }
 }
