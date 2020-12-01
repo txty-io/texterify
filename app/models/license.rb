@@ -1,4 +1,6 @@
 class License < ApplicationRecord
+  validates :data, presence: true
+
   FEATURES = %i[
     basic_permission_system
     advanced_permission_system

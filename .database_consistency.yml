@@ -19,3 +19,6 @@ ActiveStorage::Blob:
   enabled: false
 ActiveStorage::Attachment:
   enabled: false
+
+RailsSettings::Base:
+  enabled: false
