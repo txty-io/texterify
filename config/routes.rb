@@ -5,7 +5,10 @@ Rails.application.routes.draw do
   # file, see http://guides.rubyonrails.org/routing.html
   scope :api, module: :api, defaults: { format: :json } do
     scope :v1, module: :v1 do
-      mount_devise_token_auth_for 'User', at: 'auth'
+      mount_devise_token_auth_for 'User', at: 'auth', controllers: {
+        registrations:      'api/v1/registrations',
+      }
+
       resources :organizations do
         get :image, to: 'organizations#image'
         post :image, to: 'organizations#image_create'
