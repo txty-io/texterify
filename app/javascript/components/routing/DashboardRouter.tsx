@@ -226,7 +226,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             />
                         </SearchInputWrapper>
 
-                        {authStore.currentUser.is_superadmin && (
+                        {authStore.currentUser?.is_superadmin && (
                             <SettingOutlined
                                 style={{ marginRight: 40 }}
                                 onClick={() => {
