@@ -152,7 +152,6 @@ class Api::V1::ReleasesController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     releases_to_destroy = project.releases.find(params[:releases])
     releases_to_destroy.each { |release| authorize release }
-    # binding.pry
     project.releases.where(id: releases_to_destroy.map(&:id)).destroy_all
 
     render json: {

@@ -1,5 +1,5 @@
 import { DeploymentUnitOutlined, ProjectOutlined, TeamOutlined } from "@ant-design/icons";
-import { Card, Layout } from "antd";
+import { Card, Layout, Statistic } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import styled from "styled-components";
@@ -30,23 +30,18 @@ export const InstanceSite = observer(() => {
             <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                 <h1>Instance overview</h1>
                 <div style={{ display: "flex" }}>
-                    <Card style={{ width: 302, marginRight: 40 }}>
-                        <h3>
-                            <TeamOutlined style={{ marginRight: 8 }} /> Users
-                        </h3>
-                        <ValueWrapper>{instanceInfo?.users_count}</ValueWrapper>
+                    <Card style={{ width: 240, marginRight: 40 }}>
+                        <Statistic title="Users" value={instanceInfo?.users_count} prefix={<TeamOutlined />} />
                     </Card>
-                    <Card style={{ width: 300, marginRight: 40 }}>
-                        <h3>
-                            <ProjectOutlined style={{ marginRight: 8 }} /> Projects
-                        </h3>
-                        <ValueWrapper>{instanceInfo?.projects_count}</ValueWrapper>
+                    <Card style={{ width: 240, marginRight: 40 }}>
+                        <Statistic title="Projects" value={instanceInfo?.projects_count} prefix={<ProjectOutlined />} />
                     </Card>
-                    <Card style={{ width: 300 }}>
-                        <h3>
-                            <DeploymentUnitOutlined style={{ marginRight: 8 }} /> Organizations
-                        </h3>
-                        <ValueWrapper>{instanceInfo?.organizations_count}</ValueWrapper>
+                    <Card style={{ width: 240 }}>
+                        <Statistic
+                            title="Organizations"
+                            value={instanceInfo?.organizations_count}
+                            prefix={<DeploymentUnitOutlined />}
+                        />
                     </Card>
                 </div>
             </Layout.Content>

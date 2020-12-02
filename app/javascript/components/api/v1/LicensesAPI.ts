@@ -24,6 +24,15 @@ export interface IGetLicensesResponse {
 const LicensesAPI = {
     getLicenses: async (): Promise<IGetLicensesResponse> => {
         return API.getRequest("licenses", true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
+    },
+
+    uploadLicense: async (options: { file: File }): Promise<ILicense> => {
+        const data = new FormData();
+        data.append("data_file", options.file);
+
+        return API.postRequest("licenses", true, data, null, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
     }
 };
 

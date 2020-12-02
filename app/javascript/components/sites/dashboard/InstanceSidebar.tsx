@@ -32,12 +32,12 @@ class InstanceSidebar extends React.Component<IProps, IState> {
             icon: FileTextOutlined,
             path: Routes.DASHBOARD.INSTANCE.LICENSES,
             text: "Licenses"
-        },
-        {
-            icon: ToolOutlined,
-            path: Routes.DASHBOARD.INSTANCE.SETTINGS,
-            text: "Settings"
         }
+        // {
+        //     icon: ToolOutlined,
+        //     path: Routes.DASHBOARD.INSTANCE.SETTINGS,
+        //     text: "Settings"
+        // }
     ];
 
     state: IState = {

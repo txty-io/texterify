@@ -16,7 +16,7 @@ class Api::V1::LicensesController < Api::V1::ApiController
     authorize License
 
     license = License.new(license_params)
-    license.save
+    license.save!
 
     render json: LicenseSerializer.new(
       license
@@ -37,7 +37,7 @@ class Api::V1::LicensesController < Api::V1::ApiController
   private
 
   def license_params
-    license_params = params.require(:license).permit(:data_file, :data)
+    license_params = params.permit(:data_file, :data)
     license_params.delete(:data) if license_params[:data_file]
     license_params
   end
