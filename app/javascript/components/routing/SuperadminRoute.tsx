@@ -8,7 +8,7 @@ const SuperadminRoute = ({ component: Component, ...rest }) => {
         <Route
             {...rest}
             render={(props) => {
-                return authStore.currentUser.is_superadmin ? (
+                return authStore.currentUser?.is_superadmin ? (
                     <Component {...props} />
                 ) : (
                     <Redirect

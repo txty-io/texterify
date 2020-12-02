@@ -165,7 +165,7 @@ export const InstanceLicensesSite = observer(() => {
 
                 {licenses?.length > 1 && (
                     <>
-                        <h3 style={{ marginTop: 40 }}>Old licenses</h3>
+                        <h3 style={{ marginTop: 40 }}>Inactive licenses</h3>
 
                         {licenses?.slice(1).map((license) => {
                             return (

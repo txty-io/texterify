@@ -227,12 +227,14 @@ class DashboardRouter extends React.Component<IProps, IState> {
                         </SearchInputWrapper>
 
                         {authStore.currentUser?.is_superadmin && (
-                            <SettingOutlined
-                                style={{ marginRight: 40 }}
-                                onClick={() => {
-                                    history.push(Routes.DASHBOARD.INSTANCE.ROOT);
-                                }}
-                            />
+                            <antd.Tooltip title="Manage instance">
+                                <SettingOutlined
+                                    style={{ marginRight: 40 }}
+                                    onClick={() => {
+                                        history.push(Routes.DASHBOARD.INSTANCE.ROOT);
+                                    }}
+                                />
+                            </antd.Tooltip>
                         )}
 
                         {/* <MessageOutlined style={{ marginRight: 40 }} /> */}
