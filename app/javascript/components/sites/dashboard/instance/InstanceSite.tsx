@@ -2,28 +2,35 @@ import { DeploymentUnitOutlined, ProjectOutlined, TeamOutlined } from "@ant-desi
 import { Card, Layout, Statistic } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import styled from "styled-components";
 import { IInstanceInfo, InstanceAPI } from "../../../api/v1/InstanceAPI";
-
-const ValueWrapper = styled.p`
-    font-size: 30px;
-    color: #000;
-`;
+import { Loading } from "../../../ui/Loading";
 
 export const InstanceSite = observer(() => {
-    const [instanceInfo, setInstanceInfo] = React.useState<IInstanceInfo>();
+    const [instanceInfos, setInstanceInfos] = React.useState<IInstanceInfo>();
+    const [loading, setLoading] = React.useState<boolean>(true);
 
     async function loadInstance() {
         try {
-            setInstanceInfo(await InstanceAPI.getInstanceInfos());
+            const infos = await InstanceAPI.getInstanceInfos();
+            setInstanceInfos(infos);
         } catch (e) {
             console.error(e);
         }
     }
 
+    async function onInit() {
+        setLoading(true);
+        await loadInstance();
+        setLoading(false);
+    }
+
     React.useEffect(() => {
-        loadInstance();
+        onInit();
     }, []);
+
+    if (loading) {
+        return <Loading />;
+    }
 
     return (
         <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
@@ -31,15 +38,19 @@ export const InstanceSite = observer(() => {
                 <h1>Instance overview</h1>
                 <div style={{ display: "flex" }}>
                     <Card style={{ width: 240, marginRight: 40 }}>
-                        <Statistic title="Users" value={instanceInfo?.users_count} prefix={<TeamOutlined />} />
+                        <Statistic title="Users" value={instanceInfos?.users_count} prefix={<TeamOutlined />} />
                     </Card>
                     <Card style={{ width: 240, marginRight: 40 }}>
-                        <Statistic title="Projects" value={instanceInfo?.projects_count} prefix={<ProjectOutlined />} />
+                        <Statistic
+                            title="Projects"
+                            value={instanceInfos?.projects_count}
+                            prefix={<ProjectOutlined />}
+                        />
                     </Card>
                     <Card style={{ width: 240 }}>
                         <Statistic
                             title="Organizations"
-                            value={instanceInfo?.organizations_count}
+                            value={instanceInfos?.organizations_count}
                             prefix={<DeploymentUnitOutlined />}
                         />
                     </Card>
