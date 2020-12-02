@@ -1,0 +1,121 @@
+---
+- - :permit
+  - MIT
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 14:57:12.857637100 Z
+- - :permit
+  - ISC
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 14:57:19.074515300 Z
+- - :permit
+  - Apache 2.0
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 14:57:29.778360600 Z
+- - :permit
+  - BSD Zero Clause License
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 14:57:40.742523200 Z
+- - :permit
+  - Unlicense
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 14:57:46.930236700 Z
+- - :permit
+  - CC0-1.0
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 14:57:58.262293800 Z
+- - :permit
+  - Simplified BSD
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 15:02:45.768436700 Z
+- - :permit
+  - New BSD
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 15:03:36.400722800 Z
+- - :approve
+  - rgb
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 15:05:19.728659600 Z
+- - :approve
+  - isnumeric
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 15:06:54.596326800 Z
+- - :approve
+  - pako
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 15:09:14.881249400 Z
+- - :approve
+  - async-foreach
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 15:13:58.646283200 Z
+- - :approve
+  - component-indexof
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 15:14:22.342030400 Z
+- - :permit
+  - WTFPL
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 15:15:10.248332100 Z
+- - :approve
+  - fsevents
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 15:15:42.537931000 Z
+- - :permit
+  - ruby
+  - :who: 
+    :why: https://github.com/ruby/ruby/blob/ruby_2_7/COPYING
+    :versions: []
+    :when: 2020-12-02 15:18:05.157575500 Z
+- - :approve
+  - spdx-exceptions
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 15:22:46.529582800 Z
+- - :approve
+  - caniuse-lite
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 15:29:28.822082900 Z
+- - :approve
+  - json-schema
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 15:30:19.006075700 Z
+- - :approve
+  - pleeease-filters
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2020-12-02 15:31:33.935402200 Z

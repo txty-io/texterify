@@ -78,6 +78,7 @@
   "scripts": {
     "check:database-consistency": "./bin/database_consistency",
     "check:database-consistency:test": "RAILS_ENV=test ./bin/database_consistency",
+    "check:licenses": "bundle exec license_finder",
     "lint": "yarn lint:frontend && yarn lint:backend",
     "lint:frontend": "eslint 'app/javascript/**/*.{js,ts,tsx}'",
     "lint:backend": "bundle exec rubocop",
@@ -86,7 +87,7 @@
     "start:no-container-webpacker": "WEBPACKER_DEV_SERVER_PORT=3012 WEBPACKER_DEV_SERVER_PUBLIC=host.docker.internal:3012 WEBPACKER_DEV_SERVER_HOST=host.docker.internal yarn start",
     "start:watcher": "./bin/webpack-dev-server",
     "start:watcher:no-container-webpacker": "WEBPACKER_DEV_SERVER_PORT=3012 WEBPACKER_DEV_SERVER_PUBLIC=0.0.0.0:3012 ./bin/webpack-dev-server",
-    "test": "yarn test:backend",
+    "test": "yarn test:backend && yarn check:licenses",
     "test:backend": "RAILS_ENV=test bundle exec rspec",
     "dangerous:recreate-database": "bundle exec rails db:drop && bundle exec rails db:create && bundle exec rails db:migrate && bundle exec rails db:seed"
   },
