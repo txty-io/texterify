@@ -17,6 +17,7 @@ class User < ApplicationRecord
   has_many :organization_projects, through: :organizations, source: :projects
 
   has_many :access_tokens, dependent: :destroy
+  has_many :user_licenses, dependent: :destroy
   has_one_attached :image
 
   def projects

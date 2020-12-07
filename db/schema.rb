@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_27_151454) do
+ActiveRecord::Schema.define(version: 2020_12_07_164400) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -249,6 +249,14 @@ ActiveRecord::Schema.define(version: 2020_11_27_151454) do
     t.index ["language_id"], name: "index_translations_on_language_id"
   end
 
+  create_table "user_licenses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "data", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "user_id"
+    t.index ["user_id"], name: "index_user_licenses_on_user_id"
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
@@ -319,5 +327,6 @@ ActiveRecord::Schema.define(version: 2020_11_27_151454) do
   add_foreign_key "translations", "export_configs"
   add_foreign_key "translations", "keys"
   add_foreign_key "translations", "languages"
+  add_foreign_key "user_licenses", "users"
   add_foreign_key "versions", "projects"
 end
