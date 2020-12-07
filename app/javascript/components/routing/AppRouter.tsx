@@ -12,7 +12,6 @@ import { RoutingManager } from "./RoutingManager";
 import { SiteRouter } from "./SiteRouter";
 import { generalStore } from "../stores/GeneralStore";
 import { PaymentSuccessSite } from "../sites/payment/PaymentSuccessSite";
-import { NewPaymentSite } from "../sites/payment/NewPaymentSite";
 import { PaymentErrorSite } from "../sites/payment/PaymentErrorSite";
 
 @observer
@@ -25,7 +24,6 @@ class AppRouter extends React.Component {
                         <Switch>
                             <PrivateRoute path={Routes.DASHBOARD.PROJECT_EDITOR_KEY} component={EditorSite} />
                             <PrivateRoute path={Routes.DASHBOARD.PROJECT_EDITOR} component={EditorSite} />
-                            <Route exact path={Routes.PAYMENT.NEW} component={NewPaymentSite} />
                             <Route exact path={Routes.PAYMENT.SUCCESS} component={PaymentSuccessSite} />
                             <Route exact path={Routes.PAYMENT.ERROR} component={PaymentErrorSite} />
 

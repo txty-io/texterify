@@ -26,6 +26,16 @@ class UserSettingsSidebar extends React.Component<IProps, IState> {
             icon: LockOutlined,
             path: Routes.USER.SETTINGS.ACCESS_TOKENS,
             text: "Access tokens"
+        },
+        {
+            icon: LockOutlined,
+            path: Routes.USER.SETTINGS.LICENSES,
+            text: "Licenses"
+        },
+        {
+            icon: LockOutlined,
+            path: Routes.USER.SETTINGS.SUBSCRIPTIONS,
+            text: "Subscriptions"
         }
     ];
 

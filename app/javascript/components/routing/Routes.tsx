@@ -26,7 +26,6 @@ const Routes = {
         API_DOCS: "/documentation"
     },
     PAYMENT: {
-        NEW: "/checkout",
         SUCCESS: "/checkout/success",
         ERROR: "/checkout/error"
     },
@@ -68,7 +67,9 @@ const Routes = {
         SETTINGS: {
             ROOT: "/dashboard/settings/",
             ACCOUNT: "/dashboard/settings/account",
-            ACCESS_TOKENS: "/dashboard/settings/access-tokens"
+            ACCESS_TOKENS: "/dashboard/settings/access-tokens",
+            SUBSCRIPTIONS: "/dashboard/settings/subscriptions",
+            LICENSES: "/dashboard/settings/licenses"
         }
     }
 };

@@ -15,9 +15,12 @@ const PaymentSuccessSite = observer(() => {
     React.useEffect(() => {
         const fetchData = async () => {
             const parsed = queryString.parse(history.location.search);
-            const response = await fetch(`http://localhost:3001/payments/session?id=${parsed["session-id"]}`, {
-                method: "GET"
-            });
+            const response = await fetch(
+                `${process.env.TEXTERIFY_PAYMENT_SERVER}/subscriptions/session?id=${parsed["session-id"]}`,
+                {
+                    method: "GET"
+                }
+            );
             const data = await response.json();
             setEmail(data.email);
         };
@@ -37,7 +40,7 @@ const PaymentSuccessSite = observer(() => {
             }}
         >
             <div style={{ fontSize: 64 }}>🎉</div>
-            <h1>Thank you! You payment was successful.</h1>
+            <h1>Thank you! Your payment was successful.</h1>
             <p style={{ fontWeight: "bold" }}>
                 We will send you your license key by email to{" "}
                 <span style={{ color: "var(--blue-color)" }}>{email}</span>.
@@ -50,8 +53,8 @@ const PaymentSuccessSite = observer(() => {
                 .
             </p>
             {authStore.isAuthenticated && (
-                <Link to={Routes.DASHBOARD.ROOT}>
-                    <Button type="primary">Explore the app</Button>
+                <Link to={Routes.USER.SETTINGS.LICENSES}>
+                    <Button type="primary">Go to licenses</Button>
                 </Link>
             )}
             {!authStore.isAuthenticated && (
