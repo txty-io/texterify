@@ -222,6 +222,11 @@
   .ant-card {
     display: flex;
     flex-direction: column;
+    border-radius: 4px;
+
+    &.ant-card-bordered {
+      border-color: var(--border-color);
+    }
 
     .ant-card-body {
       flex-grow: 1;
