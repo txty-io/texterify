@@ -47,6 +47,13 @@ Rails.application.configure do
     :openssl_verify_mode => ENV["SMTP_OPENSSL_VERIFY_MODE"].blank? ? nil : ENV["SMTP_OPENSSL_VERIFY_MODE"]
   }
 
+  # Set host so asset_path returns a full URL instead of a relative path.
+  # Otherwise images in emails don't work.
+  config.action_controller.asset_host = ENV['ASSET_HOST']
+  config.action_mailer.asset_host = config.action_controller.asset_host
+
+  config.action_mailer.default_url_options = { host: ENV['APP_HOST'] }
+
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
