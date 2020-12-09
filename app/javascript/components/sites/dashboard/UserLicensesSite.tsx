@@ -241,7 +241,7 @@ export const UserLicensesSite = observer(() => {
     }
 
     return (
-        <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%", maxWidth: 1080 }}>
+        <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
             <Layout.Content style={{ margin: "24px 16px 0" }}>
                 <h1>Licenses</h1>
                 <p style={{ maxWidth: 480, marginTop: 16 }}>
@@ -249,27 +249,31 @@ export const UserLicensesSite = observer(() => {
                     control. Requires technical experience for installation.
                 </p>
 
-                {userLicenses?.length > 0 && (
-                    <>
-                        <h3 style={{ marginTop: 24 }}>Your licenses</h3>
-                        {userLicenses.map((license, index) => {
-                            const isLast = index === userLicenses.length - 1;
+                <div style={{ display: "flex" }}>
+                    {userLicenses?.length > 0 && (
+                        <div style={{ width: 600, marginRight: 40 }}>
+                            <h3 style={{ marginTop: 24 }}>Your licenses</h3>
+                            {userLicenses.map((license, index) => {
+                                const isLast = index === userLicenses.length - 1;
 
-                            return renderLicense({ license: license, isLast: isLast });
-                        })}
-                    </>
-                )}
+                                return renderLicense({ license: license, isLast: isLast });
+                            })}
+                        </div>
+                    )}
 
-                <h3 style={{ marginTop: 24 }}>Get a new license</h3>
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "center"
-                    }}
-                >
-                    <PaymentPlan plan={A_PLAN} />
-                    <PaymentPlan plan={B_PLAN} style={{ margin: "0 16px" }} />
-                    <PaymentPlan plan={C_PLAN} />
+                    <div style={{ flexGrow: 1, maxWidth: 1000 }}>
+                        <h3 style={{ marginTop: 24 }}>Get a new license</h3>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "center"
+                            }}
+                        >
+                            <PaymentPlan plan={A_PLAN} />
+                            <PaymentPlan plan={B_PLAN} style={{ margin: "0 16px" }} />
+                            <PaymentPlan plan={C_PLAN} />
+                        </div>
+                    </div>
                 </div>
             </Layout.Content>
         </Layout>
