@@ -205,12 +205,6 @@ export const UserLicensesSite = observer(() => {
                 <div style={{ display: "flex" }}>
                     <Statistic
                         className={options.disabled ? "disabled" : undefined}
-                        title="Name"
-                        value={options.license.attributes.licensee.name}
-                        style={{ marginRight: 40 }}
-                    />
-                    <Statistic
-                        className={options.disabled ? "disabled" : undefined}
                         title="E-Mail"
                         value={options.license.attributes.licensee.email}
                     />
