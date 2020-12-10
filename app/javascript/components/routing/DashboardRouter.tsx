@@ -17,7 +17,6 @@ import { UserAccessTokensSettingsSite } from "../sites/dashboard/UserAccessToken
 import { UserAccountSettingsSite } from "../sites/dashboard/UserAccountSettingsSite";
 import { UserLicensesSite } from "../sites/dashboard/UserLicensesSite";
 import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
-import { UserSubscriptionsSite } from "../sites/dashboard/UserSubscriptionsSite";
 import { authStore } from "../stores/AuthStore";
 import { DarkModeToggle } from "../ui/DarkModeToggle";
 import { SearchOverlay } from "../ui/SearchOverlay";
@@ -258,11 +257,6 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 exact
                                 path={Routes.USER.SETTINGS.ACCESS_TOKENS}
                                 component={UserAccessTokensSettingsSite}
-                            />
-                            <PrivateRoute
-                                exact
-                                path={Routes.USER.SETTINGS.SUBSCRIPTIONS}
-                                component={UserSubscriptionsSite}
                             />
                             <PrivateRoute exact path={Routes.USER.SETTINGS.LICENSES} component={UserLicensesSite} />
                             <PrivateRoute

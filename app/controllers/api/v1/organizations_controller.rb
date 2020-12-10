@@ -98,7 +98,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
 
     options = {}
     options[:params] = { current_user: current_user }
-    options[:include] = [:projects]
+    options[:include] = [:projects, :subscriptions]
     render json: OrganizationSerializer.new(organization, options).serialized_json, status: :ok
   end
 

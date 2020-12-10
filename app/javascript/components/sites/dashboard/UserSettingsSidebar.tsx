@@ -1,8 +1,8 @@
+import { LockOutlined, SolutionOutlined, UserOutlined } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Routes } from "../../routing/Routes";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 interface INavigationData {
     icon: any;
@@ -28,14 +28,9 @@ class UserSettingsSidebar extends React.Component<IProps, IState> {
             text: "Access tokens"
         },
         {
-            icon: LockOutlined,
+            icon: SolutionOutlined,
             path: Routes.USER.SETTINGS.LICENSES,
             text: "Licenses"
-        },
-        {
-            icon: LockOutlined,
-            path: Routes.USER.SETTINGS.SUBSCRIPTIONS,
-            text: "Subscriptions"
         }
     ];
 

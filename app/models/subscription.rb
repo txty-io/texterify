@@ -2,7 +2,7 @@ class Subscription < ApplicationRecord
   belongs_to :organization
 
   validates :stripe_id, presence: true
-  validates :stripe_cancel_at_period_end, presence: true
+  validates :stripe_cancel_at_period_end, default: false
   validates :stripe_created, presence: true
   validates :stripe_current_period_start, presence: true
   validates :stripe_current_period_end, presence: true
@@ -19,7 +19,6 @@ class Subscription < ApplicationRecord
   }
 
   ACCESS_GRANTING_STATUSES = %w[trialing active past_due].freeze
-  validates :external_id, presence: true
 
   scope :active_or_trialing, -> { where(status: ACCESS_GRANTING_STATUSES) }
   scope :recent, -> { order('current_period_end DESC NULLS LAST') }

@@ -5,6 +5,7 @@ import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 import { OrganizationMembersSite } from "../sites/dashboard/OrganizationMembersSite";
 import { OrganizationSettingsSite } from "../sites/dashboard/OrganizationSettingsSite";
 import { OrganizationSite } from "../sites/dashboard/OrganizationSite";
+import { OrganizationSubscriptionSite } from "../sites/dashboard/OrganizationSubscriptionSite";
 import { dashboardStore } from "../stores/DashboardStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { PrivateRoute } from "./PrivateRoute";
@@ -47,6 +48,11 @@ class OrganizationRouter extends React.Component<IProps> {
                         exact
                         path={Routes.DASHBOARD.ORGANIZATION_SETTINGS}
                         component={OrganizationSettingsSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.ORGANIZATION_SUBSCRIPTION}
+                        component={OrganizationSubscriptionSite}
                     />
                 </Switch>
             </>

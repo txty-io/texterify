@@ -1,4 +1,12 @@
-import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined, TeamOutlined, ToolOutlined } from "@ant-design/icons";
+import {
+    HomeOutlined,
+    LockOutlined,
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
+    ReloadOutlined,
+    TeamOutlined,
+    ToolOutlined
+} from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { CollapseType } from "antd/lib/layout/Sider";
 import { observer } from "mobx-react";
@@ -43,6 +51,14 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                 this.props.match.params.organizationId
             ),
             text: "Settings"
+        },
+        {
+            icon: ReloadOutlined,
+            path: Routes.DASHBOARD.ORGANIZATION_SUBSCRIPTION.replace(
+                ":organizationId",
+                this.props.match.params.organizationId
+            ),
+            text: "Subscription"
         }
     ];
 
