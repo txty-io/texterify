@@ -76,7 +76,12 @@ footer {
     font-weight: 400;
     cursor: pointer;
 
-    &:hover {
+    &[disabled] {
+      background: #999;
+      cursor: default;
+    }
+
+    &:hover:not([disabled]) {
         color: #fff !important;
         background: var(--primary-btn-hover-color);
     }

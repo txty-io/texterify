@@ -1,3 +1,4 @@
+import { IPlan } from "../../types/IPlan";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
@@ -5,6 +6,21 @@ export interface IGetOrganizationsOptions {
     search?: string;
     page?: number;
     perPage?: number;
+}
+
+export interface ISubscription {
+    id: string;
+    type: "subscription";
+    attributes: {
+        active: boolean;
+        id: string;
+        plan: IPlan;
+        renews_on: string;
+    };
+}
+
+export interface IGetOrganizationSubscription {
+    data: ISubscription;
 }
 
 const OrganizationsAPI = {
@@ -20,6 +36,12 @@ const OrganizationsAPI = {
 
     getOrganization: async (organizationId: string): Promise<any> => {
         return API.getRequest(`organizations/${organizationId}`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    getOrganizationSubscription: async (organizationId: string): Promise<IGetOrganizationSubscription> => {
+        return API.getRequest(`organizations/${organizationId}/subscription`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },

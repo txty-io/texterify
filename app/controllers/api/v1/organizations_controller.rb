@@ -112,6 +112,14 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
     }
   end
 
+  def subscription
+    skip_authorization
+    organization = current_user.organizations.find(params[:organization_id])
+
+    options = {}
+    render json: SubscriptionSerializer.new(organization.subscription, options).serialized_json, status: :ok
+  end
+
   private
 
   def organization_params

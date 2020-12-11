@@ -10,6 +10,7 @@ class Subscription < ApplicationRecord
   validates :stripe_status, presence: true
   validates :stripe_start_date, presence: true
   validates :stripe_latest_invoice, presence: true
+  validates :plan, presence: true
 
   enum status: {
     trialing: 'trialing',

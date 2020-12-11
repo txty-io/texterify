@@ -1,12 +1,15 @@
+import { LoadingOutlined } from "@ant-design/icons";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 import * as React from "react";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
+import { generalStore } from "../stores/GeneralStore";
 import { Features } from "./Features";
+import { Loading } from "./Loading";
 
-export const A_PLAN: IPlan = {
-    id: "A",
+export const BASIC_PLAN: IPlan = {
+    id: "basic",
     name: "Basic",
     pricePerUserCloud: 9,
     pricePerUserOnPremise: 0,
@@ -19,17 +22,17 @@ export const A_PLAN: IPlan = {
     ]
 };
 
-export const B_PLAN: IPlan = {
-    id: "B",
-    name: "Gold",
+export const TEAM_PLAN: IPlan = {
+    id: "team",
+    name: "Team",
     pricePerUserCloud: 19,
     pricePerUserOnPremise: 14,
     features: ["Validations", "History", "Export hierarchy", "Post processing", "Activity overview", "Tag management"]
 };
 
-export const C_PLAN: IPlan = {
-    id: "C",
-    name: "Premium",
+export const BUSINESS_PLAN: IPlan = {
+    id: "business",
+    name: "Business",
     pricePerUserCloud: 39,
     pricePerUserOnPremise: 31,
     features: [
@@ -50,7 +53,7 @@ interface IPlan {
     features: string[];
 }
 
-type IHostingType = "on-premise" | "cloud";
+export type IHostingType = "on-premise" | "cloud";
 
 let stripePromise: Promise<Stripe>;
 
@@ -62,45 +65,48 @@ const handleCheckout = async (
         organizationId: string;
     }
 ) => {
-    if (process.env.STRIPE_PUBLIC_API_KEY) {
-        stripePromise = loadStripe(process.env.STRIPE_PUBLIC_API_KEY);
-    }
+    try {
+        if (process.env.STRIPE_PUBLIC_API_KEY) {
+            stripePromise = loadStripe(process.env.STRIPE_PUBLIC_API_KEY);
+        }
+        const stripe = await stripePromise;
 
-    const stripe = await stripePromise;
+        if (!stripe) {
+            console.error("Failed to load stripe.");
+            history.push(Routes.OTHER.ROOT);
 
-    if (!stripe) {
-        console.error("Failed to load stripe.");
-        history.push(Routes.OTHER.ROOT);
+            return;
+        }
 
-        return;
-    }
+        // Create the checkout session
+        const response = await fetch(`${process.env.TEXTERIFY_PAYMENT_SERVER}/subscriptions`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                plan: plan.id,
+                hosting_type: type,
+                quantity: details.quantity,
+                user_id: authStore.currentUser.id,
+                organization_id: type === "cloud" ? details.organizationId : undefined,
+                email: authStore.currentUser.email
+            })
+        });
 
-    // Create the checkout session
-    const response = await fetch(`${process.env.TEXTERIFY_PAYMENT_SERVER}/subscriptions`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            plan: plan.id,
-            hosting_type: type,
-            quantity: details.quantity,
-            user_id: authStore.currentUser.id,
-            organization_id: type === "cloud" ? details.organizationId : undefined,
-            email: authStore.currentUser.email
-        })
-    });
+        const session = await response.json();
 
-    const session = await response.json();
+        const result = await stripe.redirectToCheckout({
+            sessionId: session.id
+        });
 
-    const result = await stripe.redirectToCheckout({
-        sessionId: session.id
-    });
-
-    if (result.error) {
-        // If `redirectToCheckout` fails due to a browser or network
-        // error, display the localized error message to your customer
-        // using `result.error.message`.
+        if (result.error) {
+            // If `redirectToCheckout` fails due to a browser or network
+            // error, display the localized error message to your customer
+            // using `result.error.message`.
+        }
+    } catch (error) {
+        console.error(error);
     }
 };
 
@@ -154,17 +160,20 @@ function PaymentPlan(props: {
                 <Features features={props.plan.features} />
                 <div style={{ marginTop: "auto", paddingTop: 16, display: "flex" }}>
                     <button
-                        onClick={() => {
+                        onClick={async () => {
                             setLoading(true);
-                            handleCheckout(props.plan, props.hostingType, {
+                            await handleCheckout(props.plan, props.hostingType, {
                                 quantity: 1,
                                 organizationId: props.organizationId
                             });
+                            setLoading(false);
                         }}
                         style={{ width: "100%" }}
                         className="button button-big"
+                        disabled={loading}
                     >
-                        Select
+                        {!loading && "Select"}
+                        {loading && <LoadingOutlined />}
                     </button>
                 </div>
             </div>
@@ -180,14 +189,14 @@ export function Licenses(props: { hostingType: IHostingType; organizationId?: st
                 justifyContent: "center"
             }}
         >
-            <PaymentPlan plan={A_PLAN} hostingType={props.hostingType} organizationId={props.organizationId} />
+            <PaymentPlan plan={BASIC_PLAN} hostingType={props.hostingType} organizationId={props.organizationId} />
             <PaymentPlan
-                plan={B_PLAN}
+                plan={TEAM_PLAN}
                 hostingType={props.hostingType}
                 organizationId={props.organizationId}
                 style={{ margin: "0 16px" }}
             />
-            <PaymentPlan plan={C_PLAN} hostingType={props.hostingType} organizationId={props.organizationId} />
+            <PaymentPlan plan={BUSINESS_PLAN} hostingType={props.hostingType} organizationId={props.organizationId} />
         </div>
     );
 }

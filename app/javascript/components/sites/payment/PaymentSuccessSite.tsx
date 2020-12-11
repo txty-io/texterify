@@ -6,15 +6,19 @@ import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
+import { IHostingType } from "../../ui/Licenses";
 
 const PaymentSuccessSite = observer(() => {
     const [email, setEmail] = React.useState<string>();
+    const [hostingType, setHostingType] = React.useState<IHostingType>();
+    const [organizationId, setOrganizationId] = React.useState<string>();
 
     const history = useHistory();
 
     React.useEffect(() => {
         const fetchData = async () => {
             const parsed = queryString.parse(history.location.search);
+            setHostingType(parsed.type as IHostingType);
             const response = await fetch(
                 `${process.env.TEXTERIFY_PAYMENT_SERVER}/subscriptions/session?id=${parsed["session-id"]}`,
                 {
@@ -22,6 +26,7 @@ const PaymentSuccessSite = observer(() => {
                 }
             );
             const data = await response.json();
+            setOrganizationId(data.organization_id);
             setEmail(data.email);
         };
 
@@ -41,20 +46,40 @@ const PaymentSuccessSite = observer(() => {
         >
             <div style={{ fontSize: 64 }}>🎉</div>
             <h1>Thank you! Your payment was successful.</h1>
-            <p style={{ fontWeight: "bold" }}>
-                We will send you your license key by email to{" "}
-                <span style={{ color: "var(--blue-color)" }}>{email}</span>.
-            </p>
-            <p style={{ fontSize: 12, maxWidth: 480, textAlign: "center", color: "#aaa" }}>
-                If you are having any problems receiving or activating your license you can contact us by emailing{" "}
-                <a href="mailto:support@texterify.com" target="_blank">
-                    support@texterify.com
-                </a>
-                .
-            </p>
+            {hostingType === "on-premise" && (
+                <>
+                    <p style={{ fontWeight: "bold" }}>
+                        We will send you your license key by email to{" "}
+                        <span style={{ color: "var(--blue-color)" }}>{email}</span>.
+                    </p>
+                    <p style={{ fontSize: 12, maxWidth: 480, textAlign: "center", color: "#aaa" }}>
+                        If you are having any problems receiving or activating your license you can contact us by
+                        emailing{" "}
+                        <a href="mailto:support@texterify.com" target="_blank">
+                            support@texterify.com
+                        </a>
+                        .
+                    </p>
+                </>
+            )}
+            {hostingType === "cloud" && (
+                <p style={{ fontSize: 12, maxWidth: 480, textAlign: "center", color: "#aaa" }}>
+                    If you are having any problems or questions you can contact us by emailing{" "}
+                    <a href="mailto:support@texterify.com" target="_blank">
+                        support@texterify.com
+                    </a>
+                    .
+                </p>
+            )}
             {authStore.isAuthenticated && (
-                <Link to={Routes.USER.SETTINGS.LICENSES}>
-                    <Button type="primary">Go to licenses</Button>
+                <Link
+                    to={
+                        hostingType === "cloud"
+                            ? Routes.DASHBOARD.ORGANIZATION_SUBSCRIPTION.replace(":organizationId", organizationId)
+                            : Routes.USER.SETTINGS.LICENSES
+                    }
+                >
+                    <Button type="primary">{hostingType === "cloud" ? "Go to subscription" : "Go to licenses"}</Button>
                 </Link>
             )}
             {!authStore.isAuthenticated && (

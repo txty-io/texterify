@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       }
 
       resources :organizations do
+        get :subscription, to: 'organizations#subscription'
         get :image, to: 'organizations#image'
         post :image, to: 'organizations#image_create'
         delete :image, to: 'organizations#image_destroy'
