@@ -7,6 +7,62 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
     @project = FactoryBot.create(:project)
     @export_config = FactoryBot.create(:export_config, project_id: @project.id)
     @export_config.save!
+
+    project_user = ProjectUser.new
+    project_user.project = @project
+    project_user.user = @user
+    project_user.role = 'owner'
+    project_user.save!
+  end
+
+  describe 'GET index' do
+    it 'responds with json by default' do
+      get "/api/v1/projects/#{@project.id}/releases"
+      expect(response.content_type).to eq 'application/json; charset=utf-8'
+    end
+
+    it 'responds with json even by set format' do
+      get "/api/v1/projects/#{@project.id}/releases", params: { format: :html }
+      expect(response.content_type).to eq 'application/json; charset=utf-8'
+    end
+
+    it 'has status code 403 if not logged in', :skip_before do
+      get "/api/v1/projects/#{@project.id}/releases"
+      expect(response.status).to eq(403)
+    end
+
+    it 'has status code 200 and returns empty array' do
+      get "/api/v1/projects/#{@project.id}/releases", headers: @auth_params
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
+      expect(body['data']).to eq([])
+      expect(body['meta']['total']).to eq(0)
+    end
+
+    it 'has status code 200 and returns releases paginated' do
+      FactoryBot.create(:release, export_config_id: @export_config.id)
+      FactoryBot.create(:release, export_config_id: @export_config.id)
+      FactoryBot.create(:release, export_config_id: @export_config.id)
+      get "/api/v1/projects/#{@project.id}/releases", headers: @auth_params, params: { per_page: 2 }
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
+      expect(body['data'].length).to eq(2)
+      expect(body['data'][0].keys).to contain_exactly('attributes', 'id', 'relationships', 'type')
+      expect(body['data'][0]['attributes'].keys).to contain_exactly('id', 'timestamp', 'version')
+      expect(body['meta']['total']).to eq(3)
+
+      get "/api/v1/projects/#{@project.id}/releases", headers: @auth_params, params: { per_page: 2, page: 2 }
+      body = JSON.parse(response.body)
+      expect(body['data'].length).to eq(1)
+      expect(body['data'][0].keys).to contain_exactly('attributes', 'id', 'relationships', 'type')
+      expect(body['data'][0]['attributes'].keys).to contain_exactly('id', 'timestamp', 'version')
+      expect(body['meta']['total']).to eq(3)
+
+      get "/api/v1/projects/#{@project.id}/releases", headers: @auth_params, params: { per_page: 2, page: 3 }
+      body = JSON.parse(response.body)
+      expect(body['data'].length).to eq(0)
+      expect(body['meta']['total']).to eq(3)
+    end
   end
 
   describe 'GET release' do
