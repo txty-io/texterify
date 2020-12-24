@@ -28,15 +28,17 @@ module ReleasesHelper
       end
 
       # Store the file in the cloud
-      storage = Google::Cloud::Storage.new
-      bucket = storage.bucket(ENV['GOOGLE_CLOUD_OTA_BUCKET_NAME'], skip_lookup: true)
-      file = bucket.create_file(file.path, bucket_path)
+      unless Rails.env.test?
+        storage = Google::Cloud::Storage.new
+        bucket = storage.bucket(ENV['GOOGLE_CLOUD_OTA_BUCKET_NAME'], skip_lookup: true)
+        file = bucket.create_file(file.path, bucket_path)
+      end
 
       release_file = ReleaseFile.new
       release_file.id = release_file_id
       release_file.release = release
-      release_file.preview_url = file.url
-      release_file.url = file.media_url
+      release_file.preview_url = Rails.env.test? ? 'http://localhost/preview-url' : file.url
+      release_file.url = Rails.env.test? ? 'http://localhost/url' : file.media_url
       release_file.language_code = language.language_code.code
       release_file.country_code = language.country_code ? language.country_code.code : nil
       release_file.save!

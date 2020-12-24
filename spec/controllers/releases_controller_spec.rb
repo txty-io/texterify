@@ -162,4 +162,59 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
       expect(response.status).to eq(304)
     end
   end
+
+  describe 'POST create' do
+    it 'responds with json by default' do
+      post "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/releases"
+      expect(response.content_type).to eq 'application/json; charset=utf-8'
+    end
+
+    it 'responds with json even by set format' do
+      post "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/releases", params: { format: :html }
+      expect(response.content_type).to eq 'application/json; charset=utf-8'
+    end
+
+    it 'has status code 403 if not logged in', :skip_before do
+      post "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/releases"
+      expect(response.status).to eq(403)
+    end
+
+    it 'has status code 400 and returns error when no language with language code is available' do
+      post "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/releases", headers: @auth_params
+      expect(response.status).to eq(400)
+      body = JSON.parse(response.body)
+      expect(body['errors']).to eq([{ 'code' => 'NO_LANGUAGES_WITH_LANGUAGE_CODE' }])
+    end
+
+    it 'has status code 200 and creates a first release' do
+      expect(Release.all.size).to eq(0)
+      language = Language.new
+      language.project = @project
+      language.name = 'German'
+      language.language_code = LanguageCode.first
+      language.save!
+      post "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/releases", headers: @auth_params
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
+      expect(body['success']).to eq(true)
+      expect(Release.all.size).to eq(1)
+    end
+
+    it 'has status code 200 and creates a second release with increased version' do
+      FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
+      expect(Release.all.size).to eq(1)
+      version = Release.first.version
+      language = Language.new
+      language.project = @project
+      language.name = 'German'
+      language.language_code = LanguageCode.first
+      language.save!
+      post "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/releases", headers: @auth_params
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
+      expect(body['success']).to eq(true)
+      expect(Release.all.size).to eq(2)
+      expect(Release.order(created_at: :desc).first.version).to eq(version + 1)
+    end
+  end
 end
