@@ -2,7 +2,7 @@ class Subscription < ApplicationRecord
   belongs_to :organization
 
   validates :stripe_id, presence: true
-  validates :stripe_cancel_at_period_end, default: false
+  validates :stripe_cancel_at_period_end, presence: true, default: false
   validates :stripe_created, presence: true
   validates :stripe_current_period_start, presence: true
   validates :stripe_current_period_end, presence: true
