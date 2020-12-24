@@ -78,30 +78,22 @@ class Api::V1::ReleasesController < Api::V1::ApiController
       end
     end
 
-    version = version_from_timestamp(export_config, timestamp)
+    release_timestamp = export_config.releases.find_by(timestamp: timestamp)
 
     response.set_header('Cache-Control', 'public, max-age=120')
 
-    if !version && timestamp && timestamp > latest_release.timestamp
+    if !release_timestamp && timestamp && timestamp > latest_release.timestamp
       # Skip in case the texts of the app are newer than the texts of the latest release.
       head :not_modified
-    elsif !version
+    elsif !release_timestamp
       release_file = latest_release.latest_release_file_for_locale(locale)
       if release_file
         redirect_to release_file.url
       else
         head :not_modified
       end
-    elsif version == latest_release.version
+    elsif release_timestamp.version == latest_release.version
       head :not_modified
-    elsif version > latest_release.version || version < 1
-      render json: {
-        errors: [
-          {
-            code: 'NOT_A_VALID_VERSION'
-          }
-        ]
-      }, status: :bad_request
     else
       release_file = latest_release.latest_release_file_for_locale(locale)
       if release_file
@@ -158,11 +150,5 @@ class Api::V1::ReleasesController < Api::V1::ApiController
       success: true,
       details: 'Releases deleted'
     }
-  end
-
-  private
-
-  def version_from_timestamp(export_config, timestamp)
-    export_config.releases.find_by(timestamp: timestamp)
   end
 end
