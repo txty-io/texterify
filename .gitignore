@@ -35,6 +35,7 @@ texterify.json
 .DS_Store
 
 database_consistency_*
+coverage
 
 license_key
 texterify.texterify-license

@@ -49,6 +49,8 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rubocop'
   gem 'rubocop-rails'
+
+  gem 'license_finder', require: false
 end
 
 group :development do
@@ -59,10 +61,11 @@ group :development do
   # Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen'
+  gem 'solargraph'
 end
 
-group :development, :test do
-  gem 'license_finder', require: false
+group :test do
+  gem 'simplecov', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
