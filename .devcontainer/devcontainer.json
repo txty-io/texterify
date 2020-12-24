@@ -29,7 +29,10 @@
 		"dbaeumer.vscode-eslint",
 		"eamodio.gitlens",
 		"misogi.ruby-rubocop",
-		"esbenp.prettier-vscode"
+		"esbenp.prettier-vscode",
+		"castwide.solargraph",
+		"rebornix.ruby",
+		"connorshea.vscode-ruby-test-adapter"
 	],
 
 	"postCreateCommand": "bundle exec rails db:create db:migrate db:seed"
