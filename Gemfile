@@ -61,6 +61,7 @@ group :development do
   # Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen'
+
   gem 'solargraph'
 end
 
