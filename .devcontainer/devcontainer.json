@@ -31,8 +31,7 @@
 		"misogi.ruby-rubocop",
 		"esbenp.prettier-vscode",
 		"castwide.solargraph",
-		"rebornix.ruby",
-		"connorshea.vscode-ruby-test-adapter"
+		"rebornix.ruby"
 	],
 
 	"postCreateCommand": "bundle exec rails db:create db:migrate db:seed"
