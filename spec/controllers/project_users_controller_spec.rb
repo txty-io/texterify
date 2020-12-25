@@ -182,5 +182,22 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
         end
       end
     end
+
+    it 'has status code 200 if user has no project permission so far and creates new project user' do
+      new_user = FactoryBot.create(:user)
+      project_users_count = ProjectUser.all.size
+      put "/api/v1/projects/#{@project.id}/members/#{new_user.id}", params: { role: 'developer' }, headers: @auth_params
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body)
+      expect(body['success']).to eq(true)
+      expect(ProjectUser.all.size).to eq(project_users_count + 1)
+    end
+
+    it 'has status code 400 if last owner role is changed to lower role' do
+      put "/api/v1/projects/#{@project.id}/members/#{@user.id}", params: { role: 'developer' }, headers: @auth_params
+      expect(response.status).to eq(400)
+      body = JSON.parse(response.body)
+      expect(body['errors']).to eq([{ 'code' => 'AT_LEAST_ONE_OWNER_PER_PROJECT_REQUIRED' }])
+    end
   end
 end

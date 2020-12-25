@@ -126,7 +126,7 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
       render json: {
         errors: [
           {
-            details: 'There must always be at least one owner in a project.'
+            code: 'AT_LEAST_ONE_OWNER_PER_PROJECT_REQUIRED'
           }
         ]
       }, status: :bad_request
