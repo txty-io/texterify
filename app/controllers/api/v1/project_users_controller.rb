@@ -79,21 +79,12 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     project_user = ProjectUser.find_by(project_id: project.id, user_id: params[:id])
 
-    unless project_user
-      user = User.find(params[:id])
-      project_user = ProjectUser.new
-      project_user.project = project
-      project_user.user = user
-    end
-
-    # The least privileged role of a user for a project that belongs to an organization
-    # is the role the user has in the organization.
-    user_organization_role = project.organization ? project.organization.role_of(project_user.user) : nil
-    if user_organization_role && helpers.higher_role?(user_organization_role, params[:role])
+    role = params[:role]
+    if !role
       render json: {
         errors: [
           {
-            details: 'The role of a user for a project must not be lower than the role the user has in the organization.'
+            code: 'NO_ROLE_GIVEN'
           }
         ]
       }, status: :bad_request
@@ -101,7 +92,30 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
       return
     end
 
-    project_user.role = params[:role]
+    unless project_user
+      user = User.find(params[:id])
+      project_user = ProjectUser.new
+      project_user.project = project
+      project_user.user = user
+    end
+
+    # The lowest role a user can have for a project that belongs to an organization
+    # is the role the user has in the organization.
+    user_organization_role = project.organization ? project.organization.role_of(project_user.user) : nil
+    if user_organization_role && helpers.higher_role?(user_organization_role, role)
+      render json: {
+        errors: [
+          {
+            code: 'USER_ROLE_LOWER_THAN_USER_ORGANIZATION_ROLE'
+          }
+        ]
+      }, status: :forbidden
+      skip_authorization
+      return
+    end
+
+    project_user.role_before_update = project_user.role
+    project_user.role = role
     authorize project_user
 
     project_organization_has_owner = project.organization ? project.organization.organization_users.where(role: 'owner').size >= 1 : false
@@ -122,7 +136,7 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
     project_user.save!
 
     render json: {
-      message: 'User role updated'
+      success: true
     }
   end
 end

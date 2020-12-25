@@ -33,9 +33,12 @@ class ProjectUserPolicy
   private
 
   def higher_role_or_both_highest
-    is_higher = ROLE_PRIORITY_MAP[project_user_role.to_sym] > ROLE_PRIORITY_MAP[project_user.role.to_sym]
+    return true if project_user_role == ROLE_OWNER
 
-    is_higher || project_user_role == ROLE_OWNER
+    is_higher_than_old_role = ROLE_PRIORITY_MAP[project_user_role.to_sym] > ROLE_PRIORITY_MAP[project_user.role_before_update.to_sym]
+    is_higher_than_new_role = ROLE_PRIORITY_MAP[project_user_role.to_sym] > ROLE_PRIORITY_MAP[project_user.role.to_sym]
+
+    is_higher_than_old_role && is_higher_than_new_role
   end
 
   def project_user_role
