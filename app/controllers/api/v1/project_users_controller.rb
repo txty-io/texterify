@@ -106,10 +106,10 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
       render json: {
         errors: [
           {
-            code: 'USER_ROLE_LOWER_THAN_USER_ORGANIZATION_ROLE'
+            code: 'USER_PROJECT_ROLE_LOWER_THAN_USER_ORGANIZATION_ROLE'
           }
         ]
-      }, status: :forbidden
+      }, status: :bad_request
       skip_authorization
       return
     end
