@@ -29,66 +29,68 @@ gem 'uglifier'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
-
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: %i[mri mingw x64_mingw]
+  # gem 'byebug', platforms: %i[mri mingw x64_mingw]
   # Adds support for Capybara system testing and selenium driver
-  gem 'capybara'
+  # gem 'capybara'
+  # gem 'selenium-webdriver'
+
+  gem 'dotenv-rails'
+
   gem 'database_consistency', require: false
-  gem 'selenium-webdriver'
-
-  gem 'pry-byebug'
-  gem 'pry-rails'
-
-  gem 'database_cleaner'
-  gem 'factory_bot_rails'
-  gem 'rspec'
-  gem 'rspec-rails'
-  gem 'rubocop'
-  gem 'rubocop-rails'
-
   gem 'license_finder', require: false
+  gem 'rubocop', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rspec', require: false
 end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'listen'
   gem 'web-console'
+
+  gem 'pry-byebug'
+  gem 'pry-rails'
+
   # Spring speeds up development by keeping your application running in the background.
   # Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen'
 
-  gem 'solargraph'
+  gem 'bumbler', require: false
+  gem 'solargraph', require: false
 end
 
 group :test do
+  gem 'database_cleaner'
+  gem 'factory_bot_rails'
+
+  gem 'rspec', require: false
+  gem 'rspec-rails', require: false
   gem 'simplecov', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+# gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
-gem 'bootsnap'
 gem 'devise', '4.7.3'
 gem 'devise_token_auth', '1.1.4'
-gem 'dotenv-rails', groups: [:development, :test]
 gem 'fast_jsonapi'
-gem 'figaro'
-gem 'google-cloud-storage', '~> 1.11', require: false
-gem 'haml'
-gem 'haml-rails'
 gem 'paper_trail'
 gem 'pundit'
 gem 'rails-settings-cached'
 gem 'react-rails'
-gem 'rubyzip'
 gem 'sentry-raven'
 gem 'webpacker'
 
 # https://rubygems.org/gems/gitlab-license/versions/0.0.2
 # https://www.rubydoc.info/gems/gitlab-license/
 gem 'gitlab-license'
+
+# Reduces boot times through caching; required in config/boot.rb
+gem 'bootsnap', require: false
+
+gem 'google-cloud-storage', '~> 1.11', require: false
+gem 'rest-client', require: false
+gem 'rubyzip', require: false

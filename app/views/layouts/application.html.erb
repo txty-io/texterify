@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Texterify</title>
+    <%= csrf_meta_tags %>
+    <%= javascript_pack_tag 'error_tracking' %>
+    <%= javascript_pack_tag 'application' %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= stylesheet_pack_tag 'application' %>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500&display=swap" rel="stylesheet"></link>
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet"></link>
+    <link href="/favicon-dark-mode.ico" rel="dark-mode-icon"></link>
+    <link href="/favicon-light-mode.ico" rel="light-mode-icon"></link>
+    <link href="/favicon-light-mode.ico" rel="shortcut icon"></link>
+  </head>
+  <body id="app-root">
+    <%= yield %>
+  </body>
+</html>

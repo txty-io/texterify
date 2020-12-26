@@ -1,6 +1,7 @@
 require 'json'
 require 'nokogiri'
 require 'yaml'
+require 'zip'
 
 module ExportHelper
   def convert_html_translation(content)
