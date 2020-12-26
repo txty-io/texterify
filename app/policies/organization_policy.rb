@@ -30,6 +30,10 @@ class OrganizationPolicy
     ROLES_MANAGER_UP.include? organization_user_role
   end
 
+  def change_subscription_plan?
+    ROLES_MANAGER_UP.include? organization_user_role
+  end
+
   private
 
   def organization_user_role

@@ -1,4 +1,4 @@
-import { IPlan } from "../../types/IPlan";
+import { IPlanIDS } from "../../types/IPlan";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
@@ -14,7 +14,7 @@ export interface ISubscription {
     attributes: {
         active: boolean;
         id: string;
-        plan: IPlan;
+        plan: IPlanIDS;
         renews_or_cancels_on: string;
         users_count: number;
         invoice_upcoming_total: number;
@@ -51,6 +51,12 @@ const OrganizationsAPI = {
 
     cancelOrganizationSubscription: async (organizationId: string): Promise<void> => {
         return API.deleteRequest(`organizations/${organizationId}/cancel_subscription`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    changeOrganizationSubscriptionPlan: async (organizationId: string, planId: IPlanIDS): Promise<void> => {
+        return API.putRequest(`organizations/${organizationId}/change_subscription_plan?plan=${planId}`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },

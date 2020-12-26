@@ -1,10 +1,11 @@
-import { Button, Card, Layout } from "antd";
+import { Alert, Button, Card, Layout } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { ISubscription, OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
 import { subscriptionService } from "../../services/SubscriptionService";
-import { IPlan } from "../../types/IPlan";
+import { IPlanIDS } from "../../types/IPlan";
+import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { Features } from "../../ui/Features";
 import { BASIC_PLAN, BUSINESS_PLAN, Licenses, TEAM_PLAN } from "../../ui/Licenses";
 import { Loading } from "../../ui/Loading";
@@ -32,7 +33,7 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
     }
 
     async reload() {
-        this.setState({ loading: false });
+        this.setState({ loading: true });
         const subscription = await subscriptionService.getActiveSubscription(this.props.match.params.organizationId, {
             forceReload: true
         });
@@ -42,7 +43,7 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
         });
     }
 
-    getPlanByPlanName(planName: IPlan) {
+    getPlanByPlanName(planName: IPlanIDS) {
         if (planName === "basic") {
             return BASIC_PLAN;
         } else if (planName === "team") {
@@ -53,12 +54,20 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
     }
 
     async onCancelSubscription() {
+        this.setState({ loading: true });
         await OrganizationsAPI.cancelOrganizationSubscription(this.props.match.params.organizationId);
         await this.reload();
     }
 
     async onReactivateSubscription() {
+        this.setState({ loading: true });
         await OrganizationsAPI.reactivateOrganizationSubscription(this.props.match.params.organizationId);
+        await this.reload();
+    }
+
+    async onChangeSubscriptionPlan(planID: IPlanIDS) {
+        this.setState({ loading: true });
+        await OrganizationsAPI.changeOrganizationSubscriptionPlan(this.props.match.params.organizationId, planID);
         await this.reload();
     }
 
@@ -69,6 +78,7 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
 
         return (
             <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
+                <Breadcrumbs breadcrumbName="organizationSubscription" />
                 <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                     <h1>Subscription</h1>
 
@@ -76,7 +86,7 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                         <Card
                             type="inner"
                             title="Active plan"
-                            style={{ marginRight: 40, width: 600 }}
+                            style={{ marginRight: 40, maxWidth: 880 }}
                             bodyStyle={{ display: "flex" }}
                         >
                             <Card.Grid hoverable={false} style={gridStyle}>
@@ -87,25 +97,21 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                                         fontSize: 20
                                     }}
                                 >
-                                    {Utils.capitalize(this.state.subscription.attributes.plan)}
+                                    {Utils.capitalize(this.state.subscription.attributes.plan)} Plan
                                 </div>
-                                <div style={{ fontSize: 16, marginTop: 16 }}>
-                                    Users:
-                                    <div style={{ fontWeight: "bold" }}>
-                                        {this.state.subscription.attributes.users_count}
-                                    </div>
+                                <div style={{ fontSize: 14, marginTop: 8, display: "flex", alignItems: "center" }}>
+                                    <div style={{ width: 200 }}>Users:</div>
+                                    <div>{this.state.subscription.attributes.users_count}</div>
                                 </div>
-                                <div style={{ fontSize: 16, marginTop: 16 }}>
-                                    Current monthly bill:
-                                    <div style={{ fontWeight: "bold" }}>
-                                        {this.state.subscription.attributes.invoice_upcoming_total / 100} €
-                                    </div>
+                                <div style={{ fontSize: 14, marginTop: 8, display: "flex", alignItems: "center" }}>
+                                    <div style={{ width: 200 }}>Current monthly bill:</div>
+                                    <div>{this.state.subscription.attributes.invoice_upcoming_total / 100} €</div>
                                 </div>
-                                <div style={{ fontSize: 16, marginTop: 16 }}>
-                                    {this.state.subscription.attributes.canceled ? "Ends on" : "Renews on"}:
-                                    <div style={{ fontWeight: "bold" }}>
-                                        {this.state.subscription.attributes.renews_or_cancels_on}
+                                <div style={{ fontSize: 14, marginTop: 8, display: "flex", alignItems: "center" }}>
+                                    <div style={{ width: 200 }}>
+                                        {this.state.subscription.attributes.canceled ? "Ends on" : "Renews on"}:
                                     </div>
+                                    <div>{this.state.subscription.attributes.renews_or_cancels_on}</div>
                                 </div>
                                 {!this.state.subscription.attributes.canceled && (
                                     <div style={{ marginTop: 24 }}>
@@ -115,17 +121,24 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                                                 await this.onCancelSubscription();
                                             }}
                                         >
-                                            Cancel
+                                            Cancel subscription
                                         </Button>
                                     </div>
                                 )}
 
                                 {this.state.subscription.attributes.canceled && (
                                     <div style={{ marginTop: 24 }}>
+                                        <Alert
+                                            showIcon
+                                            message={`You have canceled your subscription and will loose access to the premium Texterify features on ${this.state.subscription.attributes.renews_or_cancels_on}. Click the button below to reactivate your subscription.`}
+                                            type="warning"
+                                        />
                                         <Button
+                                            type="primary"
                                             onClick={async () => {
                                                 await this.onReactivateSubscription();
                                             }}
+                                            style={{ marginTop: 16 }}
                                         >
                                             Reactivate
                                         </Button>
@@ -140,13 +153,20 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                         </Card>
                     )}
 
-                    {!this.state.subscription && (
-                        <div style={{ flexGrow: 1, maxWidth: 1000 }}>
-                            <h3 style={{ marginTop: 24 }}>Get a new license</h3>
-                            <p style={{ maxWidth: 480, marginTop: 16 }}>Select a subscription that fits your needs.</p>
-                            <Licenses hostingType="cloud" organizationId={this.props.match.params.organizationId} />
-                        </div>
-                    )}
+                    <div style={{ flexGrow: 1, maxWidth: 1000 }}>
+                        <h3 style={{ marginTop: 24 }}>
+                            {this.state.subscription ? "Change your plan" : "Get a new license"}
+                        </h3>
+                        <p style={{ maxWidth: 480, marginTop: 16 }}>Select a subscription that fits your needs.</p>
+                        <Licenses
+                            hostingType="cloud"
+                            organizationId={this.props.match.params.organizationId}
+                            selected={this.state.subscription?.attributes.plan}
+                            onChangePlan={(plan) => {
+                                this.onChangeSubscriptionPlan(plan.id);
+                            }}
+                        />
+                    </div>
                 </Layout.Content>
             </Layout>
         );

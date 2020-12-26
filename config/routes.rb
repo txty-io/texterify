@@ -13,6 +13,7 @@ Rails.application.routes.draw do
         get :subscription, to: 'organizations#subscription'
         delete :cancel_subscription, to: 'organizations#cancel_subscription'
         post :reactivate_subscription, to: 'organizations#reactivate_subscription'
+        put :change_subscription_plan, to: 'organizations#change_subscription_plan'
         get :image, to: 'organizations#image'
         post :image, to: 'organizations#image_create'
         delete :image, to: 'organizations#image_destroy'

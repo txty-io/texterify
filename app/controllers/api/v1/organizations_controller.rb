@@ -142,6 +142,29 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
     }
   end
 
+  def change_subscription_plan
+    plan = params[:plan]
+    if !plan
+      render json: {
+        errors: [
+          {
+            code: 'NO_PLAN_GIVEN'
+          }
+        ]
+      }, status: :bad_request
+      return
+    end
+
+    organization = current_user.organizations.find(params[:organization_id])
+    authorize organization
+
+    organization.subscription&.change_plan(plan)
+
+    render json: {
+      success: true
+    }
+  end
+
   private
 
   def organization_params

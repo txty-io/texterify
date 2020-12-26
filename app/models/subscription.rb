@@ -22,6 +22,7 @@ class Subscription < ApplicationRecord
   }
 
   ACCESS_GRANTING_STATUSES = %w[trialing active past_due].freeze
+  VALID_PLANS = %w[basic team business].freeze
 
   scope :active_or_trialing, -> { where(status: ACCESS_GRANTING_STATUSES) }
   scope :recent, -> { order('current_period_end DESC NULLS LAST') }
@@ -45,6 +46,25 @@ class Subscription < ApplicationRecord
       save
 
       RestClient.put("#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/status?organization_id=#{organization.id}", {})
+    end
+  end
+
+  def change_plan(plan)
+    if IS_TEXTERIFY_CLOUD
+      if VALID_PLANS.include?(plan)
+        self.plan = plan
+        save
+
+        RestClient.put("#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/plan?organization_id=#{organization.id}&plan=#{plan}", {})
+      else
+        render json: {
+          errors: [
+            {
+              code: 'INVALID_PLAN'
+            }
+          ]
+        }, status: :bad_request
+      end
     end
   end
 end

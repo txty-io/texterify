@@ -1,12 +1,11 @@
 import { LoadingOutlined } from "@ant-design/icons";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
+import { Button } from "antd";
 import * as React from "react";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
-import { generalStore } from "../stores/GeneralStore";
 import { Features } from "./Features";
-import { Loading } from "./Loading";
 
 export const BASIC_PLAN: IPlan = {
     id: "basic",
@@ -113,8 +112,11 @@ const handleCheckout = async (
 function PaymentPlan(props: {
     plan: IPlan;
     hostingType: IHostingType;
+    selected?: boolean;
+    hasActivePlan?: boolean;
     organizationId?: string;
     style?: React.CSSProperties;
+    onChangePlan?(plan: IPlan): void;
 }) {
     const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -159,29 +161,41 @@ function PaymentPlan(props: {
             >
                 <Features features={props.plan.features} />
                 <div style={{ marginTop: "auto", paddingTop: 16, display: "flex" }}>
-                    <button
+                    <Button
                         onClick={async () => {
-                            setLoading(true);
-                            await handleCheckout(props.plan, props.hostingType, {
-                                quantity: 1,
-                                organizationId: props.organizationId
-                            });
-                            setLoading(false);
+                            if (props.hasActivePlan) {
+                                props.onChangePlan(props.plan);
+                            } else {
+                                setLoading(true);
+                                await handleCheckout(props.plan, props.hostingType, {
+                                    quantity: 1,
+                                    organizationId: props.organizationId
+                                });
+                                setLoading(false);
+                            }
                         }}
                         style={{ width: "100%" }}
-                        className="button button-big"
-                        disabled={loading}
+                        disabled={loading || props.selected}
+                        ghost={props.selected}
+                        size="large"
+                        type={props.selected ? undefined : "primary"}
                     >
-                        {!loading && "Select"}
-                        {loading && <LoadingOutlined />}
-                    </button>
+                        {!loading && !props.selected && "Select"}
+                        {props.selected && "Your plan"}
+                        {loading && !props.selected && <LoadingOutlined />}
+                    </Button>
                 </div>
             </div>
         </div>
     );
 }
 
-export function Licenses(props: { hostingType: IHostingType; organizationId?: string }) {
+export function Licenses(props: {
+    hostingType: IHostingType;
+    organizationId?: string;
+    selected: IPlan["id"];
+    onChangePlan(plan: IPlan): void;
+}) {
     return (
         <div
             style={{
@@ -189,14 +203,31 @@ export function Licenses(props: { hostingType: IHostingType; organizationId?: st
                 justifyContent: "center"
             }}
         >
-            <PaymentPlan plan={BASIC_PLAN} hostingType={props.hostingType} organizationId={props.organizationId} />
             <PaymentPlan
-                plan={TEAM_PLAN}
+                plan={BASIC_PLAN}
+                selected={props.selected === BASIC_PLAN.id}
+                hasActivePlan={!!props.selected}
                 hostingType={props.hostingType}
                 organizationId={props.organizationId}
+                onChangePlan={props.onChangePlan}
+            />
+            <PaymentPlan
+                plan={TEAM_PLAN}
+                selected={props.selected === TEAM_PLAN.id}
+                hasActivePlan={!!props.selected}
+                hostingType={props.hostingType}
+                organizationId={props.organizationId}
+                onChangePlan={props.onChangePlan}
                 style={{ margin: "0 16px" }}
             />
-            <PaymentPlan plan={BUSINESS_PLAN} hostingType={props.hostingType} organizationId={props.organizationId} />
+            <PaymentPlan
+                plan={BUSINESS_PLAN}
+                selected={props.selected === BUSINESS_PLAN.id}
+                hasActivePlan={!!props.selected}
+                hostingType={props.hostingType}
+                organizationId={props.organizationId}
+                onChangePlan={props.onChangePlan}
+            />
         </div>
     );
 }

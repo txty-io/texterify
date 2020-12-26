@@ -85,6 +85,14 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                     this.props.match.params.organizationId
                 )
             },
+            organizationSubscription: {
+                parent: "organization",
+                name: "Subscription",
+                path: Routes.DASHBOARD.ORGANIZATION_SUBSCRIPTION.replace(
+                    ":organizationId",
+                    this.props.match.params.organizationId
+                )
+            },
             languages: {
                 parent: "project",
                 name: "Languages",
