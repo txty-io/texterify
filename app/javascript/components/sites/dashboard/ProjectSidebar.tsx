@@ -10,7 +10,6 @@ import {
     LineChartOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    MonitorOutlined,
     OneToOneOutlined,
     SettingOutlined,
     SwapOutlined,
