@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Whether authentication is working correctly', type: :request do
-  context 'general authentication via API' do
+  with 'general authentication via API' do
     it 'gives you an authentication code if you successfully login' do
       user = FactoryBot.create(:user)
       sign_in(user)
@@ -42,7 +42,7 @@ describe 'Whether authentication is working correctly', type: :request do
     end
   end
 
-  context 'test access tokens of varying ages' do
+  with 'test access tokens of varying ages' do
     include_examples 'use authentication tokens of different ages', 2.days, :success
     include_examples 'use authentication tokens of different ages', 3.days, :success
     include_examples 'use authentication tokens of different ages', 4.days, :success

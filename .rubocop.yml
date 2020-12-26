@@ -108,3 +108,21 @@ Lint/StructNewOverride:
 Naming/FileName:
   Exclude:
     - Gemfile
+
+RSpec/InstanceVariable:
+    Enabled: false
+
+RSpec/DescribedClass:
+    Enabled: false
+
+RSpec/HookArgument:
+    EnforcedStyle: each
+
+RSpec/RepeatedExample:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false

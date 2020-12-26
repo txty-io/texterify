@@ -12,6 +12,7 @@ class Subscription < ApplicationRecord
   validates :stripe_latest_invoice, presence: true
   validates :plan, presence: true
   validates :users_count, presence: true
+  validates :canceled, default: false
 
   enum status: {
     trialing: 'trialing',

@@ -48,8 +48,8 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(2)
-      expect(body['data'].find { |item| item['attributes']['role_source'] == 'project' && item['attributes']['role'] == 'manager' }).to_not be_nil
-      expect(body['data'].find { |item| item['attributes']['role_source'] == 'organization' && item['attributes']['role'] == 'developer' }).to_not be_nil
+      expect(body['data'].find { |item| item['attributes']['role_source'] == 'project' && item['attributes']['role'] == 'manager' }).not_to be_nil
+      expect(body['data'].find { |item| item['attributes']['role_source'] == 'organization' && item['attributes']['role'] == 'developer' }).not_to be_nil
       expect(body['data'][0].keys).to contain_exactly('attributes', 'id', 'type')
       expect(body['data'][0]['attributes'].keys).to contain_exactly('id', 'username', 'email', 'is_superadmin', 'role', 'role_source')
       expect(body['data'][1].keys).to contain_exactly('attributes', 'id', 'type')
