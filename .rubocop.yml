@@ -17,6 +17,9 @@ AllCops:
 Rails:
   Enabled: true
 
+Rails/IndexBy:
+    Enabled: false
+
 Style/Documentation:
   Enabled: false
 
@@ -71,6 +74,12 @@ Style/CaseLikeIf:
 # Disabled because of pundit headless policies
 Style/StructInheritance:
   Enabled: false
+
+Style/BlockComments:
+    Enabled: false
+
+Style/CommentAnnotation:
+    Enabled: false
 
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: "indented"
