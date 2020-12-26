@@ -2,7 +2,7 @@ class Subscription < ApplicationRecord
   belongs_to :organization
 
   validates :stripe_id, presence: true
-  validates :stripe_cancel_at_period_end, presence: true, default: false
+  validates :stripe_cancel_at_period_end, default: false
   validates :stripe_created, presence: true
   validates :stripe_current_period_start, presence: true
   validates :stripe_current_period_end, presence: true
@@ -11,6 +11,7 @@ class Subscription < ApplicationRecord
   validates :stripe_start_date, presence: true
   validates :stripe_latest_invoice, presence: true
   validates :plan, presence: true
+  validates :users_count, presence: true
 
   enum status: {
     trialing: 'trialing',
@@ -29,8 +30,20 @@ class Subscription < ApplicationRecord
   end
 
   def interrupt
-    Stripe::Subscription.delete(stripe_id)
-    self.active = false
-    save
+    if IS_TEXTERIFY_CLOUD && !canceled
+      self.canceled = true
+      save
+
+      RestClient.put("#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/status?organization_id=#{organization.id}", {})
+    end
+  end
+
+  def reactivate
+    if IS_TEXTERIFY_CLOUD && canceled
+      self.canceled = false
+      save
+
+      RestClient.put("#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/status?organization_id=#{organization.id}", {})
+    end
   end
 end

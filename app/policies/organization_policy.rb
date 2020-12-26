@@ -22,6 +22,14 @@ class OrganizationPolicy
     ROLES_MANAGER_UP.include? organization_user_role
   end
 
+  def cancel_subscription?
+    ROLES_MANAGER_UP.include? organization_user_role
+  end
+
+  def reactivate_subscription?
+    ROLES_MANAGER_UP.include? organization_user_role
+  end
+
   private
 
   def organization_user_role

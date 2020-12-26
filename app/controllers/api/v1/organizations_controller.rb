@@ -120,6 +120,28 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
     render json: SubscriptionSerializer.new(organization.subscription, options).serialized_json, status: :ok
   end
 
+  def cancel_subscription
+    organization = current_user.organizations.find(params[:organization_id])
+    authorize organization
+
+    organization.subscription&.interrupt
+
+    render json: {
+      success: true
+    }
+  end
+
+  def reactivate_subscription
+    organization = current_user.organizations.find(params[:organization_id])
+    authorize organization
+
+    organization.subscription&.reactivate
+
+    render json: {
+      success: true
+    }
+  end
+
   private
 
   def organization_params

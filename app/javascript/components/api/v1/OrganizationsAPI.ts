@@ -15,7 +15,10 @@ export interface ISubscription {
         active: boolean;
         id: string;
         plan: IPlan;
-        renews_on: string;
+        renews_or_cancels_on: string;
+        users_count: number;
+        invoice_upcoming_total: number;
+        canceled: boolean;
     };
 }
 
@@ -42,6 +45,18 @@ const OrganizationsAPI = {
 
     getOrganizationSubscription: async (organizationId: string): Promise<IGetOrganizationSubscription> => {
         return API.getRequest(`organizations/${organizationId}/subscription`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    cancelOrganizationSubscription: async (organizationId: string): Promise<void> => {
+        return API.deleteRequest(`organizations/${organizationId}/cancel_subscription`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    reactivateOrganizationSubscription: async (organizationId: string): Promise<void> => {
+        return API.postRequest(`organizations/${organizationId}/reactivate_subscription`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },

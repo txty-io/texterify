@@ -1,8 +1,8 @@
-import { Card, Layout } from "antd";
+import { Button, Card, Layout } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { ISubscription } from "../../api/v1/OrganizationsAPI";
+import { ISubscription, OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
 import { subscriptionService } from "../../services/SubscriptionService";
 import { IPlan } from "../../types/IPlan";
 import { Features } from "../../ui/Features";
@@ -28,7 +28,14 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
     };
 
     async componentDidMount() {
-        const subscription = await subscriptionService.getActiveSubscription(this.props.match.params.organizationId);
+        await this.reload();
+    }
+
+    async reload() {
+        this.setState({ loading: false });
+        const subscription = await subscriptionService.getActiveSubscription(this.props.match.params.organizationId, {
+            forceReload: true
+        });
         this.setState({
             subscription: subscription,
             loading: false
@@ -45,6 +52,16 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
         }
     }
 
+    async onCancelSubscription() {
+        await OrganizationsAPI.cancelOrganizationSubscription(this.props.match.params.organizationId);
+        await this.reload();
+    }
+
+    async onReactivateSubscription() {
+        await OrganizationsAPI.reactivateOrganizationSubscription(this.props.match.params.organizationId);
+        await this.reload();
+    }
+
     render() {
         if (this.state.loading) {
             return <Loading />;
@@ -56,22 +73,64 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                     <h1>Subscription</h1>
 
                     {this.state.subscription && (
-                        <Card type="inner" title="Active plan" style={{ marginRight: 40, width: 600 }}>
+                        <Card
+                            type="inner"
+                            title="Active plan"
+                            style={{ marginRight: 40, width: 600 }}
+                            bodyStyle={{ display: "flex" }}
+                        >
                             <Card.Grid hoverable={false} style={gridStyle}>
                                 <div
                                     style={{
                                         color: "var(--dark-color)",
-                                        fontWeight: "bold"
+                                        fontWeight: "bold",
+                                        fontSize: 20
                                     }}
                                 >
                                     {Utils.capitalize(this.state.subscription.attributes.plan)}
                                 </div>
-                            </Card.Grid>
-                            <Card.Grid hoverable={false} style={gridStyle}>
-                                Renews on:{" "}
-                                <span style={{ fontWeight: "bold" }}>
-                                    {this.state.subscription.attributes.renews_on}
-                                </span>
+                                <div style={{ fontSize: 16, marginTop: 16 }}>
+                                    Users:
+                                    <div style={{ fontWeight: "bold" }}>
+                                        {this.state.subscription.attributes.users_count}
+                                    </div>
+                                </div>
+                                <div style={{ fontSize: 16, marginTop: 16 }}>
+                                    Current monthly bill:
+                                    <div style={{ fontWeight: "bold" }}>
+                                        {this.state.subscription.attributes.invoice_upcoming_total / 100} €
+                                    </div>
+                                </div>
+                                <div style={{ fontSize: 16, marginTop: 16 }}>
+                                    {this.state.subscription.attributes.canceled ? "Ends on" : "Renews on"}:
+                                    <div style={{ fontWeight: "bold" }}>
+                                        {this.state.subscription.attributes.renews_or_cancels_on}
+                                    </div>
+                                </div>
+                                {!this.state.subscription.attributes.canceled && (
+                                    <div style={{ marginTop: 24 }}>
+                                        <Button
+                                            danger
+                                            onClick={async () => {
+                                                await this.onCancelSubscription();
+                                            }}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </div>
+                                )}
+
+                                {this.state.subscription.attributes.canceled && (
+                                    <div style={{ marginTop: 24 }}>
+                                        <Button
+                                            onClick={async () => {
+                                                await this.onReactivateSubscription();
+                                            }}
+                                        >
+                                            Reactivate
+                                        </Button>
+                                    </div>
+                                )}
                             </Card.Grid>
                             <Card.Grid hoverable={false} style={gridStyle}>
                                 <Features

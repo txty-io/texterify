@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_25_025014) do
+ActiveRecord::Schema.define(version: 2020_12_26_025913) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -223,7 +223,7 @@ ActiveRecord::Schema.define(version: 2020_12_25_025014) do
   create_table "subscriptions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "stripe_id", null: false
     t.datetime "stripe_cancel_at"
-    t.boolean "stripe_cancel_at_period_end", null: false
+    t.boolean "stripe_cancel_at_period_end", default: false, null: false
     t.datetime "stripe_canceled_at"
     t.datetime "stripe_created", null: false
     t.datetime "stripe_current_period_start", null: false
@@ -237,6 +237,9 @@ ActiveRecord::Schema.define(version: 2020_12_25_025014) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "plan", null: false
+    t.integer "users_count", default: 1, null: false
+    t.integer "invoice_upcoming_total", default: 0, null: false
+    t.boolean "canceled", default: false, null: false
     t.index ["organization_id"], name: "index_subscriptions_on_organization_id"
   end
 

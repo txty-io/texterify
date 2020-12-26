@@ -11,6 +11,8 @@ Rails.application.routes.draw do
 
       resources :organizations do
         get :subscription, to: 'organizations#subscription'
+        delete :cancel_subscription, to: 'organizations#cancel_subscription'
+        post :reactivate_subscription, to: 'organizations#reactivate_subscription'
         get :image, to: 'organizations#image'
         post :image, to: 'organizations#image_create'
         delete :image, to: 'organizations#image_destroy'
