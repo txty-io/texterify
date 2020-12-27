@@ -38,6 +38,9 @@ group :development, :test do
 
   gem 'dotenv-rails'
 
+  # Load automatically in dev for mailer previews which use factories.
+  gem 'factory_bot_rails'
+
   gem 'database_consistency', require: false
   gem 'license_finder', require: false
   gem 'rubocop', require: false
@@ -64,7 +67,6 @@ end
 
 group :test do
   gem 'database_cleaner'
-  gem 'factory_bot_rails'
 
   gem 'rspec', require: false
   gem 'rspec-rails', require: false
