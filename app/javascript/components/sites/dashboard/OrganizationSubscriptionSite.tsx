@@ -141,7 +141,16 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                                     <div style={{ marginTop: 24 }}>
                                         <Alert
                                             showIcon
-                                            message={`You have canceled your subscription and will loose access to the premium Texterify features on ${this.state.subscription.attributes.renews_or_cancels_on}. Click the button below to reactivate your subscription.`}
+                                            message={
+                                                <>
+                                                    You have canceled your subscription and will loose access to the
+                                                    premium Texterify features on{" "}
+                                                    <span style={{ fontWeight: "bold" }}>
+                                                        {this.state.subscription.attributes.renews_or_cancels_on}
+                                                    </span>
+                                                    . Click the button below to reactivate your subscription.
+                                                </>
+                                            }
                                             type="warning"
                                         />
                                         <Button

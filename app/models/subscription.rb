@@ -14,18 +14,21 @@ class Subscription < ApplicationRecord
   validates :users_count, presence: true
   validates :canceled, default: false
 
-  enum status: {
+  # https://stripe.com/docs/billing/subscriptions/overview#subscription-statuses
+  enum stripe_status: {
     trialing: 'trialing',
     active: 'active',
+    incomplete: 'incomplete',
+    incomplete_expired: 'incomplete_expired',
     past_due: 'past_due',
-    canceled: 'canceled'
+    canceled: 'canceled',
+    unpaid: 'unpaid'
   }
 
   ACCESS_GRANTING_STATUSES = %w[trialing active past_due].freeze
   VALID_PLANS = %w[basic team business].freeze
 
-  scope :active_or_trialing, -> { where(status: ACCESS_GRANTING_STATUSES) }
-  scope :recent, -> { order('current_period_end DESC NULLS LAST') }
+  scope :active_or_trialing, -> { where(stripe_status: ACCESS_GRANTING_STATUSES) }
 
   def active_or_trialing?
     ACCESS_GRANTING_STATUSES.include?(status)
