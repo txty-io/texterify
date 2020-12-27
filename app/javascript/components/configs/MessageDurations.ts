@@ -1,0 +1,1 @@
+export const MESSAGE_DURATION_IMPORTANT = 6;

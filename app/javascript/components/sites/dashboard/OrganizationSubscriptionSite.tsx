@@ -1,8 +1,9 @@
-import { Alert, Button, Card, Layout } from "antd";
+import { Alert, Button, Card, Layout, message } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { ISubscription, OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
+import { MESSAGE_DURATION_IMPORTANT } from "../../configs/MessageDurations";
 import { subscriptionService } from "../../services/SubscriptionService";
 import { IPlanIDS } from "../../types/IPlan";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
@@ -57,18 +58,24 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
         this.setState({ loading: true });
         await OrganizationsAPI.cancelOrganizationSubscription(this.props.match.params.organizationId);
         await this.reload();
+        message.success(
+            "Your subscription has been canceled and will end at the end of your subscription period.",
+            MESSAGE_DURATION_IMPORTANT
+        );
     }
 
     async onReactivateSubscription() {
         this.setState({ loading: true });
         await OrganizationsAPI.reactivateOrganizationSubscription(this.props.match.params.organizationId);
         await this.reload();
+        message.success("Your subscription has been reactivated.", MESSAGE_DURATION_IMPORTANT);
     }
 
     async onChangeSubscriptionPlan(planID: IPlanIDS) {
         this.setState({ loading: true });
         await OrganizationsAPI.changeOrganizationSubscriptionPlan(this.props.match.params.organizationId, planID);
         await this.reload();
+        message.success("Successfully changed subscription plan.", MESSAGE_DURATION_IMPORTANT);
     }
 
     render() {
@@ -92,7 +99,6 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                             <Card.Grid hoverable={false} style={gridStyle}>
                                 <div
                                     style={{
-                                        color: "var(--dark-color)",
                                         fontWeight: "bold",
                                         fontSize: 20
                                     }}
@@ -104,7 +110,12 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                                     <div>{this.state.subscription.attributes.users_count}</div>
                                 </div>
                                 <div style={{ fontSize: 14, marginTop: 8, display: "flex", alignItems: "center" }}>
-                                    <div style={{ width: 200 }}>Current monthly bill:</div>
+                                    <div style={{ width: 200 }}>
+                                        {this.state.subscription.attributes.canceled
+                                            ? "Open bill at end of month"
+                                            : "Current monthly bill"}
+                                        :
+                                    </div>
                                     <div>{this.state.subscription.attributes.invoice_upcoming_total / 100} €</div>
                                 </div>
                                 <div style={{ fontSize: 14, marginTop: 8, display: "flex", alignItems: "center" }}>

@@ -5,6 +5,7 @@ import * as React from "react";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
+import { IPlanIDS } from "../types/IPlan";
 import { Features } from "./Features";
 
 export const BASIC_PLAN: IPlan = {
@@ -45,7 +46,7 @@ export const BUSINESS_PLAN: IPlan = {
 };
 
 interface IPlan {
-    id: string;
+    id: IPlanIDS;
     name: string;
     pricePerUserCloud: number;
     pricePerUserOnPremise: number;
@@ -127,10 +128,8 @@ function PaymentPlan(props: {
                 display: "flex",
                 flexDirection: "column",
                 border: "1px solid var(--border-color)",
-                background: "#fff",
                 borderRadius: 4,
                 flexBasis: "0",
-                color: "#333",
                 ...props.style
             }}
         >

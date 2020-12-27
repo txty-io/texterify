@@ -53,6 +53,7 @@ class Subscription < ApplicationRecord
     if IS_TEXTERIFY_CLOUD
       if VALID_PLANS.include?(plan)
         self.plan = plan
+        self.canceled = false
         save
 
         RestClient.put("#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/plan?organization_id=#{organization.id}&plan=#{plan}", {})
