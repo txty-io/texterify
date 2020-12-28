@@ -11,19 +11,27 @@ interface IProject {
     type: string;
 }
 
-interface IOrganization {
-    id: string;
-    attributes: IProjectAttributes;
-    relationships: any;
-    type: string;
-}
-
 interface IProjectAttributes {
     id: string;
     name: string;
     description: string;
     current_user_role?: string;
     current_user_role_source?: string;
+}
+
+interface IOrganization {
+    id: string;
+    attributes: IOrganizationAttributes;
+    relationships: any;
+    type: string;
+}
+
+interface IOrganizationAttributes {
+    id: string;
+    name: string;
+    current_user_role?: string;
+    trial_ends_at: string;
+    trial_active: boolean;
 }
 
 class DashboardStore {

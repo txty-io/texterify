@@ -192,8 +192,8 @@ function PaymentPlan(props: {
 export function Licenses(props: {
     hostingType: IHostingType;
     organizationId?: string;
-    selected: IPlan["id"];
-    onChangePlan(plan: IPlan): void;
+    selected?: IPlan["id"];
+    onChangePlan?(plan: IPlan): void;
 }) {
     return (
         <div

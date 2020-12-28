@@ -69,7 +69,6 @@ const Routes = {
             ROOT: "/dashboard/settings/",
             ACCOUNT: "/dashboard/settings/account",
             ACCESS_TOKENS: "/dashboard/settings/access-tokens",
-            SUBSCRIPTIONS: "/dashboard/settings/subscriptions",
             LICENSES: "/dashboard/settings/licenses"
         }
     }

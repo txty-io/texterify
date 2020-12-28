@@ -1,10 +1,12 @@
 import { Alert, Button, Card, Layout, message } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 import { ISubscription, OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
 import { MESSAGE_DURATION_IMPORTANT } from "../../configs/MessageDurations";
+import { Routes } from "../../routing/Routes";
 import { subscriptionService } from "../../services/SubscriptionService";
+import { dashboardStore } from "../../stores/DashboardStore";
 import { IPlanIDS } from "../../types/IPlan";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { Features } from "../../ui/Features";
@@ -88,6 +90,41 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                 <Breadcrumbs breadcrumbName="organizationSubscription" />
                 <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                     <h1>Subscription</h1>
+                    <p>
+                        Manage your subscription for the cloud version of Texterify. <br />
+                        If you want to host Texterify in your own infrastructure you can get a license{" "}
+                        <Link to={Routes.USER.SETTINGS.LICENSES}>here</Link>.
+                    </p>
+
+                    {dashboardStore.currentOrganization.attributes.trial_active && (
+                        <>
+                            <p style={{ marginTop: 24 }}>
+                                Your trial period ends on:{" "}
+                                <span style={{ fontWeight: "bold", marginLeft: 8 }}>
+                                    {dashboardStore.currentOrganization.attributes.trial_ends_at}
+                                </span>
+                            </p>
+                            {!this.state.subscription && (
+                                <Alert
+                                    showIcon
+                                    message={
+                                        <>
+                                            Your are currently on the trial period. You can experience all features
+                                            during the trial for free. Select a plan that fits your needs to continue
+                                            using the premium features after your trial end. If you have any questions
+                                            contact us by sending us an email to{" "}
+                                            <a href="mailto:support@texterify.com" target="_blank">
+                                                support@texterify.com
+                                            </a>
+                                            .
+                                        </>
+                                    }
+                                    type="info"
+                                    style={{ maxWidth: 560, marginBottom: 24 }}
+                                />
+                            )}
+                        </>
+                    )}
 
                     {this.state.subscription && (
                         <Card
@@ -175,9 +212,17 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
 
                     <div style={{ flexGrow: 1, maxWidth: 1000 }}>
                         <h3 style={{ marginTop: 24 }}>
-                            {this.state.subscription ? "Change your plan" : "Get a new license"}
+                            {this.state.subscription ? "Change your plan" : "Choose a plan"}
                         </h3>
-                        <p style={{ maxWidth: 480, marginTop: 16 }}>Select a subscription that fits your needs.</p>
+                        <p style={{ maxWidth: 480, marginTop: 16 }}>
+                            {dashboardStore.currentOrganization.attributes.trial_active &&
+                                !this.state.subscription &&
+                                "You are currently experiencing the trial period but you can already select a plan that fits your needs to continue using Texterify without interruptions. Your paid plan will start after your trial has ended."}
+                            {dashboardStore.currentOrganization.attributes.trial_active &&
+                                !this.state.subscription &&
+                                "Select a subscription that fits your needs."}
+                        </p>
+                        <p>You can upgrade, downgrade or cancel your plan at any time.</p>
                         <Licenses
                             hostingType="cloud"
                             organizationId={this.props.match.params.organizationId}
