@@ -278,4 +278,15 @@
       }
     }
   }
+
+  // Fix arrows of pagination controls not in the center
+  .ant-pagination {
+    display: flex;
+
+    .ant-pagination-item-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
 }

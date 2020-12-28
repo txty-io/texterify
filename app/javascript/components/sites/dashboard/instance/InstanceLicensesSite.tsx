@@ -126,7 +126,6 @@ export const InstanceLicensesSite = observer(() => {
                                         <FileTextOutlined
                                             style={{
                                                 fontSize: 26,
-                                                color: "#aaa",
                                                 marginRight: 10
                                             }}
                                         />
