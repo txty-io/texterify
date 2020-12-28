@@ -24,6 +24,7 @@ type IProps = RouteComponentProps;
 interface IState {
     organizationsResponse: any;
     addDialogVisible: boolean;
+    loading: boolean;
     perPage: number;
     page: number;
     search: string;
@@ -42,6 +43,7 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
     state: IState = {
         organizationsResponse: null,
         addDialogVisible: false,
+        loading: true,
         perPage: DEFAULT_PAGE_SIZE,
         page: 1,
         search: ""
@@ -64,11 +66,13 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
     };
 
     reloadTable = async (options?: any) => {
+        this.setState({ loading: true });
         const fetchOptions = options || {};
         fetchOptions.search = (options && options.search) || this.state.search;
         fetchOptions.page = (options && options.page) || this.state.page;
         fetchOptions.perPage = (options && options.perPage) || this.state.perPage;
         await this.fetchOrganizations(fetchOptions);
+        this.setState({ loading: false });
     };
 
     getRows = (): any[] => {
@@ -121,6 +125,7 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
                         </div>
 
                         <List
+                            loading={this.state.loading}
                             size="default"
                             locale={{
                                 emptyText: (
