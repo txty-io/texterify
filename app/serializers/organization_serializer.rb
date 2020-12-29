@@ -1,6 +1,6 @@
 class OrganizationSerializer
   include FastJsonapi::ObjectSerializer
-  attributes :id, :name
+  attributes :id, :name, :trial_active
   has_many :projects
 
   attribute :current_user_role, if: proc { |_, params| params[:current_user] } do |object, params|
@@ -16,11 +16,17 @@ class OrganizationSerializer
     end
   end
 
-  attribute :trial_active do |object|
-    if object.trial_ends_at.nil?
-      false
+  attribute :enabled_features do |object|
+    if object.subscription&.plan == Subscription::PLAN_TEAM
+      Organization::FEATURES_TEAM_PLAN
+    elsif object.subscription&.plan == Subscription::PLAN_BUSINESS
+      Organization::FEATURES_BUSINESS_PLAN
     else
-      Time.now.utc < object.trial_ends_at
+      []
     end
+  end
+
+  attribute :all_features do
+    Organization::FEATURES_PLANS
   end
 end

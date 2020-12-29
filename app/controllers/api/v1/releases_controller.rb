@@ -41,6 +41,8 @@ class Api::V1::ReleasesController < Api::V1::ApiController
     skip_authorization
 
     project = Project.find(params[:project_id])
+    return unless feature_enabled?(project, Organization::FEATURE_OTA)
+
     export_config = project.export_configs.find(params[:export_config_id])
 
     latest_release = export_config.latest_release
@@ -106,6 +108,8 @@ class Api::V1::ReleasesController < Api::V1::ApiController
 
   def create
     project = Project.find(params[:project_id])
+    return unless feature_enabled?(project, Organization::FEATURE_OTA)
+
     export_config = project.export_configs.find(params[:export_config_id])
 
     release = Release.new

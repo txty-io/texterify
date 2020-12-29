@@ -241,6 +241,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     end
 
     project = current_user.projects.find(params[:project_id])
+    return unless feature_enabled?(project, Organization::FEATURE_PROJECT_ACTIVITY)
 
     versions = PaperTrail::Version
       .where(project_id: project.id)

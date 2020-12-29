@@ -1,4 +1,5 @@
-import { Empty, Layout, Progress, Button } from "antd";
+import { PicRightOutlined } from "@ant-design/icons";
+import { Button, Empty, Layout, Progress } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -6,16 +7,15 @@ import { RouteComponentProps } from "react-router";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
+import { history } from "../../routing/history";
+import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Activity } from "../../ui/Activity";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import FlagIcon from "../../ui/FlagIcons";
 import { Loading } from "../../ui/Loading";
 import { ProjectAvatar } from "../../ui/ProjectAvatar";
-import { WhiteButton } from "../../ui/WhiteButton";
-import { history } from "../../routing/history";
-import { Routes } from "../../routing/Routes";
-import { ArrowRightOutlined, PicRightOutlined } from "@ant-design/icons";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -136,7 +136,12 @@ class ProjectSite extends React.Component<IProps, IState> {
                                 <div style={{ width: "50%", marginRight: 40 }}>{this.renderLanguagesProgress()}</div>
                                 <div style={{ width: "50%", marginLeft: 40 }}>
                                     <h3>Activity</h3>
-                                    <Activity activitiesResponse={this.state.projectActivityResponse} />
+                                    {!dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY") && (
+                                        <FeatureNotAvailable feature="FEATURE_EXPORT_HIERARCHY" />
+                                    )}
+                                    {dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY") && (
+                                        <Activity activitiesResponse={this.state.projectActivityResponse} />
+                                    )}
                                 </div>
                             </div>
                         </>

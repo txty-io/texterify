@@ -16,6 +16,7 @@ import { ColumnTag } from "../../ui/ColumnTag";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { EditableTable } from "../../ui/EditableTable";
 import { ErrorUtils } from "../../ui/ErrorUtils";
+import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { Loading } from "../../ui/Loading";
@@ -271,6 +272,14 @@ class KeysSite extends React.Component<IProps, IState> {
                         overlayClassName="popover-no-padding"
                         content={
                             <>
+                                {!dashboardStore.featureEnabled("FEATURE_HTML_EDITOR") && (
+                                    <div style={{ padding: "8px 16px" }}>
+                                        <FeatureNotAvailable
+                                            feature="FEATURE_HTML_EDITOR"
+                                            style={{ marginBottom: 0 }}
+                                        />
+                                    </div>
+                                )}
                                 <div style={{ padding: "8px 16px", display: "flex", alignItems: "center" }}>
                                     <div style={{ flexGrow: 1 }}>HTML</div>
                                     <Switch
@@ -280,7 +289,10 @@ class KeysSite extends React.Component<IProps, IState> {
                                             await this.changeHTMLEnabled(key);
                                             await this.reloadTable();
                                         }}
-                                        disabled={!PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())}
+                                        disabled={
+                                            !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole()) ||
+                                            !dashboardStore.featureEnabled("FEATURE_HTML_EDITOR")
+                                        }
                                     />
                                 </div>
                                 <div

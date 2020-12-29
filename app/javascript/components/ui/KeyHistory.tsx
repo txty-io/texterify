@@ -4,6 +4,8 @@ import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
 import { KeysAPI } from "../api/v1/KeysAPI";
 import { TranslationsAPI } from "../api/v1/TranslationsAPI";
+import { dashboardStore } from "../stores/DashboardStore";
+import { FeatureNotAvailable } from "./FeatureNotAvailable";
 import FlagIcon from "./FlagIcons";
 import { Loading } from "./Loading";
 import { Styles } from "./Styles";
@@ -27,7 +29,9 @@ class KeyHistory extends React.Component<IProps, IState> {
     };
 
     async componentDidMount() {
-        await this.reload();
+        if (dashboardStore.featureEnabled("FEATURE_KEY_HISTORY")) {
+            await this.reload();
+        }
     }
 
     reload = async () => {
@@ -173,6 +177,10 @@ class KeyHistory extends React.Component<IProps, IState> {
     };
 
     render() {
+        if (!dashboardStore.featureEnabled("FEATURE_KEY_HISTORY")) {
+            return <FeatureNotAvailable feature="FEATURE_KEY_HISTORY" />;
+        }
+
         if (!this.state.keyActivityResponse) {
             return <Loading />;
         }

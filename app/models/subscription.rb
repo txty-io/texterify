@@ -26,7 +26,10 @@ class Subscription < ApplicationRecord
   }
 
   ACCESS_GRANTING_STATUSES = %w[trialing active past_due].freeze
-  VALID_PLANS = %w[basic team business].freeze
+  PLAN_BASIC = 'basic'.freeze
+  PLAN_TEAM = 'team'.freeze
+  PLAN_BUSINESS = 'business'.freeze
+  VALID_PLANS = [PLAN_BASIC, PLAN_TEAM, PLAN_BUSINESS].freeze
 
   scope :active_or_trialing, -> { where(stripe_status: ACCESS_GRANTING_STATUSES) }
 

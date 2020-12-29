@@ -20,11 +20,19 @@ import { ProjectPostProcessingSite } from "../sites/dashboard/ProjectPostProcess
 import { ProjectValidationsSite } from "../sites/dashboard/ProjectValidationsSite";
 import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
 import { ProjectIntegrationsSite } from "../sites/dashboard/ProjectIntegrationsSite";
+import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
+interface IState {
+    loading: boolean;
+}
 
 @observer
-class ProjectRouter extends React.Component<IProps> {
+class ProjectRouter extends React.Component<IProps, IState> {
+    state: IState = {
+        loading: true
+    };
+
     async componentDidMount() {
         const getProjectResponse = await ProjectsAPI.getProject(this.props.match.params.projectId);
         if (getProjectResponse.errors) {
@@ -32,7 +40,12 @@ class ProjectRouter extends React.Component<IProps> {
         } else {
             dashboardStore.currentProject = getProjectResponse.data;
             dashboardStore.currentProjectIncluded = getProjectResponse.included;
+
+            if (getProjectResponse.data.relationships.organization.data) {
+                await this.fetchOrganization(getProjectResponse.data.relationships.organization.data.id);
+            }
         }
+        this.setState({ loading: false });
     }
 
     componentWillUnmount() {
@@ -40,8 +53,19 @@ class ProjectRouter extends React.Component<IProps> {
         dashboardStore.currentProjectIncluded = null;
     }
 
+    fetchOrganization = async (organizationId: string) => {
+        const getOrganizationResponse = await OrganizationsAPI.getOrganization(organizationId);
+        if (getOrganizationResponse.errors) {
+            this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
+        } else {
+            dashboardStore.currentOrganization = getOrganizationResponse.data;
+        }
+
+        this.forceUpdate();
+    };
+
     render() {
-        if (this.isInvalidProject()) {
+        if (this.isInvalidProject() || this.state.loading) {
             return <LoadingOverlay isVisible loadingText="App is loading..." />;
         }
 

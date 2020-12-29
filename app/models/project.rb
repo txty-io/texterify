@@ -47,4 +47,12 @@ class Project < ApplicationRecord
       'organization'
     end
   end
+
+  def feature_enabled?(feature)
+    if organization
+      organization.feature_enabled?(feature)
+    else
+      false
+    end
+  end
 end

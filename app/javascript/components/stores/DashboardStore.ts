@@ -2,6 +2,7 @@ import * as localforage from "localforage";
 import { observable } from "mobx";
 import { create, persist } from "mobx-persist";
 import { APIUtils } from "../api/v1/APIUtils";
+import { IPlanIDS } from "../types/IPlan";
 import { DEFAULT_PAGE_SIZE } from "../ui/Config";
 
 interface IProject {
@@ -19,7 +20,21 @@ interface IProjectAttributes {
     current_user_role_source?: string;
 }
 
-interface IOrganization {
+export type IFeature =
+    | "FEATURE_VALIDATIONS"
+    | "FEATURE_KEY_HISTORY"
+    | "FEATURE_EXPORT_HIERARCHY"
+    | "FEATURE_POST_PROCESSING"
+    | "FEATURE_PROJECT_ACTIVITY"
+    | "FEATURE_TAG_MANAGEMENT"
+    | "FEATURE_ADVANCED_PERMISSION_SYSTEM"
+    | "FEATURE_OTA"
+    | "FEATURE_HTML_EDITOR"
+    | "FEATURE_TEMPLATES"
+    | "FEATURE_PROJECT_GROUPS"
+    | "FEATURE_MACHINE_TRANSLATIONS";
+
+export interface IOrganization {
     id: string;
     attributes: IOrganizationAttributes;
     relationships: any;
@@ -32,12 +47,14 @@ interface IOrganizationAttributes {
     current_user_role?: string;
     trial_ends_at: string;
     trial_active: boolean;
+    enabled_features: IFeature[];
+    all_features: { [k in IFeature]: IPlanIDS[] };
 }
 
 class DashboardStore {
     @observable currentProject: IProject = null;
     @observable currentProjectIncluded: any = null;
-    @observable currentOrganization: IOrganization = null;
+    @observable currentOrganization?: IOrganization = null;
     @observable @persist sidebarMinimized: boolean;
     @observable @persist keysPerPage = DEFAULT_PAGE_SIZE;
     @observable hydrationFinished = false;
@@ -68,6 +85,10 @@ class DashboardStore {
     getCurrentOrganizationRole = () => {
         return this.currentOrganization && this.currentOrganization.attributes.current_user_role;
     };
+
+    featureEnabled(feature: IFeature) {
+        return this.currentOrganization?.attributes.enabled_features.includes(feature);
+    }
 }
 
 const hydrate: any = create({

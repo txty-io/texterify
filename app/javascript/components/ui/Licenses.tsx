@@ -27,7 +27,19 @@ export const TEAM_PLAN: IPlan = {
     name: "Team",
     pricePerUserCloud: 19,
     pricePerUserOnPremise: 14,
-    features: ["Validations", "History", "Export hierarchy", "Post processing", "Activity overview", "Tag management"]
+    features: [
+        "Unlimited projects",
+        "Unlimited keys",
+        "Unlimited translations",
+        "Unlimited languages",
+        "Basic permission system",
+        "Validations",
+        "History",
+        "Export hierarchy",
+        "Post processing",
+        "Activity overview"
+        // "Tag management"
+    ]
 };
 
 export const BUSINESS_PLAN: IPlan = {
@@ -36,12 +48,23 @@ export const BUSINESS_PLAN: IPlan = {
     pricePerUserCloud: 39,
     pricePerUserOnPremise: 31,
     features: [
-        "Advanced permission system",
+        "Unlimited projects",
+        "Unlimited keys",
+        "Unlimited translations",
+        "Unlimited languages",
+        "Basic permission system",
+        "Validations",
+        "History",
+        "Export hierarchy",
+        "Post processing",
+        "Activity overview",
+        // "Tag management",
+        // "Advanced permission system",
         "OTA",
-        "HTML editor",
-        "Templates",
-        "Project groups",
-        "Machine translations"
+        "HTML editor"
+        // "Templates",
+        // "Project groups",
+        // "Machine translations"
     ]
 };
 

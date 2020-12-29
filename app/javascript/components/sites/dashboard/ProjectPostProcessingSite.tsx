@@ -10,6 +10,7 @@ import { AddEditPostProcessingRuleForm } from "../../forms/AddEditPostProcessing
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
+import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
@@ -158,6 +159,7 @@ class ProjectPostProcessingSite extends React.Component<IProps, IState> {
                             onClick={() => {
                                 this.onEditRuleClick(rule);
                             }}
+                            disabled={!dashboardStore.featureEnabled("FEATURE_POST_PROCESSING")}
                         >
                             Edit
                         </Button>
@@ -231,6 +233,9 @@ class ProjectPostProcessingSite extends React.Component<IProps, IState> {
                             Create modification rules that are applied on your translations at export time. The rules
                             are applied ordered by name as shown in the table below.
                         </p>
+                        {!dashboardStore.featureEnabled("FEATURE_POST_PROCESSING") && (
+                            <FeatureNotAvailable feature="FEATURE_POST_PROCESSING" />
+                        )}
                         <div style={{ display: "flex" }}>
                             <div style={{ flexGrow: 1 }}>
                                 <Button
@@ -239,7 +244,10 @@ class ProjectPostProcessingSite extends React.Component<IProps, IState> {
                                     onClick={() => {
                                         this.setState({ addDialogVisible: true });
                                     }}
-                                    disabled={!PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())}
+                                    disabled={
+                                        !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole()) ||
+                                        !dashboardStore.featureEnabled("FEATURE_POST_PROCESSING")
+                                    }
                                 >
                                     Create rule
                                 </Button>

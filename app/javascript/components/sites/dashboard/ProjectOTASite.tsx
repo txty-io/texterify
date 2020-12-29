@@ -13,6 +13,7 @@ import * as _ from "lodash";
 import { TableRowSelection } from "antd/lib/table/interface";
 import FlagIcon from "../../ui/FlagIcons";
 import * as moment from "moment";
+import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -244,6 +245,8 @@ class ProjectOTASite extends React.Component<IProps, IState> {
                             store.
                         </p>
 
+                        {!dashboardStore.featureEnabled("FEATURE_OTA") && <FeatureNotAvailable feature="FEATURE_OTA" />}
+
                         <div style={{ display: "flex" }}>
                             <div style={{ flexGrow: 1 }}>
                                 <Button
@@ -252,7 +255,10 @@ class ProjectOTASite extends React.Component<IProps, IState> {
                                         this.setState({ addDialogVisible: true });
                                     }}
                                     style={{ marginRight: 8 }}
-                                    disabled={!PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())}
+                                    disabled={
+                                        !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole()) ||
+                                        !dashboardStore.featureEnabled("FEATURE_OTA")
+                                    }
                                 >
                                     Create release
                                 </Button>

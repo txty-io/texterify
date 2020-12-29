@@ -55,6 +55,8 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     end
 
     if params[:parent].present?
+      return unless feature_enabled?(project, Organization::FEATURE_EXPORT_HIERARCHY)
+
       language.parent = project.languages.find(params[:parent])
     end
 
@@ -110,7 +112,9 @@ class Api::V1::LanguagesController < Api::V1::ApiController
       language.is_default = params[:is_default]
     end
 
-    if params.key? :parent
+    if params.key?(:parent)
+      return unless feature_enabled?(project, Organization::FEATURE_EXPORT_HIERARCHY)
+
       if params[:parent].present?
         language.parent = project.languages.find(params[:parent])
       else

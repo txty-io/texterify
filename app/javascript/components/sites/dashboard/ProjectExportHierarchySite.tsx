@@ -4,7 +4,9 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
+import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import FlagIcon from "../../ui/FlagIcons";
 const { Content } = Layout;
 
@@ -203,6 +205,10 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
                         is traversed upwards until a translation has been found or the end is reached.
                     </p>
 
+                    {!dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY") && (
+                        <FeatureNotAvailable feature="FEATURE_EXPORT_HIERARCHY" />
+                    )}
+
                     <div
                         style={{
                             border: "1px solid var(--border-color)",
@@ -216,6 +222,7 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
                                 onDrop={this.onDrop}
                                 expandedKeys={this.state.expandedKeys}
                                 showIcon
+                                disabled={!dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY")}
                                 onExpand={(expandedKeys: string[], options: { expanded?: boolean; node: any }) => {
                                     if (options.expanded) {
                                         expandedKeys.push(options.node.props.eventKey);

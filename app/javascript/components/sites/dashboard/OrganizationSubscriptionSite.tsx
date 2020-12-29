@@ -40,6 +40,10 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
         const subscription = await subscriptionService.getActiveSubscription(this.props.match.params.organizationId, {
             forceReload: true
         });
+        const getOrganizationResponse = await OrganizationsAPI.getOrganization(this.props.match.params.organizationId);
+        if (!getOrganizationResponse.errors) {
+            dashboardStore.currentOrganization = getOrganizationResponse.data;
+        }
         this.setState({
             subscription: subscription,
             loading: false

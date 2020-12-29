@@ -16,6 +16,7 @@ class Api::V1::PostProcessingRulesController < Api::V1::ApiController
 
   def create
     project = current_user.projects.find(params[:project_id])
+    return unless feature_enabled?(project, Organization::FEATURE_POST_PROCESSING)
 
     post_processing_rule = PostProcessingRule.new(post_processing_rule_params)
     post_processing_rule.project = project
@@ -64,6 +65,7 @@ class Api::V1::PostProcessingRulesController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     post_processing_rule = project.post_processing_rules.find(params[:id])
     authorize post_processing_rule
+    return unless feature_enabled?(project, Organization::FEATURE_POST_PROCESSING)
 
     # Update export config
     if params[:export_config_id].present?
