@@ -33,4 +33,21 @@ class ProjectSerializer
       organization_user ? 'organization' : nil
     end
   end
+
+  attribute :enabled_features do |object|
+    if object.organization&.subscription&.plan == Subscription::PLAN_TEAM
+      Organization::FEATURES_TEAM_PLAN
+    elsif object.organization&.subscription&.plan == Subscription::PLAN_BUSINESS
+      Organization::FEATURES_BUSINESS_PLAN
+    elsif !License.all.empty?
+      license = License.all.order(created_at: :desc).first
+      license.license.restrictions[:features]
+    else
+      []
+    end
+  end
+
+  attribute :all_features do
+    Organization::FEATURES_PLANS
+  end
 end

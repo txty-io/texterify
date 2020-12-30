@@ -65,7 +65,10 @@ class Organization < ApplicationRecord
 
   def feature_enabled?(feature)
     feature_allowed_plans = FEATURES_PLANS[feature]
+    license = License.all.order(created_at: :desc).first
 
-    return trial_active || (subscription && feature_allowed_plans.include?(subscription.plan))
+    return trial_active ||
+           (subscription && feature_allowed_plans.include?(subscription.plan)) ||
+           license.license.restrictions[:features].include?(feature.to_s)
   end
 end

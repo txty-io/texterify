@@ -5,7 +5,7 @@ import { APIUtils } from "../api/v1/APIUtils";
 import { IPlanIDS } from "../types/IPlan";
 import { DEFAULT_PAGE_SIZE } from "../ui/Config";
 
-interface IProject {
+export interface IProject {
     id: string;
     attributes: IProjectAttributes;
     relationships: any;
@@ -18,6 +18,8 @@ interface IProjectAttributes {
     description: string;
     current_user_role?: string;
     current_user_role_source?: string;
+    enabled_features: IFeature[];
+    all_features: { [k in IFeature]: IPlanIDS[] };
 }
 
 export type IFeature =
@@ -87,7 +89,7 @@ class DashboardStore {
     };
 
     featureEnabled(feature: IFeature) {
-        return this.currentOrganization?.attributes.enabled_features.includes(feature);
+        return this.currentProject?.attributes.enabled_features.includes(feature);
     }
 }
 

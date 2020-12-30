@@ -40,10 +40,6 @@ class ProjectRouter extends React.Component<IProps, IState> {
         } else {
             dashboardStore.currentProject = getProjectResponse.data;
             dashboardStore.currentProjectIncluded = getProjectResponse.included;
-
-            if (getProjectResponse.data.relationships.organization.data) {
-                await this.fetchOrganization(getProjectResponse.data.relationships.organization.data.id);
-            }
         }
         this.setState({ loading: false });
     }
