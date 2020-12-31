@@ -42,18 +42,27 @@ hydrate("generalStore", generalStore)
     .then(() => {
         console.log("[GeneralStore] Hydrated from store successfully.");
 
+        const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
+
         if (!generalStore.theme) {
-            if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            if (matchMedia && matchMedia.matches) {
                 generalStore.theme = "dark";
             } else {
                 generalStore.theme = "light";
             }
         }
 
-        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+        const changeFunction = (e) => {
             console.log("[GeneralStore] Theme change detected.");
             generalStore.theme = e.matches ? "dark" : "light";
-        });
+        };
+
+        if (matchMedia && matchMedia.addEventListener) {
+            matchMedia.addEventListener("change", changeFunction);
+        } else if (matchMedia && matchMedia.addListener) {
+            // needed for Safari
+            matchMedia.addListener(changeFunction);
+        }
 
         generalStore.hydrationFinished = true;
     })

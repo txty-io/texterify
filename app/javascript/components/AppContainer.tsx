@@ -22,21 +22,30 @@ class AppContainer extends React.Component {
             return;
         }
 
-        const dark = window.matchMedia("(prefers-color-scheme: dark)");
+        const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
 
-        if (dark.matches) {
-            setFavicon("dark");
-        } else {
-            setFavicon("light");
-        }
-
-        dark.addEventListener("change", (e) => {
-            if (e.matches) {
+        if (matchMedia) {
+            if (matchMedia.matches) {
                 setFavicon("dark");
             } else {
                 setFavicon("light");
             }
-        });
+
+            const onChangeFunction = (e) => {
+                if (e.matches) {
+                    setFavicon("dark");
+                } else {
+                    setFavicon("light");
+                }
+            };
+
+            if (matchMedia.addEventListener) {
+                matchMedia.addEventListener("change", onChangeFunction);
+            } else if (matchMedia.addListener) {
+                // needed for Safari
+                matchMedia.addListener(onChangeFunction);
+            }
+        }
     }
 
     render() {
