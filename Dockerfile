@@ -1,6 +1,3 @@
-# Required environment variables:
-# - SECRET_KEY_BASE
-
 FROM ruby:2.7.1
 SHELL ["/bin/bash", "-c"]
 
