@@ -5,7 +5,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
     unless test.metadata[:skip_before]
       @user = FactoryBot.create(:user)
       @auth_params = sign_in(@user)
-      @project = FactoryBot.create(:project)
+      @project = FactoryBot.create(:project, :with_organization)
       FactoryBot.create(:project_user, project_id: @project.id, user_id: @user.id, role: 'owner')
     end
   end
@@ -22,7 +22,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
     end
 
     it 'has status code 403 if not logged in', :skip_before do
-      project = FactoryBot.create(:project)
+      project = FactoryBot.create(:project, :with_organization)
       get "/api/v1/projects/#{project.id}/members"
       expect(response.status).to eq(403)
     end
@@ -195,7 +195,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
     end
 
     it 'has status code 403 if not logged in', :skip_before do
-      project = FactoryBot.create(:project)
+      project = FactoryBot.create(:project, :with_organization)
       user_developer = FactoryBot.create(:user)
       project_user_developer = FactoryBot.create(:project_user, project_id: project.id, user_id: user_developer.id, role: 'developer')
       put "/api/v1/projects/#{project.id}/members/#{project_user_developer.user_id}"
@@ -203,7 +203,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
     end
 
     it 'has status code 400 if no role is given' do
-      project = FactoryBot.create(:project)
+      project = FactoryBot.create(:project, :with_organization)
       user_developer = FactoryBot.create(:user)
       project_user_developer = FactoryBot.create(:project_user, project_id: project.id, user_id: user_developer.id, role: 'developer')
       put "/api/v1/projects/#{@project.id}/members/#{project_user_developer.user_id}", headers: @auth_params

@@ -4,7 +4,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
   before(:each) do
     @user = FactoryBot.create(:user)
     @auth_params = sign_in(@user)
-    @project = FactoryBot.create(:project)
+    @project = FactoryBot.create(:project, :with_organization)
     @export_config = FactoryBot.create(:export_config, project_id: @project.id)
     @export_config.save!
 

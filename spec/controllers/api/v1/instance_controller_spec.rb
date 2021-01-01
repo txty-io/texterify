@@ -11,9 +11,9 @@ RSpec.describe Api::V1::InstanceController, type: :request do
       @user_superadmin.save!
       @auth_params_superadmin = sign_in(@user_superadmin)
 
-      FactoryBot.create(:project)
-      FactoryBot.create(:project)
-      FactoryBot.create(:project)
+      FactoryBot.create(:project, :with_organization)
+      FactoryBot.create(:project, :with_organization)
+      FactoryBot.create(:project, :with_organization)
       FactoryBot.create(:organization)
       FactoryBot.create(:organization)
       FactoryBot.create(:organization)
@@ -50,7 +50,7 @@ RSpec.describe Api::V1::InstanceController, type: :request do
       body = JSON.parse(response.body)
       expect(body['users_count']).to eq(2)
       expect(body['projects_count']).to eq(3)
-      expect(body['organizations_count']).to eq(4)
+      expect(body['organizations_count']).to eq(7)
     end
   end
 end

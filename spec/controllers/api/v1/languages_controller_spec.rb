@@ -4,7 +4,7 @@ RSpec.describe Api::V1::LanguagesController, type: :request do
   before(:each) do
     @user = FactoryBot.create(:user)
     @auth_params = sign_in(@user)
-    @project = FactoryBot.create(:project)
+    @project = FactoryBot.create(:project, :with_organization)
 
     project_user = ProjectUser.new
     project_user.project = @project

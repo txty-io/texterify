@@ -108,13 +108,13 @@ class Api::V1::ReleasesController < Api::V1::ApiController
 
   def create
     project = Project.find(params[:project_id])
-    return unless feature_enabled?(project, Organization::FEATURE_OTA)
 
     export_config = project.export_configs.find(params[:export_config_id])
 
     release = Release.new
     release.export_config = export_config
     authorize release
+    return unless feature_enabled?(project, Organization::FEATURE_OTA)
 
     if project.languages.where.not(language_code: nil).empty?
       render json: {

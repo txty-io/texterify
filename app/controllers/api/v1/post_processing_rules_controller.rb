@@ -16,7 +16,6 @@ class Api::V1::PostProcessingRulesController < Api::V1::ApiController
 
   def create
     project = current_user.projects.find(params[:project_id])
-    return unless feature_enabled?(project, Organization::FEATURE_POST_PROCESSING)
 
     post_processing_rule = PostProcessingRule.new(post_processing_rule_params)
     post_processing_rule.project = project
@@ -27,6 +26,7 @@ class Api::V1::PostProcessingRulesController < Api::V1::ApiController
     end
 
     authorize post_processing_rule
+    return unless feature_enabled?(project, Organization::FEATURE_POST_PROCESSING)
 
     if post_processing_rule.save
       render json: PostProcessingRuleSerializer.new(post_processing_rule).serialized_json
