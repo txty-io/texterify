@@ -8,7 +8,6 @@ jobs:
     test:
         runs-on: ubuntu-latest
         env:
-          COMMIT_HASH: $GITHUB_SHA
           DB_TEST_HOST: db
           DB_TEST_USERNAME: postgres
           SECRET_KEY_BASE: 8dfc55709e6daaf5d7b2ce70e247374400f47db2e4b6867f67821290b440a0acbe931d5f4d9687f386e5aae3f0377da533450058e131b37dbc16b692c296c941
@@ -40,10 +39,10 @@ jobs:
                   username: ${{ secrets.DOCKERHUB_USERNAME }}
                   password: ${{ secrets.DOCKERHUB_TOKEN }}
             - name: Build the Docker image
-              run: docker build . --file Dockerfile --tag chrztoph/texterify:${{ env.COMMIT_HASH }}
+              run: docker build . --file Dockerfile --tag chrztoph/texterify:$GITHUB_SHA
             - name: Tag image also as latest
-              run: docker tag chrztoph/texterify:${{ env.COMMIT_HASH }} chrztoph/texterify:latest
+              run: docker tag chrztoph/texterify:$GITHUB_SHA chrztoph/texterify:latest
             - name: Push images
               run: |
-                  docker push chrztoph/texterify:${{ env.COMMIT_HASH }}
+                  docker push chrztoph/texterify:$GITHUB_SHA
                   docker push chrztoph/texterify:latest

@@ -13,14 +13,14 @@ services:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - DB_TEST_HOST=${DB_TEST_HOST}
       - DB_TEST_USERNAME=${DB_TEST_USERNAME}
-    image: chrztoph/texterify:${COMMIT_HASH}
+    image: chrztoph/texterify:${$GITHUB_SHA}
     build:
       context: .
       args:
         SENTRY_SOURCE_MAPS_AUTH_TOKEN: ${SENTRY_SOURCE_MAPS_AUTH_TOKEN}
         SENTRY_SOURCE_MAPS_ORGANIZATION: ${SENTRY_SOURCE_MAPS_ORGANIZATION}
         SENTRY_SOURCE_MAPS_PROJECT: ${SENTRY_SOURCE_MAPS_PROJECT}
-        COMMIT_HASH: ${COMMIT_HASH}
+        COMMIT_HASH: ${$GITHUB_SHA}
       dockerfile: Dockerfile
     depends_on:
       - db
