@@ -1,0 +1,41 @@
+name: Build & Push
+
+on:
+    push:
+        branches: [master]
+    pull_request:
+        branches: [master]
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: Setup test environment
+              run: docker-compose up -d
+              run: docker-compose exec app bundle exec rails db:create db:migrate db:seed RAILS_ENV=test
+              run: docker-compose exec app bundle install --with test
+              env:
+                SECRET_KEY_BASE=8dfc55709e6daaf5d7b2ce70e247374400f47db2e4b6867f67821290b440a0acbe931d5f4d9687f386e5aae3f0377da533450058e131b37dbc16b692c296c941
+                DB_TEST_HOST=db
+                DB_TEST_USERNAME=postgres
+                COMMIT_HASH=$GITHUB_SHA
+            - name: Run linters and tests
+              run: docker-compose exec app yarn lint
+              run: docker-compose exec app yarn test
+              run: docker-compose exec app yarn check:database-consistency:test
+              run: docker-compose exec app bundle exec rails db:drop RAILS_ENV=test
+            - name: Login to DockerHub
+              uses: docker/login-action@v1
+              with:
+                  username: ${{ secrets.DOCKERHUB_USERNAME }}
+                  password: ${{ secrets.DOCKERHUB_TOKEN }}
+            - name: Build the Docker image
+              run: docker build . --file Dockerfile --tag chrztoph/texterify:$GITHUB_SHA
+            - name: Tag image also as latest
+              run: docker tag chrztoph/texterify:$GITHUB_SHA chrztoph/texterify:latest
+            - name: Push images
+              run: |
+                  docker push chrztoph/texterify:$GITHUB_SHA
+                  docker push chrztoph/texterify:latest
