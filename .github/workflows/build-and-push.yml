@@ -19,10 +19,10 @@ jobs:
             - name: Install test dependencies
               run: docker-compose exec app bundle install --with test
               env:
-                SECRET_KEY_BASE=8dfc55709e6daaf5d7b2ce70e247374400f47db2e4b6867f67821290b440a0acbe931d5f4d9687f386e5aae3f0377da533450058e131b37dbc16b692c296c941
-                DB_TEST_HOST=db
-                DB_TEST_USERNAME=postgres
-                COMMIT_HASH=$GITHUB_SHA
+                SECRET_KEY_BASE: 8dfc55709e6daaf5d7b2ce70e247374400f47db2e4b6867f67821290b440a0acbe931d5f4d9687f386e5aae3f0377da533450058e131b37dbc16b692c296c941
+                DB_TEST_HOST: db
+                DB_TEST_USERNAME: postgres
+                COMMIT_HASH: $GITHUB_SHA
             - name: Run linters
               run: docker-compose exec app yarn lint
             - name: Run tests
