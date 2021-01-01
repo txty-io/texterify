@@ -40,10 +40,10 @@ jobs:
                   username: ${{ secrets.DOCKERHUB_USERNAME }}
                   password: ${{ secrets.DOCKERHUB_TOKEN }}
             - name: Build the Docker image
-              run: docker build . --file Dockerfile --tag chrztoph/texterify:$COMMIT_HASH
+              run: docker build . --file Dockerfile --tag chrztoph/texterify:${{ env.COMMIT_HASH }}
             - name: Tag image also as latest
-              run: docker tag chrztoph/texterify:$COMMIT_HASH chrztoph/texterify:latest
+              run: docker tag chrztoph/texterify:${{ env.COMMIT_HASH }} chrztoph/texterify:latest
             - name: Push images
               run: |
-                  docker push chrztoph/texterify:$COMMIT_HASH
+                  docker push chrztoph/texterify:${{ env.COMMIT_HASH }}
                   docker push chrztoph/texterify:latest
