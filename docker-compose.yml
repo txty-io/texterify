@@ -13,7 +13,7 @@ services:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - DB_TEST_HOST=${DB_TEST_HOST}
       - DB_TEST_USERNAME=${DB_TEST_USERNAME}
-    image: chrztoph/texterify:${TRAVIS_COMMIT}
+    image: chrztoph/texterify:${COMMIT_HASH}
     build:
       context: .
       args:
