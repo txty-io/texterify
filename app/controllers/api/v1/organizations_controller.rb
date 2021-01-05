@@ -51,7 +51,9 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
   def create
     skip_authorization
     organization = Organization.new(organization_params)
-    organization.trial_ends_at = (Time.now.utc + 7.days).end_of_day
+    if IS_TEXTERIFY_CLOUD
+      organization.trial_ends_at = (Time.now.utc + 7.days).end_of_day
+    end
 
     ActiveRecord::Base.transaction do
       unless organization.save
