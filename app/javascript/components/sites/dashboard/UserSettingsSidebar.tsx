@@ -8,6 +8,7 @@ interface INavigationData {
     icon: any;
     path: string;
     text: string;
+    texterifyCloudOnly: boolean;
 }
 
 type IProps = RouteComponentProps;
@@ -20,17 +21,20 @@ class UserSettingsSidebar extends React.Component<IProps, IState> {
         {
             icon: UserOutlined,
             path: Routes.USER.SETTINGS.ACCOUNT,
-            text: "Account"
+            text: "Account",
+            texterifyCloudOnly: false
         },
         {
             icon: LockOutlined,
             path: Routes.USER.SETTINGS.ACCESS_TOKENS,
-            text: "Access tokens"
+            text: "Access tokens",
+            texterifyCloudOnly: false
         },
         {
             icon: SolutionOutlined,
             path: Routes.USER.SETTINGS.LICENSES,
-            text: "Licenses"
+            text: "Licenses",
+            texterifyCloudOnly: true
         }
     ];
 
@@ -39,14 +43,22 @@ class UserSettingsSidebar extends React.Component<IProps, IState> {
     };
 
     renderMenuItems = (): JSX.Element[] => {
-        return this.navigationData.map((data: INavigationData, index: number) => {
-            return (
-                <Menu.Item key={index}>
-                    <data.icon />
-                    <Link to={data.path}>{data.text}</Link>
-                </Menu.Item>
-            );
-        });
+        return this.navigationData
+            .filter((data) => {
+                if (data.texterifyCloudOnly && process.env.PROPRIETARY_MODE !== "true") {
+                    return false;
+                } else {
+                    return true;
+                }
+            })
+            .map((data: INavigationData, index: number) => {
+                return (
+                    <Menu.Item key={index}>
+                        <data.icon />
+                        <Link to={data.path}>{data.text}</Link>
+                    </Menu.Item>
+                );
+            });
     };
 
     getSelectedItem = (): string[] => {

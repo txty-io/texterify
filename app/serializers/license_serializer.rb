@@ -14,6 +14,10 @@ class LicenseSerializer
     license.license.expires_at
   end
 
+  attribute :plan do |license|
+    license.license.plan
+  end
+
   attribute :restrictions do |license|
     license.license.restrictions
   end

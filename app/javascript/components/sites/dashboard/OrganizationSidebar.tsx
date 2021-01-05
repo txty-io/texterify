@@ -21,6 +21,7 @@ interface INavigationData {
     icon: any;
     path: string;
     text: string;
+    texterifyCloudOnly: boolean;
 }
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
@@ -34,7 +35,8 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
         {
             icon: HomeOutlined,
             path: Routes.DASHBOARD.ORGANIZATION.replace(":organizationId", this.props.match.params.organizationId),
-            text: "Overview"
+            text: "Overview",
+            texterifyCloudOnly: false
         },
         {
             icon: TeamOutlined,
@@ -42,7 +44,8 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                 ":organizationId",
                 this.props.match.params.organizationId
             ),
-            text: "Members"
+            text: "Members",
+            texterifyCloudOnly: false
         },
         {
             icon: ToolOutlined,
@@ -50,7 +53,8 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                 ":organizationId",
                 this.props.match.params.organizationId
             ),
-            text: "Settings"
+            text: "Settings",
+            texterifyCloudOnly: false
         },
         {
             icon: ReloadOutlined,
@@ -58,7 +62,8 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                 ":organizationId",
                 this.props.match.params.organizationId
             ),
-            text: "Subscription"
+            text: "Subscription",
+            texterifyCloudOnly: true
         }
     ];
 
@@ -90,16 +95,24 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                     </span>
                 </Link>
             </Menu.Item>,
-            ...this.navigationData.map((data: INavigationData, index: number) => {
-                return (
-                    <Menu.Item key={index} title={data.text}>
-                        <Link to={data.path}>
-                            <data.icon />
-                            <span>{data.text}</span>
-                        </Link>
-                    </Menu.Item>
-                );
-            })
+            ...this.navigationData
+                .filter((data) => {
+                    if (data.texterifyCloudOnly && process.env.PROPRIETARY_MODE !== "true") {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                })
+                .map((data: INavigationData, index: number) => {
+                    return (
+                        <Menu.Item key={index} title={data.text}>
+                            <Link to={data.path}>
+                                <data.icon />
+                                <span>{data.text}</span>
+                            </Link>
+                        </Menu.Item>
+                    );
+                })
         ];
     };
 
