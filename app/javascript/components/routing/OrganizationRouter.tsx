@@ -9,6 +9,7 @@ import { OrganizationSubscriptionSite } from "../sites/dashboard/OrganizationSub
 import { dashboardStore } from "../stores/DashboardStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { PrivateRoute } from "./PrivateRoute";
+import { PrivateRouteTexterifyCloud } from "./PrivateRouteTexterifyCloud";
 import { Routes } from "./Routes";
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
@@ -49,7 +50,7 @@ class OrganizationRouter extends React.Component<IProps> {
                         path={Routes.DASHBOARD.ORGANIZATION_SETTINGS}
                         component={OrganizationSettingsSite}
                     />
-                    <PrivateRoute
+                    <PrivateRouteTexterifyCloud
                         exact
                         path={Routes.DASHBOARD.ORGANIZATION_SUBSCRIPTION}
                         component={OrganizationSubscriptionSite}

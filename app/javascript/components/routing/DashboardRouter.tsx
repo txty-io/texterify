@@ -25,6 +25,7 @@ import { history } from "./history";
 import { InstanceRouter } from "./InstanceRouter";
 import { OrganizationRouter } from "./OrganizationRouter";
 import { PrivateRoute } from "./PrivateRoute";
+import { PrivateRouteTexterifyCloud } from "./PrivateRouteTexterifyCloud";
 import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
 import { SuperadminRoute } from "./SuperadminRoute";
@@ -258,7 +259,11 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 path={Routes.USER.SETTINGS.ACCESS_TOKENS}
                                 component={UserAccessTokensSettingsSite}
                             />
-                            <PrivateRoute exact path={Routes.USER.SETTINGS.LICENSES} component={UserLicensesSite} />
+                            <PrivateRouteTexterifyCloud
+                                exact
+                                path={Routes.USER.SETTINGS.LICENSES}
+                                component={UserLicensesSite}
+                            />
                             <PrivateRoute
                                 exact
                                 path={Routes.DASHBOARD.ROOT}
