@@ -1,13 +1,18 @@
 import { Alert } from "antd";
 import * as React from "react";
 import { Link } from "react-router-dom";
+import { APIUtils } from "../api/v1/APIUtils";
 import { Routes } from "../routing/Routes";
 import { dashboardStore, IFeature } from "../stores/DashboardStore";
+import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
 import { PermissionUtils } from "../utilities/PermissionUtils";
+import { Constants } from "./Constants";
 import { Utils } from "./Utils";
 
 export function FeatureNotAvailable(props: { feature: IFeature; style?: React.CSSProperties }) {
-    if (!dashboardStore.currentProject.relationships.organization.data) {
+    const currentOrganizationRelationship = dashboardStore.currentProject.relationships.organization.data;
+
+    if (!currentOrganizationRelationship) {
         return (
             <Alert
                 showIcon
@@ -23,7 +28,12 @@ export function FeatureNotAvailable(props: { feature: IFeature; style?: React.CS
         );
     }
 
-    const featureAvailableInPlans = dashboardStore.currentOrganization.attributes.all_features[props.feature];
+    const currentOrganization = APIUtils.getIncludedObject(
+        currentOrganizationRelationship,
+        dashboardStore.currentProjectIncluded
+    );
+
+    const featureAvailableInPlans = currentOrganization.attributes.all_features[props.feature];
     const capitalizedFeatureAvailableInPlans = featureAvailableInPlans.map((plan) => {
         return (
             <span key={plan} style={{ fontWeight: "bold", marginRight: 8 }}>
@@ -39,14 +49,20 @@ export function FeatureNotAvailable(props: { feature: IFeature; style?: React.CS
                 <>
                     This feature is not available on your current plan. Please{" "}
                     {PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) ? (
-                        <Link
-                            to={Routes.DASHBOARD.ORGANIZATION_SUBSCRIPTION.replace(
-                                ":organizationId",
-                                dashboardStore.currentOrganization.id
-                            )}
-                        >
-                            upgrade
-                        </Link>
+                        IS_TEXTERIFY_CLOUD ? (
+                            <Link
+                                to={Routes.DASHBOARD.ORGANIZATION_SUBSCRIPTION.replace(
+                                    ":organizationId",
+                                    currentOrganization.id
+                                )}
+                            >
+                                upgrade
+                            </Link>
+                        ) : (
+                            <a href={Constants.TEXTERIFY_PRICING_SITE} target="_blank">
+                                upgrade
+                            </a>
+                        )
                     ) : (
                         "upgrade"
                     )}{" "}

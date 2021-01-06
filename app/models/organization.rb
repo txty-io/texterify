@@ -69,6 +69,6 @@ class Organization < ApplicationRecord
 
     return trial_active ||
            (subscription && feature_allowed_plans.include?(subscription.plan)) ||
-           (license.license.restrictions.plan && feature_allowed_plans.include?(license.license.restrictions.plan))
+           (license && feature_allowed_plans.include?(license.license.restrictions.plan))
   end
 end

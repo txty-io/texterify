@@ -15,6 +15,7 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { SidebarTrigger } from "../../ui/SidebarTrigger";
+import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
 const { Sider } = Layout;
 
 interface INavigationData {
@@ -97,7 +98,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
             </Menu.Item>,
             ...this.navigationData
                 .filter((data) => {
-                    if (data.texterifyCloudOnly && process.env.PROPRIETARY_MODE !== "true") {
+                    if (data.texterifyCloudOnly && !IS_TEXTERIFY_CLOUD) {
                         return false;
                     } else {
                         return true;

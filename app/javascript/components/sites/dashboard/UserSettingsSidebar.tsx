@@ -3,6 +3,7 @@ import { Layout, Menu } from "antd";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Routes } from "../../routing/Routes";
+import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
 
 interface INavigationData {
     icon: any;
@@ -45,7 +46,7 @@ class UserSettingsSidebar extends React.Component<IProps, IState> {
     renderMenuItems = (): JSX.Element[] => {
         return this.navigationData
             .filter((data) => {
-                if (data.texterifyCloudOnly && process.env.PROPRIETARY_MODE !== "true") {
+                if (data.texterifyCloudOnly && !IS_TEXTERIFY_CLOUD) {
                     return false;
                 } else {
                     return true;
