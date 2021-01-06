@@ -81,7 +81,7 @@ export const InstanceLicensesSite = observer(() => {
                     <Statistic
                         className={disabled ? "disabled" : undefined}
                         title="Max active users"
-                        value={license.attributes.restrictions.active_users_count}
+                        value={license.attributes.restrictions?.active_users_count}
                     />
                 </div>
             </div>

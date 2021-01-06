@@ -42,9 +42,9 @@ class ProjectSerializer
     elsif !License.all.empty?
       license = License.all.order(created_at: :desc).first
 
-      if license.license.plan == 'team'
+      if license.license.restrictions.plan == 'team'
         Organization::FEATURES_TEAM_PLAN
-      elsif license.license.plan == 'business'
+      elsif license.license.restrictions.plan == 'business'
         Organization::FEATURES_BUSINESS_PLAN
       else
         []
