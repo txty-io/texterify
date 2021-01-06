@@ -13,18 +13,6 @@ jobs:
           SECRET_KEY_BASE: 8dfc55709e6daaf5d7b2ce70e247374400f47db2e4b6867f67821290b440a0acbe931d5f4d9687f386e5aae3f0377da533450058e131b37dbc16b692c296c941
         steps:
             - uses: actions/checkout@v2
-
-            # Pull the latest image to build, and avoid caching pull-only images.
-            # (docker pull is faster than caching in most cases.)
-            - run: docker-compose pull
-
-            # In this step, this action saves a list of existing images,
-            # the cache is created without them in the post run.
-            # It also restores the cache if it exists.
-            - uses: satackey/action-docker-layer-caching@v0.0.11
-              # Ignore the failure of a step and avoid terminating the job.
-              continue-on-error: true
-
             - name: Run docker-compose
               run: docker-compose up -d
             - name: Create and seed test database
@@ -37,9 +25,6 @@ jobs:
               run: docker-compose exec -T app yarn test
             - name: Check database consistency
               run: docker-compose exec -T app yarn check:database-consistency:test
-            - name: Show disk space
-              run: df -h
-              # run: docker-compose exec -T app bundle exec rails db:drop RAILS_ENV=test
 
     build-and-push:
         runs-on: ubuntu-18.04
