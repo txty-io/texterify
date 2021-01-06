@@ -6,7 +6,7 @@ on:
 
 jobs:
     test:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-18.04
         env:
           DB_TEST_HOST: db
           DB_TEST_USERNAME: postgres
@@ -37,10 +37,12 @@ jobs:
               run: docker-compose exec -T app yarn test
             - name: Check database consistency
               run: docker-compose exec -T app yarn check:database-consistency:test
+            - name: Show disk space
+              run: df -h
               # run: docker-compose exec -T app bundle exec rails db:drop RAILS_ENV=test
 
     build-and-push:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-18.04
         needs: [test]
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         steps:
