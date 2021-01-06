@@ -9,7 +9,7 @@
   </p>
 </p>
 
-[![Build Status](https://travis-ci.org/chrztoph/texterify.svg?branch=master)](https://travis-ci.org/chrztoph/texterify) [![Open Issues](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)
+[![Open Issues](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)
 
 <p align="center">
   <img src="https://raw.github.com/chrztoph/texterify/screenshots/example_1.png" width="290">

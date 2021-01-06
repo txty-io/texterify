@@ -26,10 +26,6 @@ public/packs-test
 public/assets
 storage
 
-# Travis stuff.
-.travis/secrets.tar
-.travis/ignored
-
 texterify.json
 
 .DS_Store
