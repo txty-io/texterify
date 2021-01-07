@@ -51,6 +51,9 @@ class Project < ApplicationRecord
   def feature_enabled?(feature)
     if organization
       organization.feature_enabled?(feature)
+    elsif !License.all.empty?
+      license = License.all.order(created_at: :desc).first
+      feature_allowed_plans.include?(license.license.restrictions[:plan])
     else
       false
     end
