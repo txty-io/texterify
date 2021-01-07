@@ -40,15 +40,15 @@ jobs:
 
             - name: Build the Docker image
               run: docker build . --file Dockerfile --tag chrztoph/texterify:$GITHUB_SHA
+            - name: Build the Docker image for the cloud version
+              run: docker build . --file Dockerfile --build-arg PROPRIETARY_MODE=${{ secrets.PROPRIETARY_MODE }} --build-arg STRIPE_PUBLIC_API_KEY=${{ secrets.STRIPE_PUBLIC_API_KEY }} --build-arg TEXTERIFY_PAYMENT_SERVER=${{ secrets.TEXTERIFY_PAYMENT_SERVER }} --build-arg SENTRY_DSN_FRONTEND=${{ secrets.SENTRY_DSN_FRONTEND }} --tag chrztoph/texterify-cloud:$GITHUB_SHA
+
             - name: Tag image also as latest
               run: docker tag chrztoph/texterify:$GITHUB_SHA chrztoph/texterify:latest
             - name: Push images
               run: |
                   docker push chrztoph/texterify:$GITHUB_SHA
                   docker push chrztoph/texterify:latest
-
-            - name: Build the Docker image for the cloud version
-              run: docker build . --file Dockerfile --build-arg PROPRIETARY_MODE=${{ secrets.PROPRIETARY_MODE }} --build-arg STRIPE_PUBLIC_API_KEY=${{ secrets.STRIPE_PUBLIC_API_KEY }} --build-arg TEXTERIFY_PAYMENT_SERVER=${{ secrets.TEXTERIFY_PAYMENT_SERVER }} --build-arg SENTRY_DSN_FRONTEND=${{ secrets.SENTRY_DSN_FRONTEND }} --tag chrztoph/texterify-cloud:$GITHUB_SHA
             - name: Tag cloud image also as latest
               run: docker tag chrztoph/texterify-cloud:$GITHUB_SHA chrztoph/texterify-cloud:latest
             - name: Push images
