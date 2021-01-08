@@ -109,6 +109,7 @@ export const InstanceLicensesSite = observer(() => {
 
                 setFiles([]);
             } else {
+                message.success("Successfully uploaded license file.");
                 setFiles([]);
                 await loadLicenses();
             }
