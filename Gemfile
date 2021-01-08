@@ -71,6 +71,7 @@ group :test do
   gem 'rspec', require: false
   gem 'rspec-rails', require: false
   gem 'simplecov', require: false
+  gem 'codecov', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
