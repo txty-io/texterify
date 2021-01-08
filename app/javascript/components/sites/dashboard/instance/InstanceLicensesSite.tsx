@@ -1,4 +1,4 @@
-import { Card, Layout, Statistic } from "antd";
+import { Card, Layout, message, Statistic } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { ILicense, LicensesAPI } from "../../../api/v1/LicensesAPI";
@@ -7,6 +7,7 @@ import { PrimaryButton } from "../../../ui/PrimaryButton";
 import Dropzone from "react-dropzone";
 import { FileTextOutlined } from "@ant-design/icons";
 import { Loading } from "../../../ui/Loading";
+import { MESSAGE_DURATION_IMPORTANT } from "../../../configs/MessageDurations";
 
 const DropZoneWrapper = styled.div`
     width: 100%;
@@ -95,9 +96,22 @@ export const InstanceLicensesSite = observer(() => {
     async function uploadLicense() {
         setLoading(true);
         try {
-            await LicensesAPI.uploadLicense({ file: files[0] });
-            setFiles([]);
-            await loadLicenses();
+            const response: any = await LicensesAPI.uploadLicense({ file: files[0] });
+            if (response.error) {
+                if (response.message === "INVALID_LICENSE_FILE") {
+                    message.error(
+                        "The uploaded license is invalid. Please contact support if you are having troubles uploading your license file.",
+                        MESSAGE_DURATION_IMPORTANT
+                    );
+                } else {
+                    message.error("An error occurred while uploading the license.");
+                }
+
+                setFiles([]);
+            } else {
+                setFiles([]);
+                await loadLicenses();
+            }
         } catch (e) {
             console.error(e);
         }

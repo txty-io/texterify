@@ -16,6 +16,17 @@ class Api::V1::LicensesController < Api::V1::ApiController
     authorize License
 
     license = License.new(license_params)
+
+    begin
+      Gitlab::License.import(license.data)
+    rescue Gitlab::License::ImportError
+      render json: {
+        error: true,
+        message: 'INVALID_LICENSE_FILE'
+      }, status: :bad_request
+      return
+    end
+
     license.save!
 
     render json: LicenseSerializer.new(
