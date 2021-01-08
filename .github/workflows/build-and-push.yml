@@ -25,6 +25,8 @@ jobs:
         run: docker-compose exec -T app yarn test
       - name: Check database consistency
         run: docker-compose exec -T app yarn check:database-consistency:test
+      - name: Upload to codecov
+        run: ci_env=`bash <(curl -s https://codecov.io/env)` docker-compose run $ci_env app
 
   build-and-push:
     runs-on: ubuntu-18.04
