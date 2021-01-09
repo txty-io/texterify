@@ -28,7 +28,7 @@ jobs:
       - name: List coverage files
         run: ls -la coverage
       - name: Upload to codecov
-        run: bash <(curl -s https://codecov.io/bash) -X gcov -X coveragepy -f coverage/coverage.json
+        run: bash <(curl -s https://codecov.io/bash) -X gcov -X coveragepy -X search -X xcode -X network -X gcovout -f coverage/coverage.json
 
   build-and-push:
     runs-on: ubuntu-18.04
