@@ -25,6 +25,8 @@ jobs:
         run: docker-compose exec -T app yarn test
       - name: Check database consistency
         run: docker-compose exec -T app yarn check:database-consistency:test
+      - name: Echo coverage file content
+        run: echo coverage/coverage.json
       - name: Upload to codecov
         run: bash <(curl -s https://codecov.io/bash) -X gcov -X coveragepy -X search -X xcode -X gcovout -f coverage/coverage.json
 
