@@ -22,9 +22,7 @@ jobs:
       - name: Run linters
         run: docker-compose exec -T app yarn lint
       - name: Run tests
-        run: |
-          ci_env=`bash <(curl -s https://codecov.io/env)`
-          docker-compose exec -T $ci_env app yarn test
+        run: docker-compose exec -T $ci_env app CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }} yarn test
       - name: Check database consistency
         run: docker-compose exec -T app yarn check:database-consistency:test
       # - name: Upload to codecov
