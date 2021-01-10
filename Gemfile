@@ -68,7 +68,6 @@ end
 group :test do
   gem 'database_cleaner'
 
-  gem 'codecov', require: false
   gem 'rspec', require: false
   gem 'rspec-rails', require: false
   gem 'simplecov', require: false

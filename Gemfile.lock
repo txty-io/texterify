@@ -72,8 +72,6 @@ GEM
     builder (3.2.4)
     bumbler (0.8.0)
     byebug (11.1.3)
-    codecov (0.2.15)
-      simplecov (>= 0.15, < 0.21)
     coderay (1.1.3)
     concurrent-ruby (1.1.7)
     connection_pool (2.2.3)
@@ -409,7 +407,6 @@ PLATFORMS
 DEPENDENCIES
   bootsnap
   bumbler
-  codecov
   database_cleaner
   database_consistency
   devise (= 4.7.3)
