@@ -25,7 +25,7 @@ jobs:
         run: docker-compose exec -T app yarn test
       - name: Check database consistency
         run: docker-compose exec -T app yarn check:database-consistency:test
-      - name: Upload to codecov
+      - name: Upload to codecov 
         run: bash <(curl -s https://codecov.io/bash)
 
   build-and-push:
