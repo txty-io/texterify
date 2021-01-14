@@ -167,7 +167,12 @@ function PaymentPlan(props: {
             >
                 <h2 style={{ fontSize: 24 }}>{props.plan.name}</h2>
                 <div style={{ fontSize: 16 }}>
-                    <div style={{ fontSize: 20, fontWeight: "bold" }}>{props.plan.pricePerUserOnPremise} €</div>
+                    <div style={{ fontSize: 20, fontWeight: "bold" }}>
+                        {props.hostingType === "on-premise"
+                            ? props.plan.pricePerUserOnPremise
+                            : props.plan.pricePerUserCloud}{" "}
+                        €
+                    </div>
                     user/month
                 </div>
             </div>
