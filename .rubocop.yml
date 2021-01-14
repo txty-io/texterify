@@ -20,6 +20,9 @@ Rails:
 Rails/IndexBy:
     Enabled: false
 
+Rails/FilePath:
+  EnforcedStyle: arguments
+
 Style/Documentation:
   Enabled: false
 
