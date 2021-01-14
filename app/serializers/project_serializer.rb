@@ -35,7 +35,9 @@ class ProjectSerializer
   end
 
   attribute :enabled_features do |object|
-    if object.organization&.subscription&.plan == Subscription::PLAN_TEAM
+    if object.organization&.trial_active
+      Organization::FEATURES_BUSINESS_PLAN
+    elsif object.organization&.subscription&.plan == Subscription::PLAN_TEAM
       Organization::FEATURES_TEAM_PLAN
     elsif object.organization&.subscription&.plan == Subscription::PLAN_BUSINESS
       Organization::FEATURES_BUSINESS_PLAN
