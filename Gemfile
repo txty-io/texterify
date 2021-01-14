@@ -36,6 +36,8 @@ group :development, :test do
   # gem 'capybara'
   # gem 'selenium-webdriver'
 
+  gem 'cypress-on-rails', '~> 1.0'
+  gem 'database_cleaner'
   gem 'dotenv-rails'
 
   # Load automatically in dev for mailer previews which use factories.
@@ -66,8 +68,6 @@ group :development do
 end
 
 group :test do
-  gem 'database_cleaner'
-
   gem 'rspec', require: false
   gem 'rspec-rails', require: false
   gem 'simplecov', require: false

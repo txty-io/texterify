@@ -37,3 +37,6 @@ license_key
 texterify.texterify-license
 
 webpacker-stats.json
+
+spec/cypress/videos
+spec/cypress/screenshots

@@ -68,6 +68,7 @@
     "webpack-cli": "^3.3.7"
   },
   "devDependencies": {
+    "cypress": "^6.2.1",
     "husky": "^4.3.0",
     "less": "^3.10.3",
     "webpack-bundle-analyzer": "^4.3.0",
@@ -91,7 +92,10 @@
     "test": "yarn test:backend",
     "test:backend": "RAILS_ENV=test bundle exec rspec",
     "dangerous:recreate-database": "bundle exec rails db:drop && bundle exec rails db:create && bundle exec rails db:migrate && bundle exec rails db:seed",
-    "webpack-bundle-analyzer": "bin/webpack --profile --json > webpacker-stats.json && node_modules/.bin/webpack-bundle-analyzer webpacker-stats.json public/packs"
+    "webpack-bundle-analyzer": "bin/webpack --profile --json > webpacker-stats.json && node_modules/.bin/webpack-bundle-analyzer webpacker-stats.json public/packs",
+    "cypress:open": "yarn cypress open --project ./spec",
+    "cypress:run": "yarn cypress run --project ./spec",
+    "db:seed": "bundle exec rails db:seed"
   },
   "husky": {
     "hooks": {

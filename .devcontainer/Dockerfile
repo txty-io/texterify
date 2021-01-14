@@ -8,7 +8,23 @@ ENV RAILS_ENV="development"
 ENV RAILS_ROOT /workspace
 
 # Install essential libraries.
-RUN apt-get update && apt-get install -y build-essential libpq-dev
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    build-essential \
+    libpq-dev \
+    curl \
+
+    # Install cypress libraries
+    libgtk2.0-0 \
+    libgtk-3-0 \
+    libnotify-dev \
+    libgconf-2-4 \
+    libgbm-dev \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    libxtst6 \
+    xauth \
+    xvfb
 
 # Set workdir.
 RUN mkdir -p $RAILS_ROOT
@@ -19,12 +35,6 @@ COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
 RUN gem install bundler:2.1.4
 RUN bundle install --jobs 20 --retry 5
-
-# Update the repository sources list
-# and install dependencies.
-RUN apt-get update \
-    && apt-get install -y curl \
-    && apt-get -y autoclean
 
 # Install nvm.
 ENV NVM_DIR /usr/local/nvm
