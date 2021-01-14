@@ -12,7 +12,7 @@ export const BASIC_PLAN: IPlan = {
     id: "basic",
     name: "Basic",
     pricePerUserCloud: 9,
-    pricePerUserOnPremise: 0,
+    pricePerUserOnPremise: 7,
     features: [
         "Unlimited projects",
         "Unlimited keys",
