@@ -173,6 +173,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                                 ? "var(--blue-color)"
                                                 : undefined
                                     }}
+                                    data-id="main-menu-projects"
                                 >
                                     <ProjectOutlined style={{ marginRight: 8 }} /> Projects
                                 </MenuLink>
@@ -190,6 +191,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                                 ? "var(--blue-color)"
                                                 : undefined
                                     }}
+                                    data-id="main-menu-organizations"
                                 >
                                     <DeploymentUnitOutlined style={{ marginRight: 8 }} /> Organizations
                                 </MenuLink>
@@ -207,6 +209,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                                 ? "var(--blue-color)"
                                                 : undefined
                                     }}
+                                    data-id="main-menu-activity"
                                 >
                                     <LineChartOutlined style={{ marginRight: 8 }} /> Activity
                                 </MenuLink>

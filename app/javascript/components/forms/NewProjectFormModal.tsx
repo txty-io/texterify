@@ -193,7 +193,12 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
                                 >
                                     Cancel
                                 </Button>
-                                <Button form="newProjectForm" type="primary" htmlType="submit">
+                                <Button
+                                    data-id="new-project-form-create-project"
+                                    form="newProjectForm"
+                                    type="primary"
+                                    htmlType="submit"
+                                >
                                     Create project
                                 </Button>
                             </>
