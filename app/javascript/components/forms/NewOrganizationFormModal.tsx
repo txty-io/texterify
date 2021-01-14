@@ -24,7 +24,12 @@ class NewOrganizationFormModal extends React.Component<IProps> {
                         >
                             Cancel
                         </Button>
-                        <Button form="newOrganizationForm" type="primary" htmlType="submit">
+                        <Button
+                            data-id="new-organization-form-create-organization"
+                            form="newOrganizationForm"
+                            type="primary"
+                            htmlType="submit"
+                        >
                             Create organization
                         </Button>
                     </div>
