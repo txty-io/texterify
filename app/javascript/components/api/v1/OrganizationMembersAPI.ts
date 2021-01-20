@@ -2,14 +2,18 @@ import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
 const OrganizationMembersAPI = {
-    getMembers: async (organizationId: string): Promise<any> => {
-        return API.getRequest(`organizations/${organizationId}/members`, true)
+    getMembers: async (organizationId: string, options?: { search: string }): Promise<any> => {
+        return API.getRequest(`organizations/${organizationId}/members`, true, {
+            search: options && options.search
+        })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },
 
-    getProjectMembers: async (organizationId: string): Promise<any> => {
-        return API.getRequest(`organizations/${organizationId}/project_members`, true)
+    getProjectMembers: async (organizationId: string, options?: { search: string }): Promise<any> => {
+        return API.getRequest(`organizations/${organizationId}/project_members`, true, {
+            search: options && options.search
+        })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },

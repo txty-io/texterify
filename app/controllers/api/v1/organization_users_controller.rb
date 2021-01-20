@@ -3,18 +3,36 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     skip_authorization
     organization = current_user.organizations.find(params[:organization_id])
 
+    organization_users = if params[:search]
+                           organization.users.where(
+                             'users.username ilike :search or users.email ilike :search',
+                             search: "%#{params[:search]}%"
+                           )
+                        else
+                          organization.users
+                         end
+
     options = {}
     options[:params] = { organization: organization }
-    render json: UserSerializer.new(organization.users, options).serialized_json
+    render json: UserSerializer.new(organization_users, options).serialized_json
   end
 
   def project_users
     skip_authorization
     organization = current_user.organizations.find(params[:organization_id])
 
+    project_users = if params[:search]
+                      organization.project_users.joins(:user).where(
+                        'users.username ilike :search or users.email ilike :search',
+                        search: "%#{params[:search]}%"
+                      )
+                    else
+                      organization.project_users
+                    end
+
     options = {}
     options[:include] = [:project, :user]
-    render json: ProjectUserSerializer.new(organization.project_users, options).serialized_json
+    render json: ProjectUserSerializer.new(project_users, options).serialized_json
   end
 
   def create

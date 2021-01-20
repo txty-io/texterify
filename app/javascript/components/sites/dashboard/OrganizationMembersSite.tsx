@@ -1,4 +1,5 @@
 import { Button, Input, Layout, message, Modal, Select, Table, Tag } from "antd";
+import * as _ from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -19,6 +20,8 @@ interface IState {
     getMembersResponse: any;
     getProjectMembersResponse: any;
     deleteDialogVisible: boolean;
+    search: string;
+    loading: boolean;
 }
 
 @observer
@@ -27,18 +30,38 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
         userAddEmail: "",
         getMembersResponse: null,
         getProjectMembersResponse: null,
-        deleteDialogVisible: false
+        deleteDialogVisible: false,
+        search: "",
+        loading: true
     };
+
+    debouncedSearchReloader = _.debounce(
+        async (value) => {
+            this.setState({ search: value });
+            await this.reload({ search: value });
+        },
+        500,
+        { trailing: true }
+    );
 
     async componentDidMount() {
         await this.reload();
     }
 
-    reload = async () => {
+    reload = async (options?: { search: string }) => {
+        this.setState({ loading: true });
+
+        const fetchOptions = options || ({} as any);
+        fetchOptions.search = (options && options.search) || this.state.search;
+
         try {
-            const responseGetMembers = await OrganizationMembersAPI.getMembers(this.props.match.params.organizationId);
+            const responseGetMembers = await OrganizationMembersAPI.getMembers(
+                this.props.match.params.organizationId,
+                options
+            );
             const responseGetProjectMembers = await OrganizationMembersAPI.getProjectMembers(
-                this.props.match.params.organizationId
+                this.props.match.params.organizationId,
+                options
             );
 
             this.setState({
@@ -48,6 +71,8 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
         } catch (e) {
             console.error(e);
         }
+
+        this.setState({ loading: false });
     };
 
     getRows = () => {
@@ -385,6 +410,10 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
         return columns;
     };
 
+    onSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.debouncedSearchReloader(event.target.value);
+    };
+
     render() {
         if (!this.state.getMembersResponse) {
             return <Loading />;
@@ -433,6 +462,10 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                         >
                             Invite
                         </Button>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", marginTop: 24 }}>
+                        <Input.Search placeholder="Search users" onChange={this.onSearch} style={{ maxWidth: "50%" }} />
+
                         <div style={{ marginLeft: "auto", display: "flex", alignItems: "center" }}>
                             Roles:
                             <Tag color={this.getColorByRole("translator")} style={{ marginLeft: 16 }}>
@@ -454,7 +487,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                         <Table
                             dataSource={this.getRows()}
                             columns={this.getColumns("organization")}
-                            loading={!this.state.getMembersResponse}
+                            loading={this.state.loading}
                             size="middle"
                             pagination={false}
                         />
@@ -465,7 +498,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                         <Table
                             dataSource={this.getProjectMemberRows()}
                             columns={this.getColumns("project")}
-                            loading={!this.state.getProjectMembersResponse}
+                            loading={this.state.loading}
                             size="middle"
                             pagination={false}
                         />
