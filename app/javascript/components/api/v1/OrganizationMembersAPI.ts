@@ -8,6 +8,12 @@ const OrganizationMembersAPI = {
             .catch(APIUtils.handleErrors);
     },
 
+    getProjectMembers: async (organizationId: string): Promise<any> => {
+        return API.getRequest(`organizations/${organizationId}/project_members`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
     createMember: async (organizationId: string, email: string): Promise<any> => {
         return API.postRequest(`organizations/${organizationId}/members`, true, {
             email: email

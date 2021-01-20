@@ -3,6 +3,8 @@ const ROLE_DEVELOPER = "developer";
 const ROLE_MANAGER = "manager";
 const ROLE_OWNER = "owner";
 
+export type ROLES = typeof ROLE_TRANSLATOR | typeof ROLE_DEVELOPER | typeof ROLE_MANAGER | typeof ROLE_OWNER;
+
 const ROLE_PRIORITY_MAP = {
     translator: 1,
     developer: 2,

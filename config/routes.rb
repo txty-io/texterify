@@ -18,6 +18,7 @@ Rails.application.routes.draw do
         post :image, to: 'organizations#image_create'
         delete :image, to: 'organizations#image_destroy'
         resources :members, only: [:create, :index, :destroy, :update], controller: "organization_users"
+        get :project_members, to: 'organization_users#project_users'
       end
 
       get 'instance', to: 'instance#show'

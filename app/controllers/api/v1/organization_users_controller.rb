@@ -8,6 +8,15 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     render json: UserSerializer.new(organization.users, options).serialized_json
   end
 
+  def project_users
+    skip_authorization
+    organization = current_user.organizations.find(params[:organization_id])
+
+    options = {}
+    options[:include] = [:project, :user]
+    render json: ProjectUserSerializer.new(organization.project_users, options).serialized_json
+  end
+
   def create
     organization = current_user.organizations.find(params[:organization_id])
     user = User.find_by!(email: params[:email])
