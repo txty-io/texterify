@@ -8,7 +8,7 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
                              'users.username ilike :search or users.email ilike :search',
                              search: "%#{params[:search]}%"
                            )
-                        else
+                         else
                           organization.users
                          end
 
