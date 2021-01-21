@@ -9,7 +9,7 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
                              search: "%#{params[:search]}%"
                            )
                          else
-                          organization.users
+                           organization.users
                          end
 
     options = {}
