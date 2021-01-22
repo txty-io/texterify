@@ -51,7 +51,7 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                 <Breadcrumbs breadcrumbName="projectSettings" />
                 <Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}>
                     <h1>Settings</h1>
-                    <Collapse bordered={false}>
+                    <Collapse bordered={false} defaultActiveKey="general">
                         <Collapse.Panel header="General settings" key="general">
                             <SettingsSectionWrapper>
                                 <NewProjectForm

@@ -5,13 +5,15 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { OrganizationMembersAPI } from "../../api/v1/OrganizationMembersAPI";
+import { OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore, IProject } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { Loading } from "../../ui/Loading";
+import { RolesLegend } from "../../ui/RolesLegend";
 import { UserAvatar } from "../../ui/UserAvatar";
-import { PermissionUtils, ROLES } from "../../utilities/PermissionUtils";
+import { PermissionUtils } from "../../utilities/PermissionUtils";
 const { Content } = Layout;
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
@@ -170,16 +172,12 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
         return result;
     };
 
-    getColorByRole = (role: ROLES) => {
-        if (role === "translator") {
-            return "green";
-        } else if (role === "developer") {
-            return "blue";
-        } else if (role === "manager") {
-            return "magenta";
-        } else if (role === "owner") {
-            return "volcano";
-        }
+    hasOnlyOneOwner = () => {
+        const ownerRows = this.getRows().filter((row) => {
+            return PermissionUtils.isOwner(row.role);
+        });
+
+        return ownerRows.length === 1;
     };
 
     getColumns = (type: "organization" | "project") => {
@@ -233,17 +231,31 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                             record.id,
                                             value
                                         );
-                                        await this.reload();
+
                                         if (!response.errors) {
                                             message.success("User role updated successfully.");
                                         }
+
+                                        // If the current users permission changed we reload the current organization.
+                                        if (record.id === authStore.currentUser.id) {
+                                            const getOrganizationResponse = await OrganizationsAPI.getOrganization(
+                                                this.props.match.params.organizationId
+                                            );
+                                            if (getOrganizationResponse.errors) {
+                                                this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
+                                            } else {
+                                                dashboardStore.currentOrganization = getOrganizationResponse.data;
+                                            }
+                                        }
+
+                                        await this.reload();
                                     } catch (e) {
                                         console.error(e);
                                         message.error("Error while updating user role.");
                                     }
                                 }}
                                 disabled={
-                                    !(
+                                    (!(
                                         PermissionUtils.isManagerOrHigher(
                                             dashboardStore.getCurrentOrganizationRole()
                                         ) &&
@@ -251,7 +263,9 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                             dashboardStore.getCurrentOrganizationRole(),
                                             record.role
                                         )
-                                    ) && !PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole())
+                                    ) &&
+                                        !PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole())) ||
+                                    (record.role === "owner" && this.hasOnlyOneOwner())
                                 }
                             >
                                 <Select.Option
@@ -306,7 +320,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                             const role = projectWrapper.role;
 
                             return (
-                                <Tag key={project.id} color={this.getColorByRole(role)}>
+                                <Tag key={project.id} color={PermissionUtils.getColorByRole(role)}>
                                     {project.attributes.name}
                                 </Tag>
                             );
@@ -397,7 +411,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                             const role = projectWrapper.role;
 
                             return (
-                                <Tag key={project.id} color={this.getColorByRole(role)}>
+                                <Tag key={project.id} color={PermissionUtils.getColorByRole(role)}>
                                     {project.attributes.name}
                                 </Tag>
                             );
@@ -466,22 +480,9 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                     <div style={{ display: "flex", alignItems: "center", marginTop: 24 }}>
                         <Input.Search placeholder="Search users" onChange={this.onSearch} style={{ maxWidth: "50%" }} />
 
-                        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center" }}>
-                            Roles:
-                            <Tag color={this.getColorByRole("translator")} style={{ marginLeft: 16 }}>
-                                Translator
-                            </Tag>
-                            <Tag color={this.getColorByRole("developer")} style={{ marginLeft: 8 }}>
-                                Developer
-                            </Tag>
-                            <Tag color={this.getColorByRole("manager")} style={{ marginLeft: 8 }}>
-                                Manager
-                            </Tag>
-                            <Tag color={this.getColorByRole("owner")} style={{ marginLeft: 8 }}>
-                                Owner
-                            </Tag>
-                        </div>
+                        <RolesLegend style={{ marginLeft: "auto" }} />
                     </div>
+
                     <div style={{ marginTop: 40 }}>
                         <h3>Organization users</h3>
                         <Table

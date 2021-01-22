@@ -1,6 +1,5 @@
 import {
     HomeOutlined,
-    LockOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     ReloadOutlined,
@@ -49,15 +48,6 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
             texterifyCloudOnly: false
         },
         {
-            icon: ToolOutlined,
-            path: Routes.DASHBOARD.ORGANIZATION_SETTINGS.replace(
-                ":organizationId",
-                this.props.match.params.organizationId
-            ),
-            text: "Settings",
-            texterifyCloudOnly: false
-        },
-        {
             icon: ReloadOutlined,
             path: Routes.DASHBOARD.ORGANIZATION_SUBSCRIPTION.replace(
                 ":organizationId",
@@ -65,6 +55,15 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
             ),
             text: "Subscription",
             texterifyCloudOnly: true
+        },
+        {
+            icon: ToolOutlined,
+            path: Routes.DASHBOARD.ORGANIZATION_SETTINGS.replace(
+                ":organizationId",
+                this.props.match.params.organizationId
+            ),
+            text: "Settings",
+            texterifyCloudOnly: false
         }
     ];
 

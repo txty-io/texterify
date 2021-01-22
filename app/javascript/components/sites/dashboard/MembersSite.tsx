@@ -1,4 +1,5 @@
-import { Button, Input, Layout, message, Modal, Select, Tag, Tooltip, Form } from "antd";
+import { Button, Input, Layout, message, Modal, Select, Tag, Tooltip, Form, Table } from "antd";
+import * as _ from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -13,12 +14,15 @@ import { UserAvatar } from "../../ui/UserAvatar";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { FormInstance } from "antd/lib/form";
 import { ErrorUtils, ERRORS } from "../../ui/ErrorUtils";
+import { RolesLegend } from "../../ui/RolesLegend";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     userAddEmail: string;
     getMembersResponse: any;
     deleteDialogVisible: boolean;
+    loading: boolean;
+    search: string;
 }
 
 @observer
@@ -28,16 +32,32 @@ class MembersSite extends React.Component<IProps, IState> {
     state: IState = {
         userAddEmail: "",
         getMembersResponse: null,
-        deleteDialogVisible: false
+        deleteDialogVisible: false,
+        loading: true,
+        search: ""
     };
+
+    debouncedSearchReloader = _.debounce(
+        async (value) => {
+            this.setState({ search: value });
+            await this.reload(null, { search: value });
+        },
+        500,
+        { trailing: true }
+    );
 
     async componentDidMount() {
         await this.reload();
     }
 
-    reload = async (userId?: string) => {
+    reload = async (userId?: string, options?: { search?: string }) => {
+        this.setState({ loading: true });
+
+        const fetchOptions = options || ({} as any);
+        fetchOptions.search = (options && options.search) || this.state.search;
+
         try {
-            const responseGetMembers = await MembersAPI.getMembers(this.props.match.params.projectId);
+            const responseGetMembers = await MembersAPI.getMembers(this.props.match.params.projectId, fetchOptions);
 
             // If the current users permission changed we reload the current project.
             if (userId === authStore.currentUser.id) {
@@ -56,9 +76,11 @@ class MembersSite extends React.Component<IProps, IState> {
         } catch (e) {
             console.error(e);
         }
+
+        this.setState({ loading: false });
     };
 
-    getRows = (): any[] => {
+    getRows = () => {
         return this.state.getMembersResponse.data.map((member: any) => {
             return {
                 id: member.id,
@@ -69,6 +91,18 @@ class MembersSite extends React.Component<IProps, IState> {
                 roleSource: member.attributes.role_source
             };
         }, []);
+    };
+
+    getOrganizationRows = () => {
+        return this.getRows().filter((member) => {
+            return member.roleSource === "organization";
+        });
+    };
+
+    getProjectRows = () => {
+        return this.getRows().filter((member) => {
+            return member.roleSource === "project";
+        });
     };
 
     onRemove = async (item: any) => {
@@ -119,6 +153,139 @@ class MembersSite extends React.Component<IProps, IState> {
         return ownerRows.length === 1;
     };
 
+    getColumns = () => {
+        return [
+            {
+                title: "",
+                key: "image",
+                width: 80,
+                render: (_text, record) => {
+                    return <UserAvatar user={record} style={{ marginRight: 24 }} />;
+                }
+            },
+            {
+                title: "Username",
+                key: "username",
+                render: (_text, record) => {
+                    return <span style={{ color: "var(--full-color)", fontWeight: "bold" }}>{record.username}</span>;
+                }
+            },
+            {
+                title: "E-Mail",
+                key: "email",
+                render: (_text, record) => {
+                    return <span style={{ color: "var(--full-color)" }}>{record.email}</span>;
+                }
+            },
+            {
+                title: "Role",
+                key: "role",
+                render: (_text, record) => {
+                    if (record.roleSource === "organization") {
+                        return (
+                            <Tooltip placement="left" title="Inherited from the organization.">
+                                <Tag color={PermissionUtils.getColorByRole(record.role)}>
+                                    {record.role.charAt(0).toUpperCase() + record.role.slice(1)}
+                                </Tag>
+                            </Tooltip>
+                        );
+                    }
+
+                    return (
+                        <Select
+                            showSearch
+                            placeholder="Select a role"
+                            optionFilterProp="children"
+                            filterOption
+                            style={{ marginRight: 24, width: 240 }}
+                            value={record.role}
+                            onChange={async (value: string) => {
+                                try {
+                                    const response = await MembersAPI.updateMember(
+                                        this.props.match.params.projectId,
+                                        record.id,
+                                        value
+                                    );
+                                    await this.reload(record.id);
+                                    if (!response.errors) {
+                                        message.success("User role updated successfully.");
+                                    }
+                                } catch (e) {
+                                    console.error(e);
+                                    message.error("Error while updating user role.");
+                                }
+                            }}
+                            disabled={
+                                (!(
+                                    PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) &&
+                                    PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), record.role)
+                                ) &&
+                                    !PermissionUtils.isOwner(dashboardStore.getCurrentRole())) ||
+                                this.getRows().length === 1 ||
+                                (PermissionUtils.isOwner(record.role) && this.hasOnlyOneOwner())
+                            }
+                        >
+                            <Select.Option
+                                value="translator"
+                                disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), "translator")}
+                            >
+                                Translator
+                            </Select.Option>
+                            <Select.Option
+                                value="developer"
+                                disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), "developer")}
+                            >
+                                Developer
+                            </Select.Option>
+                            <Select.Option
+                                value="manager"
+                                disabled={!PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), "manager")}
+                            >
+                                Manager
+                            </Select.Option>
+                            <Select.Option
+                                value="owner"
+                                disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}
+                            >
+                                Owner
+                            </Select.Option>
+                        </Select>
+                    );
+                }
+            },
+            {
+                title: "",
+                key: "actions",
+                width: 80,
+                render: (_text: any, record: any) => {
+                    if (record.roleSource !== "organization") {
+                        return (
+                            <>
+                                <Button
+                                    onClick={async () => {
+                                        await this.onRemove(record);
+                                    }}
+                                    danger
+                                    disabled={
+                                        !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) &&
+                                        !PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), record.role) &&
+                                        record.email !== authStore.currentUser.email
+                                    }
+                                >
+                                    Remove
+                                </Button>
+                            </>
+                        );
+                    }
+                }
+            }
+        ];
+    };
+
+    onSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.debouncedSearchReloader(event.target.value);
+    };
+
     render() {
         if (!this.state.getMembersResponse || !this.state.getMembersResponse.data) {
             return <Loading />;
@@ -132,7 +299,7 @@ class MembersSite extends React.Component<IProps, IState> {
                     <p>Add users to your project.</p>
                     <div style={{ display: "flex", width: "100%" }}>
                         <Form ref={this.formRef} style={{ width: "100%", maxWidth: 480 }}>
-                            <Form.Item name="name">
+                            <Form.Item name="name" style={{ marginBottom: 0 }}>
                                 <Input
                                     placeholder="Enter users email address"
                                     onChange={async (event) => {
@@ -187,138 +354,32 @@ class MembersSite extends React.Component<IProps, IState> {
                         </Button>
                     </div>
 
+                    <div style={{ display: "flex", alignItems: "center", marginTop: 24 }}>
+                        <Input.Search placeholder="Search users" onChange={this.onSearch} style={{ maxWidth: "50%" }} />
+
+                        <RolesLegend style={{ marginLeft: "auto" }} />
+                    </div>
+
                     <div style={{ marginTop: 24 }}>
-                        {this.getRows().map((item) => {
-                            return (
-                                <div
-                                    key={item.username}
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        paddingBottom: 16,
-                                        marginBottom: 16
-                                    }}
-                                >
-                                    <div style={{ display: "flex", flexGrow: 1, alignItems: "center" }}>
-                                        <UserAvatar user={item} style={{ marginRight: 24 }} />
-                                        <div style={{ display: "flex", flexDirection: "column" }}>
-                                            <div style={{ fontWeight: "bold" }}>{item.username}</div>
-                                            <div>{item.email}</div>
-                                        </div>
-                                    </div>
-                                    {item.roleSource === "organization" && (
-                                        <Tooltip placement="left" title="Inherited from the organization.">
-                                            <Tag color="geekblue">
-                                                {item.role.charAt(0).toUpperCase() + item.role.slice(1)}
-                                            </Tag>
-                                        </Tooltip>
-                                    )}
-                                    {item.roleSource !== "organization" && (
-                                        <>
-                                            <Select
-                                                showSearch
-                                                placeholder="Select a role"
-                                                optionFilterProp="children"
-                                                filterOption
-                                                style={{ marginRight: 24, width: 240 }}
-                                                value={item.role}
-                                                onChange={async (value: string) => {
-                                                    try {
-                                                        const response = await MembersAPI.updateMember(
-                                                            this.props.match.params.projectId,
-                                                            item.id,
-                                                            value
-                                                        );
-                                                        await this.reload(item.id);
-                                                        if (!response.errors) {
-                                                            message.success("User role updated successfully.");
-                                                        }
-                                                    } catch (e) {
-                                                        console.error(e);
-                                                        message.error("Error while updating user role.");
-                                                    }
-                                                }}
-                                                disabled={
-                                                    (!(
-                                                        PermissionUtils.isManagerOrHigher(
-                                                            dashboardStore.getCurrentRole()
-                                                        ) &&
-                                                        PermissionUtils.isHigherRole(
-                                                            dashboardStore.getCurrentRole(),
-                                                            item.role
-                                                        )
-                                                    ) &&
-                                                        !PermissionUtils.isOwner(dashboardStore.getCurrentRole())) ||
-                                                    this.getRows().length === 1 ||
-                                                    (PermissionUtils.isOwner(item.role) && this.hasOnlyOneOwner())
-                                                }
-                                            >
-                                                <Select.Option
-                                                    value="translator"
-                                                    disabled={
-                                                        !PermissionUtils.isHigherRole(
-                                                            dashboardStore.getCurrentRole(),
-                                                            "translator"
-                                                        )
-                                                    }
-                                                >
-                                                    Translator
-                                                </Select.Option>
-                                                <Select.Option
-                                                    value="developer"
-                                                    disabled={
-                                                        !PermissionUtils.isHigherRole(
-                                                            dashboardStore.getCurrentRole(),
-                                                            "developer"
-                                                        )
-                                                    }
-                                                >
-                                                    Developer
-                                                </Select.Option>
-                                                <Select.Option
-                                                    value="manager"
-                                                    disabled={
-                                                        !PermissionUtils.isHigherRole(
-                                                            dashboardStore.getCurrentRole(),
-                                                            "manager"
-                                                        )
-                                                    }
-                                                >
-                                                    Manager
-                                                </Select.Option>
-                                                <Select.Option
-                                                    value="owner"
-                                                    disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}
-                                                >
-                                                    Owner
-                                                </Select.Option>
-                                            </Select>
-                                            <Button
-                                                onClick={async () => {
-                                                    await this.onRemove(item);
-                                                }}
-                                                danger
-                                                disabled={
-                                                    item.roleSource === "organization" ||
-                                                    (!PermissionUtils.isManagerOrHigher(
-                                                        dashboardStore.getCurrentRole()
-                                                    ) &&
-                                                        !PermissionUtils.isHigherRole(
-                                                            dashboardStore.getCurrentRole(),
-                                                            item.role
-                                                        ) &&
-                                                        item.email !== authStore.currentUser.email)
-                                                }
-                                            >
-                                                {item.roleOrganization
-                                                    ? "Remove project permission"
-                                                    : "Remove from project"}
-                                            </Button>
-                                        </>
-                                    )}
-                                </div>
-                            );
-                        })}
+                        <h3>Project users</h3>
+                        <Table
+                            dataSource={this.getProjectRows()}
+                            columns={this.getColumns()}
+                            loading={this.state.loading}
+                            size="middle"
+                            pagination={false}
+                        />
+                    </div>
+
+                    <div style={{ marginTop: 40 }}>
+                        <h3>Users from organization</h3>
+                        <Table
+                            dataSource={this.getOrganizationRows()}
+                            columns={this.getColumns()}
+                            loading={this.state.loading}
+                            size="middle"
+                            pagination={false}
+                        />
                     </div>
                 </Layout.Content>
             </Layout>

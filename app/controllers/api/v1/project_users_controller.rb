@@ -5,7 +5,12 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
 
     options = {}
     options[:params] = { project: project }
-    render json: UserSerializer.new(project.users, options).serialized_json
+    render json: UserSerializer.new(
+      project.users.where(
+        'users.username ilike :search or users.email ilike :search',
+        search: "%#{params[:search]}%"
+      ), options
+    ).serialized_json
   end
 
   def create

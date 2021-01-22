@@ -28,6 +28,17 @@ const PermissionUtils = {
     },
     isHigherRole: (roleA: string, roleB: string) => {
         return ROLE_PRIORITY_MAP[roleA] > ROLE_PRIORITY_MAP[roleB];
+    },
+    getColorByRole: (role: ROLES) => {
+        if (role === "translator") {
+            return "green";
+        } else if (role === "developer") {
+            return "blue";
+        } else if (role === "manager") {
+            return "magenta";
+        } else if (role === "owner") {
+            return "volcano";
+        }
     }
 };
 
