@@ -43,8 +43,9 @@ class SearchOverlay extends React.Component<IProps, IState> {
         }
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         window.addEventListener("mouseup", this.clickHandler);
+        await this.fetchProjects();
     }
 
     componentWillUnmount() {
@@ -113,7 +114,7 @@ class SearchOverlay extends React.Component<IProps, IState> {
                             placeholder="Search projects"
                             autoFocus
                         />
-                        {this.state.search && (
+                        {(this.state.search || this.state.projectsResponse?.data.length > 0) && (
                             <div style={{ maxHeight: 400, overflowY: "auto", padding: 12 }}>
                                 <SearchOverlayResults
                                     loading={this.state.projectsLoading}
