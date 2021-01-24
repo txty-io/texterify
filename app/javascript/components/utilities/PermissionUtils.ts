@@ -15,6 +15,7 @@ const ROLE_PRIORITY_MAP = {
 export const ROLES_TRANSLATOR_UP = [ROLE_TRANSLATOR, ROLE_DEVELOPER, ROLE_MANAGER, ROLE_OWNER];
 export const ROLES_DEVELOPER_UP = [ROLE_DEVELOPER, ROLE_MANAGER, ROLE_OWNER];
 export const ROLES_MANAGER_UP = [ROLE_MANAGER, ROLE_OWNER];
+export const ROLES_OWNER_UP = [ROLE_OWNER];
 
 const PermissionUtils = {
     isOwner: (role: string) => {

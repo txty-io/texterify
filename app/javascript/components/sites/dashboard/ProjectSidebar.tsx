@@ -24,7 +24,7 @@ import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { SidebarTrigger } from "../../ui/SidebarTrigger";
-import { ROLES_DEVELOPER_UP, ROLES_MANAGER_UP } from "../../utilities/PermissionUtils";
+import { ROLES_DEVELOPER_UP, ROLES_MANAGER_UP, ROLES_TRANSLATOR_UP } from "../../utilities/PermissionUtils";
 const { Sider } = Layout;
 
 interface INavigationData {
@@ -113,7 +113,8 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             {
                 icon: SwapOutlined,
                 path: Routes.DASHBOARD.PROJECT_OTA.replace(":projectId", this.props.match.params.projectId),
-                text: "Over the Air"
+                text: "Over the Air",
+                roles: ROLES_DEVELOPER_UP
             },
             {
                 icon: OneToOneOutlined,
@@ -129,7 +130,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 icon: BlockOutlined,
                 path: Routes.DASHBOARD.PROJECT_INTEGRATIONS.replace(":projectId", this.props.match.params.projectId),
                 text: "Integrations",
-                roles: ROLES_DEVELOPER_UP
+                roles: ROLES_TRANSLATOR_UP
             },
             {
                 icon: SettingOutlined,

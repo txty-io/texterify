@@ -112,7 +112,7 @@ class MembersSite extends React.Component<IProps, IState> {
 
         Modal.confirm({
             title:
-                item.email === authStore.currentUser.email
+                item.id === authStore.currentUser.id
                     ? "Do you really want to leave this project?"
                     : "Do you really want to remove this user from the project?",
             content: "This cannot be undone.",
@@ -262,6 +262,7 @@ class MembersSite extends React.Component<IProps, IState> {
                         return (
                             <>
                                 <Button
+                                    style={{ width: "100%" }}
                                     onClick={async () => {
                                         await this.onRemove(record);
                                     }}
@@ -272,7 +273,7 @@ class MembersSite extends React.Component<IProps, IState> {
                                         record.email !== authStore.currentUser.email
                                     }
                                 >
-                                    Remove
+                                    {record.id === authStore.currentUser.id ? "Leave" : "Remove"}
                                 </Button>
                             </>
                         );

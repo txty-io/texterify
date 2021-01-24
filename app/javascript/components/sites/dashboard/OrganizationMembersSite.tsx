@@ -394,7 +394,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                     record.email !== authStore.currentUser.email
                                 }
                             >
-                                {record.email === authStore.currentUser.email ? "Leave" : "Remove"}
+                                {record.id === authStore.currentUser.id ? "Leave" : "Remove"}
                             </Button>
                         );
                     }

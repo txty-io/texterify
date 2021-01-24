@@ -66,7 +66,7 @@ class ProjectOTASite extends React.Component<IProps, IState> {
         },
         getCheckboxProps: () => {
             return {
-                disabled: !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())
+                disabled: !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())
             };
         }
     };
@@ -256,7 +256,7 @@ class ProjectOTASite extends React.Component<IProps, IState> {
                                     }}
                                     style={{ marginRight: 8 }}
                                     disabled={
-                                        !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole()) ||
+                                        !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) ||
                                         !dashboardStore.featureEnabled("FEATURE_OTA")
                                     }
                                 >
@@ -268,7 +268,7 @@ class ProjectOTASite extends React.Component<IProps, IState> {
                                     onClick={this.onDelete}
                                     disabled={
                                         this.state.selectedReleases.length === 0 ||
-                                        !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())
+                                        !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())
                                     }
                                     loading={this.state.isDeleting}
                                 >

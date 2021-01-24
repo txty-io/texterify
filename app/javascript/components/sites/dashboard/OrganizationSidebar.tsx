@@ -15,12 +15,14 @@ import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { SidebarTrigger } from "../../ui/SidebarTrigger";
 import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
+import { ROLES_OWNER_UP } from "../../utilities/PermissionUtils";
 const { Sider } = Layout;
 
 interface INavigationData {
     icon: any;
     path: string;
     text: string;
+    roles?: string[];
     texterifyCloudOnly: boolean;
 }
 
@@ -54,7 +56,8 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                 this.props.match.params.organizationId
             ),
             text: "Subscription",
-            texterifyCloudOnly: true
+            texterifyCloudOnly: true,
+            roles: ROLES_OWNER_UP
         },
         {
             icon: ToolOutlined,
@@ -69,6 +72,16 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
 
     state: IState = {
         selectedItem: 0
+    };
+
+    isMenuItemEnabled = (requiredRoles: string[]) => {
+        if (!requiredRoles) {
+            return true;
+        }
+
+        const role = dashboardStore.getCurrentOrganizationRole();
+
+        return requiredRoles.includes(role);
     };
 
     renderMenuItems = (): JSX.Element[] => {
@@ -105,7 +118,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                 })
                 .map((data: INavigationData, index: number) => {
                     return (
-                        <Menu.Item key={index} title={data.text}>
+                        <Menu.Item key={index} title={data.text} disabled={!this.isMenuItemEnabled(data.roles)}>
                             <Link to={data.path}>
                                 <data.icon />
                                 <span>{data.text}</span>
