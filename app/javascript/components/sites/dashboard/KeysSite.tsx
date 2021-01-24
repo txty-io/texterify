@@ -819,14 +819,16 @@ class KeysSite extends React.Component<IProps, IState> {
                     // Destroy so "componentDidMount" gets called and new key history is loaded.
                     destroyOnClose
                 >
-                    <KeyHistory
-                        projectId={this.props.match.params.projectId}
-                        keyId={this.state.keyToShowHistory && this.state.keyToShowHistory.attributes.id}
-                        keyName={this.state.keyToShowHistory && this.state.keyToShowHistory.attributes.name}
-                        onTranslationRestored={async () => {
-                            await this.reloadTable();
-                        }}
-                    />
+                    {this.state.keyToShowHistory && (
+                        <KeyHistory
+                            projectId={this.props.match.params.projectId}
+                            keyId={this.state.keyToShowHistory && this.state.keyToShowHistory.attributes.id}
+                            keyName={this.state.keyToShowHistory && this.state.keyToShowHistory.attributes.name}
+                            onTranslationRestored={async () => {
+                                await this.reloadTable();
+                            }}
+                        />
+                    )}
                 </Drawer>
 
                 <TexterifyModal
