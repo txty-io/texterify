@@ -3,6 +3,7 @@ import * as _ from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import { Link } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { OrganizationMembersAPI } from "../../api/v1/OrganizationMembersAPI";
 import { OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
@@ -320,9 +321,15 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                             const role = projectWrapper.role;
 
                             return (
-                                <Tag key={project.id} color={PermissionUtils.getColorByRole(role)}>
-                                    {project.attributes.name}
-                                </Tag>
+                                <Link to={Routes.DASHBOARD.PROJECT.replace(":projectId", project.id)}>
+                                    <Tag
+                                        style={{ cursor: "pointer" }}
+                                        key={project.id}
+                                        color={PermissionUtils.getColorByRole(role)}
+                                    >
+                                        {project.attributes.name}
+                                    </Tag>
+                                </Link>
                             );
                         });
                     }
