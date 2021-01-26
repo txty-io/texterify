@@ -27,6 +27,7 @@ Rails.application.routes.draw do
         post :import
         get 'exports/:id', to: 'projects#export'
         get :activity
+        post :transfer
         get :project_columns, to: 'project_columns#show'
         put :project_columns, to: 'project_columns#update'
         resources :keys, only: [:create, :show, :index, :destroy, :update] do

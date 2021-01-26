@@ -85,6 +85,14 @@ const ProjectsAPI = {
             .catch(APIUtils.handleErrors);
     },
 
+    transferProject: async (options: { projectId: string; organizationId: string }) => {
+        return API.postRequest(`projects/${options.projectId}/transfer`, true, {
+            organization_id: options.organizationId
+        })
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
     getActivity: async (options: { projectId: string; limit?: number }) => {
         return API.getRequest(`projects/${options.projectId}/activity`, true, {
             limit: options.limit

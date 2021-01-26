@@ -253,6 +253,18 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     render json: ActivitySerializer.new(versions, options).serialized_json
   end
 
+  def transfer
+    project = current_user.projects.find(params[:project_id])
+    authorize project
+    organization = current_user.organizations.find(params[:organization_id])
+    project.organization_id = organization.id
+    project.save!
+
+    render json: {
+      success: true
+    }, status: :ok
+  end
+
   private
 
   def project_params

@@ -135,6 +135,13 @@
     border-bottom: 0;
   }
 
+  // Close icon otherwise not centered.
+  .ant-modal-close-x {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .ant-modal-footer {
     border-top: 0;
   }
