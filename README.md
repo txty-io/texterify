@@ -1,4 +1,4 @@
-<p align="center">
+ <p align="center">
   <p align="center">
     <a href="https://texterify.com/?utm_source=github&utm_medium=logo" target="_blank">
       <img src="https://raw.github.com/chrztoph/texterify/screenshots/logo.png?sanitize=true" alt="Texterify" height="72">
@@ -62,7 +62,7 @@ We are happy about every help.
 
 ### Why is the watcher command failing randomly with exit code 137?
 
-If you receive the error below try to increase the memory (e.g. `8 GB`) that docker can use.
+If you receive the error below try to increase the memory (e.g. `8 GB`) that docker can use. Webpacker unfortunately requires a lot of memory to compile all the assets.
 
 ```sh
 > yarn start:watcher
@@ -70,6 +70,10 @@ If you receive the error below try to increase the memory (e.g. `8 GB`) that doc
 Killed
 error Command failed with exit code 137.
 ```
+
+## Security
+
+Found a security issue? Please **don't** create an issue on GitHub. Instead send an email with your findings to [security@texterify.com](mailto:security@texterify.com).
 
 ## License
 
