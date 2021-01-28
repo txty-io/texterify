@@ -79,10 +79,13 @@ Style/StructInheritance:
   Enabled: false
 
 Style/BlockComments:
-    Enabled: false
+  Enabled: false
 
 Style/CommentAnnotation:
-    Enabled: false
+  Enabled: false
+
+Style/WordArray:
+  Enabled: false
 
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: "indented"

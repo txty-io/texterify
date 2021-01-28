@@ -47,7 +47,7 @@ function ProjectsList(props: { loading: boolean; projects: any[]; included?: any
                     APIUtils.getIncludedObject(project.relationships.organization.data, props.included);
 
                 return (
-                    <List.Item key={item.key}>
+                    <List.Item key={item.key} data-id={`project-${item.key}`}>
                         <List.Item.Meta
                             style={{ overflow: "hidden" }}
                             title={

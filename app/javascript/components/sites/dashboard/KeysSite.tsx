@@ -533,6 +533,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                 placeholder="Search keys"
                                 onChange={this.onSearch}
                                 style={{ maxWidth: "50%" }}
+                                data-id="project-keys-search"
                             />
                         </div>
                         <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", alignItems: "flex-end" }}>
@@ -563,7 +564,7 @@ class KeysSite extends React.Component<IProps, IState> {
                             pagination={{
                                 pageSizeOptions: PAGE_SIZE_OPTIONS,
                                 showSizeChanger: true,
-                                // current: this.state.page,
+                                current: this.state.page,
                                 pageSize: dashboardStore.keysPerPage,
                                 total: this.state.keysResponse?.meta.total || 0,
                                 onChange: async (page: number, _perPage: number) => {
