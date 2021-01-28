@@ -1,6 +1,6 @@
-import { LoadingOutlined } from "@ant-design/icons";
+import { LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
-import { Button } from "antd";
+import { Button, InputNumber, Tooltip } from "antd";
 import * as React from "react";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
@@ -84,7 +84,7 @@ const handleCheckout = async (
     plan: IPlan,
     type: IHostingType,
     details: {
-        quantity: number;
+        quantity?: number;
         organizationId: string;
     }
 ) => {
@@ -139,10 +139,14 @@ function PaymentPlan(props: {
     selected?: boolean;
     hasActivePlan?: boolean;
     organizationId?: string;
+    annualBilling?: boolean;
     style?: React.CSSProperties;
     onChangePlan?(plan: IPlan): void;
 }) {
     const [loading, setLoading] = React.useState<boolean>(false);
+    const [usersCount, setUsersCount] = React.useState<number>(5);
+
+    const price = props.hostingType === "on-premise" ? props.plan.pricePerUserOnPremise : props.plan.pricePerUserCloud;
 
     return (
         <div
@@ -167,13 +171,12 @@ function PaymentPlan(props: {
             >
                 <h2 style={{ fontSize: 24 }}>{props.plan.name}</h2>
                 <div style={{ fontSize: 16 }}>
-                    <div style={{ fontSize: 20, fontWeight: "bold" }}>
-                        {props.hostingType === "on-premise"
-                            ? props.plan.pricePerUserOnPremise
-                            : props.plan.pricePerUserCloud}{" "}
-                        €
-                    </div>
+                    <div style={{ fontSize: 20, fontWeight: "bold" }}>{price} €</div>
                     user/month
+                </div>
+
+                <div style={{ marginTop: 8, fontWeight: "bold" }}>
+                    {props.annualBilling ? `1 year for ${price * 12} €` : "Monthly Billing"}
                 </div>
             </div>
             <div
@@ -187,17 +190,55 @@ function PaymentPlan(props: {
                 }}
             >
                 <Features features={props.plan.features} />
-                <div style={{ marginTop: "auto", paddingTop: 16, display: "flex" }}>
+
+                <div style={{ marginTop: "auto", paddingTop: 24, display: "flex", flexDirection: "column" }}>
+                    {props.hostingType === "on-premise" && (
+                        <>
+                            <h3>
+                                <span style={{ marginRight: 8 }}>Choose number of users</span>
+                                <Tooltip title="The number of users that can use Texterify.">
+                                    <QuestionCircleOutlined />
+                                </Tooltip>
+                            </h3>
+                            <InputNumber
+                                min={1}
+                                defaultValue={usersCount}
+                                placeholder="Number of users"
+                                onChange={(count) => {
+                                    setUsersCount(count);
+                                }}
+                                style={{ width: "100%" }}
+                            />
+                            <div
+                                style={{
+                                    marginTop: 24,
+                                    display: "flex",
+                                    marginBottom: 24,
+                                    fontSize: 14,
+                                    fontWeight: "bold"
+                                }}
+                            >
+                                <div style={{ marginRight: 24 }}>Total:</div>
+                                <div>{price * usersCount * 12} €</div>
+                            </div>
+                        </>
+                    )}
                     <Button
                         onClick={async () => {
                             if (props.hasActivePlan) {
                                 props.onChangePlan(props.plan);
                             } else {
                                 setLoading(true);
-                                await handleCheckout(props.plan, props.hostingType, {
-                                    quantity: 1,
-                                    organizationId: props.organizationId
-                                });
+                                await handleCheckout(
+                                    props.plan,
+                                    props.hostingType,
+                                    props.hostingType === "on-premise"
+                                        ? {
+                                              quantity: usersCount,
+                                              organizationId: props.organizationId
+                                          }
+                                        : { organizationId: props.organizationId }
+                                );
                                 setLoading(false);
                             }
                         }}
@@ -221,6 +262,7 @@ export function Licenses(props: {
     hostingType: IHostingType;
     organizationId?: string;
     selected?: IPlan["id"];
+    annualBilling?: boolean;
     onChangePlan?(plan: IPlan): void;
 }) {
     return (
@@ -237,6 +279,7 @@ export function Licenses(props: {
                 hostingType={props.hostingType}
                 organizationId={props.organizationId}
                 onChangePlan={props.onChangePlan}
+                annualBilling={props.annualBilling}
             />
             <PaymentPlan
                 plan={TEAM_PLAN}
@@ -246,6 +289,7 @@ export function Licenses(props: {
                 organizationId={props.organizationId}
                 onChangePlan={props.onChangePlan}
                 style={{ margin: "0 16px" }}
+                annualBilling={props.annualBilling}
             />
             <PaymentPlan
                 plan={BUSINESS_PLAN}
@@ -254,6 +298,7 @@ export function Licenses(props: {
                 hostingType={props.hostingType}
                 organizationId={props.organizationId}
                 onChangePlan={props.onChangePlan}
+                annualBilling={props.annualBilling}
             />
         </div>
     );
