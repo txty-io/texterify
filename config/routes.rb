@@ -55,6 +55,7 @@ Rails.application.routes.draw do
 
       resources :access_tokens, only: [:create, :index, :destroy]
       resources :licenses, only: [:create, :index, :destroy]
+      get 'licenses/current', to: 'licenses#current'
       resources :country_codes, only: [:index]
       resources :language_codes, only: [:index]
       resources :user_licenses, only: [:index]

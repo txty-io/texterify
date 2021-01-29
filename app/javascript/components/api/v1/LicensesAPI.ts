@@ -22,9 +22,18 @@ export interface IGetLicensesResponse {
     };
 }
 
+export interface ICurrentLicenseInformation {
+    has_license: boolean;
+    expires_at: string | null;
+}
+
 const LicensesAPI = {
     getLicenses: async (): Promise<IGetLicensesResponse> => {
         return API.getRequest("licenses", true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
+    },
+
+    getCurrentLicenseInfo: async (): Promise<ICurrentLicenseInformation> => {
+        return API.getRequest("licenses/current", true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
     },
 
     uploadLicense: async (options: { file: File }): Promise<ILicense> => {

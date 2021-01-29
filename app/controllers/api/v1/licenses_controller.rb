@@ -12,6 +12,24 @@ class Api::V1::LicensesController < Api::V1::ApiController
     ).serialized_json
   end
 
+  def current
+    authorize License
+
+    license = License.order(created_at: :desc).first
+
+    if license
+      render json: {
+        has_license: true,
+        expires_at: license.license.expires_at.iso8601
+      }
+    else
+      render json: {
+        has_license: false,
+        expires_at: nil
+      }
+    end
+  end
+
   def create
     authorize License
 
