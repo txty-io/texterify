@@ -16,8 +16,9 @@ module Api::V1
     private
 
     def authenticate_user_from_token!
-      user = User.find_by(email: params[:email])
-      api_secret = params[:api_secret].presence
+      # TODO: Remove the usage of the deprecated params.
+      user = User.find_by(email: request.headers['Auth-Email'] || params[:email])
+      api_secret = request.headers['Auth-Secret'].presence || params[:api_secret].presence
       token_correct = api_secret && user && user.access_tokens.find_by(secret: api_secret)
       if token_correct
         client_id = 'auth-from-access-token'

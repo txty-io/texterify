@@ -140,7 +140,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     file = Tempfile.new(project.id)
 
     begin
-      helpers.create_export(project, export_config, file)
+      helpers.create_export(project, export_config, file, { emojify: params[:emojify] })
 
       send_file(
         file,

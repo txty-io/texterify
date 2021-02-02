@@ -9,8 +9,7 @@ Never save those API keys inside your repositories or publish them in some other
 After you have created you API key you can try the following curl command if everything is working \(make sure to replace `<email>` with the email you use to log in and `<secret>` with the just created API key\):
 
 ```text
-curl "https://texterify.com/api/v1/projects?email=<email>&api_secret=<secret>"
+curl "https://texterify.com/api/v1/projects" -H "Auth-Email: <email>" -H "Auth-Secret: <secret>"
 ```
 
 All API endpoints are authenticated.
-

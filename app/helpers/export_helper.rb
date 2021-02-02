@@ -39,7 +39,7 @@ module ExportHelper
     ''
   end
 
-  def create_language_export_data(project, export_config, language, post_processing_rules, skip_timestamp)
+  def create_language_export_data(project, export_config, language, post_processing_rules, **args)
     export_data = {}
     project.keys.order_by_name.each do |key|
       key_translation_export_config = key.translations.where(language_id: language.id, export_config_id: export_config.id).order(created_at: :desc).first
@@ -56,6 +56,10 @@ module ExportHelper
 
       post_processing_rules.each do |post_processing_rule|
         content = content.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
+      end
+
+      if args[:emojify]
+        content.gsub!(/[^\s]/, '❤️')
       end
 
       export_data[key.name] = content
@@ -82,20 +86,24 @@ module ExportHelper
             content = content.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
           end
 
+          if args[:emojify]
+            content.gsub!(/[^\s]/, '❤️')
+          end
+
           export_data[key.name] = content
         end
       end
       parent_language = parent_language.parent
     end
 
-    if !skip_timestamp
+    if !args[:skip_timestamp]
       export_data[:texterify_timestamp] = Time.now.utc.iso8601
     end
 
     export_data
   end
 
-  def create_export(project, export_config, file)
+  def create_export(project, export_config, file, **args)
     post_processing_rules = project.post_processing_rules
       .where(export_config_id: [export_config.id, nil])
       .order_by_name
@@ -103,7 +111,7 @@ module ExportHelper
     Zip::File.open(file.path, Zip::File::CREATE) do |zip|
       project.languages.order_by_name.each do |language|
         # Create the file content for a language.
-        export_data = create_language_export_data(project, export_config, language, post_processing_rules, false)
+        export_data = create_language_export_data(project, export_config, language, post_processing_rules, { skip_timestamp: false, emojify: args[:emojify] })
 
         duplicate_zip_entry_count = 0
         loop do
