@@ -96,7 +96,7 @@ const handleCheckout = async (
 
         if (!stripe) {
             console.error("Failed to load stripe.");
-            history.push(Routes.OTHER.ROOT);
+            history.push(Routes.ROOT);
 
             return;
         }

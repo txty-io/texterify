@@ -15,7 +15,7 @@ class SiteRouter extends React.Component {
     render() {
         return (
             <Switch>
-                <PublicRouteRedirectDashboard exact path={Routes.OTHER.ROOT} component={LoginSite} />
+                <PublicRouteRedirectDashboard exact path={Routes.ROOT} component={LoginSite} />
                 <Route exact path={Routes.AUTH.LOGIN} component={LoginSite} />
                 <Route exact path={Routes.AUTH.SIGNUP} component={SignupSite} />
                 <Route exact path={Routes.AUTH.FORGOTT_PASSWORD} component={ForgotPasswordSite} />

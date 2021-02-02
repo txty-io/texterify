@@ -2,7 +2,6 @@ import { DeploymentUnitOutlined, LineChartOutlined, ProjectOutlined, SettingOutl
 import * as antd from "antd";
 import Logo from "images/logo.svg";
 import { observer } from "mobx-react";
-import moment from "moment";
 import * as React from "react";
 import Hotkeys from "react-hot-keys";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";

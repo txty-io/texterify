@@ -31,7 +31,7 @@ class AppRouter extends React.Component {
                             <PrivateRoute path={Routes.DASHBOARD.PROJECT} component={DashboardRouter} />
 
                             <PrivateRoute path={Routes.DASHBOARD.ROOT} component={DashboardRouter} />
-                            <Route path={Routes.OTHER.ROOT} component={SiteRouter} />
+                            <Route path={Routes.ROOT} component={SiteRouter} />
                         </Switch>
                     </RoutingManager>
                 </Router>

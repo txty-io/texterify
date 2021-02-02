@@ -1,10 +1,11 @@
-import { Alert, Button, Form, Input, message } from "antd";
+import { Alert, Button, Checkbox, Form, Input, message } from "antd";
 import * as React from "react";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { SiteWrapperLink } from "../ui/SiteWrapperLink";
+import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
 
 interface IProps {
     onAccountCreated(): any;
@@ -109,6 +110,35 @@ class SignupForm extends React.Component<IProps, IState> {
                     >
                         <Input type="password" placeholder="Password confirmation" autoComplete="new-password" />
                     </Form.Item>
+
+                    {IS_TEXTERIFY_CLOUD && (
+                        <Form.Item
+                            name="agreeTermsOfServiceAndPrivacyPolicy"
+                            rules={[
+                                {
+                                    required: true,
+                                    transform: (value) => {
+                                        return value || undefined;
+                                    },
+                                    type: "boolean",
+                                    message: "You must agree to the terms of service and privacy policy."
+                                }
+                            ]}
+                            valuePropName="checked"
+                        >
+                            <Checkbox>
+                                I agree to the{" "}
+                                <a href={Routes.OTHER.TERMS_OF_SERVICE} target="_blank">
+                                    terms of service
+                                </a>{" "}
+                                and{" "}
+                                <a href={Routes.OTHER.PRIVACY_POLICY} target="_blank">
+                                    privacy policy
+                                </a>
+                                .
+                            </Checkbox>
+                        </Form.Item>
+                    )}
 
                     <div
                         style={{
