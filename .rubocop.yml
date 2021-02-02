@@ -114,6 +114,9 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Enabled: false
 
+Metrics/ModuleLength:
+  Enabled: false
+
 Lint/RaiseException:
   Enabled: true
 

@@ -111,7 +111,7 @@ module ExportHelper
     Zip::File.open(file.path, Zip::File::CREATE) do |zip|
       project.languages.order_by_name.each do |language|
         # Create the file content for a language.
-        export_data = create_language_export_data(project, export_config, language, post_processing_rules, { skip_timestamp: false, emojify: args[:emojify] })
+        export_data = create_language_export_data(project, export_config, language, post_processing_rules, skip_timestamp: false, emojify: args[:emojify])
 
         duplicate_zip_entry_count = 0
         loop do

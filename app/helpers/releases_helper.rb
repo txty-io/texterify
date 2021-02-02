@@ -52,7 +52,7 @@ module ReleasesHelper
       .where(export_config_id: [export_config.id, nil])
       .order_by_name
 
-    language_data = create_language_export_data(project, export_config, language, post_processing_rules, { skip_timestamp: true })
+    language_data = create_language_export_data(project, export_config, language, post_processing_rules, skip_timestamp: true)
 
     export_data = {
       is_default: language.is_default,
