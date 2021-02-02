@@ -144,7 +144,10 @@ class DashboardRouter extends React.Component<IProps, IState> {
                 />
                 {!IS_TEXTERIFY_CLOUD && this.state.currentLicenseInfoLoaded && (
                     <>
-                        <LicenseFreeTrial hasLicense={this.state.currentLicenseInfo.has_license} />
+                        <LicenseFreeTrial
+                            hasLicense={this.state.currentLicenseInfo.has_license}
+                            expiresAt={this.state.currentLicenseInfo.expires_at}
+                        />
                         <LicenseExpiring expiresAt={this.state.currentLicenseInfo.expires_at} />
                     </>
                 )}

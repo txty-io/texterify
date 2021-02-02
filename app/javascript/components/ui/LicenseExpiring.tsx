@@ -18,7 +18,7 @@ export function LicenseExpiring(props: { expiresAt: string }) {
     const [hidden, setHidden] = React.useState<boolean>(true);
 
     React.useEffect(() => {
-        if (moment().isBefore(moment(props.expiresAt, "YYYY-MM-DD"))) {
+        if (moment().add(1, "month").isAfter(moment(props.expiresAt, "YYYY-MM-DD"))) {
             if (!localStorage.getItem("expiredHeaderHidden")) {
                 setHidden(false);
             } else {

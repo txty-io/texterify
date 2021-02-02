@@ -13,16 +13,18 @@ const CloseIcon = styled(CloseCircleFilled)`
     }
 `;
 
-export function LicenseFreeTrial(props: { hasLicense: boolean }) {
+export function LicenseFreeTrial(props: { hasLicense: boolean; expiresAt: string }) {
     const [hidden, setHidden] = React.useState<boolean>(true);
 
     React.useEffect(() => {
-        if (!localStorage.getItem("freeVersionHeaderHidden")) {
-            setHidden(false);
-        } else {
-            const time = moment(localStorage.getItem("freeVersionHeaderHidden"));
-            if (time.add(1, "week").isBefore(moment())) {
+        if (!props.expiresAt || moment().isAfter(moment(props.expiresAt, "YYYY-MM-DD"))) {
+            if (!localStorage.getItem("freeVersionHeaderHidden")) {
                 setHidden(false);
+            } else {
+                const time = moment(localStorage.getItem("freeVersionHeaderHidden"));
+                if (time.add(1, "week").isBefore(moment())) {
+                    setHidden(false);
+                }
             }
         }
     }, []);
