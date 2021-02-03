@@ -32,12 +32,16 @@ export const ErrorUtils = {
         });
     },
 
+    showError(error: string) {
+        message.error(error);
+    },
+
     showErrors(errors: IErrorsResponse) {
         const keys = Object.keys(errors);
 
         keys.forEach((key) => {
             errors[key].forEach((error) => {
-                message.error(this.getErrorMessage(key, error.error));
+                this.showError(this.getErrorMessage(key, error.error));
             });
         });
     },

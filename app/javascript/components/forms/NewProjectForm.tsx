@@ -54,7 +54,19 @@ class NewProjectForm extends React.Component<IProps, IState> {
             response = await ProjectsAPI.createProject(values.name, values.description, this.props.organizationId);
         }
 
-        if (response.errors) {
+        if (response.error) {
+            if (response.message === "MAXIMUM_NUMBER_OF_PROJECTS_REACHED") {
+                if (this.props.organizationId) {
+                    ErrorUtils.showError(
+                        "You have reached the maximum number of projects for the free plan. Please upgrade to a paid plan create more projects."
+                    );
+                } else {
+                    ErrorUtils.showError(
+                        "You have reached the maximum number of private projects. You can create more projects as part of an organization."
+                    );
+                }
+            }
+        } else if (response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.BLANK, response.errors)) {
                 this.formRef.current.setFields([
                     {

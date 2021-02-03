@@ -5,6 +5,7 @@ import * as React from "react";
 import { CountryCodesAPI } from "../api/v1/CountryCodesAPI";
 import { LanguageCodesAPI } from "../api/v1/LanguageCodesAPI";
 import { LanguagesAPI } from "../api/v1/LanguagesAPI";
+import { dashboardStore } from "../stores/DashboardStore";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import FlagIcon from "../ui/FlagIcons";
 import { TexterifyModal } from "../ui/TexterifyModal";
@@ -73,7 +74,19 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
             });
         }
 
-        if (response.errors) {
+        if (response.error) {
+            if (response.message === "MAXIMUM_NUMBER_OF_LANGUAGES_REACHED") {
+                if (dashboardStore.currentOrganization) {
+                    ErrorUtils.showError(
+                        "You have reached the maximum number of languages for a project on the free plan. Please upgrade to a paid plan to create more projects."
+                    );
+                } else {
+                    ErrorUtils.showError(
+                        "You have reached the maximum number of languages for private projects. Move the project to an organization to create more languages."
+                    );
+                }
+            }
+        } else if (response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
                 this.formRef.current.setFields([
                     {
@@ -93,10 +106,10 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
             }
 
             return;
-        }
-
-        if (this.props.onCreated) {
-            this.props.onCreated();
+        } else {
+            if (this.props.onCreated) {
+                this.props.onCreated();
+            }
         }
     };
 

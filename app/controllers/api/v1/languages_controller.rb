@@ -37,6 +37,17 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     end
 
     project = current_user.projects.find(params[:project_id])
+
+    if !project.feature_enabled?(Organization::FEATURE_UNLIMITED_LANGUAGES) && project.languages.size >= 2
+      skip_authorization
+
+      render json: {
+        error: true,
+        message: 'MAXIMUM_NUMBER_OF_LANGUAGES_REACHED'
+      }, status: :bad_request
+      return
+    end
+
     country_code = CountryCode.find_by(id: params[:country_code])
     language_code = LanguageCode.find_by(id: params[:language_code])
 

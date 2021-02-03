@@ -17,14 +17,18 @@ class OrganizationSerializer
   end
 
   attribute :enabled_features do |object|
-    if object.subscription&.plan == Subscription::PLAN_TEAM
+    if object.subscription&.plan == Subscription::PLAN_BASIC
+      Organization::FEATURES_BASIC_PLAN
+    elsif object.subscription&.plan == Subscription::PLAN_TEAM
       Organization::FEATURES_TEAM_PLAN
     elsif object.subscription&.plan == Subscription::PLAN_BUSINESS
       Organization::FEATURES_BUSINESS_PLAN
     elsif !License.all.empty?
       license = License.all.order(created_at: :desc).first
 
-      if license.license.restrictions[:plan] == 'team'
+      if license.license.restrictions[:plan] == 'basic'
+        Organization::FEATURES_BASIC_PLAN
+      elsif license.license.restrictions[:plan] == 'team'
         Organization::FEATURES_TEAM_PLAN
       elsif license.license.restrictions[:plan] == 'business'
         Organization::FEATURES_BUSINESS_PLAN

@@ -28,6 +28,11 @@ class Organization < ApplicationRecord
     end
   end
 
+  # Basic plan features
+  FEATURE_UNLIMITED_PROJECTS = :FEATURE_UNLIMITED_PROJECTS
+  FEATURE_UNLIMITED_LANGUAGES = :FEATURE_UNLIMITED_LANGUAGES
+  FEATURE_BASIC_PERMISSION_SYSTEM = :FEATURE_BASIC_PERMISSION_SYSTEM
+
   # Team plan features
   FEATURE_VALIDATIONS = :FEATURE_VALIDATIONS
   FEATURE_KEY_HISTORY = :FEATURE_KEY_HISTORY
@@ -45,6 +50,10 @@ class Organization < ApplicationRecord
   FEATURE_MACHINE_TRANSLATIONS = :FEATURE_MACHINE_TRANSLATIONS
 
   FEATURES_PLANS = {
+    FEATURE_UNLIMITED_PROJECTS: [Subscription::PLAN_BASIC, Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
+    FEATURE_UNLIMITED_LANGUAGES: [Subscription::PLAN_BASIC, Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
+    FEATURE_BASIC_PERMISSION_SYSTEM: [Subscription::PLAN_BASIC, Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
+
     FEATURE_VALIDATIONS: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_KEY_HISTORY: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_EXPORT_HIERARCHY: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
@@ -60,6 +69,7 @@ class Organization < ApplicationRecord
     FEATURE_MACHINE_TRANSLATIONS: [Subscription::PLAN_BUSINESS]
   }.freeze
 
+  FEATURES_BASIC_PLAN = FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BASIC) ? feature : nil }.reject(&:nil?).freeze
   FEATURES_TEAM_PLAN = FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_TEAM) ? feature : nil }.reject(&:nil?).freeze
   FEATURES_BUSINESS_PLAN = FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BUSINESS) ? feature : nil }.reject(&:nil?).freeze
 

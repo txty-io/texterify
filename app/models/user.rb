@@ -24,6 +24,10 @@ class User < ApplicationRecord
     Project.where(id: user_projects.pluck(:id) + organization_projects.pluck(:id))
   end
 
+  def private_projects
+    user_projects.where(organization_id: nil)
+  end
+
   # Determines if an email confirmation is required after registration.
   def confirmation_required?
     ENV['EMAIL_CONFIRMATION_REQUIRED'] == 'true'
