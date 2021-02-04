@@ -125,16 +125,22 @@ class MembersSite extends React.Component<IProps, IState> {
             visible: this.state.deleteDialogVisible,
             onOk: async () => {
                 const deleteMemberResponse = await MembersAPI.deleteMember(this.props.match.params.projectId, item.key);
-                if (item.email === authStore.currentUser.email) {
-                    if (!deleteMemberResponse.errors) {
-                        this.props.history.push(Routes.DASHBOARD.PROJECTS);
+                if (deleteMemberResponse.error) {
+                    if (deleteMemberResponse.message === "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE") {
+                        ErrorUtils.showError("Please upgrade to a paid plan to remove users from this project.");
                     }
                 } else {
-                    const getMembersResponse = await MembersAPI.getMembers(this.props.match.params.projectId);
-                    this.setState({
-                        getMembersResponse: getMembersResponse,
-                        deleteDialogVisible: false
-                    });
+                    if (item.email === authStore.currentUser.email) {
+                        if (!deleteMemberResponse.errors) {
+                            this.props.history.push(Routes.DASHBOARD.PROJECTS);
+                        }
+                    } else {
+                        const getMembersResponse = await MembersAPI.getMembers(this.props.match.params.projectId);
+                        this.setState({
+                            getMembersResponse: getMembersResponse,
+                            deleteDialogVisible: false
+                        });
+                    }
                 }
             },
             onCancel: () => {
@@ -206,9 +212,24 @@ class MembersSite extends React.Component<IProps, IState> {
                                         record.id,
                                         value
                                     );
-                                    await this.reload(record.id);
-                                    if (!response.errors) {
-                                        message.success("User role updated successfully.");
+
+                                    if (response.error) {
+                                        if (response.message === "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE") {
+                                            if (dashboardStore.currentOrganization) {
+                                                ErrorUtils.showError(
+                                                    "Please upgrade to a paid plan to add users to this project."
+                                                );
+                                            } else {
+                                                ErrorUtils.showError(
+                                                    "This feature is not available for private projects. Please move your project to an organization."
+                                                );
+                                            }
+                                        }
+                                    } else {
+                                        await this.reload(record.id);
+                                        if (!response.errors) {
+                                            message.success("User role updated successfully.");
+                                        }
                                     }
                                 } catch (e) {
                                     console.error(e);
@@ -322,7 +343,21 @@ class MembersSite extends React.Component<IProps, IState> {
                                     this.state.userAddEmail
                                 );
 
-                                if (createMemberResponse.errors) {
+                                if (createMemberResponse.error) {
+                                    if (
+                                        createMemberResponse.message === "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE"
+                                    ) {
+                                        if (dashboardStore.currentOrganization) {
+                                            ErrorUtils.showError(
+                                                "Please upgrade to a paid plan to add users to this project."
+                                            );
+                                        } else {
+                                            ErrorUtils.showError(
+                                                "This feature is not available for private projects. Please move your project to an organization."
+                                            );
+                                        }
+                                    }
+                                } else if (createMemberResponse.errors) {
                                     this.formRef.current.setFields([
                                         {
                                             name: "name",
@@ -333,18 +368,18 @@ class MembersSite extends React.Component<IProps, IState> {
                                     ]);
 
                                     return;
+                                } else {
+                                    this.formRef.current.resetFields();
+
+                                    const getMembersResponse = await MembersAPI.getMembers(
+                                        this.props.match.params.projectId
+                                    );
+
+                                    this.setState({
+                                        getMembersResponse: getMembersResponse,
+                                        userAddEmail: ""
+                                    });
                                 }
-
-                                this.formRef.current.resetFields();
-
-                                const getMembersResponse = await MembersAPI.getMembers(
-                                    this.props.match.params.projectId
-                                );
-
-                                this.setState({
-                                    getMembersResponse: getMembersResponse,
-                                    userAddEmail: ""
-                                });
                             }}
                             disabled={
                                 this.state.userAddEmail === "" ||

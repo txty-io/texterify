@@ -1,4 +1,6 @@
 class Api::V1::ProjectUsersController < Api::V1::ApiController
+  before_action :ensure_feature_enabled, only: [:create, :update, :destroy]
+
   def index
     skip_authorization
     project = current_user.projects.find(params[:project_id])
@@ -143,5 +145,21 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
     render json: {
       success: true
     }
+  end
+
+  private
+
+  def ensure_feature_enabled
+    project = current_user.projects.find(params[:project_id])
+
+    if !project.feature_enabled?(Organization::FEATURE_BASIC_PERMISSION_SYSTEM)
+      skip_authorization
+
+      render json: {
+        error: true,
+        message: 'BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE'
+      }, status: :bad_request
+      return
+    end
   end
 end

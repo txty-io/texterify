@@ -1,4 +1,6 @@
 class Api::V1::OrganizationUsersController < Api::V1::ApiController
+  before_action :ensure_feature_enabled, only: [:create, :update, :destroy]
+
   def index
     skip_authorization
     organization = current_user.organizations.find(params[:organization_id])
@@ -130,5 +132,21 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     render json: {
       message: 'User role updated'
     }
+  end
+
+  private
+
+  def ensure_feature_enabled
+    organization = current_user.organizations.find(params[:organization_id])
+
+    if !organization.feature_enabled?(Organization::FEATURE_BASIC_PERMISSION_SYSTEM)
+      skip_authorization
+
+      render json: {
+        error: true,
+        message: 'BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE'
+      }, status: :bad_request
+      return
+    end
   end
 end

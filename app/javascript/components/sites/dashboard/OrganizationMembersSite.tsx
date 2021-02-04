@@ -11,6 +11,7 @@ import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore, IProject } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { ErrorUtils } from "../../ui/ErrorUtils";
 import { Loading } from "../../ui/Loading";
 import { RolesLegend } from "../../ui/RolesLegend";
 import { UserAvatar } from "../../ui/UserAvatar";
@@ -233,23 +234,37 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                             value
                                         );
 
-                                        if (!response.errors) {
-                                            message.success("User role updated successfully.");
-                                        }
-
-                                        // If the current users permission changed we reload the current organization.
-                                        if (record.id === authStore.currentUser.id) {
-                                            const getOrganizationResponse = await OrganizationsAPI.getOrganization(
-                                                this.props.match.params.organizationId
-                                            );
-                                            if (getOrganizationResponse.errors) {
-                                                this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
-                                            } else {
-                                                dashboardStore.currentOrganization = getOrganizationResponse.data;
+                                        if (response.error) {
+                                            if (response.message === "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE") {
+                                                if (dashboardStore.currentOrganization) {
+                                                    ErrorUtils.showError(
+                                                        "Please upgrade to a paid plan to add users to this project."
+                                                    );
+                                                } else {
+                                                    ErrorUtils.showError(
+                                                        "This feature is not available for private projects. Please move your project to an organization."
+                                                    );
+                                                }
                                             }
-                                        }
+                                        } else if (response.errors) {
+                                            ErrorUtils.showErrors(response.errors);
+                                        } else {
+                                            message.success("User role updated successfully.");
 
-                                        await this.reload();
+                                            // If the current users permission changed we reload the current organization.
+                                            if (record.id === authStore.currentUser.id) {
+                                                const getOrganizationResponse = await OrganizationsAPI.getOrganization(
+                                                    this.props.match.params.organizationId
+                                                );
+                                                if (getOrganizationResponse.errors) {
+                                                    this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
+                                                } else {
+                                                    dashboardStore.currentOrganization = getOrganizationResponse.data;
+                                                }
+                                            }
+
+                                            await this.reload();
+                                        }
                                     } catch (e) {
                                         console.error(e);
                                         message.error("Error while updating user role.");
@@ -365,18 +380,29 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                                 this.props.match.params.organizationId,
                                                 record.key
                                             );
-                                            if (record.email === authStore.currentUser.email) {
-                                                if (!deleteMemberResponse.errors) {
-                                                    this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
+                                            if (deleteMemberResponse.error) {
+                                                if (
+                                                    deleteMemberResponse.message ===
+                                                    "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE"
+                                                ) {
+                                                    ErrorUtils.showError(
+                                                        "Please upgrade to a paid plan to remove users from this project."
+                                                    );
                                                 }
                                             } else {
-                                                const getMembersResponse = await OrganizationMembersAPI.getMembers(
-                                                    this.props.match.params.organizationId
-                                                );
-                                                this.setState({
-                                                    getMembersResponse: getMembersResponse,
-                                                    deleteDialogVisible: false
-                                                });
+                                                if (record.email === authStore.currentUser.email) {
+                                                    if (!deleteMemberResponse.errors) {
+                                                        this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
+                                                    }
+                                                } else {
+                                                    const getMembersResponse = await OrganizationMembersAPI.getMembers(
+                                                        this.props.match.params.organizationId
+                                                    );
+                                                    this.setState({
+                                                        getMembersResponse: getMembersResponse,
+                                                        deleteDialogVisible: false
+                                                    });
+                                                }
                                             }
                                         },
                                         onCancel: () => {
@@ -466,18 +492,33 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                     this.props.match.params.organizationId,
                                     this.state.userAddEmail
                                 );
-                                if (createMemberResponse.errors) {
-                                    return;
+
+                                if (createMemberResponse.error) {
+                                    if (
+                                        createMemberResponse.message === "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE"
+                                    ) {
+                                        if (dashboardStore.currentOrganization) {
+                                            ErrorUtils.showError(
+                                                "Please upgrade to a paid plan to add users to this project."
+                                            );
+                                        } else {
+                                            ErrorUtils.showError(
+                                                "This feature is not available for private projects. Please move your project to an organization."
+                                            );
+                                        }
+                                    }
+                                } else if (createMemberResponse.errors) {
+                                    ErrorUtils.showErrors(createMemberResponse.errors);
+                                } else {
+                                    const getMembersResponse = await OrganizationMembersAPI.getMembers(
+                                        this.props.match.params.organizationId
+                                    );
+
+                                    this.setState({
+                                        getMembersResponse: getMembersResponse,
+                                        userAddEmail: ""
+                                    });
                                 }
-
-                                const getMembersResponse = await OrganizationMembersAPI.getMembers(
-                                    this.props.match.params.organizationId
-                                );
-
-                                this.setState({
-                                    getMembersResponse: getMembersResponse,
-                                    userAddEmail: ""
-                                });
                             }}
                             disabled={this.state.userAddEmail === ""}
                         >
