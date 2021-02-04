@@ -380,29 +380,19 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                                 this.props.match.params.organizationId,
                                                 record.key
                                             );
-                                            if (deleteMemberResponse.error) {
-                                                if (
-                                                    deleteMemberResponse.message ===
-                                                    "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE"
-                                                ) {
-                                                    ErrorUtils.showError(
-                                                        "Please upgrade to a paid plan to remove users from this project."
-                                                    );
+
+                                            if (record.email === authStore.currentUser.email) {
+                                                if (!deleteMemberResponse.errors) {
+                                                    this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
                                                 }
                                             } else {
-                                                if (record.email === authStore.currentUser.email) {
-                                                    if (!deleteMemberResponse.errors) {
-                                                        this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
-                                                    }
-                                                } else {
-                                                    const getMembersResponse = await OrganizationMembersAPI.getMembers(
-                                                        this.props.match.params.organizationId
-                                                    );
-                                                    this.setState({
-                                                        getMembersResponse: getMembersResponse,
-                                                        deleteDialogVisible: false
-                                                    });
-                                                }
+                                                const getMembersResponse = await OrganizationMembersAPI.getMembers(
+                                                    this.props.match.params.organizationId
+                                                );
+                                                this.setState({
+                                                    getMembersResponse: getMembersResponse,
+                                                    deleteDialogVisible: false
+                                                });
                                             }
                                         },
                                         onCancel: () => {

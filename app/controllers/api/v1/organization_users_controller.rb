@@ -1,5 +1,5 @@
 class Api::V1::OrganizationUsersController < Api::V1::ApiController
-  before_action :ensure_feature_enabled, only: [:create, :update, :destroy]
+  before_action :ensure_feature_enabled, only: [:create, :update]
 
   def index
     skip_authorization

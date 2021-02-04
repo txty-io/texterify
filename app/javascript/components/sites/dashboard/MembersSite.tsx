@@ -125,22 +125,17 @@ class MembersSite extends React.Component<IProps, IState> {
             visible: this.state.deleteDialogVisible,
             onOk: async () => {
                 const deleteMemberResponse = await MembersAPI.deleteMember(this.props.match.params.projectId, item.key);
-                if (deleteMemberResponse.error) {
-                    if (deleteMemberResponse.message === "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE") {
-                        ErrorUtils.showError("Please upgrade to a paid plan to remove users from this project.");
+
+                if (item.email === authStore.currentUser.email) {
+                    if (!deleteMemberResponse.errors) {
+                        this.props.history.push(Routes.DASHBOARD.PROJECTS);
                     }
                 } else {
-                    if (item.email === authStore.currentUser.email) {
-                        if (!deleteMemberResponse.errors) {
-                            this.props.history.push(Routes.DASHBOARD.PROJECTS);
-                        }
-                    } else {
-                        const getMembersResponse = await MembersAPI.getMembers(this.props.match.params.projectId);
-                        this.setState({
-                            getMembersResponse: getMembersResponse,
-                            deleteDialogVisible: false
-                        });
-                    }
+                    const getMembersResponse = await MembersAPI.getMembers(this.props.match.params.projectId);
+                    this.setState({
+                        getMembersResponse: getMembersResponse,
+                        deleteDialogVisible: false
+                    });
                 }
             },
             onCancel: () => {
