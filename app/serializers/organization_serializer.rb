@@ -24,13 +24,13 @@ class OrganizationSerializer
     elsif object.subscription&.plan == Subscription::PLAN_BUSINESS
       Organization::FEATURES_BUSINESS_PLAN
     elsif !License.all.empty?
-      license = License.all.order(created_at: :desc).first
+      license = License.current_active
 
-      if license.license.restrictions[:plan] == 'basic'
+      if license && license.restrictions[:plan] == 'basic'
         Organization::FEATURES_BASIC_PLAN
-      elsif license.license.restrictions[:plan] == 'team'
+      elsif license && license.restrictions[:plan] == 'team'
         Organization::FEATURES_TEAM_PLAN
-      elsif license.license.restrictions[:plan] == 'business'
+      elsif license && license.restrictions[:plan] == 'business'
         Organization::FEATURES_BUSINESS_PLAN
       else
         []

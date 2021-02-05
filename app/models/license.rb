@@ -20,4 +20,13 @@ class License < ApplicationRecord
         nil
       end
   end
+
+  class << self
+    def current_active
+      license = License.order(created_at: :desc).first
+      if license && license.license.expires_at > Time.now.utc
+        license.license
+      end
+    end
+  end
 end

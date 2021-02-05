@@ -33,7 +33,7 @@ export const ErrorUtils = {
     },
 
     showError(error: string) {
-        message.error(error);
+        message.error(error, 2000);
     },
 
     showErrors(errors: IErrorsResponse) {

@@ -3,6 +3,7 @@ import * as React from "react";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
+import { ErrorUtils } from "../ui/ErrorUtils";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { SiteWrapperLink } from "../ui/SiteWrapperLink";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
@@ -22,22 +23,26 @@ class SignupForm extends React.Component<IProps, IState> {
     };
 
     handleSubmit = async (values: any) => {
-        this.setState({ signupErrors: [] });
+        this.setState({ signupErrors: [], isLoading: true });
 
-        const start: number = new Date().getTime();
-        this.setState({ isLoading: true });
-
-        const response: any = await AuthAPI.signup(
+        const response = await AuthAPI.signup(
             values.username,
             values.email,
             values.password,
             values.passwordConfirmation
         );
 
-        const elapsed: number = new Date().getTime() - start;
-        setTimeout(() => {
-            this.setState({ isLoading: false });
+        this.setState({ isLoading: false });
 
+        if (response.error) {
+            if (response.message === "MAXIMUM_NUMBER_OF_USERS_REACHED") {
+                ErrorUtils.showError(
+                    "The maximum number of users for the instance license has been reached. Please inform the instance admin to upgrade the license."
+                );
+            } else {
+                ErrorUtils.showError(response.message);
+            }
+        } else {
             if (response.status === "error") {
                 this.setState({ signupErrors: response.errors });
             } else {
@@ -45,7 +50,7 @@ class SignupForm extends React.Component<IProps, IState> {
                 message.success("Account successfully created.");
                 this.props.onAccountCreated();
             }
-        }, 500 - elapsed);
+        }
     };
 
     getErrorMessage = (errors: any) => {

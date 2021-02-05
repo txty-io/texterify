@@ -52,9 +52,9 @@ class Project < ApplicationRecord
     if organization
       organization.feature_enabled?(feature)
     elsif !License.all.empty?
-      license = License.all.order(created_at: :desc).first
+      license = License.current_active
       feature_allowed_plans = Organization::FEATURES_PLANS[feature]
-      feature_allowed_plans.include?(license.license.restrictions[:plan])
+      feature_allowed_plans.include?(license.restrictions[:plan])
     else
       false
     end

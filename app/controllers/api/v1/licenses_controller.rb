@@ -15,12 +15,12 @@ class Api::V1::LicensesController < Api::V1::ApiController
   def current
     authorize License
 
-    license = License.order(created_at: :desc).first
+    license = License.current_active
 
     if license
       render json: {
         has_license: true,
-        expires_at: license.license.expires_at.iso8601
+        expires_at: license.expires_at.iso8601
       }
     else
       render json: {
