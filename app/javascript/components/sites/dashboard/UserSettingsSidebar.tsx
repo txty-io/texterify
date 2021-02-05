@@ -10,6 +10,7 @@ interface INavigationData {
     path: string;
     text: string;
     texterifyCloudOnly: boolean;
+    dataId: string;
 }
 
 type IProps = RouteComponentProps;
@@ -23,19 +24,22 @@ class UserSettingsSidebar extends React.Component<IProps, IState> {
             icon: UserOutlined,
             path: Routes.USER.SETTINGS.ACCOUNT,
             text: "Account",
-            texterifyCloudOnly: false
+            texterifyCloudOnly: false,
+            dataId: "user-sidebar-account"
         },
         {
             icon: LockOutlined,
             path: Routes.USER.SETTINGS.ACCESS_TOKENS,
             text: "Access tokens",
-            texterifyCloudOnly: false
+            texterifyCloudOnly: false,
+            dataId: "user-sidebar-access-tokens"
         },
         {
             icon: SolutionOutlined,
             path: Routes.USER.SETTINGS.LICENSES,
             text: "Licenses",
-            texterifyCloudOnly: true
+            texterifyCloudOnly: true,
+            dataId: "user-sidebar-licenses"
         }
     ];
 
@@ -54,7 +58,7 @@ class UserSettingsSidebar extends React.Component<IProps, IState> {
             })
             .map((data: INavigationData, index: number) => {
                 return (
-                    <Menu.Item key={index}>
+                    <Menu.Item data-id={data.dataId} key={index}>
                         <data.icon />
                         <Link to={data.path}>{data.text}</Link>
                     </Menu.Item>

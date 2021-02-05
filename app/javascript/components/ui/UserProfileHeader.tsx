@@ -58,6 +58,7 @@ class UserProfileHeader extends React.Component<{}, IState> {
                 }}
                 role="button"
                 style={{ cursor: "pointer", overflow: "hidden" }}
+                data-id="user-profile-menu"
             >
                 <Popover
                     title="Account"
@@ -78,7 +79,7 @@ class UserProfileHeader extends React.Component<{}, IState> {
                                         this.setState({ accountMenuVisible: false });
                                     }}
                                 >
-                                    <Link to={Routes.USER.SETTINGS.ACCOUNT}>
+                                    <Link data-id="user-profile-menu-settings" to={Routes.USER.SETTINGS.ACCOUNT}>
                                         <SettingOutlined style={{ marginRight: 5, fontWeight: "bold" }} />
                                         Settings
                                     </Link>
