@@ -19,8 +19,8 @@ jobs:
         run: docker-compose exec -T app bundle exec rails db:create db:migrate db:seed RAILS_ENV=test
       - name: Install test dependencies
         run: docker-compose exec -T app bundle install --with test
-      - name: Install yarn packages
-        run: docker-compose exec -T app yarn install
+      - name: Install yarn packages with dev dependencies
+        run: docker-compose exec -T app yarn install --production=false
       - name: Run linters
         run: docker-compose exec -T app yarn lint
       - name: Run tests
