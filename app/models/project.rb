@@ -51,12 +51,15 @@ class Project < ApplicationRecord
   def feature_enabled?(feature)
     if organization
       organization.feature_enabled?(feature)
-    elsif !License.all.empty?
-      license = License.current_active
-      feature_allowed_plans = Organization::FEATURES_PLANS[feature]
-      feature_allowed_plans.include?(license.restrictions[:plan])
     else
-      false
+      license = License.current_active
+
+      if license
+        feature_allowed_plans = Organization::FEATURES_PLANS[feature]
+        feature_allowed_plans.include?(license.restrictions[:plan])
+      else
+        false
+      end
     end
   end
 end
