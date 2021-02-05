@@ -1,0 +1,1 @@
+ENV['PROPRIETARY_MODE'] = 'true'

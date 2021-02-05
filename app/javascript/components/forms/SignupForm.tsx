@@ -82,7 +82,7 @@ class SignupForm extends React.Component<IProps, IState> {
                         name="username"
                         rules={[{ required: true, whitespace: true, message: "Please enter your username." }]}
                     >
-                        <Input placeholder="Username" />
+                        <Input autoFocus placeholder="Username" />
                     </Form.Item>
 
                     <h3>Email</h3>
@@ -156,7 +156,7 @@ class SignupForm extends React.Component<IProps, IState> {
                         <SiteWrapperLink to={Routes.AUTH.LOGIN} style={{ fontWeight: 600 }}>
                             Already have an account?
                         </SiteWrapperLink>
-                        <Button type="primary" htmlType="submit" style={{ marginBottom: 0 }}>
+                        <Button data-id="sign-up-submit" type="primary" htmlType="submit" style={{ marginBottom: 0 }}>
                             Sign up
                         </Button>
                     </div>
