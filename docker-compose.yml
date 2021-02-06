@@ -1,3 +1,5 @@
+# Used in GitHub CI.
+
 version: '3'
 volumes:
   database: {}
@@ -30,3 +32,4 @@ services:
       - db
     volumes:
       - ./coverage:/var/www/texterify/coverage
+    entrypoint: ["RAILS_ENV=test", "bundle", "exec", "rails", "server"]
