@@ -16,7 +16,6 @@ services:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - DB_TEST_HOST=${DB_TEST_HOST}
       - DB_TEST_USERNAME=${DB_TEST_USERNAME}
-      - RAILS_ENV=test
     image: chrztoph/texterify:${GITHUB_SHA}
     build:
       context: .
@@ -29,9 +28,9 @@ services:
         STRIPE_PUBLIC_API_KEY: ${STRIPE_PUBLIC_API_KEY}
         TEXTERIFY_PAYMENT_SERVER: ${TEXTERIFY_PAYMENT_SERVER}
         SENTRY_DSN_FRONTEND: ${SENTRY_DSN_FRONTEND}
+        RAILS_ENV: test
       dockerfile: Dockerfile
     depends_on:
       - db
     volumes:
       - ./coverage:/var/www/texterify/coverage
-    entrypoint: "bundle exec rails server -e test"

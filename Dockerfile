@@ -3,7 +3,10 @@ SHELL ["/bin/bash", "-c"]
 
 EXPOSE 3000
 
-ENV RAILS_ENV="production"
+ARG RAILS_ENV production
+ARG NODE_ENV production
+
+ENV RAILS_ENV=$RAILS_ENV
 ENV RAILS_ROOT /var/www/texterify
 
 # Install essential libraries.
@@ -29,7 +32,7 @@ RUN apt-get update \
 ENV NVM_DIR /usr/local/nvm
 RUN mkdir -p $NVM_DIR
 ENV NODE_VERSION 14.13.1
-ENV NODE_ENV="production"
+ENV NODE_ENV=$NODE_ENV
 ENV NODE_OPTIONS="--max_old_space_size=8192"
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 
@@ -63,7 +66,7 @@ ARG SENTRY_DSN_FRONTEND
 
 # Compile assets.
 RUN SECRET_KEY_BASE=`bin/rails secret` \
-    RAILS_ENV=production \
+    RAILS_ENV=$RAILS_ENV \
     COMMIT_HASH=$COMMIT_HASH \
     SENTRY_SOURCE_MAPS_AUTH_TOKEN=$SENTRY_SOURCE_MAPS_AUTH_TOKEN \
     SENTRY_SOURCE_MAPS_ORGANIZATION=$SENTRY_SOURCE_MAPS_ORGANIZATION \
