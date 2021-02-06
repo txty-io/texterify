@@ -3,8 +3,8 @@ SHELL ["/bin/bash", "-c"]
 
 EXPOSE 3000
 
-ARG RAILS_ENV production
-ARG NODE_ENV production
+ARG RAILS_ENV=production
+ARG NODE_ENV=production
 
 ENV RAILS_ENV=$RAILS_ENV
 ENV RAILS_ROOT /var/www/texterify

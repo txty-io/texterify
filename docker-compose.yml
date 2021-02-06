@@ -29,6 +29,7 @@ services:
         TEXTERIFY_PAYMENT_SERVER: ${TEXTERIFY_PAYMENT_SERVER}
         SENTRY_DSN_FRONTEND: ${SENTRY_DSN_FRONTEND}
         RAILS_ENV: test
+        NODE_ENV: test
       dockerfile: Dockerfile
     depends_on:
       - db
