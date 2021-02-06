@@ -1,4 +1,5 @@
 # Used in GitHub CI.
+# Don't use this config to run the service in production.
 
 version: '3'
 volumes:
@@ -32,4 +33,4 @@ services:
       - db
     volumes:
       - ./coverage:/var/www/texterify/coverage
-    entrypoint: ["RAILS_ENV=test", "bundle", "exec", "rails", "server"]
+    entrypoint: ["bundle", "exec", "rails", "server", "-e", "test"]
