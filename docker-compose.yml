@@ -16,6 +16,7 @@ services:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - DB_TEST_HOST=${DB_TEST_HOST}
       - DB_TEST_USERNAME=${DB_TEST_USERNAME}
+      - RAILS_ENV=test
     image: chrztoph/texterify:${GITHUB_SHA}
     build:
       context: .
