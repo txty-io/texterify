@@ -3,10 +3,10 @@ SHELL ["/bin/bash", "-c"]
 
 EXPOSE 3000
 
-ARG RAILS_ENV=production
-ARG NODE_ENV=production
+ARG RAILS_ENV_ARG=production
+ARG NODE_ENV_ARG=production
 
-ENV RAILS_ENV=$RAILS_ENV
+ENV RAILS_ENV=$RAILS_ENV_ARG
 ENV RAILS_ROOT /var/www/texterify
 
 # Install essential libraries.
@@ -32,7 +32,7 @@ RUN apt-get update \
 ENV NVM_DIR /usr/local/nvm
 RUN mkdir -p $NVM_DIR
 ENV NODE_VERSION 14.13.1
-ENV NODE_ENV=$NODE_ENV
+ENV NODE_ENV=$NODE_ENV_ARG
 ENV NODE_OPTIONS="--max_old_space_size=8192"
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 
