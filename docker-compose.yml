@@ -29,8 +29,9 @@ services:
         TEXTERIFY_PAYMENT_SERVER: ${TEXTERIFY_PAYMENT_SERVER}
         SENTRY_DSN_FRONTEND: ${SENTRY_DSN_FRONTEND}
         RAILS_ENV_ARG: test
-        NODE_ENV_ARG: test
+        NODE_ENV_ARG: production
       dockerfile: Dockerfile
+    entrypoint: "./docker-compose-test-setup.sh"
     depends_on:
       - db
     volumes:
