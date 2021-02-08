@@ -1,4 +1,4 @@
-FROM ruby:2.7.1
+FROM ruby:2.7.1 AS production
 SHELL ["/bin/bash", "-c"]
 
 EXPOSE 3000
@@ -76,5 +76,14 @@ RUN SECRET_KEY_BASE=`bin/rails secret` \
     TEXTERIFY_PAYMENT_SERVER=$TEXTERIFY_PAYMENT_SERVER \
     SENTRY_DSN_FRONTEND=$SENTRY_DSN_FRONTEND \
     bundle exec rails assets:precompile
+
+CMD ["rails", "server"]
+
+
+FROM production AS testing
+
+RUN bundle install --with test
+RUN yarn install --production=false
+RUN apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
 CMD ["rails", "server"]
