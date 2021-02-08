@@ -77,4 +77,4 @@ RUN SECRET_KEY_BASE=`bin/rails secret` \
     SENTRY_DSN_FRONTEND=$SENTRY_DSN_FRONTEND \
     bundle exec rails assets:precompile
 
-CMD ["bundle", "exec", "rails", "server"]
+CMD ["rails", "server"]
