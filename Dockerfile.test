@@ -77,11 +77,8 @@ RUN SECRET_KEY_BASE=`bin/rails secret` \
     SENTRY_DSN_FRONTEND=$SENTRY_DSN_FRONTEND \
     bundle exec rails assets:precompile
 
-
-RUN rails db:create db:migrate db:seed RAILS_ENV=test
 RUN bundle install --with test
 RUN yarn install --production=false
 RUN apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
-
 
 CMD ["rails", "server"]
