@@ -16,7 +16,7 @@ services:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - DB_TEST_HOST=${DB_TEST_HOST}
       - DB_TEST_USERNAME=${DB_TEST_USERNAME}
-    image: chrztoph/texterify:${GITHUB_SHA}
+    image: chrztoph/texterify:test
     build:
       context: .
       args:
@@ -24,8 +24,8 @@ services:
         PROPRIETARY_MODE: "true"
         RAILS_ENV_ARG: test
         NODE_ENV_ARG: production
-      dockerfile: Dockerfile.test
-    # entrypoint: ["./docker-compose-test-setup.sh"]
+      dockerfile: Dockerfile
+    entrypoint: ["./docker-compose-test-setup.sh"]
     depends_on:
       - db
     volumes:
