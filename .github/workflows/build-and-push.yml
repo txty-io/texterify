@@ -28,7 +28,7 @@ jobs:
       - name: Show memory
         run: free -m
       - name: Run tests
-        run: docker-compose exec -T app yarn test:backend
+        run: docker-compose exec -T app yarn test:frontend
       - name: Check database consistency
         run: docker-compose exec -T app yarn check:database-consistency:test
 
