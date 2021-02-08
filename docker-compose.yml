@@ -25,7 +25,6 @@ services:
         RAILS_ENV_ARG: test
         NODE_ENV_ARG: production
       dockerfile: Dockerfile
-    entrypoint: ["./docker-compose-test-setup.sh"]
     depends_on:
       - db
     volumes:
