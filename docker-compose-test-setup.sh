@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 echo "Executing docker-compose-test-setup.sh..."
 
 # bundle exec rails db:create db:migrate db:seed RAILS_ENV=test
