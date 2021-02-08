@@ -14,7 +14,7 @@ class Api::V1::RegistrationsController < DeviseTokenAuth::RegistrationsControlle
   private
 
   def check_users_limit_on_premise
-    if (ENV['DEV_ENABLE_LICENSE_USERS_LIMIT_CHECK'] == 'true' && Rails.env.development?) && Texterify.on_premise?
+    if (ENV['DEV_ENABLE_LICENSE_USERS_LIMIT_CHECK'] == 'true' && (Rails.env.development? || Rails.env.test?)) && Texterify.on_premise?
       license = License.current_active
 
       with_license_users_exceeded = license && (license.restrictions[:active_users_count].present? && User.all.size >= license.restrictions[:active_users_count])
