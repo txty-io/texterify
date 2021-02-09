@@ -13,8 +13,6 @@ networks:
 
 services:
   db:
-    expose:
-      - "5432"
     ports:
       - "5432:5432"
 
@@ -61,12 +59,10 @@ services:
       - DB_TEST_HOST=db
       - DB_TEST_USERNAME=postgres
 
-    expose:
-      - "3000"
-      - "3011"
     ports:
       - "3000:3000"
       - "3011:3011"
+      - "1080:1080"
 
     # Overrides default command so things don't shut down after the process ends.
     command: /bin/sh -c "while sleep 1000; do :; done"
