@@ -98,7 +98,7 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
                 this.formRef.current.setFields([
                     {
                         name: "name",
-                        errors: [ErrorUtils.getErrorMessage("name", ERRORS.INVALID)]
+                        errors: ["Name must start with a letter and can only contain alphanumeric characters and _."]
                     }
                 ]);
             } else {
