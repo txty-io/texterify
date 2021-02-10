@@ -43,7 +43,11 @@ module ExportHelper
     export_data = {}
     project.keys.order_by_name.each do |key|
       key_translation_export_config = key.translations.where(language_id: language.id, export_config_id: export_config.id).order(created_at: :desc).first
-      key_translation = key_translation_export_config || key.translations.where(language_id: language.id, export_config_id: nil).order(created_at: :desc).first
+      if key_translation_export_config&.content.present?
+        key_translation = key_translation_export_config
+      else
+        key_translation = key.translations.where(language_id: language.id, export_config_id: nil).order(created_at: :desc).first
+      end
 
       content = ''
       if key_translation.nil?
@@ -71,7 +75,11 @@ module ExportHelper
       parent_language.keys.each do |key|
         if export_data[key.name].blank?
           key_translation_export_config = key.translations.where(language_id: parent_language.id, export_config_id: export_config.id).order(created_at: :desc).first
-          key_translation = key_translation_export_config || key.translations.where(language_id: parent_language.id, export_config_id: nil).order(created_at: :desc).first
+          if key_translation_export_config&.content.present?
+            key_translation = key_translation_export_config
+          else
+            key_translation = key.translations.where(language_id: parent_language.id, export_config_id: nil).order(created_at: :desc).first
+          end
 
           content = ''
           if key_translation.nil?
