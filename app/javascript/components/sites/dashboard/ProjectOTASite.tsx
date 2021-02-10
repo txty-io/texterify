@@ -247,7 +247,7 @@ class ProjectOTASite extends React.Component<IProps, IState> {
 
                         {!dashboardStore.featureEnabled("FEATURE_OTA") && <FeatureNotAvailable feature="FEATURE_OTA" />}
 
-                        <div style={{ display: "flex" }}>
+                        <div style={{ display: "flex", flexShrink: 0 }}>
                             <div style={{ flexGrow: 1 }}>
                                 <Button
                                     type="default"
