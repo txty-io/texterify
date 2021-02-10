@@ -98,7 +98,9 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
                 this.formRef.current.setFields([
                     {
                         name: "name",
-                        errors: ["Name must start with a letter and can only contain alphanumeric characters and _."]
+                        errors: [
+                            "Name must start with a letter or an underscore and can only contain alphanumeric characters and underscores."
+                        ]
                     }
                 ]);
             } else {
