@@ -47,6 +47,7 @@
 
       .body {
         background-color: #101727;
+        color: #fff;
         width: 100%;
         padding: 8px;
       }
@@ -75,6 +76,7 @@
       ------------------------------------- */
       .main {
         background: #101727;
+        color: #fff;
         width: 100%;
         box-shadow: 0 40px 50px -50px rgb(0, 0, 0, 0.25);
       }
@@ -103,6 +105,10 @@
           text-align: center;
       }
 
+      .footer p {
+        margin: 0;
+      }
+
       /* -------------------------------------
           TYPOGRAPHY
       ------------------------------------- */
@@ -124,7 +130,7 @@
 
       p {
         line-height: 26px;
-        color: #d8d8d8;
+        color: #fff;
       }
 
       p,
@@ -349,7 +355,7 @@
         <td class="container">
           <div class="content">
             <div style="padding: 10px 10px 0 10px;">
-              <img src="<%= asset_path("white_logo_with_text.svg") %>" alt="Logo" width="134.4375" height="40.5" border="0" style="margin-bottom: 16px; border:0; outline:none; text-decoration:none; display:block;">
+              <img src="<%= asset_path("white_logo_with_text.png") %>" alt="Logo" width="134.4375" height="40.5" border="0" style="margin-bottom: 16px; border:0; outline:none; text-decoration:none; display:block;">
             </div>
             <!-- START CENTERED WHITE CONTAINER -->
             <table role="presentation" class="main">
@@ -377,14 +383,14 @@
               <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td class="content-block">
-                    <div class="apple-link">&copy; Texterify, aaa – all about apps GmbH, Siebenbrunnengasse 17 / TOP 3, A-1050 Wien</div>
-                    <div style="margin-top: 4px;">
+                    <p>&copy; Texterify, aaa – all about apps GmbH, Siebenbrunnengasse 17 / TOP 3, A-1050 Wien</p>
+                    <p>
                       Visit <a href="https://texterify.com">texterify.com</a> for more information.
-                    </div>
-                    <div style="margin-top: 4px;">
+                    </p>
+                    <p>
                       Questions? Contact us by sending an email to <a href="mailto:support@texterify.com">support@texterify.com</a>.
-                    </div>
-                    <div style="margin-top: 4px;">Coded with love in beautiful Vienna.</div>
+                    </p>
+                    <p>Coded with love in beautiful Vienna.</p>
                     <p style="font-size: 10px; line-height: 14px; margin-top: 40px">
                       This is an automatically sent email by Texterify.
                     </p>
