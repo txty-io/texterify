@@ -19,6 +19,7 @@ interface IState {
     exportConfigId: string;
     exportConfigsResponse: IGetExportConfigsResponse;
     exportConfigsLoading: boolean;
+    submitting: boolean;
 }
 
 class AddReleaseForm extends React.Component<IProps, IState> {
@@ -27,7 +28,8 @@ class AddReleaseForm extends React.Component<IProps, IState> {
     state: IState = {
         exportConfigId: null,
         exportConfigsResponse: null,
-        exportConfigsLoading: true
+        exportConfigsLoading: true,
+        submitting: false
     };
 
     async componentDidMount() {
@@ -44,31 +46,39 @@ class AddReleaseForm extends React.Component<IProps, IState> {
     }
 
     handleSubmit = async () => {
-        const response = await ReleasesAPI.createRelease({
-            projectId: this.props.projectId,
-            exportConfigId: this.state.exportConfigId
-        });
+        this.setState({ submitting: true });
 
-        if (response.errors) {
-            if (response.errors[0]?.code === "NO_LANGUAGES_WITH_LANGUAGE_CODE") {
-                this.formRef.current.setFields([
-                    {
-                        name: "exportConfig",
-                        errors: [
-                            "You need to specify the language code for at least one of your languages before you can create releases."
-                        ]
-                    }
-                ]);
-            } else {
-                ErrorUtils.showErrors(response.errors);
+        try {
+            const response = await ReleasesAPI.createRelease({
+                projectId: this.props.projectId,
+                exportConfigId: this.state.exportConfigId
+            });
+
+            if (response.errors) {
+                if (response.errors[0]?.code === "NO_LANGUAGES_WITH_LANGUAGE_CODE") {
+                    this.formRef.current.setFields([
+                        {
+                            name: "exportConfig",
+                            errors: [
+                                "You need to specify the language code for at least one of your languages before you can create releases."
+                            ]
+                        }
+                    ]);
+                } else {
+                    ErrorUtils.showErrors(response.errors);
+                }
+
+                return;
             }
 
-            return;
+            if (this.props.onCreated) {
+                this.props.onCreated();
+            }
+        } catch (error) {
+            console.error(error);
         }
 
-        if (this.props.onCreated) {
-            this.props.onCreated();
-        }
+        this.setState({ submitting: false });
     };
 
     hasExportConfigs = () => {
@@ -94,6 +104,7 @@ class AddReleaseForm extends React.Component<IProps, IState> {
                             type="primary"
                             htmlType="submit"
                             disabled={!this.hasExportConfigs()}
+                            loading={this.state.submitting}
                         >
                             Create release
                         </Button>
