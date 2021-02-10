@@ -1,9 +1,9 @@
 import { Alert, Button, Form, Input } from "antd";
 import { FormInstance } from "antd/lib/form";
 import * as React from "react";
-import { Link } from "react-router-dom";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { Routes } from "../routing/Routes";
+import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { SiteWrapperLink } from "../ui/SiteWrapperLink";
 
@@ -31,19 +31,25 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
                     {this.state.success && (
                         <Alert
                             showIcon
-                            message="We sent you an email. Follow the instructions in the email to reset your password."
+                            message="We sent you an email with instructions on how to reset your password."
                             type="success"
                             style={{ marginBottom: 16 }}
                         />
                     )}
 
-                    <h3>Email</h3>
-                    <Form.Item
-                        name="email"
-                        rules={[{ required: true, whitespace: true, message: "Please enter your email address." }]}
-                    >
-                        <Input placeholder="Email address" />
-                    </Form.Item>
+                    {!this.state.success && (
+                        <>
+                            <h3>Email</h3>
+                            <Form.Item
+                                name="email"
+                                rules={[
+                                    { required: true, whitespace: true, message: "Please enter your email address." }
+                                ]}
+                            >
+                                <Input placeholder="Email address" />
+                            </Form.Item>
+                        </>
+                    )}
 
                     <div
                         style={{
@@ -56,9 +62,11 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
                         <SiteWrapperLink to={Routes.AUTH.LOGIN} style={{ fontWeight: 600 }}>
                             Back to login
                         </SiteWrapperLink>
-                        <Button type="primary" htmlType="submit" style={{ marginBottom: 0 }}>
-                            Reset password
-                        </Button>
+                        {!this.state.success && (
+                            <Button type="primary" htmlType="submit" style={{ marginBottom: 0 }}>
+                                Reset password
+                            </Button>
+                        )}
                     </div>
                 </Form>
 
@@ -76,7 +84,14 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
         try {
             const response = await AuthAPI.sendPasswordRecoveryInstructions(values.email);
 
-            if (response.success) {
+            if (response.errors) {
+                this.formRef.current.setFields([
+                    {
+                        name: "email",
+                        errors: response.errors
+                    }
+                ]);
+            } else {
                 this.formRef.current.setFieldsValue({
                     email: undefined
                 });
