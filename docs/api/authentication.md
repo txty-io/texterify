@@ -13,3 +13,4 @@ curl "https://texterify.com/api/v1/projects" -H "Auth-Email: <email>" -H "Auth-S
 ```
 
 All API endpoints are authenticated.
+
