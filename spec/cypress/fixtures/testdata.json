@@ -1,0 +1,62 @@
+{
+    "login":
+    {
+        "user1":
+        {
+            "email": "test1@texterify.com",
+            "password": "password"
+        },
+        "user2":
+        {
+            "email": "test2@texterify.com",
+            "password": "password"
+        },
+        "invalidUser":
+        {
+            "email": "invalidtest@texterify.com",
+            "password": "password"
+        }
+    },
+    "languages": 
+    {
+        "german":
+        {
+            "languageCode": "German (de)",
+            "languageCodeShort": "de",
+            "countryCode": "Austria (AT)",
+            "countryCodeShort": "AT",
+            "languageName": "FirstLanguage"
+        },
+        "english":
+        {
+            "languageCode": "English (en)",
+            "languageCodeShort": "en",
+            "countryCode": "United Kingdom (GB)",
+            "countryCodeShort": "GB",
+            "languageName": "SecondLanguage"
+        },
+        "spanish":
+        {
+            "languageCode": "Spanish (es)",
+            "languageCodeShort": "es",
+            "countryCode": "Spain (ES)",
+            "countryCodeShort": "ES",
+            "languageName": "ThirdLanguage"
+        }
+    },
+    "keys":
+    {
+        "firstKey":
+        {
+            "keyName": "First Key",
+            "keyDescription": "This is the description for the first key.",
+            "value": "This is the first test."
+        },
+        "secondKey":
+        {
+            "keyName": "Second Key",
+            "keyDescription": "This is the description for the second key.",
+            "value": "This is the second test."
+        }
+    }
+  }
