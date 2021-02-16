@@ -31,30 +31,10 @@ else
   puts "User '#{user_3.email}' with password 'password' created."
 end
 
-project_1_id = '0e4a88fd-1d86-4ddd-bbaa-c5784ea5624f'
-project_2_id = 'd7876785-356a-4b95-8733-933545281fa2'
-project_3_id = '19ad8104-3a8c-4437-9838-f47022e76e4a'
-
-project_1 = Project.find_or_create_by!(id: project_1_id, name: "Test Project 1")
-project_2 = Project.find_or_create_by!(id: project_2_id, name: "Test Project 2")
-project_3 = Project.find_or_create_by!(id: project_3_id, name: "Test Project 3")
-
-export_config_1_id = '3a8d8688-3e0b-4676-aa9a-72431b9045ce'
-export_config_2_id = '241e30f5-c65a-496a-843f-01721d21247c'
-export_config_3_id = '8bae7a79-03a8-47b0-bfa2-3a51f43baca9'
-
-export_config_1 = ExportConfig.find_or_create_by!(id: export_config_1_id, project_id: project_1.id, name: "Export Config 1 Android", file_format: "android", file_path: "values-{languageCode}/strings.xml", default_language_file_path: "values/strings.xml")
-export_config_2 = ExportConfig.find_or_create_by!(id: export_config_2_id, project_id: project_1.id, name: "Export Config 2 iOS", file_format: "ios", file_path: "{languageCode}.lproj/Localizable.strings")
-export_config_3 = ExportConfig.find_or_create_by!(id: export_config_3_id, project_id: project_1.id, name: "Export Config 3 JSON", file_format: "json", file_path: "{languageCode}-{countryCode}.json")
-
-ProjectUser.find_or_create_by!(project_id: project_1.id, user_id: user_1.id, role: "owner")
-ProjectUser.find_or_create_by!(project_id: project_2.id, user_id: user_2.id, role: "owner")
-ProjectUser.find_or_create_by!(project_id: project_3.id, user_id: user_3.id, role: "owner")
-
 user_1_access_token_id = '4551b2e2-5c0d-4948-bb1f-adf999ae2e49'
+user_2_access_token_id = '09336a75-2577-4eb4-a3b1-200c26307d86'
+user_3_access_token_id = '605faab1-8000-4a03-b9af-4fb6ddf4c349'
 
 user_1_access_token = AccessToken.find_or_create_by!(id: user_1_access_token_id, user_id: user_1.id, name: "Access Token User 1", secret: 'SECRET')
-
-if License.count == 0
-  FactoryBot.create(:license)
-end
+user_2_access_token = AccessToken.find_or_create_by!(id: user_2_access_token_id, user_id: user_2.id, name: "Access Token User 2", secret: 'SECRET')
+user_3_access_token = AccessToken.find_or_create_by!(id: user_3_access_token_id, user_id: user_3.id, name: "Access Token User 3", secret: 'SECRET')
