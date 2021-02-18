@@ -202,6 +202,8 @@ function PaymentPlan(props: {
                             </h3>
                             <InputNumber
                                 min={1}
+                                max={10000}
+                                precision={0}
                                 defaultValue={usersCount}
                                 placeholder="Number of users"
                                 onChange={(count) => {
@@ -219,7 +221,7 @@ function PaymentPlan(props: {
                                 }}
                             >
                                 <div style={{ marginRight: 24 }}>Total:</div>
-                                <div>{price * usersCount * 12} €</div>
+                                <div>{!isNaN(Number(usersCount)) ? price * usersCount * 12 : "-"} €</div>
                             </div>
                         </>
                     )}
