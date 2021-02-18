@@ -219,6 +219,8 @@ GEM
       activesupport (>= 3.0.0)
     racc (1.5.2)
     rack (2.2.3)
+    rack-cors (1.1.1)
+      rack (>= 2.0.0)
     rack-proxy (0.6.5)
       rack
     rack-test (1.1.0)
@@ -429,6 +431,7 @@ DEPENDENCIES
   pry-rails
   puma (< 6)
   pundit
+  rack-cors
   rails (= 6.0.3.4)
   rails-settings-cached
   react-rails

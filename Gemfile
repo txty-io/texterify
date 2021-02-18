@@ -96,3 +96,5 @@ gem 'bootsnap', require: false
 gem 'google-cloud-storage', '~> 1.11', require: false
 gem 'rest-client', require: false
 gem 'rubyzip', require: false
+
+gem 'rack-cors'
