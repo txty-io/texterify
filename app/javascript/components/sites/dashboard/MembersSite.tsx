@@ -351,6 +351,10 @@ class MembersSite extends React.Component<IProps, IState> {
                                                 "This feature is not available for private projects. Please move your project to an organization."
                                             );
                                         }
+                                    } else if (createMemberResponse.message === "USER_ALREADY_ADDED") {
+                                        message.info("User has already been added to the project.");
+                                    } else {
+                                        ErrorUtils.showError("An unknown error occurred.");
                                     }
                                 } else if (createMemberResponse.errors) {
                                     this.formRef.current.setFields([

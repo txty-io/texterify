@@ -32,7 +32,7 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
 
     authorize project_user
 
-    if project.project_users.exclude?(user)
+    if project.users.exclude?(user)
       project_user.save!
 
       project_column = ProjectColumn.new
@@ -45,12 +45,9 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
       }
     else
       render json: {
-        errors: [
-          {
-            details: 'User is already in the project.'
-          }
-        ]
-      }
+        error: true,
+        message: 'USER_ALREADY_ADDED'
+      }, status: :bad_request
     end
   end
 
