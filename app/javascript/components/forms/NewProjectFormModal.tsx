@@ -59,6 +59,7 @@ interface IState {
     organizationsResponse: any;
     organizationsLoading: boolean;
     step: number;
+    search: string;
 }
 
 class NewProjectFormModal extends React.Component<IProps, IState> {
@@ -67,7 +68,8 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
         selectedOrganization: this.props.organization,
         organizationsResponse: null,
         organizationsLoading: false,
-        step: this.props.organization ? 3 : 1
+        step: this.props.organization ? 3 : 1,
+        search: null
     };
 
     state: IState = this.initialState;
@@ -237,9 +239,12 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
                     <>
                         {!this.state.organizationsLoading &&
                             this.state.organizationsResponse?.data.length === 0 &&
+                            !this.state.search &&
                             this.renderNoOrganizationsInfo()}
 
-                        {(this.state.organizationsLoading || this.state.organizationsResponse?.data.length > 0) && (
+                        {(this.state.organizationsLoading ||
+                            this.state.search ||
+                            this.state.organizationsResponse?.data.length > 0) && (
                             <>
                                 <p>Select an organization for your new project.</p>
                                 <Select
@@ -250,6 +255,7 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
                                     style={{ width: "100%" }}
                                     loading={this.state.organizationsLoading}
                                     onSearch={(value) => {
+                                        this.setState({ search: value });
                                         this.reloadOrganizations({ search: value });
                                     }}
                                     onSelect={(organizationId) => {
