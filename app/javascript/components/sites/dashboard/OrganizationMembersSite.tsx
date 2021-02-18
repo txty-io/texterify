@@ -487,15 +487,13 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                     if (
                                         createMemberResponse.message === "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE"
                                     ) {
-                                        if (dashboardStore.currentOrganization) {
-                                            ErrorUtils.showError(
-                                                "Please upgrade to a paid plan to add users to this project."
-                                            );
-                                        } else {
-                                            ErrorUtils.showError(
-                                                "This feature is not available for private projects. Please move your project to an organization."
-                                            );
-                                        }
+                                        ErrorUtils.showError(
+                                            "Please upgrade to a paid plan to add users to this organization."
+                                        );
+                                    } else if (createMemberResponse.message === "USER_ALREADY_ADDED") {
+                                        message.info("User has already been added to the organization.");
+                                    } else {
+                                        ErrorUtils.showError("An unknown error occurred.");
                                     }
                                 } else if (createMemberResponse.errors) {
                                     ErrorUtils.showErrors(createMemberResponse.errors);

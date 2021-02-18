@@ -54,12 +54,9 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
       }
     else
       render json: {
-        errors: [
-          {
-            details: 'User is already in the organization.'
-          }
-        ]
-      }
+        error: true,
+        message: 'USER_ALREADY_ADDED'
+      }, status: :bad_request
     end
   end
 
