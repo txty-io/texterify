@@ -32,4 +32,11 @@ class User < ApplicationRecord
   def confirmation_required?
     ENV['EMAIL_CONFIRMATION_REQUIRED'] == 'true'
   end
+
+  # Override Devise::Confirmable#after_confirmation
+  def after_confirmation
+    if Texterify.cloud?
+      UserMailer.welcome(email, username).deliver_later
+    end
+  end
 end
