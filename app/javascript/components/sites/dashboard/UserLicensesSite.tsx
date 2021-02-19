@@ -96,7 +96,7 @@ export const UserLicensesSite = observer(() => {
 
                     <div style={{ flexGrow: 1, maxWidth: 1000 }}>
                         <h3 style={{ marginTop: 24 }}>Get a new license</h3>
-                        <Licenses hostingType="on-premise" />
+                        <Licenses hostingType="on-premise" annualBilling />
                     </div>
                 </div>
             </Layout.Content>

@@ -13,7 +13,7 @@ class ProjectUser < ApplicationRecord
   private
 
   def update_subscription_users
-    if IS_TEXTERIFY_CLOUD && project.organization&.subscription
+    if Texterify.cloud? && project.organization&.subscription
       RestClient.put("#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/users?organization_id=#{project.organization.id}", {})
     end
   end

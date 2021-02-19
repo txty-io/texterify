@@ -7,7 +7,7 @@ import { APIErrors } from "./APIErrors";
 
 message.config({
     top: 12,
-    duration: 2,
+    duration: 4,
     maxCount: 3
 });
 

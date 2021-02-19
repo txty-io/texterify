@@ -6,8 +6,10 @@ import { OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
 import { NewOrganizationForm } from "../../forms/NewOrganizationForm";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
+import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { SettingsSectionWrapper } from "../../ui/SettingsSectionWrapper";
+import { PermissionUtils } from "../../utilities/PermissionUtils";
 const { Content } = Layout;
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
@@ -49,7 +51,7 @@ class OrganizationSettingsSite extends React.Component<IProps, IState> {
                 <Breadcrumbs breadcrumbName="organizationSettings" />
                 <Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}>
                     <h1>Settings</h1>
-                    <Collapse bordered={false}>
+                    <Collapse bordered={false} defaultActiveKey="general">
                         <Collapse.Panel header="General settings" key="general">
                             <SettingsSectionWrapper>
                                 <NewOrganizationForm
@@ -71,7 +73,11 @@ class OrganizationSettingsSite extends React.Component<IProps, IState> {
                                 </Button>
                             </SettingsSectionWrapper>
                         </Collapse.Panel>
-                        <Collapse.Panel header="Advanced settings" key="advanced">
+                        <Collapse.Panel
+                            header="Advanced settings"
+                            key="advanced"
+                            disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole())}
+                        >
                             <SettingsSectionWrapper>
                                 <Alert
                                     message="Remove organization"

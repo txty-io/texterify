@@ -1,11 +1,18 @@
 class Api::V1::ProjectUsersController < Api::V1::ApiController
+  before_action :ensure_feature_enabled, only: [:create, :update]
+
   def index
     skip_authorization
     project = current_user.projects.find(params[:project_id])
 
     options = {}
     options[:params] = { project: project }
-    render json: UserSerializer.new(project.users, options).serialized_json
+    render json: UserSerializer.new(
+      project.users.where(
+        'users.username ilike :search or users.email ilike :search',
+        search: "%#{params[:search]}%"
+      ), options
+    ).serialized_json
   end
 
   def create
@@ -25,7 +32,7 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
 
     authorize project_user
 
-    if project.project_users.exclude?(user)
+    if project.users.exclude?(user)
       project_user.save!
 
       project_column = ProjectColumn.new
@@ -38,12 +45,9 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
       }
     else
       render json: {
-        errors: [
-          {
-            details: 'User is already in the project.'
-          }
-        ]
-      }
+        error: true,
+        message: 'USER_ALREADY_ADDED'
+      }, status: :bad_request
     end
   end
 
@@ -138,5 +142,21 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
     render json: {
       success: true
     }
+  end
+
+  private
+
+  def ensure_feature_enabled
+    project = current_user.projects.find(params[:project_id])
+
+    if !project.feature_enabled?(Organization::FEATURE_BASIC_PERMISSION_SYSTEM)
+      skip_authorization
+
+      render json: {
+        error: true,
+        message: 'BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE'
+      }, status: :bad_request
+      return
+    end
   end
 end

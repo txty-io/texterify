@@ -2,8 +2,10 @@ import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
 const MembersAPI = {
-    getMembers: async (projectId: string): Promise<any> => {
-        return API.getRequest(`projects/${projectId}/members`, true)
+    getMembers: async (projectId: string, options?: { search: string }): Promise<any> => {
+        return API.getRequest(`projects/${projectId}/members`, true, {
+            search: options && options.search
+        })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },

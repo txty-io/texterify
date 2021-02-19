@@ -1,3 +1,6 @@
+# Used in GitHub CI.
+# Don't use this config to run the service in production.
+
 version: '3'
 volumes:
   database: {}
@@ -13,18 +16,14 @@ services:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - DB_TEST_HOST=${DB_TEST_HOST}
       - DB_TEST_USERNAME=${DB_TEST_USERNAME}
-    image: chrztoph/texterify:${GITHUB_SHA}
+    image: chrztoph/texterify:test
     build:
       context: .
       args:
-        SENTRY_SOURCE_MAPS_AUTH_TOKEN: ${SENTRY_SOURCE_MAPS_AUTH_TOKEN}
-        SENTRY_SOURCE_MAPS_ORGANIZATION: ${SENTRY_SOURCE_MAPS_ORGANIZATION}
-        SENTRY_SOURCE_MAPS_PROJECT: ${SENTRY_SOURCE_MAPS_PROJECT}
         COMMIT_HASH: ${GITHUB_SHA}
-        PROPRIETARY_MODE: ${PROPRIETARY_MODE}
-        STRIPE_PUBLIC_API_KEY: ${STRIPE_PUBLIC_API_KEY}
-        TEXTERIFY_PAYMENT_SERVER: ${TEXTERIFY_PAYMENT_SERVER}
-        SENTRY_DSN_FRONTEND: ${SENTRY_DSN_FRONTEND}
+        PROPRIETARY_MODE: "true"
+        RAILS_ENV_ARG: test
+        NODE_ENV_ARG: production
       dockerfile: Dockerfile
     depends_on:
       - db

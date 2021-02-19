@@ -19,19 +19,19 @@ class OrganizationPolicy
   end
 
   def destroy?
-    ROLES_MANAGER_UP.include? organization_user_role
+    ROLES_OWNER_UP.include? organization_user_role
   end
 
   def cancel_subscription?
-    ROLES_MANAGER_UP.include? organization_user_role
+    ROLES_OWNER_UP.include? organization_user_role
   end
 
   def reactivate_subscription?
-    ROLES_MANAGER_UP.include? organization_user_role
+    ROLES_OWNER_UP.include? organization_user_role
   end
 
   def change_subscription_plan?
-    ROLES_MANAGER_UP.include? organization_user_role
+    ROLES_OWNER_UP.include? organization_user_role
   end
 
   private

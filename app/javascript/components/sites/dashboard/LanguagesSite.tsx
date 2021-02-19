@@ -287,6 +287,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
                                 placeholder="Search languages by name"
                                 onChange={this.onSearch}
                                 style={{ maxWidth: "50%" }}
+                                data-id="project-languages-search"
                             />
                         </div>
                         <Table
@@ -300,6 +301,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
                             pagination={{
                                 pageSizeOptions: PAGE_SIZE_OPTIONS,
                                 showSizeChanger: true,
+                                current: this.state.page,
                                 pageSize: this.state.perPage,
                                 total: (this.state.languagesResponse && this.state.languagesResponse.meta.total) || 0,
                                 onChange: async (page: number, _perPage: number) => {

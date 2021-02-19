@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_28_014321) do
+ActiveRecord::Schema.define(version: 2021_01_24_044557) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 2020_12_28_014321) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_country_codes_on_code"
+    t.index ["name", "code"], name: "index_country_codes_on_name_and_code", unique: true
   end
 
   create_table "export_configs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -84,6 +85,7 @@ ActiveRecord::Schema.define(version: 2020_12_28_014321) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_language_codes_on_code"
+    t.index ["name", "code"], name: "index_language_codes_on_name_and_code", unique: true
   end
 
   create_table "language_configs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

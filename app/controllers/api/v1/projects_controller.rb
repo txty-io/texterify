@@ -53,10 +53,29 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
   def create
     skip_authorization
+
+    if params[:organization_id]
+      organization = current_user.organizations.find(params[:organization_id])
+    end
+
+    if organization && !organization.feature_enabled?(Organization::FEATURE_UNLIMITED_PROJECTS) && organization.projects.size >= 1
+      render json: {
+        error: true,
+        message: 'MAXIMUM_NUMBER_OF_PROJECTS_REACHED'
+      }, status: :bad_request
+      return
+    elsif !organization && current_user.private_projects.size >= 1
+      render json: {
+        error: true,
+        message: 'MAXIMUM_NUMBER_OF_PROJECTS_REACHED'
+      }, status: :bad_request
+      return
+    end
+
     project = Project.new(project_params)
 
     if params[:organization_id]
-      project.organization = current_user.organizations.find(params[:organization_id])
+      project.organization = organization
     else
       project_column = ProjectColumn.new
       project_column.project = project
@@ -140,7 +159,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     file = Tempfile.new(project.id)
 
     begin
-      helpers.create_export(project, export_config, file)
+      helpers.create_export(project, export_config, file, { emojify: params[:emojify] })
 
       send_file(
         file,
@@ -251,6 +270,18 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     options = {}
     options[:include] = [:user, :key, :language, :'language.country_code']
     render json: ActivitySerializer.new(versions, options).serialized_json
+  end
+
+  def transfer
+    project = current_user.projects.find(params[:project_id])
+    authorize project
+    organization = current_user.organizations.find(params[:organization_id])
+    project.organization_id = organization.id
+    project.save!
+
+    render json: {
+      success: true
+    }, status: :ok
   end
 
   private

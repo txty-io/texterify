@@ -9,7 +9,7 @@
     border-bottom: 1px solid var(--border-color);
   }
 
-  .ant-popover-inner {
+  .ant-popover-inner, .ant-popover-inner-content {
     background: var(--background-color);
   }
 
@@ -133,6 +133,13 @@
   // Remove inner borders from modals.
   .ant-modal-header {
     border-bottom: 0;
+  }
+
+  // Close icon otherwise not centered.
+  .ant-modal-close-x {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .ant-modal-footer {

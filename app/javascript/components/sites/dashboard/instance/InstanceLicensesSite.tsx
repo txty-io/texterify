@@ -160,6 +160,7 @@ export const InstanceLicensesSite = observer(() => {
                     onClick={() => {
                         uploadLicense();
                     }}
+                    data-id="upload-license-button"
                     disabled={files.length === 0}
                     style={{ marginTop: 16, marginBottom: 40 }}
                 >

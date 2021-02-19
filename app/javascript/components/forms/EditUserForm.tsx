@@ -4,8 +4,11 @@ import AvatarEditor from "react-avatar-editor";
 import Dropzone from "react-dropzone";
 import * as uuid from "uuid";
 import { UsersAPI } from "../api/v1/UsersAPI";
+import { AvatarNoImage } from "../sites/dashboard/AvatarNoImage";
+import { AvatarEditorWrapper } from "../sites/dashboard/AvatarEditorWrapper";
 import { authStore } from "../stores/AuthStore";
 import { Styles } from "../ui/Styles";
+import { AvatarWrapper } from "../sites/dashboard/AvatarWrapper";
 
 interface IProps {
     onError(errors: any): void;
@@ -137,50 +140,47 @@ class EditUserForm extends React.Component<IProps, IState> {
                         <Dropzone onDrop={this.handleDrop} accept="image/*" ref={this.dropzone}>
                             {({ getRootProps, getInputProps }) => {
                                 return (
-                                    <div
+                                    <AvatarWrapper
                                         {...getRootProps({
                                             onClick: (event) => {
                                                 event.stopPropagation();
                                                 this.isMovingImage = false;
                                             }
                                         })}
-                                        style={{
-                                            display: "flex",
-                                            flexDirection: "column",
-                                            borderRadius: Styles.DEFAULT_BORDER_RADIUS,
-                                            border: "1px solid var(--border-color)"
-                                        }}
                                     >
-                                        <AvatarEditor
-                                            ref={(ref) => {
-                                                this.avatarEditor = ref;
-                                            }}
-                                            image={this.state.imageUrl}
-                                            width={160}
-                                            height={160}
-                                            border={0}
-                                            position={this.state.imagePosition}
-                                            scale={this.state.imageScale / 100}
-                                            onPositionChange={(position) => {
-                                                if (!isNaN(position.x) && !isNaN(position.y)) {
-                                                    this.setState({ imagePosition: position });
-                                                }
-                                            }}
-                                            onMouseMove={() => {
-                                                this.isMovingImage = true;
-                                            }}
-                                            onMouseUp={(e) => {
-                                                if (e) {
-                                                    e.preventDefault();
-                                                }
+                                        <AvatarNoImage />
+                                        <AvatarEditorWrapper>
+                                            <AvatarEditor
+                                                ref={(ref) => {
+                                                    this.avatarEditor = ref;
+                                                }}
+                                                image={this.state.imageUrl}
+                                                width={160}
+                                                height={160}
+                                                border={0}
+                                                position={this.state.imagePosition}
+                                                scale={this.state.imageScale / 100}
+                                                onPositionChange={(position) => {
+                                                    if (!isNaN(position.x) && !isNaN(position.y)) {
+                                                        this.setState({ imagePosition: position });
+                                                    }
+                                                }}
+                                                onMouseMove={() => {
+                                                    this.isMovingImage = true;
+                                                }}
+                                                onMouseUp={(e) => {
+                                                    if (e) {
+                                                        e.preventDefault();
+                                                    }
 
-                                                if (!this.isMovingImage && this.dropzone.current) {
-                                                    this.dropzone.current.open();
-                                                }
-                                            }}
-                                        />
+                                                    if (!this.isMovingImage && this.dropzone.current) {
+                                                        this.dropzone.current.open();
+                                                    }
+                                                }}
+                                            />
+                                        </AvatarEditorWrapper>
                                         <input {...getInputProps()} />
-                                    </div>
+                                    </AvatarWrapper>
                                 );
                             }}
                         </Dropzone>

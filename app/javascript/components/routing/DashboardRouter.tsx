@@ -6,6 +6,7 @@ import * as React from "react";
 import Hotkeys from "react-hot-keys";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
 import styled from "styled-components";
+import { ICurrentLicenseInformation, LicensesAPI } from "../api/v1/LicensesAPI";
 import { ActivitySite } from "../sites/dashboard/ActivitySite";
 import { DashboardNotFoundSite } from "../sites/dashboard/DashboardNotFoundSite";
 import { InstanceSidebar } from "../sites/dashboard/InstanceSidebar";
@@ -19,8 +20,11 @@ import { UserLicensesSite } from "../sites/dashboard/UserLicensesSite";
 import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
 import { authStore } from "../stores/AuthStore";
 import { DarkModeToggle } from "../ui/DarkModeToggle";
+import { LicenseExpiring } from "../ui/LicenseExpiring";
+import { LicenseFreeTrial } from "../ui/LicenseFreeVersion";
 import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
+import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
 import { history } from "./history";
 import { InstanceRouter } from "./InstanceRouter";
 import { OrganizationRouter } from "./OrganizationRouter";
@@ -65,6 +69,8 @@ interface IState {
     hasSidebar: boolean;
     accountMenuVisible: boolean;
     searchOverlayVisible: boolean;
+    currentLicenseInfo: ICurrentLicenseInformation | null;
+    currentLicenseInfoLoaded: boolean;
 }
 
 @observer
@@ -72,13 +78,31 @@ class DashboardRouter extends React.Component<IProps, IState> {
     state: IState = {
         hasSidebar: false,
         accountMenuVisible: false,
-        searchOverlayVisible: false
+        searchOverlayVisible: false,
+        currentLicenseInfo: null,
+        currentLicenseInfoLoaded: false
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         this.setState({
             hasSidebar: this.hasSidebar()
         });
+
+        if (!IS_TEXTERIFY_CLOUD) {
+            await this.loadCurrentLicense();
+        }
+    }
+
+    async loadCurrentLicense() {
+        try {
+            const getCurrentLicenseInfosResponse = await LicensesAPI.getCurrentLicenseInfo();
+            this.setState({
+                currentLicenseInfo: getCurrentLicenseInfosResponse,
+                currentLicenseInfoLoaded: true
+            });
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     componentDidUpdate() {
@@ -117,6 +141,15 @@ class DashboardRouter extends React.Component<IProps, IState> {
                     }}
                     allowRepeat
                 />
+                {!IS_TEXTERIFY_CLOUD && this.state.currentLicenseInfoLoaded && (
+                    <>
+                        <LicenseFreeTrial
+                            hasLicense={this.state.currentLicenseInfo.has_license}
+                            expiresAt={this.state.currentLicenseInfo.expires_at}
+                        />
+                        <LicenseExpiring expiresAt={this.state.currentLicenseInfo.expires_at} />
+                    </>
+                )}
                 <antd.Layout>
                     <antd.Layout.Header
                         style={{
@@ -234,6 +267,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                         {authStore.currentUser?.is_superadmin && (
                             <antd.Tooltip title="Manage instance">
                                 <SettingOutlined
+                                    data-id="main-menu-instance-settings"
                                     style={{ marginRight: 40 }}
                                     onClick={() => {
                                         history.push(Routes.DASHBOARD.INSTANCE.ROOT);

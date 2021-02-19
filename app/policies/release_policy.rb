@@ -7,7 +7,7 @@ class ReleasePolicy
   end
 
   def index?
-    ROLES_MANAGER_UP.include? project_user_role
+    ROLES_DEVELOPER_UP.include? project_user_role
   end
 
   def create?

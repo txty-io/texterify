@@ -4,6 +4,7 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { NewProjectForm } from "../../forms/NewProjectForm";
+import { TransferProjectFormModal } from "../../forms/TransferProjectFormModal";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
@@ -15,12 +16,18 @@ const { Content } = Layout;
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     isDeletingProject: boolean;
+    transferProjectModalVisible: boolean;
 }
 
 @observer
 class ProjectSettingsSite extends React.Component<IProps, IState> {
     state: IState = {
-        isDeletingProject: false
+        isDeletingProject: false,
+        transferProjectModalVisible: false
+    };
+
+    onTransferProjectClick = () => {
+        this.setState({ transferProjectModalVisible: true });
     };
 
     onDeleteProjectClick = () => {
@@ -51,7 +58,7 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                 <Breadcrumbs breadcrumbName="projectSettings" />
                 <Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}>
                     <h1>Settings</h1>
-                    <Collapse bordered={false}>
+                    <Collapse bordered={false} defaultActiveKey="general">
                         <Collapse.Panel header="General settings" key="general">
                             <SettingsSectionWrapper>
                                 <NewProjectForm
@@ -103,10 +110,53 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                                 >
                                     Remove project
                                 </Button>
+
+                                <Alert
+                                    message="Transfer project"
+                                    description={
+                                        <>
+                                            <p>
+                                                Transfering this project to an organization will make it available to
+                                                the users of the organization.
+                                            </p>
+                                        </>
+                                    }
+                                    type="warning"
+                                    showIcon
+                                    style={{ marginTop: 40 }}
+                                />
+                                <Button
+                                    danger
+                                    onClick={this.onTransferProjectClick}
+                                    style={{ alignSelf: "flex-end", marginTop: 16 }}
+                                    disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}
+                                >
+                                    Transfer project
+                                </Button>
                             </SettingsSectionWrapper>
                         </Collapse.Panel>
                     </Collapse>
                 </Content>
+
+                <TransferProjectFormModal
+                    visible={this.state.transferProjectModalVisible}
+                    project={dashboardStore.currentProject}
+                    onClose={() => {
+                        this.setState({ transferProjectModalVisible: false });
+                    }}
+                    onSuccess={async () => {
+                        const getProjectResponse = await ProjectsAPI.getProject(this.props.match.params.projectId);
+                        if (getProjectResponse.errors) {
+                            this.props.history.push(Routes.DASHBOARD.PROJECTS);
+                        } else {
+                            dashboardStore.currentProject = getProjectResponse.data;
+                            dashboardStore.currentProjectIncluded = getProjectResponse.included;
+                        }
+                        this.setState({ transferProjectModalVisible: false });
+                        message.success("Project transferred successfully.");
+                        history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId));
+                    }}
+                />
             </Layout>
         );
     }

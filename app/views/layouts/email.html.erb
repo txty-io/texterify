@@ -18,8 +18,9 @@
       }
 
       body {
-        background-color: #f6f6f6;
-        font-family: sans-serif;
+        background-color: #101727;
+        color: #fff;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, sans-serif;
         -webkit-font-smoothing: antialiased;
         font-size: 14px;
         line-height: 1.4;
@@ -35,7 +36,7 @@
         mso-table-rspace: 0pt;
         width: 100%; }
         table td {
-          font-family: sans-serif;
+          font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, sans-serif;
           font-size: 14px;
           vertical-align: top;
       }
@@ -45,8 +46,10 @@
       ------------------------------------- */
 
       .body {
-        background-color: #f6f6f6;
+        background-color: #101727;
+        color: #fff;
         width: 100%;
+        padding: 8px;
       }
 
       /* Set a max-width, and make it display as block so it will automatically stretch to that width, but will also shrink down on a phone or something */
@@ -72,14 +75,15 @@
           HEADER, FOOTER, MAIN
       ------------------------------------- */
       .main {
-        background: #ffffff;
-        border-radius: 3px;
+        background: #101727;
+        color: #fff;
         width: 100%;
+        box-shadow: 0 40px 50px -50px rgb(0, 0, 0, 0.25);
       }
 
       .wrapper {
         box-sizing: border-box;
-        padding: 20px;
+        padding: 40px 0 24px;
       }
 
       .content-block {
@@ -89,7 +93,7 @@
 
       .footer {
         clear: both;
-        margin-top: 10px;
+        margin-top: 24px;
         text-align: center;
         width: 100%;
       }
@@ -97,9 +101,14 @@
         .footer p,
         .footer span,
         .footer a {
-          color: #999999;
           font-size: 12px;
           text-align: center;
+      }
+
+      .footer p {
+        margin: 0;
+        color: #ddd !important;
+        line-height: 18px;
       }
 
       /* -------------------------------------
@@ -109,9 +118,9 @@
       h2,
       h3,
       h4 {
-        color: #000000;
-        font-family: sans-serif;
-        font-weight: 400;
+        color: #fff;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, sans-serif;
+        font-weight: bold;
         line-height: 1.4;
         margin: 0;
         margin-bottom: 10px;
@@ -119,13 +128,17 @@
 
       h1 {
         font-size: 24px;
-        font-weight: 300;
+      }
+
+      p {
+        line-height: 26px;
+        color: #fff;
       }
 
       p,
       ul,
       ol {
-        font-family: sans-serif;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, sans-serif;
         font-size: 14px;
         font-weight: normal;
         margin: 0;
@@ -139,8 +152,12 @@
       }
 
       a {
-        color: #1c70f5;
+        color: #61b6ff !important;
         text-decoration: underline;
+      }
+
+      a:hover {
+        color: #81c7ff !important;
       }
 
       /* -------------------------------------
@@ -164,7 +181,7 @@
           border: solid 1px #1c70f5;
           border-radius: 5px;
           box-sizing: border-box;
-          color: #1c70f5;
+          color: #1c70f5 !important;
           cursor: pointer;
           display: inline-block;
           font-size: 14px;
@@ -172,7 +189,6 @@
           margin: 0;
           padding: 12px 25px;
           text-decoration: none;
-          text-transform: capitalize;
       }
 
       .btn-primary table td {
@@ -182,7 +198,7 @@
       .btn-primary a {
         background-color: #1c70f5;
         border-color: #1c70f5;
-        color: #ffffff;
+        color: #ffffff !important;
       }
 
       /* -------------------------------------
@@ -327,7 +343,9 @@
           border-color: #327ef6 !important;
         }
       }
-
+    </style>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
     </style>
   </head>
   <body class="">
@@ -338,7 +356,9 @@
         <td>&nbsp;</td>
         <td class="container">
           <div class="content">
-            <img src="<%= asset_path("black_logo_with_text.png") %>" alt="Logo" width="179.25" height="54" border="0" style="margin-bottom: 16px; border:0; outline:none; text-decoration:none; display:block;">
+            <div style="padding: 10px 10px 0 10px;">
+              <img src="<%= asset_path("white_logo_with_text.png") %>" alt="Logo" width="134.4375" height="40.5" border="0" style="margin-bottom: 16px; border:0; outline:none; text-decoration:none; display:block;">
+            </div>
             <!-- START CENTERED WHITE CONTAINER -->
             <table role="presentation" class="main">
 
@@ -349,6 +369,7 @@
                     <tr>
                       <td>
                         <%= yield %>
+                        <p>Your Texterify Team</p>
                       </td>
                     </tr>
                   </table>
@@ -364,9 +385,17 @@
               <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td class="content-block">
-                    <span class="apple-link">Texterify</span>
-                    <br>
-                    <a href="https://texterify.com">texterify.com</a>
+                    <p>&copy; Texterify, aaa – all about apps GmbH, Siebenbrunnengasse 17 / TOP 3, A-1050 Wien</p>
+                    <p>
+                      Visit <a href="https://texterify.com">texterify.com</a> for more information.
+                    </p>
+                    <p>
+                      Questions? Contact us by sending an email to <a href="mailto:support@texterify.com">support@texterify.com</a>.
+                    </p>
+                    <p>Coded with love in beautiful Vienna.</p>
+                    <p style="font-size: 10px; line-height: 14px; margin-top: 24px">
+                      This is an automatically sent email by Texterify.
+                    </p>
                   </td>
                 </tr>
               </table>

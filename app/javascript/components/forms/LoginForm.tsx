@@ -63,7 +63,7 @@ class LoginForm extends React.Component<{}, IState> {
                             paddingTop: 8
                         }}
                     >
-                        <SiteWrapperLink to={Routes.AUTH.SIGNUP} style={{ fontWeight: 600 }}>
+                        <SiteWrapperLink data-id="sign-up-link" to={Routes.AUTH.SIGNUP} style={{ fontWeight: 600 }}>
                             Create new account
                         </SiteWrapperLink>
                         <Button tabIndex={3} type="primary" htmlType="submit" style={{ marginBottom: 0 }}>
@@ -76,9 +76,7 @@ class LoginForm extends React.Component<{}, IState> {
     }
 
     handleSubmit = async (values: IFormValues) => {
-        this.setState({ loginErrors: [] });
-        const start: number = new Date().getTime();
-        this.setState({ isLoading: true });
+        this.setState({ loginErrors: [], isLoading: true });
 
         let response: ILoginResponse;
 
@@ -94,18 +92,15 @@ class LoginForm extends React.Component<{}, IState> {
             return;
         }
 
-        const elapsed: number = new Date().getTime() - start;
-        setTimeout(() => {
-            if (!response.data) {
-                this.setState({
-                    loginErrors: response.errors ? response.errors : ["An unknown error occurred."],
-                    isLoading: false
-                });
-            } else {
-                authStore.currentUser = response.data;
-                // No need to set "isLoading" to false because we navigate away anyway.
-            }
-        }, 500 - elapsed);
+        if (!response.data) {
+            this.setState({
+                loginErrors: response.errors ? response.errors : ["An unknown error occurred."],
+                isLoading: false
+            });
+        } else {
+            authStore.currentUser = response.data;
+            // No need to set "isLoading" to false because we navigate away anyway.
+        }
     };
 }
 

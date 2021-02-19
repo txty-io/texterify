@@ -54,8 +54,6 @@ Rails.application.configure do
   config.action_controller.asset_host = ENV['ASSET_HOST']
   config.action_mailer.asset_host = config.action_controller.asset_host
 
-  config.action_mailer.default_url_options = { host: ENV['APP_HOST'] }
-
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 

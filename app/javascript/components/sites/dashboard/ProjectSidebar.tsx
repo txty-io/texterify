@@ -24,7 +24,7 @@ import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { SidebarTrigger } from "../../ui/SidebarTrigger";
-import { ROLES_DEVELOPER_UP, ROLES_MANAGER_UP } from "../../utilities/PermissionUtils";
+import { ROLES_DEVELOPER_UP, ROLES_MANAGER_UP, ROLES_TRANSLATOR_UP } from "../../utilities/PermissionUtils";
 const { Sider } = Layout;
 
 interface INavigationData {
@@ -32,6 +32,7 @@ interface INavigationData {
     path?: string;
     text?: string;
     roles?: string[];
+    dataId: string;
     subItems?: INavigationData[];
 }
 
@@ -51,34 +52,40 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             {
                 icon: HomeOutlined,
                 path: Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId),
-                text: "Overview"
+                text: "Overview",
+                dataId: "project-sidebar-overview"
             },
             {
                 icon: KeyOutlined,
                 path: Routes.DASHBOARD.PROJECT_KEYS.replace(":projectId", this.props.match.params.projectId),
-                text: "Keys"
+                text: "Keys",
+                dataId: "project-sidebar-keys"
             },
             {
                 icon: GlobalOutlined,
                 path: Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId),
-                text: "Languages"
+                text: "Languages",
+                dataId: "project-sidebar-languages"
             },
             {
                 icon: ImportOutlined,
                 path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
                 text: "Import",
-                roles: ROLES_DEVELOPER_UP
+                roles: ROLES_DEVELOPER_UP,
+                dataId: "project-sidebar-import"
             },
             {
                 icon: ExportOutlined,
                 text: "Export",
                 roles: ROLES_DEVELOPER_UP,
+                dataId: "project-sidebar-export",
                 subItems: [
                     {
                         icon: DownloadOutlined,
                         path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
                         text: "Download",
-                        roles: ROLES_DEVELOPER_UP
+                        roles: ROLES_DEVELOPER_UP,
+                        dataId: "project-sidebar-download"
                     },
                     {
                         icon: SettingOutlined,
@@ -87,7 +94,8 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                             this.props.match.params.projectId
                         ),
                         text: "Configurations",
-                        roles: ROLES_DEVELOPER_UP
+                        roles: ROLES_DEVELOPER_UP,
+                        dataId: "project-sidebar-configurations"
                     },
                     {
                         icon: ClusterOutlined,
@@ -96,14 +104,16 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                             this.props.match.params.projectId
                         ),
                         text: "Hierarchy",
-                        roles: ROLES_DEVELOPER_UP
+                        roles: ROLES_DEVELOPER_UP,
+                        dataId: "project-sidebar-hierarchy"
                     }
                 ]
             },
             {
                 icon: LineChartOutlined,
                 path: Routes.DASHBOARD.PROJECT_ACTIVITY.replace(":projectId", this.props.match.params.projectId),
-                text: "Activity"
+                text: "Activity",
+                dataId: "project-sidebar-activity"
             },
             // {
             //     icon: MonitorOutlined,
@@ -113,29 +123,35 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             {
                 icon: SwapOutlined,
                 path: Routes.DASHBOARD.PROJECT_OTA.replace(":projectId", this.props.match.params.projectId),
-                text: "Over the Air"
+                text: "Over the Air",
+                roles: ROLES_DEVELOPER_UP,
+                dataId: "project-sidebar-ota"
             },
             {
                 icon: OneToOneOutlined,
                 path: Routes.DASHBOARD.PROJECT_POST_PROCESSING.replace(":projectId", this.props.match.params.projectId),
-                text: "Post Processing"
+                text: "Post Processing",
+                dataId: "project-sidebar-post-processing"
             },
             {
                 icon: TeamOutlined,
                 path: Routes.DASHBOARD.PROJECT_MEMBERS.replace(":projectId", this.props.match.params.projectId),
-                text: "Members"
+                text: "Members",
+                dataId: "project-sidebar-members"
             },
             {
                 icon: BlockOutlined,
                 path: Routes.DASHBOARD.PROJECT_INTEGRATIONS.replace(":projectId", this.props.match.params.projectId),
                 text: "Integrations",
-                roles: ROLES_DEVELOPER_UP
+                roles: ROLES_TRANSLATOR_UP,
+                dataId: "project-sidebar-integrations"
             },
             {
                 icon: SettingOutlined,
                 path: Routes.DASHBOARD.PROJECT_SETTINGS.replace(":projectId", this.props.match.params.projectId),
                 text: "Settings",
-                roles: ROLES_MANAGER_UP
+                roles: ROLES_MANAGER_UP,
+                dataId: "project-sidebar-settings"
             }
         ];
     }
@@ -220,7 +236,12 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 );
 
                 return (
-                    <Menu.Item key={index} title={data.text} disabled={!this.isMenuItemEnabled(data.roles)}>
+                    <Menu.Item
+                        data-id={data.dataId}
+                        key={index}
+                        title={data.text}
+                        disabled={!this.isMenuItemEnabled(data.roles)}
+                    >
                         {menuItem}
                     </Menu.Item>
                 );

@@ -1,11 +1,40 @@
 class Api::V1::OrganizationUsersController < Api::V1::ApiController
+  before_action :ensure_feature_enabled, only: [:create, :update]
+
   def index
     skip_authorization
     organization = current_user.organizations.find(params[:organization_id])
 
+    organization_users = if params[:search]
+                           organization.users.where(
+                             'users.username ilike :search or users.email ilike :search',
+                             search: "%#{params[:search]}%"
+                           )
+                         else
+                           organization.users
+                         end
+
     options = {}
     options[:params] = { organization: organization }
-    render json: UserSerializer.new(organization.users, options).serialized_json
+    render json: UserSerializer.new(organization_users, options).serialized_json
+  end
+
+  def project_users
+    skip_authorization
+    organization = current_user.organizations.find(params[:organization_id])
+
+    project_users = if params[:search]
+                      organization.project_users.joins(:user).where(
+                        'users.username ilike :search or users.email ilike :search',
+                        search: "%#{params[:search]}%"
+                      )
+                    else
+                      organization.project_users
+                    end
+
+    options = {}
+    options[:include] = [:project, :user]
+    render json: ProjectUserSerializer.new(project_users, options).serialized_json
   end
 
   def create
@@ -25,12 +54,9 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
       }
     else
       render json: {
-        errors: [
-          {
-            details: 'User is already in the organization.'
-          }
-        ]
-      }
+        error: true,
+        message: 'USER_ALREADY_ADDED'
+      }, status: :bad_request
     end
   end
 
@@ -103,5 +129,21 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     render json: {
       message: 'User role updated'
     }
+  end
+
+  private
+
+  def ensure_feature_enabled
+    organization = current_user.organizations.find(params[:organization_id])
+
+    if !organization.feature_enabled?(Organization::FEATURE_BASIC_PERMISSION_SYSTEM)
+      skip_authorization
+
+      render json: {
+        error: true,
+        message: 'BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE'
+      }, status: :bad_request
+      return
+    end
   end
 end

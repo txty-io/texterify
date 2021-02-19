@@ -3,6 +3,7 @@ SHELL ["/bin/bash", "-c"]
 
 EXPOSE 3000
 EXPOSE 3011
+EXPOSE 1080
 
 ENV RAILS_ENV="development"
 ENV RAILS_ROOT /workspace

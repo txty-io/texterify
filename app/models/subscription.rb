@@ -38,7 +38,7 @@ class Subscription < ApplicationRecord
   end
 
   def interrupt
-    if IS_TEXTERIFY_CLOUD && !canceled
+    if Texterify.cloud? && !canceled
       self.canceled = true
       save
 
@@ -47,7 +47,7 @@ class Subscription < ApplicationRecord
   end
 
   def reactivate
-    if IS_TEXTERIFY_CLOUD && canceled
+    if Texterify.cloud? && canceled
       self.canceled = false
       save
 
@@ -56,7 +56,7 @@ class Subscription < ApplicationRecord
   end
 
   def change_plan(plan)
-    if IS_TEXTERIFY_CLOUD
+    if Texterify.cloud?
       if VALID_PLANS.include?(plan)
         self.plan = plan
         self.canceled = false

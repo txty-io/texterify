@@ -18,6 +18,7 @@ Rails.application.routes.draw do
         post :image, to: 'organizations#image_create'
         delete :image, to: 'organizations#image_destroy'
         resources :members, only: [:create, :index, :destroy, :update], controller: "organization_users"
+        get :project_members, to: 'organization_users#project_users'
       end
 
       get 'instance', to: 'instance#show'
@@ -26,6 +27,7 @@ Rails.application.routes.draw do
         post :import
         get 'exports/:id', to: 'projects#export'
         get :activity
+        post :transfer
         get :project_columns, to: 'project_columns#show'
         put :project_columns, to: 'project_columns#update'
         resources :keys, only: [:create, :show, :index, :destroy, :update] do
@@ -53,6 +55,7 @@ Rails.application.routes.draw do
 
       resources :access_tokens, only: [:create, :index, :destroy]
       resources :licenses, only: [:create, :index, :destroy]
+      get 'licenses/current', to: 'licenses#current'
       resources :country_codes, only: [:index]
       resources :language_codes, only: [:index]
       resources :user_licenses, only: [:index]

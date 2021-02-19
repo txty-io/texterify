@@ -1,4 +1,4 @@
-import { Alert, Button, Input, Form } from "antd";
+import { Alert, Button, Form, Input } from "antd";
 import * as queryString from "query-string";
 import * as React from "react";
 import { Link } from "react-router-dom";
@@ -6,7 +6,6 @@ import { AuthAPI, IAuthData } from "../api/v1/AuthAPI";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
-import { KeyOutlined } from "@ant-design/icons";
 
 interface IState {
     isLoading: boolean;

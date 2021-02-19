@@ -13,6 +13,7 @@ interface INavigationData {
     icon: any;
     path: string;
     text: string;
+    dataId: string;
 }
 
 type IProps = RouteComponentProps<{}>;
@@ -26,12 +27,14 @@ class InstanceSidebar extends React.Component<IProps, IState> {
         {
             icon: HomeOutlined,
             path: Routes.DASHBOARD.INSTANCE.ROOT,
-            text: "Overview"
+            text: "Overview",
+            dataId: "instance-sidebar-overview"
         },
         {
             icon: FileTextOutlined,
             path: Routes.DASHBOARD.INSTANCE.LICENSES,
-            text: "Licenses"
+            text: "Licenses",
+            dataId: "instance-sidebar-licenses"
         }
         // {
         //     icon: ToolOutlined,
@@ -47,7 +50,7 @@ class InstanceSidebar extends React.Component<IProps, IState> {
     renderMenuItems = () => {
         return this.navigationData.map((data: INavigationData, index: number) => {
             return (
-                <Menu.Item key={index} title={data.text}>
+                <Menu.Item data-id={data.dataId} key={index} title={data.text}>
                     <Link to={data.path}>
                         <data.icon />
                         <span>{data.text}</span>

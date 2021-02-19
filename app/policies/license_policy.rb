@@ -10,6 +10,10 @@ class LicensePolicy
     user.is_superadmin
   end
 
+  def current?
+    true
+  end
+
   def create?
     user.is_superadmin
   end

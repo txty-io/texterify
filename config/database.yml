@@ -25,7 +25,7 @@ development:
   <<: *default
   host: <%= ENV.fetch("DB_DEV_HOST", "db") %>
   username: <%= ENV.fetch("DB_DEV_USERNAME", "postgres") %>
-  database: texterify_development
+  database: <%= ENV.fetch("DB_DEV_DATABASE", "texterify_development") %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -61,7 +61,7 @@ test:
   <<: *default
   host: <%= ENV.fetch("DB_TEST_HOST", "db") %>
   username: <%= ENV.fetch("DB_TEST_USERNAME", "postgres") %>
-  database: texterify_test
+  database: <%= ENV.fetch("DB_TEST_DATABASE", "texterify_test") %>
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is

@@ -211,7 +211,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
     permissions_destroy = {
       'translator' => 403,
       'developer' => 403,
-      'manager' => 200,
+      'manager' => 403,
       'owner' => 200
     }
 

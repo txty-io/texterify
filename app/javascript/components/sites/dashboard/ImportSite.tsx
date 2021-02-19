@@ -3,6 +3,7 @@ import { Alert, Button, Layout, message, Select } from "antd";
 import * as React from "react";
 import Dropzone from "react-dropzone";
 import { Link, RouteComponentProps } from "react-router-dom";
+import styled from "styled-components";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
@@ -11,8 +12,6 @@ import { Routes } from "../../routing/Routes";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import FlagIcon from "../../ui/FlagIcons";
 import { LoadingOverlay } from "../../ui/LoadingOverlay";
-import { Styles } from "../../ui/Styles";
-import styled from "styled-components";
 
 const DropZoneWrapper = styled.div`
     width: 100%;

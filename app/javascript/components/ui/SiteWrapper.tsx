@@ -62,7 +62,11 @@ class SiteWrapper extends React.Component<IProps> {
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <WhiteButton
                                 onClick={() => {
-                                    window.open("https://github.com/chrztoph/texterify", "_blank", "noopener");
+                                    window.open(
+                                        "https://github.com/chrztoph/texterify",
+                                        "_blank",
+                                        "noopener noreferrer"
+                                    );
                                 }}
                             >
                                 Show on GitHub

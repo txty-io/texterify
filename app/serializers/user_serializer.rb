@@ -26,6 +26,6 @@ class UserSerializer
   end
 
   attribute :role_organization, if: proc { |_, params| params[:organization] } do |object, params|
-    OrganizationUser.find_by(organization_id: params[:organization].id, user_id: object.id).role
+    OrganizationUser.find_by(organization_id: params[:organization].id, user_id: object.id)&.role
   end
 end

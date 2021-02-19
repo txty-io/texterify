@@ -1,9 +1,12 @@
-FROM ruby:2.7.1
+FROM ruby:2.7.1 AS production
 SHELL ["/bin/bash", "-c"]
 
 EXPOSE 3000
 
-ENV RAILS_ENV="production"
+ARG RAILS_ENV_ARG=production
+ARG NODE_ENV_ARG=production
+
+ENV RAILS_ENV=$RAILS_ENV_ARG
 ENV RAILS_ROOT /var/www/texterify
 
 # Install essential libraries.
@@ -29,7 +32,7 @@ RUN apt-get update \
 ENV NVM_DIR /usr/local/nvm
 RUN mkdir -p $NVM_DIR
 ENV NODE_VERSION 14.13.1
-ENV NODE_ENV="production"
+ENV NODE_ENV=$NODE_ENV_ARG
 ENV NODE_OPTIONS="--max_old_space_size=8192"
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 
@@ -63,7 +66,7 @@ ARG SENTRY_DSN_FRONTEND
 
 # Compile assets.
 RUN SECRET_KEY_BASE=`bin/rails secret` \
-    RAILS_ENV=production \
+    RAILS_ENV=$RAILS_ENV \
     COMMIT_HASH=$COMMIT_HASH \
     SENTRY_SOURCE_MAPS_AUTH_TOKEN=$SENTRY_SOURCE_MAPS_AUTH_TOKEN \
     SENTRY_SOURCE_MAPS_ORGANIZATION=$SENTRY_SOURCE_MAPS_ORGANIZATION \
@@ -74,4 +77,14 @@ RUN SECRET_KEY_BASE=`bin/rails secret` \
     SENTRY_DSN_FRONTEND=$SENTRY_DSN_FRONTEND \
     bundle exec rails assets:precompile
 
-CMD ["bundle", "exec", "rails", "server"]
+CMD ["rails", "server"]
+
+
+FROM production AS testing
+
+RUN bundle install --with test
+RUN gem install mailcatcher
+RUN yarn install --production=false
+RUN apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+
+CMD ["rails", "server"]

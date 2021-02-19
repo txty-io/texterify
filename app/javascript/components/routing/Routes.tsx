@@ -1,4 +1,5 @@
 const Routes = {
+    ROOT: "/",
     AUTH: {
         LOGIN: "/",
         LOGOUT: "/logout",
@@ -12,13 +13,8 @@ const Routes = {
         INVALID_ACCOUNT_CONFIRMATION_LINK: "/invalid-account-confirmation-link"
     },
     OTHER: {
-        ROOT: "/",
-        TERMS_OF_SERVICE: "/terms-of-service",
-        PRIVACY_POLICY: "/privacy-policy",
-        ABOUT: "/about",
-        CONTACT: "/contact",
-        CODE: "/code",
-        TOOLS: "/tools"
+        TERMS_OF_SERVICE: "https://texterify.com/terms-of-service",
+        PRIVACY_POLICY: "https://texterify.com/privacy-policy"
     },
     PRODUCT: {
         FEATURES: "/features",
