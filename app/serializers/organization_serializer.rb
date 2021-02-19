@@ -17,11 +17,11 @@ class OrganizationSerializer
   end
 
   attribute :enabled_features do |object|
-    if object.subscription&.plan == Subscription::PLAN_BASIC
+    if object.active_subscription&.plan == Subscription::PLAN_BASIC
       Organization::FEATURES_BASIC_PLAN
-    elsif object.subscription&.plan == Subscription::PLAN_TEAM
+    elsif object.active_subscription&.plan == Subscription::PLAN_TEAM
       Organization::FEATURES_TEAM_PLAN
-    elsif object.subscription&.plan == Subscription::PLAN_BUSINESS
+    elsif object.active_subscription&.plan == Subscription::PLAN_BUSINESS
       Organization::FEATURES_BUSINESS_PLAN
     elsif !License.all.empty?
       license = License.current_active

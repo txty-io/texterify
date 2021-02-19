@@ -37,9 +37,9 @@ class ProjectSerializer
   attribute :enabled_features do |object|
     if object.organization&.trial_active
       Organization::FEATURES_BUSINESS_PLAN
-    elsif object.organization&.subscription&.plan == Subscription::PLAN_TEAM
+    elsif object.organization&.active_subscription&.plan == Subscription::PLAN_TEAM
       Organization::FEATURES_TEAM_PLAN
-    elsif object.organization&.subscription&.plan == Subscription::PLAN_BUSINESS
+    elsif object.organization&.active_subscription&.plan == Subscription::PLAN_BUSINESS
       Organization::FEATURES_BUSINESS_PLAN
     elsif !License.all.empty?
       license = License.current_active

@@ -7,12 +7,16 @@ class Organization < ApplicationRecord
   has_many :users, through: :organization_users
   has_many :projects, dependent: :destroy
   has_many :project_users, through: :projects, dependent: :destroy
-  has_one :subscription, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy
 
   has_one_attached :image
 
   def name=(name)
     self[:name] = name.strip
+  end
+
+  def active_subscription
+    subscriptions.find_by(stripe_ended_at: nil)
   end
 
   def role_of(user)

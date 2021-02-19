@@ -120,14 +120,14 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
     organization = current_user.organizations.find(params[:organization_id])
 
     options = {}
-    render json: SubscriptionSerializer.new(organization.subscription, options).serialized_json, status: :ok
+    render json: SubscriptionSerializer.new(organization.active_subscription, options).serialized_json, status: :ok
   end
 
   def cancel_subscription
     organization = current_user.organizations.find(params[:organization_id])
     authorize organization
 
-    organization.subscription&.interrupt
+    organization.active_subscription&.interrupt
 
     render json: {
       success: true
@@ -138,7 +138,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
     organization = current_user.organizations.find(params[:organization_id])
     authorize organization
 
-    organization.subscription&.reactivate
+    organization.active_subscription&.reactivate
 
     render json: {
       success: true
@@ -161,7 +161,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
     organization = current_user.organizations.find(params[:organization_id])
     authorize organization
 
-    organization.subscription&.change_plan(plan)
+    organization.active_subscription&.change_plan(plan)
 
     render json: {
       success: true
