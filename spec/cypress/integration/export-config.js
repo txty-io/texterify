@@ -25,9 +25,7 @@ context("export-config", () => {
         cy.contains(testData.keys.firstKey.keyName).parent().next().next().click();
         cy.contains(testData.keys.firstKey.keyName).parent().next().next().children().should('contain', testData.keys.firstKey.value);
 
-
         cy.contains('div', 'Export').click();
-        // TODO IDs?
         cy.contains('a', 'Create an export configuration').click();
         cy.get('.ant-btn').click();
         cy.get('#name').type('name');
@@ -38,11 +36,5 @@ context("export-config", () => {
 
         cy.contains('a', 'Download').click();
         cy.get('.ant-btn').click();
-
-        //TODO: validate file
-        // const downloadedFilename = path.join(downloadsFolder, 'file.zip');
-        // cy.readFile(downloadedFilename, 'binary', { timeout: 15000 }).should('have.length.gt', 300);
-        // cy.task('validateZipFile', downloadedFilename);
     });
-
 });

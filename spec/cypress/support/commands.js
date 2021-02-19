@@ -64,6 +64,3 @@ Cypress.Commands.add("addUser", (userMail) => {
     cy.get('#name').type(userMail);
     cy.contains('button', 'Invite').click();
 });
-
-
-

@@ -20,7 +20,6 @@ context("add-keys", () => {
 
         cy.get('.ant-table-container').should('contain', testData.keys.firstKey.keyName).and('contain', testData.keys.firstKey.keyDescription);
 
-        // TODO: improve selection of input field
         cy.contains(testData.keys.firstKey.keyName).parent().next().next().children().click();
         cy.contains(testData.keys.firstKey.keyName).parent().next().next().children().type(testData.keys.firstKey.value);
         cy.contains(testData.keys.firstKey.keyName).parent().next().next().click();
@@ -35,5 +34,4 @@ context("add-keys", () => {
         cy.contains(testData.keys.secondKey.keyName).parent().next().next().click();
         cy.contains(testData.keys.secondKey.keyName).parent().next().next().children().should('contain', testData.keys.secondKey.value);
     });
-
 });

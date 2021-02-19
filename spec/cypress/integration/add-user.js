@@ -26,5 +26,4 @@ context("add-user", () => {
         cy.get('.ant-layout-content').should('not.contain', testData.login.invalidUser.email);
         cy.contains('User with that email could not be found.')
     });
-
 });

@@ -23,5 +23,4 @@ context("add-language", () => {
         cy.get('.ant-table-container').should('contain', testData.languages.spanish.languageCodeShort).and('contain', testData.languages.spanish.countryCodeShort).and('contain', testData.languages.spanish.languageName);
 
     });
-
 });
