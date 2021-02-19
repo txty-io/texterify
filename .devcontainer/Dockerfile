@@ -64,3 +64,6 @@ RUN apt-get update && apt-get install yarn -y
 # Keep bash history between runs.
 RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/command-history/.bash_history" \
     && echo $SNIPPET >> "/root/.bashrc"
+
+# Install mailcatcher.
+RUN gem install mailcatcher
