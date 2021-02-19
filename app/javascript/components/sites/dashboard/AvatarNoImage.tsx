@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
+import { AvatarWrapper } from "./AvatarWrapper";
 
 const Container = styled.div`
     width: 160px;
@@ -11,8 +12,8 @@ const Container = styled.div`
     text-align: center;
     color: rgba(255, 255, 255, 0.65);
 
-    &:hover {
-        color: rgba(255, 255, 255, 1);
+    ${AvatarWrapper}:hover & {
+        color: rgba(255, 255, 255, 0.75);
     }
 `;
 
