@@ -1,4 +1,4 @@
-context.only("add-keys", () => {
+context("add-keys", () => {
     let testData;
 
     beforeEach(() => {
