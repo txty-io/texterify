@@ -82,7 +82,7 @@ class Organization < ApplicationRecord
     license = License.current_active
 
     return trial_active ||
-           (subscription && feature_allowed_plans.include?(subscription.plan)) ||
+           (active_subscription && feature_allowed_plans.include?(active_subscription.plan)) ||
            (license && feature_allowed_plans.include?(license.restrictions[:plan]))
   end
 end
