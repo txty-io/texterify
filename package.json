@@ -68,7 +68,7 @@
     "webpack-cli": "^3.3.7"
   },
   "devDependencies": {
-    "cypress": "^6.2.1",
+    "cypress": "^6.5.0",
     "cypress-file-upload": "^5.0.2",
     "husky": "^4.3.0",
     "less": "^3.10.3",
