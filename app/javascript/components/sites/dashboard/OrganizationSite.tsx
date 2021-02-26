@@ -58,6 +58,7 @@ class OrganizationSite extends React.Component<IProps, IState> {
                                 {dashboardStore.currentOrganization &&
                                     dashboardStore.currentOrganization.attributes.name}
                                 <PrimaryButton
+                                    data-id="organization-create-project"
                                     style={{ marginLeft: 40 }}
                                     onClick={() => {
                                         this.setState({ addDialogVisible: true });

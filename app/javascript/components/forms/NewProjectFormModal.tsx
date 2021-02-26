@@ -214,6 +214,7 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
                         <p>Select the type of project you want to create:</p>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <TypeSelection
+                                data-id="new-project-form-select-private"
                                 active={this.state.selectedType === "private"}
                                 onClick={() => {
                                     return this.setState({ selectedType: "private" });
@@ -223,6 +224,7 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
                                 <div>Private</div>
                             </TypeSelection>
                             <TypeSelection
+                                data-id="new-project-form-select-organization"
                                 active={this.state.selectedType === "organization"}
                                 onClick={() => {
                                     return this.setState({ selectedType: "organization" });

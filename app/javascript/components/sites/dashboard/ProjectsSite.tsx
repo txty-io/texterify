@@ -80,6 +80,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                         <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
                             <div style={{ flexGrow: 1 }}>
                                 <PrimaryButton
+                                    data-id="projects-create-project"
                                     onClick={() => {
                                         this.setState({ addDialogVisible: true });
                                     }}
