@@ -125,6 +125,11 @@
     }
   }
 
+  .ant-layout {
+    // Fix content overflowing horizontally.
+    overflow-x: hidden;
+  }
+
   .ant-layout-header {
     height: 58px;
     line-height: 0;
@@ -153,11 +158,6 @@
 
   .ant-table-tbody .ant-form-item-control {
     line-height: 0;
-  }
-
-  .ant-btn {
-    padding-left: 18px;
-    padding-right: 18px;
   }
 
   // Hide the loading indicator container because otherwise it still takes some

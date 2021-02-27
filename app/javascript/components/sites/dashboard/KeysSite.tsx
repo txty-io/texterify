@@ -547,7 +547,6 @@ class KeysSite extends React.Component<IProps, IState> {
                             style={{ marginTop: 16, maxWidth: "100%" }}
                             bordered
                             loading={this.state.keysLoading}
-                            size="middle"
                             projectId={this.props.match.params.projectId}
                             onCellEdit={async (options: { languageId: string; keyId: string }) => {
                                 const keyResponse = await KeysAPI.getKey(
@@ -725,8 +724,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                                   columns={columns}
                                                   dataSource={data}
                                                   pagination={false}
-                                                  bordered={false}
-                                                  size="small"
+                                                  bordered
                                                   showHeader={false}
                                                   projectId={this.props.match.params.projectId}
                                                   onTranslationUpdated={async () => {

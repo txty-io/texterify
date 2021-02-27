@@ -7,9 +7,11 @@
   --blue-color: #568aea;
   --highlight-color: #000;
   --header-background-color: var(--dark-color);
-  --primary-light-color: #4170ff26;
+  --primary-light-color: #e3eaff;
   --primary-btn-color: #1c70f5;
   --primary-btn-hover-color: #327ef6;
+  --color-passive: #aaa;
+  --color-passive-hover: #333;
 }
 
 .dark-theme {
@@ -20,7 +22,9 @@
   --blue-color: #61b6ff;
   --blue-color-light: #61b6ffbf;
   --highlight-color: rgba(255, 255, 255, 0.85);
-  --primary-light-color: #4170ff26;
+  --primary-light-color: #111d3a;
   --primary-btn-color: #177ddc;
   --primary-btn-hover-color: #288eec;
+  --color-passive: #555;
+  --color-passive-hover: #999;
 }

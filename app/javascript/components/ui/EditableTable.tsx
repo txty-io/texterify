@@ -110,7 +110,7 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
                 columns={columns}
                 style={this.props.style}
                 loading={this.props.loading}
-                // size={this.props.size}
+                size={this.props.size}
                 pagination={this.props.pagination}
                 locale={{ emptyText: <Empty description="No keys found" image={Empty.PRESENTED_IMAGE_SIMPLE} /> }}
             />

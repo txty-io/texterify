@@ -76,7 +76,11 @@ class OrganizationSettingsSite extends React.Component<IProps, IState> {
                         <Collapse.Panel
                             header="Advanced settings"
                             key="advanced"
-                            disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole())}
+                            collapsible={
+                                !PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole())
+                                    ? "disabled"
+                                    : undefined
+                            }
                         >
                             <SettingsSectionWrapper>
                                 <Alert

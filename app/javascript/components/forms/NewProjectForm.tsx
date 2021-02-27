@@ -188,7 +188,7 @@ class NewProjectForm extends React.Component<IProps, IState> {
                                             }
                                         })}
                                     >
-                                        <AvatarNoImage />
+                                        {!this.state.imageUrl && <AvatarNoImage />}
                                         <AvatarEditorWrapper>
                                             <AvatarEditor
                                                 ref={(ref) => {

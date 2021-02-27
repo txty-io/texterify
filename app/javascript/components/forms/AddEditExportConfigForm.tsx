@@ -1,16 +1,16 @@
-import { Button, Empty, Form, Input, Select, Table, Modal } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Empty, Form, Input, Modal, Select, Table } from "antd";
 import { FormInstance } from "antd/lib/form";
 import Paragraph from "antd/lib/typography/Paragraph";
 import * as React from "react";
+import { APIUtils } from "../api/v1/APIUtils";
 import { ExportConfigsAPI } from "../api/v1/ExportConfigsAPI";
+import { IGetLanguageConfigsResponse, LanguageConfigsAPI } from "../api/v1/LanguageConfigsAPI";
 import { LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { FileFormatOptions } from "../configs/FileFormatOptions";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
-import { AddEditExportConfigLanguageForm, ICreateUpdateLanguageConfig } from "./AddEditExportConfigLanguageForm";
 import FlagIcon from "../ui/FlagIcons";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { LanguageConfigsAPI, IGetLanguageConfigsResponse } from "../api/v1/LanguageConfigsAPI";
-import { APIUtils } from "../api/v1/APIUtils";
+import { AddEditExportConfigLanguageForm, ICreateUpdateLanguageConfig } from "./AddEditExportConfigLanguageForm";
 
 interface IFormValues {
     name: string;
@@ -341,10 +341,7 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                     </Form.Item>
 
                     <h3>Language configs</h3>
-                    <p>
-                        Override the language codes used for exports in this configuration. You can learn more here when
-                        this can be helpful.
-                    </p>
+                    <p>Override the language codes used for exports in this configuration.</p>
                     <div style={{ display: "flex" }}>
                         <Button
                             type="primary"

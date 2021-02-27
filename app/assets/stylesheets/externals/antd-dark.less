@@ -219,10 +219,23 @@
   }
 
   // Fix select
+  .ant-select:not(.ant-select-disabled) .ant-select-selector {
+    color: rgba(255, 255, 255, 0.65);
+  }
+
+  .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+    color: var(--primary-btn-hover-color);
+  }
+
+  .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border-color: var(--border-color);
+    background-color: transparent;
+  }
+
   .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
   .ant-select-focused.ant-select-single:not(.ant-select-customize-input):not(.ant-select-disabled) .ant-select-selector {
-    border-color: var(--blue-color);
-    color: var(--blue-color);
+    border-color: var(--primary-btn-hover-color);
+    color: var(--primary-btn-hover-color);
   }
 
   // Fix erros
@@ -261,6 +274,12 @@
 
   .ant-tag:hover {
     opacity: 1;
+  }
+
+  .ant-pagination-item {
+    a {
+      color: rgba(255, 255, 255, 0.65);
+    }
   }
 
   .ant-pagination-item-active {

@@ -3,17 +3,17 @@ import styled from "styled-components";
 import { AvatarWrapper } from "./AvatarWrapper";
 
 const Container = styled.div`
-    width: 160px;
-    height: 160px;
+    width: 100%;
+    height: 100%;
     padding: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: rgba(255, 255, 255, 0.65);
+    color: var(--color-passive);
 
     ${AvatarWrapper}:hover & {
-        color: rgba(255, 255, 255, 0.75);
+        color: var(--color-passive-hover);
     }
 `;
 

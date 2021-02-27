@@ -177,7 +177,7 @@ class NewOrganizationForm extends React.Component<IProps, IState> {
                                             }
                                         })}
                                     >
-                                        <AvatarNoImage />
+                                        {!this.state.imageUrl && <AvatarNoImage />}
                                         <AvatarEditorWrapper>
                                             <AvatarEditor
                                                 ref={(ref) => {
@@ -226,7 +226,7 @@ class NewOrganizationForm extends React.Component<IProps, IState> {
                             <Button
                                 onClick={this.centerImage}
                                 disabled={this.state.imagePosition.x === 0.5 && this.state.imagePosition.y === 0.5}
-                                style={{ width: "100%" }}
+                                style={{ width: "100%", marginBottom: 16 }}
                             >
                                 Center image
                             </Button>

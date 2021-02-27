@@ -94,7 +94,8 @@ export const EditableCell: React.FC<IEditableCellProps> = ({
                     <div
                         className={isCellEditEnabled ? "editable-cell-value-wrap" : undefined}
                         style={{
-                            maxWidth: 400,
+                            minWidth: 320,
+                            maxWidth: "100%",
                             overflow: "auto",
                             display: "flex",
                             flexDirection: "column",

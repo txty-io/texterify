@@ -83,7 +83,9 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                         <Collapse.Panel
                             header="Advanced settings"
                             key="advanced"
-                            disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}
+                            collapsible={
+                                !PermissionUtils.isOwner(dashboardStore.getCurrentRole()) ? "disabled" : undefined
+                            }
                         >
                             <SettingsSectionWrapper>
                                 <Alert
