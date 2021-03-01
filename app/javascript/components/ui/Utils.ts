@@ -65,6 +65,14 @@ const Utils = {
 
     capitalize: (s: string) => {
         return s.charAt(0).toUpperCase() + s.slice(1);
+    },
+
+    getCommandKeyDependingOnPlatform: () => {
+        if (navigator.platform.includes("Mac")) {
+            return "⌘";
+        } else {
+            return "Ctrl";
+        }
     }
 };
 

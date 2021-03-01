@@ -24,6 +24,7 @@ import { LicenseExpiring } from "../ui/LicenseExpiring";
 import { LicenseFreeTrial } from "../ui/LicenseFreeVersion";
 import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
+import { Utils } from "../ui/Utils";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
 import { history } from "./history";
 import { InstanceRouter } from "./InstanceRouter";
@@ -251,7 +252,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
 
                         <SearchInputWrapper>
                             <antd.Input
-                                placeholder="Search projects        ⌘ + ⇧ + P"
+                                placeholder={`Search projects        ${Utils.getCommandKeyDependingOnPlatform()} + ⇧ + P`}
                                 onClick={(e) => {
                                     e.preventDefault();
 
