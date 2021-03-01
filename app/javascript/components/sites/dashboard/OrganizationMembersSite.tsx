@@ -437,9 +437,9 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                             const role = projectWrapper.role;
 
                             return (
-                                <Tag key={project.id} color={PermissionUtils.getColorByRole(role)}>
-                                    {project.attributes.name}
-                                </Tag>
+                                <Link key={project.id} to={Routes.DASHBOARD.PROJECT.replace(":projectId", project.id)}>
+                                    <Tag color={PermissionUtils.getColorByRole(role)}>{project.attributes.name}</Tag>
+                                </Link>
                             );
                         });
                     }
