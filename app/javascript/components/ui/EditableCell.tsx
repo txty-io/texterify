@@ -87,7 +87,7 @@ export const EditableCell: React.FC<IEditableCellProps> = ({
         <td {...restProps}>
             {editable ? (
                 editing ? (
-                    <FormItem style={{ margin: 0 }} name={dataIndex}>
+                    <FormItem style={{ margin: 0, minWidth: 320, maxWidth: "100%" }} name={dataIndex}>
                         <Input.TextArea ref={inputRef} onPressEnter={save} onBlur={save} autoSize />
                     </FormItem>
                 ) : (
