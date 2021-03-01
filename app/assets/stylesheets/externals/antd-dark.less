@@ -68,11 +68,6 @@
     background: rgba(255, 255, 255, 0.05);
   }
 
-  // Remove right padding of search input field icon.
-  .ant-input-search:not(.ant-input-search-enter-button) {
-    padding-right: 0;
-  }
-
   // Fix hidden alert descriptions.
   .ant-alert-description {
     display: block;
@@ -182,15 +177,6 @@
     text-align: center;
   }
 
-  // Fix input color
-  .ant-input-affix-wrapper:hover, .ant-input:hover {
-    border-color: var(--input-border-hover-color);
-  }
-
-  .ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused, .ant-input:focus, .ant-input-focused {
-    border-color: var(--input-border-focus-color);
-  }
-
   // Fix checkbox color
   .ant-checkbox-wrapper:hover .ant-checkbox-inner,
   .ant-checkbox:hover .ant-checkbox-inner,
@@ -243,10 +229,10 @@
     color: var(--input-border-hover-color);
   }
 
-.ant-select-focused.ant-select-single:not(.ant-select-customize-input):not(.ant-select-disabled) .ant-select-selector {
-  border-color: var(--input-border-focus-color);
-  color: var(--input-border-focus-color);
-}
+  .ant-select-focused.ant-select-single:not(.ant-select-customize-input):not(.ant-select-disabled) .ant-select-selector {
+    border-color: var(--input-border-focus-color);
+    color: var(--input-border-focus-color);
+  }
 
   // Fix erros
   .ant-form-item-has-error .ant-form-item-explain, .ant-form-item-has-error .ant-form-item-split {
@@ -361,4 +347,6 @@
   .ant-statistic.disabled .ant-statistic-content {
     color: rgba(255, 255, 255, 0.25) !important;
   }
+
+  @import 'antd-input.less';
 }
