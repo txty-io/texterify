@@ -182,6 +182,9 @@ class EditorSite extends React.Component<IProps, IState> {
                         zIndex: 10,
                         overflow: "hidden"
                     }}
+                    // Apply the dark-theme class because the
+                    // main menu bar is always in dark mode.
+                    className="dark-theme"
                 >
                     <div style={{ flexGrow: 1 }}>
                         <WhiteButton
