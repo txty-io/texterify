@@ -376,15 +376,17 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                         autoFocusButton: "cancel",
                                         visible: this.state.deleteDialogVisible,
                                         onOk: async () => {
-                                            const deleteMemberResponse = await OrganizationMembersAPI.deleteMember(
+                                            const response = await OrganizationMembersAPI.deleteMember(
                                                 this.props.match.params.organizationId,
                                                 record.key
                                             );
 
-                                            if (record.email === authStore.currentUser.email) {
-                                                if (!deleteMemberResponse.errors) {
-                                                    this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
+                                            if (response.error) {
+                                                if (response.message === "LAST_OWNER_CANT_BE_REMOVED") {
+                                                    message.error("The last user with an owner role can't be removed.");
                                                 }
+                                            } else if (record.email === authStore.currentUser.email) {
+                                                this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
                                             } else {
                                                 const getMembersResponse = await OrganizationMembersAPI.getMembers(
                                                     this.props.match.params.organizationId
@@ -404,7 +406,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                 }}
                                 danger
                                 disabled={
-                                    !(
+                                    (!(
                                         PermissionUtils.isManagerOrHigher(
                                             dashboardStore.getCurrentOrganizationRole()
                                         ) &&
@@ -413,8 +415,9 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                             record.role
                                         )
                                     ) &&
-                                    !PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole()) &&
-                                    record.email !== authStore.currentUser.email
+                                        !PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole()) &&
+                                        record.email !== authStore.currentUser.email) ||
+                                    this.state.getMembersResponse?.data.length === 1
                                 }
                             >
                                 {record.id === authStore.currentUser.id ? "Leave" : "Remove"}

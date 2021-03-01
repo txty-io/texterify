@@ -219,6 +219,8 @@ class MembersSite extends React.Component<IProps, IState> {
                                                     "This feature is not available for private projects. Please move your project to an organization."
                                                 );
                                             }
+                                        } else if (response.message === "LAST_OWNER_CANT_BE_REMOVED") {
+                                            message.error("The last user with an owner role can't be removed.");
                                         }
                                     } else {
                                         await this.reload(record.id);
