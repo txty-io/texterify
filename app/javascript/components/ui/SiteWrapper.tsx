@@ -1,7 +1,7 @@
 import * as React from "react";
 import { WhiteButton } from "./WhiteButton";
 import { DarkModeToggle } from "./DarkModeToggle";
-import Logo from "images/logo.svg";
+import WhiteLogoWithText from "images/white_logo_with_text.svg";
 
 interface IProps {
     style?: React.CSSProperties;
@@ -41,20 +41,7 @@ class SiteWrapper extends React.Component<IProps> {
                             padding: 40
                         }}
                     >
-                        <h1
-                            style={{
-                                marginBottom: 24,
-                                fontSize: 48,
-                                fontFamily: "Ubuntu",
-                                color: "#fff",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center"
-                            }}
-                        >
-                            <img src={Logo} style={{ maxWidth: 120, marginRight: 16 }} />
-                            texterify
-                        </h1>
+                        <img src={WhiteLogoWithText} style={{ maxWidth: 240, marginBottom: 24 }} />
                         <p style={{ marginBottom: 40 }}>
                             Texterify is a localization management system that helps you to translate your software
                             efficient and fast.

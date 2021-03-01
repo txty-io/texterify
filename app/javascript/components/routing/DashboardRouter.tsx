@@ -34,6 +34,7 @@ import { PrivateRouteTexterifyCloud } from "./PrivateRouteTexterifyCloud";
 import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
 import { SuperadminRoute } from "./SuperadminRoute";
+import WhiteLogoWithText from "images/white_logo_with_text.svg";
 
 const MenuList = styled.li`
     overflow: hidden;
@@ -165,24 +166,8 @@ class DashboardRouter extends React.Component<IProps, IState> {
                         // main menu bar is always in dark mode.
                         className="dark-theme"
                     >
-                        <Link
-                            to={Routes.DASHBOARD.ROOT}
-                            style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
-                        >
-                            <img src={Logo} style={{ width: 32, marginRight: 16 }} />
-                            <h1
-                                style={{
-                                    fontSize: 18,
-                                    marginBottom: 0,
-                                    marginRight: 24,
-                                    textDecoration: "none",
-                                    fontFamily: "Ubuntu",
-                                    color: "#fff",
-                                    whiteSpace: "nowrap"
-                                }}
-                            >
-                                texterify
-                            </h1>
+                        <Link to={Routes.DASHBOARD.ROOT}>
+                            <img src={WhiteLogoWithText} style={{ maxHeight: 32, marginRight: 24 }} />
                         </Link>
                         <ul
                             className="dashboard-main-menu"
