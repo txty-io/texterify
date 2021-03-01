@@ -11,11 +11,11 @@
     "@editorjs/editorjs": "^2.15.0",
     "@editorjs/list": "^1.4.0",
     "@rails/webpacker": "^5.1.1",
-    "@sentry/react": "^5.27.4",
-    "@sentry/tracing": "^5.27.4",
-    "@sentry/webpack-plugin": "^1.13.0",
+    "@sentry/react": "^6.2.0",
+    "@sentry/tracing": "^6.2.0",
+    "@sentry/webpack-plugin": "^1.14.1",
     "@stripe/stripe-js": "^1.9.0",
-    "@types/lodash": "^4.14.138",
+    "@types/lodash": "^4.14.168",
     "@types/query-string": "^6.1.0",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.6",
@@ -39,7 +39,7 @@
     "history": "^4.7.2",
     "js-file-download": "^0.4.12",
     "less-loader": "^6.0.0",
-    "localforage": "^1.7.1",
+    "localforage": "^1.9.0",
     "lodash": "^4.17.21",
     "mobx": "^5.13.0",
     "mobx-persist": "^0.4.1",
@@ -54,7 +54,7 @@
     "react-dom": "^16.9.0",
     "react-dropzone": "^10.1.8",
     "react-flag-icon-css": "^1.0.23",
-    "react-hot-keys": "^2.6.0",
+    "react-hot-keys": "^2.6.2",
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
     "react-spinkit": "^3.0.0",
@@ -70,10 +70,10 @@
   "devDependencies": {
     "cypress": "^6.5.0",
     "cypress-file-upload": "^5.0.2",
-    "husky": "^4.3.0",
-    "less": "^3.10.3",
-    "webpack-bundle-analyzer": "^4.3.0",
-    "webpack-dev-server": "^3.8.0"
+    "husky": "^4.3.8",
+    "less": "^4.1.1",
+    "webpack-bundle-analyzer": "^4.4.0",
+    "webpack-dev-server": "^3.11.2"
   },
   "engines": {
     "yarn": ">=1.5.1"
