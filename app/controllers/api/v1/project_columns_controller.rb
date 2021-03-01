@@ -34,6 +34,6 @@ class Api::V1::ProjectColumnsController < Api::V1::ApiController
   private
 
   def project_column_params
-    params.require(:project_column).permit(:show_name, :show_description)
+    params.require(:project_column).permit(:show_name, :show_description, :show_tags, :show_overwrites)
   end
 end

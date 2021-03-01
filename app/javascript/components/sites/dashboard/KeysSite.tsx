@@ -1,5 +1,5 @@
-import { MoreOutlined } from "@ant-design/icons";
-import { Button, Drawer, Input, Layout, Modal, Popover, Switch, Tag } from "antd";
+import { MoreOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { Button, Drawer, Input, Layout, Modal, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
@@ -151,15 +151,30 @@ class KeysSite extends React.Component<IProps, IState> {
 
         const columns = [];
 
-        columns.push({
-            title: "Tags",
-            dataIndex: "tags",
-            key: "tags",
-            width:
-                filteredLanguages.length > 0 || this.isNameColumnVisible() || this.isDescriptionColumnVisible()
-                    ? 80
-                    : undefined
-        });
+        if (this.isTagsColumnVisible()) {
+            columns.push({
+                title: "Tags",
+                dataIndex: "tags",
+                key: "tags",
+                width: 80
+            });
+        }
+
+        if (this.isOverwritesColumnVisible()) {
+            columns.push({
+                title: (
+                    <div style={{ whiteSpace: "nowrap" }}>
+                        <span style={{ marginRight: 8 }}>Overwrites</span>
+                        <Tooltip title="Shows how often the key translations are overwritten in export configs.">
+                            <QuestionCircleOutlined />
+                        </Tooltip>
+                    </div>
+                ),
+                dataIndex: "hasExportConfigOverwrites",
+                key: "hasExportConfigOverwrites",
+                width: 80
+            });
+        }
 
         if (this.isNameColumnVisible()) {
             columns.push({
@@ -248,12 +263,20 @@ class KeysSite extends React.Component<IProps, IState> {
                 }
             });
 
+            const keyExportConfigOverwritesCount = this.getKeyExportConfigOverwritesCount(key);
+
             return {
                 tags: key.attributes.html_enabled ? (
                     <Tag color="magenta" style={{ margin: 0 }}>
                         HTML
                     </Tag>
                 ) : undefined,
+                hasExportConfigOverwrites:
+                    keyExportConfigOverwritesCount > 0 ? (
+                        <div style={{ display: "flex", justifyContent: "center" }}>
+                            {keyExportConfigOverwritesCount}
+                        </div>
+                    ) : undefined,
                 key: key.attributes.id,
                 keyId: key.attributes.id,
                 name: key.attributes.name,
@@ -373,6 +396,14 @@ class KeysSite extends React.Component<IProps, IState> {
         await this.fetchKeys(fetchOptions);
     };
 
+    isTagsColumnVisible = () => {
+        return this.state.projectColumns.data ? this.state.projectColumns.data.attributes.show_tags : true;
+    };
+
+    isOverwritesColumnVisible = () => {
+        return this.state.projectColumns.data ? this.state.projectColumns.data.attributes.show_overwrites : true;
+    };
+
     isNameColumnVisible = () => {
         return this.state.projectColumns.data ? this.state.projectColumns.data.attributes.show_name : true;
     };
@@ -407,6 +438,34 @@ class KeysSite extends React.Component<IProps, IState> {
     renderColumnTags = () => {
         return (
             <>
+                <ColumnTag
+                    onChange={async () => {
+                        await ProjectColumnsAPI.updateProjectColumn({
+                            projectId: this.props.match.params.projectId,
+                            showTags: !this.isTagsColumnVisible(),
+                            languages: this.getSelectedLanguageColumnIds()
+                        });
+
+                        await this.loadProjectColumns();
+                    }}
+                    defaultChecked={this.isTagsColumnVisible()}
+                >
+                    Tags
+                </ColumnTag>
+                <ColumnTag
+                    onChange={async () => {
+                        await ProjectColumnsAPI.updateProjectColumn({
+                            projectId: this.props.match.params.projectId,
+                            showOverwrites: !this.isOverwritesColumnVisible(),
+                            languages: this.getSelectedLanguageColumnIds()
+                        });
+
+                        await this.loadProjectColumns();
+                    }}
+                    defaultChecked={this.isOverwritesColumnVisible()}
+                >
+                    Overwrites
+                </ColumnTag>
                 <ColumnTag
                     onChange={async () => {
                         await ProjectColumnsAPI.updateProjectColumn({
@@ -490,6 +549,39 @@ class KeysSite extends React.Component<IProps, IState> {
                     })}
             </>
         );
+    };
+
+    getKeyExportConfigOverwritesCount = (key: any) => {
+        if (this.state.exportConfigsResponse.data.length === 0) {
+            return false;
+        }
+
+        const translations = {};
+        this.state.exportConfigsResponse.data.map((exportConfig) => {
+            const currentKey = this.state.keys.find((k) => {
+                return key.id === k.id;
+            });
+            currentKey.relationships.translations.data.map((translationReference) => {
+                const translation = APIUtils.getIncludedObject(translationReference, this.state.keysResponse.included);
+                if (
+                    translation.attributes.content &&
+                    translation.relationships.export_config &&
+                    translation.relationships.export_config.data &&
+                    translation.relationships.export_config.data.id === exportConfig.id
+                ) {
+                    const languageId = translation.relationships.language.data.id;
+                    let translationContent = translation.attributes.content;
+                    if (currentKey.attributes.html_enabled) {
+                        translationContent = Utils.getHTMLContentPreview(translationContent);
+                    }
+                    translations[
+                        `language-${languageId}-export-config-${translation.relationships.export_config.data.id}`
+                    ] = translationContent;
+                }
+            });
+        });
+
+        return Object.keys(translations).length;
     };
 
     render() {

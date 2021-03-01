@@ -11,13 +11,17 @@ const ProjectColumnsAPI = {
     updateProjectColumn: async (options: {
         projectId: string;
         languages: string[];
-        showName: boolean;
+        showName?: boolean;
         showDescription?: boolean;
+        showTags?: boolean;
+        showOverwrites?: boolean;
     }): Promise<any> => {
         return API.putRequest(`projects/${options.projectId}/project_columns`, true, {
             languages: options.languages,
             show_name: options.showName,
-            show_description: options.showDescription
+            show_description: options.showDescription,
+            show_tags: options.showTags,
+            show_overwrites: options.showOverwrites
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
