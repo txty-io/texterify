@@ -9,6 +9,9 @@ import { TranslationCard } from "../sites/dashboard/editor/TranslationCard";
 import { APIUtils } from "../api/v1/APIUtils";
 import FlagIcon from "../ui/FlagIcons";
 import { TranslationsAPI } from "../api/v1/TranslationsAPI";
+import { PermissionUtils } from "../utilities/PermissionUtils";
+import { dashboardStore } from "../stores/DashboardStore";
+import { FeatureNotAvailable } from "../ui/FeatureNotAvailable";
 
 interface IProps {
     projectId: string;
@@ -142,12 +145,27 @@ class NewKeyForm extends React.Component<IProps> {
                                             valuePropName="checked"
                                             style={{ marginBottom: 0 }}
                                         >
-                                            <Checkbox>HTML</Checkbox>
+                                            <Checkbox
+                                                disabled={
+                                                    !PermissionUtils.isDeveloperOrHigher(
+                                                        dashboardStore.getCurrentRole()
+                                                    ) || !dashboardStore.featureEnabled("FEATURE_HTML_EDITOR")
+                                                }
+                                            >
+                                                HTML
+                                            </Checkbox>
                                         </Form.Item>
                                         <Tooltip title="If checked a editor will be used for translation that helps you to create HTML content. You can always change this later.">
                                             <QuestionCircleOutlined />
                                         </Tooltip>
                                     </div>
+
+                                    {!dashboardStore.featureEnabled("FEATURE_HTML_EDITOR") && (
+                                        <FeatureNotAvailable
+                                            feature="FEATURE_HTML_EDITOR"
+                                            style={{ marginBottom: 0 }}
+                                        />
+                                    )}
 
                                     {defaultLanguage && (
                                         <>
