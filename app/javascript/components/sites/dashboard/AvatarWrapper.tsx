@@ -5,12 +5,12 @@ export const AvatarWrapper = styled.div`
     display: flex;
     flex-direction: column;
     border-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--input-border-color);
     width: 162px;
     height: 162px;
     position: relative;
 
     &:hover {
-        border-color: var(--border-color-flashier);
+        border-color: var(--input-border-hover-color);
     }
 `;

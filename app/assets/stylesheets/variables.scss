@@ -12,6 +12,10 @@
   --primary-btn-hover-color: #327ef6;
   --color-passive: #aaa;
   --color-passive-hover: #333;
+  --input-border-color: #d9d9d9;
+  --input-border-hover-color: #6993ff;
+  --input-border-focus-color: #568aea;
+  --input-border-disabled-color: #d9d9d9;
 }
 
 .dark-theme {
@@ -27,4 +31,8 @@
   --primary-btn-hover-color: #288eec;
   --color-passive: #555;
   --color-passive-hover: #999;
+  --input-border-color: #434343;
+  --input-border-hover-color: var(--blue-color-light);
+  --input-border-focus-color: var(--blue-color);
+  --input-border-disabled-color: #434343;
 }

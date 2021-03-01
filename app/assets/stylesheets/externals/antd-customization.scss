@@ -270,6 +270,11 @@
     padding: 16px 24px;
   }
 
+  // Fix icon not aligned with text
+  .ant-tree .ant-tree-node-content-wrapper .ant-tree-iconEle {
+    vertical-align: initial;
+  }
+
   .ant-statistic {
     .ant-statistic-content-prefix {
       margin-right: 16px;

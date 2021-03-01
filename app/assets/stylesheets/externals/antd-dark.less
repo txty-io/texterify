@@ -60,6 +60,10 @@
     background: none;
   }
 
+  .ant-table-tbody > tr.ant-table-row-selected > td {
+    border-color: #303030;
+  }
+
   .ant-table-thead > tr > th, .ant-table-tbody > tr.ant-table-row:hover > td {
     background: rgba(255, 255, 255, 0.05);
   }
@@ -94,7 +98,8 @@
 
   // Fix arrow color.
   .ant-popover-arrow {
-    border-color: #1f1f1f !important;
+    border-top-color: #090b0f !important;
+    border-left-color: #090b0f !important;
   }
 
   // Sidebar collapse trigger styling.
@@ -139,6 +144,7 @@
   .ant-select-disabled.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
     background: none;
     color: #434343;
+    border-color: var(--input-border-disabled-color);
   }
 
   // Fix tree hover and selected elements.
@@ -178,11 +184,11 @@
 
   // Fix input color
   .ant-input-affix-wrapper:hover, .ant-input:hover {
-    border-color: var(--blue-color-light);
+    border-color: var(--input-border-hover-color);
   }
 
   .ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused, .ant-input:focus, .ant-input-focused {
-    border-color: var(--blue-color);
+    border-color: var(--input-border-focus-color);
   }
 
   // Fix checkbox color
@@ -221,22 +227,26 @@
   // Fix select
   .ant-select:not(.ant-select-disabled) .ant-select-selector {
     color: rgba(255, 255, 255, 0.65);
+    border-color: var(--input-border-color);
   }
 
   .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
-    color: var(--primary-btn-hover-color);
+    border-color: var(--input-border-hover-color);
   }
 
   .ant-select:not(.ant-select-customize-input) .ant-select-selector {
-    border-color: var(--border-color);
     background-color: transparent;
   }
 
-  .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
-  .ant-select-focused.ant-select-single:not(.ant-select-customize-input):not(.ant-select-disabled) .ant-select-selector {
-    border-color: var(--primary-btn-hover-color);
-    color: var(--primary-btn-hover-color);
+  .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+    border-color: var(--input-border-hover-color);
+    color: var(--input-border-hover-color);
   }
+
+.ant-select-focused.ant-select-single:not(.ant-select-customize-input):not(.ant-select-disabled) .ant-select-selector {
+  border-color: var(--input-border-focus-color);
+  color: var(--input-border-focus-color);
+}
 
   // Fix erros
   .ant-form-item-has-error .ant-form-item-explain, .ant-form-item-has-error .ant-form-item-split {
@@ -296,26 +306,6 @@
 
 
   // Fix button color
-  .ant-btn:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
-  .ant-btn:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled) {
-      color: var(--primary-btn-hover-color);
-      border-color: var(--primary-btn-hover-color);
-  }
-
-  .ant-btn.ant-btn-primary:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
-  .ant-btn.ant-btn-primary:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
-  .ant-tag-checkable-checked:hover {
-      color: #fff;
-      background: var(--primary-btn-hover-color);
-      border-color: var(--primary-btn-hover-color);
-  }
-
-  .ant-btn-primary, .ant-tag-checkable-checked {
-      color: #fff;
-      background: var(--primary-btn-color);
-      border-color: var(--primary-btn-color);
-  }
-
   .ant-btn-dangerous {
     color: #cc3d3f;
     border-color: #cc3d3f;

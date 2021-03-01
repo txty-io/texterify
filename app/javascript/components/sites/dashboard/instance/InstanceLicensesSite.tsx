@@ -1,29 +1,13 @@
+import { FileTextOutlined } from "@ant-design/icons";
 import { Card, Layout, message, Statistic } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { ILicense, LicensesAPI } from "../../../api/v1/LicensesAPI";
-import styled from "styled-components";
-import { PrimaryButton } from "../../../ui/PrimaryButton";
 import Dropzone from "react-dropzone";
-import { FileTextOutlined } from "@ant-design/icons";
-import { Loading } from "../../../ui/Loading";
+import { ILicense, LicensesAPI } from "../../../api/v1/LicensesAPI";
 import { MESSAGE_DURATION_IMPORTANT } from "../../../configs/MessageDurations";
-
-const DropZoneWrapper = styled.div`
-    width: 100%;
-    height: 128px;
-    border: 1px dashed #bbb;
-    border-radius: 3px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    margin-top: 8px;
-
-    .dark-theme & {
-        border-color: var(--border-color);
-    }
-`;
+import { DropZoneWrapper } from "../../../ui/DropZoneWrapper";
+import { Loading } from "../../../ui/Loading";
+import { PrimaryButton } from "../../../ui/PrimaryButton";
 
 const TEXTERIFY_LICENSE_FILE_NAME = "texterify.texterify-license";
 const TEXTERIFY_LICENSE_FILE_ACCEPT = ".texterify-license";
