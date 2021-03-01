@@ -284,9 +284,13 @@ class MembersSite extends React.Component<IProps, IState> {
                                     }}
                                     danger
                                     disabled={
-                                        !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) &&
-                                        !PermissionUtils.isHigherRole(dashboardStore.getCurrentRole(), record.role) &&
-                                        record.email !== authStore.currentUser.email
+                                        (!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) &&
+                                            !PermissionUtils.isHigherRole(
+                                                dashboardStore.getCurrentRole(),
+                                                record.role
+                                            ) &&
+                                            record.email !== authStore.currentUser.email) ||
+                                        this.state.getMembersResponse?.data.length === 1
                                     }
                                 >
                                     {record.id === authStore.currentUser.id ? "Leave" : "Remove"}
