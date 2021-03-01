@@ -81,6 +81,14 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
       return
     end
 
+    if organization.owners_count == 1 && organization.owner?(organization_user.user)
+      render json: {
+        error: true,
+        message: 'LAST_OWNER_CANT_BE_REMOVED'
+      }, status: :bad_request
+      return
+    end
+
     organization_user.destroy
 
     render json: {

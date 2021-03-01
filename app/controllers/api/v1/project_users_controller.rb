@@ -72,6 +72,14 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
       return
     end
 
+    if !project.organization && project.owners_count == 1 && project.owner?(project_user.user)
+      render json: {
+        error: true,
+        message: 'LAST_OWNER_CANT_BE_REMOVED'
+      }, status: :bad_request
+      return
+    end
+
     project_user.destroy
 
     render json: {
