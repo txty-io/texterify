@@ -135,7 +135,11 @@ class ProjectOTASite extends React.Component<IProps, IState> {
                 date: moment(release.attributes.timestamp).format("YYYY-MM-DD HH:mm"),
                 version: release.attributes.version,
                 urls: (
-                    <div style={{ whiteSpace: "nowrap", maxWidth: 400, overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <div
+                        style={{
+                            maxWidth: 400
+                        }}
+                    >
                         {release.relationships.release_files.data
                             .sort((a, b) => {
                                 const releaseFileA = APIUtils.getIncludedObject(
@@ -163,7 +167,7 @@ class ProjectOTASite extends React.Component<IProps, IState> {
                                         href={releaseFile.attributes.preview_url}
                                         rel="noopener noreferrer"
                                         target="_blank"
-                                        style={{ marginRight: 16 }}
+                                        style={{ whiteSpace: "nowrap", marginRight: 16 }}
                                         key={releaseFile.attributes.id}
                                     >
                                         {releaseFile.attributes.country_code ? (
