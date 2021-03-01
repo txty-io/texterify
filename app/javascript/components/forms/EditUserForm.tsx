@@ -1,14 +1,13 @@
-import { Button, Input, Slider, Form } from "antd";
+import { Button, Form, Input, Slider } from "antd";
 import * as React from "react";
 import AvatarEditor from "react-avatar-editor";
 import Dropzone from "react-dropzone";
 import * as uuid from "uuid";
 import { UsersAPI } from "../api/v1/UsersAPI";
-import { AvatarNoImage } from "../sites/dashboard/AvatarNoImage";
 import { AvatarEditorWrapper } from "../sites/dashboard/AvatarEditorWrapper";
-import { authStore } from "../stores/AuthStore";
-import { Styles } from "../ui/Styles";
+import { AvatarNoImage } from "../sites/dashboard/AvatarNoImage";
 import { AvatarWrapper } from "../sites/dashboard/AvatarWrapper";
+import { authStore } from "../stores/AuthStore";
 
 interface IProps {
     onError(errors: any): void;
