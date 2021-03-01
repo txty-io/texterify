@@ -1,7 +1,7 @@
  <p align="center">
   <p align="center">
     <a href="https://texterify.com/?utm_source=github&utm_medium=logo" target="_blank">
-      <img src="https://raw.github.com/chrztoph/texterify/screenshots/logo.png?sanitize=true" alt="Texterify" height="72">
+      <img src="https://raw.github.com/texterify/texterify/screenshots/logo.png?sanitize=true" alt="Texterify" height="72">
     </a>
   </p>
   <p align="center">
@@ -9,12 +9,12 @@
   </p>
 </p>
 
-[![Open Issues](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)](https://img.shields.io/github/issues-raw/chrztoph/texterify.svg)
+[![Open Issues](https://img.shields.io/github/issues-raw/texterify/texterify.svg)](https://img.shields.io/github/issues-raw/texterify/texterify.svg)
 
 <p align="center">
-  <img src="https://raw.github.com/chrztoph/texterify/screenshots/example_1.png" width="290">
-  <img src="https://raw.github.com/chrztoph/texterify/screenshots/example_2.png" width="290">
-  <img src="https://raw.github.com/chrztoph/texterify/screenshots/example_3.png" width="290">
+  <img src="https://raw.github.com/texterify/texterify/screenshots/example_1.png" width="290">
+  <img src="https://raw.github.com/texterify/texterify/screenshots/example_2.png" width="290">
+  <img src="https://raw.github.com/texterify/texterify/screenshots/example_3.png" width="290">
 </p>
 
 ## Installation
@@ -27,7 +27,7 @@ The process of starting the application is the following:
 
 ```sh
 # Clone the docker-compose configuration.
-git clone https://github.com/chrztoph/texterify-docker-compose-setup.git
+git clone https://github.com/texterify/texterify-docker-compose-setup.git
 cd texterify-docker-compose-setup
 
 # Generate a secret key for the app.
@@ -49,8 +49,8 @@ This will install the latest version of the service available at the time of set
 
 ## Tools & Integrations
 
-- Texterify VSC Extension (https://github.com/chrztoph/texterify-vsc)
-- Texterify CLI (https://github.com/chrztoph/texterify-cli)
+- Texterify VSC Extension (https://github.com/texterify/texterify-vsc)
+- Texterify CLI (https://github.com/texterify/texterify-cli)
 
 ## Contributing
 

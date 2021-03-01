@@ -78,7 +78,7 @@ class ProjectIntegrationsSite extends React.Component {
                             textLogo: "CLI",
                             name: "Command Line Interface",
                             description: "Use the command line.",
-                            link: "https://github.com/chrztoph/texterify-cli"
+                            link: "https://github.com/texterify/texterify-cli"
                         })}
 
                         {this.renderIntegration({
@@ -92,7 +92,7 @@ class ProjectIntegrationsSite extends React.Component {
                             logo: VisualStudioCodeLogo,
                             name: "Visual Studio Code",
                             description: "Add and download keys right from your editor.",
-                            link: "https://github.com/chrztoph/texterify-vsc"
+                            link: "https://github.com/texterify/texterify-vsc"
                         })}
 
                         {this.renderIntegration({
