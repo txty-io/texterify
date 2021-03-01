@@ -2,7 +2,7 @@ class User < ApplicationRecord
   include DeviseTokenAuth::Concerns::User
 
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
+  # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :confirmable
@@ -38,5 +38,9 @@ class User < ApplicationRecord
     if Texterify.cloud?
       UserMailer.welcome(email, username).deliver_later
     end
+  end
+
+  def confirmed
+    !confirmed_at.nil?
   end
 end

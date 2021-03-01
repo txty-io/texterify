@@ -60,6 +60,7 @@ Rails.application.routes.draw do
       resources :language_codes, only: [:index]
       resources :user_licenses, only: [:index]
       get 'dashboard/activity', to: 'dashboard#activity'
+      get 'users/info', to: 'users#info'
       get 'users/image', to: 'users#image'
       post 'users/image', to: 'users#image_create'
       delete 'users/image', to: 'users#image_destroy'

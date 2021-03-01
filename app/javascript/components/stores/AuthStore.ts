@@ -10,6 +10,7 @@ class AuthStore {
     @persist @observable accessToken: string | null = null;
     @persist @observable client: string | null = null;
     @persist @observable userImageUrl: string | null = null;
+    @observable confirmed: boolean = null;
     @observable hydrationFinished = false;
 
     @computed get isAuthenticated(): boolean {

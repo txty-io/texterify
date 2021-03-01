@@ -1,4 +1,12 @@
 class Api::V1::UsersController < Api::V1::ApiController
+  def info
+    skip_authorization
+
+    render json: {
+      confirmed: current_user.confirmed
+    }
+  end
+
   def image
     skip_authorization
     user = User.find(params[:userId])

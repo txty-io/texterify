@@ -1,6 +1,5 @@
 import { DeploymentUnitOutlined, LineChartOutlined, ProjectOutlined, SettingOutlined } from "@ant-design/icons";
 import * as antd from "antd";
-import Logo from "images/logo.svg";
 import { observer } from "mobx-react";
 import * as React from "react";
 import Hotkeys from "react-hot-keys";
@@ -35,6 +34,8 @@ import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
 import { SuperadminRoute } from "./SuperadminRoute";
 import WhiteLogoWithText from "images/white_logo_with_text.svg";
+import { ConfirmEmailHint } from "../ui/ConfirmEmailHint";
+import { UsersAPI } from "../api/v1/UsersAPI";
 
 const MenuList = styled.li`
     overflow: hidden;
@@ -93,6 +94,9 @@ class DashboardRouter extends React.Component<IProps, IState> {
         if (!IS_TEXTERIFY_CLOUD) {
             await this.loadCurrentLicense();
         }
+
+        const userInfoResponse = await UsersAPI.getCurrentUserInfo();
+        authStore.confirmed = userInfoResponse.confirmed;
     }
 
     async loadCurrentLicense() {
@@ -152,6 +156,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                         <LicenseExpiring expiresAt={this.state.currentLicenseInfo.expires_at} />
                     </>
                 )}
+                {authStore.confirmed === false && <ConfirmEmailHint />}
                 <antd.Layout>
                     <antd.Layout.Header
                         style={{

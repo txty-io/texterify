@@ -2,6 +2,10 @@ import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
 const UsersAPI = {
+    getCurrentUserInfo: async (): Promise<{ confirmed: boolean }> => {
+        return API.getRequest("users/info", true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
+    },
+
     updateUser: async (options: { username: string; email: string }): Promise<any> => {
         return API.putRequest("auth", true, {
             username: options.username,

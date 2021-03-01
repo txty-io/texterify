@@ -78,6 +78,14 @@ const AuthAPI = {
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
+    },
+
+    resendConfirmationEmail: async (email: string) => {
+        return API.postRequest("auth/confirmation", true, {
+            email: email
+        })
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
     }
 };
 
