@@ -273,6 +273,7 @@
   // Fix icon not aligned with text
   .ant-tree .ant-tree-node-content-wrapper .ant-tree-iconEle {
     vertical-align: initial;
+    height: unset;
   }
 
   .ant-statistic {
@@ -300,5 +301,9 @@
       align-items: center;
       justify-content: center;
     }
+  }
+
+  .ant-tree.ant-tree-directory .ant-tree-treenode .ant-tree-switcher {
+    align-self: center;
   }
 }
