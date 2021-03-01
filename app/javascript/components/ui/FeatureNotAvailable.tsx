@@ -10,6 +10,10 @@ import { Constants } from "./Constants";
 import { Utils } from "./Utils";
 
 export function FeatureNotAvailable(props: { feature: IFeature; style?: React.CSSProperties }) {
+    if (!dashboardStore.currentProject) {
+        return null;
+    }
+
     const currentOrganizationRelationship = dashboardStore.currentProject.relationships.organization.data;
 
     if (!currentOrganizationRelationship) {
