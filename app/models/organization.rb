@@ -24,6 +24,14 @@ class Organization < ApplicationRecord
     organization_user ? organization_user.role : nil
   end
 
+  def owners_count
+    organization_users.where(role: 'owner').size
+  end
+
+  def owner?(user)
+    organization_users.exists?(user_id: user.id, role: 'owner')
+  end
+
   def trial_active
     if trial_ends_at.nil?
       false

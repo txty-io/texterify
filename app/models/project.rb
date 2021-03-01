@@ -39,6 +39,14 @@ class Project < ApplicationRecord
     end
   end
 
+  def owners_count
+    project_users.where(role: 'owner').size
+  end
+
+  def owner?(user)
+    project_users.exists?(user_id: user.id, role: 'owner')
+  end
+
   def role_of_source(user)
     project_user = project_users.find_by(user_id: user.id)
     if project_user
