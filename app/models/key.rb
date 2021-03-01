@@ -17,6 +17,7 @@ class Key < ApplicationRecord
   validate :no_duplicate_keys_for_project
 
   before_validation :strip_leading_and_trailing_whitespace
+  before_validation :check_html_allowed
 
   # Validates that there are no keys with same name for a project.
   def no_duplicate_keys_for_project
@@ -31,6 +32,12 @@ class Key < ApplicationRecord
   end
 
   protected
+
+  def check_html_allowed
+    if html_enabled_changed? && !project.feature_enabled?(Organization::FEATURE_HTML_EDITOR)
+      self.html_enabled = false
+    end
+  end
 
   def strip_leading_and_trailing_whitespace
     self.name = name.strip
