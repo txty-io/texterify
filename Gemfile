@@ -98,3 +98,6 @@ gem 'rest-client', require: false
 gem 'rubyzip', require: false
 
 gem 'rack-cors'
+
+gem 'sidekiq'
+gem 'sidekiq-scheduler'

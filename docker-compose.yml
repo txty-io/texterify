@@ -27,5 +27,6 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - db
+      - sidekiq
     volumes:
       - ./coverage:/var/www/texterify/coverage

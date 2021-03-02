@@ -1,7 +1,8 @@
-import { DeploymentUnitOutlined, ProjectOutlined, TeamOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, DeploymentUnitOutlined, ProjectOutlined, TeamOutlined } from "@ant-design/icons";
 import { Card, Layout, Statistic } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
+import { Link } from "react-router-dom";
 import { IInstanceInfo, InstanceAPI } from "../../../api/v1/InstanceAPI";
 import { Loading } from "../../../ui/Loading";
 
@@ -55,6 +56,13 @@ export const InstanceSite = observer(() => {
                         />
                     </Card>
                 </div>
+
+                <h3 style={{ marginTop: 40 }}>Application status</h3>
+                <ul>
+                    <Link to="/sidekiq" target="_blank">
+                        View background jobs <ArrowRightOutlined />
+                    </Link>
+                </ul>
             </Layout.Content>
         </Layout>
     );

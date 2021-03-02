@@ -1,0 +1,4 @@
+:schedule:
+  trial_ending_worker:
+    cron: '0 4 * * *' # "At 04:00."
+    class: TrialEndingWorker
