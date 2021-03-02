@@ -29,6 +29,7 @@ class AuthStore {
         this.client = null;
         this.currentUser = null;
         this.userImageUrl = null;
+        this.confirmed = null;
     };
 }
 
