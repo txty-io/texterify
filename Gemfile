@@ -70,6 +70,7 @@ end
 group :test do
   gem 'rspec', require: false
   gem 'rspec-rails', require: false
+  gem 'rspec-sidekiq' # rspec-sidekiq requires sidekiq/testing by default
   gem 'simplecov', require: false
 end
 
