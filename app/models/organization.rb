@@ -8,7 +8,7 @@ class Organization < ApplicationRecord
   has_many :projects, dependent: :destroy
   has_many :project_users, through: :projects, dependent: :destroy
   has_many :subscriptions, dependent: :destroy
-  has_many :sent_organization_emails, dependent: :destroy
+  has_many :sent_emails, dependent: :destroy
 
   has_one_attached :image
 
@@ -42,6 +42,14 @@ class Organization < ApplicationRecord
       false
     else
       Time.now.utc < trial_ends_at
+    end
+  end
+
+  def trial_days_left
+    if trial_ends_at.present?
+      ((trial_ends_at - Time.now.utc) / 1.day.to_i).ceil
+    else
+      0
     end
   end
 
