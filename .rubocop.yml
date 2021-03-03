@@ -87,6 +87,9 @@ Style/CommentAnnotation:
 Style/WordArray:
   Enabled: false
 
+Style/NumericLiterals:
+  Enabled: false
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: "indented"
 
