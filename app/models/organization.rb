@@ -8,6 +8,7 @@ class Organization < ApplicationRecord
   has_many :projects, dependent: :destroy
   has_many :project_users, through: :projects, dependent: :destroy
   has_many :subscriptions, dependent: :destroy
+  has_many :sent_organization_emails, dependent: :destroy
 
   has_one_attached :image
 
@@ -22,6 +23,10 @@ class Organization < ApplicationRecord
   def role_of(user)
     organization_user = organization_users.find_by(user_id: user.id)
     organization_user ? organization_user.role : nil
+  end
+
+  def owners
+    organization_users.where(role: 'owner').map(&:user)
   end
 
   def owners_count

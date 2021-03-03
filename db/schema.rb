@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_01_134228) do
+ActiveRecord::Schema.define(version: 2021_03_02_155924) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -217,6 +217,15 @@ ActiveRecord::Schema.define(version: 2021_03_01_134228) do
     t.index ["export_config_id"], name: "index_releases_on_export_config_id"
   end
 
+  create_table "sent_organization_emails", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "topic", null: false
+    t.datetime "sent_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "organization_id", null: false
+    t.index ["organization_id"], name: "index_sent_organization_emails_on_organization_id"
+  end
+
   create_table "settings", force: :cascade do |t|
     t.string "var", null: false
     t.text "value"
@@ -334,6 +343,7 @@ ActiveRecord::Schema.define(version: 2021_03_01_134228) do
   add_foreign_key "projects_users", "users"
   add_foreign_key "release_files", "releases"
   add_foreign_key "releases", "export_configs"
+  add_foreign_key "sent_organization_emails", "organizations"
   add_foreign_key "subscriptions", "organizations"
   add_foreign_key "translations", "export_configs"
   add_foreign_key "translations", "keys"
