@@ -1,0 +1,14 @@
+<% content_for :title do %>Your trial is expiring<% end %>
+<% content_for :preheader do %>Your trial is expiring<% end %>
+
+<h1>Your trial is expiring</h1>
+
+<p>Hello <%= @username %>,</p>
+
+<p>the trial of your organization <%= @organization.name %> is expiring in <%= @organization.trial_days_left %> days.</p>
+
+<p>You can manage your subscription by clicking <a href="<%= @manage_subscription_link %>">here</a>.</p>
+
+<p>If you have any feedback or questions you can always send us an email to <a href="mailto:support@texterify.com">support@texterify.com</a>.</p>
+
+<p>Have fun using Texterify and optimizing your localization process.</p>
