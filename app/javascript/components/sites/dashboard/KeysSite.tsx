@@ -1,5 +1,5 @@
 import { MoreOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { Button, Drawer, Input, Layout, Modal, Popover, Switch, Tag, Tooltip } from "antd";
+import { Button, Drawer, Input, Layout, Modal, Pagination, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
@@ -591,6 +591,23 @@ class KeysSite extends React.Component<IProps, IState> {
 
         this.rowSelection.selectedRowKeys = this.state.selectedRowKeys;
 
+        const paginationOptions = {
+            pageSizeOptions: PAGE_SIZE_OPTIONS,
+            showSizeChanger: true,
+            current: this.state.page,
+            pageSize: dashboardStore.keysPerPage,
+            total: this.state.keysResponse?.meta.total || 0,
+            onChange: async (page: number, _perPage: number) => {
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                this.setState({ page: page }, this.reloadTable);
+            },
+            onShowSizeChange: async (_current: number, size: number) => {
+                dashboardStore.keysPerPage = size;
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                this.setState({ page: 1 }, this.reloadTable);
+            }
+        };
+
         return (
             <>
                 <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
@@ -631,6 +648,10 @@ class KeysSite extends React.Component<IProps, IState> {
                         <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", alignItems: "flex-end" }}>
                             <span style={{ marginRight: 8 }}>Select visible columns:</span>
                             {this.renderColumnTags()}
+
+                            <div style={{ marginLeft: "auto", marginTop: 4 }}>
+                                <Pagination {...paginationOptions} />
+                            </div>
                         </div>
                         <EditableTable
                             rowSelection={this.rowSelection}
@@ -652,22 +673,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                     editTranslationLanguageId: options.languageId
                                 });
                             }}
-                            pagination={{
-                                pageSizeOptions: PAGE_SIZE_OPTIONS,
-                                showSizeChanger: true,
-                                current: this.state.page,
-                                pageSize: dashboardStore.keysPerPage,
-                                total: this.state.keysResponse?.meta.total || 0,
-                                onChange: async (page: number, _perPage: number) => {
-                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                    this.setState({ page: page }, this.reloadTable);
-                                },
-                                onShowSizeChange: async (_current: number, size: number) => {
-                                    dashboardStore.keysPerPage = size;
-                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                    this.setState({ page: 1 }, this.reloadTable);
-                                }
-                            }}
+                            pagination={paginationOptions}
                             onTranslationUpdated={async () => {
                                 await this.reloadTable();
                             }}

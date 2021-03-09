@@ -25,7 +25,7 @@ class ColumnTag extends React.Component<IColumnTagProps, IColumnTagState> {
 
     render() {
         return (
-            <div style={{ margin: "2px 0" }}>
+            <div style={{ marginTop: 4 }}>
                 <Tag.CheckableTag {...this.props} checked={this.state.checked} onChange={this.handleChange} />
             </div>
         );
