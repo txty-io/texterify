@@ -20,6 +20,8 @@ class User < ApplicationRecord
   has_many :user_licenses, dependent: :destroy
   has_one_attached :image
 
+  has_many :recently_viewed_projects, dependent: :destroy
+
   def projects
     Project.where(id: user_projects.pluck(:id) + organization_projects.pluck(:id))
   end

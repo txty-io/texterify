@@ -31,6 +31,8 @@ Rails.application.routes.draw do
 
       get 'instance', to: 'instance#show'
 
+      get :recently_viewed_projects, to: 'projects#recently_viewed'
+
       resources :projects, only: [:create, :index, :destroy, :show, :update] do
         post :import
         get 'exports/:id', to: 'projects#export'

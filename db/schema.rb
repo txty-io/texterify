@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_02_155924) do
+ActiveRecord::Schema.define(version: 2021_03_09_182337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -195,6 +195,17 @@ ActiveRecord::Schema.define(version: 2021_03_02_155924) do
     t.index ["user_id"], name: "index_projects_users_on_user_id"
   end
 
+  create_table "recently_viewed_projects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "last_accessed", null: false
+    t.uuid "project_id", null: false
+    t.uuid "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["project_id", "user_id"], name: "index_recently_viewed_projects_unique", unique: true
+    t.index ["project_id"], name: "index_recently_viewed_projects_on_project_id"
+    t.index ["user_id"], name: "index_recently_viewed_projects_on_user_id"
+  end
+
   create_table "release_files", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "language_code", null: false
     t.string "country_code"
@@ -343,6 +354,8 @@ ActiveRecord::Schema.define(version: 2021_03_02_155924) do
   add_foreign_key "projects", "organizations"
   add_foreign_key "projects_users", "projects"
   add_foreign_key "projects_users", "users"
+  add_foreign_key "recently_viewed_projects", "projects"
+  add_foreign_key "recently_viewed_projects", "users"
   add_foreign_key "release_files", "releases"
   add_foreign_key "releases", "export_configs"
   add_foreign_key "sent_emails", "organizations"

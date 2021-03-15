@@ -136,6 +136,13 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     skip_authorization
     project = current_user.projects.find(params[:id])
 
+    recently_viewed_project = RecentlyViewedProject.find_by(project_id: project.id, user_id: current_user.id)
+    if recently_viewed_project.present?
+      recently_viewed_project.update(last_accessed: Time.now.utc)
+    else
+      RecentlyViewedProject.create(project_id: project.id, user_id: current_user.id, last_accessed: Time.now.utc)
+    end
+
     options = {}
     options[:include] = [:organization]
     options[:params] = { current_user: current_user }
@@ -282,6 +289,19 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     render json: {
       success: true
     }, status: :ok
+  end
+
+  def recently_viewed
+    skip_authorization
+
+    projects = current_user.projects.joins('INNER JOIN recently_viewed_projects rvp ON rvp.project_id = projects.id').order(last_accessed: :desc)
+
+    per_page = 10
+
+    options = {}
+    options[:include] = [:organization]
+    options[:params] = { current_user: current_user }
+    render json: ProjectSerializer.new(projects.limit(per_page), options).serialized_json, status: :ok
   end
 
   private

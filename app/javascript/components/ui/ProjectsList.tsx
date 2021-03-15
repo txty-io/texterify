@@ -23,14 +23,25 @@ const ProjectInfoWrapper = styled.div`
     }
 `;
 
-function ProjectsList(props: { loading: boolean; projects: any[]; included?: any[] }) {
+function ProjectsList(props: {
+    loading: boolean;
+    projects: any[];
+    included?: any[];
+    disableSort?: boolean;
+    style?: React.CSSProperties;
+}) {
     return (
         <List
             size="default"
             loading={props.loading}
             locale={{ emptyText: <Empty description="No projects found" image={Empty.PRESENTED_IMAGE_SIMPLE} /> }}
+            style={props.style}
             dataSource={props.projects
                 .sort((a, b) => {
+                    if (props.disableSort) {
+                        return 0;
+                    }
+
                     return a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : 1;
                 })
                 .map((project: any) => {

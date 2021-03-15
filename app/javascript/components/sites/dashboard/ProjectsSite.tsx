@@ -14,6 +14,8 @@ interface IState {
     projectsLoading: boolean;
     projectsResponse: any;
     projects: any[];
+    recentlyViewedProjectsLoading: boolean;
+    recentlyViewedProjectsResponse: any;
     addDialogVisible: boolean;
     perPage: number;
     page: number;
@@ -34,6 +36,8 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
         projectsLoading: true,
         projectsResponse: null,
         projects: [],
+        recentlyViewedProjectsLoading: true,
+        recentlyViewedProjectsResponse: null,
         addDialogVisible: false,
         perPage: DEFAULT_PAGE_SIZE,
         page: 1,
@@ -41,7 +45,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
     };
 
     async componentDidMount() {
-        await this.reloadTable();
+        await Promise.all([this.fetchRecentlyViewedProjects(), this.reloadTable()]);
     }
 
     fetchProjects = async (options?: any) => {
@@ -53,6 +57,20 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                 projectsLoading: false,
                 projectsResponse: responseProjects,
                 projects: responseProjects.data
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    fetchRecentlyViewedProjects = async () => {
+        try {
+            this.setState({ recentlyViewedProjectsLoading: true });
+            const responseProjects = await ProjectsAPI.getRecentlyViewedProjects();
+
+            this.setState({
+                recentlyViewedProjectsLoading: false,
+                recentlyViewedProjectsResponse: responseProjects
             });
         } catch (error) {
             console.error(error);
@@ -74,53 +92,64 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
     render() {
         return (
             <>
-                <Layout style={{ padding: "0 24px 24px", maxWidth: 800, margin: "0 auto", width: "100%" }}>
-                    <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
-                        <h1 style={{ flexGrow: 1 }}>Projects</h1>
-                        <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
-                            <div style={{ flexGrow: 1 }}>
-                                <PrimaryButton
-                                    data-id="projects-create-project"
-                                    onClick={() => {
-                                        this.setState({ addDialogVisible: true });
-                                    }}
-                                >
-                                    Create project
-                                </PrimaryButton>
+                <Layout style={{ padding: "0 24px 24px", maxWidth: 1400, margin: "0 auto", width: "100%" }}>
+                    <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex" }}>
+                        <div style={{ flexGrow: 1, flexShrink: 0, flexBasis: 0, marginRight: 80 }}>
+                            <h1 style={{ flexGrow: 1 }}>All projects</h1>
+                            <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
+                                <div style={{ flexGrow: 1 }}>
+                                    <PrimaryButton
+                                        data-id="projects-create-project"
+                                        onClick={() => {
+                                            this.setState({ addDialogVisible: true });
+                                        }}
+                                    >
+                                        Create project
+                                    </PrimaryButton>
+                                </div>
+                                <Input.Search
+                                    placeholder="Search projects"
+                                    onChange={this.onSearch}
+                                    style={{ maxWidth: "50%" }}
+                                />
                             </div>
-                            <Input.Search
-                                placeholder="Search projects"
-                                onChange={this.onSearch}
-                                style={{ maxWidth: "50%" }}
+
+                            <ProjectsList
+                                loading={this.state.projectsLoading}
+                                projects={this.state.projects || []}
+                                included={this.state.projectsResponse && this.state.projectsResponse.included}
                             />
+
+                            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+                                <Pagination
+                                    pageSizeOptions={PAGE_SIZE_OPTIONS}
+                                    showSizeChanger
+                                    pageSize={this.state.perPage}
+                                    current={this.state.page}
+                                    total={
+                                        (this.state.projectsResponse &&
+                                            this.state.projectsResponse.meta &&
+                                            this.state.projectsResponse.meta.total) ||
+                                        0
+                                    }
+                                    onChange={async (page: number, _perPage: number) => {
+                                        this.setState({ page: page });
+                                        await this.reloadTable({ page: page });
+                                    }}
+                                    onShowSizeChange={async (_current: number, size: number) => {
+                                        this.setState({ page: 1, perPage: size });
+                                        await this.reloadTable({ page: 1, perPage: size });
+                                    }}
+                                />
+                            </div>
                         </div>
-
-                        <ProjectsList
-                            loading={this.state.projectsLoading}
-                            projects={this.state.projects || []}
-                            included={this.state.projectsResponse && this.state.projectsResponse.included}
-                        />
-
-                        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
-                            <Pagination
-                                pageSizeOptions={PAGE_SIZE_OPTIONS}
-                                showSizeChanger
-                                pageSize={this.state.perPage}
-                                current={this.state.page}
-                                total={
-                                    (this.state.projectsResponse &&
-                                        this.state.projectsResponse.meta &&
-                                        this.state.projectsResponse.meta.total) ||
-                                    0
-                                }
-                                onChange={async (page: number, _perPage: number) => {
-                                    this.setState({ page: page });
-                                    await this.reloadTable({ page: page });
-                                }}
-                                onShowSizeChange={async (_current: number, size: number) => {
-                                    this.setState({ page: 1, perPage: size });
-                                    await this.reloadTable({ page: 1, perPage: size });
-                                }}
+                        <div style={{ flexGrow: 1, flexShrink: 0, flexBasis: 0 }}>
+                            <h1>Recent projects</h1>
+                            <ProjectsList
+                                loading={this.state.recentlyViewedProjectsLoading}
+                                projects={this.state.recentlyViewedProjectsResponse?.data || []}
+                                included={this.state.recentlyViewedProjectsResponse?.included}
+                                disableSort
                             />
                         </div>
                     </Layout.Content>

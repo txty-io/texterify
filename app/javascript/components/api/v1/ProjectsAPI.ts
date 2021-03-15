@@ -1,4 +1,5 @@
 import fileDownload from "js-file-download";
+import { IProject } from "../../stores/DashboardStore";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
@@ -115,6 +116,12 @@ const ProjectsAPI = {
 
     uploadImage: async (options: { projectId: string; formData: FormData }): Promise<any> => {
         return API.postRequest(`projects/${options.projectId}/image`, true, options.formData, null, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    getRecentlyViewedProjects: async (): Promise<any> => {
+        return API.getRequest("recently_viewed_projects", true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     }
