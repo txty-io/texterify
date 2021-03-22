@@ -10,7 +10,7 @@
 [![](https://img.shields.io/github/stars/texterify/texterify)](https://github.com/texterify/texterify)
 [![](https://img.shields.io/docker/pulls/chrztoph/texterify)](https://hub.docker.com/r/chrztoph/texterify)
 
-[Texterify](https://texterify.com) is a localization management platform which aims to make software localization as easy as possible. A very clean and user friendly interface makes it easy to use while providing full flexibility and powerful tools to perfectly integrate it into your workflow. Find out more at [texterify.com](https://texterify.com).
+[Texterify](https://texterify.com) is a localization management platform which aims to make software localization as easy as possible. A very clean, fast and user friendly interface makes it super easy to use while providing full flexibility and powerful tools to perfectly integrate it into your workflow.
 
 - Beautiful light and dark mode for every situation
 - Built-in WYSIWYG HTML editor for easy rich content editing
@@ -19,8 +19,10 @@
 - Translation and activity history
 - Collaboration features for teams
 - Over the air translations for fast app translation updates
-- Integrations for every situation
-- Cloud and on-premise versions available
+- A big selection of integrations
+- Cloud and on-premise options
+
+Find out more at [texterify.com](https://texterify.com) or [sign up](https://app.texterify.com/signup) here.
 
 <p align="center">
   <img src="https://raw.github.com/texterify/texterify/screenshots/example_1.png" width="290">
@@ -65,10 +67,10 @@ docker-compose up
 # After everything has started create the database in another terminal.
 docker-compose exec app bin/rails db:create db:migrate db:seed
 
-# Service is now available at http://localhost.
+# Service is now available at http://localhost. 🎉
 ```
 
-This will install the latest version of the service available at the time of setting up.
+This will install the latest version of the service available at the time of setting up. For production you want to pin it to a specific version (see `TEXTERIFY_TAG`).
 
 ## 🛠️ Tools & Integrations
 
@@ -101,15 +103,37 @@ This usually happens when you start the development server for the first time an
 
 Want to help build Texterify?
 
-We are happy about every help.
+We are happy about every help. For major changes, please [open an issue](https://github.com/texterify/texterify/issues/new) first to discuss what you would like to change.
+
+The easiest way to get started working on Texterify is by using [Visual Studio Code Remote Containers](https://code.visualstudio.com/docs/remote/containers). Follow the guide and open the dev container. After the container has started open a terminal inside of VSC and run the following commands:
+
+```sh
+yarn
+bundle install
+bundle exec rails db:create db:migrate db:seed
+```
+
+This will install dependencies, create the database and add some [test data](db/seeds/development.rb) like users for you. After that execute the following commands in two different terminals:
+
+```sh
+# terminal 1
+yarn start
+
+# terminal 2
+yarn start:watcher
+```
+
+Having done that you can open [http://localhost:3000](http://localhost:3000) and see your local development instance of Texterify.
 
 ## 🔒 Security
 
 Found a security issue? Please **don't** create an issue on GitHub. Instead send an email with your findings to [security@texterify.com](mailto:security@texterify.com) so a bugfix can be developed before the security flaw is publicly disclosed. We take security very seriously.
 
+See also [SECURITY](SECURITY.md) for details.
+
 ## 📋 Changelog
 
-See [CHANGELOG](CHANGELOG) for changelog.
+See [CHANGELOG](CHANGELOG.md) for changelog.
 
 ## 📝 License
 
