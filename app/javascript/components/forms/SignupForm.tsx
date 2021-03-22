@@ -78,6 +78,7 @@ class SignupForm extends React.Component<IProps, IState> {
                     )}
 
                     <h3>Username</h3>
+                    <p>This name will be visible to others. You can always change it later.</p>
                     <Form.Item
                         name="username"
                         rules={[{ required: true, whitespace: true, message: "Please enter your username." }]}
