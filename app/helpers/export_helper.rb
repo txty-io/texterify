@@ -129,6 +129,9 @@ module ExportHelper
             file_path += duplicate_zip_entry_count.to_s
           end
 
+          # Remove leading '/' because Zip::EntryNameError is otherwise thrown.
+          file_path.delete_prefix!('/') while file_path.start_with?('/')
+
           zip.add(file_path, export_config.file(language, export_data))
           break
         rescue Zip::EntryExistsError
