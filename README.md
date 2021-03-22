@@ -4,11 +4,11 @@
   </a>
 </p>
 
-[![Open Issues](https://img.shields.io/badge/website-texterify.com-blue.svg)](https://texterify.com)
-[![Build & Push](https://github.com/texterify/texterify/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/texterify/texterify/actions)
-[![Open Issues](https://img.shields.io/github/issues-raw/texterify/texterify.svg)](https://github.com/texterify/texterify/issues)
-[![](https://img.shields.io/github/stars/texterify/texterify)](https://github.com/texterify/texterify)
-[![](https://img.shields.io/docker/pulls/chrztoph/texterify)](https://hub.docker.com/r/chrztoph/texterify)
+[![website](https://img.shields.io/badge/website-texterify.com-blue.svg)](https://texterify.com)
+[![build & push](https://github.com/texterify/texterify/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/texterify/texterify/actions)
+[![open issues](https://img.shields.io/github/issues-raw/texterify/texterify.svg)](https://github.com/texterify/texterify/issues)
+[![stars](https://img.shields.io/github/stars/texterify/texterify)](https://github.com/texterify/texterify)
+[![docker pulls](https://img.shields.io/docker/pulls/chrztoph/texterify)](https://hub.docker.com/r/chrztoph/texterify)
 
 [Texterify](https://texterify.com) is a localization management platform which aims to make software localization as easy as possible. A very clean, fast and user friendly interface makes it super easy to use while providing full flexibility and powerful tools to perfectly integrate it into your workflow.
 
@@ -30,17 +30,17 @@ Find out more at [texterify.com](https://texterify.com) or [sign up](https://app
   <img src="https://raw.github.com/texterify/texterify/screenshots/example_3.png" width="290">
 </p>
 
-## Table of contents
+<h2>Table of contents</h2>
 
 - [🚀 Getting started](#getting-started)
-- [🛠️ Tools & Integrations](#tools-&-integrations)
-- [👀 Troubleshooting](#troubleshooting)
+- [🛠️ Tools & Integrations](#tools-and-integrations)
 - [🤝 Contributing](#contributing)
+- [👀 Troubleshooting](#troubleshooting)
 - [🔒 Security](#security)
 - [📋 Changelog](#changelog)
 - [📝 License](#license)
 
-## 🚀 Getting started
+<h2 id="getting-started">🚀 Getting started</h2>
 
 If you want to try out Texterify you can sign up at [texterify.com](https://texterify.com) and use the cloud version of Texterify without having to setup anything yourself.
 
@@ -72,7 +72,7 @@ docker-compose exec app bin/rails db:create db:migrate db:seed
 
 This will install the latest version of the service available at the time of setting up. For production you want to pin it to a specific version (see `TEXTERIFY_TAG`).
 
-## 🛠️ Tools & Integrations
+<h2 id="tools-and-integrations">🛠️ Tools & Integrations</h2>
 
 We provide several different tools and integrations to make localization as easy as possible. If you are missing anything you would love to have create a ticket [here](https://github.com/texterify/texterify/issues) and let us know or tell us what you created and we will include it here.
 
@@ -82,24 +82,7 @@ We provide several different tools and integrations to make localization as easy
 - Texterify iOS SDK (https://github.com/texterify/texterify-ios)
 - Texterify API Node (https://github.com/texterify/texterify-api-node)
 
-## 👀 Troubleshooting
-
-### Why is the watcher command failing randomly with exit code 137?
-
-If you receive the error below try to increase the memory (e.g. `8 GB`) that docker can use. Webpacker unfortunately requires a lot of memory to compile all the assets.
-
-```sh
-> yarn start:watcher
-...
-Killed
-error Command failed with exit code 137.
-```
-
-### After starting the server I get Webpacker::Manifest::MissingEntryError?
-
-This usually happens when you start the development server for the first time and webpack has not yet compiled the required frontend assets and therefore some files can not be found. Run `yarn start` in a terminal and `yarn start:watcher` in another one and wait for the `yarn start:watcher` command to finish initial compilation (the terminal outputs `Compiled successfully`). Then reload the site. This can take some minutes initially.
-
-## 🤝 Contributing
+<h2 id="contributing">🤝 Contributing</h2>
 
 Want to help build Texterify?
 
@@ -125,18 +108,35 @@ yarn start:watcher
 
 Having done that you can open [http://localhost:3000](http://localhost:3000) and see your local development instance of Texterify.
 
-## 🔒 Security
+<h2 id="troubleshooting">👀 Troubleshooting</h2>
+
+### Why is the watcher command failing randomly with exit code 137?
+
+If you receive the error below try to increase the memory (e.g. `8 GB`) that docker can use. Webpacker unfortunately requires a lot of memory to compile all the assets.
+
+```sh
+> yarn start:watcher
+...
+Killed
+error Command failed with exit code 137.
+```
+
+### After starting the server I get Webpacker::Manifest::MissingEntryError?
+
+This usually happens when you start the development server for the first time and webpack has not yet compiled the required frontend assets and therefore some files can not be found. Run `yarn start` in a terminal and `yarn start:watcher` in another one and wait for the `yarn start:watcher` command to finish initial compilation (the terminal outputs `Compiled successfully`). Then reload the site. This can take some minutes initially.
+
+<h2 id="security">🔒 Security</h2>
 
 Found a security issue? Please **don't** create an issue on GitHub. Instead send an email with your findings to [security@texterify.com](mailto:security@texterify.com) so a bugfix can be developed before the security flaw is publicly disclosed. We take security very seriously.
 
-See also [SECURITY](SECURITY.md) for details.
+See [SECURITY](SECURITY.md) for details.
 
-## 📋 Changelog
+<h2 id="changelog">📋 Changelog</h2>
 
 See [CHANGELOG](CHANGELOG.md) for changelog.
 
-## 📝 License
+<h2 id="license">📝 License</h2>
 
 See the [LICENSE](LICENSE) file for details.
 
-You can find also more information at [https://texterify.com/pricing](https://texterify.com/pricing).
+You can find more information at [texterify.com/pricing](https://texterify.com/pricing).
