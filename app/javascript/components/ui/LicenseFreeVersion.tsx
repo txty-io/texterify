@@ -38,6 +38,7 @@ export function LicenseFreeTrial(props: { hasLicense: boolean; expiresAt: string
             style={{
                 padding: "12px 24px",
                 background: "var(--primary-btn-color)",
+                color: "#fff",
                 display: "flex",
                 alignItems: "center"
             }}

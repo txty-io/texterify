@@ -93,7 +93,7 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  if Texterify.cloud?
+  if ENV['PROPRIETARY_MODE'] == 'true'
     config.active_job.queue_adapter = :sidekiq
   end
 end
