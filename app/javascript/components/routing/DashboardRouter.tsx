@@ -1,4 +1,10 @@
-import { DeploymentUnitOutlined, LineChartOutlined, ProjectOutlined, SettingOutlined } from "@ant-design/icons";
+import {
+    DeploymentUnitOutlined,
+    HddOutlined,
+    LineChartOutlined,
+    ProjectOutlined,
+    SettingOutlined
+} from "@ant-design/icons";
 import * as antd from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -256,15 +262,39 @@ class DashboardRouter extends React.Component<IProps, IState> {
                         </SearchInputWrapper>
 
                         {authStore.currentUser?.is_superadmin && (
-                            <antd.Tooltip title="Manage instance">
-                                <SettingOutlined
-                                    data-id="main-menu-instance-settings"
-                                    style={{ marginRight: 40 }}
-                                    onClick={() => {
-                                        history.push(Routes.DASHBOARD.INSTANCE.ROOT);
-                                    }}
-                                />
-                            </antd.Tooltip>
+                            <ul
+                                className="dashboard-main-menu"
+                                style={{
+                                    overflow: "hidden",
+                                    marginBottom: 0,
+                                    marginLeft: 0,
+                                    marginRight: 24,
+                                    display: "flex",
+                                    alignItems: "center"
+                                }}
+                            >
+                                <MenuList>
+                                    <MenuLink
+                                        to={Routes.DASHBOARD.INSTANCE.ROOT}
+                                        style={{
+                                            background: this.props.history.location.pathname.startsWith(
+                                                Routes.DASHBOARD.INSTANCE.ROOT
+                                            )
+                                                ? "var(--primary-light-color)"
+                                                : undefined,
+                                            color: this.props.history.location.pathname.startsWith(
+                                                Routes.DASHBOARD.INSTANCE.ROOT
+                                            )
+                                                ? "var(--blue-color)"
+                                                : undefined
+                                        }}
+                                        data-id="main-menu-instance-settings"
+                                    >
+                                        <HddOutlined style={{ marginRight: 8 }} />
+                                        Admin
+                                    </MenuLink>
+                                </MenuList>
+                            </ul>
                         )}
 
                         {/* <MessageOutlined style={{ marginRight: 40 }} /> */}
