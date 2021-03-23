@@ -5,8 +5,16 @@ import { EditUserForm } from "../../forms/EditUserForm";
 import { SettingsSectionWrapper } from "../../ui/SettingsSectionWrapper";
 const { Content } = Layout;
 
+interface IState {
+    loading: boolean;
+}
+
 @observer
-class UserAccountSettingsSite extends React.Component {
+class UserAccountSettingsSite extends React.Component<{}, IState> {
+    state: IState = {
+        loading: false
+    };
+
     render() {
         return (
             <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
@@ -18,9 +26,10 @@ class UserAccountSettingsSite extends React.Component {
                                 <EditUserForm
                                     onCreated={() => {
                                         message.success("Successfully updated account settings.");
+                                        this.setState({ loading: false });
                                     }}
-                                    onError={(_errors: any) => {
-                                        message.error("Error while updating account settings.");
+                                    onError={() => {
+                                        this.setState({ loading: false });
                                     }}
                                 />
                                 <Button
@@ -28,6 +37,10 @@ class UserAccountSettingsSite extends React.Component {
                                     type="primary"
                                     htmlType="submit"
                                     style={{ alignSelf: "flex-end" }}
+                                    loading={this.state.loading}
+                                    onClick={() => {
+                                        this.setState({ loading: true });
+                                    }}
                                 >
                                     Save
                                 </Button>

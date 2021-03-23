@@ -1,4 +1,4 @@
-import { Button, Form, Input, Slider } from "antd";
+import { Alert, Button, Form, FormInstance, Input, Slider } from "antd";
 import * as React from "react";
 import AvatarEditor from "react-avatar-editor";
 import Dropzone from "react-dropzone";
@@ -8,9 +8,10 @@ import { AvatarEditorWrapper } from "../sites/dashboard/AvatarEditorWrapper";
 import { AvatarNoImage } from "../sites/dashboard/AvatarNoImage";
 import { AvatarWrapper } from "../sites/dashboard/AvatarWrapper";
 import { authStore } from "../stores/AuthStore";
+import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 
 interface IProps {
-    onError(errors: any): void;
+    onError?(): void;
     onCreated?(): void;
 }
 interface IState {
@@ -29,6 +30,7 @@ class EditUserForm extends React.Component<IProps, IState> {
     isMovingImage = false;
     dropzone: any = React.createRef();
     avatarEditor: any = React.createRef();
+    formRef = React.createRef<FormInstance>();
 
     async componentDidMount() {
         const imageResponse = await UsersAPI.getImage(authStore.currentUser.id);
@@ -47,16 +49,37 @@ class EditUserForm extends React.Component<IProps, IState> {
             authStore.userImageUrl = null;
         }
 
-        const response = await UsersAPI.updateUser({ username: values.username, email: values.email });
+        try {
+            const response = await UsersAPI.updateUser({ username: values.username, email: values.email });
 
-        // Set new user data.
-        authStore.currentUser = response.data;
+            if (response.errors) {
+                if (response.errors.username?.includes("has already been taken")) {
+                    this.formRef.current.setFields([
+                        {
+                            name: "username",
+                            errors: [ErrorUtils.getErrorMessage("username", ERRORS.TAKEN)]
+                        }
+                    ]);
+                } else {
+                    ErrorUtils.showErrors(response.errors);
+                }
 
-        if (this.props.onCreated) {
-            this.props.onCreated();
+                this.props.onError();
+            } else {
+                // Set new user data.
+                authStore.currentUser = response.data;
+
+                if (this.props.onCreated) {
+                    this.props.onCreated();
+                }
+
+                await authStore.refetchCurrentUserImage();
+            }
+        } catch (error) {
+            console.error(error);
+
+            this.props.onError();
         }
-
-        await authStore.refetchCurrentUserImage();
     };
 
     handleDrop = (dropped: any) => {
@@ -125,6 +148,7 @@ class EditUserForm extends React.Component<IProps, IState> {
     render() {
         return (
             <Form
+                ref={this.formRef}
                 id="editUserForm"
                 onFinish={this.handleSubmit}
                 initialValues={{

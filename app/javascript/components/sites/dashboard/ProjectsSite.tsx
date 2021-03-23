@@ -95,7 +95,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                 <Layout style={{ padding: "0 24px 24px", maxWidth: 1400, margin: "0 auto", width: "100%" }}>
                     <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex" }}>
                         <div style={{ flexGrow: 1, flexShrink: 0, flexBasis: 0, marginRight: 80 }}>
-                            <h1 style={{ flexGrow: 1 }}>All projects</h1>
+                            <h1 style={{ flexGrow: 1 }}>Your projects</h1>
                             <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
                                 <div style={{ flexGrow: 1 }}>
                                     <PrimaryButton
