@@ -106,7 +106,7 @@ class ProjectSite extends React.Component<IProps, IState> {
                         <div style={{ marginLeft: 80, display: "flex", flexDirection: "column", fontSize: 13 }}>
                             <span style={{ fontWeight: "bold", color: "var(--highlight-color)" }}>Project ID:</span>
                             <Paragraph
-                                style={{ marginBottom: 0 }}
+                                style={{ marginBottom: 0, marginTop: 4 }}
                                 code
                                 copyable={{ text: this.props.match.params.projectId }}
                             >
