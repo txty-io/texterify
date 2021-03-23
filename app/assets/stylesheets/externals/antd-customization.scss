@@ -264,6 +264,7 @@
   // Make tables scrollable if they are too big to be displayed.
   .ant-table-content {
     overflow-x: auto;
+    overflow-y: hidden;
   }
 
   .ant-modal-body {
