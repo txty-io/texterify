@@ -4,5 +4,6 @@ export const SiteWrapperHeader = styled.h2`
     && {
         margin-bottom: 24px;
         font-size: 28px;
+        line-height: 24px;
     }
 `;
