@@ -528,7 +528,6 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                             dataSource={this.getRows()}
                             columns={this.getColumns("organization")}
                             loading={this.state.loading}
-                            size="middle"
                             pagination={false}
                         />
                     </div>
@@ -539,7 +538,6 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                             dataSource={this.getProjectMemberRows()}
                             columns={this.getColumns("project")}
                             loading={this.state.loading}
-                            size="middle"
                             pagination={false}
                         />
                     </div>

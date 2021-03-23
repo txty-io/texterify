@@ -288,7 +288,6 @@ class ProjectOTASite extends React.Component<IProps, IState> {
                             style={{ marginTop: 16 }}
                             bordered
                             loading={this.state.releasesLoading}
-                            size="middle"
                             pagination={{
                                 pageSizeOptions: PAGE_SIZE_OPTIONS,
                                 showSizeChanger: true,

@@ -358,7 +358,6 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                         columns={this.getColumns()}
                         style={{ marginTop: 16 }}
                         bordered
-                        size="middle"
                         pagination={false}
                         loading={this.state.languageConfigsLoading}
                         locale={{

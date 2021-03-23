@@ -23,7 +23,7 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
     render() {
         return (
             <>
-                <p style={{ marginBottom: 16, color: "rgba(255, 255, 255, 0.85)" }}>
+                <p style={{ marginBottom: 16 }}>
                     Enter your email address and we will send you an email to reset your password.
                 </p>
 

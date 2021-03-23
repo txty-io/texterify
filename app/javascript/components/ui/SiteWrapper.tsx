@@ -22,7 +22,7 @@ class SiteWrapper extends React.Component<IProps> {
                 }}
                 className="dark-theme"
             >
-                <div style={{ display: "flex", width: "100%", maxWidth: 800, marginTop: 120 }}>
+                <div style={{ display: "flex", width: "100%", maxWidth: 800, marginTop: 240 }}>
                     <div
                         style={{
                             display: "flex",

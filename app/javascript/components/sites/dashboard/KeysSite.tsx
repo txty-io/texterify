@@ -643,6 +643,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                 onChange={this.onSearch}
                                 style={{ maxWidth: "50%" }}
                                 data-id="project-keys-search"
+                                allowClear
                             />
                         </div>
                         <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", alignItems: "flex-end" }}>

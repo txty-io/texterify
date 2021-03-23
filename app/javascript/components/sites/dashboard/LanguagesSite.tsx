@@ -288,6 +288,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
                                 onChange={this.onSearch}
                                 style={{ maxWidth: "50%" }}
                                 data-id="project-languages-search"
+                                allowClear
                             />
                         </div>
                         <Table
@@ -296,8 +297,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
                             columns={this.getColumns()}
                             style={{ marginTop: 16 }}
                             bordered
-                            loading={!this.state.languagesResponse}
-                            size="middle"
+                            loading={this.state.languagesLoading}
                             pagination={{
                                 pageSizeOptions: PAGE_SIZE_OPTIONS,
                                 showSizeChanger: true,

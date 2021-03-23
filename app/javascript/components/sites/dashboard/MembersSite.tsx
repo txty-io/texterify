@@ -396,7 +396,12 @@ class MembersSite extends React.Component<IProps, IState> {
                     </div>
 
                     <div style={{ display: "flex", alignItems: "center", marginTop: 24 }}>
-                        <Input.Search placeholder="Search users" onChange={this.onSearch} style={{ maxWidth: "50%" }} />
+                        <Input.Search
+                            allowClear
+                            placeholder="Search users"
+                            onChange={this.onSearch}
+                            style={{ maxWidth: "50%" }}
+                        />
 
                         <RolesLegend style={{ marginLeft: "auto" }} />
                     </div>
@@ -407,7 +412,6 @@ class MembersSite extends React.Component<IProps, IState> {
                             dataSource={this.getProjectRows()}
                             columns={this.getColumns()}
                             loading={this.state.loading}
-                            size="middle"
                             pagination={false}
                         />
                     </div>
@@ -418,7 +422,6 @@ class MembersSite extends React.Component<IProps, IState> {
                             dataSource={this.getOrganizationRows()}
                             columns={this.getColumns()}
                             loading={this.state.loading}
-                            size="middle"
                             pagination={false}
                         />
                     </div>

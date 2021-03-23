@@ -114,6 +114,7 @@ class ProjectSite extends React.Component<IProps, IState> {
                             </Paragraph>
                         </div>
                         <Button
+                            type="primary"
                             onClick={() => {
                                 history.push(
                                     Routes.DASHBOARD.PROJECT_EDITOR.replace(

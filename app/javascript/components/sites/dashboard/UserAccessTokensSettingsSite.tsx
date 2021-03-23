@@ -187,7 +187,6 @@ class UserAccessTokensSettingsSite extends React.Component<{}, IState> {
                                 dataSource={this.getRows()}
                                 columns={this.getColumns()}
                                 loading={!this.state.getTokensResponse}
-                                size="middle"
                                 pagination={false}
                             />
                         </div>

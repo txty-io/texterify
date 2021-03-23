@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined, LoadingOutlined } from "@ant-design/icons";
-import { Layout, Pagination, Tabs } from "antd";
+import { Button, Layout, Pagination, Tabs } from "antd";
 import Search from "antd/lib/input/Search";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
@@ -187,7 +187,8 @@ class EditorSite extends React.Component<IProps, IState> {
                     className="dark-theme"
                 >
                     <div style={{ flexGrow: 1 }}>
-                        <WhiteButton
+                        <Button
+                            type="primary"
                             style={{
                                 marginRight: 24
                             }}
@@ -199,7 +200,7 @@ class EditorSite extends React.Component<IProps, IState> {
                         >
                             <ArrowLeftOutlined />
                             <span style={{ marginLeft: 16 }}>Back</span>
-                        </WhiteButton>
+                        </Button>
                         {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
                     </div>
                     <DarkModeToggle style={{ marginRight: 40 }} />
