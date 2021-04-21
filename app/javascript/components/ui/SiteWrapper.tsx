@@ -1,5 +1,5 @@
 import { GithubOutlined } from "@ant-design/icons";
-import WhiteLogoWithText from "images/white_logo_with_text.svg";
+import WhiteLogoWithText from "images/logo_white_text.png";
 import * as React from "react";
 
 interface IProps {
@@ -22,7 +22,7 @@ class SiteWrapper extends React.Component<IProps> {
                 }}
                 className="dark-theme"
             >
-                <div style={{ display: "flex", width: "100%", maxWidth: 800, marginTop: 240 }}>
+                <div style={{ display: "flex", width: "100%", maxWidth: 960, marginTop: 240 }}>
                     <div
                         style={{
                             display: "flex",
@@ -34,11 +34,11 @@ class SiteWrapper extends React.Component<IProps> {
                             style={{
                                 display: "flex",
                                 flexDirection: "column",
-                                padding: "24px 40px 0 24px"
+                                padding: "24px 80px 0 24px"
                             }}
                         >
-                            <img src={WhiteLogoWithText} style={{ maxWidth: 240, marginBottom: 24 }} />
-                            <p style={{ color: "rgba(255, 255, 255, 0.85)", fontWeight: "bold" }}>
+                            <img src={WhiteLogoWithText} style={{ maxWidth: "100%", marginBottom: 24 }} />
+                            <p style={{ color: "rgba(255, 255, 255, 0.85)", fontWeight: "bold", marginTop: 8 }}>
                                 The web-based localization system
                             </p>
                             <p style={{ color: "rgba(255, 255, 255, 0.85)" }}>

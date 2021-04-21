@@ -1,2 +1,4 @@
-declare module "images/logo.svg";
-declare module "images/white_logo_with_text.svg";
+declare module "images/logo_white.png";
+declare module "images/logo_white_text.png";
+declare module "images/logo_black.png";
+declare module "images/logo_black_text.png";

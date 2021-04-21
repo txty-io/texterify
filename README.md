@@ -1,6 +1,6 @@
  <p align="center">
   <a href="https://texterify.com/?utm_source=github&utm_medium=logo" target="_blank">
-    <img src="https://raw.github.com/texterify/texterify/screenshots/logo.png?sanitize=true" alt="Texterify" height="72">
+    <img src="https://raw.github.com/texterify/texterify/master/app/public/logo_black.png?sanitize=true" alt="Texterify logo" height="72">
   </a>
 </p>
 

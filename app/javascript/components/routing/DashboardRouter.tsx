@@ -1,17 +1,13 @@
-import {
-    DeploymentUnitOutlined,
-    HddOutlined,
-    LineChartOutlined,
-    ProjectOutlined,
-    SettingOutlined
-} from "@ant-design/icons";
+import { DeploymentUnitOutlined, HddOutlined, LineChartOutlined, ProjectOutlined } from "@ant-design/icons";
 import * as antd from "antd";
+import WhiteLogoWithText from "images/logo_white_text.png";
 import { observer } from "mobx-react";
 import * as React from "react";
 import Hotkeys from "react-hot-keys";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { ICurrentLicenseInformation, LicensesAPI } from "../api/v1/LicensesAPI";
+import { UsersAPI } from "../api/v1/UsersAPI";
 import { ActivitySite } from "../sites/dashboard/ActivitySite";
 import { DashboardNotFoundSite } from "../sites/dashboard/DashboardNotFoundSite";
 import { InstanceSidebar } from "../sites/dashboard/InstanceSidebar";
@@ -24,6 +20,7 @@ import { UserAccountSettingsSite } from "../sites/dashboard/UserAccountSettingsS
 import { UserLicensesSite } from "../sites/dashboard/UserLicensesSite";
 import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
 import { authStore } from "../stores/AuthStore";
+import { ConfirmEmailHint } from "../ui/ConfirmEmailHint";
 import { DarkModeToggle } from "../ui/DarkModeToggle";
 import { LicenseExpiring } from "../ui/LicenseExpiring";
 import { LicenseFreeTrial } from "../ui/LicenseFreeVersion";
@@ -31,7 +28,6 @@ import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
 import { Utils } from "../ui/Utils";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
-import { history } from "./history";
 import { InstanceRouter } from "./InstanceRouter";
 import { OrganizationRouter } from "./OrganizationRouter";
 import { PrivateRoute } from "./PrivateRoute";
@@ -39,9 +35,6 @@ import { PrivateRouteTexterifyCloud } from "./PrivateRouteTexterifyCloud";
 import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
 import { SuperadminRoute } from "./SuperadminRoute";
-import WhiteLogoWithText from "images/white_logo_with_text.svg";
-import { ConfirmEmailHint } from "../ui/ConfirmEmailHint";
-import { UsersAPI } from "../api/v1/UsersAPI";
 
 const MenuList = styled.li`
     overflow: hidden;
