@@ -639,7 +639,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                 </Button>
                             </div>
                             <Input.Search
-                                placeholder="Search keys"
+                                placeholder="Search keys and translations"
                                 onChange={this.onSearch}
                                 style={{ maxWidth: "50%" }}
                                 data-id="project-keys-search"

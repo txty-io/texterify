@@ -1,10 +1,11 @@
 import { ArrowLeftOutlined, LoadingOutlined } from "@ant-design/icons";
-import { Button, Layout, Pagination, Tabs } from "antd";
+import { Alert, Button, Layout, Pagination, Tabs } from "antd";
 import Search from "antd/lib/input/Search";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { KeysAPI } from "../../api/v1/KeysAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
@@ -16,7 +17,6 @@ import { DarkModeToggle } from "../../ui/DarkModeToggle";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { Styles } from "../../ui/Styles";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
-import { WhiteButton } from "../../ui/WhiteButton";
 import { TranslationCard } from "./editor/TranslationCard";
 
 const Key = styled.div<{ isSelected: boolean }>`
@@ -28,11 +28,11 @@ const Key = styled.div<{ isSelected: boolean }>`
     font-size: 13px;
 
     background: ${(props) => {
-        return props.isSelected ? "rgba(255, 255, 255, 0.05)" : "none";
+        return props.isSelected ? "var(--primary-light-color)" : "none";
     }};
 
     color: ${(props) => {
-        return props.isSelected ? "var(--blue-color)" : "none";
+        return props.isSelected ? "var(--blue-color)" : "#333";
     }};
 
     &:hover {
@@ -290,6 +290,27 @@ class EditorSite extends React.Component<IProps, IState> {
                                     <p style={{ wordBreak: "break-word" }}>
                                         {this.state.keyResponse && this.state.keyResponse.data.attributes.description}
                                     </p>
+
+                                    {this.state.languagesResponse && this.state.languagesResponse.data.length === 0 && (
+                                        <Alert
+                                            type="info"
+                                            showIcon
+                                            message="No language"
+                                            description={
+                                                <p>
+                                                    <Link
+                                                        to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
+                                                            ":projectId",
+                                                            this.props.match.params.projectId
+                                                        )}
+                                                    >
+                                                        Create a language
+                                                    </Link>{" "}
+                                                    before you can translate your content.
+                                                </p>
+                                            }
+                                        />
+                                    )}
 
                                     {this.state.languagesResponse && this.state.languagesResponse.data.length > 0 && (
                                         <TranslationCard
