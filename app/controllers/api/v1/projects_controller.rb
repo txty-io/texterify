@@ -294,7 +294,10 @@ class Api::V1::ProjectsController < Api::V1::ApiController
   def recently_viewed
     skip_authorization
 
-    projects = current_user.projects.joins('INNER JOIN recently_viewed_projects rvp ON rvp.project_id = projects.id').order(last_accessed: :desc)
+    projects = current_user.projects
+      .joins('INNER JOIN recently_viewed_projects rvp ON rvp.project_id = projects.id')
+      .where('rvp.user_id = ?', current_user.id)
+      .order(last_accessed: :desc)
 
     per_page = 10
 
