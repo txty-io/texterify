@@ -22,7 +22,6 @@ import { TranslationCard } from "./editor/TranslationCard";
 const Key = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
     padding: 12px 16px;
-    color: var(--background-color);
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 13px;
@@ -42,21 +41,13 @@ const Key = styled.div<{ isSelected: boolean }>`
     .dark-theme & {
         color: #fff;
 
-        background: ${(props) => {
-            return props.isSelected ? "rgba(255, 255, 255, 0.05)" : "none";
-        }};
-
-        color: ${(props) => {
-            return props.isSelected ? "var(--blue-color)" : "none";
-        }};
-
         &:hover {
             color: var(--blue-color);
         }
     }
 `;
 
-type IProps = {} & RouteComponentProps<{ projectId: string; keyId?: string }>;
+type IProps = RouteComponentProps<{ projectId: string; keyId?: string }>;
 interface IState {
     keysResponse: any;
     keyResponse: any;
@@ -241,6 +232,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     );
                                                 }}
                                                 isSelected={this.isSelectedKey(key.id)}
+                                                style={{
+                                                    color: this.isSelectedKey(key.id) ? "var(--blue-color)" : undefined
+                                                }}
                                             >
                                                 {key.attributes.name}
                                             </Key>
