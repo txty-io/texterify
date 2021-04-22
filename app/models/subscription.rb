@@ -2,7 +2,6 @@ class Subscription < ApplicationRecord
   belongs_to :organization
 
   validates :stripe_id, presence: true
-  validates :stripe_cancel_at_period_end, default: false
   validates :stripe_created, presence: true
   validates :stripe_current_period_start, presence: true
   validates :stripe_current_period_end, presence: true
@@ -12,7 +11,6 @@ class Subscription < ApplicationRecord
   validates :stripe_latest_invoice, presence: true
   validates :plan, presence: true
   validates :users_count, presence: true
-  validates :canceled, default: false
 
   # https://stripe.com/docs/billing/subscriptions/overview#subscription-statuses
   enum stripe_status: {
