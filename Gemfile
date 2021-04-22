@@ -8,7 +8,7 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '6.0.3.4'
+gem 'rails', '6.1.3.1'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
@@ -78,7 +78,7 @@ end
 # gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 gem 'devise', '4.7.3'
-gem 'devise_token_auth', '1.1.4'
+gem 'devise_token_auth', '1.1.5'
 gem 'fast_jsonapi'
 gem 'paper_trail'
 gem 'pundit'
