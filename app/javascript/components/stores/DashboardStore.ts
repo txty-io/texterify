@@ -100,17 +100,6 @@ const hydrate: any = create({
 
 const dashboardStore: DashboardStore = new DashboardStore();
 
-reaction(
-    () => {
-        return dashboardStore.currentProject;
-    },
-    (currentProject) => {
-        (async () => {
-            await ProjectsAPI.createRecentlyViewedProject(currentProject);
-        })();
-    }
-);
-
 hydrate("dashboardStore", dashboardStore)
     .then(() => {
         console.log("Hydrated from store successfully.");
