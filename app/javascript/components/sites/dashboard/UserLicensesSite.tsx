@@ -75,7 +75,7 @@ export const UserLicensesSite = observer(() => {
     return (
         <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
             <Layout.Content style={{ margin: "24px 16px 0" }}>
-                <h1>Licenses</h1>
+                <h1>Get a license</h1>
                 <p style={{ maxWidth: 480, marginTop: 16 }}>
                     Setup Texterify in your own infrastructure. Make sure that your data never leaves your own
                     infrastructure. Requires technical experience for installation. You can also get a subscription for

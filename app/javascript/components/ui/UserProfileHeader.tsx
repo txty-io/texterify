@@ -9,7 +9,16 @@ import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
 import { Styles } from "./Styles";
 import { UserAvatar } from "./UserAvatar";
-import { SettingOutlined, LogoutOutlined } from "@ant-design/icons";
+import {
+    SettingOutlined,
+    LogoutOutlined,
+    InfoOutlined,
+    UserOutlined,
+    LockOutlined,
+    SolutionOutlined,
+    InfoCircleOutlined
+} from "@ant-design/icons";
+import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
 
 const AccountProfileContentWrapper: any = styled.div`
     a {
@@ -79,9 +88,50 @@ class UserProfileHeader extends React.Component<{}, IState> {
                                         this.setState({ accountMenuVisible: false });
                                     }}
                                 >
-                                    <Link data-id="user-profile-menu-settings" to={Routes.USER.SETTINGS.ACCOUNT}>
-                                        <SettingOutlined style={{ marginRight: 5, fontWeight: "bold" }} />
-                                        Settings
+                                    <Link data-id="user-profile-menu-account" to={Routes.USER.SETTINGS.ACCOUNT}>
+                                        <UserOutlined style={{ marginRight: 5, fontWeight: "bold" }} />
+                                        Account
+                                    </Link>
+                                </li>
+                                <li
+                                    role="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        this.setState({ accountMenuVisible: false });
+                                    }}
+                                >
+                                    <Link
+                                        data-id="user-profile-menu-access-tokens"
+                                        to={Routes.USER.SETTINGS.ACCESS_TOKENS}
+                                    >
+                                        <LockOutlined style={{ marginRight: 5, fontWeight: "bold" }} />
+                                        Access tokens
+                                    </Link>
+                                </li>
+                                {IS_TEXTERIFY_CLOUD && (
+                                    <li
+                                        role="button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            this.setState({ accountMenuVisible: false });
+                                        }}
+                                    >
+                                        <Link data-id="user-profile-menu-licenses" to={Routes.USER.SETTINGS.LICENSES}>
+                                            <SolutionOutlined style={{ marginRight: 5, fontWeight: "bold" }} />
+                                            Get a license
+                                        </Link>
+                                    </li>
+                                )}
+                                <li
+                                    role="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        this.setState({ accountMenuVisible: false });
+                                    }}
+                                >
+                                    <Link data-id="user-profile-menu-about" to={Routes.USER.SETTINGS.ABOUT}>
+                                        <InfoCircleOutlined style={{ marginRight: 5, fontWeight: "bold" }} />
+                                        About
                                     </Link>
                                 </li>
                                 <li>

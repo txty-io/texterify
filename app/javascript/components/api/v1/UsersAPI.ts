@@ -2,7 +2,7 @@ import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
 const UsersAPI = {
-    getCurrentUserInfo: async (): Promise<{ confirmed: boolean }> => {
+    getCurrentUserInfo: async (): Promise<{ confirmed: boolean; version: string }> => {
         return API.getRequest("users/info", true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
     },
 

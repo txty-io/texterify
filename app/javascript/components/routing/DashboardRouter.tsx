@@ -8,6 +8,7 @@ import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { ICurrentLicenseInformation, LicensesAPI } from "../api/v1/LicensesAPI";
 import { UsersAPI } from "../api/v1/UsersAPI";
+import { AboutSite } from "../sites/dashboard/AboutSite";
 import { ActivitySite } from "../sites/dashboard/ActivitySite";
 import { DashboardNotFoundSite } from "../sites/dashboard/DashboardNotFoundSite";
 import { InstanceSidebar } from "../sites/dashboard/InstanceSidebar";
@@ -96,6 +97,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
 
         const userInfoResponse = await UsersAPI.getCurrentUserInfo();
         authStore.confirmed = userInfoResponse.confirmed;
+        authStore.version = userInfoResponse.version;
     }
 
     async loadCurrentLicense() {
@@ -310,6 +312,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 path={Routes.USER.SETTINGS.ACCESS_TOKENS}
                                 component={UserAccessTokensSettingsSite}
                             />
+                            <PrivateRoute exact path={Routes.USER.SETTINGS.ABOUT} component={AboutSite} />
                             <PrivateRouteTexterifyCloud
                                 exact
                                 path={Routes.USER.SETTINGS.LICENSES}

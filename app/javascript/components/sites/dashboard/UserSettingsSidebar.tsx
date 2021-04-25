@@ -1,4 +1,4 @@
-import { LockOutlined, SolutionOutlined, UserOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, LockOutlined, SolutionOutlined, UserOutlined } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
@@ -37,9 +37,16 @@ class UserSettingsSidebar extends React.Component<IProps, IState> {
         {
             icon: SolutionOutlined,
             path: Routes.USER.SETTINGS.LICENSES,
-            text: "Licenses",
+            text: "Get a license",
             texterifyCloudOnly: true,
             dataId: "user-sidebar-licenses"
+        },
+        {
+            icon: InfoCircleOutlined,
+            path: Routes.USER.SETTINGS.ABOUT,
+            text: "About",
+            texterifyCloudOnly: false,
+            dataId: "user-sidebar-about"
         }
     ];
 
