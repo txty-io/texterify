@@ -71,13 +71,17 @@ class ExportConfig < ApplicationRecord
   end
 
   def file(language, export_data)
-    if file_format == 'json'
+    if file_format == 'json-flat'
       json(language, export_data)
+    elsif file_format == 'json-nested'
+      json(language, export_data)
+    elsif file_format == 'json-formatjs'
+      json_formatjs(language, export_data)
     elsif file_format == 'typescript'
       typescript(language, export_data)
     elsif file_format == 'android'
       android(language, export_data)
-    elsif file_format == 'ios'
+    elsif file_format == 'ios-strings'
       ios(language, export_data)
     elsif file_format == 'rails'
       rails(language, export_data)
@@ -103,6 +107,23 @@ class ExportConfig < ApplicationRecord
   def json(language, export_data)
     language_file = Tempfile.new(language.id.to_s)
     language_file.puts(JSON.pretty_generate(export_data))
+    language_file.close
+
+    language_file
+  end
+
+  def json_formatjs(language, export_data)
+    language_file = Tempfile.new(language.id.to_s)
+
+    data = {}
+    export_data.each do |key, value|
+      data[key] = {
+        defaultMessage: value,
+        description: Key.find_by(name: key)&.description
+      }
+    end
+
+    language_file.puts(JSON.pretty_generate(data))
     language_file.close
 
     language_file

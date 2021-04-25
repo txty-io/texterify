@@ -105,7 +105,7 @@ module ExportHelper
     end
 
     if !args[:skip_timestamp]
-      export_data[:texterify_timestamp] = Time.now.utc.iso8601
+      export_data['texterify_timestamp'] = Time.now.utc.iso8601
     end
 
     export_data

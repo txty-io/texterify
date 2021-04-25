@@ -1,7 +1,15 @@
 const FileFormatOptions = [
     {
-        value: "json",
-        text: "JSON"
+        value: "json-flat",
+        text: "JSON Flat"
+    },
+    // {
+    //     value: "json-nested",
+    //     text: "JSON Nested"
+    // },
+    {
+        value: "json-formatjs",
+        text: "JSON Format.js"
     },
     {
         value: "typescript",
@@ -12,7 +20,7 @@ const FileFormatOptions = [
         text: "Android"
     },
     {
-        value: "ios",
+        value: "ios-strings",
         text: "iOS"
     },
     {
