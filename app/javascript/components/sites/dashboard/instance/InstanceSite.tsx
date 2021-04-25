@@ -73,7 +73,7 @@ export const InstanceSite = observer(() => {
                     <Card style={{ width: 240, marginBottom: 40, marginRight: 40 }}>
                         <Statistic title="Keys" value={instanceInfos?.keys_count} prefix={<KeyOutlined />} />
                     </Card>
-                    <Card style={{ width: 240, marginBottom: 40 }}>
+                    <Card style={{ width: 240, marginBottom: 40, marginRight: 40 }}>
                         <Statistic title="Translations" value={instanceInfos?.translations_count} />
                     </Card>
                     <Card style={{ width: 240, marginBottom: 40 }}>
