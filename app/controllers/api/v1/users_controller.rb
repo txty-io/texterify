@@ -4,7 +4,7 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     render json: {
       confirmed: current_user.confirmed,
-      version: `git rev-parse HEAD`.strip
+      version: ENV['COMMIT_HASH']
     }
   end
 

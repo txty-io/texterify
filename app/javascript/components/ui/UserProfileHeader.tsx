@@ -1,3 +1,4 @@
+import { InfoCircleOutlined, LockOutlined, LogoutOutlined, SolutionOutlined, UserOutlined } from "@ant-design/icons";
 import { Popover } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -7,18 +8,9 @@ import { AuthAPI } from "../api/v1/AuthAPI";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
+import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
 import { Styles } from "./Styles";
 import { UserAvatar } from "./UserAvatar";
-import {
-    SettingOutlined,
-    LogoutOutlined,
-    InfoOutlined,
-    UserOutlined,
-    LockOutlined,
-    SolutionOutlined,
-    InfoCircleOutlined
-} from "@ant-design/icons";
-import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
 
 const AccountProfileContentWrapper: any = styled.div`
     a {
