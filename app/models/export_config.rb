@@ -71,7 +71,7 @@ class ExportConfig < ApplicationRecord
   end
 
   def file(language, export_data)
-    if file_format == 'json-flat'
+    if file_format == 'json'
       json(language, export_data)
     elsif file_format == 'json-nested'
       json(language, export_data)
@@ -81,7 +81,7 @@ class ExportConfig < ApplicationRecord
       typescript(language, export_data)
     elsif file_format == 'android'
       android(language, export_data)
-    elsif file_format == 'ios-strings'
+    elsif file_format == 'ios'
       ios(language, export_data)
     elsif file_format == 'rails'
       rails(language, export_data)

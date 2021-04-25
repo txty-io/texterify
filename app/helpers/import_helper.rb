@@ -7,7 +7,7 @@ module ImportHelper
   REGEX_KEY_VALUE = /#{REGEX_CONTENT}\s*=\s*#{REGEX_CONTENT}*/.freeze
 
   def parse_file_content(_file_name, file_content, file_format)
-    if ['json-flat', 'json-formatjs'].include?(file_format)
+    if ['json', 'json-formatjs'].include?(file_format)
       result = json?(file_content)
       if result[:matches]
         return result[:content]
@@ -25,7 +25,7 @@ module ImportHelper
       else
         raise 'NOTHING_IMPORTED'
       end
-    elsif file_format == 'ios-strings'
+    elsif file_format == 'ios'
       result = strings?(file_content)
       if result[:matches]
         return result[:content]

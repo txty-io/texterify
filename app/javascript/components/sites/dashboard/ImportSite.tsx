@@ -13,7 +13,7 @@ import { DropZoneWrapper } from "../../ui/DropZoneWrapper";
 import FlagIcon from "../../ui/FlagIcons";
 import { LoadingOverlay } from "../../ui/LoadingOverlay";
 
-export type ImportFileFormats = "json-flat" | "json-nested" | "json-formatjs" | "ios-strings";
+export type ImportFileFormats = "json" | "json-nested" | "json-formatjs" | "ios";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -123,13 +123,13 @@ class ImportSite extends React.Component<IProps, IState> {
     };
 
     getFileEndingForSelectedFormat() {
-        if (this.state.selectedImportFormat === "json-flat") {
+        if (this.state.selectedImportFormat === "json") {
             return ".json";
         } else if (this.state.selectedImportFormat === "json-nested") {
             return ".json";
         } else if (this.state.selectedImportFormat === "json-formatjs") {
             return ".json";
-        } else if (this.state.selectedImportFormat === "ios-strings") {
+        } else if (this.state.selectedImportFormat === "ios") {
             return ".strings";
         }
     }
@@ -233,10 +233,10 @@ class ImportSite extends React.Component<IProps, IState> {
                                         }}
                                         value={this.state.selectedImportFormat}
                                     >
-                                        <Select.Option value="json-flat">JSON Flat</Select.Option>
+                                        <Select.Option value="json">JSON Flat</Select.Option>
                                         {/* <Select.Option value="json-nested">JSON Nested</Select.Option> */}
                                         <Select.Option value="json-formatjs">JSON Format.js</Select.Option>
-                                        <Select.Option value="ios-strings">iOS .strings</Select.Option>
+                                        <Select.Option value="ios">iOS .strings</Select.Option>
                                     </Select>
                                 </div>
                                 <Dropzone

@@ -1,6 +1,6 @@
 const FileFormatOptions = [
     {
-        value: "json-flat",
+        value: "json",
         text: "JSON Flat"
     },
     // {
@@ -20,7 +20,7 @@ const FileFormatOptions = [
         text: "Android"
     },
     {
-        value: "ios-strings",
+        value: "ios",
         text: "iOS"
     },
     {
