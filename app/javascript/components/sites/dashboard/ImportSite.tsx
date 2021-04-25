@@ -25,6 +25,7 @@ interface IState {
     languagesResponse: any;
     loading: boolean;
     responseExportConfigs: any;
+    showExportConfigSelect: boolean;
 }
 
 class ImportSite extends React.Component<IProps, IState> {
@@ -38,7 +39,8 @@ class ImportSite extends React.Component<IProps, IState> {
         languages: [],
         languagesResponse: null,
         loading: false,
-        responseExportConfigs: null
+        responseExportConfigs: null,
+        showExportConfigSelect: false
     };
 
     async componentDidMount() {
@@ -164,7 +166,7 @@ class ImportSite extends React.Component<IProps, IState> {
                         )}
                         {this.state.languages.length > 0 && (
                             <>
-                                <div style={{ display: "flex", alignItems: "center" }}>
+                                <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
                                     <span style={{ marginRight: 8 }}>Select a language:</span>
                                     <Select
                                         style={{ flexGrow: 1 }}
@@ -196,11 +198,29 @@ class ImportSite extends React.Component<IProps, IState> {
                                         })}
                                     </Select>
                                 </div>
-                                {this.state.responseExportConfigs && this.state.responseExportConfigs.data.length > 0 && (
-                                    <div style={{ display: "flex", alignItems: "center", marginTop: 8 }}>
-                                        <span style={{ marginRight: 8 }}>Select an export config:</span>
-                                        {this.getExportConfigSelect()}
-                                    </div>
+                                {this.state.showExportConfigSelect &&
+                                    this.state.responseExportConfigs &&
+                                    this.state.responseExportConfigs.data.length > 0 && (
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                marginTop: 8
+                                            }}
+                                        >
+                                            <span style={{ marginRight: 8 }}>Select an export config:</span>
+                                            {this.getExportConfigSelect()}
+                                        </div>
+                                    )}
+
+                                {!this.state.showExportConfigSelect && (
+                                    <a
+                                        onClick={() => {
+                                            this.setState({ showExportConfigSelect: true });
+                                        }}
+                                    >
+                                        Click here to import strings for an export config
+                                    </a>
                                 )}
                                 <div style={{ display: "flex", alignItems: "center", marginTop: 8 }}>
                                     <span style={{ marginRight: 8 }}>Select the format of your file:</span>
