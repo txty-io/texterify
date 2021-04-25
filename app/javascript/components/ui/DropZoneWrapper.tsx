@@ -11,8 +11,13 @@ export const DropZoneWrapper = styled.div`
     cursor: pointer;
     margin-top: 8px;
     outline: none;
+    cursor: ${(props) => {
+        return props.disabled ? "not-allowed" : "grab";
+    }};
 
     &:hover {
-        border-color: var(--input-border-hover-color);
+        border-color: ${(props) => {
+            return props.disabled ? "var(--input-border-color)" : "var(--input-border-hover-color)";
+        }};
     }
 `;

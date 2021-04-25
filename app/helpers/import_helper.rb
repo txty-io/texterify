@@ -6,10 +6,8 @@ module ImportHelper
   REGEX_CONTENT = /"((\\"|[^"])+)"/.freeze
   REGEX_KEY_VALUE = /#{REGEX_CONTENT}\s*=\s*#{REGEX_CONTENT}*/.freeze
 
-  def json_file_content(file_name, file_content)
-    file_extension = File.extname(file_name)
-
-    if file_extension == '.json'
+  def parse_file_content(_file_name, file_content, file_format)
+    if ['json-flat', 'json-formatjs'].include?(file_format)
       result = json?(file_content)
       if result[:matches]
         return result[:content]
@@ -18,9 +16,16 @@ module ImportHelper
       else
         raise 'NOTHING_IMPORTED'
       end
-    end
-
-    if file_extension == '.strings'
+    elsif file_format == 'json-nested'
+      result = json_nested?(file_content)
+      if result[:matches]
+        return result[:content]
+      elsif result[:invalid]
+        raise 'INVALID_JSON'
+      else
+        raise 'NOTHING_IMPORTED'
+      end
+    elsif file_format == 'ios-strings'
       result = strings?(file_content)
       if result[:matches]
         return result[:content]
@@ -29,10 +34,21 @@ module ImportHelper
       end
     end
 
-    raise 'INVALID_FILE_EXTENSION'
+    raise 'INVALID_FILE_FORMAT'
   end
 
   def json?(content)
+    parsed = JSON.parse(content)
+    if parsed.count > 0
+      { matches: true, content: parsed }
+    else
+      { matches: false }
+    end
+  rescue JSON::ParserError
+    { matches: false, invalid: true }
+  end
+
+  def json_nested?(content)
     parsed = JSON.parse(content)
     if parsed.count > 0
       { matches: true, content: parsed }

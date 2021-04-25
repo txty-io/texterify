@@ -13,11 +13,14 @@ import { DropZoneWrapper } from "../../ui/DropZoneWrapper";
 import FlagIcon from "../../ui/FlagIcons";
 import { LoadingOverlay } from "../../ui/LoadingOverlay";
 
+export type ImportFileFormats = "json-flat" | "json-nested" | "json-formatjs" | "ios-strings";
+
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     files: any[];
     selectedLanguageId: string;
     selectedExportConfigId: string;
+    selectedImportFormat: ImportFileFormats;
     languages: any[];
     languagesResponse: any;
     loading: boolean;
@@ -31,6 +34,7 @@ class ImportSite extends React.Component<IProps, IState> {
         files: [],
         selectedLanguageId: null,
         selectedExportConfigId: null,
+        selectedImportFormat: null,
         languages: [],
         languagesResponse: null,
         loading: false,
@@ -67,7 +71,8 @@ class ImportSite extends React.Component<IProps, IState> {
             projectId: this.props.match.params.projectId,
             languageId: this.state.selectedLanguageId,
             exportConfigId: this.state.selectedExportConfigId,
-            file: this.state.files[0]
+            file: this.state.files[0],
+            fileFormat: this.state.selectedImportFormat
         });
 
         if (!response.errors && response.ok) {
@@ -83,8 +88,8 @@ class ImportSite extends React.Component<IProps, IState> {
                 message.error("The content of the file is invalid JSON.");
             } else if (response.message === "NOTHING_IMPORTED") {
                 message.error("No data in file found to import.");
-            } else if (response.message === "INVALID_FILE_EXTENSION") {
-                message.error("The file has an invalid file extension.");
+            } else if (response.message === "INVALID_FILE_FORMAT") {
+                message.error("The selected file format is invalid.");
             } else {
                 message.error("Failed to import translations.");
             }
@@ -114,6 +119,18 @@ class ImportSite extends React.Component<IProps, IState> {
             </Select>
         );
     };
+
+    getFileEndingForSelectedFormat() {
+        if (this.state.selectedImportFormat === "json-flat") {
+            return ".json";
+        } else if (this.state.selectedImportFormat === "json-nested") {
+            return ".json";
+        } else if (this.state.selectedImportFormat === "json-formatjs") {
+            return ".json";
+        } else if (this.state.selectedImportFormat === "ios-strings") {
+            return ".strings";
+        }
+    }
 
     render() {
         return (
@@ -185,16 +202,37 @@ class ImportSite extends React.Component<IProps, IState> {
                                         {this.getExportConfigSelect()}
                                     </div>
                                 )}
+                                <div style={{ display: "flex", alignItems: "center", marginTop: 8 }}>
+                                    <span style={{ marginRight: 8 }}>Select the format of your file:</span>
+                                    <Select
+                                        style={{ flexGrow: 1 }}
+                                        onChange={(selectedValue: ImportFileFormats) => {
+                                            this.setState({
+                                                selectedImportFormat: selectedValue
+                                            });
+                                        }}
+                                        value={this.state.selectedImportFormat}
+                                    >
+                                        <Select.Option value="json-flat">JSON Flat</Select.Option>
+                                        {/* <Select.Option value="json-nested">JSON Nested</Select.Option> */}
+                                        <Select.Option value="json-formatjs">JSON Format.js</Select.Option>
+                                        <Select.Option value="ios-strings">iOS .strings</Select.Option>
+                                    </Select>
+                                </div>
                                 <Dropzone
                                     onDrop={this.onDrop}
                                     ref={(node) => {
                                         this.dropzoneRef = node;
                                     }}
                                     accept={[".json", ".strings"]}
+                                    disabled={!this.state.selectedImportFormat}
                                 >
                                     {({ getRootProps, getInputProps }) => {
                                         return (
-                                            <DropZoneWrapper {...getRootProps()}>
+                                            <DropZoneWrapper
+                                                {...getRootProps()}
+                                                disabled={!this.state.selectedImportFormat}
+                                            >
                                                 {this.state.files.length > 0 ? (
                                                     <p style={{ margin: 0, display: "flex", alignItems: "center" }}>
                                                         <FileTextOutlined
@@ -208,8 +246,14 @@ class ImportSite extends React.Component<IProps, IState> {
                                                     </p>
                                                 ) : (
                                                     <p style={{ margin: 0 }}>
-                                                        Drop a <b>.json</b> or <b>.strings</b> file here or click to
-                                                        upload one.
+                                                        {!this.state.selectedImportFormat ? (
+                                                            <>Please select an import format.</>
+                                                        ) : (
+                                                            <>
+                                                                Drop a <b>{this.getFileEndingForSelectedFormat()}</b>{" "}
+                                                                file here or click to upload one.
+                                                            </>
+                                                        )}
                                                     </p>
                                                 )}
                                                 <input {...getInputProps()} accept=".json,.strings" />

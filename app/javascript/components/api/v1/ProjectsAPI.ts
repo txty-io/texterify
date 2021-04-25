@@ -1,4 +1,5 @@
 import fileDownload from "js-file-download";
+import { ImportFileFormats } from "../../sites/dashboard/ImportSite";
 import { IProject } from "../../stores/DashboardStore";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
@@ -67,14 +68,21 @@ const ProjectsAPI = {
         return response;
     },
 
-    import: async (options: { projectId: string; languageId: string; file: any; exportConfigId: string }) => {
+    import: async (options: {
+        projectId: string;
+        languageId: string;
+        file: any;
+        exportConfigId: string;
+        fileFormat: ImportFileFormats;
+    }) => {
         const fileBase64 = await getBase64(options.file);
 
         return API.postRequest(`projects/${options.projectId}/import`, true, {
             language_id: options.languageId,
             export_config_id: options.exportConfigId,
             name: options.file.name,
-            file: fileBase64
+            file: fileBase64,
+            file_format: options.fileFormat
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);

@@ -197,8 +197,10 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     file_name = params[:name]
     file_content = Base64.decode64(file).force_encoding('UTF-8')
 
+    file_format = params[:file_format]
+
     begin
-      json = helpers.json_file_content(file_name, file_content)
+      parsed_data = helpers.parse_file_content(file_name, file_content, file_format)
     rescue RuntimeError => e
       render json: {
         error: true,
@@ -207,15 +209,13 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       return
     end
 
-    json.each do |json_key, json_value|
+    parsed_data.each do |json_key, json_value|
       key = project.keys.find_by(name: json_key)
 
       if key.present?
         translation = key.translations.find_by(language: language)
 
-        if translation.present?
-          translation.content = json_value
-        else
+        if translation.blank?
           translation = Translation.new
           translation.content = json_value
           translation.key_id = key.id
@@ -225,16 +225,35 @@ class Api::V1::ProjectsController < Api::V1::ApiController
           end
         end
 
+        if file_format == 'json-formatjs'
+          translation.content = json_value['defaultMessage']
+
+          key.description = json_value['description']
+          key.save
+        else
+          translation.content = json_value
+        end
+
         translation.save
       else
         key = Key.new(name: json_key)
         key.project_id = project.id
 
+        if file_format == 'json-formatjs'
+          key.description = json_value['description']
+        end
+
         if key.save!
           translation = Translation.new
-          translation.content = json_value
           translation.key_id = key.id
           translation.language_id = language.id
+
+          if file_format == 'json-formatjs'
+            translation.content = json_value['defaultMessage']
+          else
+            translation.content = json_value
+          end
+
           translation.save
         end
       end
