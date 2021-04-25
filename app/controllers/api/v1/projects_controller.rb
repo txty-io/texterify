@@ -220,6 +220,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
           translation.content = json_value
           translation.key_id = key.id
           translation.language_id = language.id
+
           if export_config
             translation.export_config_id = export_config.id
           end
@@ -247,6 +248,10 @@ class Api::V1::ProjectsController < Api::V1::ApiController
           translation = Translation.new
           translation.key_id = key.id
           translation.language_id = language.id
+
+          if export_config
+            translation.export_config_id = export_config.id
+          end
 
           if file_format == 'json-formatjs'
             translation.content = json_value['defaultMessage']
