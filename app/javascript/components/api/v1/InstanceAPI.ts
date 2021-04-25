@@ -5,6 +5,10 @@ export interface IInstanceInfo {
     users_count: number;
     projects_count: number;
     organizations_count: number;
+    languages_count: number;
+    keys_count: number;
+    translations_count: number;
+    releases_count: number;
 }
 
 const InstanceAPI = {

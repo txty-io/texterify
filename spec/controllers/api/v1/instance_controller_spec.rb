@@ -51,6 +51,10 @@ RSpec.describe Api::V1::InstanceController, type: :request do
       expect(body['users_count']).to eq(2)
       expect(body['projects_count']).to eq(3)
       expect(body['organizations_count']).to eq(7)
+      expect(body['languages_count']).to eq(0)
+      expect(body['keys_count']).to eq(0)
+      expect(body['translations_count']).to eq(0)
+      expect(body['releases_count']).to eq(0)
     end
   end
 end
