@@ -66,6 +66,9 @@ ARG SENTRY_DSN_FRONTEND
 
 ENV COMMIT $COMMIT_HASH
 
+RUN echo $COMMIT_HASH
+RUN echo $COMMIT
+
 # Compile assets.
 RUN SECRET_KEY_BASE=`bin/rails secret` \
     RAILS_ENV=$RAILS_ENV \
