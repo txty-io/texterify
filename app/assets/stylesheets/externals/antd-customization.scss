@@ -10,6 +10,11 @@
     }
   }
 
+  // Fixes cross to delete items not centered in multi-select.
+  .ant-select-selection-item {
+    align-items: center;
+  }
+
   .ant-layout-header {
     background: var(--header-background-color);
     border-bottom: 1px solid var(--border-color);
