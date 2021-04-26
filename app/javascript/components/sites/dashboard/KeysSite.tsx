@@ -1,5 +1,19 @@
-import { MoreOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { Button, Drawer, Input, Layout, Modal, Pagination, Popover, Switch, Tag, Tooltip } from "antd";
+import { MoreOutlined, QuestionCircleOutlined, SettingOutlined } from "@ant-design/icons";
+import {
+    Button,
+    DatePicker,
+    Drawer,
+    Input,
+    Layout,
+    Modal,
+    Pagination,
+    Popover,
+    Select,
+    Switch,
+    Tag,
+    Tooltip
+} from "antd";
+import Checkbox from "antd/lib/checkbox/Checkbox";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
@@ -19,6 +33,8 @@ import { ErrorUtils } from "../../ui/ErrorUtils";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
+import { KeySearchSettings } from "../../ui/KeySearchSettings";
+import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActiveFilters";
 import { Loading } from "../../ui/Loading";
 import { TexterifyModal } from "../../ui/TexterifyModal";
 import { Utils } from "../../ui/Utils";
@@ -615,7 +631,7 @@ class KeysSite extends React.Component<IProps, IState> {
                     <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                         <h1>Keys</h1>
                         <div style={{ display: "flex" }}>
-                            <div style={{ flexGrow: 1 }}>
+                            <div>
                                 <Button
                                     type="default"
                                     style={{ marginRight: 8 }}
@@ -638,13 +654,56 @@ class KeysSite extends React.Component<IProps, IState> {
                                     Delete selected
                                 </Button>
                             </div>
-                            <Input.Search
-                                placeholder="Search keys and translations"
-                                onChange={this.onSearch}
-                                style={{ maxWidth: "50%" }}
-                                data-id="project-keys-search"
-                                allowClear
-                            />
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    marginLeft: 120,
+                                    flexGrow: 1
+                                }}
+                            >
+                                <KeySearchSettingsActiveFilters
+                                    languagesResponse={this.state.languagesResponse}
+                                    exportConfigsResponse={this.state.exportConfigsResponse}
+                                />
+                                <Input.Group
+                                    compact
+                                    style={{
+                                        width: "100%",
+                                        display: "flex",
+                                        marginTop: 8
+                                    }}
+                                >
+                                    <Select defaultValue="contains">
+                                        <Select.Option value="contains">contains</Select.Option>
+                                        <Select.Option value="exactly">exactly</Select.Option>
+                                    </Select>
+                                    <Popover
+                                        title="Search settings"
+                                        placement="bottomLeft"
+                                        trigger="click"
+                                        content={
+                                            <KeySearchSettings
+                                                languagesResponse={this.state.languagesResponse}
+                                                exportConfigsResponse={this.state.exportConfigsResponse}
+                                                onChange={(settings) => {
+                                                    console.error(settings);
+                                                }}
+                                            />
+                                        }
+                                    >
+                                        <Button>
+                                            <SettingOutlined />
+                                        </Button>
+                                    </Popover>
+                                    <Input.Search
+                                        placeholder="Search your translations"
+                                        onChange={this.onSearch}
+                                        data-id="project-keys-search"
+                                        allowClear
+                                    />
+                                </Input.Group>
+                            </div>
                         </div>
                         <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", alignItems: "flex-end" }}>
                             <span style={{ marginRight: 8 }}>Select visible columns:</span>
