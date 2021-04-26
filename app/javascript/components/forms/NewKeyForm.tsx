@@ -40,7 +40,7 @@ class NewKeyForm extends React.Component<IProps> {
             values.htmlEnabled
         );
 
-        if (response.errors) {
+        if (!response || !response.data || response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
                 this.formRef.current.setFields([
                     {
