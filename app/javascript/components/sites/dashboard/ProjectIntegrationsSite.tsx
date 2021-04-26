@@ -81,12 +81,12 @@ class ProjectIntegrationsSite extends React.Component {
                             link: "https://github.com/texterify/texterify-cli"
                         })}
 
-                        {this.renderIntegration({
+                        {/* {this.renderIntegration({
                             textLogo: "API",
                             name: "Application Programming Interface",
                             description: "Use the API.",
                             link: "https://docs.texterify.com/api/basics"
-                        })}
+                        })} */}
 
                         {this.renderIntegration({
                             logo: VisualStudioCodeLogo,
