@@ -4,6 +4,12 @@
   flex-grow: 1;
   min-height: 100%;
 
+  .ant-input-group {
+    button:hover, button:focus {
+      z-index: 1;
+    }
+  }
+
   .ant-layout-header {
     background: var(--header-background-color);
     border-bottom: 1px solid var(--border-color);
