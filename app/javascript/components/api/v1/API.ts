@@ -45,7 +45,7 @@ async function request(options: {
 
     // Add query params if it is a get request.
     if (options.method === "GET" && options.params) {
-        fullURL += `?${queryString.stringify(options.params)}`;
+        fullURL += `?${queryString.stringify(options.params, { arrayFormat: "bracket" })}`;
     }
 
     let response: any;
