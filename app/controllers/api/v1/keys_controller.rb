@@ -28,10 +28,10 @@ class Api::V1::KeysController < Api::V1::ApiController
     only_untranslated = params[:only_untranslated] == 'true'
     only_html_enabled = params[:only_html_enabled] == 'true'
     only_with_overwrites = params[:only_with_overwrites] == 'true'
-    changed_before = params[:changed_before]
-    changed_after = params[:changed_after]
+    # changed_before = params[:changed_before]
+    # changed_after = params[:changed_after]
     language_ids = Array(params[:language_ids])
-    export_config_ids = Array(params[:export_config_ids])
+    # export_config_ids = Array(params[:export_config_ids])
 
     keys = project.keys.order_by_name
 
