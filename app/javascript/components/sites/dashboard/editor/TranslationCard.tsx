@@ -113,15 +113,21 @@ class TranslationCard extends React.Component<IProps, IState> {
         let translationForLanguage = "";
 
         if (this.props.keyResponse) {
-            this.props.keyResponse.data.relationships.translations.data.map((translationReference) => {
+            this.props.keyResponse.data.relationships.translations.data.some((translationReference) => {
                 const translation = APIUtils.getIncludedObject(translationReference, this.props.keyResponse.included);
+
+                // Check for language
                 if (translation.relationships.language.data.id === languageId) {
-                    if (translation.relationships.export_config.data) {
-                        if (translation.relationships.export_config.data.id === this.props.exportConfigId) {
+                    if (this.props.exportConfigId) {
+                        // If translation for export config is requested
+                        if (translation.relationships.export_config.data?.id === this.props.exportConfigId) {
                             translationForLanguage = translation.attributes.content;
+                            return true;
                         }
-                    } else {
+                    } else if (!translation.relationships.export_config.data?.id) {
+                        // If the default translation for that language is requested
                         translationForLanguage = translation.attributes.content;
+                        return true;
                     }
                 }
             });
