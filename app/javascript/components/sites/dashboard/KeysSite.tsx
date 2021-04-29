@@ -1,25 +1,11 @@
 import { MoreOutlined, QuestionCircleOutlined, SettingOutlined } from "@ant-design/icons";
-import {
-    Button,
-    DatePicker,
-    Drawer,
-    Input,
-    Layout,
-    Modal,
-    Pagination,
-    Popover,
-    Select,
-    Switch,
-    Tag,
-    Tooltip
-} from "antd";
-import Checkbox from "antd/lib/checkbox/Checkbox";
+import { Button, Drawer, Input, Layout, Modal, Pagination, Popover, Select, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
-import { KeysAPI } from "../../api/v1/KeysAPI";
+import { IGetKeysOptionMatch, IGetKeysOptions, KeysAPI } from "../../api/v1/KeysAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
 import { TranslationsAPI } from "../../api/v1/TranslationsAPI";
@@ -33,7 +19,7 @@ import { ErrorUtils } from "../../ui/ErrorUtils";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
-import { KeySearchSettings } from "../../ui/KeySearchSettings";
+import { ISearchSettings, KeySearchSettings, parseKeySearchSettingsFromURL } from "../../ui/KeySearchSettings";
 import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActiveFilters";
 import { Loading } from "../../ui/Loading";
 import { TexterifyModal } from "../../ui/TexterifyModal";
@@ -63,6 +49,8 @@ interface IState {
     editTranslationContentChanged: boolean;
     keyToShowHistory: any;
     keyMenuVisible: string;
+    searchSettings: ISearchSettings;
+    match: IGetKeysOptionMatch;
 }
 
 class KeysSite extends React.Component<IProps, IState> {
@@ -110,7 +98,9 @@ class KeysSite extends React.Component<IProps, IState> {
         editTranslationExportConfigId: null,
         editTranslationContentChanged: false,
         keyToShowHistory: null,
-        keyMenuVisible: null
+        keyMenuVisible: null,
+        searchSettings: parseKeySearchSettingsFromURL(),
+        match: "contains"
     };
 
     async componentDidMount() {
@@ -140,7 +130,7 @@ class KeysSite extends React.Component<IProps, IState> {
         });
     }
 
-    fetchKeys = async (options?: any) => {
+    fetchKeys = async (options?: IGetKeysOptions) => {
         this.setState({ keysLoading: true });
         try {
             const responseKeys = await KeysAPI.getKeys(this.props.match.params.projectId, options);
@@ -404,10 +394,12 @@ class KeysSite extends React.Component<IProps, IState> {
     };
 
     reloadTable = async () => {
-        const fetchOptions = {
+        const fetchOptions: IGetKeysOptions = {
             search: this.state.search,
             page: this.state.page,
-            perPage: dashboardStore.keysPerPage
+            perPage: dashboardStore.keysPerPage,
+            match: this.state.match,
+            searchSettings: this.state.searchSettings
         };
         await this.fetchKeys(fetchOptions);
     };
@@ -630,7 +622,7 @@ class KeysSite extends React.Component<IProps, IState> {
                     <Breadcrumbs breadcrumbName="keys" />
                     <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                         <h1>Keys</h1>
-                        <div style={{ display: "flex" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <div>
                                 <Button
                                     type="default"
@@ -659,7 +651,8 @@ class KeysSite extends React.Component<IProps, IState> {
                                     display: "flex",
                                     flexDirection: "column",
                                     marginLeft: 120,
-                                    flexGrow: 1
+                                    flexGrow: 1,
+                                    maxWidth: 800
                                 }}
                             >
                                 <KeySearchSettingsActiveFilters
@@ -671,10 +664,16 @@ class KeysSite extends React.Component<IProps, IState> {
                                     style={{
                                         width: "100%",
                                         display: "flex",
-                                        marginTop: 8
+                                        marginTop: 4
                                     }}
                                 >
-                                    <Select defaultValue="contains">
+                                    <Select
+                                        defaultValue={this.state.match}
+                                        onSelect={(value) => {
+                                            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                            this.setState({ match: value }, this.reloadTable);
+                                        }}
+                                    >
                                         <Select.Option value="contains">contains</Select.Option>
                                         <Select.Option value="exactly">exactly</Select.Option>
                                     </Select>
@@ -687,7 +686,8 @@ class KeysSite extends React.Component<IProps, IState> {
                                                 languagesResponse={this.state.languagesResponse}
                                                 exportConfigsResponse={this.state.exportConfigsResponse}
                                                 onChange={(settings) => {
-                                                    console.error(settings);
+                                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                                    this.setState({ searchSettings: settings }, this.reloadTable);
                                                 }}
                                             />
                                         }

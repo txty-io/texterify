@@ -23,14 +23,76 @@ class Api::V1::KeysController < Api::V1::ApiController
     page = parse_page(params[:page])
     per_page = parse_per_page(params[:per_page])
 
+    match = params[:match]
+    case_sensitive = params[:case_sensitive] == 'true'
+    only_untranslated = params[:only_untranslated] == 'true'
+    only_html_enabled = params[:only_html_enabled] == 'true'
+    only_with_overwrites = params[:only_with_overwrites] == 'true'
+    changed_before = params[:changed_before]
+    changed_after = params[:changed_after]
+    language_ids = Array(params[:language_ids])
+    export_config_ids = Array(params[:export_config_ids])
+
     keys = project.keys.order_by_name
+
+    # Check if a search query has been applied
     if params[:search]
-      keys = project.keys
-        .left_outer_joins(:translations)
-        .ilike_name_or_description_or_translation_content(params[:search])
-        .order_by_name
-        .distinct_on_lower_name
+      eq_op = 'ilike'
+      if case_sensitive
+        eq_op = 'like'
+      end
+
+      keys = project.keys.left_outer_joins(:translations)
+
+      # Apply search query only to given languages
+      if language_ids
+        keys = keys.where('translations.language_id in (?)', language_ids)
+      end
+
+      keys = keys.match_name_or_description_or_translation_content(params[:search], eq_op, match == 'contains')
     end
+
+    # Check for HTML enabled keys
+    if only_html_enabled
+      keys = keys.where(html_enabled: true)
+    end
+
+    # Check for untranslated keys
+    if only_untranslated
+      ids = language_ids
+      if ids.empty?
+        ids = project.languages.map(&:id)
+      end
+
+      untranslated_keys = project.keys.left_outer_joins(:translations)
+        .where("? != (
+          select count(*)
+          from translations
+          where
+            translations.key_id = keys.id and
+            translations.export_config_id is NULL and
+            coalesce(trim(translations.content), '') != '' AND
+            translations.language_id in (?)
+        )", ids.size, ids)
+
+      keys = keys.where(id: untranslated_keys.map(&:id))
+    end
+
+    # Check for keys with overwrites
+    if only_with_overwrites
+      keys = project.keys.left_outer_joins(:translations)
+        .where("translations.export_config_id is not NULL and coalesce(trim(translations.content), '') != ''")
+
+      ids = language_ids
+      if ids.empty?
+        ids = project.languages.map(&:id)
+      end
+
+      keys = keys.where('translations.language_id in (?)', ids)
+      keys = keys.where(id: keys.map(&:id))
+    end
+
+    keys = keys.order_by_name.distinct_on_lower_name
 
     options = {}
     options[:meta] = { total: keys.size }

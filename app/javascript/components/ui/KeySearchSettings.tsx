@@ -7,14 +7,30 @@ import { history } from "../routing/history";
 import moment from "moment";
 import { useLocation } from "react-router";
 
+export function parseKeySearchSettingsFromURL(): ISearchSettings {
+    const currentQueryParams = queryString.parse(history.location.search);
+
+    return {
+        languageIds: currentQueryParams.l as string[],
+        exportConfigIds: currentQueryParams.ec as string[],
+        showOnlyUntranslated: currentQueryParams.ou === "true",
+        onlyHTMLEnabled: currentQueryParams.he === "true",
+        checkCase: currentQueryParams.cc === "true",
+        showOnlyKeysWithOverwrites: currentQueryParams.oo === "true",
+        changedBefore: currentQueryParams.cb as string,
+        changedAfter: currentQueryParams.ca as string
+    };
+}
+
 export function useQuery() {
     return queryString.parse(useLocation().search);
 }
 
-interface ISearchSettings {
+export interface ISearchSettings {
     languageIds: string[];
     exportConfigIds: string[];
     showOnlyUntranslated: boolean;
+    onlyHTMLEnabled: boolean;
     checkCase: boolean;
     showOnlyKeysWithOverwrites: boolean;
     changedBefore: string;
@@ -28,6 +44,7 @@ interface ISearchSettings {
 // oo == only overrides
 // ca == changed after
 // cb == changed before
+// he == html enabled
 export interface ISearchSettingsQueryParams {
     l?: string | string[];
     ec?: string | string[];
@@ -36,6 +53,7 @@ export interface ISearchSettingsQueryParams {
     oo?: boolean;
     ca?: moment.Moment;
     cb?: moment.Moment;
+    he?: boolean;
 }
 
 export function KeySearchSettings(props: {
@@ -49,6 +67,7 @@ export function KeySearchSettings(props: {
     const [selectedExportConfigs, setSelectedExportConfigs] = React.useState<string | string[]>(currentQueryParams.ec);
     const [onlyUntranslated, setOnlyUntranslated] = React.useState<boolean>(currentQueryParams.ou === "true");
     const [checkCase, setCheckCase] = React.useState<boolean>(currentQueryParams.cc === "true");
+    const [onlyHTMLEnabled, setOnlyKeysWithHTMLEnabled] = React.useState<boolean>(currentQueryParams.he === "true");
     const [onlyKeysWithOverwrites, setOnlyKeysWithOverwrites] = React.useState<boolean>(
         currentQueryParams.oo === "true"
     );
@@ -59,7 +78,7 @@ export function KeySearchSettings(props: {
         currentQueryParams.ca !== undefined ? moment(currentQueryParams.ca) : undefined
     );
 
-    React.useEffect(() => {
+    function onChange() {
         const query: ISearchSettingsQueryParams = {};
 
         query.l = selectedLanguages;
@@ -77,6 +96,10 @@ export function KeySearchSettings(props: {
             query.oo = onlyKeysWithOverwrites;
         }
 
+        if (onlyHTMLEnabled) {
+            query.he = onlyHTMLEnabled;
+        }
+
         query.ca = changedAfter;
         query.cb = changedBefore;
 
@@ -84,6 +107,12 @@ export function KeySearchSettings(props: {
         history.push({
             search: searchString
         });
+
+        props.onChange(parseKeySearchSettingsFromURL());
+    }
+
+    React.useEffect(() => {
+        onChange();
     }, [
         selectedLanguages,
         selectedExportConfigs,
@@ -91,7 +120,8 @@ export function KeySearchSettings(props: {
         checkCase,
         onlyKeysWithOverwrites,
         changedBefore,
-        changedAfter
+        changedAfter,
+        onlyHTMLEnabled
     ]);
 
     const languagesForFilterSelectOptions = props.languagesResponse.data.map((language) => {
@@ -162,15 +192,6 @@ export function KeySearchSettings(props: {
 
                 <Checkbox
                     onChange={(event) => {
-                        setOnlyUntranslated(event.target.checked);
-                    }}
-                    style={{ marginTop: 16, marginLeft: 0, width: "100%" }}
-                    defaultChecked={onlyUntranslated}
-                >
-                    Show only untranslated
-                </Checkbox>
-                <Checkbox
-                    onChange={(event) => {
                         setCheckCase(event.target.checked);
                     }}
                     style={{ marginTop: 16, marginLeft: 0, width: "100%" }}
@@ -180,12 +201,30 @@ export function KeySearchSettings(props: {
                 </Checkbox>
                 <Checkbox
                     onChange={(event) => {
+                        setOnlyUntranslated(event.target.checked);
+                    }}
+                    style={{ marginTop: 16, marginLeft: 0, width: "100%" }}
+                    defaultChecked={onlyUntranslated}
+                >
+                    Show only untranslated keys
+                </Checkbox>
+                <Checkbox
+                    onChange={(event) => {
                         setOnlyKeysWithOverwrites(event.target.checked);
                     }}
                     style={{ marginTop: 16, marginLeft: 0, width: "100%" }}
                     defaultChecked={onlyKeysWithOverwrites}
                 >
                     Show only keys with overwrites
+                </Checkbox>
+                <Checkbox
+                    onChange={(event) => {
+                        setOnlyKeysWithHTMLEnabled(event.target.checked);
+                    }}
+                    style={{ marginTop: 16, marginLeft: 0, width: "100%" }}
+                    defaultChecked={onlyHTMLEnabled}
+                >
+                    Show only keys with HTML enabled
                 </Checkbox>
             </div>
 

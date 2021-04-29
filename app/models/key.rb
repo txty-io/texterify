@@ -2,10 +2,13 @@ class Key < ApplicationRecord
   has_paper_trail
 
   scope :order_by_name, -> { order(arel_table['name'].lower.asc) }
-  scope :ilike_name_or_description_or_translation_content, lambda { |search|
+
+  # Note: For HTML keys "contains" is always used because it is otherwise hard to find keys with HTML content at all.
+  scope :match_name_or_description_or_translation_content, lambda { |search, eq_op, contains|
     where(
-      'keys.name ilike :search or keys.description ilike :search or translations.content ilike :search',
-      search: "%#{sanitize_sql_like(search)}%"
+      "(keys.name #{eq_op} :search or keys.description #{eq_op} :search or translations.content #{eq_op} :search) or (translations.content ilike :search_html and keys.html_enabled = true)",
+      search: contains ? "%#{sanitize_sql_like(search)}%" : sanitize_sql_like(search),
+      search_html: "%#{sanitize_sql_like(search)}%"
     )
   }
   scope :distinct_on_lower_name, -> { select('distinct on (lower("keys"."name")) keys.*') }
