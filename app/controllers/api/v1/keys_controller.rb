@@ -28,12 +28,12 @@ class Api::V1::KeysController < Api::V1::ApiController
     only_untranslated = params[:only_untranslated] == 'true'
     only_html_enabled = params[:only_html_enabled] == 'true'
     only_with_overwrites = params[:only_with_overwrites] == 'true'
-    # changed_before = params[:changed_before]
-    # changed_after = params[:changed_after]
+    changed_before = params[:changed_before]
+    changed_after = params[:changed_after]
     language_ids = Array(params[:language_ids])
     # export_config_ids = Array(params[:export_config_ids])
 
-    keys = project.keys.order_by_name
+    keys = project.keys.left_outer_joins(:translations)
 
     # Check if a search query has been applied
     if params[:search]
@@ -42,10 +42,8 @@ class Api::V1::KeysController < Api::V1::ApiController
         eq_op = 'like'
       end
 
-      keys = project.keys.left_outer_joins(:translations)
-
       # Apply search query only to given languages
-      if language_ids
+      if !language_ids.empty?
         keys = keys.where('translations.language_id in (?)', language_ids)
       end
 
@@ -64,8 +62,7 @@ class Api::V1::KeysController < Api::V1::ApiController
         ids = project.languages.map(&:id)
       end
 
-      untranslated_keys = project.keys.left_outer_joins(:translations)
-        .where("? != (
+      untranslated_keys = keys.where("? != (
           select count(*)
           from translations
           where
@@ -80,16 +77,22 @@ class Api::V1::KeysController < Api::V1::ApiController
 
     # Check for keys with overwrites
     if only_with_overwrites
-      keys = project.keys.left_outer_joins(:translations)
-        .where("translations.export_config_id is not NULL and coalesce(trim(translations.content), '') != ''")
+      keys = keys.where("translations.export_config_id is not NULL and coalesce(trim(translations.content), '') != ''")
 
-      ids = language_ids
-      if ids.empty?
-        ids = project.languages.map(&:id)
+      if !language_ids.empty?
+        keys = keys.where('translations.language_id in (?)', language_ids)
+      end
+    end
+
+    if changed_before || changed_after
+      if changed_before
+        # Add 1 day because comparison uses 00:00 as time an we also want to include the selected day
+        keys = keys.where('translations.updated_at <= (:changed_before) or keys.updated_at <= (:changed_before)', changed_before: Date.parse(changed_before) + 1.day)
       end
 
-      keys = keys.where('translations.language_id in (?)', ids)
-      keys = keys.where(id: keys.map(&:id))
+      if changed_after
+        keys = keys.where('translations.updated_at >= (:changed_after) or keys.updated_at >= (:changed_after)', changed_after: changed_after)
+      end
     end
 
     keys = keys.order_by_name.distinct_on_lower_name

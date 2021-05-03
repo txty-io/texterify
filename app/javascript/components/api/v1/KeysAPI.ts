@@ -2,13 +2,10 @@ import { ISearchSettings } from "../../ui/KeySearchSettings";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
-export type IGetKeysOptionMatch = "exactly" | "contains";
-
 export interface IGetKeysOptions {
     search: string;
     page: number;
     perPage: number;
-    match: IGetKeysOptionMatch;
     searchSettings?: ISearchSettings;
 }
 
@@ -24,7 +21,7 @@ const KeysAPI = {
             search: (options && options.search) || undefined,
             page: options && options.page,
             per_page: options && options.perPage,
-            match: options && options.match,
+            match: options && options.searchSettings && options.searchSettings.match,
             case_sensitive: options && options.searchSettings && options.searchSettings.checkCase,
             only_untranslated: options && options.searchSettings && options.searchSettings.showOnlyUntranslated,
             only_html_enabled: options && options.searchSettings && options.searchSettings.onlyHTMLEnabled,

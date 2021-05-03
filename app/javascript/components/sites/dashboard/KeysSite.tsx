@@ -1,11 +1,11 @@
 import { MoreOutlined, QuestionCircleOutlined, SettingOutlined } from "@ant-design/icons";
-import { Button, Drawer, Input, Layout, Modal, Pagination, Popover, Select, Switch, Tag, Tooltip } from "antd";
+import { Button, Drawer, Input, Layout, Modal, Pagination, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
-import { IGetKeysOptionMatch, IGetKeysOptions, KeysAPI } from "../../api/v1/KeysAPI";
+import { IGetKeysOptions, KeysAPI } from "../../api/v1/KeysAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
 import { TranslationsAPI } from "../../api/v1/TranslationsAPI";
@@ -50,7 +50,6 @@ interface IState {
     keyToShowHistory: any;
     keyMenuVisible: string;
     searchSettings: ISearchSettings;
-    match: IGetKeysOptionMatch;
 }
 
 class KeysSite extends React.Component<IProps, IState> {
@@ -99,8 +98,7 @@ class KeysSite extends React.Component<IProps, IState> {
         editTranslationContentChanged: false,
         keyToShowHistory: null,
         keyMenuVisible: null,
-        searchSettings: parseKeySearchSettingsFromURL(),
-        match: "contains"
+        searchSettings: parseKeySearchSettingsFromURL()
     };
 
     async componentDidMount() {
@@ -398,7 +396,6 @@ class KeysSite extends React.Component<IProps, IState> {
             search: this.state.search,
             page: this.state.page,
             perPage: dashboardStore.keysPerPage,
-            match: this.state.match,
             searchSettings: this.state.searchSettings
         };
         await this.fetchKeys(fetchOptions);
@@ -667,16 +664,6 @@ class KeysSite extends React.Component<IProps, IState> {
                                         marginTop: 4
                                     }}
                                 >
-                                    <Select
-                                        defaultValue={this.state.match}
-                                        onSelect={(value) => {
-                                            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                            this.setState({ match: value }, this.reloadTable);
-                                        }}
-                                    >
-                                        <Select.Option value="contains">contains</Select.Option>
-                                        <Select.Option value="exactly">exactly</Select.Option>
-                                    </Select>
                                     <Popover
                                         title="Search settings"
                                         placement="bottomLeft"

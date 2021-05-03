@@ -1,11 +1,11 @@
 import { Checkbox, DatePicker, Select } from "antd";
-import * as React from "react";
-import { APIUtils } from "../api/v1/APIUtils";
-import FlagIcon from "./FlagIcons";
-import * as queryString from "query-string";
-import { history } from "../routing/history";
 import moment from "moment";
+import * as queryString from "query-string";
+import * as React from "react";
 import { useLocation } from "react-router";
+import { APIUtils } from "../api/v1/APIUtils";
+import { history } from "../routing/history";
+import FlagIcon from "./FlagIcons";
 
 export function parseKeySearchSettingsFromURL(): ISearchSettings {
     const currentQueryParams = queryString.parse(history.location.search);
@@ -18,13 +18,16 @@ export function parseKeySearchSettingsFromURL(): ISearchSettings {
         checkCase: currentQueryParams.cc === "true",
         showOnlyKeysWithOverwrites: currentQueryParams.oo === "true",
         changedBefore: currentQueryParams.cb as string,
-        changedAfter: currentQueryParams.ca as string
+        changedAfter: currentQueryParams.ca as string,
+        match: currentQueryParams.m as ISearchSettingsMatch
     };
 }
 
 export function useQuery() {
     return queryString.parse(useLocation().search);
 }
+
+type ISearchSettingsMatch = "contains" | "exactly";
 
 export interface ISearchSettings {
     languageIds: string[];
@@ -35,6 +38,7 @@ export interface ISearchSettings {
     showOnlyKeysWithOverwrites: boolean;
     changedBefore: string;
     changedAfter: string;
+    match: ISearchSettingsMatch;
 }
 
 // l == languages
@@ -51,9 +55,10 @@ export interface ISearchSettingsQueryParams {
     ou?: boolean;
     cc?: boolean;
     oo?: boolean;
-    ca?: moment.Moment;
-    cb?: moment.Moment;
+    ca?: string;
+    cb?: string;
     he?: boolean;
+    m?: string;
 }
 
 export function KeySearchSettings(props: {
@@ -65,6 +70,7 @@ export function KeySearchSettings(props: {
 
     const [selectedLanguages, setSelectedLanguages] = React.useState<string | string[]>(currentQueryParams.l);
     const [selectedExportConfigs, setSelectedExportConfigs] = React.useState<string | string[]>(currentQueryParams.ec);
+    const [match, setMatch] = React.useState<string>((currentQueryParams.m as string) || "contains");
     const [onlyUntranslated, setOnlyUntranslated] = React.useState<boolean>(currentQueryParams.ou === "true");
     const [checkCase, setCheckCase] = React.useState<boolean>(currentQueryParams.cc === "true");
     const [onlyHTMLEnabled, setOnlyKeysWithHTMLEnabled] = React.useState<boolean>(currentQueryParams.he === "true");
@@ -72,10 +78,10 @@ export function KeySearchSettings(props: {
         currentQueryParams.oo === "true"
     );
     const [changedBefore, setChangedBefore] = React.useState<moment.Moment>(
-        currentQueryParams.cb !== undefined ? moment(currentQueryParams.cb) : undefined
+        currentQueryParams.cb !== undefined ? moment(currentQueryParams.cb as string) : undefined
     );
     const [changedAfter, setChangedAfter] = React.useState<moment.Moment>(
-        currentQueryParams.ca !== undefined ? moment(currentQueryParams.ca) : undefined
+        currentQueryParams.ca !== undefined ? moment(currentQueryParams.ca as string) : undefined
     );
 
     function onChange() {
@@ -100,8 +106,17 @@ export function KeySearchSettings(props: {
             query.he = onlyHTMLEnabled;
         }
 
-        query.ca = changedAfter;
-        query.cb = changedBefore;
+        if (changedAfter) {
+            query.ca = changedAfter.format("YYYY-MM-DD");
+        }
+
+        if (changedBefore) {
+            query.cb = changedBefore.format("YYYY-MM-DD");
+        }
+
+        if (match !== "contains") {
+            query.m = match;
+        }
 
         const searchString = queryString.stringify(query);
         history.push({
@@ -121,7 +136,8 @@ export function KeySearchSettings(props: {
         onlyKeysWithOverwrites,
         changedBefore,
         changedAfter,
-        onlyHTMLEnabled
+        onlyHTMLEnabled,
+        match
     ]);
 
     const languagesForFilterSelectOptions = props.languagesResponse.data.map((language) => {
@@ -149,7 +165,20 @@ export function KeySearchSettings(props: {
     return (
         <div style={{ width: 640, display: "flex" }}>
             <div style={{ width: "50%", marginRight: 40 }}>
-                <h4>Filter by languages</h4>
+                <h4>String matching</h4>
+                <Select
+                    placeholder="Select string matching"
+                    style={{ width: "100%" }}
+                    defaultValue={match}
+                    onSelect={(value) => {
+                        setMatch(value);
+                    }}
+                >
+                    <Select.Option value="contains">contains</Select.Option>
+                    <Select.Option value="exactly">exactly</Select.Option>
+                </Select>
+
+                <h4 style={{ marginTop: 16 }}>Filter by languages</h4>
                 <Select
                     showSearch
                     placeholder="Select languages"

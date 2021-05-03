@@ -22,7 +22,8 @@ export function KeySearchSettingsActiveFilters(props: {
         currentQueryParams.l ||
         currentQueryParams.ec ||
         currentQueryParams.ca ||
-        currentQueryParams.cb;
+        currentQueryParams.cb ||
+        currentQueryParams.m === "exactly";
 
     return (
         <div style={{ display: "flex", ...props.style }}>
@@ -31,28 +32,35 @@ export function KeySearchSettingsActiveFilters(props: {
                 {!hasActiveFilter && (
                     <span style={{ fontStyle: "italic", color: "var(--color-passive)" }}>No filters active</span>
                 )}
+
+                {currentQueryParams.m === "exactly" && (
+                    <Tag color="magenta" style={TagStyle}>
+                        text matches search exactly
+                    </Tag>
+                )}
+
                 {currentQueryParams.ou === "true" && (
-                    <Tag color="blue" style={TagStyle}>
+                    <Tag color="red" style={TagStyle}>
                         only untranslated
                     </Tag>
                 )}
                 {currentQueryParams.cc === "true" && (
-                    <Tag color="blue" style={TagStyle}>
+                    <Tag color="volcano" style={TagStyle}>
                         case sensitive
                     </Tag>
                 )}
                 {currentQueryParams.oo === "true" && (
-                    <Tag color="blue" style={TagStyle}>
+                    <Tag color="orange" style={TagStyle}>
                         only with overwrites
                     </Tag>
                 )}
                 {currentQueryParams.he === "true" && (
-                    <Tag color="blue" style={TagStyle}>
+                    <Tag color="gold" style={TagStyle}>
                         only HTML
                     </Tag>
                 )}
                 {currentQueryParams.l && (
-                    <Tag color="blue" style={TagStyle}>
+                    <Tag color="green" style={TagStyle}>
                         {props.languagesResponse.data
                             .filter((language) => {
                                 return currentQueryParams.l.includes(language.id);
@@ -80,7 +88,7 @@ export function KeySearchSettingsActiveFilters(props: {
                     </Tag>
                 )}
                 {currentQueryParams.ec && (
-                    <Tag color="blue" style={TagStyle}>
+                    <Tag color="cyan" style={TagStyle}>
                         {props.exportConfigsResponse.data
                             .filter((exportConfig) => {
                                 return currentQueryParams.ec.includes(exportConfig.id);
@@ -99,7 +107,7 @@ export function KeySearchSettingsActiveFilters(props: {
                     </Tag>
                 )}
                 {currentQueryParams.cb && (
-                    <Tag color="blue" style={TagStyle}>
+                    <Tag color="geekblue" style={TagStyle}>
                         changed before {moment(currentQueryParams.cb).format("YYYY-MM-DD")}
                     </Tag>
                 )}
