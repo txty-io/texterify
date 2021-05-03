@@ -215,6 +215,11 @@
     margin-right: 0;
   }
 
+  // Adjust tab selection padding
+  .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab, .ant-tabs-card > div > .ant-tabs-nav .ant-tabs-tab {
+    padding: 12px 24px;
+  }
+
   .ant-list-item-meta-content {
     max-width: 100%;
   }

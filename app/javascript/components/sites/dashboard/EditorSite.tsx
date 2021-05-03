@@ -1,5 +1,5 @@
-import { ArrowLeftOutlined, LoadingOutlined } from "@ant-design/icons";
-import { Alert, Button, Layout, Pagination, Tabs } from "antd";
+import { ArrowLeftOutlined, LoadingOutlined, SettingOutlined } from "@ant-design/icons";
+import { Alert, Button, Input, Layout, Pagination, Popover, Tabs, Tag } from "antd";
 import Search from "antd/lib/input/Search";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
@@ -7,21 +7,28 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { KeysAPI } from "../../api/v1/KeysAPI";
+import { APIUtils } from "../../api/v1/APIUtils";
+import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
+import { IGetKeysOptions, KeysAPI } from "../../api/v1/KeysAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { DarkModeToggle } from "../../ui/DarkModeToggle";
+import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
+import { ISearchSettings, KeySearchSettings, parseKeySearchSettingsFromURL } from "../../ui/KeySearchSettings";
+import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActiveFilters";
 import { Styles } from "../../ui/Styles";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
 import { TranslationCard } from "./editor/TranslationCard";
+import * as queryString from "query-string";
+import { Utils } from "../../ui/Utils";
 
 const Key = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
-    padding: 12px 16px;
+    padding: 12px 24px;
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 13px;
@@ -53,10 +60,12 @@ interface IState {
     keyResponse: any;
     keysLoading: boolean;
     languagesResponse: any;
+    exportConfigsResponse: any;
     selectedLanguageIdFrom: string;
     selectedLanguageIdTo: string;
     search: string;
     page: number;
+    searchSettings: ISearchSettings;
 }
 
 @observer
@@ -68,14 +77,30 @@ class EditorSite extends React.Component<IProps, IState> {
         keyResponse: null,
         keysLoading: true,
         languagesResponse: null,
+        exportConfigsResponse: null,
         selectedLanguageIdFrom: "",
         selectedLanguageIdTo: "",
         search: undefined,
-        page: 1
+        page: 1,
+        searchSettings: parseKeySearchSettingsFromURL()
     };
 
     debouncedSearchReloader = _.debounce(
         (value) => {
+            const currentQueryParams = queryString.parse(history.location.search);
+            const searchObject: { q?: string } = currentQueryParams;
+
+            if (value) {
+                searchObject.q = value;
+            } else {
+                delete searchObject.q;
+            }
+
+            const searchString = queryString.stringify(searchObject);
+            history.push({
+                search: searchString
+            });
+
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
             this.setState({ search: value, page: 1 }, this.fetchKeys);
         },
@@ -97,9 +122,13 @@ class EditorSite extends React.Component<IProps, IState> {
         await this.fetchKeys();
 
         const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
+        const exportConfigsResponse = await ExportConfigsAPI.getExportConfigs({
+            projectId: this.props.match.params.projectId
+        });
 
         this.setState({
-            languagesResponse: responseLanguages
+            languagesResponse: responseLanguages,
+            exportConfigsResponse: exportConfigsResponse
         });
     }
 
@@ -107,11 +136,12 @@ class EditorSite extends React.Component<IProps, IState> {
         window.removeEventListener("resize", this.onResize);
     }
 
-    fetchKeys = async (options?: any) => {
+    fetchKeys = async (options?: IGetKeysOptions) => {
         options = options || {};
         options.search = options.search || this.state.search;
         options.page = options.page || this.state.page;
         options.perPage = 12;
+        options.searchSettings = this.state.searchSettings;
 
         this.setState({ keysLoading: true });
         try {
@@ -205,30 +235,149 @@ class EditorSite extends React.Component<IProps, IState> {
                                 flexDirection: "column",
                                 borderRight: "1px solid var(--border-color)",
                                 overflow: "auto",
-                                flexBasis: 300,
-                                flexShrink: 0,
-                                flexGrow: 0
+                                width: "25%",
+                                flexShrink: 0
                             }}
                         >
-                            <Search
-                                placeholder="Search keys and translations"
-                                onChange={this.onSearch}
-                                style={{ margin: 16, width: "auto" }}
-                            />
+                            <div style={{ margin: 24, width: "auto" }}>
+                                <KeySearchSettingsActiveFilters
+                                    languagesResponse={this.state.languagesResponse}
+                                    exportConfigsResponse={this.state.exportConfigsResponse}
+                                />
+                                {/* <Search placeholder="Search keys and translations" onChange={this.onSearch} /> */}
+                                <Input.Group
+                                    compact
+                                    style={{
+                                        width: "100%",
+                                        display: "flex",
+                                        marginTop: 4
+                                    }}
+                                >
+                                    <Popover
+                                        title="Search settings"
+                                        placement="bottomLeft"
+                                        trigger="click"
+                                        content={
+                                            <KeySearchSettings
+                                                languagesResponse={this.state.languagesResponse}
+                                                exportConfigsResponse={this.state.exportConfigsResponse}
+                                                onChange={(settings) => {
+                                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                                    this.setState({ searchSettings: settings }, this.fetchKeys);
+                                                }}
+                                            />
+                                        }
+                                    >
+                                        <Button>
+                                            <SettingOutlined />
+                                        </Button>
+                                    </Popover>
+                                    <Input.Search
+                                        placeholder="Search your translations"
+                                        onChange={this.onSearch}
+                                        data-id="project-keys-search"
+                                        allowClear
+                                        defaultValue={this.state.search}
+                                    />
+                                </Input.Group>
+                            </div>
                             <div style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
                                 {!this.state.keysLoading &&
                                     this.state.keysResponse &&
                                     this.state.keysResponse.data.map((key, index) => {
+                                        let keyContentPreview: JSX.Element;
+
+                                        if (this.state.languagesResponse) {
+                                            const defaultLanguage = this.state.languagesResponse.data.find(
+                                                (language) => {
+                                                    return language.attributes.is_default;
+                                                }
+                                            );
+
+                                            if (defaultLanguage) {
+                                                const countryCode = APIUtils.getIncludedObject(
+                                                    defaultLanguage.relationships.country_code.data,
+                                                    this.state.languagesResponse.included
+                                                );
+
+                                                const defaultLanguageTranslation = key.relationships.translations.data.find(
+                                                    (translationReference) => {
+                                                        const translation = APIUtils.getIncludedObject(
+                                                            translationReference,
+                                                            this.state.keysResponse.included
+                                                        );
+
+                                                        return (
+                                                            translation &&
+                                                            translation.relationships.export_config.data === null &&
+                                                            translation.relationships.language.data.id ===
+                                                                defaultLanguage.id
+                                                        );
+                                                    }
+                                                );
+
+                                                if (defaultLanguageTranslation) {
+                                                    const translation = APIUtils.getIncludedObject(
+                                                        defaultLanguageTranslation,
+                                                        this.state.keysResponse.included
+                                                    );
+
+                                                    const content = key.attributes.html_enabled
+                                                        ? Utils.getHTMLContentPreview(translation.attributes.content)
+                                                        : translation.attributes.content;
+
+                                                    keyContentPreview = (
+                                                        <>
+                                                            {countryCode && (
+                                                                <span style={{ marginRight: 8 }}>
+                                                                    <FlagIcon
+                                                                        code={countryCode.attributes.code.toLowerCase()}
+                                                                    />
+                                                                </span>
+                                                            )}
+                                                            {translation.attributes.content === "" ? (
+                                                                <span style={{ color: "var(--color-passive)" }}>
+                                                                    No content
+                                                                </span>
+                                                            ) : (
+                                                                content
+                                                            )}
+                                                        </>
+                                                    );
+                                                } else {
+                                                    keyContentPreview = (
+                                                        <div style={{ color: "var(--color-passive)" }}>
+                                                            {countryCode && (
+                                                                <span style={{ marginRight: 8 }}>
+                                                                    <FlagIcon
+                                                                        code={countryCode.attributes.code.toLowerCase()}
+                                                                    />
+                                                                </span>
+                                                            )}
+                                                            No content
+                                                        </div>
+                                                    );
+                                                }
+                                            } else {
+                                                keyContentPreview = (
+                                                    <div style={{ color: "var(--color-passive)" }}>
+                                                        Set a default language for preview.
+                                                    </div>
+                                                );
+                                            }
+                                        }
+
                                         return (
                                             <Key
                                                 key={key.id}
                                                 index={index}
                                                 onClick={() => {
+                                                    console.log(history.location.search);
                                                     history.push(
                                                         Routes.DASHBOARD.PROJECT_EDITOR_KEY.replace(
                                                             ":projectId",
                                                             this.props.match.params.projectId
-                                                        ).replace(":keyId", key.id)
+                                                        ).replace(":keyId", key.id) + history.location.search
                                                     );
                                                 }}
                                                 isSelected={this.isSelectedKey(key.id)}
@@ -236,7 +385,31 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     color: this.isSelectedKey(key.id) ? "var(--blue-color)" : undefined
                                                 }}
                                             >
-                                                {key.attributes.name}
+                                                <span style={{ fontWeight: "bold" }}>{key.attributes.name}</span>
+                                                <div
+                                                    style={{
+                                                        textOverflow: "ellipsis",
+                                                        overflow: "hidden",
+                                                        whiteSpace: "nowrap",
+                                                        marginTop: 8,
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "space-between"
+                                                    }}
+                                                >
+                                                    <div
+                                                        style={{
+                                                            flexShrink: 1,
+                                                            overflow: "hidden",
+                                                            textOverflow: "ellipsis"
+                                                        }}
+                                                    >
+                                                        {keyContentPreview}
+                                                    </div>
+                                                    <div style={{ marginLeft: 8, flexShrink: 0 }}>
+                                                        {key.attributes.html_enabled && <Tag color="magenta">HTML</Tag>}
+                                                    </div>
+                                                </div>
                                             </Key>
                                         );
                                     })}
@@ -349,16 +522,15 @@ class EditorSite extends React.Component<IProps, IState> {
                                     flexDirection: "column",
                                     borderLeft: "1px solid var(--border-color)",
                                     overflow: "auto",
-                                    flexBasis: 300,
-                                    flexShrink: 0,
-                                    flexGrow: 0
+                                    width: "25%",
+                                    flexShrink: 0
                                 }}
                             >
                                 <Tabs defaultActiveKey="history" type="card" style={{ overflow: "auto" }}>
                                     {/* <Tabs.TabPane tab="Comments" key="chat" style={{ padding: "0 16px", overflow: "auto" }} >
                                     <KeyComments />
                                     </Tabs.TabPane> */}
-                                    <Tabs.TabPane tab="History" key="history" style={{ padding: "0 16px 16px" }}>
+                                    <Tabs.TabPane tab="History" key="history" style={{ padding: "0 24px 24px" }}>
                                         {this.props.match.params.projectId && this.state.keyResponse.data.id && (
                                             <KeyHistory
                                                 projectId={this.props.match.params.projectId}

@@ -3,9 +3,9 @@ import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
 export interface IGetKeysOptions {
-    search: string;
-    page: number;
-    perPage: number;
+    search?: string;
+    page?: number;
+    perPage?: number;
     searchSettings?: ISearchSettings;
 }
 
