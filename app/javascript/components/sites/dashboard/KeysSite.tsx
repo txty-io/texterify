@@ -10,6 +10,7 @@ import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
 import { TranslationsAPI } from "../../api/v1/TranslationsAPI";
 import { NewKeyForm } from "../../forms/NewKeyForm";
+import { history } from "../../routing/history";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { ColumnTag } from "../../ui/ColumnTag";
@@ -26,6 +27,7 @@ import { TexterifyModal } from "../../ui/TexterifyModal";
 import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { TranslationCard } from "./editor/TranslationCard";
+import * as queryString from "query-string";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -55,6 +57,20 @@ interface IState {
 class KeysSite extends React.Component<IProps, IState> {
     debouncedSearchReloader: any = _.debounce(
         (value) => {
+            const currentQueryParams = queryString.parse(history.location.search);
+            const searchObject: { q?: string } = currentQueryParams;
+
+            if (value) {
+                searchObject.q = value;
+            } else {
+                delete searchObject.q;
+            }
+
+            const searchString = queryString.stringify(searchObject);
+            history.push({
+                search: searchString
+            });
+
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
             this.setState({ search: value, page: 1 }, this.reloadTable);
         },
@@ -77,29 +93,35 @@ class KeysSite extends React.Component<IProps, IState> {
 
     translationCardRef: any;
 
-    state: IState = {
-        keys: [],
-        languages: [],
-        selectedRowKeys: [],
-        isDeleting: false,
-        languagesResponse: null,
-        keysResponse: null,
-        exportConfigsResponse: null,
-        addDialogVisible: false,
-        page: 1,
-        search: undefined,
-        keysLoading: false,
-        projectColumns: null,
-        editTranslationCellOpen: false,
-        editTranslationKeyId: "",
-        editTranslationKeyReponse: null,
-        editTranslationLanguageId: "",
-        editTranslationExportConfigId: null,
-        editTranslationContentChanged: false,
-        keyToShowHistory: null,
-        keyMenuVisible: null,
-        searchSettings: parseKeySearchSettingsFromURL()
-    };
+    constructor(props) {
+        super(props);
+
+        const currentQueryParams = queryString.parse(history.location.search);
+
+        this.state = {
+            keys: [],
+            languages: [],
+            selectedRowKeys: [],
+            isDeleting: false,
+            languagesResponse: null,
+            keysResponse: null,
+            exportConfigsResponse: null,
+            addDialogVisible: false,
+            page: 1,
+            search: currentQueryParams.q as string,
+            keysLoading: false,
+            projectColumns: null,
+            editTranslationCellOpen: false,
+            editTranslationKeyId: "",
+            editTranslationKeyReponse: null,
+            editTranslationLanguageId: "",
+            editTranslationExportConfigId: null,
+            editTranslationContentChanged: false,
+            keyToShowHistory: null,
+            keyMenuVisible: null,
+            searchSettings: parseKeySearchSettingsFromURL()
+        };
+    }
 
     async componentDidMount() {
         await this.reloadTable();
@@ -168,14 +190,14 @@ class KeysSite extends React.Component<IProps, IState> {
             columns.push({
                 title: (
                     <div style={{ whiteSpace: "nowrap" }}>
-                        <span style={{ marginRight: 8 }}>Overwrites</span>
-                        <Tooltip title="Shows how often the key translations are overwritten in export configs.">
+                        <span style={{ marginRight: 8 }}>Overwritten for</span>
+                        <Tooltip title="For which export configs at least one of the translations is overwritten.">
                             <QuestionCircleOutlined />
                         </Tooltip>
                     </div>
                 ),
-                dataIndex: "hasExportConfigOverwrites",
-                key: "hasExportConfigOverwrites",
+                dataIndex: "exportConfigOverwrites",
+                key: "exportConfigOverwrites",
                 width: 80
             });
         }
@@ -267,7 +289,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 }
             });
 
-            const keyExportConfigOverwritesCount = this.getKeyExportConfigOverwritesCount(key);
+            const overwrites = this.getKeyExportConfigOverwrites(key);
 
             return {
                 tags: key.attributes.html_enabled ? (
@@ -275,12 +297,9 @@ class KeysSite extends React.Component<IProps, IState> {
                         HTML
                     </Tag>
                 ) : undefined,
-                hasExportConfigOverwrites:
-                    keyExportConfigOverwritesCount > 0 ? (
-                        <div style={{ display: "flex", justifyContent: "center" }}>
-                            {keyExportConfigOverwritesCount}
-                        </div>
-                    ) : undefined,
+                exportConfigOverwrites: overwrites.map((overwrite) => {
+                    return <Tag color="cyan">{overwrite}</Tag>;
+                }),
                 key: key.attributes.id,
                 keyId: key.attributes.id,
                 name: key.attributes.name,
@@ -556,12 +575,12 @@ class KeysSite extends React.Component<IProps, IState> {
         );
     };
 
-    getKeyExportConfigOverwritesCount = (key: any) => {
+    getKeyExportConfigOverwrites = (key: any) => {
         if (this.state.exportConfigsResponse.data.length === 0) {
-            return false;
+            return [];
         }
 
-        const translations = {};
+        const exportConfigs = [];
         this.state.exportConfigsResponse.data.map((exportConfig) => {
             const currentKey = this.state.keys.find((k) => {
                 return key.id === k.id;
@@ -574,19 +593,19 @@ class KeysSite extends React.Component<IProps, IState> {
                     translation.relationships.export_config.data &&
                     translation.relationships.export_config.data.id === exportConfig.id
                 ) {
-                    const languageId = translation.relationships.language.data.id;
-                    let translationContent = translation.attributes.content;
-                    if (currentKey.attributes.html_enabled) {
-                        translationContent = Utils.getHTMLContentPreview(translationContent);
+                    const exportConfigIncluded = APIUtils.getIncludedObject(
+                        translation.relationships.export_config.data,
+                        this.state.exportConfigsResponse.data
+                    );
+
+                    if (exportConfigIncluded) {
+                        exportConfigs.push(exportConfigIncluded.attributes.name);
                     }
-                    translations[
-                        `language-${languageId}-export-config-${translation.relationships.export_config.data.id}`
-                    ] = translationContent;
                 }
             });
         });
 
-        return Object.keys(translations).length;
+        return exportConfigs;
     };
 
     render() {
@@ -688,6 +707,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                         onChange={this.onSearch}
                                         data-id="project-keys-search"
                                         allowClear
+                                        defaultValue={this.state.search}
                                     />
                                 </Input.Group>
                             </div>

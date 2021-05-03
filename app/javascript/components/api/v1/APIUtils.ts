@@ -49,9 +49,13 @@ const APIUtils = {
         return response;
     },
 
-    getIncludedObject(object: any, included: any): any {
+    getIncludedObject(object: { id: string; type: string }, included: any): any {
         if (!object) {
             return null;
+        }
+
+        if (!object.id || !object.type) {
+            console.error("Couldn't find property 'id' or 'type'.");
         }
 
         return _.find(included, (o) => {

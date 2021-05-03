@@ -85,37 +85,51 @@ export function KeySearchSettings(props: {
     );
 
     function onChange() {
-        const query: ISearchSettingsQueryParams = {};
+        const query: ISearchSettingsQueryParams = currentQueryParams;
 
         query.l = selectedLanguages;
         query.ec = selectedExportConfigs;
 
         if (onlyUntranslated) {
             query.ou = onlyUntranslated;
+        } else {
+            delete query.ou;
         }
 
         if (checkCase) {
             query.cc = checkCase;
+        } else {
+            delete query.cc;
         }
 
         if (onlyKeysWithOverwrites) {
             query.oo = onlyKeysWithOverwrites;
+        } else {
+            delete query.oo;
         }
 
         if (onlyHTMLEnabled) {
             query.he = onlyHTMLEnabled;
+        } else {
+            delete query.he;
         }
 
         if (changedAfter) {
             query.ca = changedAfter.format("YYYY-MM-DD");
+        } else {
+            delete query.ca;
         }
 
         if (changedBefore) {
             query.cb = changedBefore.format("YYYY-MM-DD");
+        } else {
+            delete query.cb;
         }
 
         if (match !== "contains") {
             query.m = match;
+        } else {
+            delete query.m;
         }
 
         const searchString = queryString.stringify(query);

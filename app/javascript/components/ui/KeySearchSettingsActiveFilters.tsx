@@ -107,7 +107,7 @@ export function KeySearchSettingsActiveFilters(props: {
                     </Tag>
                 )}
                 {currentQueryParams.cb && (
-                    <Tag color="geekblue" style={TagStyle}>
+                    <Tag color="blue" style={TagStyle}>
                         changed before {moment(currentQueryParams.cb).format("YYYY-MM-DD")}
                     </Tag>
                 )}
