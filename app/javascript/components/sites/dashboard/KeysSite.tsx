@@ -297,8 +297,12 @@ class KeysSite extends React.Component<IProps, IState> {
                         HTML
                     </Tag>
                 ) : undefined,
-                exportConfigOverwrites: overwrites.map((overwrite) => {
-                    return <Tag color="cyan">{overwrite}</Tag>;
+                exportConfigOverwrites: overwrites.map((overwrite, index) => {
+                    return (
+                        <Tag color="cyan" key={index}>
+                            {overwrite}
+                        </Tag>
+                    );
                 }),
                 key: key.attributes.id,
                 keyId: key.attributes.id,
