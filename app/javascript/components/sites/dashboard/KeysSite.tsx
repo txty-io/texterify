@@ -602,7 +602,7 @@ class KeysSite extends React.Component<IProps, IState> {
                         this.state.exportConfigsResponse.data
                     );
 
-                    if (exportConfigIncluded) {
+                    if (exportConfigIncluded && !exportConfigs.includes(exportConfigIncluded.attributes.name)) {
                         exportConfigs.push(exportConfigIncluded.attributes.name);
                     }
                 }
