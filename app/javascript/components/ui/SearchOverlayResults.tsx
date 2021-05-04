@@ -18,11 +18,11 @@ const openProject = (project: any) => {
 const ProjectWrapper = styled.div`
     display: flex;
     align-items: center;
-    margin-bottom: 8px;
     cursor: pointer;
 
     &:last-child {
-        margin-bottom: 0px;
+        border-bottom-left-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
+        border-bottom-right-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
     }
 
     &:hover {
@@ -129,8 +129,8 @@ function SearchOverlayResults(props: { loading: boolean; projects: any[]; includ
                         ref={ref}
                         key={project.id}
                         style={{
-                            background: isSelected ? "var(--primary-btn-color)" : undefined,
-                            borderRadius: Styles.DEFAULT_BORDER_RADIUS
+                            padding: "8px 16px",
+                            background: isSelected ? "var(--primary-btn-color)" : undefined
                         }}
                     >
                         <ProjectAvatar

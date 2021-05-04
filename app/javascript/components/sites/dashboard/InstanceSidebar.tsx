@@ -27,8 +27,8 @@ class InstanceSidebar extends React.Component<IProps, IState> {
         {
             icon: HomeOutlined,
             path: Routes.DASHBOARD.INSTANCE.ROOT,
-            text: "Overview",
-            dataId: "instance-sidebar-overview"
+            text: "Home",
+            dataId: "instance-sidebar-home"
         },
         {
             icon: FileTextOutlined,

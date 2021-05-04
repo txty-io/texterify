@@ -5,6 +5,7 @@ import * as React from "react";
 import { ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { SearchOverlayResults } from "./SearchOverlayResults";
 import { generalStore } from "../stores/GeneralStore";
+import { Styles } from "./Styles";
 
 interface IProps {
     onClose(): void;
@@ -100,22 +101,23 @@ class SearchOverlay extends React.Component<IProps, IState> {
                             position: "relative",
                             background: "var(--background-color)",
                             left: "-50%",
-                            borderRadius: 4,
+                            borderRadius: Styles.DEFAULT_BORDER_RADIUS,
                             margin: "0 40px",
-                            boxShadow: "0 0 12px rgba(0, 0, 0, 0.5)",
-                            padding: 8
+                            boxShadow: "0 0 12px rgba(0, 0, 0, 0.5)"
                         }}
                         ref={this.containerRef}
                     >
-                        <Input
-                            prefix={<SearchOutlined style={{ marginRight: 12 }} />}
-                            onChange={this.onSearch}
-                            style={{ border: 0, boxShadow: "none" }}
-                            placeholder="Search projects"
-                            autoFocus
-                        />
+                        <div style={{ padding: 8 }}>
+                            <Input
+                                prefix={<SearchOutlined style={{ marginRight: 12 }} />}
+                                onChange={this.onSearch}
+                                style={{ border: 0, boxShadow: "none" }}
+                                placeholder="Search projects"
+                                autoFocus
+                            />
+                        </div>
                         {(this.state.search || this.state.projectsResponse?.data.length > 0) && (
-                            <div style={{ maxHeight: 400, overflowY: "auto", padding: 12 }}>
+                            <div style={{ maxHeight: 400, overflowY: "auto" }}>
                                 <SearchOverlayResults
                                     loading={this.state.projectsLoading}
                                     projects={this.state.projectsResponse?.data || []}

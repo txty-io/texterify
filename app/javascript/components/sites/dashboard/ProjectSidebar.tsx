@@ -2,6 +2,7 @@ import {
     BlockOutlined,
     ClusterOutlined,
     DownloadOutlined,
+    EditOutlined,
     ExportOutlined,
     GlobalOutlined,
     HomeOutlined,
@@ -52,8 +53,8 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             {
                 icon: HomeOutlined,
                 path: Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId),
-                text: "Overview",
-                dataId: "project-sidebar-overview"
+                text: "Home",
+                dataId: "project-sidebar-home"
             },
             {
                 icon: KeyOutlined,
@@ -66,6 +67,12 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 path: Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId),
                 text: "Languages",
                 dataId: "project-sidebar-languages"
+            },
+            {
+                icon: EditOutlined,
+                path: Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId),
+                text: "Editor",
+                dataId: "project-sidebar-editor"
             },
             {
                 icon: ImportOutlined,

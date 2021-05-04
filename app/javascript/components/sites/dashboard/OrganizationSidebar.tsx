@@ -37,7 +37,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
         {
             icon: HomeOutlined,
             path: Routes.DASHBOARD.ORGANIZATION.replace(":organizationId", this.props.match.params.organizationId),
-            text: "Overview",
+            text: "Home",
             texterifyCloudOnly: false
         },
         {

@@ -4,10 +4,10 @@ class Key < ApplicationRecord
   scope :order_by_name, -> { order(arel_table['name'].lower.asc) }
 
   # Note: For HTML keys "contains" is always used because it is otherwise hard to find keys with HTML content at all.
-  scope :match_name_or_description_or_translation_content, lambda { |search, eq_op, contains|
+  scope :match_name_or_description_or_translation_content, lambda { |search, eq_op, exactly|
     where(
       "(keys.name #{eq_op} :search or keys.description #{eq_op} :search or translations.content #{eq_op} :search) or (translations.content ilike :search_html and keys.html_enabled = true)",
-      search: contains ? "%#{sanitize_sql_like(search)}%" : sanitize_sql_like(search),
+      search: exactly ? sanitize_sql_like(search) : "%#{sanitize_sql_like(search)}%",
       search_html: "%#{sanitize_sql_like(search)}%"
     )
   }

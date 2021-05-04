@@ -52,7 +52,7 @@ class Api::V1::KeysController < Api::V1::ApiController
         keys = keys.where('translations.export_config_id in (?)', export_config_ids)
       end
 
-      keys = keys.match_name_or_description_or_translation_content(params[:search], eq_op, match == 'contains')
+      keys = keys.match_name_or_description_or_translation_content(params[:search], eq_op, match == 'exactly')
     end
 
     # Check for HTML enabled keys
