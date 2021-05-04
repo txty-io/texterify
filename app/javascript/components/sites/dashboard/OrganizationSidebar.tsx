@@ -110,8 +110,12 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
             </Menu.Item>,
             ...this.navigationData
                 .filter((data) => {
-                    if (data.texterifyCloudOnly && !IS_TEXTERIFY_CLOUD) {
-                        return false;
+                    if (data.texterifyCloudOnly) {
+                        if (IS_TEXTERIFY_CLOUD) {
+                            return true;
+                        } else {
+                            return false;
+                        }
                     } else {
                         return true;
                     }
