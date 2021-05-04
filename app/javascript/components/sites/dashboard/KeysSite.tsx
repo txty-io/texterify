@@ -299,7 +299,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 ) : undefined,
                 exportConfigOverwrites: overwrites.map((overwrite, index) => {
                     return (
-                        <Tag color="cyan" key={index}>
+                        <Tag color="cyan" key={index} style={{ margin: "0 4px 4px 0" }}>
                             {overwrite}
                         </Tag>
                     );
