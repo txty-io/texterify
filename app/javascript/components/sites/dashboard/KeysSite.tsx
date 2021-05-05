@@ -28,6 +28,9 @@ import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { TranslationCard } from "./editor/TranslationCard";
 import * as queryString from "query-string";
+import { KeystrokeButtonWrapper } from "../../ui/KeystrokeButtonWrapper";
+import { KeystrokeHandler } from "../../ui/KeystrokeHandler";
+import { KEYSTROKE_DEFINITIONS } from "../../ui/KeystrokeDefinitions";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -92,6 +95,7 @@ class KeysSite extends React.Component<IProps, IState> {
     };
 
     translationCardRef: any;
+    searchInput = React.createRef<Input>();
 
     constructor(props) {
         super(props);
@@ -638,6 +642,22 @@ class KeysSite extends React.Component<IProps, IState> {
 
         return (
             <>
+                <KeystrokeHandler
+                    keys={KEYSTROKE_DEFINITIONS.KEYS_SITE_NEW_KEY}
+                    onActivated={() => {
+                        if (PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())) {
+                            this.setState({ addDialogVisible: true });
+                        }
+                    }}
+                />
+
+                <KeystrokeHandler
+                    keys={KEYSTROKE_DEFINITIONS.KEYS_SITE_SEARCH}
+                    onActivated={() => {
+                        this.searchInput.current.focus();
+                    }}
+                />
+
                 <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
                     <Breadcrumbs breadcrumbName="keys" />
                     <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
@@ -652,7 +672,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                     }}
                                     disabled={!PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())}
                                 >
-                                    Create key
+                                    Create key <KeystrokeButtonWrapper keys={KEYSTROKE_DEFINITIONS.KEYS_SITE_NEW_KEY} />
                                 </Button>
                                 <Button
                                     danger
@@ -707,6 +727,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                         </Button>
                                     </Popover>
                                     <Input.Search
+                                        ref={this.searchInput}
                                         placeholder="Search your translations"
                                         onChange={this.onSearch}
                                         data-id="project-keys-search"

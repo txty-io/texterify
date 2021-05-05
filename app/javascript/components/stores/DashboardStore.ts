@@ -1,8 +1,7 @@
 import * as localforage from "localforage";
-import { observable, reaction } from "mobx";
+import { observable } from "mobx";
 import { create, persist } from "mobx-persist";
 import { APIUtils } from "../api/v1/APIUtils";
-import { ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { IPlanIDS } from "../types/IPlan";
 import { DEFAULT_PAGE_SIZE } from "../ui/Config";
 

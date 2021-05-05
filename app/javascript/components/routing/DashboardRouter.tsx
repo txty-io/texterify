@@ -23,11 +23,11 @@ import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
 import { authStore } from "../stores/AuthStore";
 import { ConfirmEmailHint } from "../ui/ConfirmEmailHint";
 import { DarkModeToggle } from "../ui/DarkModeToggle";
+import { getKeystrokePreview } from "../ui/KeystrokePreview";
 import { LicenseExpiring } from "../ui/LicenseExpiring";
 import { LicenseFreeTrial } from "../ui/LicenseFreeVersion";
 import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
-import { Utils } from "../ui/Utils";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
 import { InstanceRouter } from "./InstanceRouter";
 import { OrganizationRouter } from "./OrganizationRouter";
@@ -63,7 +63,13 @@ const SearchInputWrapper = styled.div`
     margin-right: 40px;
 
     input::placeholder {
-        color: #bbb !important;
+        color: #999 !important;
+    }
+
+    &:hover {
+        input::placeholder {
+            color: #ccc !important;
+        }
     }
 `;
 
@@ -173,7 +179,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                         className="dark-theme"
                     >
                         <Link to={Routes.DASHBOARD.ROOT}>
-                            <img src={WhiteLogoWithText} style={{ maxHeight: 32, marginRight: 24 }} />
+                            <img src={WhiteLogoWithText} style={{ maxHeight: 28, marginRight: 24 }} />
                         </Link>
                         <ul
                             className="dashboard-main-menu"
@@ -243,7 +249,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
 
                         <SearchInputWrapper>
                             <antd.Input
-                                placeholder={`Search projects        ${Utils.getCommandKeyDependingOnPlatform()} + ⇧ + P`}
+                                placeholder={`Search projects        ${getKeystrokePreview(["ctrl", "shift", "p"])}`}
                                 onClick={(e) => {
                                     e.preventDefault();
 
@@ -252,7 +258,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     });
                                 }}
                                 value=""
-                                style={{ borderTop: 0, borderRight: 0, borderLeft: 0, boxShadow: "none" }}
+                                style={{ border: 0, boxShadow: "none", color: "transparent" }}
                             />
                         </SearchInputWrapper>
 
