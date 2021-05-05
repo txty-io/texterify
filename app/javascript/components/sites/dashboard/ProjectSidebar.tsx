@@ -182,7 +182,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     height: 48,
                     display: "flex",
                     alignItems: "center",
-                    overflow: "hidden"
+                    justifyContent: "center"
                 }}
             >
                 <Link
@@ -198,7 +198,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                             dashboardStore.currentProject.attributes.name}
                         {dashboardStore.sidebarMinimized &&
                             dashboardStore.currentProject &&
-                            dashboardStore.currentProject.attributes.name.substr(0, 2)}
+                            dashboardStore.currentProject.attributes.name.substr(0, 1)}
                     </span>
                 </Link>
             </Menu.Item>,
@@ -282,6 +282,29 @@ class ProjectSidebar extends React.Component<IProps, IState> {
         if (type === "clickTrigger") {
             dashboardStore.sidebarMinimized = collapsed;
         }
+
+        // Fix sidebar somehow not collapsing correctly.
+        if (collapsed) {
+            const sidebarMenu = document.getElementById("sidebar-menu");
+            setTimeout(() => {
+                if (sidebarMenu) {
+                    sidebarMenu.classList.remove("ant-menu-inline");
+                    sidebarMenu.classList.add("ant-menu-vertical");
+
+                    const menuItems = (sidebarMenu.querySelectorAll(".ant-menu-item") as unknown) as HTMLElement[];
+                    menuItems.forEach((menuItem) => {
+                        menuItem.style.removeProperty("padding-left");
+                    });
+
+                    const submenuItems = (sidebarMenu.querySelectorAll(
+                        ".ant-menu-submenu .ant-menu-submenu-title"
+                    ) as unknown) as HTMLElement[];
+                    submenuItems.forEach((submenuItem) => {
+                        submenuItem.style.removeProperty("padding-left");
+                    });
+                }
+            });
+        }
     };
 
     renderSidebarTrigger = () => {
@@ -298,14 +321,18 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 <div className="logo" />
                 <Sider
                     collapsible
-                    breakpoint="md"
                     defaultCollapsed={dashboardStore.sidebarMinimized}
                     collapsed={dashboardStore.sidebarMinimized}
                     onCollapse={this.onCollapse}
                     trigger={this.renderSidebarTrigger()}
                     style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 24px" }}
                 >
-                    <Menu mode="inline" selectedKeys={this.getSelectedItem()} style={{ height: "100%" }}>
+                    <Menu
+                        id="sidebar-menu"
+                        mode="inline"
+                        selectedKeys={this.getSelectedItem()}
+                        style={{ height: "100%" }}
+                    >
                         {this.renderMenuItems()}
                     </Menu>
                 </Sider>
