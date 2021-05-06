@@ -1,5 +1,5 @@
 import { MoreOutlined, QuestionCircleOutlined, SettingOutlined } from "@ant-design/icons";
-import { Button, Drawer, Input, Layout, Modal, Pagination, Popover, Switch, Tag, Tooltip } from "antd";
+import { Button, Drawer, Input, Layout, Modal, Pagination, PaginationProps, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
@@ -623,7 +623,7 @@ class KeysSite extends React.Component<IProps, IState> {
 
         this.rowSelection.selectedRowKeys = this.state.selectedRowKeys;
 
-        const paginationOptions = {
+        const paginationOptions: PaginationProps = {
             pageSizeOptions: PAGE_SIZE_OPTIONS,
             showSizeChanger: true,
             current: this.state.page,
@@ -637,7 +637,8 @@ class KeysSite extends React.Component<IProps, IState> {
                 dashboardStore.keysPerPage = size;
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 this.setState({ page: 1 }, this.reloadTable);
-            }
+            },
+            hideOnSinglePage: true
         };
 
         return (
@@ -716,8 +717,11 @@ class KeysSite extends React.Component<IProps, IState> {
                                                 languagesResponse={this.state.languagesResponse}
                                                 exportConfigsResponse={this.state.exportConfigsResponse}
                                                 onChange={(settings) => {
-                                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                                    this.setState({ searchSettings: settings }, this.reloadTable);
+                                                    this.setState(
+                                                        { searchSettings: settings, page: 1 },
+                                                        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                                        this.reloadTable
+                                                    );
                                                 }}
                                             />
                                         }
