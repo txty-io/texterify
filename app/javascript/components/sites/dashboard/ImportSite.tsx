@@ -131,6 +131,8 @@ class ImportSite extends React.Component<IProps, IState> {
             return ".json";
         } else if (this.state.selectedImportFormat === "ios") {
             return ".strings";
+        } else if (this.state.selectedImportFormat === "go-i18n") {
+            return ".toml";
         }
     }
 
@@ -237,6 +239,7 @@ class ImportSite extends React.Component<IProps, IState> {
                                         {/* <Select.Option value="json-nested">JSON Nested</Select.Option> */}
                                         <Select.Option value="json-formatjs">JSON Format.js</Select.Option>
                                         <Select.Option value="ios">iOS .strings</Select.Option>
+                                        <Select.Option value="go-i18n">TOML (go-i18n)</Select.Option>
                                     </Select>
                                 </div>
                                 <Dropzone
@@ -244,7 +247,7 @@ class ImportSite extends React.Component<IProps, IState> {
                                     ref={(node) => {
                                         this.dropzoneRef = node;
                                     }}
-                                    accept={[".json", ".strings"]}
+                                    accept={[".json", ".strings", ".toml"]}
                                     disabled={!this.state.selectedImportFormat}
                                 >
                                     {({ getRootProps, getInputProps }) => {
@@ -276,7 +279,7 @@ class ImportSite extends React.Component<IProps, IState> {
                                                         )}
                                                     </p>
                                                 )}
-                                                <input {...getInputProps()} accept=".json,.strings" />
+                                                <input {...getInputProps()} accept=".json,.strings,.toml" />
                                             </DropZoneWrapper>
                                         );
                                     }}

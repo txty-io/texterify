@@ -26,6 +26,10 @@ const FileFormatOptions = [
     {
         value: "rails",
         text: "Ruby on Rails"
+    },
+    {
+        value: "go-i18n",
+        text: "TOML (go-i18n)"
     }
 ].sort((a, b) => {
     return a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 1;

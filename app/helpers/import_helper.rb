@@ -1,6 +1,7 @@
 require 'json'
 require 'nokogiri'
 require 'yaml'
+require 'toml-rb'
 
 module ImportHelper
   REGEX_CONTENT = /"((\\"|[^"])+)"/.freeze
@@ -27,6 +28,13 @@ module ImportHelper
       end
     elsif file_format == 'ios'
       result = strings?(file_content)
+      if result[:matches]
+        return result[:content]
+      else
+        raise 'NOTHING_IMPORTED'
+      end
+    elsif file_format == 'go-i18n'
+      result = toml?(file_content)
       if result[:matches]
         return result[:content]
       else
@@ -77,5 +85,39 @@ module ImportHelper
     end
 
     { matches: true, content: json }
+  end
+
+  def toml?(content)
+    parsed = TomlRB.parse(content)
+
+    keys = {}
+    parsed.each do |k1, v1|
+      # TOML sections are parsed as a hash (special handling for those sections).
+      if v1.is_a?(Hash)
+        v1.each do |k2, v2|
+          if k2 == 'description'
+            # The "description" field is imported as the description for the keys in this group so skip it.
+            next
+          elsif v1.key?('description')
+            # If the TOML section contains a "description" field we use it as the description of the key.
+            keys["#{k1}.#{k2}"] = {
+              description: v1['description'],
+              value: v2
+            }
+          else
+            # Otherwise import the key as a combination of the section name and the key name.
+            keys["#{k1}.#{k2}"] = v2
+          end
+        end
+      else
+        keys[k1] = v1
+      end
+    end
+
+    if keys.count > 0
+      { matches: true, content: keys }
+    else
+      { matches: false }
+    end
   end
 end

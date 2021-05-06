@@ -76,6 +76,7 @@ GEM
     builder (3.2.4)
     bumbler (0.8.0)
     byebug (11.1.3)
+    citrus (3.0.2)
     coderay (1.1.3)
     concurrent-ruby (1.1.8)
     connection_pool (2.2.3)
@@ -402,6 +403,8 @@ GEM
     thwait (0.2.0)
       e2mmap
     tilt (2.0.10)
+    toml-rb (2.0.1)
+      citrus (~> 3.0, > 3.0)
     tomlrb (2.0.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
@@ -476,6 +479,7 @@ DEPENDENCIES
   solargraph
   spring
   spring-watcher-listen
+  toml-rb
   uglifier
   web-console
   webpacker
