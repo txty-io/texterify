@@ -89,7 +89,13 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
             <Menu.Item
                 key={"title"}
                 title={dashboardStore.currentOrganization && dashboardStore.currentOrganization.attributes.name}
-                style={{ height: 48, display: "flex", alignItems: "center", padding: "0 24px", overflow: "hidden" }}
+                style={{
+                    height: 48,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: dashboardStore.sidebarMinimized ? "center" : undefined,
+                    overflow: "hidden"
+                }}
             >
                 <Link
                     to={Routes.DASHBOARD.ORGANIZATION.replace(
@@ -104,7 +110,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                             dashboardStore.currentOrganization.attributes.name}
                         {dashboardStore.sidebarMinimized &&
                             dashboardStore.currentOrganization &&
-                            dashboardStore.currentOrganization.attributes.name.substr(0, 2)}
+                            dashboardStore.currentOrganization.attributes.name.substr(0, 1)}
                     </span>
                 </Link>
             </Menu.Item>,

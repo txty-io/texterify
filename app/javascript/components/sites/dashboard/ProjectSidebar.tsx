@@ -182,7 +182,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     height: 48,
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center"
+                    justifyContent: dashboardStore.sidebarMinimized ? "center" : undefined
                 }}
             >
                 <Link
