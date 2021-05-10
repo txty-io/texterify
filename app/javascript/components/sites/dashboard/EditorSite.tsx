@@ -1,4 +1,4 @@
-import { ArrowLeftOutlined, LoadingOutlined, SettingOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, HddOutlined, LoadingOutlined, SettingOutlined } from "@ant-design/icons";
 import { Alert, Button, Input, Layout, Pagination, Popover, Tabs, Tag } from "antd";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
@@ -12,8 +12,10 @@ import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
 import { IGetKeysOptions, KeysAPI } from "../../api/v1/KeysAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
+import { MenuLink, MenuList } from "../../routing/DashboardRouter";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
+import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { DarkModeToggle } from "../../ui/DarkModeToggle";
 import FlagIcon from "../../ui/FlagIcons";
@@ -259,6 +261,43 @@ class EditorSite extends React.Component<IProps, IState> {
                         </Button>
                         {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
                     </div>
+
+                    {authStore.currentUser?.is_superadmin && (
+                        <ul
+                            className="dashboard-main-menu"
+                            style={{
+                                overflow: "hidden",
+                                marginBottom: 0,
+                                marginLeft: 0,
+                                marginRight: 24,
+                                display: "flex",
+                                alignItems: "center"
+                            }}
+                        >
+                            <MenuList>
+                                <MenuLink
+                                    to={Routes.DASHBOARD.INSTANCE.ROOT}
+                                    style={{
+                                        background: this.props.history.location.pathname.startsWith(
+                                            Routes.DASHBOARD.INSTANCE.ROOT
+                                        )
+                                            ? "var(--primary-light-color)"
+                                            : undefined,
+                                        color: this.props.history.location.pathname.startsWith(
+                                            Routes.DASHBOARD.INSTANCE.ROOT
+                                        )
+                                            ? "var(--blue-color)"
+                                            : undefined
+                                    }}
+                                    data-id="main-menu-instance-settings"
+                                >
+                                    <HddOutlined style={{ marginRight: 8 }} />
+                                    Admin
+                                </MenuLink>
+                            </MenuList>
+                        </ul>
+                    )}
+
                     <DarkModeToggle style={{ marginRight: 40 }} />
                     <UserProfileHeader />
                 </Layout.Header>
