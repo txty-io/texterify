@@ -1,56 +1,29 @@
-@import '~antd/dist/antd.less';
-@import 'antd-input.less';
+@import "~antd/dist/antd.less";
+@import "antd-input.less";
 
-.ant-layout {
-    background: #fefeff;
+// Fix wrong flex direction of main layout.
+.ant-layout.ant-layout-has-sider {
+    flex-direction: row;
 }
 
-.ant-layout-sider-trigger {
-    color: #000;
-    background: #fff;
-    border-right: 1px solid #f0f0f0;
-
-    &:hover {
-        color: var(--blue-color);
-    }
+.ant-tag.ant-tag-checkable {
+    display: flex;
+    align-items: center;
 }
 
-.ant-layout-sider-collapsed {
-    .ant-layout-sider-trigger {
-        color: var(--blue-color);
-        background: var(--primary-light-color);
-    }
+// Fix checkbox in table header not centered.
+table tr th.ant-table-selection-column,
+table tr td.ant-table-selection-column {
+    text-align: center;
 }
 
-// Fix button color
-.ant-btn:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
-.ant-btn:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled) {
-    color: var(--primary-btn-hover-color);
-    border-color: var(--primary-btn-hover-color);
+// Fix hidden alert descriptions.
+.ant-alert-description {
+    display: block;
 }
 
-.ant-btn.ant-btn-primary:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
-.ant-btn.ant-btn-primary:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
-.ant-tag-checkable-checked:hover {
-    color: #fff;
-    background: var(--primary-btn-hover-color);
-    border-color: var(--primary-btn-hover-color);
-}
-
-.ant-btn-primary, .ant-tag-checkable-checked {
-    color: #fff;
-    background: var(--primary-btn-color);
-    border-color: var(--primary-btn-color);
-}
-
-.ant-btn.ant-btn-primary.ant-btn-background-ghost {
-    color: var(--primary-btn-color);
-    border-color: var(--primary-btn-color);
-}
-
-.ant-btn.ant-btn-primary.ant-btn-background-ghost:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
-.ant-btn.ant-btn-primary.ant-btn-background-ghost:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled) {
-    color: var(--primary-btn-hover-color);
-    background: var(--primary-btn-hover-color);
-    border-color: var(--primary-btn-hover-color);
+// Padding of checkbox column for dark mode not the same as for light mode.
+table tr th.ant-table-selection-column,
+table tr td.ant-table-selection-column {
+    padding: 0 16px;
 }

@@ -16,7 +16,7 @@ class GeneralStore {
                 document.documentElement.style.setProperty("--theme", theme);
 
                 if (theme === "light") {
-                    document.documentElement.setAttribute("class", "no-transition");
+                    document.documentElement.setAttribute("class", "no-transition light-theme");
                 } else {
                     document.documentElement.setAttribute("class", "no-transition dark-theme");
                 }
