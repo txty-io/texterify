@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_22_121533) do
+ActiveRecord::Schema.define(version: 2021_05_09_231115) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -135,6 +135,21 @@ ActiveRecord::Schema.define(version: 2021_04_22_121533) do
     t.text "data", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "machine_translation_memories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "from", null: false
+    t.string "to", null: false
+    t.uuid "source_country_code_id"
+    t.uuid "source_language_code_id", null: false
+    t.uuid "target_country_code_id"
+    t.uuid "target_language_code_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["source_country_code_id"], name: "index_machine_translation_memories_on_source_country_code_id"
+    t.index ["source_language_code_id"], name: "index_machine_translation_memories_on_source_language_code_id"
+    t.index ["target_country_code_id"], name: "index_machine_translation_memories_on_target_country_code_id"
+    t.index ["target_language_code_id"], name: "index_machine_translation_memories_on_target_language_code_id"
   end
 
   create_table "organizations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -353,6 +368,10 @@ ActiveRecord::Schema.define(version: 2021_04_22_121533) do
   add_foreign_key "languages", "projects"
   add_foreign_key "languages_project_columns", "languages"
   add_foreign_key "languages_project_columns", "project_columns"
+  add_foreign_key "machine_translation_memories", "country_codes", column: "source_country_code_id"
+  add_foreign_key "machine_translation_memories", "country_codes", column: "target_country_code_id"
+  add_foreign_key "machine_translation_memories", "language_codes", column: "source_language_code_id"
+  add_foreign_key "machine_translation_memories", "language_codes", column: "target_language_code_id"
   add_foreign_key "organizations_users", "organizations"
   add_foreign_key "organizations_users", "users"
   add_foreign_key "post_processing_rules", "export_configs"
