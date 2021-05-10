@@ -1,3 +1,4 @@
+import { DeploymentUnitOutlined, ProjectOutlined } from "@ant-design/icons";
 import { Breadcrumb } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -26,7 +27,12 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
             projects: {
                 root: true,
                 parent: "dashboard",
-                name: "Projects",
+                name: (
+                    <>
+                        <ProjectOutlined style={{ marginRight: 8 }} />
+                        Projects
+                    </>
+                ),
                 path: Routes.DASHBOARD.PROJECTS
             },
             project: {
@@ -37,7 +43,11 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
             organizations: {
                 root: true,
                 parent: "dashboard",
-                name: "Organizations",
+                name: (
+                    <>
+                        <DeploymentUnitOutlined style={{ marginRight: 8 }} /> Organizations
+                    </>
+                ),
                 path: Routes.DASHBOARD.ORGANIZATIONS
             },
             organization: {
