@@ -111,7 +111,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     language_code = LanguageCode.find_by(id: params[:language_code])
     language.language_code = language_code if language_code
 
-    if params[:is_default].present?
+    if params[:is_default] == true || params[:is_default] == false
       if params[:is_default]
         current_default_language = project.languages.find_by(is_default: true)
         # Avoid multiple updates of same language.
