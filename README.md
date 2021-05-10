@@ -32,14 +32,14 @@ Find out more at [texterify.com](https://texterify.com) or [sign up](https://app
 
 <h2>Table of contents</h2>
 
-- [🚀 Getting started](#getting-started)
-- [🛠️ Tools & Integrations](#tools-and-integrations)
-- [🤝 Contributing](#contributing)
-- [👀 Troubleshooting](#troubleshooting)
-- [🔒 Security](#security)
-- [📋 Changelog](#changelog)
-- [❤️ Support](#support)
-- [📝 License](#license)
+- [Getting started](#getting-started)
+- [Tools & Integrations](#tools-and-integrations)
+- [Contributing](#contributing)
+- [Troubleshooting](#troubleshooting)
+- [Security](#security)
+- [Changelog](#changelog)
+- [Support](#support)
+- [License](#license)
 
 <h2 id="getting-started">🚀 Getting started</h2>
 
