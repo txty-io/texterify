@@ -12,16 +12,21 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { IInstanceInfo, InstanceAPI } from "../../../api/v1/InstanceAPI";
+import { IGetMachineTranslationsUsage, MachineTranslationsAPI } from "../../../api/v1/MachineTranslationsAPI";
 import { Loading } from "../../../ui/Loading";
 
 export const InstanceSite = observer(() => {
     const [instanceInfos, setInstanceInfos] = React.useState<IInstanceInfo>();
+    const [machineTransationsUsage, setMachineTransationsUsage] = React.useState<IGetMachineTranslationsUsage>();
     const [loading, setLoading] = React.useState<boolean>(true);
 
     async function loadInstance() {
         try {
             const infos = await InstanceAPI.getInstanceInfos();
             setInstanceInfos(infos);
+
+            const usage = await MachineTranslationsAPI.getUsage();
+            setMachineTransationsUsage(usage);
         } catch (e) {
             console.error(e);
         }
@@ -91,6 +96,15 @@ export const InstanceSite = observer(() => {
                         View background jobs <ArrowRightOutlined />
                     </Link>
                 </ul>
+                <div style={{ display: "flex", flexWrap: "wrap" }}>
+                    <Card style={{ width: 240, marginBottom: 40 }}>
+                        <Statistic
+                            title="Machine Translations Usage"
+                            value={`${machineTransationsUsage.character_count}/${machineTransationsUsage.character_limit}`}
+                            prefix={<SwapOutlined />}
+                        />
+                    </Card>
+                </div>
             </Layout.Content>
         </Layout>
     );
