@@ -1,5 +1,6 @@
 import * as React from "react";
 import "../../assets/stylesheets/externals/antd-dark.less";
+import "../../assets/stylesheets/externals/antd-light.less";
 import "../../assets/stylesheets/externals/antd.less";
 import { AppRouter } from "./routing/AppRouter";
 import "mobx-react-lite/batchingForReactDom";
