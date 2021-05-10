@@ -182,6 +182,8 @@ class ProjectSite extends React.Component<IProps, IState> {
                                 dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY") && (
                                     <Activity activitiesResponse={this.state.projectActivityResponse} />
                                 )}
+                            {!this.state.projectActivityResponse &&
+                                dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY") && <Skeleton active />}
                         </div>
                     </div>
                 </Layout.Content>
