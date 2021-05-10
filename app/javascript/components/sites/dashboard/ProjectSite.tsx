@@ -1,5 +1,5 @@
 import { CrownOutlined, PicRightOutlined } from "@ant-design/icons";
-import { Button, Empty, Layout, Progress } from "antd";
+import { Button, Empty, Layout, Progress, Tooltip } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as moment from "moment";
@@ -74,7 +74,9 @@ class ProjectSite extends React.Component<IProps, IState> {
                             <div style={{ display: "flex", marginTop: 24, alignItems: "center" }}>
                                 {language.attributes.is_default && (
                                     <div style={{ textAlign: "center", marginRight: 8 }}>
-                                        <CrownOutlined style={{ color: "#d6ad13", fontSize: 16 }} />
+                                        <Tooltip title="Default language">
+                                            <CrownOutlined style={{ color: "#d6ad13", fontSize: 16 }} />
+                                        </Tooltip>
                                     </div>
                                 )}
                                 {countryCode && (
