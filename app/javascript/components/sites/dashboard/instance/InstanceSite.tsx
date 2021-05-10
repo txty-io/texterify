@@ -4,6 +4,7 @@ import {
     GlobalOutlined,
     KeyOutlined,
     ProjectOutlined,
+    RobotOutlined,
     SwapOutlined,
     TeamOutlined
 } from "@ant-design/icons";
@@ -100,8 +101,27 @@ export const InstanceSite = observer(() => {
                     <Card style={{ width: 240, marginBottom: 40 }}>
                         <Statistic
                             title="Machine Translations Usage"
-                            value={`${machineTransationsUsage.character_count}/${machineTransationsUsage.character_limit}`}
-                            prefix={<SwapOutlined />}
+                            valueRender={() => {
+                                return (
+                                    <>
+                                        <div>
+                                            <RobotOutlined style={{ marginRight: 16 }} />
+                                            {machineTransationsUsage.character_count}/
+                                            {machineTransationsUsage.character_limit}
+                                        </div>
+                                        <div style={{ marginTop: 4 }}>
+                                            <a
+                                                href="https://www.deepl.com/pro-account/plan"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                style={{ fontSize: 12 }}
+                                            >
+                                                DeepL Account <ArrowRightOutlined />
+                                            </a>
+                                        </div>
+                                    </>
+                                );
+                            }}
                         />
                     </Card>
                 </div>
