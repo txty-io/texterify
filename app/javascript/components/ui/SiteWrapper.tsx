@@ -1,5 +1,5 @@
 import { GithubOutlined } from "@ant-design/icons";
-import WhiteLogoWithText from "images/logo_white_text.png";
+import WhiteLogoWithText from "images/logo_white_text.svg";
 import * as React from "react";
 
 interface IProps {
