@@ -1,4 +1,4 @@
-import { MoreOutlined, QuestionCircleOutlined, SettingOutlined } from "@ant-design/icons";
+import { CrownOutlined, MoreOutlined, QuestionCircleOutlined, SettingOutlined } from "@ant-design/icons";
 import { Button, Drawer, Input, Layout, Modal, Pagination, PaginationProps, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
@@ -241,6 +241,11 @@ class KeysSite extends React.Component<IProps, IState> {
             return {
                 title: (
                     <div data-language-column={language.id} style={{ minWidth: 160 }}>
+                        {language.attributes.is_default && (
+                            <Tooltip title="Default language">
+                                <CrownOutlined style={{ color: "#d6ad13", fontSize: 16, marginRight: 8 }} />
+                            </Tooltip>
+                        )}
                         {countryCode ? (
                             <span style={{ marginRight: 8 }}>
                                 <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
@@ -568,6 +573,11 @@ class KeysSite extends React.Component<IProps, IState> {
                                     await this.reloadTable();
                                 }}
                             >
+                                {language.attributes.is_default && (
+                                    <Tooltip title="Default language">
+                                        <CrownOutlined style={{ color: "#d6ad13", fontSize: 16, marginRight: 1 }} />
+                                    </Tooltip>
+                                )}
                                 {countryCode ? (
                                     <span style={{ marginRight: 8 }}>
                                         <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
