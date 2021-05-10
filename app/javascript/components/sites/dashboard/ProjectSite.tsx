@@ -1,9 +1,11 @@
-import { PicRightOutlined } from "@ant-design/icons";
+import { CrownOutlined, PicRightOutlined } from "@ant-design/icons";
 import { Button, Empty, Layout, Progress } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
+import * as moment from "moment";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import { Link } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
@@ -69,15 +71,46 @@ class ProjectSite extends React.Component<IProps, IState> {
 
                     return (
                         <div key={index}>
-                            <div style={{ display: "flex", marginTop: 24 }}>
+                            <div style={{ display: "flex", marginTop: 24, alignItems: "center" }}>
+                                {language.attributes.is_default && (
+                                    <div style={{ textAlign: "center", marginRight: 8 }}>
+                                        <CrownOutlined style={{ color: "#d6ad13", fontSize: 16 }} />
+                                    </div>
+                                )}
                                 {countryCode && (
                                     <span style={{ marginRight: 8 }}>
                                         <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
                                     </span>
                                 )}
-                                <h4 style={{ color: "#a7a7a7" }}>{language.attributes.name}</h4>
+                                <div style={{ color: "#a7a7a7" }}>{language.attributes.name}</div>
                             </div>
-                            <Progress percent={parseFloat(language.attributes.progress.toFixed(2))} />
+                            <Progress
+                                style={{ marginTop: 8 }}
+                                percent={parseFloat(language.attributes.progress.toFixed(2))}
+                            />
+                            <div style={{ marginTop: 4 }}>
+                                <Link
+                                    to={
+                                        Routes.DASHBOARD.PROJECT_KEYS.replace(
+                                            ":projectId",
+                                            this.props.match.params.projectId
+                                        ) + `?ou=true&l=${language.id}`
+                                    }
+                                >
+                                    All untranslated
+                                </Link>
+                                <Link
+                                    to={
+                                        Routes.DASHBOARD.PROJECT_KEYS.replace(
+                                            ":projectId",
+                                            this.props.match.params.projectId
+                                        ) + `?ca=${moment().subtract(7, "days").format("YYYY-MM-DD")}&l=${language.id}`
+                                    }
+                                    style={{ marginLeft: 24 }}
+                                >
+                                    Changed last 7 days
+                                </Link>
+                            </div>
                         </div>
                     );
                 })}
