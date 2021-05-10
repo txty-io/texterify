@@ -1,7 +1,7 @@
 import { Spin } from "antd";
 import * as React from "react";
 
-function Loading() {
+function Loading(props: { text?: string; style?: React.CSSProperties; size?: "large" | "small" }) {
     return (
         <div
             style={{
@@ -10,11 +10,12 @@ function Loading() {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                flexGrow: 1
+                flexGrow: 1,
+                ...props.style
             }}
         >
-            <Spin size="large" />
-            <div style={{ marginTop: 16 }}>Loading the bits and bytes...</div>
+            <Spin size={props.size || "large"} />
+            <div style={{ marginTop: 16 }}>{props.text || "Loading the bits and bytes..."}</div>
         </div>
     );
 }
