@@ -11,6 +11,7 @@ import { TranslationsAPI } from "../../../api/v1/TranslationsAPI";
 import FlagIcon from "../../../ui/FlagIcons";
 import { Styles } from "../../../ui/Styles";
 import { Utils } from "../../../ui/Utils";
+import DeeplLogo from "images/deepl_logo.svg";
 
 const EMPTY_EDITOR_HEIGHT = 108;
 
@@ -418,8 +419,17 @@ class TranslationCard extends React.Component<IProps, IState> {
                                 )}
                             </div>
                         )}
-                        <div style={{ color: "var(--color-passive)", marginTop: 8, fontSize: 11 }}>
-                            powered by DeepL
+                        <div
+                            style={{
+                                color: "var(--color-passive)",
+                                marginTop: 8,
+                                fontSize: 11,
+                                display: "flex",
+                                alignItems: "center"
+                            }}
+                        >
+                            powered by <img src={DeeplLogo} style={{ maxWidth: 16, marginRight: 4, marginLeft: 4 }} />
+                            DeepL
                         </div>
                     </div>
                 )}
