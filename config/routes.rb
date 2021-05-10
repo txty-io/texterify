@@ -14,8 +14,12 @@ Rails.application.routes.draw do
   scope :api, module: :api, defaults: { format: :json } do
     scope :v1, module: :v1 do
       mount_devise_token_auth_for 'User', at: 'auth', controllers: {
-        registrations:      'api/v1/registrations',
+        registrations: 'api/v1/registrations',
       }
+
+      get :machine_translations_usage, to: 'machine_translations#usage'
+      get :machine_translations_target_languages, to: 'machine_translations#target_languages'
+      get :machine_translations_source_languages, to: 'machine_translations#source_languages'
 
       resources :organizations do
         get :subscription, to: 'organizations#subscription'
@@ -56,7 +60,9 @@ Rails.application.routes.draw do
         delete 'post_processing_rules', to: 'post_processing_rules#destroy_multiple'
         resources :languages, only: [:create, :index, :destroy, :update]
         delete 'languages', to: 'languages#destroy_multiple'
-        resources :translations, only: [:create]
+        resources :translations, only: [:create] do
+          post :translate, to: 'machine_translations#translate'
+        end
         resources :members, only: [:create, :index, :destroy, :update], controller: "project_users"
         get :image, to: 'projects#image'
         post :image, to: 'projects#image_create'
