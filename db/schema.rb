@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_22_121533) do
+ActiveRecord::Schema.define(version: 2021_05_10_160346) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -362,8 +362,8 @@ ActiveRecord::Schema.define(version: 2021_04_22_121533) do
   add_foreign_key "projects", "organizations"
   add_foreign_key "projects_users", "projects"
   add_foreign_key "projects_users", "users"
-  add_foreign_key "recently_viewed_projects", "projects"
-  add_foreign_key "recently_viewed_projects", "users"
+  add_foreign_key "recently_viewed_projects", "projects", on_delete: :cascade
+  add_foreign_key "recently_viewed_projects", "users", on_delete: :cascade
   add_foreign_key "release_files", "releases"
   add_foreign_key "releases", "export_configs"
   add_foreign_key "sent_emails", "organizations"
