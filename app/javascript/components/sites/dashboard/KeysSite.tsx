@@ -632,13 +632,14 @@ class KeysSite extends React.Component<IProps, IState> {
             onChange: async (page: number, _perPage: number) => {
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 this.setState({ page: page }, this.reloadTable);
+                window.scrollTo(0, 0);
             },
             onShowSizeChange: async (_current: number, size: number) => {
                 dashboardStore.keysPerPage = size;
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 this.setState({ page: 1 }, this.reloadTable);
             },
-            hideOnSinglePage: true
+            hideOnSinglePage: false
         };
 
         return (
