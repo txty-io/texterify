@@ -1,6 +1,6 @@
  <p align="center">
   <a href="https://texterify.com/?utm_source=github&utm_medium=logo" target="_blank">
-    <img src="https://raw.github.com/texterify/texterify/master/app/assets/images/logo_black_text.png?sanitize=true" alt="Texterify logo" height="72">
+    <img src="https://raw.github.com/texterify/texterify/master/app/assets/images/logo_black_text_background_rounded.png?sanitize=true" alt="Texterify logo" height="160">
   </a>
 </p>
 
@@ -32,14 +32,14 @@ Find out more at [texterify.com](https://texterify.com) or [sign up](https://app
 
 <h2>Table of contents</h2>
 
-- [🚀 Getting started](#getting-started)
-- [🛠️ Tools & Integrations](#tools-and-integrations)
-- [🤝 Contributing](#contributing)
-- [👀 Troubleshooting](#troubleshooting)
-- [🔒 Security](#security)
-- [📋 Changelog](#changelog)
-- [❤️ Support](#support)
-- [📝 License](#license)
+- [Getting started](#getting-started)
+- [Tools & Integrations](#tools-and-integrations)
+- [Contributing](#contributing)
+- [Troubleshooting](#troubleshooting)
+- [Security](#security)
+- [Changelog](#changelog)
+- [Support](#support)
+- [License](#license)
 
 <h2 id="getting-started">🚀 Getting started</h2>
 

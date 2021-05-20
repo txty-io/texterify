@@ -1,6 +1,6 @@
 import { DeploymentUnitOutlined, HddOutlined, LineChartOutlined, ProjectOutlined } from "@ant-design/icons";
 import * as antd from "antd";
-import WhiteLogoWithText from "images/logo_white_text.png";
+import WhiteLogoWithText from "images/logo_white_text.svg";
 import { observer } from "mobx-react";
 import * as React from "react";
 import Hotkeys from "react-hot-keys";

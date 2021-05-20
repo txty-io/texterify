@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --target production --build-arg COMMIT_HASH=$GITHUB_SHA --build-arg PROPRIETARY_MODE=${{ secrets.PROPRIETARY_MODE }} --tag chrztoph/texterify:$GITHUB_SHA
+        run: docker build . --file Dockerfile --target production --build-arg COMMIT_HASH=$GITHUB_SHA --tag chrztoph/texterify:$GITHUB_SHA
       - name: Build the Docker image for the cloud version
         run: docker build . --file Dockerfile --target production --build-arg COMMIT_HASH=$GITHUB_SHA --build-arg PROPRIETARY_MODE=${{ secrets.PROPRIETARY_MODE }} --build-arg STRIPE_PUBLIC_API_KEY=${{ secrets.STRIPE_PUBLIC_API_KEY }} --build-arg TEXTERIFY_PAYMENT_SERVER=${{ secrets.TEXTERIFY_PAYMENT_SERVER }} --build-arg SENTRY_DSN_FRONTEND=${{ secrets.SENTRY_DSN_FRONTEND }} --tag chrztoph/texterify-cloud:$GITHUB_SHA
 
