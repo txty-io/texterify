@@ -15,10 +15,34 @@ module Deepl
         request(:get, 'usage')
       end
 
+      # Response:
+      # [
+      #   {
+      #     "language": "BG",
+      #     "name": "Bulgarian"
+      #   },
+      #   {
+      #     "language": "CS",
+      #     "name": "Czech"
+      #   },
+      #   ...
+      # ]
       def target_languages
         request(:get, 'languages', { type: 'target' })
       end
 
+      # Response:
+      # [
+      #   {
+      #     "language": "BG",
+      #     "name": "Bulgarian"
+      #   },
+      #   {
+      #     "language": "CS",
+      #     "name": "Czech"
+      #   },
+      #   ...
+      # ]
       def source_languages
         request(:get, 'languages', { type: 'source' })
       end

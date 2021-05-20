@@ -1,4 +1,9 @@
+# To start sidekiq run "bundle exec sidekiq".
+
+:dynamic: true
 :schedule:
-  trial_ending_worker:
+  TrialEndingWorker:
     cron: '0 4 * * *' # "At 04:00."
-    class: TrialEndingWorker
+
+  DeeplSupportedLanguagesWorker:
+    cron: '0 4 * * *' # "At 04:00."

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_10_160346) do
+ActiveRecord::Schema.define(version: 2021_05_20_154010) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -62,6 +62,22 @@ ActiveRecord::Schema.define(version: 2021_05_10_160346) do
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_country_codes_on_code"
     t.index ["name", "code"], name: "index_country_codes_on_name_and_code", unique: true
+  end
+
+  create_table "deepl_source_languages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "language", null: false
+    t.text "name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["language"], name: "index_deepl_source_languages_on_language", unique: true
+  end
+
+  create_table "deepl_target_languages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "language", null: false
+    t.text "name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["language"], name: "index_deepl_target_languages_on_language", unique: true
   end
 
   create_table "export_configs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
