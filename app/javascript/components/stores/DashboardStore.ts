@@ -59,6 +59,7 @@ class DashboardStore {
     @observable currentOrganization?: IOrganization = null;
     @observable @persist sidebarMinimized: boolean;
     @observable @persist keysPerPage = DEFAULT_PAGE_SIZE;
+    @observable @persist keysPerPageEditor = DEFAULT_PAGE_SIZE;
     @observable hydrationFinished = false;
 
     getOrganizationId = (organizationId?: string) => {

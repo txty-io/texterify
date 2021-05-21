@@ -1,12 +1,17 @@
 import { LoadingOutlined, RobotOutlined } from "@ant-design/icons";
 import EditorJS from "@editorjs/editorjs";
 import List from "@editorjs/list";
-import { Button, message, Select, Skeleton } from "antd";
+import { Alert, Button, message, Select, Skeleton } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import * as React from "react";
 import styled from "styled-components";
 import { APIUtils } from "../../../api/v1/APIUtils";
-import { IGetMachineTranslation, MachineTranslationsAPI } from "../../../api/v1/MachineTranslationsAPI";
+import {
+    IGetMachineTranslation,
+    IGetMachineTranslationsSourceLanguages,
+    IGetMachineTranslationsTargetLanguages,
+    MachineTranslationsAPI
+} from "../../../api/v1/MachineTranslationsAPI";
 import { TranslationsAPI } from "../../../api/v1/TranslationsAPI";
 import FlagIcon from "../../../ui/FlagIcons";
 import { Styles } from "../../../ui/Styles";
@@ -41,6 +46,8 @@ interface IProps {
     isDefaultLanguage?: boolean;
     defaultLanguage?: any;
     defaultLanguageTranslationContent?: string;
+    supportedSourceLanguages?: IGetMachineTranslationsSourceLanguages;
+    supportedTargetLanguages?: IGetMachineTranslationsTargetLanguages;
     onChange?(changed: boolean, content: string);
     onSave?();
     onSelectedLanguageChange?(languageId: string): void;
@@ -83,8 +90,42 @@ class TranslationCard extends React.Component<IProps, IState> {
         await this.loadMachineTranslation();
     }
 
+    defaultLanguageSupportsMachineTranslation() {
+        if (!this.props.defaultLanguage) {
+            return false;
+        }
+
+        const defaultLanguageLanguageCode = APIUtils.getIncludedObject(
+            this.props.defaultLanguage.relationships.language_code.data,
+            this.props.languagesResponse.included
+        );
+
+        return this.props.supportedSourceLanguages?.data.some((supportedSourceLanguage) => {
+            return supportedSourceLanguage.attributes.language_code === defaultLanguageLanguageCode.attributes.code;
+        });
+    }
+
+    languageSupportsMachineTranslation(languageId: string) {
+        const language = this.props.languages.find((l) => {
+            return l.id === languageId;
+        });
+
+        const languageLanguageCode = APIUtils.getIncludedObject(
+            language.relationships.language_code.data,
+            this.props.languagesResponse.included
+        );
+
+        return this.props.supportedTargetLanguages?.data.some((supportedTargetLanguage) => {
+            return supportedTargetLanguage.attributes.language_code === languageLanguageCode.attributes.code;
+        });
+    }
+
+    machineTranslationsSupported(languageId: string) {
+        return this.defaultLanguageSupportsMachineTranslation() && this.languageSupportsMachineTranslation(languageId);
+    }
+
     async loadMachineTranslation() {
-        if (this.isHTMLKey()) {
+        if (this.isHTMLKey() || !this.machineTranslationsSupported(this.state.selectedLanguage)) {
             // Machine translations for HTML keys are not supported.
             return;
         }
@@ -101,6 +142,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                 this.setState({ translationSuggestion: translationSuggestion });
             } catch (error) {
                 console.error(error);
+                message.error("Failed to load machine translation.");
             }
 
             this.setState({ translationSuggestionLoading: false });
@@ -335,7 +377,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                     </div>
                 ) : (
                     <TextArea
-                        autoSize={{ minRows: 4, maxRows: 12 }}
+                        autoSize={{ minRows: 8, maxRows: 12 }}
                         placeholder="Language translation content"
                         onChange={(event) => {
                             const changed = event.target.value !== this.state.translationForLanguage;
@@ -363,31 +405,71 @@ class TranslationCard extends React.Component<IProps, IState> {
                             </div>
                         )}
 
-                        {!this.state.translationSuggestionLoading && (
-                            <div>
-                                {this.props.defaultLanguageTranslationContent && this.state.translationSuggestion ? (
-                                    this.state.translationSuggestion.translation !==
-                                    this.state.translationForLanguage ? (
-                                        <>
-                                            <div style={{ marginTop: 16 }}>
-                                                {this.state.translationSuggestion.translation}
+                        {!this.machineTranslationsSupported(this.state.selectedLanguage) && (
+                            <Alert
+                                showIcon
+                                type="info"
+                                message={
+                                    <>
+                                        {!this.defaultLanguageSupportsMachineTranslation() && (
+                                            <div>
+                                                Machine translation with your default language as source is not
+                                                supported.
                                             </div>
-                                            <Button
-                                                type="primary"
-                                                style={{ marginTop: 16, marginBottom: 8 }}
-                                                disabled={
-                                                    this.state.translationSuggestion.translation === this.state.content
-                                                }
-                                                onClick={() => {
-                                                    this.setState({
-                                                        content: this.state.translationSuggestion.translation,
-                                                        editorContentChanged: true
-                                                    });
+                                        )}
+                                        {!this.languageSupportsMachineTranslation(this.state.selectedLanguage) && (
+                                            <div>Machine translation to the selected language is not supported.</div>
+                                        )}
+                                    </>
+                                }
+                            />
+                        )}
+
+                        {!this.state.translationSuggestionLoading &&
+                            this.defaultLanguageSupportsMachineTranslation() &&
+                            this.languageSupportsMachineTranslation(this.state.selectedLanguage) && (
+                                <div>
+                                    {this.props.defaultLanguageTranslationContent &&
+                                    this.state.translationSuggestion ? (
+                                        this.state.translationSuggestion.translation !==
+                                        this.state.translationForLanguage ? (
+                                            <>
+                                                <div style={{ marginTop: 16 }}>
+                                                    {this.state.translationSuggestion.translation}
+                                                </div>
+                                                <Button
+                                                    type="primary"
+                                                    style={{ marginTop: 16, marginBottom: 8 }}
+                                                    disabled={
+                                                        this.state.translationSuggestion.translation ===
+                                                        this.state.content
+                                                    }
+                                                    onClick={() => {
+                                                        this.setState({
+                                                            content: this.state.translationSuggestion.translation,
+                                                            editorContentChanged: true
+                                                        });
+                                                    }}
+                                                >
+                                                    Use translation
+                                                </Button>
+                                            </>
+                                        ) : (
+                                            <div
+                                                style={{
+                                                    fontStyle: "italic",
+                                                    color: "var(--color-passive)",
+                                                    fontSize: 12,
+                                                    marginTop: 16,
+                                                    marginBottom: 16
                                                 }}
                                             >
-                                                Use translation
-                                            </Button>
-                                        </>
+                                                Machine translation suggestion is the same as the current translation.
+                                                <div style={{ fontWeight: "bold", marginTop: 4 }}>
+                                                    {this.state.translationSuggestion.translation}
+                                                </div>
+                                            </div>
+                                        )
                                     ) : (
                                         <div
                                             style={{
@@ -398,27 +480,11 @@ class TranslationCard extends React.Component<IProps, IState> {
                                                 marginBottom: 16
                                             }}
                                         >
-                                            Machine translation suggestion is the same as the current translation.
-                                            <div style={{ fontWeight: "bold", marginTop: 4 }}>
-                                                {this.state.translationSuggestion.translation}
-                                            </div>
+                                            No translation in source language to translate.
                                         </div>
-                                    )
-                                ) : (
-                                    <div
-                                        style={{
-                                            fontStyle: "italic",
-                                            color: "var(--color-passive)",
-                                            fontSize: 12,
-                                            marginTop: 16,
-                                            marginBottom: 16
-                                        }}
-                                    >
-                                        No translation in source language to translate.
-                                    </div>
-                                )}
-                            </div>
-                        )}
+                                    )}
+                                </div>
+                            )}
                         <div
                             style={{
                                 color: "var(--color-passive)",

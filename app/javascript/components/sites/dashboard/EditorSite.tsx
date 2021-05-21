@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined, HddOutlined, LoadingOutlined, SettingOutlined } from "@ant-design/icons";
-import { Alert, Button, Input, Layout, Pagination, Popover, Tabs, Tag } from "antd";
+import { Alert, Button, Input, Layout, Pagination, Popover, Skeleton, Tabs, Tag } from "antd";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
 import * as queryString from "query-string";
@@ -11,6 +11,11 @@ import { APIUtils } from "../../api/v1/APIUtils";
 import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
 import { IGetKeysOptions, KeysAPI } from "../../api/v1/KeysAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
+import {
+    IGetMachineTranslationsSourceLanguages,
+    IGetMachineTranslationsTargetLanguages,
+    MachineTranslationsAPI
+} from "../../api/v1/MachineTranslationsAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { MenuLink, MenuList } from "../../routing/DashboardRouter";
 import { history } from "../../routing/history";
@@ -67,6 +72,8 @@ interface IState {
     search: string;
     page: number;
     searchSettings: ISearchSettings;
+    supportedSourceLanguages: IGetMachineTranslationsSourceLanguages;
+    supportedTargetLanguages: IGetMachineTranslationsTargetLanguages;
 }
 
 @observer
@@ -83,7 +90,9 @@ class EditorSite extends React.Component<IProps, IState> {
         selectedLanguageIdTo: "",
         search: undefined,
         page: 1,
-        searchSettings: parseKeySearchSettingsFromURL()
+        searchSettings: parseKeySearchSettingsFromURL(),
+        supportedSourceLanguages: null,
+        supportedTargetLanguages: null
     };
 
     debouncedSearchReloader = _.debounce(
@@ -131,6 +140,14 @@ class EditorSite extends React.Component<IProps, IState> {
             languagesResponse: responseLanguages,
             exportConfigsResponse: exportConfigsResponse
         });
+
+        const supportedSourceLanguages = await MachineTranslationsAPI.getSourceLanguages();
+        const supportedTargetLanguages = await MachineTranslationsAPI.getTargetLanguages();
+
+        this.setState({
+            supportedSourceLanguages: supportedSourceLanguages,
+            supportedTargetLanguages: supportedTargetLanguages
+        });
     }
 
     componentWillUnmount() {
@@ -141,7 +158,7 @@ class EditorSite extends React.Component<IProps, IState> {
         options = options || {};
         options.search = options.search || this.state.search;
         options.page = options.page || this.state.page;
-        options.perPage = 12;
+        options.perPage = dashboardStore.keysPerPageEditor;
         options.searchSettings = this.state.searchSettings;
 
         this.setState({ keysLoading: true });
@@ -355,7 +372,15 @@ class EditorSite extends React.Component<IProps, IState> {
                                     />
                                 </Input.Group>
                             </div>
-                            <div style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+                            <div
+                                style={{
+                                    flexGrow: 1,
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    flexShrink: 1,
+                                    overflow: "auto"
+                                }}
+                            >
                                 {!this.state.keysLoading &&
                                     this.state.keysResponse &&
                                     this.state.keysResponse.data.map((key, index) => {
@@ -426,11 +451,22 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 );
                                             }
                                         } else {
-                                            keyContentPreview = (
-                                                <div style={{ color: "var(--color-passive)" }}>
-                                                    Set a default language for preview.
-                                                </div>
-                                            );
+                                            if (this.state.languagesResponse) {
+                                                keyContentPreview = (
+                                                    <div style={{ color: "var(--color-passive)" }}>
+                                                        Set a default language for preview.
+                                                    </div>
+                                                );
+                                            } else {
+                                                keyContentPreview = (
+                                                    <Skeleton
+                                                        active
+                                                        paragraph={{ rows: 1 }}
+                                                        title={false}
+                                                        className="skeleton-small"
+                                                    />
+                                                );
+                                            }
                                         }
 
                                         return (
@@ -448,7 +484,8 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 }}
                                                 isSelected={this.isSelectedKey(key.id)}
                                                 style={{
-                                                    color: this.isSelectedKey(key.id) ? "var(--blue-color)" : undefined
+                                                    color: this.isSelectedKey(key.id) ? "var(--blue-color)" : undefined,
+                                                    flexShrink: 0
                                                 }}
                                             >
                                                 <span style={{ fontWeight: "bold" }}>{key.attributes.name}</span>
@@ -466,6 +503,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     <div
                                                         style={{
                                                             flexShrink: 1,
+                                                            flexGrow: 1,
                                                             overflow: "hidden",
                                                             textOverflow: "ellipsis"
                                                         }}
@@ -501,9 +539,14 @@ class EditorSite extends React.Component<IProps, IState> {
                                     // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                     this.setState({ page: page }, this.fetchKeys);
                                 }}
+                                onShowSizeChange={async (_current: number, size: number) => {
+                                    dashboardStore.keysPerPageEditor = size;
+                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                    this.setState({ page: 1 }, this.fetchKeys);
+                                }}
                                 style={{ alignSelf: "center", margin: 16 }}
-                                size="small"
-                                pageSize={12}
+                                pageSize={dashboardStore.keysPerPageEditor}
+                                showSizeChanger
                             />
                         </div>
                         <div
@@ -593,6 +636,8 @@ class EditorSite extends React.Component<IProps, IState> {
                                             keyResponse={this.state.keyResponse}
                                             defaultLanguage={defaultLanguage}
                                             defaultLanguageTranslationContent={defaultLanguageTranslationContent}
+                                            supportedSourceLanguages={this.state.supportedSourceLanguages}
+                                            supportedTargetLanguages={this.state.supportedTargetLanguages}
                                             onSave={() => {
                                                 if (this.keyHistoryRef) {
                                                     this.keyHistoryRef.reload();

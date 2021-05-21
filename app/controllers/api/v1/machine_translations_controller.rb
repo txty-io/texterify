@@ -9,15 +9,13 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
   def source_languages
     authorize :machine_translation, :source_languages?
 
-    deepl_client = Deepl::V2::Client.new(ENV['DEEPL_API_TOKEN'])
-    render json: deepl_client.source_languages
+    render json: DeeplSourceLanguageSerializer.new(DeeplSourceLanguage.all).serialized_json
   end
 
   def target_languages
     authorize :machine_translation, :target_languages?
 
-    deepl_client = Deepl::V2::Client.new(ENV['DEEPL_API_TOKEN'])
-    render json: deepl_client.target_languages
+    render json: DeeplTargetLanguageSerializer.new(DeeplTargetLanguage.all).serialized_json
   end
 
   def translate
