@@ -9,7 +9,7 @@ require 'rails/all'
 Bundler.require(*Rails.groups)
 
 if ENV["SENTRY_DSN_BACKEND"].present?
-  Raven.configure do |config|
+  Sentry.init do |config|
     config.dsn = ENV["SENTRY_DSN_BACKEND"]
   end
 end
