@@ -90,6 +90,9 @@ Style/WordArray:
 Style/NumericLiterals:
   Enabled: false
 
+Style/RedundantSelf:
+  Enabled: false
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: "indented"
 
