@@ -34,6 +34,16 @@ class Key < ApplicationRecord
     end
   end
 
+  def default_language
+    project.languages.find_by(is_default: true)
+  end
+
+  def default_language_translation
+    if default_language
+      translations.find_by(language_id: default_language.id)
+    end
+  end
+
   protected
 
   def check_html_allowed
