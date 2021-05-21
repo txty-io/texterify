@@ -29,23 +29,23 @@ class KeyHistory extends React.Component<IProps, IState> {
     };
 
     async componentDidMount() {
-        if (dashboardStore.featureEnabled("FEATURE_KEY_HISTORY")) {
-            await this.reload();
-        }
+        await this.reload();
     }
 
     reload = async () => {
-        try {
-            const keyActivityResponse = await KeysAPI.getActivity({
-                projectId: this.props.projectId,
-                keyId: this.props.keyId
-            });
+        if (dashboardStore.featureEnabled("FEATURE_KEY_HISTORY")) {
+            try {
+                const keyActivityResponse = await KeysAPI.getActivity({
+                    projectId: this.props.projectId,
+                    keyId: this.props.keyId
+                });
 
-            this.setState({
-                keyActivityResponse: keyActivityResponse
-            });
-        } catch (err) {
-            console.error(err);
+                this.setState({
+                    keyActivityResponse: keyActivityResponse
+                });
+            } catch (err) {
+                console.error(err);
+            }
         }
     };
 

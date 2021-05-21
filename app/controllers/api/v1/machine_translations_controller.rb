@@ -1,4 +1,6 @@
 class Api::V1::MachineTranslationsController < Api::V1::ApiController
+  before_action :verify_deepl_configured
+
   def usage
     authorize :machine_translation, :usage?
 
@@ -57,6 +59,17 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
       )
 
       render json: { translation: deepl_translation }
+    end
+  end
+
+  private
+
+  def verify_deepl_configured
+    if ENV['DEEPL_API_TOKEN'].blank?
+      render json: {
+        error: true,
+        message: 'NOT_CONFIGURED'
+      }, status: :bad_request
     end
   end
 end

@@ -63,4 +63,8 @@ class ProjectSerializer
   attribute :all_features do
     Organization::FEATURES_PLANS
   end
+
+  attribute :machine_translation_enabled do
+    ENV['DEEPL_API_TOKEN'].present?
+  end
 end

@@ -141,13 +141,15 @@ class EditorSite extends React.Component<IProps, IState> {
             exportConfigsResponse: exportConfigsResponse
         });
 
-        const supportedSourceLanguages = await MachineTranslationsAPI.getSourceLanguages();
-        const supportedTargetLanguages = await MachineTranslationsAPI.getTargetLanguages();
+        if (dashboardStore.currentProject.attributes.machine_translation_enabled) {
+            const supportedSourceLanguages = await MachineTranslationsAPI.getSourceLanguages();
+            const supportedTargetLanguages = await MachineTranslationsAPI.getTargetLanguages();
 
-        this.setState({
-            supportedSourceLanguages: supportedSourceLanguages,
-            supportedTargetLanguages: supportedTargetLanguages
-        });
+            this.setState({
+                supportedSourceLanguages: supportedSourceLanguages,
+                supportedTargetLanguages: supportedTargetLanguages
+            });
+        }
     }
 
     componentWillUnmount() {
@@ -602,7 +604,6 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 }
 
                                                 await this.loadAndSetKey();
-                                                console.error("reloaded");
                                             }}
                                         />
                                     ) : (

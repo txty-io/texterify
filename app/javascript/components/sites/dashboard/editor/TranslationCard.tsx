@@ -17,6 +17,7 @@ import FlagIcon from "../../../ui/FlagIcons";
 import { Styles } from "../../../ui/Styles";
 import { Utils } from "../../../ui/Utils";
 import DeeplLogo from "images/deepl_logo.svg";
+import { dashboardStore } from "../../../stores/DashboardStore";
 
 const EMPTY_EDITOR_HEIGHT = 108;
 
@@ -87,7 +88,10 @@ class TranslationCard extends React.Component<IProps, IState> {
 
     async componentDidMount() {
         await this.loadData();
-        await this.loadMachineTranslation();
+
+        if (dashboardStore.currentProject.attributes.machine_translation_enabled) {
+            await this.loadMachineTranslation();
+        }
     }
 
     defaultLanguageSupportsMachineTranslation() {
@@ -405,27 +409,35 @@ class TranslationCard extends React.Component<IProps, IState> {
                             </div>
                         )}
 
-                        {!this.machineTranslationsSupported(this.state.selectedLanguage) && (
-                            <Alert
-                                showIcon
-                                type="info"
-                                message={
-                                    <>
-                                        {!this.defaultLanguageSupportsMachineTranslation() && (
-                                            <div>
-                                                Machine translation with your default language as source is not
-                                                supported.
-                                            </div>
-                                        )}
-                                        {!this.languageSupportsMachineTranslation(this.state.selectedLanguage) && (
-                                            <div>Machine translation to the selected language is not supported.</div>
-                                        )}
-                                    </>
-                                }
-                            />
+                        {!dashboardStore.currentProject.attributes.machine_translation_enabled && (
+                            <Alert showIcon type="warning" message="Machine translation service is not configured." />
                         )}
 
-                        {!this.state.translationSuggestionLoading &&
+                        {dashboardStore.currentProject.attributes.machine_translation_enabled &&
+                            !this.machineTranslationsSupported(this.state.selectedLanguage) && (
+                                <Alert
+                                    showIcon
+                                    type="info"
+                                    message={
+                                        <>
+                                            {!this.defaultLanguageSupportsMachineTranslation() && (
+                                                <div>
+                                                    Machine translation with your default language as source is not
+                                                    supported.
+                                                </div>
+                                            )}
+                                            {!this.languageSupportsMachineTranslation(this.state.selectedLanguage) && (
+                                                <div>
+                                                    Machine translation to the selected language is not supported.
+                                                </div>
+                                            )}
+                                        </>
+                                    }
+                                />
+                            )}
+
+                        {dashboardStore.currentProject.attributes.machine_translation_enabled &&
+                            !this.state.translationSuggestionLoading &&
                             this.defaultLanguageSupportsMachineTranslation() &&
                             this.languageSupportsMachineTranslation(this.state.selectedLanguage) && (
                                 <div>
