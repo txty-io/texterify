@@ -37,6 +37,10 @@ export function FeatureNotAvailable(props: { feature: IFeature; style?: React.CS
         dashboardStore.currentProjectIncluded
     );
 
+    if (!currentOrganization) {
+        return null;
+    }
+
     const featureAvailableInPlans = currentOrganization.attributes.all_features[props.feature];
     const capitalizedFeatureAvailableInPlans = featureAvailableInPlans.map((plan) => {
         return (
