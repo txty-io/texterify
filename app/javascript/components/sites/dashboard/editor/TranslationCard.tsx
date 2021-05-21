@@ -1,4 +1,4 @@
-import { LoadingOutlined, RobotOutlined } from "@ant-design/icons";
+import { CheckOutlined, LoadingOutlined, RobotOutlined } from "@ant-design/icons";
 import EditorJS from "@editorjs/editorjs";
 import List from "@editorjs/list";
 import { Alert, Button, message, Select, Skeleton } from "antd";
@@ -63,6 +63,7 @@ interface IState {
     content: string;
     translationSuggestion: IGetMachineTranslation;
     translationSuggestionLoading: boolean;
+    initialMachineTranslationLoaded: boolean;
 }
 
 class TranslationCard extends React.Component<IProps, IState> {
@@ -75,13 +76,24 @@ class TranslationCard extends React.Component<IProps, IState> {
         translationForLanguage: null,
         content: null,
         translationSuggestion: null,
-        translationSuggestionLoading: false
+        translationSuggestionLoading: false,
+        initialMachineTranslationLoaded: false
     };
 
     editor: any;
 
     async componentDidUpdate(prevProps: IProps) {
+        // Reload the machine translation whenever the translation for the source language changes.
         if (prevProps.defaultLanguageTranslationContent !== this.props.defaultLanguageTranslationContent) {
+            await this.loadMachineTranslation();
+        }
+
+        // When reloading the site with a key selected load the machine translation when everything is available.
+        if (
+            this.props.defaultLanguageTranslationContent &&
+            this.props.defaultLanguage &&
+            !this.state.initialMachineTranslationLoaded
+        ) {
             await this.loadMachineTranslation();
         }
     }
@@ -135,7 +147,7 @@ class TranslationCard extends React.Component<IProps, IState> {
         }
 
         if (this.props.defaultLanguage && this.props.defaultLanguageTranslationContent) {
-            this.setState({ translationSuggestionLoading: true });
+            this.setState({ initialMachineTranslationLoaded: true, translationSuggestionLoading: true });
             try {
                 const translationSuggestion = await MachineTranslationsAPI.translate({
                     projectId: this.props.projectId,
@@ -403,7 +415,9 @@ class TranslationCard extends React.Component<IProps, IState> {
                         <h4 style={{ fontSize: 12 }}>
                             <RobotOutlined style={{ marginRight: 4 }} /> Machine Translation Suggestion
                         </h4>
-                        {this.state.translationSuggestionLoading && (
+                        {(this.state.translationSuggestionLoading ||
+                            !this.props.supportedSourceLanguages ||
+                            !this.props.supportedTargetLanguages) && (
                             <div style={{ marginTop: 16, marginBottom: 16 }}>
                                 <Skeleton active paragraph={{ rows: 2 }} title={false} />
                             </div>
@@ -414,6 +428,8 @@ class TranslationCard extends React.Component<IProps, IState> {
                         )}
 
                         {dashboardStore.currentProject.attributes.machine_translation_enabled &&
+                            this.props.supportedSourceLanguages &&
+                            this.props.supportedTargetLanguages &&
                             !this.machineTranslationsSupported(this.state.selectedLanguage) && (
                                 <Alert
                                     showIcon
@@ -438,6 +454,8 @@ class TranslationCard extends React.Component<IProps, IState> {
 
                         {dashboardStore.currentProject.attributes.machine_translation_enabled &&
                             !this.state.translationSuggestionLoading &&
+                            this.props.supportedSourceLanguages &&
+                            this.props.supportedTargetLanguages &&
                             this.defaultLanguageSupportsMachineTranslation() &&
                             this.languageSupportsMachineTranslation(this.state.selectedLanguage) && (
                                 <div>
@@ -476,8 +494,11 @@ class TranslationCard extends React.Component<IProps, IState> {
                                                     marginBottom: 16
                                                 }}
                                             >
+                                                <CheckOutlined
+                                                    style={{ color: "var(--color-success)", marginRight: 4 }}
+                                                />{" "}
                                                 Machine translation suggestion is the same as the current translation.
-                                                <div style={{ fontWeight: "bold", marginTop: 4 }}>
+                                                <div style={{ fontWeight: "bold", marginTop: 16 }}>
                                                     {this.state.translationSuggestion.translation}
                                                 </div>
                                             </div>
