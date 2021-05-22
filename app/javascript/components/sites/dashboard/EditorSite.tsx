@@ -141,7 +141,7 @@ class EditorSite extends React.Component<IProps, IState> {
             exportConfigsResponse: exportConfigsResponse
         });
 
-        if (dashboardStore.currentProject.attributes.machine_translation_enabled) {
+        if (dashboardStore.currentProject.attributes.machine_translation_active) {
             const supportedSourceLanguages = await MachineTranslationsAPI.getSourceLanguages();
             const supportedTargetLanguages = await MachineTranslationsAPI.getTargetLanguages();
 

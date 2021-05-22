@@ -343,6 +343,6 @@ class Api::V1::ProjectsController < Api::V1::ApiController
   private
 
   def project_params
-    params.permit(:name, :description)
+    params.permit(:name, :description, :machine_translation_enabled, :auto_translate_new_keys, :auto_translate_new_languages)
   end
 end

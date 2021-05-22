@@ -1,3 +1,5 @@
+require_relative '../lib/texterify'
+
 class Language < ApplicationRecord
   scope :order_by_name, -> { order(arel_table['name'].lower.asc) }
 
@@ -26,6 +28,32 @@ class Language < ApplicationRecord
       updating_language = language.id == id
 
       errors.add(:name, :taken) if !updating_language
+    end
+  end
+
+  # Translates all non export config translations of all non HTML keys for the language which are empty.
+  def auto_translate_untranslated
+    if ENV['DEEPL_API_TOKEN'].present? && self.project.machine_translation_enabled && self.project.auto_translate_new_languages
+      self.keys.where(html_enabled: false).each do |key|
+        target_language = self
+        source_translation = key.default_language_translation
+        target_translation = key.translations.find_by(language_id: target_language.id, export_config_id: nil)
+
+        if source_translation.present? && (target_translation.nil? || target_translation.content.empty?)
+          content = Texterify::MachineTranslation.translate(source_translation, target_language)
+
+          unless content.nil?
+            if target_translation.nil?
+              translation = Translation.new(content: content)
+              translation.language = target_language
+              translation.key = key
+              translation.save!
+            else
+              current_translation.update(content: content)
+            end
+          end
+        end
+      end
     end
   end
 

@@ -22,6 +22,11 @@ interface IState {
     imagePosition: { x: number; y: number };
 }
 
+interface IFormValues {
+    name: string;
+    description: string;
+}
+
 class NewProjectForm extends React.Component<IProps, IState> {
     isMovingImage = false;
     dropzone: any = React.createRef();
@@ -43,15 +48,15 @@ class NewProjectForm extends React.Component<IProps, IState> {
         }
     }
 
-    handleSubmit = async (values: any) => {
+    handleSubmit = async (values: IFormValues) => {
         let response;
 
         if (this.props.isEdit) {
-            response = await ProjectsAPI.updateProject(
-                dashboardStore.currentProject.id,
-                values.name,
-                values.description
-            );
+            response = await ProjectsAPI.updateProject({
+                projectId: dashboardStore.currentProject.id,
+                name: values.name,
+                description: values.description
+            });
         } else {
             response = await ProjectsAPI.createProject(values.name, values.description, this.props.organizationId);
         }

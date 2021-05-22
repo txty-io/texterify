@@ -1,6 +1,5 @@
 import fileDownload from "js-file-download";
 import { ImportFileFormats } from "../../sites/dashboard/ImportSite";
-import { IProject } from "../../stores/DashboardStore";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
@@ -40,10 +39,18 @@ const ProjectsAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    updateProject: async (projectId: string, name: string, description: string): Promise<any> => {
-        return API.putRequest(`projects/${projectId}`, true, {
-            name: name,
-            description: description
+    updateProject: async (options: {
+        projectId: string;
+        name?: string;
+        description?: string;
+        machineTranslationEnabled?: boolean;
+        autoTranslateNewKeys?: boolean;
+        autoTranslateNewLanguages?: boolean;
+    }): Promise<any> => {
+        return API.putRequest(`projects/${options.projectId}`, true, {
+            machine_translation_enabled: options.machineTranslationEnabled,
+            auto_translate_new_keys: options.autoTranslateNewKeys,
+            auto_translate_new_languages: options.autoTranslateNewLanguages
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);

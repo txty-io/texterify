@@ -12,6 +12,7 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     OneToOneOutlined,
+    RobotOutlined,
     SettingOutlined,
     SwapOutlined,
     TeamOutlined
@@ -145,6 +146,15 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 path: Routes.DASHBOARD.PROJECT_MEMBERS.replace(":projectId", this.props.match.params.projectId),
                 text: "Members",
                 dataId: "project-sidebar-members"
+            },
+            {
+                icon: RobotOutlined,
+                path: Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION.replace(
+                    ":projectId",
+                    this.props.match.params.projectId
+                ),
+                text: "Machine Translation",
+                dataId: "project-sidebar-machine-translation"
             },
             {
                 icon: BlockOutlined,

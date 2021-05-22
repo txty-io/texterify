@@ -1,7 +1,7 @@
 class ProjectSerializer
   include FastJsonapi::ObjectSerializer
   extend ApplicationHelper
-  attributes :id, :name, :description
+  attributes :id, :name, :description, :machine_translation_enabled, :auto_translate_new_keys, :auto_translate_new_languages
   belongs_to :organization
   has_many :keys
   has_many :languages
@@ -64,7 +64,7 @@ class ProjectSerializer
     Organization::FEATURES_PLANS
   end
 
-  attribute :machine_translation_enabled do
-    ENV['DEEPL_API_TOKEN'].present?
+  attribute :machine_translation_active do |object|
+    ENV['DEEPL_API_TOKEN'].present? && object.machine_translation_enabled
   end
 end

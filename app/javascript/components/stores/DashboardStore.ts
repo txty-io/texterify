@@ -20,7 +20,10 @@ interface IProjectAttributes {
     current_user_role_source?: string;
     enabled_features: IFeature[];
     all_features: { [k in IFeature]: IPlanIDS[] };
+    machine_translation_active: boolean;
     machine_translation_enabled: boolean;
+    auto_translate_new_keys: boolean;
+    auto_translate_new_languages: boolean;
 }
 
 export type IFeature =

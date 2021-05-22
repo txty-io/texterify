@@ -55,15 +55,19 @@ module Deepl
         }
 
         json = request(:post, 'translate', data)
-        json['translations'][0]['text']
+
+        unless json.nil?
+          json['translations'][0]['text']
+        end
       end
 
       private
 
       def request(http_method, endpoint, data = nil)
         response = RestClient::Request.execute(method: http_method, url: API_ENDPOINT + endpoint, payload: data, headers: { params: { auth_key: @auth_token } })
-
         JSON.parse(response)
+      rescue => e
+        Sentry.capture_exception(e)
       end
     end
   end

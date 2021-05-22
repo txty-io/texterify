@@ -73,7 +73,8 @@ class NewKeyForm extends React.Component<IProps> {
             } else if (!values.htmlEnabled) {
                 await TranslationsAPI.createTranslation({
                     ...translationParams,
-                    content: values.defaultLanguageContent
+                    content: values.defaultLanguageContent,
+                    triggerAutoTranslate: true
                 });
             }
         }

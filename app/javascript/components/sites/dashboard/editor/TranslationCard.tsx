@@ -101,7 +101,7 @@ class TranslationCard extends React.Component<IProps, IState> {
     async componentDidMount() {
         await this.loadData();
 
-        if (dashboardStore.currentProject.attributes.machine_translation_enabled) {
+        if (dashboardStore.currentProject.attributes.machine_translation_active) {
             await this.loadMachineTranslation();
         }
     }
@@ -423,11 +423,11 @@ class TranslationCard extends React.Component<IProps, IState> {
                             </div>
                         )}
 
-                        {!dashboardStore.currentProject.attributes.machine_translation_enabled && (
-                            <Alert showIcon type="warning" message="Machine translation service is not configured." />
+                        {!dashboardStore.currentProject.attributes.machine_translation_active && (
+                            <Alert showIcon type="warning" message="Machine translation is not enabled." />
                         )}
 
-                        {dashboardStore.currentProject.attributes.machine_translation_enabled &&
+                        {dashboardStore.currentProject.attributes.machine_translation_active &&
                             this.props.supportedSourceLanguages &&
                             this.props.supportedTargetLanguages &&
                             !this.machineTranslationsSupported(this.state.selectedLanguage) && (
@@ -452,7 +452,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                                 />
                             )}
 
-                        {dashboardStore.currentProject.attributes.machine_translation_enabled &&
+                        {dashboardStore.currentProject.attributes.machine_translation_active &&
                             !this.state.translationSuggestionLoading &&
                             this.props.supportedSourceLanguages &&
                             this.props.supportedTargetLanguages &&

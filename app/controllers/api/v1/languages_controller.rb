@@ -91,6 +91,8 @@ class Api::V1::LanguagesController < Api::V1::ApiController
         success: true,
         details: 'Language successfully created.'
       }, status: :ok
+
+      language.auto_translate_untranslated
     else
       render json: {
         errors: language.errors.details
