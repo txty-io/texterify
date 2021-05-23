@@ -20,6 +20,10 @@ interface IProjectAttributes {
     current_user_role_source?: string;
     enabled_features: IFeature[];
     all_features: { [k in IFeature]: IPlanIDS[] };
+    validate_leading_whitespace: boolean;
+    validate_trailing_whitespace: boolean;
+    validate_double_whitespace: boolean;
+    validate_https: boolean;
 }
 
 export type IFeature =

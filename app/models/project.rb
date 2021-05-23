@@ -15,6 +15,8 @@ class Project < ApplicationRecord
   has_many :versions, class_name: 'PaperTrail::Version', dependent: :delete_all
   has_many :users_project, through: :project_users, source: :user
   has_many :releases, through: :export_configs, dependent: :destroy
+  has_many :validations, dependent: :destroy
+  has_many :validation_violations, dependent: :destroy
 
   has_one_attached :image
 

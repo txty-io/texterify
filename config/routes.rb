@@ -53,6 +53,7 @@ Rails.application.routes.draw do
         delete 'releases', to: 'releases#destroy_multiple'
 
         resources :post_processing_rules, only: [:create, :index, :destroy, :update]
+        resources :validations, only: [:create, :index, :destroy, :update]
         delete 'post_processing_rules', to: 'post_processing_rules#destroy_multiple'
         resources :languages, only: [:create, :index, :destroy, :update]
         delete 'languages', to: 'languages#destroy_multiple'

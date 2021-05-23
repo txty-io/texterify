@@ -3,10 +3,10 @@ import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import { ErrorUtils } from "../ui/ErrorUtils";
 import { TexterifyModal } from "../ui/TexterifyModal";
-import { ValidationRulesAPI } from "../api/v1/ValidationRulesAPI";
+import { IValidation, ValidationsAPI } from "../api/v1/ValidationsAPI";
 
 interface IProps {
-    ruleToEdit?: any;
+    validationToEdit?: IValidation;
     projectId: string;
     visible: boolean;
     onCancelRequest();
@@ -14,38 +14,44 @@ interface IProps {
 }
 
 interface IState {
-    type: string;
+    match: string;
 }
 
 interface IFormValues {
     name: string;
-    type: string;
+    description: string;
     content: string;
 }
 
-class AddEditValidationRuleForm extends React.Component<IProps> {
+class AddEditValidationForm extends React.Component<IProps, IState> {
     formRef = React.createRef<FormInstance>();
 
-    state: IState = {
-        type: "contains"
-    };
+    constructor(props: IProps) {
+        super(props);
+
+        this.state = {
+            match: props.validationToEdit?.attributes.match || "contains"
+        };
+    }
 
     handleSubmit = async (values: IFormValues) => {
         let response;
 
-        if (this.props.ruleToEdit) {
-            response = await ValidationRulesAPI.updateValidationRule({
+        if (this.props.validationToEdit) {
+            response = await ValidationsAPI.updateValidation({
                 projectId: this.props.projectId,
-                ruleId: this.props.ruleToEdit.id,
+                validationId: this.props.validationToEdit.id,
                 name: values.name,
-                type: values.type,
+                description: values.description,
+                match: this.state.match,
                 content: values.content
             });
         } else {
-            response = await ValidationRulesAPI.createValidationRule({
+            response = await ValidationsAPI.createValidation({
                 projectId: this.props.projectId,
                 name: values.name,
-                type: values.type,
+                description: values.description,
+                match: this.state.match,
                 content: values.content
             });
         }
@@ -64,10 +70,10 @@ class AddEditValidationRuleForm extends React.Component<IProps> {
     render() {
         const selectBefore = (
             <Select
-                value={this.state.type}
+                value={this.state.match}
                 style={{ minWidth: 140, textAlign: "left" }}
                 onChange={(value) => {
-                    this.setState({ type: value });
+                    this.setState({ match: value });
                 }}
             >
                 <Select.Option value="contains">contains</Select.Option>
@@ -77,7 +83,7 @@ class AddEditValidationRuleForm extends React.Component<IProps> {
 
         return (
             <TexterifyModal
-                title={this.props.ruleToEdit ? "Edit validation rule" : "Add a new rule"}
+                title={this.props.validationToEdit ? "Edit validation" : "Add a new validation"}
                 visible={this.props.visible}
                 footer={
                     <div style={{ margin: "6px 0" }}>
@@ -88,8 +94,8 @@ class AddEditValidationRuleForm extends React.Component<IProps> {
                         >
                             Cancel
                         </Button>
-                        <Button form="addEditValidationRuleForm" type="primary" htmlType="submit">
-                            {this.props.ruleToEdit ? "Save changes" : "Create rule"}
+                        <Button form="addEditValidationForm" type="primary" htmlType="submit">
+                            {this.props.validationToEdit ? "Save changes" : "Create validation"}
                         </Button>
                     </div>
                 }
@@ -99,17 +105,21 @@ class AddEditValidationRuleForm extends React.Component<IProps> {
                     ref={this.formRef}
                     onFinish={this.handleSubmit}
                     style={{ maxWidth: "100%" }}
-                    id="addEditValidationRuleForm"
+                    id="addEditValidationForm"
                     initialValues={
-                        this.props.ruleToEdit && {
-                            name: this.props.ruleToEdit.attributes.name
+                        this.props.validationToEdit && {
+                            name: this.props.validationToEdit.attributes.name,
+                            description: this.props.validationToEdit.attributes.description,
+                            content: this.props.validationToEdit.attributes.content
                         }
                     }
                 >
                     <h3>Name *</h3>
                     <Form.Item
                         name="name"
-                        rules={[{ required: true, whitespace: true, message: "Please enter the name of the rule." }]}
+                        rules={[
+                            { required: true, whitespace: true, message: "Please enter the name of the validation." }
+                        ]}
                     >
                         <Input placeholder="Name" />
                     </Form.Item>
@@ -119,19 +129,21 @@ class AddEditValidationRuleForm extends React.Component<IProps> {
                         <Input placeholder="Description" />
                     </Form.Item>
 
-                    <h3>Rule *</h3>
-                    <Form.Item
-                        name="content"
-                        rules={[{ required: true, whitespace: true, message: "Please enter a validation." }]}
-                    >
-                        <div style={{ display: "flex", alignItems: "center", whiteSpace: "nowrap" }}>
-                            Report if text <Input addonBefore={selectBefore} style={{ marginLeft: 8 }} />
-                        </div>
-                    </Form.Item>
+                    <h3>Validation *</h3>
+                    <div style={{ display: "flex", alignItems: "center", whiteSpace: "nowrap" }}>
+                        Report if text
+                        <Form.Item
+                            name="content"
+                            style={{ margin: 0 }}
+                            rules={[{ required: true, whitespace: true, message: "Please enter a validation." }]}
+                        >
+                            <Input addonBefore={selectBefore} style={{ marginLeft: 8 }} />
+                        </Form.Item>
+                    </div>
                 </Form>
             </TexterifyModal>
         );
     }
 }
 
-export { AddEditValidationRuleForm };
+export { AddEditValidationForm };

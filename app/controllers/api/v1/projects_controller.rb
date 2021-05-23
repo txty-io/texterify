@@ -343,6 +343,6 @@ class Api::V1::ProjectsController < Api::V1::ApiController
   private
 
   def project_params
-    params.permit(:name, :description)
+    params.permit(:name, :description, :validate_leading_whitespace, :validate_trailing_whitespace, :validate_double_whitespace, :validate_https)
   end
 end

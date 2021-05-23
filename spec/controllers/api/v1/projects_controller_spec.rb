@@ -44,7 +44,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(10)
       expect(body['data'][0].keys).to contain_exactly('attributes', 'id', 'relationships', 'type')
-      expect(body['data'][0]['attributes'].keys).to contain_exactly('description', 'id', 'name', 'current_user_role', 'current_user_role_source', 'all_features', 'enabled_features')
+      expect(body['data'][0]['attributes'].keys).to contain_exactly('description', 'id', 'name', 'current_user_role', 'current_user_role_source', 'all_features', 'enabled_features', 'validate_leading_whitespace', 'validate_trailing_whitespace', 'validate_double_whitespace', 'validate_https')
       expect(body['meta']['total']).to eq(number_of_projects)
     end
 
@@ -137,7 +137,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
       expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
-      expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'description', 'current_user_role', 'current_user_role_source', 'all_features', 'enabled_features')
+      expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'description', 'current_user_role', 'current_user_role_source', 'all_features', 'enabled_features', 'validate_leading_whitespace', 'validate_trailing_whitespace', 'validate_double_whitespace', 'validate_https')
       expect(body['data']['attributes']['name']).to eq(name)
       expect(body['data']['attributes']['description']).to eq(nil)
     end
@@ -150,7 +150,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
       expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
-      expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'description', 'current_user_role', 'current_user_role_source', 'all_features', 'enabled_features')
+      expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'description', 'current_user_role', 'current_user_role_source', 'all_features', 'enabled_features', 'validate_leading_whitespace', 'validate_trailing_whitespace', 'validate_double_whitespace', 'validate_https')
       expect(body['data']['attributes']['name']).to eq(name)
       expect(body['data']['attributes']['description']).to eq(description)
       expect(body['data']['relationships']['project_columns']['data'].length).to eq(1)
@@ -203,7 +203,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
         if expected_response_status == 200
           body = JSON.parse(response.body)
           expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
-          expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'description', 'current_user_role', 'current_user_role_source', 'all_features', 'enabled_features')
+          expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'description', 'current_user_role', 'current_user_role_source', 'all_features', 'enabled_features', 'validate_leading_whitespace', 'validate_trailing_whitespace', 'validate_double_whitespace', 'validate_https')
           expect(body['data']['attributes']['name']).to eq(new_name)
           expect(body['data']['attributes']['description']).to eq(nil)
         end

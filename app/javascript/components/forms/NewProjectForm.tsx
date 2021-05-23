@@ -47,11 +47,11 @@ class NewProjectForm extends React.Component<IProps, IState> {
         let response;
 
         if (this.props.isEdit) {
-            response = await ProjectsAPI.updateProject(
-                dashboardStore.currentProject.id,
-                values.name,
-                values.description
-            );
+            response = await ProjectsAPI.updateProject({
+                projectId: dashboardStore.currentProject.id,
+                name: values.name,
+                description: values.description
+            });
         } else {
             response = await ProjectsAPI.createProject(values.name, values.description, this.props.organizationId);
         }

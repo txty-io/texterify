@@ -11,6 +11,7 @@ import {
     LineChartOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
+    MonitorOutlined,
     OneToOneOutlined,
     SettingOutlined,
     SwapOutlined,
@@ -122,11 +123,12 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 text: "Activity",
                 dataId: "project-sidebar-activity"
             },
-            // {
-            //     icon: MonitorOutlined,
-            //     path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
-            //     text: "Validations"
-            // },
+            {
+                icon: MonitorOutlined,
+                path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
+                text: "Validations",
+                dataId: "project-sidebar-validations"
+            },
             {
                 icon: SwapOutlined,
                 path: Routes.DASHBOARD.PROJECT_OTA.replace(":projectId", this.props.match.params.projectId),

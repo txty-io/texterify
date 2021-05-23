@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_10_160346) do
+ActiveRecord::Schema.define(version: 2021_05_23_030300) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -188,6 +188,10 @@ ActiveRecord::Schema.define(version: 2021_05_10_160346) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "organization_id"
+    t.boolean "validate_leading_whitespace", default: true, null: false
+    t.boolean "validate_trailing_whitespace", default: true, null: false
+    t.boolean "validate_double_whitespace", default: true, null: false
+    t.boolean "validate_https", default: true, null: false
     t.index ["organization_id"], name: "index_projects_on_organization_id"
   end
 
@@ -327,6 +331,30 @@ ActiveRecord::Schema.define(version: 2021_05_10_160346) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  create_table "validation_violations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "ignored", default: false, null: false
+    t.uuid "project_id", null: false
+    t.uuid "validation_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["project_id"], name: "index_validation_violations_on_project_id"
+    t.index ["validation_id"], name: "index_validation_violations_on_validation_id"
+  end
+
+  create_table "validations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "name", null: false
+    t.text "description"
+    t.text "match", null: false
+    t.text "content", null: false
+    t.uuid "organization_id"
+    t.uuid "project_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.boolean "enabled", default: true, null: false
+    t.index ["organization_id"], name: "index_validations_on_organization_id"
+    t.index ["project_id"], name: "index_validations_on_project_id"
+  end
+
   create_table "versions", force: :cascade do |t|
     t.string "item_type", null: false
     t.string "event", null: false
@@ -373,5 +401,9 @@ ActiveRecord::Schema.define(version: 2021_05_10_160346) do
   add_foreign_key "translations", "keys"
   add_foreign_key "translations", "languages"
   add_foreign_key "user_licenses", "users"
+  add_foreign_key "validation_violations", "projects"
+  add_foreign_key "validation_violations", "validations"
+  add_foreign_key "validations", "organizations"
+  add_foreign_key "validations", "projects"
   add_foreign_key "versions", "projects"
 end
