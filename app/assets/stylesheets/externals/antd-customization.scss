@@ -20,26 +20,6 @@
     border-bottom: 1px solid var(--border-color);
   }
 
-  .ant-popover-inner, .ant-popover-inner-content {
-    background: var(--background-color);
-  }
-
-  .popover-no-padding {
-    .ant-popover-inner-content {
-      padding: 8px 0;
-
-      a {
-        &:hover {
-          text-decoration: none;
-        }
-      }
-
-      ul {
-        margin: 0;
-      }
-    }
-  }
-
   .editable-cell {
     position: relative;
   }

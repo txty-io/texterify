@@ -1,6 +1,7 @@
 :root {
   --full-color: #000;
-  --background-color: #fff;
+  --background-color: #fff;;
+  --popover-background-color: #fff;
   --dark-color: #080b0d;
   --border-color: #d9d9d9;
   --border-color-flashier: #777;
@@ -22,6 +23,7 @@
 .dark-theme {
   --full-color: #fff;
   --background-color: var(--dark-color);
+  --popover-background-color: #0e1215;
   --border-color: rgb(27, 31, 33);
   --border-color-flashier: #4e4e4e;
   --blue-color: #61b6ff;
