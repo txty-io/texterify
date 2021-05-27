@@ -1,8 +1,42 @@
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
+export interface ILanguageCode {
+    id: string;
+    type: "language_code";
+    attributes: { id: string; name: string; code: string };
+}
+
+export interface ILanguage {
+    id: string;
+    type: "language";
+    attributes: {
+        id: string;
+        name: string;
+        is_default: boolean;
+        progress: number;
+    };
+    relationships: {
+        country_code: { data: null | { id: string; type: "country_code" } };
+        language_code: { data: null | { id: string; type: "language_code" } };
+        parent: { data: null | { id: string; type: "language" } };
+    };
+}
+
+export interface IGetLanguagesResponse {
+    data: ILanguage[];
+    included: ILanguageCode[];
+    meta: { total: number };
+}
+
+export interface IGetLanguagesOptions {
+    search: string;
+    page: number;
+    perPage: number;
+}
+
 const LanguagesAPI = {
-    getLanguages: async (projectId: string, options?: any): Promise<any> => {
+    getLanguages: async (projectId: string, options?: IGetLanguagesOptions): Promise<IGetLanguagesResponse> => {
         return API.getRequest(`projects/${projectId}/languages`, true, {
             search: options && options.search,
             page: options && options.page,
