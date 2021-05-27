@@ -92,7 +92,9 @@ class Api::V1::LanguagesController < Api::V1::ApiController
         details: 'Language successfully created.'
       }, status: :ok
 
-      language.auto_translate_untranslated
+      if project.auto_translate_new_languages
+        language.translate_untranslated_using_machine_translation
+      end
     else
       render json: {
         errors: language.errors.details

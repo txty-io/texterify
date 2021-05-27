@@ -31,9 +31,9 @@ class Language < ApplicationRecord
     end
   end
 
-  # Translates all non export config translations of all non HTML keys for the language which are empty.
-  def auto_translate_untranslated
-    if ENV['DEEPL_API_TOKEN'].present? && self.project.machine_translation_enabled && self.project.auto_translate_new_languages
+  # Translates all non export config translations of all non HTML keys for the language which are empty using machine translation.
+  def translate_untranslated_using_machine_translation
+    if ENV['DEEPL_API_TOKEN'].present? && self.project.machine_translation_enabled
       self.keys.where(html_enabled: false).each do |key|
         target_language = self
         source_translation = key.default_language_translation
