@@ -6,7 +6,7 @@ export interface IGetMachineTranslationsUsage {
     character_limit: number;
 }
 
-export interface IGetMachineTranslation {
+export interface IGetMachineTranslationSuggestion {
     translation: string;
 }
 
@@ -33,14 +33,24 @@ const MachineTranslationsAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    translate: async (options: {
+    machineTranslationSuggestion: async (options: {
         projectId: string;
         translationId: string;
         targetLanguageId: string;
-    }): Promise<IGetMachineTranslation> => {
-        return API.postRequest(`projects/${options.projectId}/translations/${options.translationId}/translate`, true, {
-            language_id: options.targetLanguageId
-        })
+    }): Promise<IGetMachineTranslationSuggestion> => {
+        return API.postRequest(
+            `projects/${options.projectId}/translations/${options.translationId}/machine_translation_suggestion`,
+            true,
+            {
+                language_id: options.targetLanguageId
+            }
+        )
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    translateLanguage: async (options: { projectId: string; languageId: string }) => {
+        return API.postRequest(`projects/${options.projectId}/languages/${options.languageId}/machine_translate`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },

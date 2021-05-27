@@ -7,7 +7,7 @@ import * as React from "react";
 import styled from "styled-components";
 import { APIUtils } from "../../../api/v1/APIUtils";
 import {
-    IGetMachineTranslation,
+    IGetMachineTranslationSuggestion,
     IGetMachineTranslationsSourceLanguages,
     IGetMachineTranslationsTargetLanguages,
     MachineTranslationsAPI
@@ -18,6 +18,7 @@ import { Styles } from "../../../ui/Styles";
 import { Utils } from "../../../ui/Utils";
 import DeeplLogo from "images/deepl_logo.svg";
 import { dashboardStore } from "../../../stores/DashboardStore";
+import { MachineTranslationUtils } from "../../../utilities/MachineTranslationUtils";
 
 const EMPTY_EDITOR_HEIGHT = 108;
 
@@ -61,7 +62,7 @@ interface IState {
     isHTMLKey: boolean;
     translationForLanguage: string;
     content: string;
-    translationSuggestion: IGetMachineTranslation;
+    translationSuggestion: IGetMachineTranslationSuggestion;
     translationSuggestionLoading: boolean;
     initialMachineTranslationLoaded: boolean;
 }
@@ -107,17 +108,10 @@ class TranslationCard extends React.Component<IProps, IState> {
     }
 
     defaultLanguageSupportsMachineTranslation() {
-        if (!this.props.defaultLanguage) {
-            return false;
-        }
-
-        const defaultLanguageLanguageCode = APIUtils.getIncludedObject(
-            this.props.defaultLanguage.relationships.language_code.data,
-            this.props.languagesResponse.included
-        );
-
-        return this.props.supportedSourceLanguages?.data.some((supportedSourceLanguage) => {
-            return supportedSourceLanguage.attributes.language_code === defaultLanguageLanguageCode.attributes.code;
+        return MachineTranslationUtils.supportsMachineTranslationAsSourceLanguage({
+            language: this.props.defaultLanguage,
+            languagesResponse: this.props.languagesResponse,
+            supportedSourceLanguages: this.props.supportedSourceLanguages
         });
     }
 
@@ -149,7 +143,7 @@ class TranslationCard extends React.Component<IProps, IState> {
         if (this.props.defaultLanguage && this.props.defaultLanguageTranslationContent) {
             this.setState({ initialMachineTranslationLoaded: true, translationSuggestionLoading: true });
             try {
-                const translationSuggestion = await MachineTranslationsAPI.translate({
+                const translationSuggestion = await MachineTranslationsAPI.machineTranslationSuggestion({
                     projectId: this.props.projectId,
                     translationId: this.getTranslationForLanguage(this.props.defaultLanguage.id).attributes.id,
                     targetLanguageId: this.state.selectedLanguage

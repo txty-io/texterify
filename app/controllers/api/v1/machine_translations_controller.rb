@@ -20,7 +20,7 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
     render json: DeeplTargetLanguageSerializer.new(DeeplTargetLanguage.all).serialized_json
   end
 
-  def translate
+  def suggestion
     project = current_user.projects.find(params[:project_id])
     translation = project.translations.find(params[:translation_id])
     target_language = project.languages.find(params[:language_id])
@@ -60,6 +60,20 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
 
       render json: { translation: deepl_translation }
     end
+  end
+
+  def machine_translate_language
+    project = current_user.projects.find(params[:project_id])
+    language = project.languages.find(params[:language_id])
+
+    authorize language
+
+    language.translate_untranslated_using_machine_translation
+
+    render json: {
+      success: true,
+      details: 'OK'
+    }
   end
 
   private

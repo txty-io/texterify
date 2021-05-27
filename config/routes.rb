@@ -58,10 +58,12 @@ Rails.application.routes.draw do
 
         resources :post_processing_rules, only: [:create, :index, :destroy, :update]
         delete 'post_processing_rules', to: 'post_processing_rules#destroy_multiple'
-        resources :languages, only: [:create, :index, :destroy, :update]
+        resources :languages, only: [:create, :index, :destroy, :update] do
+          post :machine_translate, to: 'machine_translations#machine_translate_language'
+        end
         delete 'languages', to: 'languages#destroy_multiple'
         resources :translations, only: [:create] do
-          post :translate, to: 'machine_translations#translate'
+          post :machine_translation_suggestion, to: 'machine_translations#suggestion'
         end
         resources :members, only: [:create, :index, :destroy, :update], controller: "project_users"
         get :image, to: 'projects#image'
