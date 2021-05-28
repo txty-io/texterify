@@ -13,7 +13,9 @@ import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import FlagIcon from "../../ui/FlagIcons";
+import { SupportedMachineTranslationLanguagesModal } from "../../ui/SupportedMachineTranslationLanguagesModal";
 import { LanguageUtils } from "../../utilities/LanguageUtils";
+import { MachineTranslationUtils } from "../../utilities/MachineTranslationUtils";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -24,6 +26,7 @@ interface IState {
     supportedMachineTranslationLanguagesLoading: boolean;
     translatingLanguage: boolean;
     settingsSubmitting: boolean;
+    supportedMachineTranslationLanguagesModalVisible: boolean;
 }
 
 interface IAutoTranslation {
@@ -41,7 +44,8 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
         supportedTargetLanguages: null,
         supportedMachineTranslationLanguagesLoading: true,
         translatingLanguage: false,
-        settingsSubmitting: false
+        settingsSubmitting: false,
+        supportedMachineTranslationLanguagesModalVisible: false
     };
 
     handleSubmit = async (values: IAutoTranslation) => {
@@ -99,6 +103,31 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
         this.setState({ languagesLoading: false });
     };
 
+    defaultLanguageSupportsMachineTranslation() {
+        const defaultLanguage = LanguageUtils.getDefaultLanguage(this.state.languagesResponse);
+
+        return MachineTranslationUtils.supportsMachineTranslationAsSourceLanguage({
+            language: defaultLanguage,
+            languagesResponse: this.state.languagesResponse,
+            supportedSourceLanguages: this.state.supportedSourceLanguages
+        });
+    }
+
+    languageSupportsMachineTranslation(languageId: string) {
+        const language = this.state.languagesResponse.data.find((l) => {
+            return l.id === languageId;
+        });
+
+        const languageLanguageCode = APIUtils.getIncludedObject(
+            language.relationships.language_code.data,
+            this.state.languagesResponse.included
+        );
+
+        return this.state.supportedTargetLanguages?.data.some((supportedTargetLanguage) => {
+            return supportedTargetLanguage.attributes.language_code === languageLanguageCode.attributes.code;
+        });
+    }
+
     render() {
         const defaultLanguage = LanguageUtils.getDefaultLanguage(this.state.languagesResponse);
 
@@ -121,6 +150,9 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
 
                     <Tabs defaultActiveKey="1">
                         <Tabs.TabPane tab="Machine translation" key="1">
+                            {!this.defaultLanguageSupportsMachineTranslation() && (
+                                <div>Machine translation with your default language as source is not supported.</div>
+                            )}
                             {!this.state.languagesLoading &&
                                 !this.state.supportedMachineTranslationLanguagesLoading &&
                                 !defaultLanguage && (
@@ -130,7 +162,7 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                                         message="Please specify a default language for machine translation."
                                     />
                                 )}
-                            {defaultLanguage && (
+                            {this.defaultLanguageSupportsMachineTranslation() && (
                                 <List
                                     itemLayout="horizontal"
                                     loading={
@@ -148,9 +180,15 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                                                 this.state.languagesResponse.included
                                             );
 
+                                            const languageCode = APIUtils.getIncludedObject(
+                                                language.relationships.language_code.data,
+                                                this.state.languagesResponse.included
+                                            );
+
                                             return {
                                                 id: language.id,
                                                 countryCode: countryCode,
+                                                languageCode: languageCode,
                                                 name: language.attributes.name
                                             };
                                         })}
@@ -158,43 +196,78 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                                         return (
                                             <List.Item>
                                                 <div>
-                                                    {item.countryCode && (
-                                                        <span>
-                                                            <FlagIcon
-                                                                code={item.countryCode.attributes.code.toLowerCase()}
-                                                            />
-                                                            <span style={{ marginLeft: 8 }}>
-                                                                {item.countryCode.attributes.code}
-                                                            </span>
-                                                        </span>
-                                                    )}
+                                                    <span>
+                                                        {item.countryCode && (
+                                                            <>
+                                                                <FlagIcon
+                                                                    code={item.countryCode.attributes.code.toLowerCase()}
+                                                                />
+                                                                <span style={{ marginLeft: 8 }}>
+                                                                    {item.countryCode.attributes.code}
+                                                                </span>
+                                                            </>
+                                                        )}
+                                                        {item.languageCode && <span></span>}
+                                                    </span>
+
                                                     <span style={{ fontWeight: "bold", marginLeft: 24 }}>
                                                         {item.name}
                                                     </span>
                                                 </div>
 
-                                                <Popconfirm
-                                                    title="Do you want to translate all empty keys using machine translation? Keys with existing translations are not overwritten."
-                                                    onConfirm={async () => {
-                                                        this.setState({ translatingLanguage: true });
-                                                        try {
-                                                            await MachineTranslationsAPI.translateLanguage({
-                                                                languageId: item.id,
-                                                                projectId: dashboardStore.currentProject.id
-                                                            });
-                                                            message.success("Texts of language auto-translated.");
-                                                        } catch (error) {
-                                                            console.error(error);
-                                                            message.error("Failed to auto-translate language.");
-                                                        }
-                                                        this.setState({ translatingLanguage: false });
-                                                    }}
-                                                    okText="Yes"
-                                                    cancelText="No"
-                                                    placement="top"
-                                                >
-                                                    <Button type="primary">Translate</Button>
-                                                </Popconfirm>
+                                                {this.languageSupportsMachineTranslation(item.id) ? (
+                                                    <Popconfirm
+                                                        title="Do you want to translate all empty keys using machine translation? Keys with existing translations are not overwritten."
+                                                        onConfirm={async () => {
+                                                            this.setState({ translatingLanguage: true });
+                                                            try {
+                                                                await MachineTranslationsAPI.translateLanguage({
+                                                                    languageId: item.id,
+                                                                    projectId: dashboardStore.currentProject.id
+                                                                });
+                                                                message.success("Texts of language auto-translated.");
+                                                            } catch (error) {
+                                                                console.error(error);
+                                                                message.error("Failed to auto-translate language.");
+                                                            }
+                                                            this.setState({ translatingLanguage: false });
+                                                        }}
+                                                        okText="Yes"
+                                                        cancelText="No"
+                                                        placement="top"
+                                                    >
+                                                        <Button type="primary">Translate</Button>
+                                                    </Popconfirm>
+                                                ) : (
+                                                    <>
+                                                        <a
+                                                            onClick={() => {
+                                                                this.setState({
+                                                                    supportedMachineTranslationLanguagesModalVisible: true
+                                                                });
+                                                            }}
+                                                        >
+                                                            not supported
+                                                        </a>
+                                                        <SupportedMachineTranslationLanguagesModal
+                                                            visible={
+                                                                this.state
+                                                                    .supportedMachineTranslationLanguagesModalVisible
+                                                            }
+                                                            supportedSourceLanguages={
+                                                                this.state.supportedSourceLanguages
+                                                            }
+                                                            supportedTargetLanguages={
+                                                                this.state.supportedTargetLanguages
+                                                            }
+                                                            onCancelRequest={() => {
+                                                                this.setState({
+                                                                    supportedMachineTranslationLanguagesModalVisible: false
+                                                                });
+                                                            }}
+                                                        />
+                                                    </>
+                                                )}
                                             </List.Item>
                                         );
                                     }}
