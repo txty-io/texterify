@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_21_160906) do
+ActiveRecord::Schema.define(version: 2021_05_28_104719) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(version: 2021_05_21_160906) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.text "country_code"
-    t.index ["language_code"], name: "index_deepl_source_languages_on_language_code", unique: true
+    t.index ["language_code", "country_code"], name: "index_deepl_source_languages_on_language_code_and_country_code", unique: true
   end
 
   create_table "deepl_target_languages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -79,7 +79,7 @@ ActiveRecord::Schema.define(version: 2021_05_21_160906) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.text "country_code"
-    t.index ["language_code"], name: "index_deepl_target_languages_on_language_code", unique: true
+    t.index ["language_code", "country_code"], name: "index_deepl_target_languages_on_language_code_and_country_code", unique: true
   end
 
   create_table "export_configs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

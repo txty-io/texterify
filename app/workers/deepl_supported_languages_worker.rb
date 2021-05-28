@@ -12,27 +12,41 @@ class DeeplSupportedLanguagesWorker
 
       source_languages = deepl_client.source_languages
       source_languages.each do |source_language|
-        DeeplSourceLanguage.where(name: source_language['name']).first_or_create do |item|
-          if source_language['language'].include?('-')
-            splitted = source_language['language'].split('-')
-            item.language_code = splitted[0].downcase
-            item.country_code = splitted[1]
-          else
-            item.language_code = source_language['language'].downcase
-          end
+        language_code = nil
+        country_code = nil
+
+        if source_language['language'].include?('-')
+          splitted = source_language['language'].split('-')
+          language_code = splitted[0].downcase
+          country_code = splitted[1]
+        else
+          language_code = source_language['language'].downcase
+        end
+
+        deepl_source_language = DeeplSourceLanguage.find_by(language_code: language_code, country_code: country_code)
+
+        unless deepl_source_language
+          DeeplSourceLanguage.create!(language_code: language_code, country_code: country_code, name: source_language['name'])
         end
       end
 
       target_languages = deepl_client.target_languages
       target_languages.each do |target_language|
-        DeeplTargetLanguage.where(name: target_language['name']).first_or_create do |item|
-          if target_language['language'].include?('-')
-            splitted = target_language['language'].split('-')
-            item.language_code = splitted[0].downcase
-            item.country_code = splitted[1]
-          else
-            item.language_code = target_language['language'].downcase
-          end
+        language_code = nil
+        country_code = nil
+
+        if target_language['language'].include?('-')
+          splitted = target_language['language'].split('-')
+          language_code = splitted[0].downcase
+          country_code = splitted[1]
+        else
+          language_code = target_language['language'].downcase
+        end
+
+        deepl_target_language = DeeplTargetLanguage.find_by(language_code: language_code, country_code: country_code)
+
+        unless deepl_target_language
+          DeeplTargetLanguage.create!(language_code: language_code, country_code: country_code, name: target_language['name'])
         end
       end
     end
