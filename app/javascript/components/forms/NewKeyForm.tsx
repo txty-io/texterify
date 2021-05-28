@@ -63,7 +63,7 @@ class NewKeyForm extends React.Component<IProps> {
             const translationParams = {
                 projectId: this.props.projectId,
                 keyId: response.data.id,
-                languageId: this.getDefaultLanguage().id
+                languageId: LanguageUtils.getDefaultLanguage(this.props.languagesResponse).id
             };
 
             if (values.htmlEnabled) {
