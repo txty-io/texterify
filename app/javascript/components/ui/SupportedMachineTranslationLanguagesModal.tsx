@@ -29,9 +29,14 @@ export function SupportedMachineTranslationLanguagesModal(props: {
             }
             onCancel={props.onCancelRequest}
         >
+            <p>
+                This is the list of all languages for which machine translation is available. The source language is
+                used as the source for machine translation into other languages (as source language is the default
+                language of your project used).
+            </p>
             <div style={{ display: "flex" }}>
-                <div>
-                    <h1>Supported source languages</h1>
+                <div style={{ width: "50%" }}>
+                    <h1>Source languages</h1>
                     <ul>
                         {props.supportedSourceLanguages?.data.map((supportedSourceLanguage) => {
                             return <li>{supportedSourceLanguage.attributes.name}</li>;
@@ -39,8 +44,8 @@ export function SupportedMachineTranslationLanguagesModal(props: {
                     </ul>
                 </div>
 
-                <div>
-                    <h1>Supported target languages</h1>
+                <div style={{ width: "50%" }}>
+                    <h1>Target languages</h1>
                     <ul>
                         {props.supportedTargetLanguages?.data.map((supportedTargetLanguage) => {
                             return <li>{supportedTargetLanguage.attributes.name}</li>;

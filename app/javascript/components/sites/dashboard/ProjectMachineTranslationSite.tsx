@@ -1,3 +1,4 @@
+import { CheckOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { Alert, Button, Checkbox, Form, Layout, List, message, Popconfirm, Tabs } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -10,6 +11,8 @@ import {
     MachineTranslationsAPI
 } from "../../api/v1/MachineTranslationsAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
+import { history } from "../../routing/history";
+import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import FlagIcon from "../../ui/FlagIcons";
@@ -130,6 +133,19 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
 
     render() {
         const defaultLanguage = LanguageUtils.getDefaultLanguage(this.state.languagesResponse);
+        let defaultLanguageCountryCode;
+        let defaultLanguageLanguageCode;
+        if (defaultLanguage) {
+            defaultLanguageCountryCode = APIUtils.getIncludedObject(
+                defaultLanguage.relationships.country_code.data,
+                this.state.languagesResponse.included
+            );
+
+            defaultLanguageLanguageCode = APIUtils.getIncludedObject(
+                defaultLanguage.relationships.language_code.data,
+                this.state.languagesResponse.included
+            );
+        }
 
         return (
             <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
@@ -148,10 +164,88 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                         with the click of a button.
                     </p>
 
+                    {defaultLanguage && (
+                        <div style={{ marginBottom: 24 }}>
+                            <h4 style={{ fontWeight: "bold" }}>Source language</h4>
+                            <div>Your default language is used as the source for your machine translations.</div>
+                            <div style={{ marginTop: 16 }}>
+                                <span style={{ width: 80, display: "inline-block" }}>
+                                    {defaultLanguageCountryCode && (
+                                        <>
+                                            <span style={{ width: 24, display: "inline-block" }}>
+                                                <FlagIcon
+                                                    code={defaultLanguageCountryCode.attributes.code.toLowerCase()}
+                                                />
+                                            </span>
+                                            <span style={{ marginLeft: 8 }}>
+                                                {defaultLanguageCountryCode.attributes.code}
+                                            </span>
+                                        </>
+                                    )}
+                                    {defaultLanguageCountryCode && defaultLanguageLanguageCode && <span>-</span>}
+                                    {defaultLanguageLanguageCode && (
+                                        <span>{defaultLanguageLanguageCode.attributes.code}</span>
+                                    )}
+                                </span>
+
+                                <span style={{ fontWeight: "bold", marginLeft: 24 }}>
+                                    {defaultLanguage.attributes.name}
+                                </span>
+                                {this.defaultLanguageSupportsMachineTranslation() ? (
+                                    <span
+                                        style={{
+                                            display: "inline-block",
+                                            marginLeft: 56,
+                                            fontStyle: "italic",
+                                            color: "var(--color-passive)",
+                                            fontSize: 12
+                                        }}
+                                    >
+                                        <CheckOutlined style={{ color: "var(--color-success)", marginRight: 8 }} />
+                                        Default language supports machine translation.
+                                    </span>
+                                ) : (
+                                    <span
+                                        style={{
+                                            display: "inline-block",
+                                            marginLeft: 56,
+                                            fontStyle: "italic",
+                                            color: "var(--color-passive)",
+                                            fontSize: 12
+                                        }}
+                                    >
+                                        <CloseCircleOutlined style={{ color: "var(--color-error)", marginRight: 8 }} />
+                                        Default language does not support machine translation.
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                     <Tabs defaultActiveKey="1">
-                        <Tabs.TabPane tab="Machine translation" key="1">
-                            {!this.defaultLanguageSupportsMachineTranslation() && (
-                                <div>Machine translation with your default language as source is not supported.</div>
+                        <Tabs.TabPane tab="Translate" key="1">
+                            {defaultLanguage && !this.defaultLanguageSupportsMachineTranslation() && (
+                                <Alert
+                                    showIcon
+                                    type="info"
+                                    message={
+                                        <>
+                                            Machine translation with your default language as source is not supported.{" "}
+                                            <a
+                                                onClick={() => {
+                                                    history.push(
+                                                        Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
+                                                            ":projectId",
+                                                            this.props.match.params.projectId
+                                                        )
+                                                    );
+                                                }}
+                                            >
+                                                Change default language
+                                            </a>
+                                        </>
+                                    }
+                                />
                             )}
                             {!this.state.languagesLoading &&
                                 !this.state.supportedMachineTranslationLanguagesLoading &&
@@ -196,18 +290,23 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                                         return (
                                             <List.Item>
                                                 <div>
-                                                    <span>
+                                                    <span style={{ width: 80, display: "inline-block" }}>
                                                         {item.countryCode && (
                                                             <>
-                                                                <FlagIcon
-                                                                    code={item.countryCode.attributes.code.toLowerCase()}
-                                                                />
+                                                                <span style={{ width: 24, display: "inline-block" }}>
+                                                                    <FlagIcon
+                                                                        code={item.countryCode.attributes.code.toLowerCase()}
+                                                                    />
+                                                                </span>
                                                                 <span style={{ marginLeft: 8 }}>
                                                                     {item.countryCode.attributes.code}
                                                                 </span>
                                                             </>
                                                         )}
-                                                        {item.languageCode && <span></span>}
+                                                        {item.countryCode && item.languageCode && <span>-</span>}
+                                                        {item.languageCode && (
+                                                            <span>{item.languageCode.attributes.code}</span>
+                                                        )}
                                                     </span>
 
                                                     <span style={{ fontWeight: "bold", marginLeft: 24 }}>
@@ -217,7 +316,7 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
 
                                                 {this.languageSupportsMachineTranslation(item.id) ? (
                                                     <Popconfirm
-                                                        title="Do you want to translate all empty keys using machine translation? Keys with existing translations are not overwritten."
+                                                        title="Do you want to translate all empty keys for this language using machine translation? Keys with existing translations for that language are not overwritten."
                                                         onConfirm={async () => {
                                                             this.setState({ translatingLanguage: true });
                                                             try {
@@ -236,7 +335,7 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                                                         cancelText="No"
                                                         placement="top"
                                                     >
-                                                        <Button type="primary">Translate</Button>
+                                                        <Button type="primary">Translate missing</Button>
                                                     </Popconfirm>
                                                 ) : (
                                                     <>
