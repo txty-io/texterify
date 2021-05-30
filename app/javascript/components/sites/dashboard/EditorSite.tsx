@@ -587,6 +587,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     before you can translate your content.
                                                 </p>
                                             }
+                                            style={{ marginBottom: 24 }}
                                         />
                                     )}
 
@@ -611,7 +612,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                             showIcon
                                             message={
                                                 <>
-                                                    Set a default language as reference for translation by clicking{" "}
+                                                    Set a default language as source for translation by clicking{" "}
                                                     <Link
                                                         to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
                                                             ":projectId",

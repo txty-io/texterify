@@ -104,7 +104,7 @@ class ProjectSite extends React.Component<IProps, IState> {
                                         ) + `?ou=true&l=${language.id}`
                                     }
                                 >
-                                    All untranslated
+                                    Show all untranslated
                                 </Link>
                                 <Link
                                     to={
@@ -115,7 +115,7 @@ class ProjectSite extends React.Component<IProps, IState> {
                                     }
                                     style={{ marginLeft: 24 }}
                                 >
-                                    Changed last 7 days
+                                    Show changed in last 7 days
                                 </Link>
                             </div>
                         </div>

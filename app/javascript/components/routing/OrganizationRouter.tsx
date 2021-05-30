@@ -2,6 +2,7 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps, Switch } from "react-router-dom";
 import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
+import { OrganizationMachineTranslationSite } from "../sites/dashboard/OrganizationMachineTranslationSite";
 import { OrganizationMembersSite } from "../sites/dashboard/OrganizationMembersSite";
 import { OrganizationSettingsSite } from "../sites/dashboard/OrganizationSettingsSite";
 import { OrganizationSite } from "../sites/dashboard/OrganizationSite";
@@ -49,6 +50,11 @@ class OrganizationRouter extends React.Component<IProps> {
                         exact
                         path={Routes.DASHBOARD.ORGANIZATION_SETTINGS}
                         component={OrganizationSettingsSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.ORGANIZATION_MACHINE_TRANSLATION}
+                        component={OrganizationMachineTranslationSite}
                     />
                     <PrivateRouteTexterifyCloud
                         exact

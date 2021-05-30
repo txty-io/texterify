@@ -103,6 +103,14 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                     this.props.match.params.organizationId
                 )
             },
+            organizationMachineTranslation: {
+                parent: "organization",
+                name: "Machine Translation",
+                path: Routes.DASHBOARD.ORGANIZATION_MACHINE_TRANSLATION.replace(
+                    ":organizationId",
+                    this.props.match.params.organizationId
+                )
+            },
             languages: {
                 parent: "project",
                 name: "Languages",

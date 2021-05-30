@@ -1,4 +1,3 @@
-import { CheckOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { Alert, Button, Checkbox, Form, Layout, List, message, Popconfirm, Tabs } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -16,6 +15,7 @@ import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import FlagIcon from "../../ui/FlagIcons";
+import { MachineTranslationSourceSupportMessage } from "../../ui/MachineTranslationSourceSupportMessage";
 import { SupportedMachineTranslationLanguagesModal } from "../../ui/SupportedMachineTranslationLanguagesModal";
 import { LanguageUtils } from "../../utilities/LanguageUtils";
 import { MachineTranslationUtils } from "../../utilities/MachineTranslationUtils";
@@ -191,33 +191,13 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                                 <span style={{ fontWeight: "bold", marginLeft: 24 }}>
                                     {defaultLanguage.attributes.name}
                                 </span>
-                                {this.defaultLanguageSupportsMachineTranslation() ? (
-                                    <span
-                                        style={{
-                                            display: "inline-block",
-                                            marginLeft: 56,
-                                            fontStyle: "italic",
-                                            color: "var(--color-passive)",
-                                            fontSize: 12
-                                        }}
-                                    >
-                                        <CheckOutlined style={{ color: "var(--color-success)", marginRight: 8 }} />
-                                        Default language supports machine translation.
-                                    </span>
-                                ) : (
-                                    <span
-                                        style={{
-                                            display: "inline-block",
-                                            marginLeft: 56,
-                                            fontStyle: "italic",
-                                            color: "var(--color-passive)",
-                                            fontSize: 12
-                                        }}
-                                    >
-                                        <CloseCircleOutlined style={{ color: "var(--color-error)", marginRight: 8 }} />
-                                        Default language does not support machine translation.
-                                    </span>
-                                )}
+                                {
+                                    <MachineTranslationSourceSupportMessage
+                                        defaultLanguage={LanguageUtils.getDefaultLanguage(this.state.languagesResponse)}
+                                        languagesResponse={this.state.languagesResponse}
+                                        supportedSourceLanguages={this.state.supportedSourceLanguages}
+                                    />
+                                }
                             </div>
                         </div>
                     )}
@@ -502,6 +482,19 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                                     Save
                                 </Button>
                             </Form>
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="Usage" key="3">
+                            <p>
+                                The current number of characters used in machine translation including translation
+                                suggestions.
+                            </p>
+                            <div style={{ display: "flex", fontSize: 16 }}>
+                                <span style={{ fontWeight: "bold", marginRight: 24 }}>Usage:</span>
+                                {
+                                    dashboardStore.getProjectOrganization()?.attributes
+                                        .machine_translation_character_usage
+                                }
+                            </div>
                         </Tabs.TabPane>
                     </Tabs>
                 </Layout.Content>

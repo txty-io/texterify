@@ -55,6 +55,7 @@ const Routes = {
         ORGANIZATION_MEMBERS: "/dashboard/organizations/:organizationId/members",
         ORGANIZATION_SETTINGS: "/dashboard/organizations/:organizationId/settings",
         ORGANIZATION_SUBSCRIPTION: "/dashboard/organizations/:organizationId/subscription",
+        ORGANIZATION_MACHINE_TRANSLATION: "/dashboard/organizations/:organizationId/machine-translation",
         INSTANCE: {
             ROOT: "/dashboard/instance",
             LICENSES: "/dashboard/instance/licenses",

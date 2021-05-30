@@ -3,6 +3,7 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     ReloadOutlined,
+    RobotOutlined,
     TeamOutlined,
     ToolOutlined
 } from "@ant-design/icons";
@@ -47,6 +48,15 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                 this.props.match.params.organizationId
             ),
             text: "Members",
+            texterifyCloudOnly: false
+        },
+        {
+            icon: RobotOutlined,
+            path: Routes.DASHBOARD.ORGANIZATION_MACHINE_TRANSLATION.replace(
+                ":organizationId",
+                this.props.match.params.organizationId
+            ),
+            text: "Machine Translation",
             texterifyCloudOnly: false
         },
         {

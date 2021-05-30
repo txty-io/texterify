@@ -106,4 +106,9 @@ class Organization < ApplicationRecord
            (active_subscription && feature_allowed_plans.include?(active_subscription.plan)) ||
            (license && feature_allowed_plans.include?(license.restrictions[:plan]))
   end
+
+  # Checks if the number of characters would exceed the machine translation limit of the organization.
+  def exceeds_machine_translation_usage?(character_count)
+    return self.machine_translation_character_usage + character_count > self.machine_translation_character_limit
+  end
 end

@@ -44,6 +44,28 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
     if machine_translation_memory.present?
       render json: { translation: machine_translation_memory.to }
     else
+      character_count = translation.content.length
+      organization = project.organization
+
+      if organization.exceeds_machine_translation_usage?(character_count)
+        render json: {
+          error: true,
+          message: 'MACHINE_TRANSLATIONS_USAGE_EXCEEDED',
+          data: {
+            machine_translation_character_usage: organization.machine_translation_character_usage,
+            machine_translation_character_limit: organization.machine_translation_character_limit,
+            translation_character_count: character_count
+          }
+        }, status: :bad_request
+        return
+      end
+
+      project.increment(:machine_translation_character_usage,  character_count)
+      organization.increment(:machine_translation_character_usage,  character_count)
+
+      project.save!
+      organization.save!
+
       deepl_client = Deepl::V2::Client.new(ENV['DEEPL_API_TOKEN'])
       deepl_translation = deepl_client.translate(
         translation.content,

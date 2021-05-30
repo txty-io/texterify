@@ -1,6 +1,6 @@
 class OrganizationSerializer
   include FastJsonapi::ObjectSerializer
-  attributes :id, :name, :trial_active
+  attributes :id, :name, :trial_active, :machine_translation_character_usage, :machine_translation_character_limit
   has_many :projects
 
   attribute :current_user_role, if: proc { |_, params| params[:current_user] } do |object, params|

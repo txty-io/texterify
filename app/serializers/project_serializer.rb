@@ -1,7 +1,7 @@
 class ProjectSerializer
   include FastJsonapi::ObjectSerializer
   extend ApplicationHelper
-  attributes :id, :name, :description, :machine_translation_enabled, :auto_translate_new_keys, :auto_translate_new_languages
+  attributes :id, :name, :description, :machine_translation_enabled, :auto_translate_new_keys, :auto_translate_new_languages, :machine_translation_character_usage
   belongs_to :organization
   has_many :keys
   has_many :languages
