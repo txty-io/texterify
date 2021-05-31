@@ -56,7 +56,8 @@ class OrganizationMachineTranslationSite extends React.Component<IProps, IState>
                                     <span style={{ fontWeight: "bold", marginRight: 24 }}>Usage:</span>
                                     {dashboardStore.currentOrganization?.attributes.machine_translation_character_usage}
                                     /
-                                    {dashboardStore.currentOrganization?.attributes.machine_translation_character_limit}
+                                    {dashboardStore.currentOrganization?.attributes.machine_translation_character_limit}{" "}
+                                    characters
                                 </div>
                             </div>
                             <div style={{ width: "60%" }}>
@@ -108,7 +109,8 @@ class OrganizationMachineTranslationSite extends React.Component<IProps, IState>
                                                             {
                                                                 item.project.attributes
                                                                     .machine_translation_character_usage
-                                                            }
+                                                            }{" "}
+                                                            characters
                                                         </div>
                                                         <div style={{ flexShrink: 0, width: 240 }}>
                                                             <MachineTranslationEnabledMessage project={item.project} />

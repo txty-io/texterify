@@ -163,6 +163,17 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                         Machine translation allows you to automatically translate your project into different languages
                         with the click of a button.
                     </p>
+                    <div style={{ marginBottom: 24 }}>
+                        <a
+                            onClick={() => {
+                                this.setState({
+                                    supportedMachineTranslationLanguagesModalVisible: true
+                                });
+                            }}
+                        >
+                            Get a list of supported languages
+                        </a>
+                    </div>
 
                     {defaultLanguage && (
                         <div style={{ marginBottom: 24 }}>
@@ -484,6 +495,7 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                             </Form>
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="Usage" key="3">
+                            <h3>Project usage</h3>
                             <p>
                                 The current number of characters used in machine translation including translation
                                 suggestions.
@@ -493,7 +505,24 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                                 {
                                     dashboardStore.getProjectOrganization()?.attributes
                                         .machine_translation_character_usage
+                                }{" "}
+                                characters
+                            </div>
+
+                            <h3 style={{ marginTop: 40 }}>Total usage</h3>
+                            <p>This is the total amount of characters machine translated over all your projects.</p>
+                            <div style={{ display: "flex", fontSize: 16 }}>
+                                <span style={{ fontWeight: "bold", marginRight: 24 }}>Usage:</span>
+                                {
+                                    dashboardStore.getProjectOrganization()?.attributes
+                                        .machine_translation_character_usage
                                 }
+                                /
+                                {
+                                    dashboardStore.getProjectOrganization()?.attributes
+                                        .machine_translation_character_limit
+                                }{" "}
+                                characters
                             </div>
                         </Tabs.TabPane>
                     </Tabs>

@@ -753,7 +753,7 @@ class KeysSite extends React.Component<IProps, IState> {
                             </div>
                         </div>
                         <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", alignItems: "flex-end" }}>
-                            <span style={{ marginRight: 8 }}>Select visible columns:</span>
+                            <span style={{ marginRight: 8, fontWeight: "bold" }}>Columns:</span>
                             {this.renderColumnTags()}
 
                             <div style={{ marginLeft: "auto", marginTop: 4 }}>
