@@ -476,7 +476,6 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 key={key.id}
                                                 index={index}
                                                 onClick={() => {
-                                                    console.log(history.location.search);
                                                     history.push(
                                                         Routes.DASHBOARD.PROJECT_EDITOR_KEY.replace(
                                                             ":projectId",

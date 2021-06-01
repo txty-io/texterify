@@ -10,7 +10,9 @@ class Translation < ApplicationRecord
   belongs_to :export_config, optional: true
 
   def auto_translate_untranslated
-    if ENV['DEEPL_API_TOKEN'].present? && key.project.machine_translation_enabled && key.project.auto_translate_new_keys && !key.html_enabled
+    project = key.project
+
+    if ENV['DEEPL_API_TOKEN'].present? && project.machine_translation_enabled && project.auto_translate_new_keys && !key.html_enabled && project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
       key.project.languages.where(is_default: false).each do |target_language|
         source_translation = key.default_language_translation
         target_translation = key.translations.find_by(language_id: target_language.id, export_config_id: nil)

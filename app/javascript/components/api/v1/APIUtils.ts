@@ -46,6 +46,10 @@ const APIUtils = {
             }
         }
 
+        if (response.error || response.errors) {
+            throw response;
+        }
+
         return response;
     },
 

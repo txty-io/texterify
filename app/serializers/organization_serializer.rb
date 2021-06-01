@@ -17,7 +17,9 @@ class OrganizationSerializer
   end
 
   attribute :enabled_features do |object|
-    if object.active_subscription&.plan == Subscription::PLAN_BASIC
+    if object.trial_active
+      Organization::FEATURES_TRIAL
+    elsif object.active_subscription&.plan == Subscription::PLAN_BASIC
       Organization::FEATURES_BASIC_PLAN
     elsif object.active_subscription&.plan == Subscription::PLAN_TEAM
       Organization::FEATURES_TEAM_PLAN

@@ -1,24 +1,22 @@
-import { CheckOutlined, LoadingOutlined, RobotOutlined } from "@ant-design/icons";
+import { LoadingOutlined } from "@ant-design/icons";
 import EditorJS from "@editorjs/editorjs";
 import List from "@editorjs/list";
-import { Alert, Button, message, Select, Skeleton } from "antd";
+import { Button, message, Select } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import * as React from "react";
 import styled from "styled-components";
 import { APIUtils } from "../../../api/v1/APIUtils";
 import {
-    IGetMachineTranslationSuggestion,
     IGetMachineTranslationsSourceLanguages,
     IGetMachineTranslationsTargetLanguages,
-    MachineTranslationsAPI
+    IGetMachineTranslationSuggestion
 } from "../../../api/v1/MachineTranslationsAPI";
 import { TranslationsAPI } from "../../../api/v1/TranslationsAPI";
 import FlagIcon from "../../../ui/FlagIcons";
+import { MachineTranslationSuggestion } from "../../../ui/MachineTranslationSuggestion";
 import { Styles } from "../../../ui/Styles";
 import { Utils } from "../../../ui/Utils";
-import DeeplLogo from "images/deepl_logo.svg";
-import { dashboardStore } from "../../../stores/DashboardStore";
-import { MachineTranslationUtils } from "../../../utilities/MachineTranslationUtils";
+import { TranslationUtils } from "../../../utilities/TranslationUtils";
 
 const EMPTY_EDITOR_HEIGHT = 108;
 
@@ -52,10 +50,10 @@ interface IProps {
     supportedTargetLanguages?: IGetMachineTranslationsTargetLanguages;
     onChange?(changed: boolean, content: string);
     onSave?();
-    onSelectedLanguageChange?(languageId: string): void;
+    onSelectedLanguageIdChange?(languageId: string): void;
 }
 interface IState {
-    selectedLanguage: string;
+    selectedLanguageId: string;
     editorContentChanged: boolean;
     editorLoaded: boolean;
     textareaContentChanged: boolean;
@@ -69,7 +67,7 @@ interface IState {
 
 class TranslationCard extends React.Component<IProps, IState> {
     state: IState = {
-        selectedLanguage: this.props.defaultSelected,
+        selectedLanguageId: this.props.defaultSelected,
         editorContentChanged: false,
         editorLoaded: false,
         textareaContentChanged: false,
@@ -83,84 +81,15 @@ class TranslationCard extends React.Component<IProps, IState> {
 
     editor: any;
 
-    async componentDidUpdate(prevProps: IProps) {
-        // Reload the machine translation whenever the translation for the source language changes.
-        if (prevProps.defaultLanguageTranslationContent !== this.props.defaultLanguageTranslationContent) {
-            await this.loadMachineTranslation();
-        }
-
-        // When reloading the site with a key selected load the machine translation when everything is available.
-        if (
-            this.props.defaultLanguageTranslationContent &&
-            this.props.defaultLanguage &&
-            !this.state.initialMachineTranslationLoaded
-        ) {
-            await this.loadMachineTranslation();
-        }
-    }
-
     async componentDidMount() {
         await this.loadData();
-
-        if (dashboardStore.currentProject.attributes.machine_translation_active) {
-            await this.loadMachineTranslation();
-        }
-    }
-
-    defaultLanguageSupportsMachineTranslation() {
-        return MachineTranslationUtils.supportsMachineTranslationAsSourceLanguage({
-            language: this.props.defaultLanguage,
-            languagesResponse: this.props.languagesResponse,
-            supportedSourceLanguages: this.props.supportedSourceLanguages
-        });
-    }
-
-    languageSupportsMachineTranslation(languageId: string) {
-        const language = this.props.languages.find((l) => {
-            return l.id === languageId;
-        });
-
-        const languageLanguageCode = APIUtils.getIncludedObject(
-            language.relationships.language_code.data,
-            this.props.languagesResponse.included
-        );
-
-        return this.props.supportedTargetLanguages?.data.some((supportedTargetLanguage) => {
-            return supportedTargetLanguage.attributes.language_code === languageLanguageCode.attributes.code;
-        });
-    }
-
-    machineTranslationsSupported(languageId: string) {
-        return this.defaultLanguageSupportsMachineTranslation() && this.languageSupportsMachineTranslation(languageId);
-    }
-
-    async loadMachineTranslation() {
-        if (this.isHTMLKey() || !this.machineTranslationsSupported(this.state.selectedLanguage)) {
-            // Machine translations for HTML keys are not supported.
-            return;
-        }
-
-        if (this.props.defaultLanguage && this.props.defaultLanguageTranslationContent) {
-            this.setState({ initialMachineTranslationLoaded: true, translationSuggestionLoading: true });
-            try {
-                const translationSuggestion = await MachineTranslationsAPI.machineTranslationSuggestion({
-                    projectId: this.props.projectId,
-                    translationId: this.getTranslationForLanguage(this.props.defaultLanguage.id).attributes.id,
-                    targetLanguageId: this.state.selectedLanguage
-                });
-
-                this.setState({ translationSuggestion: translationSuggestion });
-            } catch (error) {
-                console.error(error);
-                message.error("Failed to load machine translation.");
-            }
-
-            this.setState({ translationSuggestionLoading: false });
-        }
     }
 
     loadData = async () => {
-        const translationForLanguage = this.getTranslationForLanguage(this.state.selectedLanguage)?.attributes.content;
+        const translationForLanguage = TranslationUtils.getTranslationForLanguage({
+            languageId: this.state.selectedLanguageId,
+            keyResponse: this.props.keyResponse
+        })?.attributes.content;
         const isHTMLKey = this.props.keyResponse
             ? this.props.keyResponse.data.attributes.html_enabled
             : this.props.isHTMLKey;
@@ -174,7 +103,7 @@ class TranslationCard extends React.Component<IProps, IState> {
             }
 
             this.editor = new EditorJS({
-                holder: `codex-editor-${this.state.selectedLanguage}`,
+                holder: `codex-editor-${this.state.selectedLanguageId}`,
                 minHeight: 40,
                 tools: {
                     list: {
@@ -201,33 +130,6 @@ class TranslationCard extends React.Component<IProps, IState> {
             isHTMLKey: isHTMLKey,
             translationForLanguage: translationForLanguage
         });
-    };
-
-    getTranslationForLanguage = (languageId: string) => {
-        let translationForLanguage;
-
-        if (this.props.keyResponse) {
-            this.props.keyResponse.data.relationships.translations.data.some((translationReference) => {
-                const translation = APIUtils.getIncludedObject(translationReference, this.props.keyResponse.included);
-
-                // Check for language
-                if (translation.relationships.language.data.id === languageId) {
-                    if (this.props.exportConfigId) {
-                        // If translation for export config is requested
-                        if (translation.relationships.export_config.data?.id === this.props.exportConfigId) {
-                            translationForLanguage = translation;
-                            return true;
-                        }
-                    } else if (!translation.relationships.export_config.data?.id) {
-                        // If the default translation for that language is requested
-                        translationForLanguage = translation;
-                        return true;
-                    }
-                }
-            });
-        }
-
-        return translationForLanguage;
     };
 
     isHTMLKey = () => {
@@ -273,7 +175,7 @@ class TranslationCard extends React.Component<IProps, IState> {
 
                 await TranslationsAPI.createTranslation({
                     projectId: this.props.projectId,
-                    languageId: this.state.selectedLanguage,
+                    languageId: this.state.selectedLanguageId,
                     keyId: this.props.keyResponse.data.id,
                     exportConfigId: this.props.exportConfigId ? this.props.exportConfigId : undefined,
                     content: content
@@ -327,15 +229,17 @@ class TranslationCard extends React.Component<IProps, IState> {
                                 onChange={async (selectedValue: string) => {
                                     this.setState(
                                         {
-                                            selectedLanguage: selectedValue
+                                            selectedLanguageId: selectedValue
                                         },
                                         // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                         this.loadData
                                     );
 
-                                    this.props.onSelectedLanguageChange(selectedValue);
+                                    if (this.props.onSelectedLanguageIdChange) {
+                                        this.props.onSelectedLanguageIdChange(selectedValue);
+                                    }
                                 }}
-                                value={this.state.selectedLanguage}
+                                value={this.state.selectedLanguageId}
                             >
                                 {this.props.languages &&
                                     this.props.languages.map((language) => {
@@ -381,7 +285,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                                 height: this.state.editorLoaded ? undefined : EMPTY_EDITOR_HEIGHT
                             }}
                         >
-                            <div id={`codex-editor-${this.state.selectedLanguage}`} />
+                            <div id={`codex-editor-${this.state.selectedLanguageId}`} />
                         </EditorWrapper>
                         {!this.state.editorLoaded && this.getEditorLoadingOverlay()}
                     </div>
@@ -404,128 +308,24 @@ class TranslationCard extends React.Component<IProps, IState> {
                     />
                 )}
 
-                {this.props.defaultLanguage && !this.state.isHTMLKey && (
-                    <div style={{ padding: 8, marginTop: 8 }}>
-                        <h4 style={{ fontSize: 12 }}>
-                            <RobotOutlined style={{ marginRight: 4 }} /> Machine Translation Suggestion
-                        </h4>
-                        {(this.state.translationSuggestionLoading ||
-                            !this.props.supportedSourceLanguages ||
-                            !this.props.supportedTargetLanguages) && (
-                            <div style={{ marginTop: 16, marginBottom: 16 }}>
-                                <Skeleton active paragraph={{ rows: 2 }} title={false} />
-                            </div>
-                        )}
-
-                        {!dashboardStore.currentProject.attributes.machine_translation_active && (
-                            <Alert showIcon type="warning" message="Machine translation is not enabled." />
-                        )}
-
-                        {dashboardStore.currentProject.attributes.machine_translation_active &&
-                            this.props.supportedSourceLanguages &&
-                            this.props.supportedTargetLanguages &&
-                            !this.machineTranslationsSupported(this.state.selectedLanguage) && (
-                                <Alert
-                                    showIcon
-                                    type="info"
-                                    message={
-                                        <>
-                                            {!this.defaultLanguageSupportsMachineTranslation() && (
-                                                <div>
-                                                    Machine translation with your default language as source is not
-                                                    supported.
-                                                </div>
-                                            )}
-                                            {!this.languageSupportsMachineTranslation(this.state.selectedLanguage) && (
-                                                <div>
-                                                    Machine translation to the selected language is not supported.
-                                                </div>
-                                            )}
-                                        </>
-                                    }
-                                />
-                            )}
-
-                        {dashboardStore.currentProject.attributes.machine_translation_active &&
-                            !this.state.translationSuggestionLoading &&
-                            this.props.supportedSourceLanguages &&
-                            this.props.supportedTargetLanguages &&
-                            this.defaultLanguageSupportsMachineTranslation() &&
-                            this.languageSupportsMachineTranslation(this.state.selectedLanguage) && (
-                                <div>
-                                    {this.props.defaultLanguageTranslationContent &&
-                                    this.state.translationSuggestion ? (
-                                        this.state.translationSuggestion.translation !==
-                                        this.state.translationForLanguage ? (
-                                            <>
-                                                <div style={{ marginTop: 16 }}>
-                                                    {this.state.translationSuggestion.translation}
-                                                </div>
-                                                <Button
-                                                    type="primary"
-                                                    style={{ marginTop: 16, marginBottom: 8 }}
-                                                    disabled={
-                                                        this.state.translationSuggestion.translation ===
-                                                        this.state.content
-                                                    }
-                                                    onClick={() => {
-                                                        this.setState({
-                                                            content: this.state.translationSuggestion.translation,
-                                                            editorContentChanged: true
-                                                        });
-                                                    }}
-                                                >
-                                                    Use translation
-                                                </Button>
-                                            </>
-                                        ) : (
-                                            <div
-                                                style={{
-                                                    fontStyle: "italic",
-                                                    color: "var(--color-passive)",
-                                                    fontSize: 12,
-                                                    marginTop: 16,
-                                                    marginBottom: 16
-                                                }}
-                                            >
-                                                <CheckOutlined
-                                                    style={{ color: "var(--color-success)", marginRight: 4 }}
-                                                />{" "}
-                                                Machine translation suggestion is the same as the current translation.
-                                                <div style={{ fontWeight: "bold", marginTop: 16 }}>
-                                                    {this.state.translationSuggestion.translation}
-                                                </div>
-                                            </div>
-                                        )
-                                    ) : (
-                                        <div
-                                            style={{
-                                                fontStyle: "italic",
-                                                color: "var(--color-passive)",
-                                                fontSize: 12,
-                                                marginTop: 16,
-                                                marginBottom: 16
-                                            }}
-                                        >
-                                            No translation in source language to translate.
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        <div
-                            style={{
-                                color: "var(--color-passive)",
-                                marginTop: 8,
-                                fontSize: 11,
-                                display: "flex",
-                                alignItems: "center"
-                            }}
-                        >
-                            powered by <img src={DeeplLogo} style={{ maxWidth: 16, marginRight: 4, marginLeft: 4 }} />
-                            DeepL
-                        </div>
-                    </div>
-                )}
+                <MachineTranslationSuggestion
+                    defaultLanguage={this.props.defaultLanguage}
+                    isHTMLKey={this.state.isHTMLKey}
+                    defaultLanguageTranslationContent={this.props.defaultLanguageTranslationContent}
+                    supportedSourceLanguages={this.props.supportedSourceLanguages}
+                    supportedTargetLanguages={this.props.supportedTargetLanguages}
+                    onUseTranslation={(data) => {
+                        this.setState({
+                            content: data.suggestion.translation,
+                            editorContentChanged: true
+                        });
+                    }}
+                    selectedLanguageId={this.state.selectedLanguageId}
+                    translationForTargetLanguage={this.state.content}
+                    languagesResponse={this.props.languagesResponse}
+                    projectId={this.props.projectId}
+                    keyReponse={this.props.keyResponse}
+                />
             </div>
         );
     }

@@ -65,6 +65,7 @@ class Organization < ApplicationRecord
   FEATURE_POST_PROCESSING = :FEATURE_POST_PROCESSING
   FEATURE_PROJECT_ACTIVITY = :FEATURE_PROJECT_ACTIVITY
   FEATURE_TAG_MANAGEMENT = :FEATURE_TAG_MANAGEMENT
+  FEATURE_MACHINE_TRANSLATION_SUGGESTIONS = :FEATURE_MACHINE_TRANSLATION_SUGGESTIONS
 
   # Business plan features
   FEATURE_ADVANCED_PERMISSION_SYSTEM = :FEATURE_ADVANCED_PERMISSION_SYSTEM
@@ -72,7 +73,7 @@ class Organization < ApplicationRecord
   FEATURE_HTML_EDITOR = :FEATURE_HTML_EDITOR
   FEATURE_TEMPLATES = :FEATURE_TEMPLATES
   FEATURE_PROJECT_GROUPS = :FEATURE_PROJECT_GROUPS
-  FEATURE_MACHINE_TRANSLATIONS = :FEATURE_MACHINE_TRANSLATIONS
+  FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE = :FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE
 
   FEATURES_PLANS = {
     FEATURE_UNLIMITED_PROJECTS: [Subscription::PLAN_BASIC, Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
@@ -85,24 +86,28 @@ class Organization < ApplicationRecord
     FEATURE_POST_PROCESSING: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_PROJECT_ACTIVITY: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_TAG_MANAGEMENT: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
+    FEATURE_MACHINE_TRANSLATION_SUGGESTIONS: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
 
     FEATURE_ADVANCED_PERMISSION_SYSTEM: [Subscription::PLAN_BUSINESS],
     FEATURE_OTA: [Subscription::PLAN_BUSINESS],
     FEATURE_HTML_EDITOR: [Subscription::PLAN_BUSINESS],
     FEATURE_TEMPLATES: [Subscription::PLAN_BUSINESS],
     FEATURE_PROJECT_GROUPS: [Subscription::PLAN_BUSINESS],
-    FEATURE_MACHINE_TRANSLATIONS: [Subscription::PLAN_BUSINESS]
+    FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE: [Subscription::PLAN_BUSINESS]
   }.freeze
+
+  NOT_IN_TRIAL_AVAILABLE = [:FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE].freeze
 
   FEATURES_BASIC_PLAN = FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BASIC) ? feature : nil }.reject(&:nil?).freeze
   FEATURES_TEAM_PLAN = FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_TEAM) ? feature : nil }.reject(&:nil?).freeze
   FEATURES_BUSINESS_PLAN = FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BUSINESS) ? feature : nil }.reject(&:nil?).freeze
+  FEATURES_TRIAL = FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BUSINESS) && NOT_IN_TRIAL_AVAILABLE.exclude?(feature) ? feature : nil }.reject(&:nil?).freeze
 
   def feature_enabled?(feature)
     feature_allowed_plans = FEATURES_PLANS[feature]
     license = License.current_active
 
-    return trial_active ||
+    return (trial_active && NOT_IN_TRIAL_AVAILABLE.exclude?(feature)) ||
            (active_subscription && feature_allowed_plans.include?(active_subscription.plan)) ||
            (license && feature_allowed_plans.include?(license.restrictions[:plan]))
   end

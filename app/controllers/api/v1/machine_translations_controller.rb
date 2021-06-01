@@ -25,6 +25,16 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
     translation = project.translations.find(params[:translation_id])
     target_language = project.languages.find(params[:language_id])
 
+    if !project.feature_enabled?(Organization::FEATURE_MACHINE_TRANSLATION_SUGGESTIONS)
+      skip_authorization
+
+      render json: {
+        error: true,
+        message: 'FEATURE_NOT_AVAILABLE'
+      }, status: :bad_request
+      return
+    end
+
     authorize translation
 
     if translation.key.html_enabled
@@ -60,8 +70,8 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
         return
       end
 
-      project.increment(:machine_translation_character_usage,  character_count)
-      organization.increment(:machine_translation_character_usage,  character_count)
+      project.increment(:machine_translation_character_usage, character_count)
+      organization.increment(:machine_translation_character_usage, character_count)
 
       project.save!
       organization.save!
@@ -87,6 +97,16 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
   def machine_translate_language
     project = current_user.projects.find(params[:project_id])
     language = project.languages.find(params[:language_id])
+
+    if !project.feature_enabled?(Organization::FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
+      skip_authorization
+
+      render json: {
+        error: true,
+        message: 'FEATURE_NOT_AVAILABLE'
+      }, status: :bad_request
+      return
+    end
 
     authorize language
 
