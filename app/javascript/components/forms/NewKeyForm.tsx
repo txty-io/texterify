@@ -183,6 +183,7 @@ class NewKeyForm extends React.Component<IProps> {
                                                     <Form.Item
                                                         name="defaultLanguageHTMLContent"
                                                         rules={[{ required: false }]}
+                                                        className="defaultLanguageHTMLContent"
                                                     >
                                                         <TranslationCard
                                                             projectId={this.props.projectId}

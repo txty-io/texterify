@@ -274,6 +274,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                     Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId)
                                 );
                             }}
+                            className="editor-back"
                         >
                             <ArrowLeftOutlined />
                             <span style={{ marginLeft: 16 }}>Back</span>
@@ -488,8 +489,11 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     color: this.isSelectedKey(key.id) ? "var(--blue-color)" : undefined,
                                                     flexShrink: 0
                                                 }}
+                                                className="editor-key"
                                             >
-                                                <span style={{ fontWeight: "bold" }}>{key.attributes.name}</span>
+                                                <span style={{ fontWeight: "bold" }} className="editor-key-name">
+                                                    {key.attributes.name}
+                                                </span>
                                                 <div
                                                     style={{
                                                         textOverflow: "ellipsis",
@@ -508,11 +512,16 @@ class EditorSite extends React.Component<IProps, IState> {
                                                             overflow: "hidden",
                                                             textOverflow: "ellipsis"
                                                         }}
+                                                        className="editor-key-content"
                                                     >
                                                         {keyContentPreview}
                                                     </div>
                                                     <div style={{ marginLeft: 8, flexShrink: 0 }}>
-                                                        {key.attributes.html_enabled && <Tag color="magenta">HTML</Tag>}
+                                                        {key.attributes.html_enabled && (
+                                                            <Tag color="magenta" className="editor-key-html">
+                                                                HTML
+                                                            </Tag>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </Key>
