@@ -20,5 +20,9 @@
     },
     "[typescriptreact]": {
         "editor.formatOnSave": true
+    },
+    "[ruby]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
     }
 }

@@ -7,10 +7,11 @@
   "printWidth": 120,
   "overrides": [
     {
-      "files": ["**/*.json", "**/*.yaml", "**/*.yml", ".prettierrc", ".eslintrc", "**/*.less"],
+      "files": ["**/*.json", "**/*.yaml", "**/*.yml", ".prettierrc", ".eslintrc", "**/*.less", "**/*.rb"],
       "options": {
         "tabWidth": 2
       }
     }
-  ]
+  ],
+  "rubyArrayLiteral": false
 }

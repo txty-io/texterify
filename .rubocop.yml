@@ -1,4 +1,6 @@
 # See https://github.com/bbatsov/rubocop.
+inherit_from:
+  - node_modules/@prettier/plugin-ruby/rubocop.yml
 
 require:
   - rubocop-rails
