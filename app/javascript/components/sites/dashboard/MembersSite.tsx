@@ -124,18 +124,25 @@ class MembersSite extends React.Component<IProps, IState> {
             autoFocusButton: "cancel",
             visible: this.state.deleteDialogVisible,
             onOk: async () => {
-                const deleteMemberResponse = await MembersAPI.deleteMember(this.props.match.params.projectId, item.key);
+                try {
+                    const deleteMemberResponse = await MembersAPI.deleteMember(
+                        this.props.match.params.projectId,
+                        item.key
+                    );
 
-                if (item.email === authStore.currentUser.email) {
-                    if (!deleteMemberResponse.errors) {
-                        this.props.history.push(Routes.DASHBOARD.PROJECTS);
+                    if (item.email === authStore.currentUser.email) {
+                        if (!deleteMemberResponse.errors) {
+                            this.props.history.push(Routes.DASHBOARD.PROJECTS);
+                        }
+                    } else {
+                        const getMembersResponse = await MembersAPI.getMembers(this.props.match.params.projectId);
+                        this.setState({
+                            getMembersResponse: getMembersResponse,
+                            deleteDialogVisible: false
+                        });
                     }
-                } else {
-                    const getMembersResponse = await MembersAPI.getMembers(this.props.match.params.projectId);
-                    this.setState({
-                        getMembersResponse: getMembersResponse,
-                        deleteDialogVisible: false
-                    });
+                } catch (error) {
+                    message.error("Failed to remove user.");
                 }
             },
             onCancel: () => {
@@ -339,51 +346,56 @@ class MembersSite extends React.Component<IProps, IState> {
                             style={{ marginLeft: 8 }}
                             type="primary"
                             onClick={async () => {
-                                const createMemberResponse = await MembersAPI.createMember(
-                                    this.props.match.params.projectId,
-                                    this.state.userAddEmail
-                                );
-
-                                if (createMemberResponse.error) {
-                                    if (
-                                        createMemberResponse.message === "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE"
-                                    ) {
-                                        if (dashboardStore.currentOrganization) {
-                                            ErrorUtils.showError(
-                                                "Please upgrade to a paid plan to add users to this project."
-                                            );
-                                        } else {
-                                            ErrorUtils.showError(
-                                                "This feature is not available for private projects. Please move your project to an organization."
-                                            );
-                                        }
-                                    } else if (createMemberResponse.message === "USER_ALREADY_ADDED") {
-                                        message.info("User has already been added to the project.");
-                                    } else {
-                                        ErrorUtils.showError("An unknown error occurred.");
-                                    }
-                                } else if (createMemberResponse.errors) {
-                                    this.formRef.current.setFields([
-                                        {
-                                            name: "name",
-                                            errors: [
-                                                ErrorUtils.getErrorMessage("user with that email", ERRORS.NOT_FOUND)
-                                            ]
-                                        }
-                                    ]);
-
-                                    return;
-                                } else {
-                                    this.formRef.current.resetFields();
-
-                                    const getMembersResponse = await MembersAPI.getMembers(
-                                        this.props.match.params.projectId
+                                try {
+                                    const createMemberResponse = await MembersAPI.createMember(
+                                        this.props.match.params.projectId,
+                                        this.state.userAddEmail
                                     );
 
-                                    this.setState({
-                                        getMembersResponse: getMembersResponse,
-                                        userAddEmail: ""
-                                    });
+                                    if (createMemberResponse.error) {
+                                        if (
+                                            createMemberResponse.message ===
+                                            "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE"
+                                        ) {
+                                            if (dashboardStore.currentOrganization) {
+                                                ErrorUtils.showError(
+                                                    "Please upgrade to a paid plan to add users to this project."
+                                                );
+                                            } else {
+                                                ErrorUtils.showError(
+                                                    "This feature is not available for private projects. Please move your project to an organization."
+                                                );
+                                            }
+                                        } else if (createMemberResponse.message === "USER_ALREADY_ADDED") {
+                                            message.info("User has already been added to the project.");
+                                        } else {
+                                            ErrorUtils.showError("An unknown error occurred.");
+                                        }
+                                    } else if (createMemberResponse.errors) {
+                                        this.formRef.current.setFields([
+                                            {
+                                                name: "name",
+                                                errors: [
+                                                    ErrorUtils.getErrorMessage("user with that email", ERRORS.NOT_FOUND)
+                                                ]
+                                            }
+                                        ]);
+
+                                        return;
+                                    } else {
+                                        this.formRef.current.resetFields();
+
+                                        const getMembersResponse = await MembersAPI.getMembers(
+                                            this.props.match.params.projectId
+                                        );
+
+                                        this.setState({
+                                            getMembersResponse: getMembersResponse,
+                                            userAddEmail: ""
+                                        });
+                                    }
+                                } catch (error) {
+                                    message.error("Failed to add user.");
                                 }
                             }}
                             disabled={
