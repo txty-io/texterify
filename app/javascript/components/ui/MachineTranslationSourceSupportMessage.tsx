@@ -19,7 +19,6 @@ export function MachineTranslationSourceSupportMessage(props: {
         <span
             style={{
                 display: "inline-block",
-                marginLeft: 56,
                 fontStyle: "italic",
                 color: "var(--color-passive)",
                 fontSize: 12
@@ -32,7 +31,6 @@ export function MachineTranslationSourceSupportMessage(props: {
         <span
             style={{
                 display: "inline-block",
-                marginLeft: 56,
                 fontStyle: "italic",
                 color: "var(--color-passive)",
                 fontSize: 12

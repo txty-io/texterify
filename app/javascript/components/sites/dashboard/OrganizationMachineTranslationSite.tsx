@@ -1,35 +1,40 @@
-import { Layout, List } from "antd";
+import { Layout, List, Pagination } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { IGetProjects, ProjectsAPI } from "../../api/v1/ProjectsAPI";
+import { IGetProjects, IGetProjectsOptions, ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { MachineTranslationEnabledMessage } from "../../ui/MachineTranslationEnabledMessage";
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {
     projectsLoading: boolean;
     projectsResponse: IGetProjects;
+    perPage: number;
+    page: number;
 }
 
 @observer
 class OrganizationMachineTranslationSite extends React.Component<IProps, IState> {
     state: IState = {
         projectsLoading: true,
-        projectsResponse: null
+        projectsResponse: null,
+        perPage: DEFAULT_PAGE_SIZE,
+        page: 1
     };
 
     async componentDidMount() {
         await this.fetchProjects();
     }
 
-    fetchProjects = async () => {
+    fetchProjects = async (options?: IGetProjectsOptions) => {
         try {
             this.setState({ projectsLoading: true });
-            const responseProjects = await ProjectsAPI.getProjects();
+            const responseProjects = await ProjectsAPI.getProjects(options);
 
             this.setState({
                 projectsLoading: false,
@@ -136,6 +141,28 @@ class OrganizationMachineTranslationSite extends React.Component<IProps, IState>
                                     }}
                                     style={{ width: "100%" }}
                                 />
+                                <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+                                    <Pagination
+                                        pageSizeOptions={PAGE_SIZE_OPTIONS}
+                                        showSizeChanger
+                                        pageSize={this.state.perPage}
+                                        current={this.state.page}
+                                        total={
+                                            (this.state.projectsResponse &&
+                                                this.state.projectsResponse.meta &&
+                                                this.state.projectsResponse.meta.total) ||
+                                            0
+                                        }
+                                        onChange={async (page: number, _perPage: number) => {
+                                            this.setState({ page: page });
+                                            await this.fetchProjects({ page: page });
+                                        }}
+                                        onShowSizeChange={async (_current: number, size: number) => {
+                                            this.setState({ page: 1, perPage: size });
+                                            await this.fetchProjects({ page: 1, perPage: size });
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </Layout.Content>

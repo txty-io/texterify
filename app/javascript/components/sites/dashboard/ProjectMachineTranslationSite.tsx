@@ -435,7 +435,7 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                         margin: "24px 16px 0",
                         display: "flex",
                         flexDirection: "column",
-                        maxWidth: 560
+                        maxWidth: 640
                     }}
                 >
                     <h1>Machine Translation</h1>
@@ -443,23 +443,39 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                         Machine translation allows you to automatically translate your project into different languages
                         with the click of a button.
                     </p>
-                    <div style={{ marginBottom: 24 }}>
-                        <a
-                            onClick={() => {
-                                this.setState({
-                                    supportedMachineTranslationLanguagesModalVisible: true
-                                });
-                            }}
-                        >
-                            Get a list of supported languages
-                        </a>
-                    </div>
+                    {dashboardStore.getProjectOrganization() && (
+                        <div style={{ marginBottom: 24 }}>
+                            <a
+                                onClick={() => {
+                                    this.setState({
+                                        supportedMachineTranslationLanguagesModalVisible: true
+                                    });
+                                }}
+                            >
+                                Get a list of supported languages
+                            </a>
+                        </div>
+                    )}
 
-                    {defaultLanguage && (
+                    {!dashboardStore.getProjectOrganization() && (
+                        <Alert
+                            showIcon
+                            message={
+                                <>
+                                    Premium features are not available for private projects. Please move your project to
+                                    an organization.
+                                </>
+                            }
+                            type="info"
+                            style={{ marginBottom: 16, maxWidth: 400 }}
+                        />
+                    )}
+
+                    {dashboardStore.getProjectOrganization() && defaultLanguage && (
                         <div style={{ marginBottom: 24 }}>
                             <h4 style={{ fontWeight: "bold" }}>Source language</h4>
                             <div>Your default language is used as the source for your machine translations.</div>
-                            <div style={{ marginTop: 16 }}>
+                            <div style={{ marginTop: 16, display: "flex" }}>
                                 <span style={{ width: 80, display: "inline-block" }}>
                                     {defaultLanguageCountryCode && (
                                         <>
@@ -479,59 +495,65 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                                     )}
                                 </span>
 
-                                <span style={{ fontWeight: "bold", marginLeft: 24 }}>
-                                    {defaultLanguage.attributes.name}
-                                </span>
-                                {
-                                    <MachineTranslationSourceSupportMessage
-                                        defaultLanguage={LanguageUtils.getDefaultLanguage(this.state.languagesResponse)}
-                                        languagesResponse={this.state.languagesResponse}
-                                        supportedSourceLanguages={this.state.supportedSourceLanguages}
-                                    />
-                                }
+                                <div style={{ marginLeft: 24 }}>
+                                    <div style={{ fontWeight: "bold" }}>{defaultLanguage.attributes.name}</div>
+                                    <div style={{ marginTop: 8 }}>
+                                        {
+                                            <MachineTranslationSourceSupportMessage
+                                                defaultLanguage={LanguageUtils.getDefaultLanguage(
+                                                    this.state.languagesResponse
+                                                )}
+                                                languagesResponse={this.state.languagesResponse}
+                                                supportedSourceLanguages={this.state.supportedSourceLanguages}
+                                            />
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
 
-                    <Tabs defaultActiveKey="1">
-                        <Tabs.TabPane tab="Translate" key="1">
-                            {this.translateTabContent(defaultLanguage)}
-                        </Tabs.TabPane>
-                        <Tabs.TabPane tab="Settings" key="2">
-                            {this.settingsTabContent()}
-                        </Tabs.TabPane>
-                        <Tabs.TabPane tab="Usage" key="3">
-                            <h3>Project usage</h3>
-                            <p>
-                                The current number of characters used in machine translation including translation
-                                suggestions.
-                            </p>
-                            <div style={{ display: "flex", fontSize: 16 }}>
-                                <span style={{ fontWeight: "bold", marginRight: 24 }}>Usage:</span>
-                                {
-                                    dashboardStore.getProjectOrganization()?.attributes
-                                        .machine_translation_character_usage
-                                }{" "}
-                                characters
-                            </div>
+                    {dashboardStore.getProjectOrganization() && (
+                        <Tabs defaultActiveKey="1">
+                            <Tabs.TabPane tab="Translate" key="1">
+                                {this.translateTabContent(defaultLanguage)}
+                            </Tabs.TabPane>
+                            <Tabs.TabPane tab="Settings" key="2">
+                                {this.settingsTabContent()}
+                            </Tabs.TabPane>
+                            <Tabs.TabPane tab="Usage" key="3">
+                                <h3>Project usage</h3>
+                                <p>
+                                    The current number of characters used in machine translation including translation
+                                    suggestions.
+                                </p>
+                                <div style={{ display: "flex", fontSize: 16 }}>
+                                    <span style={{ fontWeight: "bold", marginRight: 24 }}>Usage:</span>
+                                    {
+                                        dashboardStore.getProjectOrganization()?.attributes
+                                            .machine_translation_character_usage
+                                    }{" "}
+                                    characters
+                                </div>
 
-                            <h3 style={{ marginTop: 40 }}>Total usage</h3>
-                            <p>This is the total amount of characters machine translated over all your projects.</p>
-                            <div style={{ display: "flex", fontSize: 16 }}>
-                                <span style={{ fontWeight: "bold", marginRight: 24 }}>Usage:</span>
-                                {
-                                    dashboardStore.getProjectOrganization()?.attributes
-                                        .machine_translation_character_usage
-                                }
-                                /
-                                {
-                                    dashboardStore.getProjectOrganization()?.attributes
-                                        .machine_translation_character_limit
-                                }{" "}
-                                characters
-                            </div>
-                        </Tabs.TabPane>
-                    </Tabs>
+                                <h3 style={{ marginTop: 40 }}>Total usage</h3>
+                                <p>This is the total amount of characters machine translated over all your projects.</p>
+                                <div style={{ display: "flex", fontSize: 16 }}>
+                                    <span style={{ fontWeight: "bold", marginRight: 24 }}>Usage:</span>
+                                    {
+                                        dashboardStore.getProjectOrganization()?.attributes
+                                            .machine_translation_character_usage
+                                    }
+                                    /
+                                    {
+                                        dashboardStore.getProjectOrganization()?.attributes
+                                            .machine_translation_character_limit
+                                    }{" "}
+                                    characters
+                                </div>
+                            </Tabs.TabPane>
+                        </Tabs>
+                    )}
                 </Layout.Content>
             </Layout>
         );

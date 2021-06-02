@@ -115,81 +115,103 @@ export function MachineTranslationSuggestion(props: {
         props.isHTMLKey
     ]);
 
-    return (
-        <>
-            {props.defaultLanguage && !props.isHTMLKey && (
-                <div style={{ padding: 8, marginTop: 8 }}>
-                    <h4 style={{ fontSize: 12 }}>
-                        <RobotOutlined style={{ marginRight: 4 }} /> Machine Translation Suggestion
-                    </h4>
-                    {(translationSuggestionLoading ||
-                        !props.supportedSourceLanguages ||
-                        !props.supportedTargetLanguages) && (
-                        <div style={{ marginTop: 16, marginBottom: 16 }}>
-                            <Skeleton active paragraph={{ rows: 2 }} title={false} />
-                        </div>
-                    )}
-
-                    {!dashboardStore.currentProject.attributes.machine_translation_active && (
-                        <Alert showIcon type="warning" message="Machine translation is not enabled." />
-                    )}
-
-                    {dashboardStore.currentProject.attributes.machine_translation_active &&
-                        props.supportedSourceLanguages &&
-                        props.supportedTargetLanguages &&
-                        !machineTranslationsSupported(props.selectedLanguageId) && (
-                            <Alert
-                                showIcon
-                                type="info"
-                                message={
-                                    <>
-                                        {!defaultLanguageSupportsMachineTranslation() && (
-                                            <div>
-                                                Machine translation with your default language as source is not
-                                                supported.
-                                            </div>
-                                        )}
-                                        {!languageSupportsMachineTranslation(props.selectedLanguageId) && (
-                                            <div>Machine translation to the selected language is not supported.</div>
-                                        )}
-                                    </>
-                                }
-                            />
+    if (dashboardStore.getProjectOrganization()) {
+        return (
+            <>
+                {props.defaultLanguage && !props.isHTMLKey && (
+                    <div style={{ padding: 8, marginTop: 8 }}>
+                        <h4 style={{ fontSize: 12 }}>
+                            <RobotOutlined style={{ marginRight: 4 }} /> Machine Translation Suggestion
+                        </h4>
+                        {(translationSuggestionLoading ||
+                            !props.supportedSourceLanguages ||
+                            !props.supportedTargetLanguages) && (
+                            <div style={{ marginTop: 16, marginBottom: 16 }}>
+                                <Skeleton active paragraph={{ rows: 2 }} title={false} />
+                            </div>
                         )}
 
-                    {!dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_SUGGESTIONS") && (
-                        <FeatureNotAvailable feature="FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" />
-                    )}
+                        {!dashboardStore.currentProject.attributes.machine_translation_active && (
+                            <Alert showIcon type="warning" message="Machine translation is not enabled." />
+                        )}
 
-                    {machineTranslationLimitExceeded && (
-                        <Alert showIcon type="error" message="You have exceeded your machine translation limit." />
-                    )}
-
-                    {dashboardStore.currentProject.attributes.machine_translation_active &&
-                        dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_SUGGESTIONS") &&
-                        !translationSuggestionLoading &&
-                        props.supportedSourceLanguages &&
-                        props.supportedTargetLanguages &&
-                        !machineTranslationLimitExceeded &&
-                        defaultLanguageSupportsMachineTranslation() &&
-                        languageSupportsMachineTranslation(props.selectedLanguageId) && (
-                            <div>
-                                {props.defaultLanguageTranslationContent && translationSuggestion ? (
-                                    translationSuggestion.translation !== props.translationForTargetLanguage ? (
+                        {dashboardStore.currentProject.attributes.machine_translation_active &&
+                            props.supportedSourceLanguages &&
+                            props.supportedTargetLanguages &&
+                            !machineTranslationsSupported(props.selectedLanguageId) && (
+                                <Alert
+                                    showIcon
+                                    type="info"
+                                    message={
                                         <>
-                                            <div style={{ marginTop: 16 }}>{translationSuggestion.translation}</div>
-                                            <Button
-                                                type="primary"
-                                                style={{ marginTop: 16, marginBottom: 8 }}
-                                                onClick={() => {
-                                                    props.onUseTranslation({
-                                                        suggestion: translationSuggestion
-                                                    });
+                                            {!defaultLanguageSupportsMachineTranslation() && (
+                                                <div>
+                                                    Machine translation with your default language as source is not
+                                                    supported.
+                                                </div>
+                                            )}
+                                            {!languageSupportsMachineTranslation(props.selectedLanguageId) && (
+                                                <div>
+                                                    Machine translation to the selected language is not supported.
+                                                </div>
+                                            )}
+                                        </>
+                                    }
+                                />
+                            )}
+
+                        {!dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_SUGGESTIONS") && (
+                            <FeatureNotAvailable feature="FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" />
+                        )}
+
+                        {machineTranslationLimitExceeded && (
+                            <Alert showIcon type="error" message="You have exceeded your machine translation limit." />
+                        )}
+
+                        {dashboardStore.currentProject.attributes.machine_translation_active &&
+                            dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_SUGGESTIONS") &&
+                            !translationSuggestionLoading &&
+                            props.supportedSourceLanguages &&
+                            props.supportedTargetLanguages &&
+                            !machineTranslationLimitExceeded &&
+                            defaultLanguageSupportsMachineTranslation() &&
+                            languageSupportsMachineTranslation(props.selectedLanguageId) && (
+                                <div>
+                                    {props.defaultLanguageTranslationContent && translationSuggestion ? (
+                                        translationSuggestion.translation !== props.translationForTargetLanguage ? (
+                                            <>
+                                                <div style={{ marginTop: 16 }}>{translationSuggestion.translation}</div>
+                                                <Button
+                                                    type="primary"
+                                                    style={{ marginTop: 16, marginBottom: 8 }}
+                                                    onClick={() => {
+                                                        props.onUseTranslation({
+                                                            suggestion: translationSuggestion
+                                                        });
+                                                    }}
+                                                >
+                                                    Use translation
+                                                </Button>
+                                            </>
+                                        ) : (
+                                            <div
+                                                style={{
+                                                    fontStyle: "italic",
+                                                    color: "var(--color-passive)",
+                                                    fontSize: 12,
+                                                    marginTop: 16,
+                                                    marginBottom: 16
                                                 }}
                                             >
-                                                Use translation
-                                            </Button>
-                                        </>
+                                                <CheckOutlined
+                                                    style={{ color: "var(--color-success)", marginRight: 4 }}
+                                                />{" "}
+                                                Machine translation suggestion is the same as the current translation.
+                                                <div style={{ fontWeight: "bold", marginTop: 16 }}>
+                                                    {translationSuggestion.translation}
+                                                </div>
+                                            </div>
+                                        )
                                     ) : (
                                         <div
                                             style={{
@@ -200,44 +222,47 @@ export function MachineTranslationSuggestion(props: {
                                                 marginBottom: 16
                                             }}
                                         >
-                                            <CheckOutlined style={{ color: "var(--color-success)", marginRight: 4 }} />{" "}
-                                            Machine translation suggestion is the same as the current translation.
-                                            <div style={{ fontWeight: "bold", marginTop: 16 }}>
-                                                {translationSuggestion.translation}
-                                            </div>
+                                            {!props.defaultLanguageTranslationContent &&
+                                                "No translation in source language to translate."}
+                                            {!translationSuggestion && "Could not load translation suggestion."}
                                         </div>
-                                    )
-                                ) : (
-                                    <div
-                                        style={{
-                                            fontStyle: "italic",
-                                            color: "var(--color-passive)",
-                                            fontSize: 12,
-                                            marginTop: 16,
-                                            marginBottom: 16
-                                        }}
-                                    >
-                                        {!props.defaultLanguageTranslationContent &&
-                                            "No translation in source language to translate."}
-                                        {!translationSuggestion && "Could not load translation suggestion."}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    <div
-                        style={{
-                            color: "var(--color-passive)",
-                            marginTop: 8,
-                            fontSize: 11,
-                            display: "flex",
-                            alignItems: "center"
-                        }}
-                    >
-                        powered by <img src={DeeplLogo} style={{ maxWidth: 16, marginRight: 4, marginLeft: 4 }} />
-                        DeepL
+                                    )}
+                                </div>
+                            )}
+                        <div
+                            style={{
+                                color: "var(--color-passive)",
+                                marginTop: 8,
+                                fontSize: 11,
+                                display: "flex",
+                                alignItems: "center"
+                            }}
+                        >
+                            powered by <img src={DeeplLogo} style={{ maxWidth: 16, marginRight: 4, marginLeft: 4 }} />
+                            DeepL
+                        </div>
                     </div>
-                </div>
-            )}
-        </>
-    );
+                )}
+            </>
+        );
+    } else {
+        return (
+            <div style={{ marginTop: 24 }}>
+                <h4 style={{ fontSize: 12 }}>
+                    <RobotOutlined style={{ marginRight: 4 }} /> Machine Translation Suggestion
+                </h4>
+                <Alert
+                    showIcon
+                    message={
+                        <>
+                            Premium features are not available for private projects. Please move your project to an
+                            organization.
+                        </>
+                    }
+                    type="info"
+                    style={{ maxWidth: 400, marginTop: 8 }}
+                />
+            </div>
+        );
+    }
 }

@@ -34,6 +34,9 @@ export interface IGetProjects {
         attributes: IProjectAttributes;
         relationships: any;
     }[];
+    meta: {
+        total: number;
+    }
 }
 
 async function getBase64(file: any) {
