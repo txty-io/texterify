@@ -12,7 +12,8 @@ PROJECT_ATTRIBUTES = [
   'machine_translation_enabled',
   'auto_translate_new_keys',
   'auto_translate_new_languages',
-  'machine_translation_active'
+  'machine_translation_active',
+  'machine_translation_character_usage'
 ].freeze
 
 RSpec.describe Api::V1::ProjectsController, type: :request do
@@ -182,12 +183,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
   end
 
   describe 'PUT update' do
-    permissions_update = {
-      'translator' => 403,
-      'developer' => 403,
-      'manager' => 200,
-      'owner' => 200
-    }
+    permissions_update = { 'translator' => 403, 'developer' => 403, 'manager' => 200, 'owner' => 200 }
 
     it 'responds with json by default' do
       put '/api/v1/projects/1'
@@ -226,12 +222,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
   end
 
   describe 'DELETE destroy' do
-    permissions_destroy = {
-      'translator' => 403,
-      'developer' => 403,
-      'manager' => 403,
-      'owner' => 200
-    }
+    permissions_destroy = { 'translator' => 403, 'developer' => 403, 'manager' => 403, 'owner' => 200 }
 
     it 'responds with json by default' do
       delete '/api/v1/projects/1'
@@ -254,9 +245,8 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
         project_user.role = permission
         project_user.save!
 
-        expect do
-          delete "/api/v1/projects/#{project.id}", headers: @auth_params, as: :json
-        end.to change(Project, :count).by(expected_response_status == 200 ? -1 : 0)
+        expect { delete "/api/v1/projects/#{project.id}", headers: @auth_params, as: :json }.to change(Project, :count)
+          .by(expected_response_status == 200 ? -1 : 0)
 
         expect(response.status).to eq(expected_response_status)
         if expected_response_status == 200

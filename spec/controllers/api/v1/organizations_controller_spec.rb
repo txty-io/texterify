@@ -1,6 +1,18 @@
 require 'rails_helper'
 require 'json'
 
+ORGANIZATION_ATTRIBUTES = [
+  'id',
+  'name',
+  'current_user_role',
+  'all_features',
+  'enabled_features',
+  'trial_active',
+  'trial_ends_at',
+  'machine_translation_character_limit',
+  'machine_translation_character_usage'
+].freeze
+
 RSpec.describe Api::V1::OrganizationsController, type: :request do
   before(:each) do |test|
     unless test.metadata[:skip_before]
@@ -44,7 +56,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(10)
       expect(body['data'][0].keys).to contain_exactly('attributes', 'id', 'relationships', 'type')
-      expect(body['data'][0]['attributes'].keys).to contain_exactly('id', 'name', 'current_user_role', 'all_features', 'enabled_features', 'trial_active', 'trial_ends_at')
+      expect(body['data'][0]['attributes'].keys).to contain_exactly(*ORGANIZATION_ATTRIBUTES)
       expect(body['meta']['total']).to eq(number_of_organizations)
     end
 
@@ -137,7 +149,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
       expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
-      expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'current_user_role', 'all_features', 'enabled_features', 'trial_active', 'trial_ends_at')
+      expect(body['data']['attributes'].keys).to contain_exactly(*ORGANIZATION_ATTRIBUTES)
       expect(body['data']['attributes']['name']).to eq(name)
     end
 
@@ -149,7 +161,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
       expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
-      expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'current_user_role', 'all_features', 'enabled_features', 'trial_active', 'trial_ends_at')
+      expect(body['data']['attributes'].keys).to contain_exactly(*ORGANIZATION_ATTRIBUTES)
       expect(body['data']['attributes']['name']).to eq(name)
     end
 
@@ -165,12 +177,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
   end
 
   describe 'PUT update' do
-    permissions_update = {
-      'translator' => 403,
-      'developer' => 403,
-      'manager' => 200,
-      'owner' => 200
-    }
+    permissions_update = { 'translator' => 403, 'developer' => 403, 'manager' => 200, 'owner' => 200 }
 
     it 'responds with json by default' do
       put '/api/v1/organizations/1'
@@ -200,7 +207,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
         if expected_response_status == 200
           body = JSON.parse(response.body)
           expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
-          expect(body['data']['attributes'].keys).to contain_exactly('id', 'name', 'current_user_role', 'all_features', 'enabled_features', 'trial_active', 'trial_ends_at')
+          expect(body['data']['attributes'].keys).to contain_exactly(*ORGANIZATION_ATTRIBUTES)
           expect(body['data']['attributes']['name']).to eq(new_name)
         end
       end
@@ -208,12 +215,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
   end
 
   describe 'DESTROY delete' do
-    permissions_destroy = {
-      'translator' => 403,
-      'developer' => 403,
-      'manager' => 403,
-      'owner' => 200
-    }
+    permissions_destroy = { 'translator' => 403, 'developer' => 403, 'manager' => 403, 'owner' => 200 }
 
     it 'responds with json by default' do
       delete '/api/v1/organizations/1'
@@ -236,9 +238,10 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
         organization_user.role = permission
         organization_user.save!
 
-        expect do
-          delete "/api/v1/organizations/#{organization.id}", headers: @auth_params, as: :json
-        end.to change(Organization, :count).by(expected_response_status == 200 ? -1 : 0)
+        expect { delete "/api/v1/organizations/#{organization.id}", headers: @auth_params, as: :json }.to change(
+          Organization,
+          :count
+        ).by(expected_response_status == 200 ? -1 : 0)
 
         expect(response.status).to eq(expected_response_status)
         if expected_response_status == 200
