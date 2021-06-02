@@ -74,20 +74,18 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
     }
 
     fetchSupportedLanguagesMachineTranslation = async () => {
-        if (dashboardStore.currentProject.attributes.machine_translation_active) {
-            this.setState({ supportedMachineTranslationLanguagesLoading: true });
-            try {
-                const supportedSourceLanguages = await MachineTranslationsAPI.getSourceLanguages();
-                const supportedTargetLanguages = await MachineTranslationsAPI.getTargetLanguages();
+        this.setState({ supportedMachineTranslationLanguagesLoading: true });
+        try {
+            const supportedSourceLanguages = await MachineTranslationsAPI.getSourceLanguages();
+            const supportedTargetLanguages = await MachineTranslationsAPI.getTargetLanguages();
 
-                this.setState({
-                    supportedSourceLanguages: supportedSourceLanguages,
-                    supportedTargetLanguages: supportedTargetLanguages
-                });
-            } catch (error) {
-                console.error(error);
-                message.error("Failed to load supported languages for machine translation.");
-            }
+            this.setState({
+                supportedSourceLanguages: supportedSourceLanguages,
+                supportedTargetLanguages: supportedTargetLanguages
+            });
+        } catch (error) {
+            console.error(error);
+            message.error("Failed to load supported languages for machine translation.");
         }
 
         this.setState({ supportedMachineTranslationLanguagesLoading: false });
