@@ -91,9 +91,9 @@ Cypress.Commands.add("addKey", (keyName, keyDescription, keyContent, isHtml) => 
         cy.get("#htmlEnabled").click();
 
         if (keyContent) {
-            cy.wait(1000); // wait until the editor has loaded
+            cy.wait(2000); // wait until the editor has loaded
             cy.get(".defaultLanguageHTMLContent").find(".codex-editor").type(keyContent);
-            cy.wait(500); // wait until editor has saved content
+            cy.wait(1000); // wait until editor has saved content
         }
     } else if (keyContent) {
         cy.get("#defaultLanguageContent").type(keyContent);
