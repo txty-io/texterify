@@ -46,7 +46,7 @@ const APIUtils = {
             }
         }
 
-        if (response.error || response.errors) {
+        if (response.error || response.errors) {
             throw response;
         }
 
