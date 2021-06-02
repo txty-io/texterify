@@ -111,7 +111,8 @@ export function MachineTranslationSuggestion(props: {
         props.defaultLanguage,
         props.defaultLanguageTranslationContent,
         props.selectedLanguageId,
-        props.defaultLanguageTranslationContent
+        props.defaultLanguageTranslationContent,
+        props.isHTMLKey
     ]);
 
     return (
@@ -216,7 +217,9 @@ export function MachineTranslationSuggestion(props: {
                                             marginBottom: 16
                                         }}
                                     >
-                                        No translation in source language to translate.
+                                        {!props.defaultLanguageTranslationContent &&
+                                            "No translation in source language to translate."}
+                                        {!translationSuggestion && "Could not load translation suggestion."}
                                     </div>
                                 )}
                             </div>
