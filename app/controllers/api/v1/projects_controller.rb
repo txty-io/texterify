@@ -7,13 +7,9 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
 
     if project
-      render json: {
-        image: project.image.attached? ? url_for(project.image) : nil
-      }
+      render json: { image: project.image.attached? ? url_for(project.image) : nil }
     else
-      render json: {
-        errors: project.errors.details
-      }, status: :bad_request
+      render json: { errors: project.errors.details }, status: :bad_request
     end
   end
 
@@ -35,20 +31,21 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     page = parse_page(params[:page])
     per_page = parse_per_page(params[:per_page])
 
-    projects = if params[:search]
-                 current_user.projects.where(
-                   'name ilike :search',
-                   search: "%#{params[:search]}%"
-                 )
-               else
-                 current_user.projects
-               end
+    projects =
+      if params[:search]
+        current_user.projects.where('name ilike :search', search: "%#{params[:search]}%")
+      else
+        current_user.projects
+      end
 
     options = {}
     options[:meta] = { total: projects.size }
     options[:include] = [:organization]
     options[:params] = { current_user: current_user }
-    render json: ProjectSerializer.new(projects.order_by_name.offset(page * per_page).limit(per_page), options).serialized_json, status: :ok
+    render json:
+             ProjectSerializer.new(projects.order_by_name.offset(page * per_page).limit(per_page), options)
+               .serialized_json,
+           status: :ok
   end
 
   def create
@@ -58,17 +55,12 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       organization = current_user.organizations.find(params[:organization_id])
     end
 
-    if organization && !organization.feature_enabled?(Organization::FEATURE_UNLIMITED_PROJECTS) && organization.projects.size >= 1
-      render json: {
-        error: true,
-        message: 'MAXIMUM_NUMBER_OF_PROJECTS_REACHED'
-      }, status: :bad_request
+    if organization && !organization.feature_enabled?(Organization::FEATURE_UNLIMITED_PROJECTS) &&
+         organization.projects.size >= 1
+      render json: { error: true, message: 'MAXIMUM_NUMBER_OF_PROJECTS_REACHED' }, status: :bad_request
       return
     elsif !organization && current_user.private_projects.size >= 1
-      render json: {
-        error: true,
-        message: 'MAXIMUM_NUMBER_OF_PROJECTS_REACHED'
-      }, status: :bad_request
+      render json: { error: true, message: 'MAXIMUM_NUMBER_OF_PROJECTS_REACHED' }, status: :bad_request
       return
     end
 
@@ -84,17 +76,13 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
     ActiveRecord::Base.transaction do
       unless project.save
-        render json: {
-          errors: project.errors.details
-        }, status: :bad_request
+        render json: { errors: project.errors.details }, status: :bad_request
         raise ActiveRecord::Rollback
       end
 
       unless params[:organization_id]
         unless project_column.save
-          render json: {
-            errors: project_column.errors.details
-          }, status: :bad_request
+          render json: { errors: project_column.errors.details }, status: :bad_request
           raise ActiveRecord::Rollback
         end
 
@@ -103,9 +91,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
         project_user.project_id = project.id
         project_user.role = 'owner'
         unless project_user.save
-          render json: {
-            errors: project_user.errors.details
-          }, status: :bad_request
+          render json: { errors: project_user.errors.details }, status: :bad_request
           raise ActiveRecord::Rollback
         end
       end
@@ -126,9 +112,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       options[:params] = { current_user: current_user }
       render json: ProjectSerializer.new(project, options).serialized_json
     else
-      render json: {
-        errors: project.errors.details
-      }, status: :bad_request
+      render json: { errors: project.errors.details }, status: :bad_request
     end
   end
 
@@ -156,10 +140,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     export_config = project.export_configs.find(params[:id])
 
     if project.languages.empty?
-      render json: {
-        error: true,
-        messages: ["can't export anything without languages"]
-      }, status: :bad_request
+      render json: { error: true, messages: ["can't export anything without languages"] }, status: :bad_request
       return
     end
 
@@ -168,10 +149,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     begin
       helpers.create_export(project, export_config, file, { emojify: params[:emojify] })
 
-      send_file(
-        file,
-        type: 'application/zip'
-      )
+      send_file(file, type: 'application/zip')
     ensure
       file.close
     end
@@ -187,10 +165,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     file = params[:file]
 
     unless file
-      render json: {
-        error: true,
-        message: 'NO_OR_EMPTY_FILE'
-      }, status: :bad_request
+      render json: { error: true, message: 'NO_OR_EMPTY_FILE' }, status: :bad_request
       return
     end
 
@@ -202,10 +177,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     begin
       parsed_data = helpers.parse_file_content(file_name, file_content, file_format)
     rescue RuntimeError => e
-      render json: {
-        error: true,
-        message: e.message
-      }, status: :bad_request
+      render json: { error: true, message: e.message }, status: :bad_request
       return
     end
 
@@ -273,10 +245,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       end
     end
 
-    render json: {
-      message: 'Successfully imported translations.',
-      ok: true
-    }, status: :ok
+    render json: { message: 'Successfully imported translations.', ok: true }, status: :ok
   end
 
   def destroy
@@ -284,9 +253,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     authorize project
     project.destroy
 
-    render json: {
-      message: 'Project deleted'
-    }
+    render json: { message: 'Project deleted' }
   end
 
   def activity
@@ -295,17 +262,20 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     limit = 5
     if params[:limit].present?
       limit = params[:limit].to_i || 5
-      limit = 1 if limit < 1
-      limit = 20 if limit > 20
+      if limit < 1
+        limit = 1
+      end
+      if limit > 20
+        limit = 20
+      end
     end
 
     project = current_user.projects.find(params[:project_id])
-    return unless feature_enabled?(project, Organization::FEATURE_PROJECT_ACTIVITY)
+    unless feature_enabled?(project, Organization::FEATURE_PROJECT_ACTIVITY)
+      return
+    end
 
-    versions = PaperTrail::Version
-      .where(project_id: project.id)
-      .limit(limit)
-      .order(created_at: :desc)
+    versions = PaperTrail::Version.where(project_id: project.id).limit(limit).order(created_at: :desc)
 
     options = {}
     options[:include] = [:user, :key, :language, :'language.country_code']
@@ -319,18 +289,18 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     project.organization_id = organization.id
     project.save!
 
-    render json: {
-      success: true
-    }, status: :ok
+    render json: { success: true }, status: :ok
   end
 
   def recently_viewed
     skip_authorization
 
-    projects = current_user.projects
-      .joins('INNER JOIN recently_viewed_projects rvp ON rvp.project_id = projects.id')
-      .where('rvp.user_id = ?', current_user.id)
-      .order(last_accessed: :desc)
+    projects =
+      current_user
+        .projects
+        .joins('INNER JOIN recently_viewed_projects rvp ON rvp.project_id = projects.id')
+        .where('rvp.user_id = ?', current_user.id)
+        .order(last_accessed: :desc)
 
     per_page = 10
 
@@ -343,6 +313,12 @@ class Api::V1::ProjectsController < Api::V1::ApiController
   private
 
   def project_params
-    params.permit(:name, :description, :machine_translation_enabled, :auto_translate_new_keys, :auto_translate_new_languages)
+    params.permit(
+      :name,
+      :description,
+      :machine_translation_enabled,
+      :auto_translate_new_keys,
+      :auto_translate_new_languages
+    )
   end
 end

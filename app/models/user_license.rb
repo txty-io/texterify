@@ -4,7 +4,9 @@ class UserLicense < ApplicationRecord
   validates :data, presence: true
 
   def license
-    return unless data
+    unless data
+      return
+    end
 
     @license ||=
       begin

@@ -27,33 +27,39 @@ class Language < ApplicationRecord
     if language.present?
       updating_language = language.id == id
 
-      errors.add(:name, :taken) if !updating_language
+      if !updating_language
+        errors.add(:name, :taken)
+      end
     end
   end
 
   # Translates all non export config translations of all non HTML keys for the language which are empty using machine translation.
   def translate_untranslated_using_machine_translation
-    if ENV['DEEPL_API_TOKEN'].present? && self.project.machine_translation_enabled && project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
-      self.keys.where(html_enabled: false).each do |key|
-        target_language = self
-        source_translation = key.default_language_translation
-        target_translation = key.translations.find_by(language_id: target_language.id, export_config_id: nil)
+    if ENV['DEEPL_API_TOKEN'].present? && self.project.machine_translation_enabled &&
+         project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
+      self
+        .keys
+        .where(html_enabled: false)
+        .each do |key|
+          target_language = self
+          source_translation = key.default_language_translation
+          target_translation = key.translations.find_by(language_id: target_language.id, export_config_id: nil)
 
-        if source_translation.present? && (target_translation.nil? || target_translation.content.empty?)
-          content = Texterify::MachineTranslation.translate(source_translation, target_language)
+          if source_translation.present? && (target_translation.nil? || target_translation.content.empty?)
+            content = Texterify::MachineTranslation.translate(source_translation, target_language)
 
-          unless content.nil?
-            if target_translation.nil?
-              translation = Translation.new(content: content)
-              translation.language = target_language
-              translation.key = key
-              translation.save!
-            else
-              current_translation.update(content: content)
+            unless content.nil?
+              if target_translation.nil?
+                translation = Translation.new(content: content)
+                translation.language = target_language
+                translation.key = key
+                translation.save!
+              else
+                current_translation.update(content: content)
+              end
             end
           end
         end
-      end
     end
   end
 

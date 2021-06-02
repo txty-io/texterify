@@ -26,7 +26,11 @@ class DeeplSupportedLanguagesWorker
         deepl_source_language = DeeplSourceLanguage.find_by(language_code: language_code, country_code: country_code)
 
         unless deepl_source_language
-          DeeplSourceLanguage.create!(language_code: language_code, country_code: country_code, name: source_language['name'])
+          DeeplSourceLanguage.create!(
+            language_code: language_code,
+            country_code: country_code,
+            name: source_language['name']
+          )
         end
       end
 
@@ -46,7 +50,11 @@ class DeeplSupportedLanguagesWorker
         deepl_target_language = DeeplTargetLanguage.find_by(language_code: language_code, country_code: country_code)
 
         unless deepl_target_language
-          DeeplTargetLanguage.create!(language_code: language_code, country_code: country_code, name: target_language['name'])
+          DeeplTargetLanguage.create!(
+            language_code: language_code,
+            country_code: country_code,
+            name: target_language['name']
+          )
         end
       end
     end

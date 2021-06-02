@@ -6,9 +6,6 @@ class Api::V1::UserLicensesController < Api::V1::ApiController
 
     options = {}
     options[:meta] = { total: user_licenses.size }
-    render json: UserLicenseSerializer.new(
-      user_licenses,
-      options
-    ).serialized_json
+    render json: UserLicenseSerializer.new(user_licenses, options).serialized_json
   end
 end

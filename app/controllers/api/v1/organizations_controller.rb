@@ -4,14 +4,9 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
     organization = Organization.find(params[:organization_id])
 
     if organization
-      render json: {
-        image: organization.image.attached? ? url_for(organization.image) : nil
-      }
+      render json: { image: organization.image.attached? ? url_for(organization.image) : nil }
     else
-      render json: {
-        error: true,
-        message: 'Organization could not be found.'
-      }, status: :bad_request
+      render json: { error: true, message: 'Organization could not be found.' }, status: :bad_request
     end
   end
 
@@ -33,19 +28,20 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
     page = parse_page(params[:page])
     per_page = parse_per_page(params[:per_page])
 
-    organizations = if params[:search]
-                      current_user.organizations.where(
-                        'name ilike :search',
-                        search: "%#{params[:search]}%"
-                      )
-                    else
-                      current_user.organizations
-                    end
+    organizations =
+      if params[:search]
+        current_user.organizations.where('name ilike :search', search: "%#{params[:search]}%")
+      else
+        current_user.organizations
+      end
 
     options = {}
     options[:meta] = { total: organizations.size }
     options[:params] = { current_user: current_user }
-    render json: OrganizationSerializer.new(organizations.order_by_name.offset(page * per_page).limit(per_page), options).serialized_json, status: :ok
+    render json:
+             OrganizationSerializer.new(organizations.order_by_name.offset(page * per_page).limit(per_page), options)
+               .serialized_json,
+           status: :ok
   end
 
   def create
@@ -57,9 +53,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
 
     ActiveRecord::Base.transaction do
       unless organization.save
-        render json: {
-          errors: organization.errors.details
-        }, status: :bad_request
+        render json: { errors: organization.errors.details }, status: :bad_request
         raise ActiveRecord::Rollback
       end
 
@@ -68,9 +62,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
       organization_user.organization_id = organization.id
       organization_user.role = 'owner'
       unless organization_user.save
-        render json: {
-          errors: organization_user.errors.details
-        }, status: :bad_request
+        render json: { errors: organization_user.errors.details }, status: :bad_request
         raise ActiveRecord::Rollback
       end
 
@@ -89,9 +81,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
       options[:params] = { current_user: current_user }
       render json: OrganizationSerializer.new(organization, options).serialized_json
     else
-      render json: {
-        errors: organization.errors.details
-      }, status: :bad_request
+      render json: { errors: organization.errors.details }, status: :bad_request
     end
   end
 
@@ -110,9 +100,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
     authorize organization
     organization.destroy
 
-    render json: {
-      message: 'Organization deleted'
-    }
+    render json: { message: 'Organization deleted' }
   end
 
   def subscription
@@ -129,9 +117,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
 
     organization.active_subscription&.interrupt
 
-    render json: {
-      success: true
-    }
+    render json: { success: true }
   end
 
   def reactivate_subscription
@@ -140,21 +126,13 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
 
     organization.active_subscription&.reactivate
 
-    render json: {
-      success: true
-    }
+    render json: { success: true }
   end
 
   def change_subscription_plan
     plan = params[:plan]
     if !plan
-      render json: {
-        errors: [
-          {
-            code: 'NO_PLAN_GIVEN'
-          }
-        ]
-      }, status: :bad_request
+      render json: { errors: [{ code: 'NO_PLAN_GIVEN' }] }, status: :bad_request
       return
     end
 
@@ -163,9 +141,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
 
     organization.active_subscription&.change_plan(plan)
 
-    render json: {
-      success: true
-    }
+    render json: { success: true }
   end
 
   private

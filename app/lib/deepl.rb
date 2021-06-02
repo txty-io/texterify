@@ -48,11 +48,7 @@ module Deepl
       end
 
       def translate(text, source_lang, target_lang)
-        data = {
-          text: text,
-          source_lang: source_lang,
-          target_lang: target_lang
-        }
+        data = { text: text, source_lang: source_lang, target_lang: target_lang }
 
         json = request(:post, 'translate', data)
 
@@ -64,7 +60,17 @@ module Deepl
       private
 
       def request(http_method, endpoint, data = nil)
-        response = RestClient::Request.execute(method: http_method, url: API_ENDPOINT + endpoint, payload: data, headers: { params: { auth_key: @auth_token } })
+        response =
+          RestClient::Request.execute(
+            method: http_method,
+            url: API_ENDPOINT + endpoint,
+            payload: data,
+            headers: {
+              params: {
+                auth_key: @auth_token
+              }
+            }
+          )
         JSON.parse(response)
       rescue => e
         Sentry.capture_exception(e)

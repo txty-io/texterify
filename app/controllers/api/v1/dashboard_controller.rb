@@ -5,13 +5,15 @@ class Api::V1::DashboardController < Api::V1::ApiController
     limit = 5
     if params[:limit].present?
       limit = params[:limit].to_i || 5
-      limit = 1 if limit < 1
-      limit = 20 if limit > 20
+      if limit < 1
+        limit = 1
+      end
+      if limit > 20
+        limit = 20
+      end
     end
 
-    versions = PaperTrail::Version.where(
-      project_id: current_user.projects
-    ).limit(limit).order(created_at: :desc)
+    versions = PaperTrail::Version.where(project_id: current_user.projects).limit(limit).order(created_at: :desc)
 
     options = {}
     options[:include] = [:user, :project, :key, :language, :'language.country_code']

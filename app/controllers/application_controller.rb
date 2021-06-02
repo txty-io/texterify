@@ -8,8 +8,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
-  def app
-  end
+  def app; end
 
   protected
 
@@ -19,9 +18,7 @@ class ApplicationController < ActionController::Base
   end
 
   # Handle unsupported formats.
-  rescue_from(ActionController::UnknownFormat) do
-    head(:not_acceptable)
-  end
+  rescue_from(ActionController::UnknownFormat) { head(:not_acceptable) }
 
   # Handle expired/used password reset and account confirmation links.
   rescue_from(ActionController::RoutingError) do
@@ -47,13 +44,14 @@ class ApplicationController < ActionController::Base
       feature_allowed_plans = Organization::FEATURES_PLANS[feature]
 
       render json: {
-        errors: [
-          {
-            code: 'FEATURE_NOT_AVAILABLE_IN_PLAN',
-            description: "Please upgrade your plan to one of the following: #{feature_allowed_plans.join(', ')}"
-          }
-        ]
-      }, status: :forbidden
+               errors: [
+                 {
+                   code: 'FEATURE_NOT_AVAILABLE_IN_PLAN',
+                   description: "Please upgrade your plan to one of the following: #{feature_allowed_plans.join(', ')}"
+                 }
+               ]
+             },
+             status: :forbidden
 
       false
     end

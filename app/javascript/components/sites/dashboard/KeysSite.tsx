@@ -863,9 +863,8 @@ class KeysSite extends React.Component<IProps, IState> {
                                                       const languageId = translation.relationships.language.data.id;
                                                       let translationContent = translation.attributes.content;
                                                       if (currentKey.attributes.html_enabled) {
-                                                          translationContent = Utils.getHTMLContentPreview(
-                                                              translationContent
-                                                          );
+                                                          translationContent =
+                                                              Utils.getHTMLContentPreview(translationContent);
                                                       }
                                                       translations[`language-${languageId}`] = translationContent;
                                                   }
@@ -966,15 +965,14 @@ class KeysSite extends React.Component<IProps, IState> {
                                                               const content = newItem[`language-${languageKey}`];
 
                                                               if (content !== undefined) {
-                                                                  const response = await TranslationsAPI.createTranslation(
-                                                                      {
+                                                                  const response =
+                                                                      await TranslationsAPI.createTranslation({
                                                                           projectId: this.props.match.params.projectId,
                                                                           languageId: languageKey,
                                                                           keyId: newItem.keyId,
                                                                           content: content,
                                                                           exportConfigId: oldRow.exportConfigId
-                                                                      }
-                                                                  );
+                                                                      });
 
                                                                   if (response.errors) {
                                                                       ErrorUtils.showErrors(response.errors);

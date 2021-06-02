@@ -9,11 +9,7 @@ class OrganizationSerializer
   end
 
   attribute :trial_ends_at do |object|
-    if object.trial_ends_at.nil?
-      nil
-    else
-      object.trial_ends_at.strftime('%Y-%m-%d')
-    end
+    object.trial_ends_at.nil? ? nil : object.trial_ends_at.strftime('%Y-%m-%d')
   end
 
   attribute :enabled_features do |object|

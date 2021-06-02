@@ -11,7 +11,9 @@ class Api::V1::PostProcessingRulesController < Api::V1::ApiController
     options = {}
     options[:meta] = { total: post_processing_rules.size }
     options[:include] = [:export_config]
-    render json: PostProcessingRuleSerializer.new(post_processing_rules.offset(page * per_page).limit(per_page), options).serialized_json
+    render json:
+             PostProcessingRuleSerializer.new(post_processing_rules.offset(page * per_page).limit(per_page), options)
+               .serialized_json
   end
 
   def create
@@ -26,14 +28,14 @@ class Api::V1::PostProcessingRulesController < Api::V1::ApiController
     end
 
     authorize post_processing_rule
-    return unless feature_enabled?(project, Organization::FEATURE_POST_PROCESSING)
+    unless feature_enabled?(project, Organization::FEATURE_POST_PROCESSING)
+      return
+    end
 
     if post_processing_rule.save
       render json: PostProcessingRuleSerializer.new(post_processing_rule).serialized_json
     else
-      render json: {
-        errors: post_processing_rule.errors.details
-      }, status: :bad_request
+      render json: { errors: post_processing_rule.errors.details }, status: :bad_request
     end
   end
 
@@ -43,10 +45,7 @@ class Api::V1::PostProcessingRulesController < Api::V1::ApiController
     authorize post_processing_rule_to_destroy
     project.post_processing_rules.destroy(post_processing_rules_to_destroy)
 
-    render json: {
-      success: true,
-      details: 'OK'
-    }
+    render json: { success: true, details: 'OK' }
   end
 
   def destroy_multiple
@@ -55,17 +54,16 @@ class Api::V1::PostProcessingRulesController < Api::V1::ApiController
     post_processing_rules_to_destroy.each { |post_processing_rule| authorize post_processing_rule }
     project.post_processing_rules.destroy(post_processing_rules_to_destroy)
 
-    render json: {
-      success: true,
-      details: 'OK'
-    }
+    render json: { success: true, details: 'OK' }
   end
 
   def update
     project = current_user.projects.find(params[:project_id])
     post_processing_rule = project.post_processing_rules.find(params[:id])
     authorize post_processing_rule
-    return unless feature_enabled?(project, Organization::FEATURE_POST_PROCESSING)
+    unless feature_enabled?(project, Organization::FEATURE_POST_PROCESSING)
+      return
+    end
 
     # Update export config
     if params[:export_config_id].present?
@@ -75,13 +73,9 @@ class Api::V1::PostProcessingRulesController < Api::V1::ApiController
     end
 
     if post_processing_rule.update(post_processing_rule_params)
-      render json: {
-        message: 'OK'
-      }
+      render json: { message: 'OK' }
     else
-      render json: {
-        errors: post_processing_rule.errors.details
-      }, status: :bad_request
+      render json: { errors: post_processing_rule.errors.details }, status: :bad_request
     end
   end
 

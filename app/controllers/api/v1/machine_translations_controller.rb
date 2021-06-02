@@ -28,28 +28,23 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
     if !project.feature_enabled?(Organization::FEATURE_MACHINE_TRANSLATION_SUGGESTIONS)
       skip_authorization
 
-      render json: {
-        error: true,
-        message: 'FEATURE_NOT_AVAILABLE'
-      }, status: :bad_request
+      render json: { error: true, message: 'FEATURE_NOT_AVAILABLE' }, status: :bad_request
       return
     end
 
     authorize translation
 
     if translation.key.html_enabled
-      render json: {
-        error: true,
-        message: 'MACHINE_TRANSLATIONS_FOR_HTML_KEYS_NOT_SUPPROTED'
-      }, status: :bad_request
+      render json: { error: true, message: 'MACHINE_TRANSLATIONS_FOR_HTML_KEYS_NOT_SUPPROTED' }, status: :bad_request
       return
     end
 
-    machine_translation_memory = MachineTranslationMemory.find_by(
-      from: translation.content,
-      source_language_code_id: translation.language.language_code_id,
-      target_language_code_id: target_language.language_code_id
-    )
+    machine_translation_memory =
+      MachineTranslationMemory.find_by(
+        from: translation.content,
+        source_language_code_id: translation.language.language_code_id,
+        target_language_code_id: target_language.language_code_id
+      )
 
     if machine_translation_memory.present?
       render json: { translation: machine_translation_memory.to }
@@ -59,14 +54,15 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
 
       if organization.exceeds_machine_translation_usage?(character_count)
         render json: {
-          error: true,
-          message: 'MACHINE_TRANSLATIONS_USAGE_EXCEEDED',
-          data: {
-            machine_translation_character_usage: organization.machine_translation_character_usage,
-            machine_translation_character_limit: organization.machine_translation_character_limit,
-            translation_character_count: character_count
-          }
-        }, status: :bad_request
+                 error: true,
+                 message: 'MACHINE_TRANSLATIONS_USAGE_EXCEEDED',
+                 data: {
+                   machine_translation_character_usage: organization.machine_translation_character_usage,
+                   machine_translation_character_limit: organization.machine_translation_character_limit,
+                   translation_character_count: character_count
+                 }
+               },
+               status: :bad_request
         return
       end
 
@@ -77,11 +73,12 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
       organization.save!
 
       deepl_client = Deepl::V2::Client.new(ENV['DEEPL_API_TOKEN'])
-      deepl_translation = deepl_client.translate(
-        translation.content,
-        translation.language.language_code.code,
-        target_language.language_code.code
-      )
+      deepl_translation =
+        deepl_client.translate(
+          translation.content,
+          translation.language.language_code.code,
+          target_language.language_code.code
+        )
 
       MachineTranslationMemory.create(
         from: translation.content,
@@ -101,10 +98,7 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
     if !project.feature_enabled?(Organization::FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
       skip_authorization
 
-      render json: {
-        error: true,
-        message: 'FEATURE_NOT_AVAILABLE'
-      }, status: :bad_request
+      render json: { error: true, message: 'FEATURE_NOT_AVAILABLE' }, status: :bad_request
       return
     end
 
@@ -112,20 +106,14 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
 
     language.translate_untranslated_using_machine_translation
 
-    render json: {
-      success: true,
-      details: 'OK'
-    }
+    render json: { success: true, details: 'OK' }
   end
 
   private
 
   def verify_deepl_configured
     if ENV['DEEPL_API_TOKEN'].blank?
-      render json: {
-        error: true,
-        message: 'NOT_CONFIGURED'
-      }, status: :bad_request
+      render json: { error: true, message: 'NOT_CONFIGURED' }, status: :bad_request
     end
   end
 end

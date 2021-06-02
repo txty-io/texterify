@@ -101,6 +101,9 @@ Style/RedundantSelf:
 Style/RescueStandardError:
   Enabled: false
 
+Style/WhileUntilModifier:
+  Enabled: false
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: "indented"
 

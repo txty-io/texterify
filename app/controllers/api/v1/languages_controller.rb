@@ -8,31 +8,20 @@ class Api::V1::LanguagesController < Api::V1::ApiController
 
     languages = project.languages
     if params[:search]
-      languages = project.languages
-        .where(
-          'name ilike :search',
-          search: "%#{params[:search]}%"
-        )
+      languages = project.languages.where('name ilike :search', search: "%#{params[:search]}%")
     end
 
     options = {}
     options[:meta] = { total: languages.size }
     options[:include] = [:country_code, :language_code]
-    render json: LanguageSerializer.new(
-      languages.order_by_name.offset(page * per_page).limit(per_page),
-      options
-    ).serialized_json
+    render json:
+             LanguageSerializer.new(languages.order_by_name.offset(page * per_page).limit(per_page), options)
+               .serialized_json
   end
 
   def create
     if params[:name].blank?
-      render json: {
-        errors: [
-          {
-            details: 'Missing required parameters'
-          }
-        ]
-      }, status: :bad_request
+      render json: { errors: [{ details: 'Missing required parameters' }] }, status: :bad_request
       return
     end
 
@@ -41,10 +30,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     if !project.feature_enabled?(Organization::FEATURE_UNLIMITED_LANGUAGES) && project.languages.size >= 2
       skip_authorization
 
-      render json: {
-        error: true,
-        message: 'MAXIMUM_NUMBER_OF_LANGUAGES_REACHED'
-      }, status: :bad_request
+      render json: { error: true, message: 'MAXIMUM_NUMBER_OF_LANGUAGES_REACHED' }, status: :bad_request
       return
     end
 
@@ -53,8 +39,12 @@ class Api::V1::LanguagesController < Api::V1::ApiController
 
     language = Language.new(language_params)
     language.project = project
-    language.country_code = country_code if country_code
-    language.language_code = language_code if language_code
+    if country_code
+      language.country_code = country_code
+    end
+    if language_code
+      language.language_code = language_code
+    end
     authorize language
 
     if params[:is_default].present?
@@ -66,7 +56,9 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     end
 
     if params[:parent].present?
-      return unless feature_enabled?(project, Organization::FEATURE_EXPORT_HIERARCHY)
+      unless feature_enabled?(project, Organization::FEATURE_EXPORT_HIERARCHY)
+        return
+      end
 
       language.parent = project.languages.find(params[:parent])
     end
@@ -87,18 +79,13 @@ class Api::V1::LanguagesController < Api::V1::ApiController
         end
       end
 
-      render json: {
-        success: true,
-        details: 'Language successfully created.'
-      }, status: :ok
+      render json: { success: true, details: 'Language successfully created.' }, status: :ok
 
       if project.auto_translate_new_languages
         language.translate_untranslated_using_machine_translation
       end
     else
-      render json: {
-        errors: language.errors.details
-      }, status: :bad_request
+      render json: { errors: language.errors.details }, status: :bad_request
     end
   end
 
@@ -109,15 +96,20 @@ class Api::V1::LanguagesController < Api::V1::ApiController
 
     # Update country code
     country_code = CountryCode.find_by(id: params[:country_code])
-    language.country_code = country_code if country_code
+    if country_code
+      language.country_code = country_code
+    end
 
     # Update language code
     language_code = LanguageCode.find_by(id: params[:language_code])
-    language.language_code = language_code if language_code
+    if language_code
+      language.language_code = language_code
+    end
 
     if params[:is_default] == true || params[:is_default] == false
       if params[:is_default]
         current_default_language = project.languages.find_by(is_default: true)
+
         # Avoid multiple updates of same language.
         if current_default_language&.id != language.id
           current_default_language&.update(is_default: false)
@@ -128,7 +120,9 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     end
 
     if params.key?(:parent)
-      return unless feature_enabled?(project, Organization::FEATURE_EXPORT_HIERARCHY)
+      unless feature_enabled?(project, Organization::FEATURE_EXPORT_HIERARCHY)
+        return
+      end
 
       if params[:parent].present?
         language.parent = project.languages.find(params[:parent])
@@ -137,16 +131,14 @@ class Api::V1::LanguagesController < Api::V1::ApiController
       end
     end
 
-    language.name = params[:language][:name] if params[:language][:name]
+    if params[:language][:name]
+      language.name = params[:language][:name]
+    end
 
     if language.save
-      render json: {
-        message: 'Language updated'
-      }
+      render json: { message: 'Language updated' }
     else
-      render json: {
-        errors: language.errors.details
-      }, status: :bad_request
+      render json: { errors: language.errors.details }, status: :bad_request
     end
   end
 
@@ -156,10 +148,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     authorize language_to_destroy
     project.languages.destroy(language_to_destroy)
 
-    render json: {
-      success: true,
-      details: 'Language deleted'
-    }
+    render json: { success: true, details: 'Language deleted' }
   end
 
   def destroy_multiple
@@ -168,10 +157,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     languages_to_destroy.each { |language| authorize language }
     project.languages.destroy(languages_to_destroy)
 
-    render json: {
-      success: true,
-      details: 'Languages deleted'
-    }
+    render json: { success: true, details: 'Languages deleted' }
   end
 
   private

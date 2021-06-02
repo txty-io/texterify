@@ -14,45 +14,48 @@ module ReleasesHelper
     release.save!
 
     # Create a file for every language
-    project.languages.where.not(language_code: nil).each do |language|
-      release_file_id = SecureRandom.uuid
+    project
+      .languages
+      .where
+      .not(language_code: nil)
+      .each do |language|
+        release_file_id = SecureRandom.uuid
 
-      bucket_path = "#{project.id}/#{export_config.id}/#{version}-#{timestamp}/#{release_file_id}.json"
+        bucket_path = "#{project.id}/#{export_config.id}/#{version}-#{timestamp}/#{release_file_id}.json"
 
-      file = Tempfile.new(project.id)
+        file = Tempfile.new(project.id)
 
-      begin
-        create_release_export(project, export_config, language, file, timestamp)
-      ensure
-        file.close
+        begin
+          create_release_export(project, export_config, language, file, timestamp)
+        ensure
+          file.close
+        end
+
+        # Store the file in the cloud
+        unless Rails.env.test?
+          storage = Google::Cloud::Storage.new
+          bucket = storage.bucket(ENV['GOOGLE_CLOUD_OTA_BUCKET_NAME'], skip_lookup: true)
+          file = bucket.create_file(file.path, bucket_path)
+        end
+
+        release_file = ReleaseFile.new
+        release_file.id = release_file_id
+        release_file.release = release
+        release_file.preview_url = Rails.env.test? ? 'http://localhost/preview-url' : file.url
+        release_file.url = Rails.env.test? ? 'http://localhost/url' : file.media_url
+        release_file.language_code = language.language_code.code
+        release_file.country_code = language.country_code ? language.country_code.code : nil
+        release_file.save!
       end
-
-      # Store the file in the cloud
-      unless Rails.env.test?
-        storage = Google::Cloud::Storage.new
-        bucket = storage.bucket(ENV['GOOGLE_CLOUD_OTA_BUCKET_NAME'], skip_lookup: true)
-        file = bucket.create_file(file.path, bucket_path)
-      end
-
-      release_file = ReleaseFile.new
-      release_file.id = release_file_id
-      release_file.release = release
-      release_file.preview_url = Rails.env.test? ? 'http://localhost/preview-url' : file.url
-      release_file.url = Rails.env.test? ? 'http://localhost/url' : file.media_url
-      release_file.language_code = language.language_code.code
-      release_file.country_code = language.country_code ? language.country_code.code : nil
-      release_file.save!
-    end
 
     release
   end
 
   def create_release_export(project, export_config, language, file, timestamp)
-    post_processing_rules = project.post_processing_rules
-      .where(export_config_id: [export_config.id, nil])
-      .order_by_name
+    post_processing_rules = project.post_processing_rules.where(export_config_id: [export_config.id, nil]).order_by_name
 
-    language_data = create_language_export_data(project, export_config, language, post_processing_rules, skip_timestamp: true)
+    language_data =
+      create_language_export_data(project, export_config, language, post_processing_rules, skip_timestamp: true)
 
     export_data = {
       is_default: language.is_default,

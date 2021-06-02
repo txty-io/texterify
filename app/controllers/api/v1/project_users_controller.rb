@@ -7,12 +7,14 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
 
     options = {}
     options[:params] = { project: project }
-    render json: UserSerializer.new(
-      project.users.where(
-        'users.username ilike :search or users.email ilike :search',
-        search: "%#{params[:search]}%"
-      ), options
-    ).serialized_json
+    render json:
+             UserSerializer.new(
+               project.users.where(
+                 'users.username ilike :search or users.email ilike :search',
+                 search: "%#{params[:search]}%"
+               ),
+               options
+             ).serialized_json
   end
 
   def create
@@ -40,14 +42,9 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
       project_column.user = user
       project_column.save!
 
-      render json: {
-        message: 'Successfully added user to the project.'
-      }
+      render json: { message: 'Successfully added user to the project.' }
     else
-      render json: {
-        error: true,
-        message: 'USER_ALREADY_ADDED'
-      }, status: :bad_request
+      render json: { error: true, message: 'USER_ALREADY_ADDED' }, status: :bad_request
     end
   end
 
@@ -63,28 +60,20 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
 
     if current_user.id == params[:id] && project.users.count == 1
       render json: {
-        errors: [
-          {
-            details: "You can't remove yourself from the project if you are the only member"
-          }
-        ]
-      }, status: :bad_request
+               errors: [{ details: "You can't remove yourself from the project if you are the only member" }]
+             },
+             status: :bad_request
       return
     end
 
     if !project.organization && project.owners_count == 1 && project.owner?(project_user.user)
-      render json: {
-        error: true,
-        message: 'LAST_OWNER_CANT_BE_REMOVED'
-      }, status: :bad_request
+      render json: { error: true, message: 'LAST_OWNER_CANT_BE_REMOVED' }, status: :bad_request
       return
     end
 
     project_user.destroy
 
-    render json: {
-      message: 'User removed from project'
-    }
+    render json: { message: 'User removed from project' }
   end
 
   def update
@@ -93,13 +82,7 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
 
     role = params[:role]
     if !role
-      render json: {
-        errors: [
-          {
-            code: 'NO_ROLE_GIVEN'
-          }
-        ]
-      }, status: :bad_request
+      render json: { errors: [{ code: 'NO_ROLE_GIVEN' }] }, status: :bad_request
       skip_authorization
       return
     end
@@ -115,13 +98,7 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
     # is the role the user has in the organization.
     user_organization_role = project.organization ? project.organization.role_of(project_user.user) : nil
     if user_organization_role && helpers.higher_role?(user_organization_role, role)
-      render json: {
-        errors: [
-          {
-            code: 'USER_PROJECT_ROLE_LOWER_THAN_USER_ORGANIZATION_ROLE'
-          }
-        ]
-      }, status: :bad_request
+      render json: { errors: [{ code: 'USER_PROJECT_ROLE_LOWER_THAN_USER_ORGANIZATION_ROLE' }] }, status: :bad_request
       skip_authorization
       return
     end
@@ -130,26 +107,20 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
     project_user.role = role
     authorize project_user
 
-    project_organization_has_owner = project.organization ? project.organization.organization_users.where(role: 'owner').size >= 1 : false
+    project_organization_has_owner =
+      project.organization ? project.organization.organization_users.where(role: 'owner').size >= 1 : false
 
     # Don't allow the last owner of the project to change his role.
     # There should always be at least one owner.
-    if project.project_users.where(role: 'owner').size == 1 && project_user.role_changed? && project_user.role_was == 'owner' && !project_organization_has_owner
-      render json: {
-        errors: [
-          {
-            code: 'AT_LEAST_ONE_OWNER_PER_PROJECT_REQUIRED'
-          }
-        ]
-      }, status: :bad_request
+    if project.project_users.where(role: 'owner').size == 1 && project_user.role_changed? &&
+         project_user.role_was == 'owner' && !project_organization_has_owner
+      render json: { errors: [{ code: 'AT_LEAST_ONE_OWNER_PER_PROJECT_REQUIRED' }] }, status: :bad_request
       return
     end
 
     project_user.save!
 
-    render json: {
-      success: true
-    }
+    render json: { success: true }
   end
 
   private
@@ -160,10 +131,7 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
     if !project.feature_enabled?(Organization::FEATURE_BASIC_PERMISSION_SYSTEM)
       skip_authorization
 
-      render json: {
-        error: true,
-        message: 'BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE'
-      }, status: :bad_request
+      render json: { error: true, message: 'BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE' }, status: :bad_request
       return
     end
   end

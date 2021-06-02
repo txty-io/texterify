@@ -23,9 +23,7 @@ class Api::V1::LanguageConfigsController < Api::V1::ApiController
     if language_config.save
       render json: LanguageConfigSerializer.new(language_config).serialized_json
     else
-      render json: {
-        errors: language_config.errors.details
-      }, status: :bad_request
+      render json: { errors: language_config.errors.details }, status: :bad_request
     end
   end
 
@@ -42,9 +40,7 @@ class Api::V1::LanguageConfigsController < Api::V1::ApiController
     if language_config.update(language_config_params)
       render json: ExportConfigSerializer.new(export_config).serialized_json
     else
-      render json: {
-        errors: language_config.errors.details
-      }, status: :bad_request
+      render json: { errors: language_config.errors.details }, status: :bad_request
     end
   end
 
@@ -56,13 +52,9 @@ class Api::V1::LanguageConfigsController < Api::V1::ApiController
     authorize language_config
 
     if language_config.destroy
-      render json: {
-        success: true
-      }
+      render json: { success: true }
     else
-      render json: {
-        errors: language_config.errors.details
-      }, status: :bad_request
+      render json: { errors: language_config.errors.details }, status: :bad_request
     end
   end
 

@@ -21,9 +21,7 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
     if export_config.save
       render json: ExportConfigSerializer.new(export_config).serialized_json
     else
-      render json: {
-        errors: export_config.errors.details
-      }, status: :bad_request
+      render json: { errors: export_config.errors.details }, status: :bad_request
     end
   end
 
@@ -36,9 +34,7 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
     if export_config.update(export_config_params)
       render json: ExportConfigSerializer.new(export_config).serialized_json
     else
-      render json: {
-        errors: export_config.errors.details
-      }, status: :bad_request
+      render json: { errors: export_config.errors.details }, status: :bad_request
     end
   end
 
@@ -49,13 +45,9 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
     authorize export_config
 
     if export_config.destroy
-      render json: {
-        success: true
-      }
+      render json: { success: true }
     else
-      render json: {
-        errors: export_config.errors.details
-      }, status: :bad_request
+      render json: { errors: export_config.errors.details }, status: :bad_request
     end
   end
 

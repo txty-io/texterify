@@ -38,19 +38,11 @@ class Organization < ApplicationRecord
   end
 
   def trial_active
-    if trial_ends_at.nil?
-      false
-    else
-      Time.now.utc < trial_ends_at
-    end
+    trial_ends_at.nil? ? false : Time.now.utc < trial_ends_at
   end
 
   def trial_days_left
-    if trial_ends_at.present?
-      ((trial_ends_at - Time.now.utc) / 1.day.to_i).ceil
-    else
-      0
-    end
+    trial_ends_at.present? ? ((trial_ends_at - Time.now.utc) / 1.day.to_i).ceil : 0
   end
 
   # Basic plan features
@@ -79,7 +71,6 @@ class Organization < ApplicationRecord
     FEATURE_UNLIMITED_PROJECTS: [Subscription::PLAN_BASIC, Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_UNLIMITED_LANGUAGES: [Subscription::PLAN_BASIC, Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_BASIC_PERMISSION_SYSTEM: [Subscription::PLAN_BASIC, Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
-
     FEATURE_VALIDATIONS: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_KEY_HISTORY: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_EXPORT_HIERARCHY: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
@@ -87,7 +78,6 @@ class Organization < ApplicationRecord
     FEATURE_PROJECT_ACTIVITY: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_TAG_MANAGEMENT: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_MACHINE_TRANSLATION_SUGGESTIONS: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
-
     FEATURE_ADVANCED_PERMISSION_SYSTEM: [Subscription::PLAN_BUSINESS],
     FEATURE_OTA: [Subscription::PLAN_BUSINESS],
     FEATURE_HTML_EDITOR: [Subscription::PLAN_BUSINESS],
@@ -98,18 +88,29 @@ class Organization < ApplicationRecord
 
   NOT_IN_TRIAL_AVAILABLE = [:FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE].freeze
 
-  FEATURES_BASIC_PLAN = FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BASIC) ? feature : nil }.reject(&:nil?).freeze
-  FEATURES_TEAM_PLAN = FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_TEAM) ? feature : nil }.reject(&:nil?).freeze
-  FEATURES_BUSINESS_PLAN = FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BUSINESS) ? feature : nil }.reject(&:nil?).freeze
-  FEATURES_TRIAL = FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BUSINESS) && NOT_IN_TRIAL_AVAILABLE.exclude?(feature) ? feature : nil }.reject(&:nil?).freeze
+  FEATURES_BASIC_PLAN =
+    FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BASIC) ? feature : nil }.reject(&:nil?)
+      .freeze
+  FEATURES_TEAM_PLAN =
+    FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_TEAM) ? feature : nil }.reject(&:nil?)
+      .freeze
+  FEATURES_BUSINESS_PLAN =
+    FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BUSINESS) ? feature : nil }.reject(&:nil?)
+      .freeze
+  FEATURES_TRIAL =
+    FEATURES_PLANS.map do |feature, plans|
+      plans.include?(Subscription::PLAN_BUSINESS) && NOT_IN_TRIAL_AVAILABLE.exclude?(feature) ? feature : nil
+    end.reject(&:nil?).freeze
 
   def feature_enabled?(feature)
     feature_allowed_plans = FEATURES_PLANS[feature]
     license = License.current_active
 
-    return (trial_active && NOT_IN_TRIAL_AVAILABLE.exclude?(feature)) ||
-           (active_subscription && feature_allowed_plans.include?(active_subscription.plan)) ||
-           (license && feature_allowed_plans.include?(license.restrictions[:plan]))
+    return(
+      (trial_active && NOT_IN_TRIAL_AVAILABLE.exclude?(feature)) ||
+        (active_subscription && feature_allowed_plans.include?(active_subscription.plan)) ||
+        (license && feature_allowed_plans.include?(license.restrictions[:plan]))
+    )
   end
 
   # Checks if the number of characters would exceed the machine translation limit of the organization.

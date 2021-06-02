@@ -32,20 +32,14 @@ module Api::V1
     def verify_signed_in
       if !user_signed_in?
         render json: {
-          errors: [
-            {
-              details: 'You must be logged in to access this ressource.',
-              code: 'INVALID_ACCESS_TOKEN'
-            }
-          ]
-        }, status: :forbidden
+                 errors: [{ details: 'You must be logged in to access this ressource.', code: 'INVALID_ACCESS_TOKEN' }]
+               },
+               status: :forbidden
       end
     end
 
     def render_not_found_error(model_name)
-      error = {
-        error: :not_found
-      }
+      error = { error: :not_found }
 
       render json: { errors: { "#{model_name.downcase}": [error] } }, status: :not_found
     end
@@ -54,11 +48,7 @@ module Api::V1
       if params_page.present?
         page = (params_page.to_i || 1) - 1
 
-        if page < 1
-          0
-        else
-          page
-        end
+        page < 1 ? 0 : page
       else
         0
       end
