@@ -251,7 +251,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
           key.description = json_value[:description]
         end
 
-        if key.save!
+        if key.save
           translation = Translation.new
           translation.key_id = key.id
           translation.language_id = language.id
