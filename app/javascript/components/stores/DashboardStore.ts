@@ -2,7 +2,7 @@ import * as localforage from "localforage";
 import { observable } from "mobx";
 import { create, persist } from "mobx-persist";
 import { APIUtils } from "../api/v1/APIUtils";
-import { IProject } from "../api/v1/ProjectsAPI";
+import { IProject, ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { IFeature } from "../types/IFeature";
 import { IPlanIDS } from "../types/IPlan";
 import { DEFAULT_PAGE_SIZE } from "../ui/Config";
@@ -34,6 +34,14 @@ class DashboardStore {
     @observable @persist keysPerPage = DEFAULT_PAGE_SIZE;
     @observable @persist keysPerPageEditor = DEFAULT_PAGE_SIZE;
     @observable hydrationFinished = false;
+
+    loadProject = async (projectId) => {
+        const getProjectResponse = await ProjectsAPI.getProject(projectId);
+        if (!getProjectResponse.errors) {
+            this.currentProject = getProjectResponse.data;
+            this.currentProjectIncluded = getProjectResponse.included;
+        }
+    };
 
     getOrganizationId = (organizationId?: string) => {
         return (this.getProjectOrganization() && this.getProjectOrganization().id) || organizationId;
