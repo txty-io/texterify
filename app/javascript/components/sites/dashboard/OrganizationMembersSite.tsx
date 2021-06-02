@@ -16,7 +16,6 @@ import { Loading } from "../../ui/Loading";
 import { RolesLegend } from "../../ui/RolesLegend";
 import { UserAvatar } from "../../ui/UserAvatar";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
-const { Content } = Layout;
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {
@@ -462,7 +461,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
         return (
             <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
                 <Breadcrumbs breadcrumbName="organizationMembers" />
-                <Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
+                <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                     <h1>Members</h1>
                     <p>Invite users to your organization to help you localize your apps.</p>
                     <div style={{ display: "flex" }}>
@@ -541,7 +540,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                             pagination={false}
                         />
                     </div>
-                </Content>
+                </Layout.Content>
             </Layout>
         );
     }

@@ -36,7 +36,7 @@ export interface IGetProjects {
     }[];
     meta: {
         total: number;
-    }
+    };
 }
 
 async function getBase64(file: any) {

@@ -1,49 +1,50 @@
-import { Layout, List, Pagination } from "antd";
+import { Layout, List, message } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { IGetProjects, IGetProjectsOptions, ProjectsAPI } from "../../api/v1/ProjectsAPI";
+import { OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
+import { IProject } from "../../api/v1/ProjectsAPI";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
-import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { MachineTranslationEnabledMessage } from "../../ui/MachineTranslationEnabledMessage";
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {
-    projectsLoading: boolean;
-    projectsResponse: IGetProjects;
-    perPage: number;
-    page: number;
+    organizationLoading: boolean;
+    organizationResponse: any;
 }
 
 @observer
 class OrganizationMachineTranslationSite extends React.Component<IProps, IState> {
     state: IState = {
-        projectsLoading: true,
-        projectsResponse: null,
-        perPage: DEFAULT_PAGE_SIZE,
-        page: 1
+        organizationLoading: true,
+        organizationResponse: null
     };
 
     async componentDidMount() {
-        await this.fetchProjects();
-    }
-
-    fetchProjects = async (options?: IGetProjectsOptions) => {
+        this.setState({ organizationLoading: true });
         try {
-            this.setState({ projectsLoading: true });
-            const responseProjects = await ProjectsAPI.getProjects(options);
+            const organizationResponse = await OrganizationsAPI.getOrganization(this.props.match.params.organizationId);
 
             this.setState({
-                projectsLoading: false,
-                projectsResponse: responseProjects
+                organizationResponse: organizationResponse
             });
         } catch (error) {
             console.error(error);
+            message.error("Failed to load organization.");
         }
-    };
+        this.setState({ organizationLoading: false });
+    }
+
+    getProjects(): IProject[] {
+        return this.state.organizationResponse?.included
+            ? this.state.organizationResponse.included.filter((included) => {
+                  return included.type === "project";
+              })
+            : [];
+    }
 
     render() {
         return (
@@ -69,8 +70,8 @@ class OrganizationMachineTranslationSite extends React.Component<IProps, IState>
                                 <h3>Usage by project</h3>
                                 <List
                                     itemLayout="horizontal"
-                                    loading={this.state.projectsLoading}
-                                    dataSource={this.state.projectsResponse?.data.map((project) => {
+                                    loading={this.state.organizationLoading}
+                                    dataSource={this.getProjects()?.map((project) => {
                                         return {
                                             project: project
                                         };
@@ -141,28 +142,6 @@ class OrganizationMachineTranslationSite extends React.Component<IProps, IState>
                                     }}
                                     style={{ width: "100%" }}
                                 />
-                                <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
-                                    <Pagination
-                                        pageSizeOptions={PAGE_SIZE_OPTIONS}
-                                        showSizeChanger
-                                        pageSize={this.state.perPage}
-                                        current={this.state.page}
-                                        total={
-                                            (this.state.projectsResponse &&
-                                                this.state.projectsResponse.meta &&
-                                                this.state.projectsResponse.meta.total) ||
-                                            0
-                                        }
-                                        onChange={async (page: number, _perPage: number) => {
-                                            this.setState({ page: page });
-                                            await this.fetchProjects({ page: page });
-                                        }}
-                                        onShowSizeChange={async (_current: number, size: number) => {
-                                            this.setState({ page: 1, perPage: size });
-                                            await this.fetchProjects({ page: 1, perPage: size });
-                                        }}
-                                    />
-                                </div>
                             </div>
                         </div>
                     </Layout.Content>
