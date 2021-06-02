@@ -13,7 +13,9 @@ PROJECT_ATTRIBUTES = [
   'auto_translate_new_keys',
   'auto_translate_new_languages',
   'machine_translation_active',
-  'machine_translation_character_usage'
+  'machine_translation_character_usage',
+  'character_count',
+  'word_count'
 ].freeze
 
 RSpec.describe Api::V1::ProjectsController, type: :request do

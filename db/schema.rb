@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_29_194655) do
+ActiveRecord::Schema.define(version: 2021_06_02_180516) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -227,6 +227,8 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
     t.boolean "auto_translate_new_keys", default: false, null: false
     t.boolean "auto_translate_new_languages", default: false, null: false
     t.integer "machine_translation_character_usage", default: 0, null: false
+    t.integer "character_count", default: 0
+    t.integer "word_count", default: 0
     t.index ["organization_id"], name: "index_projects_on_organization_id"
   end
 

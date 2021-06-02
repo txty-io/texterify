@@ -18,6 +18,8 @@ interface IProjectAttributes {
     machine_translation_character_usage: number;
     auto_translate_new_keys: boolean;
     auto_translate_new_languages: boolean;
+    word_count: number;
+    character_count: number;
 }
 
 export interface IProject {
