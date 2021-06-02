@@ -92,7 +92,7 @@ class LoginForm extends React.Component<{}, IState> {
             return;
         }
 
-        if (!response.data) {
+        if (!response?.data) {
             this.setState({
                 loginErrors: response.errors ? response.errors : ["An unknown error occurred."],
                 isLoading: false

@@ -109,9 +109,6 @@ class OrganizationSite extends React.Component<IProps, IState> {
                         organizationId: this.props.match.params.organizationId,
                         onCreated: (projectId: string) => {
                             this.props.history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", projectId));
-                        },
-                        onError: (_errors: any) => {
-                            message.error("Failed to create project.");
                         }
                     }}
                 />

@@ -1,16 +1,15 @@
-import { Button, Input, Slider, Form } from "antd";
+import { Button, Form, Input, Slider } from "antd";
+import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import AvatarEditor from "react-avatar-editor";
 import Dropzone from "react-dropzone";
 import * as uuid from "uuid";
 import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
-import { dashboardStore } from "../stores/DashboardStore";
-import { Styles } from "../ui/Styles";
-import { FormInstance } from "antd/lib/form";
-import { ErrorUtils, ERRORS } from "../ui/ErrorUtils";
-import { AvatarNoImage } from "../sites/dashboard/AvatarNoImage";
 import { AvatarEditorWrapper } from "../sites/dashboard/AvatarEditorWrapper";
+import { AvatarNoImage } from "../sites/dashboard/AvatarNoImage";
 import { AvatarWrapper } from "../sites/dashboard/AvatarWrapper";
+import { dashboardStore } from "../stores/DashboardStore";
+import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 
 interface IProps {
     isEdit?: boolean;
@@ -61,7 +60,7 @@ class NewOrganizationForm extends React.Component<IProps, IState> {
 
         if (response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
-                this.formRef.current.setFields([
+                this.formRef.current?.setFields([
                     {
                         name: "name",
                         errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]

@@ -73,6 +73,8 @@ class NewProjectForm extends React.Component<IProps, IState> {
                     );
                 }
             }
+
+            return;
         } else if (response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.BLANK, response.errors)) {
                 this.formRef.current.setFields([
@@ -84,8 +86,6 @@ class NewProjectForm extends React.Component<IProps, IState> {
             } else {
                 ErrorUtils.showErrors(response.errors);
             }
-
-            this.props.onError(response.errors);
 
             return;
         }
