@@ -4,6 +4,7 @@ import { UsersAPI } from "../api/v1/UsersAPI";
 import { authStore } from "../stores/AuthStore";
 import { Styles } from "./Styles";
 import styled from "styled-components";
+import Avatar from "boring-avatars";
 
 const UserAvatarWrapper = styled.div`
     height: 40px;
@@ -72,13 +73,39 @@ class UserAvatar extends React.Component<IProps, IState> {
                     />
                 )}
                 {!hasImage && (
-                    <UserAvatarWrapper
-                        style={{
-                            ...this.props.style
-                        }}
-                    >
-                        {this.props.user && this.props.user.username && this.props.user.username.substr(0, 2)}
-                    </UserAvatarWrapper>
+                    <div style={{ position: "relative" }}>
+                        <Avatar
+                            size={32}
+                            // name={this.props.user && this.props.user.username}
+                            colors={["#1c70f5", "#2E58ED", "#31AAF8", "#2E5CE1", "#3C88E9"]}
+                        />
+                        <div
+                            style={{
+                                position: "absolute",
+                                left: 0,
+                                top: 0,
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                textTransform: "uppercase",
+                                lineHeight: 0,
+                                fontSize: 14
+                            }}
+                        >
+                            {this.props.user && this.props.user.username && this.props.user.username.substr(0, 2)}
+                        </div>
+                    </div>
+
+                    // <UserAvatarWrapper
+                    //     style={{
+                    //         ...this.props.style
+                    //     }}
+                    // >
+
+                    //     {this.props.user && this.props.user.username && this.props.user.username.substr(0, 2)}
+                    // </UserAvatarWrapper>
                 )}
             </div>
         );
