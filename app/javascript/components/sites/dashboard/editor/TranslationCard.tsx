@@ -71,7 +71,7 @@ class TranslationCard extends React.Component<IProps, IState> {
         editorContentChanged: false,
         editorLoaded: false,
         textareaContentChanged: false,
-        isHTMLKey: false,
+        isHTMLKey: true,
         translationForLanguage: null,
         content: null,
         translationSuggestion: null,
