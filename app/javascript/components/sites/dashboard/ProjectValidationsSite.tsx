@@ -13,7 +13,7 @@ import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 const DeleteLink = styled.a`
     && {
         color: var(--error-color);
-        margin-left: 8px;
+        margin-left: 16px;
 
         &:hover {
             color: var(--error-color-hover);
@@ -181,7 +181,7 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                                         flexShrink: 0
                                                     }}
                                                 />
-                                                <div style={{ marginRight: "auto" }}>
+                                                <div style={{ marginRight: "auto", width: "100%" }}>
                                                     <div
                                                         style={{
                                                             fontSize: 16,
@@ -204,41 +204,44 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                                             {validation.attributes.content}
                                                         </span>
                                                     </div>
-                                                    <a
-                                                        onClick={() => {
-                                                            this.setState({
-                                                                addDialogVisible: true,
-                                                                validationToEdit: validation
-                                                            });
-                                                        }}
-                                                    >
-                                                        Edit
-                                                    </a>
-                                                    <DeleteLink
-                                                        onClick={() => {
-                                                            Modal.confirm({
-                                                                title: "Do you really want to delete this validation?",
-                                                                content: "This cannot be undone.",
-                                                                okText: "Yes",
-                                                                okButtonProps: {
-                                                                    danger: true
-                                                                },
-                                                                cancelText: "No",
-                                                                autoFocusButton: "cancel",
-                                                                onOk: async () => {
-                                                                    await ValidationsAPI.deleteValidation(
-                                                                        this.props.match.params.projectId,
-                                                                        validation.id
-                                                                    );
+                                                    <div style={{ display: "flex" }}>
+                                                        <a
+                                                            onClick={() => {
+                                                                this.setState({
+                                                                    addDialogVisible: true,
+                                                                    validationToEdit: validation
+                                                                });
+                                                            }}
+                                                        >
+                                                            Edit
+                                                        </a>
+                                                        <DeleteLink
+                                                            onClick={() => {
+                                                                Modal.confirm({
+                                                                    title:
+                                                                        "Do you really want to delete this validation?",
+                                                                    content: "This cannot be undone.",
+                                                                    okText: "Yes",
+                                                                    okButtonProps: {
+                                                                        danger: true
+                                                                    },
+                                                                    cancelText: "No",
+                                                                    autoFocusButton: "cancel",
+                                                                    onOk: async () => {
+                                                                        await ValidationsAPI.deleteValidation(
+                                                                            this.props.match.params.projectId,
+                                                                            validation.id
+                                                                        );
 
-                                                                    await this.loadValidations();
-                                                                    message.success("Validation deleted");
-                                                                }
-                                                            });
-                                                        }}
-                                                    >
-                                                        Delete
-                                                    </DeleteLink>
+                                                                        await this.loadValidations();
+                                                                        message.success("Validation deleted");
+                                                                    }
+                                                                });
+                                                            }}
+                                                        >
+                                                            Delete
+                                                        </DeleteLink>
+                                                    </div>
                                                 </div>
                                                 <Switch
                                                     defaultChecked={validation.attributes.enabled}

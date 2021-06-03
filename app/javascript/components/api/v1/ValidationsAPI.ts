@@ -75,6 +75,12 @@ const ValidationsAPI = {
         return API.deleteRequest(`projects/${projectId}/validations/${validationId}`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
+    },
+
+    deleteValidationViolation: async (projectId: string, validationViolationId: string) => {
+        return API.deleteRequest(`projects/${projectId}/validation-violations/${validationViolationId}`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
     }
 };
 

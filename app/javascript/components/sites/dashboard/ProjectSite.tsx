@@ -1,5 +1,5 @@
 import { CrownOutlined, PicRightOutlined } from "@ant-design/icons";
-import { Button, Empty, Layout, Progress, Skeleton } from "antd";
+import { Button, Empty, Layout, Progress, Skeleton, Tag } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as moment from "moment";
@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
+import { IGetValidationViolationsCountResponse, ValidationViolationsAPI } from "../../api/v1/ValidationViolationsAPI";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
@@ -16,20 +17,21 @@ import { Activity } from "../../ui/Activity";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import FlagIcon from "../../ui/FlagIcons";
-import { Loading } from "../../ui/Loading";
 import { ProjectAvatar } from "../../ui/ProjectAvatar";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     languagesResponse: any;
     projectActivityResponse: any;
+    validationViolationsCountResponse: IGetValidationViolationsCountResponse;
 }
 
 @observer
 class ProjectSite extends React.Component<IProps, IState> {
     state: IState = {
         languagesResponse: null,
-        projectActivityResponse: null
+        projectActivityResponse: null,
+        validationViolationsCountResponse: null
     };
 
     async componentDidMount() {
@@ -49,6 +51,11 @@ class ProjectSite extends React.Component<IProps, IState> {
                     projectActivityResponse: projectActivityResponse
                 });
             }
+
+            const validationViolationsCountResponse = await ValidationViolationsAPI.getCount({
+                projectId: this.props.match.params.projectId
+            });
+            this.setState({ validationViolationsCountResponse: validationViolationsCountResponse });
         } catch (error) {
             console.error(error);
         }
@@ -174,7 +181,27 @@ class ProjectSite extends React.Component<IProps, IState> {
                         <div style={{ width: "50%", marginRight: 40 }}>{this.renderLanguagesProgress()}</div>
 
                         <div style={{ width: "50%", marginLeft: 40 }}>
-                            <h3>Activity</h3>
+                            <h3>Validations</h3>
+
+                            {this.state.validationViolationsCountResponse && (
+                                <Tag color={this.state.validationViolationsCountResponse.total > 0 ? "red" : "green"}>
+                                    {this.state.validationViolationsCountResponse.total}{" "}
+                                    {this.state.validationViolationsCountResponse.total === 1 ? "Issue" : "Issues"}
+                                </Tag>
+                            )}
+
+                            <div style={{ marginTop: 8 }}>
+                                <a
+                                    href={Routes.DASHBOARD.PROJECT_ISSUES.replace(
+                                        ":projectId",
+                                        this.props.match.params.projectId
+                                    )}
+                                >
+                                    See details
+                                </a>
+                            </div>
+
+                            <h3 style={{ marginTop: 24 }}>Activity</h3>
                             {!dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY") && (
                                 <FeatureNotAvailable feature="FEATURE_EXPORT_HIERARCHY" />
                             )}

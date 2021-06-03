@@ -174,6 +174,11 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                 parent: "projectExport",
                 name: "Hierarchy",
                 path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", this.props.match.params.projectId)
+            },
+            projectIssues: {
+                parent: "project",
+                name: "Issues",
+                path: Routes.DASHBOARD.PROJECT_ISSUES.replace(":projectId", this.props.match.params.projectId)
             }
         };
 

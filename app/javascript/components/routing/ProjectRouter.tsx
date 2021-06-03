@@ -20,6 +20,7 @@ import { ProjectPostProcessingSite } from "../sites/dashboard/ProjectPostProcess
 import { ProjectValidationsSite } from "../sites/dashboard/ProjectValidationsSite";
 import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
 import { ProjectIntegrationsSite } from "../sites/dashboard/ProjectIntegrationsSite";
+import { ProjectIssuesSite } from "../sites/dashboard/ProjectIssuesSite";
 import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
@@ -69,6 +70,7 @@ class ProjectRouter extends React.Component<IProps, IState> {
             <>
                 <Switch>
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT} component={ProjectSite} />
+                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_ISSUES} component={ProjectIssuesSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_KEYS} component={KeysSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_IMPORT} component={ImportSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_EXPORT} component={ProjectExportDownloadSite} />

@@ -57,6 +57,8 @@ class Api::V1::TranslationsController < Api::V1::ApiController
         }, status: :bad_request
       end
     end
+
+    translation.check_validations
   end
 
   private

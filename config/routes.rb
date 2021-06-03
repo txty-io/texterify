@@ -49,14 +49,24 @@ Rails.application.routes.draw do
           resources :releases, only: [:create]
           get :release, to: 'releases#release'
         end
+
+        # Releases
         get 'releases', to: 'releases#index'
         delete 'releases', to: 'releases#destroy_multiple'
 
+        # Post processing rules
         resources :post_processing_rules, only: [:create, :index, :destroy, :update]
-        resources :validations, only: [:create, :index, :destroy, :update]
         delete 'post_processing_rules', to: 'post_processing_rules#destroy_multiple'
+
+        # Validations and violations
+        resources :validations, only: [:create, :index, :destroy, :update]
+        resources :validation_violations, only: [:index]
+        get :validation_violations_count, to: 'validation_violations#count'
+
+        # Languages
         resources :languages, only: [:create, :index, :destroy, :update]
         delete 'languages', to: 'languages#destroy_multiple'
+
         resources :translations, only: [:create]
         resources :members, only: [:create, :index, :destroy, :update], controller: "project_users"
         get :image, to: 'projects#image'

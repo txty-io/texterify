@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_23_030300) do
+ActiveRecord::Schema.define(version: 2021_05_25_005023) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -334,10 +334,14 @@ ActiveRecord::Schema.define(version: 2021_05_23_030300) do
   create_table "validation_violations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "ignored", default: false, null: false
     t.uuid "project_id", null: false
-    t.uuid "validation_id", null: false
+    t.uuid "validation_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "name"
+    t.uuid "translation_id"
+    t.index ["name", "project_id", "translation_id", "validation_id"], name: "index_validation_violations_uniqueness", unique: true
     t.index ["project_id"], name: "index_validation_violations_on_project_id"
+    t.index ["translation_id"], name: "index_validation_violations_on_translation_id"
     t.index ["validation_id"], name: "index_validation_violations_on_validation_id"
   end
 
@@ -402,6 +406,7 @@ ActiveRecord::Schema.define(version: 2021_05_23_030300) do
   add_foreign_key "translations", "languages"
   add_foreign_key "user_licenses", "users"
   add_foreign_key "validation_violations", "projects"
+  add_foreign_key "validation_violations", "translations"
   add_foreign_key "validation_violations", "validations"
   add_foreign_key "validations", "organizations"
   add_foreign_key "validations", "projects"
