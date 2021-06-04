@@ -1,4 +1,4 @@
-import { Layout, message, Pagination, Skeleton, Typography } from "antd";
+import { Empty, Layout, message, Pagination, Skeleton, Typography } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -140,10 +140,17 @@ class ProjectIssuesSite extends React.Component<IProps, IState> {
                                         <div style={{ display: "flex", marginLeft: "auto" }}>
                                             <a
                                                 onClick={async () => {
-                                                    await ValidationsAPI.deleteValidationViolation(
-                                                        this.props.match.params.projectId,
-                                                        validationViolation.id
-                                                    );
+                                                    try {
+                                                        await ValidationsAPI.deleteValidationViolation(
+                                                            this.props.match.params.projectId,
+                                                            validationViolation.id
+                                                        );
+                                                        message.success("Issue ignored");
+                                                    } catch (error) {
+                                                        console.error(error);
+                                                        message.error("Failed to delete issue.");
+                                                    }
+                                                    await this.loadValidationViolations();
                                                 }}
                                             >
                                                 Ignore
@@ -154,27 +161,35 @@ class ProjectIssuesSite extends React.Component<IProps, IState> {
                             );
                         })}
 
-                    <Pagination
-                        pageSizeOptions={PAGE_SIZE_OPTIONS}
-                        showSizeChanger
-                        pageSize={this.state.perPage}
-                        current={this.state.page}
-                        total={
-                            (this.state.validationViolationsResponse &&
-                                this.state.validationViolationsResponse.meta &&
-                                this.state.validationViolationsResponse.meta.total) ||
-                            0
-                        }
-                        onChange={async (page: number, _perPage: number) => {
-                            this.setState({ page: page });
-                            await this.loadValidationViolations({ page: page });
-                        }}
-                        onShowSizeChange={async (_current: number, size: number) => {
-                            this.setState({ page: 1, perPage: size });
-                            await this.loadValidationViolations({ page: 1, perPage: size });
-                        }}
-                        style={{ marginTop: 24, marginLeft: "auto" }}
-                    />
+                    {!this.state.validationViolationsLoading &&
+                        this.state.validationViolationsResponse?.data.length > 0 && (
+                            <Pagination
+                                pageSizeOptions={PAGE_SIZE_OPTIONS}
+                                showSizeChanger
+                                pageSize={this.state.perPage}
+                                current={this.state.page}
+                                total={
+                                    (this.state.validationViolationsResponse &&
+                                        this.state.validationViolationsResponse.meta &&
+                                        this.state.validationViolationsResponse.meta.total) ||
+                                    0
+                                }
+                                onChange={async (page: number, _perPage: number) => {
+                                    this.setState({ page: page });
+                                    await this.loadValidationViolations({ page: page });
+                                }}
+                                onShowSizeChange={async (_current: number, size: number) => {
+                                    this.setState({ page: 1, perPage: size });
+                                    await this.loadValidationViolations({ page: 1, perPage: size });
+                                }}
+                                style={{ marginTop: 24, marginLeft: "auto" }}
+                            />
+                        )}
+
+                    {!this.state.validationViolationsLoading &&
+                        this.state.validationViolationsResponse?.data.length === 0 && (
+                            <Empty description="No issues found." image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                        )}
                 </Layout.Content>
             </Layout>
         );

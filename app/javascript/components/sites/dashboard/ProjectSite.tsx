@@ -197,7 +197,7 @@ class ProjectSite extends React.Component<IProps, IState> {
                                         this.props.match.params.projectId
                                     )}
                                 >
-                                    See details
+                                    View details
                                 </a>
                             </div>
 

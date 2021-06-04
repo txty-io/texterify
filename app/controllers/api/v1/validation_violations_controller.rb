@@ -28,4 +28,16 @@ class Api::V1::ValidationViolationsController < Api::V1::ApiController
       total: project.validation_violations.size
     }
   end
+
+  def destroy
+    project = current_user.projects.find(params[:project_id])
+    validation_violation = project.validation_violations.find(params[:id])
+    authorize validation_violation
+    validation_violation.destroy
+
+    render json: {
+      success: true,
+      details: 'VALIDATION_VIOLATION_DELETED'
+    }
+  end
 end

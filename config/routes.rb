@@ -60,7 +60,7 @@ Rails.application.routes.draw do
 
         # Validations and violations
         resources :validations, only: [:create, :index, :destroy, :update]
-        resources :validation_violations, only: [:index]
+        resources :validation_violations, only: [:index, :destroy]
         get :validation_violations_count, to: 'validation_violations#count'
 
         # Languages
