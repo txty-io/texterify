@@ -17,6 +17,7 @@ import { dashboardStore } from "../../stores/DashboardStore";
 import { SidebarTrigger } from "../../ui/SidebarTrigger";
 import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
 import { ROLES_OWNER_UP } from "../../utilities/PermissionUtils";
+import { SidebarUtils } from "../../utilities/SidebarUtils";
 const { Sider } = Layout;
 
 interface INavigationData {
@@ -83,6 +84,12 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
     state: IState = {
         selectedItem: 0
     };
+
+    componentDidUpdate() {
+        if (dashboardStore.sidebarMinimized) {
+            SidebarUtils.handleSidebarCollpaseBug();
+        }
+    }
 
     isMenuItemEnabled = (requiredRoles: string[]) => {
         if (!requiredRoles) {
@@ -160,29 +167,6 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
     onCollapse = (collapsed: boolean, type: CollapseType) => {
         if (type === "clickTrigger") {
             dashboardStore.sidebarMinimized = collapsed;
-        }
-
-        // Fix sidebar somehow not collapsing correctly.
-        if (collapsed) {
-            const sidebarMenu = document.getElementById("sidebar-menu");
-            setTimeout(() => {
-                if (sidebarMenu) {
-                    sidebarMenu.classList.remove("ant-menu-inline");
-                    sidebarMenu.classList.add("ant-menu-vertical");
-
-                    const menuItems = sidebarMenu.querySelectorAll(".ant-menu-item") as unknown as HTMLElement[];
-                    menuItems.forEach((menuItem) => {
-                        menuItem.style.removeProperty("padding-left");
-                    });
-
-                    const submenuItems = sidebarMenu.querySelectorAll(
-                        ".ant-menu-submenu .ant-menu-submenu-title"
-                    ) as unknown as HTMLElement[];
-                    submenuItems.forEach((submenuItem) => {
-                        submenuItem.style.removeProperty("padding-left");
-                    });
-                }
-            });
         }
     };
 
