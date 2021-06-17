@@ -30,9 +30,9 @@ export interface IGetLanguagesResponse {
 }
 
 export interface IGetLanguagesOptions {
-    search: string;
-    page: number;
-    perPage: number;
+    search?: string;
+    page?: number;
+    perPage?: number;
 }
 
 const LanguagesAPI = {

@@ -3,6 +3,7 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { ISubscription, OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
+import { IProject } from "../../api/v1/ProjectsAPI";
 import { NewProjectFormModal } from "../../forms/NewProjectFormModal";
 import { Routes } from "../../routing/Routes";
 import { subscriptionService } from "../../services/SubscriptionService";
@@ -107,8 +108,8 @@ class OrganizationSite extends React.Component<IProps, IState> {
                     }}
                     newProjectFormProps={{
                         organizationId: this.props.match.params.organizationId,
-                        onCreated: (projectId: string) => {
-                            this.props.history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", projectId));
+                        onChanged: (project: IProject) => {
+                            this.props.history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", project.id));
                         }
                     }}
                 />

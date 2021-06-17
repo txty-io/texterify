@@ -1,4 +1,6 @@
+import { IOrganization } from "../../stores/DashboardStore";
 import { IPlanIDS } from "../../types/IPlan";
+import { IErrorsResponse } from "../../ui/ErrorUtils";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
@@ -7,6 +9,22 @@ export interface IGetOrganizationsOptions {
     page?: number;
     perPage?: number;
 }
+
+export interface IGetOrganizationsResponse {
+    data: IOrganization[];
+    included: [];
+    meta: {
+        total: number;
+    };
+}
+
+export interface IGetOrganizationResponse {
+    data: IOrganization;
+    included: [];
+}
+
+export type IUpdateOrganizationResponse = IGetOrganizationResponse & { errors: IErrorsResponse };
+export type ICreateOrganizationResponse = IGetOrganizationResponse & { errors: IErrorsResponse };
 
 export interface ISubscription {
     id: string;
@@ -27,7 +45,7 @@ export interface IGetOrganizationSubscription {
 }
 
 const OrganizationsAPI = {
-    getOrganizations: async (options?: IGetOrganizationsOptions): Promise<any> => {
+    getOrganizations: async (options?: IGetOrganizationsOptions): Promise<IGetOrganizationsResponse> => {
         return API.getRequest("organizations", true, {
             search: options && options.search,
             page: options && options.page,
@@ -37,7 +55,7 @@ const OrganizationsAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    getOrganization: async (organizationId: string): Promise<any> => {
+    getOrganization: async (organizationId: string): Promise<IGetOrganizationResponse> => {
         return API.getRequest(`organizations/${organizationId}`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
@@ -67,7 +85,7 @@ const OrganizationsAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    createOrganization: async (name: string, description: string): Promise<any> => {
+    createOrganization: async (name: string, description: string): Promise<ICreateOrganizationResponse> => {
         return API.postRequest("organizations", true, {
             name: name,
             description: description
@@ -76,7 +94,11 @@ const OrganizationsAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    updateOrganization: async (organizationId: string, name: string, description: string): Promise<any> => {
+    updateOrganization: async (
+        organizationId: string,
+        name: string,
+        description: string
+    ): Promise<IUpdateOrganizationResponse> => {
         return API.putRequest(`organizations/${organizationId}`, true, {
             name: name,
             description: description

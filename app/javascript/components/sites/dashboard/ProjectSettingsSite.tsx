@@ -63,7 +63,7 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                             <SettingsSectionWrapper>
                                 <NewProjectForm
                                     isEdit
-                                    onCreated={(_projectId: string) => {
+                                    onChanged={() => {
                                         message.success("Successfully updated project settings.");
                                     }}
                                 />

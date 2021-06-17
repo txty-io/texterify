@@ -161,8 +161,8 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                         this.setState({ addDialogVisible: false });
                     }}
                     newProjectFormProps={{
-                        onCreated: (projectId: string) => {
-                            this.props.history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", projectId));
+                        onChanged: (project) => {
+                            this.props.history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", project.id));
                         }
                     }}
                 />

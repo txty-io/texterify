@@ -10,6 +10,8 @@ import { ListContent } from "../../ui/ListContent";
 import { OrganizationAvatar } from "../../ui/OrganizationAvatar";
 import { PrimaryButton } from "../../ui/PrimaryButton";
 import styled from "styled-components";
+import { IOrganization } from "../../stores/DashboardStore";
+import { history } from "../../routing/history";
 
 const OrganizationInfoWrapper = styled.div`
     text-overflow: ellipsis;
@@ -111,7 +113,8 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
                             <div style={{ flexGrow: 1 }}>
                                 <PrimaryButton
                                     onClick={() => {
-                                        this.setState({ addDialogVisible: true });
+                                        // this.setState({ addDialogVisible: true });
+                                        history.push(Routes.DASHBOARD.SETUP_ORGANIZATION_NEW);
                                     }}
                                 >
                                     Create organization
@@ -205,13 +208,12 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
                         this.setState({ addDialogVisible: false });
                     }}
                     newOrganizationFormProps={{
-                        onCreated: (organizationId: string) => {
+                        onChanged: (organization: IOrganization) => {
                             this.props.history.push(
-                                Routes.DASHBOARD.ORGANIZATION.replace(":organizationId", organizationId)
+                                Routes.DASHBOARD.ORGANIZATION.replace(":organizationId", organization.id)
                             );
                         },
-                        onError: (errors) => {
-                            console.error(errors);
+                        onError: () => {
                             message.error("Failed to create organization.");
                         }
                     }}
