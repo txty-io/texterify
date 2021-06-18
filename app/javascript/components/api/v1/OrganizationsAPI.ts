@@ -21,6 +21,7 @@ export interface IGetOrganizationsResponse {
 export interface IGetOrganizationResponse {
     data: IOrganization;
     included: [];
+    errors?: IErrorsResponse;
 }
 
 export type IUpdateOrganizationResponse = IGetOrganizationResponse & { errors: IErrorsResponse };

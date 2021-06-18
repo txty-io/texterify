@@ -297,6 +297,7 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
                             organizationId: this.state.selectedOrganization?.id,
                             ...this.props.newProjectFormProps
                         }}
+                        orientation="vertical"
                     />
                 )}
             </TexterifyModal>

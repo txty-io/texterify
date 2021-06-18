@@ -1,1 +1,1 @@
-export type IPlanIDS = "basic" | "team" | "business";
+export type IPlanIDS = "free" | "basic" | "team" | "business";

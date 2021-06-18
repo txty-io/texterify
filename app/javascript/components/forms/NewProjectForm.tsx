@@ -16,6 +16,7 @@ interface IProps {
     isEdit?: boolean;
     projectToEdit?: IProject;
     organizationId?: string;
+    orientation?: "vertical" | "horizontal";
     onChanged?(project: IProject, isNew: boolean): void;
     onError?(): void;
     onValidationsFailed?(): void;
@@ -190,100 +191,108 @@ class NewProjectForm extends React.Component<IProps, IState> {
                             : dashboardStore.currentProject.attributes.description
                         : undefined
                 }}
-                style={{ maxWidth: "100%" }}
+                style={{
+                    maxWidth: "100%",
+                    display: "flex",
+                    flexDirection: this.props.orientation === "vertical" ? "column" : "row"
+                }}
                 ref={this.formRef}
             >
-                <h3>Name *</h3>
-                <Form.Item
-                    name="name"
-                    rules={[{ required: true, whitespace: true, message: "Please enter the name of the project." }]}
-                >
-                    <Input placeholder="Name" autoFocus={!this.props.isEdit} />
-                </Form.Item>
+                <div style={{ flexGrow: 2, marginRight: this.props.orientation === "vertical" ? 0 : 40 }}>
+                    <h3>Name *</h3>
+                    <Form.Item
+                        name="name"
+                        rules={[{ required: true, whitespace: true, message: "Please enter the name of the project." }]}
+                    >
+                        <Input placeholder="Name" autoFocus={!this.props.isEdit} />
+                    </Form.Item>
 
-                <h3>Description</h3>
-                <Form.Item name="description">
-                    <Input.TextArea autoSize={{ minRows: 4, maxRows: 8 }} placeholder="Description" />
-                </Form.Item>
+                    <h3>Description</h3>
+                    <Form.Item name="description">
+                        <Input.TextArea autoSize={{ minRows: 4, maxRows: 8 }} placeholder="Description" />
+                    </Form.Item>
+                </div>
 
-                <h3>Image</h3>
-                <Form.Item>
-                    <div style={{ display: "flex", marginTop: 4 }}>
-                        <Dropzone onDrop={this.handleDrop} accept="image/*" ref={this.dropzone}>
-                            {({ getRootProps, getInputProps }) => {
-                                return (
-                                    <AvatarWrapper
-                                        {...getRootProps({
-                                            onClick: (event) => {
-                                                event.stopPropagation();
-                                                this.isMovingImage = false;
-                                            }
-                                        })}
-                                    >
-                                        {!this.state.imageUrl && <AvatarNoImage />}
-                                        <AvatarEditorWrapper>
-                                            <AvatarEditor
-                                                ref={(ref) => {
-                                                    this.avatarEditor = ref;
-                                                }}
-                                                image={this.state.imageUrl}
-                                                width={160}
-                                                height={160}
-                                                border={0}
-                                                position={this.state.imagePosition}
-                                                scale={this.state.imageScale / 100}
-                                                onPositionChange={(position) => {
-                                                    if (!isNaN(position.x) && !isNaN(position.y)) {
-                                                        this.setState({ imagePosition: position });
-                                                    }
-                                                }}
-                                                onMouseMove={() => {
-                                                    this.isMovingImage = true;
-                                                }}
-                                                onMouseUp={(e) => {
-                                                    if (e) {
-                                                        e.preventDefault();
-                                                    }
+                <div style={{ flexGrow: 1 }}>
+                    <h3>Image</h3>
+                    <Form.Item>
+                        <div style={{ display: "flex" }}>
+                            <Dropzone onDrop={this.handleDrop} accept="image/*" ref={this.dropzone}>
+                                {({ getRootProps, getInputProps }) => {
+                                    return (
+                                        <AvatarWrapper
+                                            {...getRootProps({
+                                                onClick: (event) => {
+                                                    event.stopPropagation();
+                                                    this.isMovingImage = false;
+                                                }
+                                            })}
+                                        >
+                                            {!this.state.imageUrl && <AvatarNoImage />}
+                                            <AvatarEditorWrapper>
+                                                <AvatarEditor
+                                                    ref={(ref) => {
+                                                        this.avatarEditor = ref;
+                                                    }}
+                                                    image={this.state.imageUrl}
+                                                    width={160}
+                                                    height={160}
+                                                    border={0}
+                                                    position={this.state.imagePosition}
+                                                    scale={this.state.imageScale / 100}
+                                                    onPositionChange={(position) => {
+                                                        if (!isNaN(position.x) && !isNaN(position.y)) {
+                                                            this.setState({ imagePosition: position });
+                                                        }
+                                                    }}
+                                                    onMouseMove={() => {
+                                                        this.isMovingImage = true;
+                                                    }}
+                                                    onMouseUp={(e) => {
+                                                        if (e) {
+                                                            e.preventDefault();
+                                                        }
 
-                                                    if (!this.isMovingImage && this.dropzone.current) {
-                                                        this.dropzone.current.open();
-                                                    }
-                                                }}
-                                            />
-                                        </AvatarEditorWrapper>
-                                        <input {...getInputProps()} />
-                                    </AvatarWrapper>
-                                );
-                            }}
-                        </Dropzone>
-                        <div style={{ marginLeft: 24, flexGrow: 1, display: "flex", flexDirection: "column" }}>
-                            <div style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
-                                <span style={{ fontWeight: "bold" }}>Resize</span>
-                                <Slider
-                                    value={this.state.imageScale}
-                                    onChange={(value: number) => {
-                                        this.setState({ imageScale: value });
-                                    }}
-                                />
+                                                        if (!this.isMovingImage && this.dropzone.current) {
+                                                            this.dropzone.current.open();
+                                                        }
+                                                    }}
+                                                />
+                                            </AvatarEditorWrapper>
+                                            <input {...getInputProps()} />
+                                        </AvatarWrapper>
+                                    );
+                                }}
+                            </Dropzone>
+                            <div style={{ marginLeft: 24, flexGrow: 1, display: "flex", flexDirection: "column" }}>
+                                <div style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                                    <span style={{ fontWeight: "bold" }}>Resize</span>
+                                    <Slider
+                                        value={this.state.imageScale}
+                                        onChange={(value: number) => {
+                                            this.setState({ imageScale: value });
+                                        }}
+                                    />
+                                </div>
+                                <Button
+                                    onClick={this.centerImage}
+                                    disabled={this.state.imagePosition.x === 0.5 && this.state.imagePosition.y === 0.5}
+                                    style={{ width: "100%", marginBottom: 16 }}
+                                >
+                                    Center image
+                                </Button>
+                                <Button
+                                    onClick={this.deleteImage}
+                                    disabled={!this.state.imageUrl}
+                                    danger
+                                    style={{ marginBottom: 0, width: "100%" }}
+                                >
+                                    Delete image
+                                </Button>
                             </div>
-                            <Button
-                                onClick={this.centerImage}
-                                disabled={this.state.imagePosition.x === 0.5 && this.state.imagePosition.y === 0.5}
-                                style={{ width: "100%", marginBottom: 16 }}
-                            >
-                                Center image
-                            </Button>
-                            <Button
-                                onClick={this.deleteImage}
-                                disabled={!this.state.imageUrl}
-                                danger
-                                style={{ marginBottom: 0, width: "100%" }}
-                            >
-                                Delete image
-                            </Button>
                         </div>
-                    </div>
-                </Form.Item>
+                    </Form.Item>
+                </div>
             </Form>
         );
     }

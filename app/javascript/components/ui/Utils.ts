@@ -73,6 +73,33 @@ const Utils = {
         } else {
             return "Ctrl";
         }
+    },
+
+    createQueryParamsFromObject: (options: {
+        currentParams: { [key: string]: string | string[] };
+        add?: { key: string; value: string }[];
+        remove?: string[];
+    }) => {
+        const queryParams = new URLSearchParams();
+        if (options.add) {
+            options.add.forEach((newKeyValue) => {
+                queryParams.append(newKeyValue.key, newKeyValue.value);
+            });
+        }
+
+        for (const [key, value] of Object.entries(options.currentParams)) {
+            if (!queryParams.has(key)) {
+                queryParams.append(key, value.toString());
+            }
+        }
+
+        if (options.remove) {
+            for (const key of options.remove) {
+                queryParams.delete(key);
+            }
+        }
+
+        return queryParams;
     }
 };
 

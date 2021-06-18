@@ -330,21 +330,39 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             />
                             <PrivateRoute
                                 exact
-                                path={Routes.DASHBOARD.SETUP_PROJECT_NEW}
+                                path={Routes.DASHBOARD.SETUP_PLAN}
                                 component={SetupSite}
                                 componentParams={{ step: 1 }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PROJECT_NEW}
+                                component={SetupSite}
+                                componentParams={{ step: 2 }}
                             />
                             <PrivateRoute
                                 exact
                                 path={Routes.DASHBOARD.SETUP_PROJECT}
                                 component={SetupSite}
-                                componentParams={{ step: 1 }}
+                                componentParams={{ step: 2 }}
                             />
                             <PrivateRoute
                                 exact
                                 path={Routes.DASHBOARD.SETUP_PROJECT_LANGUAGES}
                                 component={SetupSite}
-                                componentParams={{ step: 2 }}
+                                componentParams={{ step: 3 }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PROJECT_IMPORT}
+                                component={SetupSite}
+                                componentParams={{ step: 4 }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PROJECT_INTEGRATIONS}
+                                component={SetupSite}
+                                componentParams={{ step: 5 }}
                             />
                             <PrivateRoute
                                 exact

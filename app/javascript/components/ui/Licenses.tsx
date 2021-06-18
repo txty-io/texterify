@@ -7,6 +7,15 @@ import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
 import { IPlanIDS } from "../types/IPlan";
 import { Features } from "./Features";
+import styled from "styled-components";
+
+export const FREE_PLAN: IPlan = {
+    id: "free",
+    name: "Free",
+    pricePerUserCloud: 0,
+    pricePerUserOnPremise: 0,
+    features: ["1 user", "1 project", "2 languages", "Unlimited keys", "Unlimited translations"]
+};
 
 export const BASIC_PLAN: IPlan = {
     id: "basic",
@@ -14,11 +23,11 @@ export const BASIC_PLAN: IPlan = {
     pricePerUserCloud: 9,
     pricePerUserOnPremise: 7,
     features: [
+        "Unlimited users",
         "Unlimited projects",
-        "Unlimited keys",
-        "Unlimited translations",
         "Unlimited languages",
-        "Basic permission system"
+        "Unlimited keys",
+        "Unlimited translations"
     ]
 };
 
@@ -28,16 +37,16 @@ export const TEAM_PLAN: IPlan = {
     pricePerUserCloud: 19,
     pricePerUserOnPremise: 14,
     features: [
+        "Unlimited users",
         "Unlimited projects",
+        "Unlimited languages",
         "Unlimited keys",
         "Unlimited translations",
-        "Unlimited languages",
-        "Basic permission system",
-        "Validations",
-        "History",
+        // "Validations",
+        "Key history",
         "Export hierarchy",
         "Post processing",
-        "Activity overview"
+        "Project activity"
         // "Tag management"
     ]
 };
@@ -48,18 +57,17 @@ export const BUSINESS_PLAN: IPlan = {
     pricePerUserCloud: 39,
     pricePerUserOnPremise: 31,
     features: [
+        "Unlimited users",
         "Unlimited projects",
+        "Unlimited languages",
         "Unlimited keys",
         "Unlimited translations",
-        "Unlimited languages",
-        "Basic permission system",
-        "Validations",
-        "History",
+        // "Validations",
+        "Key history",
         "Export hierarchy",
         "Post processing",
-        "Activity overview",
+        "Project activity",
         // "Tag management",
-        // "Advanced permission system",
         "OTA",
         "HTML editor"
         // "Templates",
@@ -133,6 +141,19 @@ const handleCheckout = async (
     }
 };
 
+const PlanWrapper = styled.div`
+    border: 1px solid;
+    border-color: ${(props) => {
+        return props.selected ? "var(--primary-btn-color)" : "var(--border-color)";
+    }};
+
+    &:hover {
+        border-color: ${(props) => {
+            return props.selected ? "var(--primary-btn-color)" : "var(--border-color-flashier)";
+        }};
+    }
+`;
+
 function PaymentPlan(props: {
     plan: IPlan;
     hostingType: IHostingType;
@@ -141,6 +162,8 @@ function PaymentPlan(props: {
     organizationId?: string;
     annualBilling?: boolean;
     style?: React.CSSProperties;
+    hideSelectButton?: boolean;
+    onClick?(): void;
     onChangePlan?(plan: IPlan): void;
 }) {
     const [loading, setLoading] = React.useState<boolean>(false);
@@ -149,16 +172,17 @@ function PaymentPlan(props: {
     const price = props.hostingType === "on-premise" ? props.plan.pricePerUserOnPremise : props.plan.pricePerUserCloud;
 
     return (
-        <div
+        <PlanWrapper
             style={{
                 flexGrow: 1,
                 display: "flex",
                 flexDirection: "column",
-                border: "1px solid var(--border-color)",
                 borderRadius: 4,
                 flexBasis: "0",
                 ...props.style
             }}
+            selected={props.selected}
+            onClick={props.onClick}
         >
             <div
                 style={{
@@ -206,7 +230,7 @@ function PaymentPlan(props: {
                                 precision={0}
                                 defaultValue={usersCount}
                                 placeholder="Number of users"
-                                onChange={(count) => {
+                                onChange={(count: number) => {
                                     setUsersCount(count);
                                 }}
                                 style={{ width: "100%" }}
@@ -225,38 +249,40 @@ function PaymentPlan(props: {
                             </div>
                         </>
                     )}
-                    <Button
-                        onClick={async () => {
-                            if (props.hasActivePlan) {
-                                props.onChangePlan(props.plan);
-                            } else {
-                                setLoading(true);
-                                await handleCheckout(
-                                    props.plan,
-                                    props.hostingType,
-                                    props.hostingType === "on-premise"
-                                        ? {
-                                              quantity: usersCount,
-                                              organizationId: props.organizationId
-                                          }
-                                        : { organizationId: props.organizationId }
-                                );
-                                setLoading(false);
-                            }
-                        }}
-                        style={{ width: "100%" }}
-                        disabled={loading || props.selected}
-                        ghost={props.selected}
-                        size="large"
-                        type={props.selected ? undefined : "primary"}
-                    >
-                        {!loading && !props.selected && "Select"}
-                        {props.selected && "Your plan"}
-                        {loading && !props.selected && <LoadingOutlined />}
-                    </Button>
+                    {!props.selected && !props.hideSelectButton && (
+                        <Button
+                            onClick={async () => {
+                                if (props.hasActivePlan) {
+                                    props.onChangePlan(props.plan);
+                                } else {
+                                    setLoading(true);
+                                    await handleCheckout(
+                                        props.plan,
+                                        props.hostingType,
+                                        props.hostingType === "on-premise"
+                                            ? {
+                                                  quantity: usersCount,
+                                                  organizationId: props.organizationId
+                                              }
+                                            : { organizationId: props.organizationId }
+                                    );
+                                    setLoading(false);
+                                }
+                            }}
+                            style={{ width: "100%" }}
+                            disabled={loading}
+                            ghost={props.selected}
+                            size="large"
+                            type={props.selected ? undefined : "primary"}
+                        >
+                            {!loading && !props.selected && "Select"}
+                            {props.selected && "Your plan"}
+                            {loading && !props.selected && <LoadingOutlined />}
+                        </Button>
+                    )}
                 </div>
             </div>
-        </div>
+        </PlanWrapper>
     );
 }
 
@@ -265,6 +291,8 @@ export function Licenses(props: {
     organizationId?: string;
     selected?: IPlan["id"];
     annualBilling?: boolean;
+    hideSelectButtons?: boolean;
+    selectByPlanClick?: boolean;
     onChangePlan?(plan: IPlan): void;
 }) {
     return (
@@ -275,13 +303,36 @@ export function Licenses(props: {
             }}
         >
             <PaymentPlan
+                plan={FREE_PLAN}
+                selected={props.selected === FREE_PLAN.id}
+                hasActivePlan={!!props.selected}
+                hostingType={props.hostingType}
+                organizationId={props.organizationId}
+                onChangePlan={props.onChangePlan}
+                style={{ marginRight: 16, cursor: props.selectByPlanClick ? "pointer" : "default" }}
+                annualBilling={props.annualBilling}
+                hideSelectButton={props.hideSelectButtons}
+                onClick={() => {
+                    if (props.selectByPlanClick && props.onChangePlan) {
+                        props.onChangePlan(FREE_PLAN);
+                    }
+                }}
+            />
+            <PaymentPlan
                 plan={BASIC_PLAN}
                 selected={props.selected === BASIC_PLAN.id}
                 hasActivePlan={!!props.selected}
                 hostingType={props.hostingType}
                 organizationId={props.organizationId}
                 onChangePlan={props.onChangePlan}
+                style={{ marginRight: 16, cursor: props.selectByPlanClick ? "pointer" : "default" }}
                 annualBilling={props.annualBilling}
+                hideSelectButton={props.hideSelectButtons}
+                onClick={() => {
+                    if (props.selectByPlanClick && props.onChangePlan) {
+                        props.onChangePlan(BASIC_PLAN);
+                    }
+                }}
             />
             <PaymentPlan
                 plan={TEAM_PLAN}
@@ -290,8 +341,14 @@ export function Licenses(props: {
                 hostingType={props.hostingType}
                 organizationId={props.organizationId}
                 onChangePlan={props.onChangePlan}
-                style={{ margin: "0 16px" }}
+                style={{ marginRight: 16, cursor: props.selectByPlanClick ? "pointer" : "default" }}
                 annualBilling={props.annualBilling}
+                hideSelectButton={props.hideSelectButtons}
+                onClick={() => {
+                    if (props.selectByPlanClick && props.onChangePlan) {
+                        props.onChangePlan(TEAM_PLAN);
+                    }
+                }}
             />
             <PaymentPlan
                 plan={BUSINESS_PLAN}
@@ -300,7 +357,14 @@ export function Licenses(props: {
                 hostingType={props.hostingType}
                 organizationId={props.organizationId}
                 onChangePlan={props.onChangePlan}
+                style={{ cursor: props.selectByPlanClick ? "pointer" : "default" }}
                 annualBilling={props.annualBilling}
+                hideSelectButton={props.hideSelectButtons}
+                onClick={() => {
+                    if (props.selectByPlanClick && props.onChangePlan) {
+                        props.onChangePlan(BUSINESS_PLAN);
+                    }
+                }}
             />
         </div>
     );
