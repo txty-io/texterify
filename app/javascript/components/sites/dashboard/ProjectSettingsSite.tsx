@@ -66,9 +66,6 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                                     onCreated={(_projectId: string) => {
                                         message.success("Successfully updated project settings.");
                                     }}
-                                    onError={(_errors: any) => {
-                                        message.error("Error while updating project settings.");
-                                    }}
                                 />
                                 <Button
                                     form="newProjectForm"

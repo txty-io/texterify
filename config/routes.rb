@@ -14,8 +14,12 @@ Rails.application.routes.draw do
   scope :api, module: :api, defaults: { format: :json } do
     scope :v1, module: :v1 do
       mount_devise_token_auth_for 'User', at: 'auth', controllers: {
-        registrations:      'api/v1/registrations',
+        registrations: 'api/v1/registrations',
       }
+
+      get :machine_translations_usage, to: 'machine_translations#usage'
+      get :machine_translations_target_languages, to: 'machine_translations#target_languages'
+      get :machine_translations_source_languages, to: 'machine_translations#source_languages'
 
       resources :organizations do
         get :subscription, to: 'organizations#subscription'
@@ -64,10 +68,14 @@ Rails.application.routes.draw do
         get :validation_violations_count, to: 'validation_violations#count'
 
         # Languages
-        resources :languages, only: [:create, :index, :destroy, :update]
+        resources :languages, only: [:create, :index, :destroy, :update] do
+          post :machine_translate, to: 'machine_translations#machine_translate_language'
+        end
         delete 'languages', to: 'languages#destroy_multiple'
 
-        resources :translations, only: [:create]
+        resources :translations, only: [:create] do
+          post :machine_translation_suggestion, to: 'machine_translations#suggestion'
+        end
         resources :members, only: [:create, :index, :destroy, :update], controller: "project_users"
         get :image, to: 'projects#image'
         post :image, to: 'projects#image_create'

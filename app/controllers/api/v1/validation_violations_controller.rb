@@ -9,7 +9,7 @@ class Api::V1::ValidationViolationsController < Api::V1::ApiController
 
     options = {}
     options[:meta] = { total: project.validation_violations.size }
-    options[:include] = [:project, :validation, :translation]
+    options[:include] = [:project, :validation, :translation, :'translation.key']
     render json: ValidationViolationSerializer.new(
       project.validation_violations
         .order('id ASC')

@@ -22,6 +22,10 @@ class LanguagePolicy
     ROLES_DEVELOPER_UP.include? project_user_role
   end
 
+  def machine_translate_language?
+    ROLES_TRANSLATOR_UP.include? project_user_role
+  end
+
   private
 
   def project_user_role

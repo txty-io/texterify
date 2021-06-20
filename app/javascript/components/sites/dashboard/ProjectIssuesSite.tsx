@@ -53,6 +53,13 @@ class ProjectIssuesSite extends React.Component<IProps, IState> {
         this.setState({ validationViolationsLoading: false });
     }
 
+    getTranslationForViolation(violation: IValidationViolation) {
+        // const translation = this.state.validationViolationsResponse.included.find((included) => {
+        //     return violation.attributes.translation_id === validationViolation.relationships.translation.data?.id;
+        // });
+        // return
+    }
+
     getValidationDescription(validationViolation: IValidationViolation, validation: IValidation) {
         if (validationViolation.attributes.name) {
             if (validationViolation.attributes.name === "validate_double_whitespace") {

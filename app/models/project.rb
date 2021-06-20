@@ -25,20 +25,12 @@ class Project < ApplicationRecord
   end
 
   def users
-    if organization
-      User.where(id: users_project.pluck(:id) + organization.users.pluck(:id))
-    else
-      users_project
-    end
+    organization ? User.where(id: users_project.pluck(:id) + organization.users.pluck(:id)) : users_project
   end
 
   def role_of(user)
     project_user = project_users.find_by(user_id: user.id)
-    if project_user
-      project_user.role
-    else
-      organization.organization_users.find_by(user_id: user.id).role
-    end
+    project_user ? project_user.role : organization.organization_users.find_by(user_id: user.id).role
   end
 
   def owners_count
@@ -51,11 +43,7 @@ class Project < ApplicationRecord
 
   def role_of_source(user)
     project_user = project_users.find_by(user_id: user.id)
-    if project_user
-      'project'
-    else
-      'organization'
-    end
+    project_user ? 'project' : 'organization'
   end
 
   def feature_enabled?(feature)

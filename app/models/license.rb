@@ -11,7 +11,9 @@ class License < ApplicationRecord
   end
 
   def license
-    return unless data
+    unless data
+      return
+    end
 
     @license ||=
       begin

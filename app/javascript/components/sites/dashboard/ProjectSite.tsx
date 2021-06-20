@@ -1,5 +1,5 @@
 import { CrownOutlined, PicRightOutlined } from "@ant-design/icons";
-import { Button, Empty, Layout, Progress, Skeleton, Tag } from "antd";
+import { Button, Empty, Layout, message, Progress, Skeleton, Statistic, Tag, Tooltip } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as moment from "moment";
@@ -21,28 +21,48 @@ import { ProjectAvatar } from "../../ui/ProjectAvatar";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
+    projectLoading: boolean;
     languagesResponse: any;
+    languagesLoading: boolean;
     projectActivityResponse: any;
+    projectActivityLoading: boolean;
     validationViolationsCountResponse: IGetValidationViolationsCountResponse;
 }
 
 @observer
 class ProjectSite extends React.Component<IProps, IState> {
     state: IState = {
+        projectLoading: true,
         languagesResponse: null,
+        languagesLoading: true,
         projectActivityResponse: null,
+        projectActivityLoading: true,
         validationViolationsCountResponse: null
     };
 
     async componentDidMount() {
+        await Promise.all([this.fetchLanguages(), this.fetchProject(), this.fetchProjectActivity()]);
+    }
+
+    async fetchLanguages() {
+        this.setState({ languagesLoading: true });
         try {
             const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
 
             this.setState({
                 languagesResponse: responseLanguages
             });
+        } catch (error) {
+            console.error(error);
+            message.error("Failed to load languages.");
+        }
+        this.setState({ languagesLoading: false });
+    }
 
-            if (dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY")) {
+    async fetchProjectActivity() {
+        if (dashboardStore.featureEnabled("FEATURE_PROJECT_ACTIVITY")) {
+            this.setState({ projectActivityLoading: true });
+            try {
                 const projectActivityResponse = await ProjectsAPI.getActivity({
                     projectId: this.props.match.params.projectId
                 });
@@ -50,15 +70,28 @@ class ProjectSite extends React.Component<IProps, IState> {
                 this.setState({
                     projectActivityResponse: projectActivityResponse
                 });
+            } catch (error) {
+                console.error(error);
+                message.error("Failed to load project activity.");
             }
 
             const validationViolationsCountResponse = await ValidationViolationsAPI.getCount({
                 projectId: this.props.match.params.projectId
             });
             this.setState({ validationViolationsCountResponse: validationViolationsCountResponse });
+            this.setState({ projectActivityLoading: false });
+        }
+    }
+
+    async fetchProject() {
+        this.setState({ projectLoading: true });
+        try {
+            await dashboardStore.loadProject(this.props.match.params.projectId);
         } catch (error) {
             console.error(error);
+            message.error("Failed to load project.");
         }
+        this.setState({ projectLoading: false });
     }
 
     renderLanguagesProgress = () => {
@@ -68,8 +101,8 @@ class ProjectSite extends React.Component<IProps, IState> {
         return (
             <>
                 <h3>Progress</h3>
-                {!this.state.languagesResponse && <Skeleton active />}
-                {this.state.languagesResponse && languages.length === 0 && (
+                {this.state.languagesLoading && <Skeleton active />}
+                {!this.state.languagesLoading && languages.length === 0 && (
                     <Empty
                         description="No data available"
                         style={{ margin: "40px 0" }}
@@ -87,7 +120,9 @@ class ProjectSite extends React.Component<IProps, IState> {
                             <div style={{ display: "flex", marginTop: 24, alignItems: "center" }}>
                                 {language.attributes.is_default && (
                                     <div style={{ textAlign: "center", marginRight: 8 }}>
-                                        <CrownOutlined style={{ color: "#d6ad13", fontSize: 16 }} />
+                                        <Tooltip title="Default language">
+                                            <CrownOutlined style={{ color: "#d6ad13", fontSize: 16 }} />
+                                        </Tooltip>
                                     </div>
                                 )}
                                 {countryCode && (
@@ -110,7 +145,7 @@ class ProjectSite extends React.Component<IProps, IState> {
                                         ) + `?ou=true&l=${language.id}`
                                     }
                                 >
-                                    All untranslated
+                                    Show all untranslated
                                 </Link>
                                 <Link
                                     to={
@@ -121,7 +156,7 @@ class ProjectSite extends React.Component<IProps, IState> {
                                     }
                                     style={{ marginLeft: 24 }}
                                 >
-                                    Changed last 7 days
+                                    Show changed in last 7 days
                                 </Link>
                             </div>
                         </div>
@@ -201,16 +236,33 @@ class ProjectSite extends React.Component<IProps, IState> {
                                 </a>
                             </div>
 
-                            <h3 style={{ marginTop: 24 }}>Activity</h3>
-                            {!dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY") && (
-                                <FeatureNotAvailable feature="FEATURE_EXPORT_HIERARCHY" />
+                            <h3 style={{ marginTop: 40 }}>Statistics</h3>
+                            <div style={{ display: "flex" }}>
+                                <Statistic
+                                    title="Words"
+                                    value={dashboardStore.currentProject?.attributes.word_count}
+                                    loading={this.state.projectLoading}
+                                    className="big"
+                                />
+                                <Statistic
+                                    title="Characters"
+                                    value={dashboardStore.currentProject?.attributes.character_count}
+                                    loading={this.state.projectLoading}
+                                    style={{ marginLeft: 40 }}
+                                    className="big"
+                                />
+                            </div>
+
+                            <h3 style={{ marginTop: 40 }}>Activity</h3>
+                            {!dashboardStore.featureEnabled("FEATURE_PROJECT_ACTIVITY") && (
+                                <FeatureNotAvailable feature="FEATURE_PROJECT_ACTIVITY" />
                             )}
-                            {this.state.projectActivityResponse &&
-                                dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY") && (
+                            {!this.state.projectActivityLoading &&
+                                dashboardStore.featureEnabled("FEATURE_PROJECT_ACTIVITY") && (
                                     <Activity activitiesResponse={this.state.projectActivityResponse} />
                                 )}
-                            {!this.state.projectActivityResponse &&
-                                dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY") && <Skeleton active />}
+                            {this.state.projectActivityLoading &&
+                                dashboardStore.featureEnabled("FEATURE_PROJECT_ACTIVITY") && <Skeleton active />}
                         </div>
                     </div>
                 </Layout.Content>

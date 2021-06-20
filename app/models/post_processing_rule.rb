@@ -19,7 +19,9 @@ class PostProcessingRule < ApplicationRecord
     if post_processing_rule.present?
       updating_post_processing_rule = post_processing_rule.id == id
 
-      errors.add(:name, :taken) if !updating_post_processing_rule
+      if !updating_post_processing_rule
+        errors.add(:name, :taken)
+      end
     end
   end
 

@@ -22,6 +22,11 @@ interface IState {
     imagePosition: { x: number; y: number };
 }
 
+interface IFormValues {
+    name: string;
+    description: string;
+}
+
 class NewProjectForm extends React.Component<IProps, IState> {
     isMovingImage = false;
     dropzone: any = React.createRef();
@@ -43,7 +48,7 @@ class NewProjectForm extends React.Component<IProps, IState> {
         }
     }
 
-    handleSubmit = async (values: any) => {
+    handleSubmit = async (values: IFormValues) => {
         let response;
 
         if (this.props.isEdit) {
@@ -68,6 +73,8 @@ class NewProjectForm extends React.Component<IProps, IState> {
                     );
                 }
             }
+
+            return;
         } else if (response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.BLANK, response.errors)) {
                 this.formRef.current.setFields([
@@ -79,8 +86,6 @@ class NewProjectForm extends React.Component<IProps, IState> {
             } else {
                 ErrorUtils.showErrors(response.errors);
             }
-
-            this.props.onError(response.errors);
 
             return;
         }

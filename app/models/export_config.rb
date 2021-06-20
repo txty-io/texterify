@@ -63,11 +63,7 @@ class ExportConfig < ApplicationRecord
       path
     end
 
-    if language.country_code
-      path.sub('{countryCode}', language.country_code.code)
-    else
-      path
-    end
+    language.country_code ? path.sub('{countryCode}', language.country_code.code) : path
   end
 
   def file(language, export_data)
@@ -100,7 +96,9 @@ class ExportConfig < ApplicationRecord
     if export_config.present?
       updating_export_config = export_config.id == id
 
-      errors.add(:name, :taken) if !updating_export_config
+      if !updating_export_config
+        errors.add(:name, :taken)
+      end
     end
   end
 
@@ -119,10 +117,7 @@ class ExportConfig < ApplicationRecord
 
     data = {}
     export_data.each do |key, value|
-      data[key] = {
-        defaultMessage: value,
-        description: Key.find_by(name: key)&.description
-      }
+      data[key] = { defaultMessage: value, description: Key.find_by(name: key)&.description }
     end
 
     language_file.puts(JSON.pretty_generate(data))
@@ -144,17 +139,19 @@ class ExportConfig < ApplicationRecord
 
   def android(language, export_data)
     template = ERB.new(File.read('app/views/templates/android.xml.erb'))
-    data = AndroidTemplateData.new(
-      export_data.transform_values do |v|
-        # https://developer.android.com/guide/topics/resources/string-resource#escaping_quotes
-        # & and < must be escaped manually if necessary.
-        v.gsub(/(?<!\\)'/, "\\\\'")
-          .gsub(/(?<!\\)"/, '\\\\"')
-          .gsub(/(?<!\\)@/, '\\\\@')
-          .gsub(/(?<!\\)\?/, '\\\\?')
-          .gsub(/&(?!amp;)/, '&amp;')
-      end
-    )
+    data =
+      AndroidTemplateData.new(
+        export_data.transform_values do |v|
+          # https://developer.android.com/guide/topics/resources/string-resource#escaping_quotes
+          # & and < must be escaped manually if necessary.
+          v
+            .gsub(/(?<!\\)'/, "\\\\'")
+            .gsub(/(?<!\\)"/, '\\\\"')
+            .gsub(/(?<!\\)@/, '\\\\@')
+            .gsub(/(?<!\\)\?/, '\\\\?')
+            .gsub(/&(?!amp;)/, '&amp;')
+        end
+      )
     output = template.result(data.get_binding)
 
     language_file = Tempfile.new(language.id.to_s)

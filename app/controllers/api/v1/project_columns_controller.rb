@@ -20,14 +20,8 @@ class Api::V1::ProjectColumnsController < Api::V1::ApiController
       render json: project_column
     else
       errors = []
-      project_column.errors.each do |error|
-        errors.push(
-          details: project_column.errors[error]
-        )
-      end
-      render json: {
-        errors: errors
-      }, status: :bad_request
+      project_column.errors.each { |error| errors.push(details: project_column.errors[error]) }
+      render json: { errors: errors }, status: :bad_request
     end
   end
 

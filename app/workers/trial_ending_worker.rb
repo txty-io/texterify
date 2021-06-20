@@ -8,15 +8,13 @@ class TrialEndingWorker
     if Texterify.cloud? || Rails.env.development? || Rails.env.test?
       topic = SentEmail::TRIAL_EXPIRES_IN_ONE_DAY
 
-      trials_expiring_in_one_day = Organization.where(
-        'trial_ends_at >= ? AND trial_ends_at <= ?',
-        DateTime.current.utc,
-        (DateTime.current + 1.day).utc
-      ).where.not(
-        SentEmail
-          .where('organizations.id = sent_emails.id AND sent_emails.topic = ?', topic)
-          .limit(1).arel.exists
-      )
+      trials_expiring_in_one_day =
+        Organization
+          .where('trial_ends_at >= ? AND trial_ends_at <= ?', DateTime.current.utc, (DateTime.current + 1.day).utc)
+          .where
+          .not(
+            SentEmail.where('organizations.id = sent_emails.id AND sent_emails.topic = ?', topic).limit(1).arel.exists
+          )
 
       trials_expiring_in_one_day.each do |organization|
         organization.owners.each do |owner|

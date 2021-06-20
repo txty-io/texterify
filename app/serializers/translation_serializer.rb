@@ -3,4 +3,5 @@ class TranslationSerializer
   attributes :id, :content
   belongs_to :language
   belongs_to :export_config
+  belongs_to :key
 end

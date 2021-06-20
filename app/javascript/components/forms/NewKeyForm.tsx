@@ -14,6 +14,7 @@ import { KeystrokeButtonWrapper } from "../ui/KeystrokeButtonWrapper";
 import { KEYSTROKE_DEFINITIONS } from "../ui/KeystrokeDefinitions";
 import { KeystrokeHandler } from "../ui/KeystrokeHandler";
 import { TexterifyModal } from "../ui/TexterifyModal";
+import { LanguageUtils } from "../utilities/LanguageUtils";
 import { PermissionUtils } from "../utilities/PermissionUtils";
 
 interface IProps {
@@ -62,7 +63,7 @@ class NewKeyForm extends React.Component<IProps> {
             const translationParams = {
                 projectId: this.props.projectId,
                 keyId: response.data.id,
-                languageId: this.getDefaultLanguage().id
+                languageId: LanguageUtils.getDefaultLanguage(this.props.languagesResponse).id
             };
 
             if (values.htmlEnabled) {
@@ -73,7 +74,8 @@ class NewKeyForm extends React.Component<IProps> {
             } else if (!values.htmlEnabled) {
                 await TranslationsAPI.createTranslation({
                     ...translationParams,
-                    content: values.defaultLanguageContent
+                    content: values.defaultLanguageContent,
+                    triggerAutoTranslate: true
                 });
             }
         }
@@ -83,14 +85,8 @@ class NewKeyForm extends React.Component<IProps> {
         }
     };
 
-    getDefaultLanguage = () => {
-        return this.props.languagesResponse.data.find((language) => {
-            return language.attributes.is_default;
-        });
-    };
-
     render() {
-        const defaultLanguage = this.getDefaultLanguage();
+        const defaultLanguage = LanguageUtils.getDefaultLanguage(this.props.languagesResponse);
 
         const countryCode = APIUtils.getIncludedObject(
             defaultLanguage?.relationships.country_code.data,
@@ -187,6 +183,7 @@ class NewKeyForm extends React.Component<IProps> {
                                                     <Form.Item
                                                         name="defaultLanguageHTMLContent"
                                                         rules={[{ required: false }]}
+                                                        className="defaultLanguageHTMLContent"
                                                     >
                                                         <TranslationCard
                                                             projectId={this.props.projectId}

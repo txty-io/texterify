@@ -1,6 +1,6 @@
-import { IProject } from "../../stores/DashboardStore";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
+import { IValidation } from "./ValidationsAPI";
 
 export interface IValidationViolation {
     id: string;
@@ -26,7 +26,7 @@ export interface IValidationViolation {
 
 export interface IGetValidationViolationsResponse {
     data: IValidationViolation[];
-    included: any[];
+    included: IValidation[];
     meta: { total: number };
 }
 

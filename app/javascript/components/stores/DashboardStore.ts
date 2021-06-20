@@ -2,44 +2,10 @@ import * as localforage from "localforage";
 import { observable } from "mobx";
 import { create, persist } from "mobx-persist";
 import { APIUtils } from "../api/v1/APIUtils";
+import { IProject, ProjectsAPI } from "../api/v1/ProjectsAPI";
+import { IFeature } from "../types/IFeature";
 import { IPlanIDS } from "../types/IPlan";
 import { DEFAULT_PAGE_SIZE } from "../ui/Config";
-
-export interface IProject {
-    id: string;
-    attributes: IProjectAttributes;
-    relationships: any;
-    type: string;
-}
-
-interface IProjectAttributes {
-    id: string;
-    name: string;
-    description: string;
-    current_user_role?: string;
-    current_user_role_source?: string;
-    enabled_features: IFeature[];
-    all_features: { [k in IFeature]: IPlanIDS[] };
-    validate_leading_whitespace: boolean;
-    validate_trailing_whitespace: boolean;
-    validate_double_whitespace: boolean;
-    validate_https: boolean;
-    issues_count: number;
-}
-
-export type IFeature =
-    | "FEATURE_VALIDATIONS"
-    | "FEATURE_KEY_HISTORY"
-    | "FEATURE_EXPORT_HIERARCHY"
-    | "FEATURE_POST_PROCESSING"
-    | "FEATURE_PROJECT_ACTIVITY"
-    | "FEATURE_TAG_MANAGEMENT"
-    | "FEATURE_ADVANCED_PERMISSION_SYSTEM"
-    | "FEATURE_OTA"
-    | "FEATURE_HTML_EDITOR"
-    | "FEATURE_TEMPLATES"
-    | "FEATURE_PROJECT_GROUPS"
-    | "FEATURE_MACHINE_TRANSLATIONS";
 
 export interface IOrganization {
     id: string;
@@ -56,6 +22,8 @@ interface IOrganizationAttributes {
     trial_active: boolean;
     enabled_features: IFeature[];
     all_features: { [k in IFeature]: IPlanIDS[] };
+    machine_translation_character_usage: string;
+    machine_translation_character_limit: string;
 }
 
 class DashboardStore {
@@ -64,7 +32,16 @@ class DashboardStore {
     @observable currentOrganization?: IOrganization = null;
     @observable @persist sidebarMinimized: boolean;
     @observable @persist keysPerPage = DEFAULT_PAGE_SIZE;
+    @observable @persist keysPerPageEditor = DEFAULT_PAGE_SIZE;
     @observable hydrationFinished = false;
+
+    loadProject = async (projectId) => {
+        const getProjectResponse = await ProjectsAPI.getProject(projectId);
+        if (!getProjectResponse.errors) {
+            this.currentProject = getProjectResponse.data;
+            this.currentProjectIncluded = getProjectResponse.included;
+        }
+    };
 
     getOrganizationId = (organizationId?: string) => {
         return (this.getProjectOrganization() && this.getProjectOrganization().id) || organizationId;

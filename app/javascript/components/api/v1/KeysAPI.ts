@@ -9,6 +9,26 @@ export interface IGetKeysOptions {
     searchSettings?: ISearchSettings;
 }
 
+export interface IKey {
+    id: string;
+    type: "key";
+    attributes: {
+        id: string;
+        project_id: string;
+        name: string;
+        description: string;
+        html_enabled: boolean;
+    };
+    relationships: {
+        translations: { data: any };
+    };
+}
+export interface IGetKeysResponse {
+    data: IKey[];
+    included: any[];
+    meta: { total: number };
+}
+
 const KeysAPI = {
     getKey: async (projectId: string, keyId: string): Promise<any> => {
         return API.getRequest(`projects/${projectId}/keys/${keyId}`, true, {})
@@ -16,7 +36,7 @@ const KeysAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    getKeys: async (projectId: string, options: IGetKeysOptions): Promise<any> => {
+    getKeys: async (projectId: string, options: IGetKeysOptions): Promise<IGetKeysResponse> => {
         return API.getRequest(`projects/${projectId}/keys`, true, {
             search: (options && options.search) || undefined,
             page: options && options.page,

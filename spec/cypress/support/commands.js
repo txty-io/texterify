@@ -68,7 +68,7 @@ Cypress.Commands.add("createProject", (projectName, projectType, fromOrganizatio
     }
 });
 
-Cypress.Commands.add("addLanguage", (languageCode, countryCode, languageName) => {
+Cypress.Commands.add("addLanguage", (languageCode, countryCode, languageName, isDefault) => {
     cy.get('[title="Languages"] > a').click();
     cy.get(".ant-btn-default").click();
     cy.contains("div", "Select a language").type(languageCode);
@@ -76,14 +76,28 @@ Cypress.Commands.add("addLanguage", (languageCode, countryCode, languageName) =>
     cy.contains("div", "Select a country").type(countryCode);
     cy.get("body").type("{enter}");
     cy.get("#name").clear().type(languageName);
+    if (isDefault) {
+        cy.get("#is_default").click();
+    }
     cy.get(".ant-btn-primary").click();
 });
 
-Cypress.Commands.add("addKey", (keyName, keyDescription) => {
+Cypress.Commands.add("addKey", (keyName, keyDescription, keyContent, isHtml) => {
     cy.get('[title="Keys"] > a').click();
     cy.get(".ant-btn-default").click();
     cy.get("#name").type(keyName);
     cy.get("#description").type(keyDescription);
+    if (isHtml) {
+        cy.get("#htmlEnabled").click();
+
+        if (keyContent) {
+            cy.wait(1000); // wait until the editor has loaded
+            cy.get(".defaultLanguageHTMLContent").find(".codex-editor").type(keyContent);
+            cy.wait(500); // wait until editor has saved content
+        }
+    } else if (keyContent) {
+        cy.get("#defaultLanguageContent").type(keyContent);
+    }
     cy.get(".ant-btn-primary").click();
 });
 
@@ -99,6 +113,22 @@ Cypress.Commands.add("addOrganization", (name) => {
     cy.focused().type(name);
     cy.get('[data-id="new-organization-form-create-organization"]').click();
     cy.location("pathname").should("contain", "/dashboard/organizations/");
+});
+
+Cypress.Commands.add("goToEditor", () => {
+    cy.get('[data-id="project-sidebar-editor"]').click();
+});
+
+Cypress.Commands.add("leaveEditor", () => {
+    cy.get(".editor-back").click();
+});
+
+Cypress.Commands.add("goToLanguages", () => {
+    cy.get('[data-id="project-sidebar-languages"]').click();
+});
+
+Cypress.Commands.add("goToKeys", () => {
+    cy.get('[data-id="project-sidebar-keys"]').click();
 });
 
 Cypress.Commands.add("clickOutside", () => {

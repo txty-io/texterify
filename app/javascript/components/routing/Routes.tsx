@@ -34,6 +34,7 @@ const Routes = {
         PROJECT_IMPORT: "/dashboard/projects/:projectId/import",
         PROJECT_EXPORT: "/dashboard/projects/:projectId/export",
         PROJECT_MEMBERS: "/dashboard/projects/:projectId/members",
+        PROJECT_MACHINE_TRANSLATION: "/dashboard/projects/:projectId/machine-translation",
         PROJECT_EXPORT_CONFIGURATIONS: "/dashboard/projects/:projectId/export/configurations",
         PROJECT_EXPORT_HIERARCHY: "/dashboard/projects/:projectId/export/hierarchy",
         PROJECT_ISSUES: "/dashboard/projects/:projectId/issues",
@@ -55,6 +56,7 @@ const Routes = {
         ORGANIZATION_MEMBERS: "/dashboard/organizations/:organizationId/members",
         ORGANIZATION_SETTINGS: "/dashboard/organizations/:organizationId/settings",
         ORGANIZATION_SUBSCRIPTION: "/dashboard/organizations/:organizationId/subscription",
+        ORGANIZATION_MACHINE_TRANSLATION: "/dashboard/organizations/:organizationId/machine-translation",
         INSTANCE: {
             ROOT: "/dashboard/instance",
             LICENSES: "/dashboard/instance/licenses",

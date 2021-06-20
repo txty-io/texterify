@@ -1,3 +1,4 @@
+import { StarFilled } from "@ant-design/icons";
 import { Alert } from "antd";
 import * as React from "react";
 import { Link } from "react-router-dom";
@@ -37,6 +38,10 @@ export function FeatureNotAvailable(props: { feature: IFeature; style?: React.CS
         dashboardStore.currentProjectIncluded
     );
 
+    if (!currentOrganization) {
+        return null;
+    }
+
     const featureAvailableInPlans = currentOrganization.attributes.all_features[props.feature];
     const capitalizedFeatureAvailableInPlans = featureAvailableInPlans.map((plan) => {
         return (
@@ -48,6 +53,7 @@ export function FeatureNotAvailable(props: { feature: IFeature; style?: React.CS
 
     return (
         <Alert
+            icon={<StarFilled />}
             showIcon
             message={
                 <>

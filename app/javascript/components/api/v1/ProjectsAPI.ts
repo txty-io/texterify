@@ -1,7 +1,50 @@
 import fileDownload from "js-file-download";
 import { ImportFileFormats } from "../../sites/dashboard/ImportSite";
+import { IFeature } from "../../types/IFeature";
+import { IPlanIDS } from "../../types/IPlan";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
+
+interface IProjectAttributes {
+    id: string;
+    name: string;
+    description: string;
+    current_user_role?: string;
+    current_user_role_source?: string;
+    enabled_features: IFeature[];
+    all_features: { [k in IFeature]: IPlanIDS[] };
+    machine_translation_active: boolean;
+    machine_translation_enabled: boolean;
+    machine_translation_character_usage: number;
+    auto_translate_new_keys: boolean;
+    auto_translate_new_languages: boolean;
+    word_count: number;
+    character_count: number;
+    issues_count: number;
+    validate_leading_whitespace: boolean;
+    validate_trailing_whitespace: boolean;
+    validate_double_whitespace: boolean;
+    validate_https: boolean;
+}
+
+export interface IProject {
+    id: string;
+    attributes: IProjectAttributes;
+    relationships: any;
+    type: string;
+}
+
+export interface IGetProjects {
+    data: {
+        id: string;
+        type: "project";
+        attributes: IProjectAttributes;
+        relationships: any;
+    }[];
+    meta: {
+        total: number;
+    };
+}
 
 async function getBase64(file: any) {
     return new Promise((resolve, reject) => {
@@ -14,8 +57,14 @@ async function getBase64(file: any) {
     });
 }
 
+export interface IGetProjectsOptions {
+    search?: string;
+    page?: number;
+    perPage?: number;
+}
+
 const ProjectsAPI = {
-    getProjects: async (options: any): Promise<any> => {
+    getProjects: async (options?: IGetProjectsOptions): Promise<IGetProjects> => {
         return API.getRequest("projects", true, {
             search: options && options.search,
             page: options && options.page,
@@ -47,6 +96,9 @@ const ProjectsAPI = {
         validateTrailingWhitespace?: boolean;
         validateDoubleWhitespace?: boolean;
         validateHTTPS?: boolean;
+        machineTranslationEnabled?: boolean;
+        autoTranslateNewKeys?: boolean;
+        autoTranslateNewLanguages?: boolean;
     }): Promise<any> => {
         return API.putRequest(`projects/${options.projectId}`, true, {
             name: options.name,
@@ -54,7 +106,10 @@ const ProjectsAPI = {
             validate_leading_whitespace: options.validateLeadingWhitespace,
             validate_trailing_whitespace: options.validateTrailingWhitespace,
             validate_double_whitespace: options.validateDoubleWhitespace,
-            validate_https: options.validateHTTPS
+            validate_https: options.validateHTTPS,
+            machine_translation_enabled: options.machineTranslationEnabled,
+            auto_translate_new_keys: options.autoTranslateNewKeys,
+            auto_translate_new_languages: options.autoTranslateNewLanguages
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);

@@ -1,4 +1,6 @@
 # See https://github.com/bbatsov/rubocop.
+inherit_from:
+  - node_modules/@prettier/plugin-ruby/rubocop.yml
 
 require:
   - rubocop-rails
@@ -22,6 +24,9 @@ Rails/IndexBy:
 
 Rails/FilePath:
   EnforcedStyle: arguments
+
+Rails/FindEach:
+  Enabled: false
 
 Style/Documentation:
   Enabled: false
@@ -90,6 +95,15 @@ Style/WordArray:
 Style/NumericLiterals:
   Enabled: false
 
+Style/RedundantSelf:
+  Enabled: false
+
+Style/RescueStandardError:
+  Enabled: false
+
+Style/WhileUntilModifier:
+  Enabled: false
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: "indented"
 
@@ -118,6 +132,9 @@ Metrics/PerceivedComplexity:
   Enabled: false
 
 Metrics/ModuleLength:
+  Enabled: false
+
+Metrics/BlockNesting:
   Enabled: false
 
 Lint/RaiseException:

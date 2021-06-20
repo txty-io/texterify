@@ -46,10 +46,14 @@ const APIUtils = {
             }
         }
 
+        // if (response.error || response.errors) {
+        //     throw response;
+        // }
+
         return response;
     },
 
-    getIncludedObject(object: { id: string; type: string }, included: any): any {
+    getIncludedObject(object: { id: string; type: string }, included: any) {
         if (!object) {
             return null;
         }

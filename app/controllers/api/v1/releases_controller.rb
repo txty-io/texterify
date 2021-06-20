@@ -27,13 +27,9 @@ class Api::V1::ReleasesController < Api::V1::ApiController
     options = {}
     options[:meta] = { total: releases.size }
     options[:include] = [:export_config, :release_files]
-    render json: ReleaseSerializer.new(
-      releases
-        .order('timestamp DESC')
-        .offset(page * per_page)
-        .limit(per_page),
-      options
-    ).serialized_json
+    render json:
+             ReleaseSerializer.new(releases.order('timestamp DESC').offset(page * per_page).limit(per_page), options)
+               .serialized_json
   end
 
   def release
@@ -41,32 +37,22 @@ class Api::V1::ReleasesController < Api::V1::ApiController
     skip_authorization
 
     project = Project.find(params[:project_id])
-    return unless feature_enabled?(project, Organization::FEATURE_OTA)
+    unless feature_enabled?(project, Organization::FEATURE_OTA)
+      return
+    end
 
     export_config = project.export_configs.find(params[:export_config_id])
 
     latest_release = export_config.latest_release
 
     if !latest_release
-      render json: {
-        errors: [
-          {
-            code: 'NO_RELEASES_FOUND'
-          }
-        ]
-      }, status: :bad_request
+      render json: { errors: [{ code: 'NO_RELEASES_FOUND' }] }, status: :bad_request
       return
     end
 
     locale = params[:locale]
     if !locale
-      render json: {
-        errors: [
-          {
-            code: 'NO_LOCALE_GIVEN'
-          }
-        ]
-      }, status: :bad_request
+      render json: { errors: [{ code: 'NO_LOCALE_GIVEN' }] }, status: :bad_request
       return
     end
 
@@ -114,16 +100,12 @@ class Api::V1::ReleasesController < Api::V1::ApiController
     release = Release.new
     release.export_config = export_config
     authorize release
-    return unless feature_enabled?(project, Organization::FEATURE_OTA)
+    unless feature_enabled?(project, Organization::FEATURE_OTA)
+      return
+    end
 
     if project.languages.where.not(language_code: nil).empty?
-      render json: {
-        errors: [
-          {
-            code: 'NO_LANGUAGES_WITH_LANGUAGE_CODE'
-          }
-        ]
-      }, status: :bad_request
+      render json: { errors: [{ code: 'NO_LANGUAGES_WITH_LANGUAGE_CODE' }] }, status: :bad_request
       return
     end
 
@@ -139,9 +121,7 @@ class Api::V1::ReleasesController < Api::V1::ApiController
 
     helpers.create_release(project, export_config, version)
 
-    render json: {
-      success: true
-    }
+    render json: { success: true }
   end
 
   def destroy_multiple
@@ -150,9 +130,6 @@ class Api::V1::ReleasesController < Api::V1::ApiController
     releases_to_destroy.each { |release| authorize release }
     project.releases.where(id: releases_to_destroy.map(&:id)).destroy_all
 
-    render json: {
-      success: true,
-      details: 'Releases deleted'
-    }
+    render json: { success: true, details: 'Releases deleted' }
   end
 end

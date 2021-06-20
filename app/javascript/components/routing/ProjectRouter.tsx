@@ -22,6 +22,7 @@ import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
 import { ProjectIntegrationsSite } from "../sites/dashboard/ProjectIntegrationsSite";
 import { ProjectIssuesSite } from "../sites/dashboard/ProjectIssuesSite";
 import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
+import { ProjectMachineTranslationSite } from "../sites/dashboard/ProjectMachineTranslationSite";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -78,6 +79,11 @@ class ProjectRouter extends React.Component<IProps, IState> {
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_SETTINGS} component={ProjectSettingsSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_LANGUAGES} component={LanguagesSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_ACTIVITY} component={ProjectActivitySite} />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION}
+                        component={ProjectMachineTranslationSite}
+                    />
                     <PrivateRoute
                         exact
                         path={Routes.DASHBOARD.PROJECT_INTEGRATIONS}

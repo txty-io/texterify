@@ -84,8 +84,11 @@ gem 'paper_trail'
 gem 'pundit'
 gem 'rails-settings-cached'
 gem 'react-rails'
-gem 'sentry-raven'
 gem 'webpacker'
+
+gem 'sentry-rails'
+gem 'sentry-ruby'
+gem 'sentry-sidekiq'
 
 # https://rubygems.org/gems/gitlab-license/versions/0.0.2
 # https://www.rubydoc.info/gems/gitlab-license/

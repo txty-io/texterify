@@ -8,6 +8,7 @@ const TranslationsAPI = {
         keyId: string;
         content: string;
         exportConfigId?: string;
+        triggerAutoTranslate?: boolean;
     }) => {
         return API.postRequest(`projects/${options.projectId}/translations`, true, {
             language_id: options.languageId,
@@ -15,7 +16,8 @@ const TranslationsAPI = {
             translation: {
                 content: options.content
             },
-            export_config_id: options.exportConfigId
+            export_config_id: options.exportConfigId,
+            trigger_auto_translate: options.triggerAutoTranslate
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);

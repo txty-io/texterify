@@ -11,16 +11,9 @@ class Api::V1::AccessTokensController < Api::V1::ApiController
     access_token.user = current_user
 
     if access_token.save
-      render json: {
-        ok: true,
-        data: {
-          secret: access_token.secret
-        }
-      }
+      render json: { ok: true, data: { secret: access_token.secret } }
     else
-      render json: {
-        errors: access_token.errors.full_messages.map { |error| "#{error}." }
-      }, status: :bad_request
+      render json: { errors: access_token.errors.full_messages.map { |error| "#{error}." } }, status: :bad_request
     end
   end
 
@@ -29,13 +22,9 @@ class Api::V1::AccessTokensController < Api::V1::ApiController
     access_token = current_user.access_tokens.find(params[:id])
 
     if access_token.destroy
-      render json: {
-        message: 'Access token deleted'
-      }
+      render json: { message: 'Access token deleted' }
     else
-      render json: {
-        message: 'Failed to delete access token'
-      }
+      render json: { message: 'Failed to delete access token' }
     end
   end
 

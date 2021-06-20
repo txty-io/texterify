@@ -1,4 +1,5 @@
-import { Divider, Empty, Popconfirm, Select } from "antd";
+import { Divider, Empty, message, Popconfirm, Select } from "antd";
+import { observer } from "mobx-react";
 import * as moment from "moment";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
@@ -19,33 +20,45 @@ interface IProps {
 }
 interface IState {
     keyActivityResponse: any;
+    keyActivityResponseRequested: boolean;
     selectedLanguageId: string;
 }
 
 class KeyHistory extends React.Component<IProps, IState> {
     state: IState = {
         keyActivityResponse: null,
+        keyActivityResponseRequested: false,
         selectedLanguageId: "all-languages"
     };
 
     async componentDidMount() {
-        if (dashboardStore.featureEnabled("FEATURE_KEY_HISTORY")) {
+        await this.reload();
+    }
+
+    async componentDidUpdate() {
+        // In case the site is reloaded where the key history is initially shown the information if the the feature is
+        // enabled for the current organization might not be available.
+        if (dashboardStore.featureEnabled("FEATURE_KEY_HISTORY") && !this.state.keyActivityResponseRequested) {
+            this.setState({ keyActivityResponseRequested: true });
             await this.reload();
         }
     }
 
     reload = async () => {
-        try {
-            const keyActivityResponse = await KeysAPI.getActivity({
-                projectId: this.props.projectId,
-                keyId: this.props.keyId
-            });
+        if (dashboardStore.featureEnabled("FEATURE_KEY_HISTORY")) {
+            try {
+                const keyActivityResponse = await KeysAPI.getActivity({
+                    projectId: this.props.projectId,
+                    keyId: this.props.keyId
+                });
 
-            this.setState({
-                keyActivityResponse: keyActivityResponse
-            });
-        } catch (err) {
-            console.error(err);
+                this.setState({
+                    keyActivityResponse: keyActivityResponse
+                });
+            } catch (err) {
+                console.error(err);
+                message.error("Failed to load key history.");
+            }
         }
     };
 

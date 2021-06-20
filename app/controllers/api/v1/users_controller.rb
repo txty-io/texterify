@@ -2,19 +2,14 @@ class Api::V1::UsersController < Api::V1::ApiController
   def info
     skip_authorization
 
-    render json: {
-      confirmed: current_user.confirmed,
-      version: ENV['COMMIT']
-    }
+    render json: { confirmed: current_user.confirmed, version: ENV['COMMIT'] }
   end
 
   def image
     skip_authorization
     user = User.find(params[:userId])
 
-    render json: {
-      image: user.image.attached? ? url_for(user.image) : nil
-    }
+    render json: { image: user.image.attached? ? url_for(user.image) : nil }
   end
 
   def image_create

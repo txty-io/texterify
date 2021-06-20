@@ -37,14 +37,14 @@ import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
 import { SuperadminRoute } from "./SuperadminRoute";
 
-const MenuList = styled.li`
+export const MenuList = styled.li`
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     display: flex;
 `;
 
-const MenuLink = styled(Link)`
+export const MenuLink = styled(Link)`
     transition: none;
     margin-right: 8px;
     overflow: hidden;

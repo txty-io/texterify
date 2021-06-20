@@ -6,10 +6,7 @@ class Api::V1::LicensesController < Api::V1::ApiController
 
     options = {}
     options[:meta] = { total: licenses.size }
-    render json: LicenseSerializer.new(
-      licenses,
-      options
-    ).serialized_json
+    render json: LicenseSerializer.new(licenses, options).serialized_json
   end
 
   def current
@@ -18,15 +15,9 @@ class Api::V1::LicensesController < Api::V1::ApiController
     license = License.current_active
 
     if license
-      render json: {
-        has_license: true,
-        expires_at: license.expires_at.iso8601
-      }
+      render json: { has_license: true, expires_at: license.expires_at.iso8601 }
     else
-      render json: {
-        has_license: false,
-        expires_at: nil
-      }
+      render json: { has_license: false, expires_at: nil }
     end
   end
 
@@ -38,18 +29,13 @@ class Api::V1::LicensesController < Api::V1::ApiController
     begin
       Gitlab::License.import(license.data)
     rescue Gitlab::License::ImportError
-      render json: {
-        error: true,
-        message: 'INVALID_LICENSE_FILE'
-      }, status: :bad_request
+      render json: { error: true, message: 'INVALID_LICENSE_FILE' }, status: :bad_request
       return
     end
 
     license.save!
 
-    render json: LicenseSerializer.new(
-      license
-    ).serialized_json
+    render json: LicenseSerializer.new(license).serialized_json
   end
 
   def destroy
@@ -58,16 +44,16 @@ class Api::V1::LicensesController < Api::V1::ApiController
     license = License.find(params[:id])
     license.destroy
 
-    render json: {
-      message: 'License deleted'
-    }
+    render json: { message: 'License deleted' }
   end
 
   private
 
   def license_params
     license_params = params.permit(:data_file, :data)
-    license_params.delete(:data) if license_params[:data_file]
+    if license_params[:data_file]
+      license_params.delete(:data)
+    end
     license_params
   end
 end

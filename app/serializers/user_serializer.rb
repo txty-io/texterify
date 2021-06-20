@@ -18,11 +18,7 @@ class UserSerializer
 
   attribute :role_source, if: proc { |_, params| params[:project] } do |object, params|
     project_user = ProjectUser.find_by(project_id: params[:project].id, user_id: object.id)
-    if project_user
-      'project'
-    else
-      'organization'
-    end
+    project_user ? 'project' : 'organization'
   end
 
   attribute :role_organization, if: proc { |_, params| params[:organization] } do |object, params|

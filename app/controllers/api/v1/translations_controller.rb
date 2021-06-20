@@ -8,7 +8,8 @@ class Api::V1::TranslationsController < Api::V1::ApiController
     key = project.keys.find(params[:key_id])
 
     if params[:export_config_id].present?
-      translation = key.translations.find_by(language_id: params[:language_id], export_config_id: params[:export_config_id])
+      translation =
+        key.translations.find_by(language_id: params[:language_id], export_config_id: params[:export_config_id])
     else
       translation = key.translations.find_by(language_id: params[:language_id], export_config_id: nil)
     end
@@ -18,10 +19,12 @@ class Api::V1::TranslationsController < Api::V1::ApiController
 
       if translation.update(translation_params)
         render json: TranslationSerializer.new(translation).serialized_json
+
+        if params[:trigger_auto_translate]
+          translation.auto_translate_untranslated
+        end
       else
-        render json: {
-          errors: translation.errors.details
-        }, status: :bad_request
+        render json: { errors: translation.errors.details }, status: :bad_request
       end
     else
       if params[:language_id].present?
@@ -32,9 +35,7 @@ class Api::V1::TranslationsController < Api::V1::ApiController
         if !language
           skip_authorization
 
-          render json: {
-            error: 'NO_DEFAULT_LANGUAGE_SPECIFIED'
-          }, status: :bad_request
+          render json: { error: 'NO_DEFAULT_LANGUAGE_SPECIFIED' }, status: :bad_request
           return
         end
       end
@@ -51,10 +52,12 @@ class Api::V1::TranslationsController < Api::V1::ApiController
 
       if translation.save
         render json: TranslationSerializer.new(translation).serialized_json
+
+        if params[:trigger_auto_translate]
+          translation.auto_translate_untranslated
+        end
       else
-        render json: {
-          errors: translation.errors.details
-        }, status: :bad_request
+        render json: { errors: translation.errors.details }, status: :bad_request
       end
     end
 

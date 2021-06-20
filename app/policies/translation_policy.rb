@@ -14,6 +14,10 @@ class TranslationPolicy
     ROLES_TRANSLATOR_UP.include? project_user_role
   end
 
+  def suggestion?
+    ROLES_TRANSLATOR_UP.include? project_user_role
+  end
+
   private
 
   def project_user_role

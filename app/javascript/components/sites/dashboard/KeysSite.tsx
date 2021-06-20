@@ -1,4 +1,4 @@
-import { MoreOutlined, QuestionCircleOutlined, SettingOutlined } from "@ant-design/icons";
+import { CrownOutlined, MoreOutlined, QuestionCircleOutlined, SettingOutlined } from "@ant-design/icons";
 import { Button, Drawer, Input, Layout, Modal, Pagination, PaginationProps, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
@@ -241,6 +241,11 @@ class KeysSite extends React.Component<IProps, IState> {
             return {
                 title: (
                     <div data-language-column={language.id} style={{ minWidth: 160 }}>
+                        {language.attributes.is_default && (
+                            <Tooltip title="Default language">
+                                <CrownOutlined style={{ color: "#d6ad13", fontSize: 16, marginRight: 8 }} />
+                            </Tooltip>
+                        )}
                         {countryCode ? (
                             <span style={{ marginRight: 8 }}>
                                 <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
@@ -568,6 +573,11 @@ class KeysSite extends React.Component<IProps, IState> {
                                     await this.reloadTable();
                                 }}
                             >
+                                {language.attributes.is_default && (
+                                    <Tooltip title="Default language">
+                                        <CrownOutlined style={{ color: "#d6ad13", fontSize: 16, marginRight: 1 }} />
+                                    </Tooltip>
+                                )}
                                 {countryCode ? (
                                     <span style={{ marginRight: 8 }}>
                                         <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
@@ -743,7 +753,7 @@ class KeysSite extends React.Component<IProps, IState> {
                             </div>
                         </div>
                         <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", alignItems: "flex-end" }}>
-                            <span style={{ marginRight: 8 }}>Select visible columns:</span>
+                            <span style={{ marginRight: 8, fontWeight: "bold" }}>Columns:</span>
                             {this.renderColumnTags()}
 
                             <div style={{ marginLeft: "auto", marginTop: 4 }}>
@@ -853,9 +863,8 @@ class KeysSite extends React.Component<IProps, IState> {
                                                       const languageId = translation.relationships.language.data.id;
                                                       let translationContent = translation.attributes.content;
                                                       if (currentKey.attributes.html_enabled) {
-                                                          translationContent = Utils.getHTMLContentPreview(
-                                                              translationContent
-                                                          );
+                                                          translationContent =
+                                                              Utils.getHTMLContentPreview(translationContent);
                                                       }
                                                       translations[`language-${languageId}`] = translationContent;
                                                   }
@@ -956,15 +965,14 @@ class KeysSite extends React.Component<IProps, IState> {
                                                               const content = newItem[`language-${languageKey}`];
 
                                                               if (content !== undefined) {
-                                                                  const response = await TranslationsAPI.createTranslation(
-                                                                      {
+                                                                  const response =
+                                                                      await TranslationsAPI.createTranslation({
                                                                           projectId: this.props.match.params.projectId,
                                                                           languageId: languageKey,
                                                                           keyId: newItem.keyId,
                                                                           content: content,
                                                                           exportConfigId: oldRow.exportConfigId
-                                                                      }
-                                                                  );
+                                                                      });
 
                                                                   if (response.errors) {
                                                                       ErrorUtils.showErrors(response.errors);

@@ -209,43 +209,35 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
                         <FeatureNotAvailable feature="FEATURE_EXPORT_HIERARCHY" />
                     )}
 
-                    <div
-                        style={{
-                            border: "1px solid var(--border-color)",
-                            borderRadius: 3,
-                            padding: 16
-                        }}
-                    >
-                        {this.state.responseLanguages && this.state.responseLanguages.data.length > 0 && (
-                            <Tree
-                                draggable
-                                onDrop={this.onDrop}
-                                expandedKeys={this.state.expandedKeys}
-                                showIcon
-                                disabled={!dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY")}
-                                onExpand={(expandedKeys: string[], options: { expanded?: boolean; node: any }) => {
-                                    if (options.expanded) {
-                                        expandedKeys.push(options.node.props.eventKey);
-                                        this.setState({
-                                            expandedKeys: expandedKeys
-                                        });
-                                    } else {
-                                        this.setState({
-                                            expandedKeys: this.state.expandedKeys.filter((key) => {
-                                                return key !== options.node.props.eventKey;
-                                            })
-                                        });
-                                    }
-                                }}
-                            >
-                                {this.loop(this.state.treeData)}
-                            </Tree>
-                        )}
+                    {this.state.responseLanguages && this.state.responseLanguages.data.length > 0 && (
+                        <Tree
+                            draggable
+                            onDrop={this.onDrop}
+                            expandedKeys={this.state.expandedKeys}
+                            showIcon
+                            disabled={!dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY")}
+                            onExpand={(expandedKeys: string[], options: { expanded?: boolean; node: any }) => {
+                                if (options.expanded) {
+                                    expandedKeys.push(options.node.props.eventKey);
+                                    this.setState({
+                                        expandedKeys: expandedKeys
+                                    });
+                                } else {
+                                    this.setState({
+                                        expandedKeys: this.state.expandedKeys.filter((key) => {
+                                            return key !== options.node.props.eventKey;
+                                        })
+                                    });
+                                }
+                            }}
+                        >
+                            {this.loop(this.state.treeData)}
+                        </Tree>
+                    )}
 
-                        {this.state.responseLanguages &&
-                            this.state.responseLanguages.data.length === 0 &&
-                            "No languages available."}
-                    </div>
+                    {this.state.responseLanguages &&
+                        this.state.responseLanguages.data.length === 0 &&
+                        "No languages available."}
                 </Content>
             </Layout>
         );

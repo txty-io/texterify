@@ -103,6 +103,14 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                     this.props.match.params.organizationId
                 )
             },
+            organizationMachineTranslation: {
+                parent: "organization",
+                name: "Machine Translation",
+                path: Routes.DASHBOARD.ORGANIZATION_MACHINE_TRANSLATION.replace(
+                    ":organizationId",
+                    this.props.match.params.organizationId
+                )
+            },
             languages: {
                 parent: "project",
                 name: "Languages",
@@ -122,6 +130,14 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                 parent: "project",
                 name: "Members",
                 path: Routes.DASHBOARD.PROJECT_MEMBERS.replace(":projectId", this.props.match.params.projectId)
+            },
+            projectMachineTranslation: {
+                parent: "project",
+                name: "Machine Translation",
+                path: Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION.replace(
+                    ":projectId",
+                    this.props.match.params.projectId
+                )
             },
             projectSettings: {
                 parent: "project",

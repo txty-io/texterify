@@ -5,14 +5,15 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     skip_authorization
     organization = current_user.organizations.find(params[:organization_id])
 
-    organization_users = if params[:search]
-                           organization.users.where(
-                             'users.username ilike :search or users.email ilike :search',
-                             search: "%#{params[:search]}%"
-                           )
-                         else
-                           organization.users
-                         end
+    organization_users =
+      if params[:search]
+        organization.users.where(
+          'users.username ilike :search or users.email ilike :search',
+          search: "%#{params[:search]}%"
+        )
+      else
+        organization.users
+      end
 
     options = {}
     options[:params] = { organization: organization }
@@ -23,14 +24,15 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     skip_authorization
     organization = current_user.organizations.find(params[:organization_id])
 
-    project_users = if params[:search]
-                      organization.project_users.joins(:user).where(
-                        'users.username ilike :search or users.email ilike :search',
-                        search: "%#{params[:search]}%"
-                      )
-                    else
-                      organization.project_users
-                    end
+    project_users =
+      if params[:search]
+        organization
+          .project_users
+          .joins(:user)
+          .where('users.username ilike :search or users.email ilike :search', search: "%#{params[:search]}%")
+      else
+        organization.project_users
+      end
 
     options = {}
     options[:include] = [:project, :user]
@@ -49,14 +51,9 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     if organization.users.exclude?(user)
       organization_user.save!
 
-      render json: {
-        message: 'Successfully added user to the organization.'
-      }
+      render json: { message: 'Successfully added user to the organization.' }
     else
-      render json: {
-        error: true,
-        message: 'USER_ALREADY_ADDED'
-      }, status: :bad_request
+      render json: { error: true, message: 'USER_ALREADY_ADDED' }, status: :bad_request
     end
   end
 
@@ -72,28 +69,20 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
 
     if current_user.id == params[:id] && organization.users.count == 1
       render json: {
-        errors: [
-          {
-            details: "You can't remove yourself from the organization if you are the only member"
-          }
-        ]
-      }, status: :bad_request
+               errors: [{ details: "You can't remove yourself from the organization if you are the only member" }]
+             },
+             status: :bad_request
       return
     end
 
     if organization.owners_count == 1 && organization.owner?(organization_user.user)
-      render json: {
-        error: true,
-        message: 'LAST_OWNER_CANT_BE_REMOVED'
-      }, status: :bad_request
+      render json: { error: true, message: 'LAST_OWNER_CANT_BE_REMOVED' }, status: :bad_request
       return
     end
 
     organization_user.destroy
 
-    render json: {
-      message: 'User removed from organization'
-    }
+    render json: { message: 'User removed from organization' }
   end
 
   def update
@@ -113,30 +102,26 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
 
     # Don't allow the last owner of the organization to change his role.
     # There should always be at least one owner.
-    if organization.organization_users.where(role: 'owner').size == 1 && organization_user.role_changed? && organization_user.role_was == 'owner'
+    if organization.organization_users.where(role: 'owner').size == 1 && organization_user.role_changed? &&
+         organization_user.role_was == 'owner'
       render json: {
-        errors: [
-          {
-            details: 'There must always be at least one owner in an organization.'
-          }
-        ]
-      }, status: :bad_request
+               errors: [{ details: 'There must always be at least one owner in an organization.' }]
+             },
+             status: :bad_request
       return
     end
 
     # Remove user project roles which are below the users organization role.
     if helpers.higher_role?(organization_user.role, old_role)
-      organization.project_users.where(
-        user_id: organization_user.user.id,
-        role: helpers.roles_below(organization_user.role)
-      ).destroy_all
+      organization
+        .project_users
+        .where(user_id: organization_user.user.id, role: helpers.roles_below(organization_user.role))
+        .destroy_all
     end
 
     organization_user.save!
 
-    render json: {
-      message: 'User role updated'
-    }
+    render json: { message: 'User role updated' }
   end
 
   private
@@ -147,10 +132,7 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     if !organization.feature_enabled?(Organization::FEATURE_BASIC_PERMISSION_SYSTEM)
       skip_authorization
 
-      render json: {
-        error: true,
-        message: 'BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE'
-      }, status: :bad_request
+      render json: { error: true, message: 'BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE' }, status: :bad_request
       return
     end
   end

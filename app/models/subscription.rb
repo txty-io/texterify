@@ -14,14 +14,14 @@ class Subscription < ApplicationRecord
 
   # https://stripe.com/docs/billing/subscriptions/overview#subscription-statuses
   enum stripe_status: {
-    trialing: 'trialing',
-    active: 'active',
-    incomplete: 'incomplete',
-    incomplete_expired: 'incomplete_expired',
-    past_due: 'past_due',
-    canceled: 'canceled',
-    unpaid: 'unpaid'
-  }
+         trialing: 'trialing',
+         active: 'active',
+         incomplete: 'incomplete',
+         incomplete_expired: 'incomplete_expired',
+         past_due: 'past_due',
+         canceled: 'canceled',
+         unpaid: 'unpaid'
+       }
 
   ACCESS_GRANTING_STATUSES = %w[trialing active past_due].freeze
   PLAN_BASIC = 'basic'.freeze
@@ -60,15 +60,12 @@ class Subscription < ApplicationRecord
         self.canceled = false
         save
 
-        RestClient.put("#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/plan?organization_id=#{organization.id}&plan=#{plan}", {})
+        RestClient.put(
+          "#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/plan?organization_id=#{organization.id}&plan=#{plan}",
+          {}
+        )
       else
-        render json: {
-          errors: [
-            {
-              code: 'INVALID_PLAN'
-            }
-          ]
-        }, status: :bad_request
+        render json: { errors: [{ code: 'INVALID_PLAN' }] }, status: :bad_request
       end
     end
   end

@@ -10,10 +10,7 @@ class Api::V1::KeysController < Api::V1::ApiController
 
     options = {}
     options[:include] = [:translations, :'translations.language']
-    render json: KeySerializer.new(
-      key,
-      options
-    ).serialized_json
+    render json: KeySerializer.new(key, options).serialized_json
   end
 
   def index
@@ -67,7 +64,9 @@ class Api::V1::KeysController < Api::V1::ApiController
         ids = project.languages.map(&:id)
       end
 
-      untranslated_keys = keys.where("? != (
+      untranslated_keys =
+        keys.where(
+          "? != (
           select count(*)
           from translations
           where
@@ -75,7 +74,10 @@ class Api::V1::KeysController < Api::V1::ApiController
             translations.export_config_id is NULL and
             coalesce(trim(translations.content), '') != '' AND
             translations.language_id in (?)
-        )", ids.size, ids)
+        )",
+          ids.size,
+          ids
+        )
 
       keys = keys.where(id: untranslated_keys.map(&:id))
     end
@@ -92,11 +94,19 @@ class Api::V1::KeysController < Api::V1::ApiController
     if changed_before || changed_after
       if changed_before
         # Add 1 day because comparison uses 00:00 as time an we also want to include the selected day
-        keys = keys.where('translations.updated_at <= (:changed_before) or keys.updated_at <= (:changed_before)', changed_before: Date.parse(changed_before) + 1.day)
+        keys =
+          keys.where(
+            'translations.updated_at <= (:changed_before) or keys.updated_at <= (:changed_before)',
+            changed_before: Date.parse(changed_before) + 1.day
+          )
       end
 
       if changed_after
-        keys = keys.where('translations.updated_at >= (:changed_after) or keys.updated_at >= (:changed_after)', changed_after: changed_after)
+        keys =
+          keys.where(
+            'translations.updated_at >= (:changed_after) or keys.updated_at >= (:changed_after)',
+            changed_after: changed_after
+          )
       end
     end
 
@@ -105,10 +115,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     options = {}
     options[:meta] = { total: keys.size }
     options[:include] = [:translations, :'translations.language']
-    render json: KeySerializer.new(
-      keys.offset(page * per_page).limit(per_page),
-      options
-    ).serialized_json
+    render json: KeySerializer.new(keys.offset(page * per_page).limit(per_page), options).serialized_json
   end
 
   def create
@@ -121,9 +128,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     if key.save
       render json: KeySerializer.new(key).serialized_json
     else
-      render json: {
-        errors: key.errors.details
-      }, status: :bad_request
+      render json: { errors: key.errors.details }, status: :bad_request
     end
   end
 
@@ -137,16 +142,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     if params.key?(:html_enabled) && params[:html_enabled] != key.html_enabled
       key.translations.each do |translation|
         if params[:html_enabled]
-          translation.content = {
-            "blocks": [
-              {
-                "type": 'paragraph',
-                "data": {
-                  "text": translation.content
-                }
-              }
-            ]
-          }.to_json
+          translation.content = { "blocks": [{ "type": 'paragraph', "data": { "text": translation.content } }] }.to_json
         else
           translation.content = helpers.convert_html_translation(translation.content)
         end
@@ -156,13 +152,9 @@ class Api::V1::KeysController < Api::V1::ApiController
     end
 
     if key.update(permitted_attributes(key))
-      render json: {
-        message: 'Key updated'
-      }
+      render json: { message: 'Key updated' }
     else
-      render json: {
-        errors: key.errors.details
-      }, status: :bad_request
+      render json: { errors: key.errors.details }, status: :bad_request
     end
   end
 
@@ -172,9 +164,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     authorize key_to_destroy
     key_to_destroy.destroy
 
-    render json: {
-      message: 'Key deleted'
-    }
+    render json: { message: 'Key deleted' }
   end
 
   def destroy_multiple
@@ -183,21 +173,23 @@ class Api::V1::KeysController < Api::V1::ApiController
     keys_to_destroy.each { |key| authorize key }
     project.keys.destroy(keys_to_destroy)
 
-    render json: {
-      message: 'Keys deleted'
-    }
+    render json: { message: 'Keys deleted' }
   end
 
   def activity
     skip_authorization
     project = current_user.projects.find(params[:project_id])
-    return unless feature_enabled?(project, Organization::FEATURE_KEY_HISTORY)
+    unless feature_enabled?(project, Organization::FEATURE_KEY_HISTORY)
+      return
+    end
 
     key = project.keys.find(params[:key_id])
 
     options = {}
     options[:include] = [:translations, :'translations.language', :'translations.language.country_code', :key]
-    render json: ActivitySerializer.new(key.translations.map(&:versions).flatten.sort_by(&:created_at).reverse, options).serialized_json
+    render json:
+             ActivitySerializer.new(key.translations.map(&:versions).flatten.sort_by(&:created_at).reverse, options)
+               .serialized_json
   end
 
   private
