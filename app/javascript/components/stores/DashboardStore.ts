@@ -24,6 +24,7 @@ interface IProjectAttributes {
     validate_trailing_whitespace: boolean;
     validate_double_whitespace: boolean;
     validate_https: boolean;
+    issues_count: number;
 }
 
 export type IFeature =

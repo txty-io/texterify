@@ -18,7 +18,7 @@ import {
     SwapOutlined,
     TeamOutlined
 } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Tag } from "antd";
 import { CollapseType } from "antd/lib/layout/Sider";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -33,7 +33,7 @@ const { Sider } = Layout;
 interface INavigationData {
     icon: any;
     path?: string;
-    text?: string;
+    text?: React.ReactNode;
     roles?: string[];
     dataId: string;
     subItems?: INavigationData[];
@@ -134,7 +134,17 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             {
                 icon: AlertOutlined,
                 path: Routes.DASHBOARD.PROJECT_ISSUES.replace(":projectId", this.props.match.params.projectId),
-                text: "Issues",
+                text: (
+                    <span>
+                        Issues
+                        <Tag
+                            color={dashboardStore.currentProject?.attributes.issues_count > 0 ? "red" : "green"}
+                            style={{ marginLeft: 16 }}
+                        >
+                            {dashboardStore.currentProject?.attributes.issues_count}
+                        </Tag>
+                    </span>
+                ),
                 roles: ROLES_TRANSLATOR_UP,
                 dataId: "project-sidebar-issues"
             },
@@ -302,14 +312,14 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     sidebarMenu.classList.remove("ant-menu-inline");
                     sidebarMenu.classList.add("ant-menu-vertical");
 
-                    const menuItems = (sidebarMenu.querySelectorAll(".ant-menu-item") as unknown) as HTMLElement[];
+                    const menuItems = sidebarMenu.querySelectorAll(".ant-menu-item") as unknown as HTMLElement[];
                     menuItems.forEach((menuItem) => {
                         menuItem.style.removeProperty("padding-left");
                     });
 
-                    const submenuItems = (sidebarMenu.querySelectorAll(
+                    const submenuItems = sidebarMenu.querySelectorAll(
                         ".ant-menu-submenu .ant-menu-submenu-title"
-                    ) as unknown) as HTMLElement[];
+                    ) as unknown as HTMLElement[];
                     submenuItems.forEach((submenuItem) => {
                         submenuItem.style.removeProperty("padding-left");
                     });

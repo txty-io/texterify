@@ -63,4 +63,8 @@ class ProjectSerializer
   attribute :all_features do
     Organization::FEATURES_PLANS
   end
+
+  attribute :issues_count do |object|
+    object.validation_violations.size
+  end
 end
