@@ -1,16 +1,21 @@
-import { Empty, Layout, message, Pagination, Skeleton, Typography } from "antd";
+import { Empty, Layout, message, Pagination, Skeleton, Tag, Typography } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { APIUtils } from "../../api/v1/APIUtils";
-import { ValidationsAPI, IValidation } from "../../api/v1/ValidationsAPI";
+import { IKey } from "../../api/v1/KeysAPI";
+import { ITranslation } from "../../api/v1/TranslationsAPI";
+import { IValidation, ValidationsAPI } from "../../api/v1/ValidationsAPI";
 import {
     IGetValidationViolationsResponse,
     IValidationViolation,
     ValidationViolationsAPI
 } from "../../api/v1/ValidationViolationsAPI";
+import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
+import { HighlightBox } from "../../ui/HighlightBox";
+import { Styles } from "../../ui/Styles";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -53,11 +58,16 @@ class ProjectIssuesSite extends React.Component<IProps, IState> {
         this.setState({ validationViolationsLoading: false });
     }
 
-    getTranslationForViolation(violation: IValidationViolation) {
-        // const translation = this.state.validationViolationsResponse.included.find((included) => {
-        //     return violation.attributes.translation_id === validationViolation.relationships.translation.data?.id;
-        // });
-        // return
+    getTranslationForViolation(violation: IValidationViolation): ITranslation {
+        return this.state.validationViolationsResponse.included.find((included) => {
+            return violation.attributes.translation_id === included.id && included.type === "translation";
+        }) as ITranslation;
+    }
+
+    getKeyForTranslation(translation: ITranslation): IKey {
+        return this.state.validationViolationsResponse.included.find((included) => {
+            return translation.attributes.key_id === included.id && included.type === "key";
+        }) as IKey;
     }
 
     getValidationDescription(validationViolation: IValidationViolation, validation: IValidation) {
@@ -118,50 +128,77 @@ class ProjectIssuesSite extends React.Component<IProps, IState> {
                                         display: "flex",
                                         alignItems: "center",
                                         marginBottom: 16,
+                                        marginTop: 16,
                                         width: "100%"
                                     }}
                                     key={validationViolation.id}
                                 >
                                     <div style={{ marginRight: "auto", width: "100%", display: "flex" }}>
-                                        <div style={{ display: "flex", flexDirection: "column", marginRight: 16 }}>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                flexGrow: 1,
+                                                marginRight: 16
+                                            }}
+                                        >
+                                            <div>
+                                                <span style={{ fontWeight: "bolder", marginRight: 8 }}>Key:</span>
+                                                {
+                                                    this.getKeyForTranslation(
+                                                        this.getTranslationForViolation(validationViolation)
+                                                    )?.attributes.name
+                                                }
+                                            </div>
                                             <div
                                                 style={{
                                                     fontSize: 14,
                                                     wordBreak: "break-word",
-                                                    color: "var(--error-color)"
+                                                    marginTop: 8
                                                 }}
                                             >
-                                                {this.getValidationDescription(validationViolation, validation)}
+                                                <Tag color="red">
+                                                    {this.getValidationDescription(validationViolation, validation)}
+                                                </Tag>
                                             </div>
                                             <div
                                                 style={{
-                                                    wordBreak: "break-word",
-                                                    marginTop: 12
+                                                    marginTop: 12,
+                                                    display: "grid",
+                                                    gridTemplateColumns: "1fr 1fr",
+                                                    columnGap: "24px",
+                                                    alignItems: "center"
                                                 }}
                                             >
-                                                <Typography.Text code style={{ whiteSpace: "pre-wrap" }}>
+                                                <HighlightBox
+                                                    style={{
+                                                        whiteSpace: "pre-wrap",
+                                                        textDecorationLine: "underline",
+                                                        textDecorationColor: "var(--error-color)",
+                                                        textUnderlinePosition: "under"
+                                                    }}
+                                                >
                                                     {translation.attributes.content}
-                                                </Typography.Text>
+                                                </HighlightBox>
+                                                <a
+                                                    onClick={async () => {
+                                                        try {
+                                                            await ValidationsAPI.deleteValidationViolation(
+                                                                this.props.match.params.projectId,
+                                                                validationViolation.id
+                                                            );
+                                                            dashboardStore.currentProject.attributes.issues_count--;
+                                                            message.success("Issue ignored");
+                                                        } catch (error) {
+                                                            console.error(error);
+                                                            message.error("Failed to delete issue.");
+                                                        }
+                                                        await this.loadValidationViolations();
+                                                    }}
+                                                >
+                                                    Ignore
+                                                </a>
                                             </div>
-                                        </div>
-                                        <div style={{ display: "flex", marginLeft: "auto" }}>
-                                            <a
-                                                onClick={async () => {
-                                                    try {
-                                                        await ValidationsAPI.deleteValidationViolation(
-                                                            this.props.match.params.projectId,
-                                                            validationViolation.id
-                                                        );
-                                                        message.success("Issue ignored");
-                                                    } catch (error) {
-                                                        console.error(error);
-                                                        message.error("Failed to delete issue.");
-                                                    }
-                                                    await this.loadValidationViolations();
-                                                }}
-                                            >
-                                                Ignore
-                                            </a>
                                         </div>
                                     </div>
                                 </div>

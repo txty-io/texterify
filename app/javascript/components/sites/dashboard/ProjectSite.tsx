@@ -27,6 +27,7 @@ interface IState {
     projectActivityResponse: any;
     projectActivityLoading: boolean;
     validationViolationsCountResponse: IGetValidationViolationsCountResponse;
+    validationViolationsLoading: boolean;
 }
 
 @observer
@@ -37,15 +38,22 @@ class ProjectSite extends React.Component<IProps, IState> {
         languagesLoading: true,
         projectActivityResponse: null,
         projectActivityLoading: true,
-        validationViolationsCountResponse: null
+        validationViolationsCountResponse: null,
+        validationViolationsLoading: true
     };
 
     async componentDidMount() {
-        await Promise.all([this.fetchLanguages(), this.fetchProject(), this.fetchProjectActivity()]);
+        await Promise.all([
+            this.fetchLanguages(),
+            this.fetchProject(),
+            this.fetchProjectActivity(),
+            this.fetchValidationViolations()
+        ]);
     }
 
     async fetchLanguages() {
         this.setState({ languagesLoading: true });
+
         try {
             const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
 
@@ -56,12 +64,14 @@ class ProjectSite extends React.Component<IProps, IState> {
             console.error(error);
             message.error("Failed to load languages.");
         }
+
         this.setState({ languagesLoading: false });
     }
 
     async fetchProjectActivity() {
         if (dashboardStore.featureEnabled("FEATURE_PROJECT_ACTIVITY")) {
             this.setState({ projectActivityLoading: true });
+
             try {
                 const projectActivityResponse = await ProjectsAPI.getActivity({
                     projectId: this.props.match.params.projectId
@@ -75,22 +85,45 @@ class ProjectSite extends React.Component<IProps, IState> {
                 message.error("Failed to load project activity.");
             }
 
-            const validationViolationsCountResponse = await ValidationViolationsAPI.getCount({
-                projectId: this.props.match.params.projectId
+            this.setState({
+                projectActivityLoading: false
             });
-            this.setState({ validationViolationsCountResponse: validationViolationsCountResponse });
-            this.setState({ projectActivityLoading: false });
+        }
+    }
+
+    async fetchValidationViolations() {
+        if (dashboardStore.featureEnabled("FEATURE_VALIDATIONS")) {
+            this.setState({ validationViolationsLoading: true });
+
+            try {
+                const validationViolationsCountResponse = await ValidationViolationsAPI.getCount({
+                    projectId: this.props.match.params.projectId
+                });
+
+                this.setState({
+                    validationViolationsCountResponse: validationViolationsCountResponse
+                });
+            } catch (error) {
+                console.error(error);
+                message.error("Failed to load violations.");
+            }
+
+            this.setState({
+                validationViolationsLoading: false
+            });
         }
     }
 
     async fetchProject() {
         this.setState({ projectLoading: true });
+
         try {
             await dashboardStore.loadProject(this.props.match.params.projectId);
         } catch (error) {
             console.error(error);
             message.error("Failed to load project.");
         }
+
         this.setState({ projectLoading: false });
     }
 
@@ -218,7 +251,8 @@ class ProjectSite extends React.Component<IProps, IState> {
                         <div style={{ width: "50%", marginLeft: 40 }}>
                             <h3>Validations</h3>
 
-                            {this.state.validationViolationsCountResponse && (
+                            {this.state.validationViolationsLoading && <Skeleton active paragraph={false} />}
+                            {!this.state.validationViolationsLoading && this.state.validationViolationsCountResponse && (
                                 <Tag color={this.state.validationViolationsCountResponse.total > 0 ? "red" : "green"}>
                                     {this.state.validationViolationsCountResponse.total}{" "}
                                     {this.state.validationViolationsCountResponse.total === 1 ? "Issue" : "Issues"}
@@ -232,7 +266,7 @@ class ProjectSite extends React.Component<IProps, IState> {
                                         this.props.match.params.projectId
                                     )}
                                 >
-                                    View details
+                                    View issues
                                 </a>
                             </div>
 

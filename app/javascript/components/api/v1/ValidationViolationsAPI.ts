@@ -1,5 +1,7 @@
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
+import { IKey } from "./KeysAPI";
+import { ITranslation } from "./TranslationsAPI";
 import { IValidation } from "./ValidationsAPI";
 
 export interface IValidationViolation {
@@ -26,7 +28,7 @@ export interface IValidationViolation {
 
 export interface IGetValidationViolationsResponse {
     data: IValidationViolation[];
-    included: IValidation[];
+    included: (IValidation | ITranslation | IKey)[];
     meta: { total: number };
 }
 
