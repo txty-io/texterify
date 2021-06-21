@@ -22,7 +22,8 @@ interface IFormValues {
 interface IProps {
     exportConfigToEdit?: any;
     projectId: string;
-    visible: boolean;
+    hideDefaultSubmitButton?: boolean;
+    clearFieldsAfterSubmit?: boolean;
     onCreated?(): void;
 }
 interface IState {
@@ -120,6 +121,10 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
 
         if (this.props.onCreated) {
             this.props.onCreated();
+        }
+
+        if (this.props.clearFieldsAfterSubmit) {
+            this.formRef.current.resetFields();
         }
     };
 
@@ -268,7 +273,7 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                 <Form
                     ref={this.formRef}
                     onFinish={this.handleSubmit}
-                    style={{ maxWidth: "100%" }}
+                    style={{ maxWidth: "100%", display: "flex", flexDirection: "column" }}
                     id="addEditExportConfigForm"
                     initialValues={
                         this.props.exportConfigToEdit && {
@@ -340,17 +345,16 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                         <Input placeholder="Default language file path" />
                     </Form.Item>
 
-                    <h3>Language configs</h3>
+                    <h3>Override language codes</h3>
                     <p>Override the language codes used for exports in this configuration.</p>
                     <div style={{ display: "flex" }}>
                         <Button
-                            type="primary"
                             style={{ marginTop: 8, marginLeft: "auto" }}
                             onClick={() => {
                                 this.setState({ addEditExportConfigLanguageConfigOpen: true });
                             }}
                         >
-                            Add new config
+                            Add new language code override
                         </Button>
                     </div>
                     <Table
@@ -362,10 +366,18 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                         loading={this.state.languageConfigsLoading}
                         locale={{
                             emptyText: (
-                                <Empty description="No language configs found" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                                <Empty
+                                    description="No language code overrides found"
+                                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                />
                             )
                         }}
                     />
+                    {!this.props.hideDefaultSubmitButton && (
+                        <Button type="primary" htmlType="submit" style={{ marginLeft: "auto", marginTop: 24 }}>
+                            {this.props.exportConfigToEdit ? "Save changes" : "Add export config"}
+                        </Button>
+                    )}
                 </Form>
 
                 <AddEditExportConfigLanguageForm
@@ -385,7 +397,7 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                             });
 
                             await this.reloadLanguageConfigs();
-                        } else {
+                        } else {x
                             this.setState({
                                 languageConfigsToCreate: [
                                     ...this.state.languageConfigsToCreate.filter((item) => {

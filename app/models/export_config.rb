@@ -81,7 +81,7 @@ class ExportConfig < ApplicationRecord
       ios(language, export_data)
     elsif file_format == 'rails'
       rails(language, export_data)
-    elsif file_format == 'go-i18n'
+    elsif file_format == 'toml'
       toml(language, export_data)
     else
       json(language, export_data)

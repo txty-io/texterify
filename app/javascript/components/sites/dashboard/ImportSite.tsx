@@ -13,7 +13,7 @@ import { DropZoneWrapper } from "../../ui/DropZoneWrapper";
 import FlagIcon from "../../ui/FlagIcons";
 import { LoadingOverlay } from "../../ui/LoadingOverlay";
 
-export type ImportFileFormats = "json" | "json-nested" | "json-formatjs" | "ios";
+export type ImportFileFormats = "json" | "json-nested" | "json-formatjs" | "ios" | "android" | "toml" | "rails";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -131,7 +131,7 @@ class ImportSite extends React.Component<IProps, IState> {
             return ".json";
         } else if (this.state.selectedImportFormat === "ios") {
             return ".strings";
-        } else if (this.state.selectedImportFormat === "go-i18n") {
+        } else if (this.state.selectedImportFormat === "toml") {
             return ".toml";
         }
     }
@@ -239,7 +239,7 @@ class ImportSite extends React.Component<IProps, IState> {
                                         {/* <Select.Option value="json-nested">JSON Nested</Select.Option> */}
                                         <Select.Option value="json-formatjs">JSON Format.js</Select.Option>
                                         <Select.Option value="ios">iOS .strings</Select.Option>
-                                        <Select.Option value="go-i18n">TOML (go-i18n)</Select.Option>
+                                        <Select.Option value="toml">TOML</Select.Option>
                                     </Select>
                                 </div>
                                 <Dropzone

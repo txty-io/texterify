@@ -176,7 +176,6 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                     <AddEditExportConfigForm
                         projectId={this.props.match.params.projectId}
                         exportConfigToEdit={this.state.exportConfigToEdit}
-                        visible={this.state.addEditExportConfigOpen}
                         onCreated={async () => {
                             this.setState({
                                 addEditExportConfigOpen: false,

@@ -4,10 +4,16 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
 
     authorize ExportConfig.new(project_id: project.id)
 
+    page = parse_page(params[:page])
+    per_page = parse_per_page(params[:per_page])
+
     export_configs = project.export_configs.order_by_name
+
     options = {}
+    options[:meta] = { total: export_configs.size }
     options[:include] = [:language_configs]
-    render json: ExportConfigSerializer.new(export_configs, options).serialized_json
+    render json:
+             ExportConfigSerializer.new(export_configs.offset(page * per_page).limit(per_page), options).serialized_json
   end
 
   def create
@@ -49,6 +55,17 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
     else
       render json: { errors: export_config.errors.details }, status: :bad_request
     end
+  end
+
+  def destroy_multiple
+    project = current_user.projects.find(params[:project_id])
+
+    export_configs_to_destroy = project.export_configs.find(params[:export_configs])
+    export_configs_to_destroy.each { |export_config| authorize export_config }
+
+    project.export_configs.destroy(export_configs_to_destroy)
+
+    render json: { success: true, details: 'Export configs deleted' }
   end
 
   private

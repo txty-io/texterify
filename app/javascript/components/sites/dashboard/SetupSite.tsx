@@ -1,9 +1,13 @@
-import { Button, Layout, message, Steps } from "antd";
+import { FileTextOutlined } from "@ant-design/icons";
+import { Button, Layout, message, Select, Steps } from "antd";
 import { ParsedQuery } from "query-string";
 import * as React from "react";
+import Dropzone from "react-dropzone";
 import { useParams } from "react-router";
+import { APIUtils } from "../../api/v1/APIUtils";
 import { OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
 import { IProject, ProjectsAPI } from "../../api/v1/ProjectsAPI";
+import { AddEditExportConfigForm } from "../../forms/AddEditExportConfigForm";
 import { AddEditLanguageForm } from "../../forms/AddEditLanguageForm";
 import { NewOrganizationForm } from "../../forms/NewOrganizationForm";
 import { NewProjectForm } from "../../forms/NewProjectForm";
@@ -11,10 +15,15 @@ import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { IOrganization } from "../../stores/DashboardStore";
 import { IPlanIDS } from "../../types/IPlan";
+import { DropZoneWrapper } from "../../ui/DropZoneWrapper";
+import { ExportConfigsTable } from "../../ui/ExportConfigsTable";
+import FlagIcon from "../../ui/FlagIcons";
 import { useQuery } from "../../ui/KeySearchSettings";
 import { LanguagesTable } from "../../ui/LanguagesTable";
 import { Licenses } from "../../ui/Licenses";
+import { TranslationFileImporter } from "../../ui/TranslationFileImporter";
 import { Utils } from "../../ui/Utils";
+import { ImportFileFormats } from "./ImportSite";
 
 function SetupSteps(props: {
     current: number;
@@ -173,6 +182,7 @@ export function SetupSite(props: { step: number }) {
     const [organization, setOrganization] = React.useState<IOrganization>();
     const [project, setProject] = React.useState<IProject>();
     const [languagesTableReloader, setLanguagesTableReloader] = React.useState<number>(0);
+    const [exportConfigsReloader, setExportConfigsReloader] = React.useState<number>(0);
     const [selectedPlan, setSelectedPlan] = React.useState<IPlanIDS>((currentQueryParams.plan as IPlanIDS) || "basic");
 
     const projectId = params.projectId || (currentQueryParams.project as string);
@@ -511,7 +521,7 @@ export function SetupSite(props: { step: number }) {
                         }
                         fullWidth
                     >
-                        todo
+                        <TranslationFileImporter />
                     </StepWrapper>
                 )}
 
@@ -531,7 +541,24 @@ export function SetupSite(props: { step: number }) {
                         }
                         fullWidth
                     >
-                        todo
+                        <div
+                            style={{
+                                display: "grid",
+                                gridTemplateColumns: "1fr 2fr",
+                                columnGap: 40,
+                                rowGap: 40
+                            }}
+                        >
+                            <AddEditExportConfigForm
+                                projectId={projectId}
+                                onCreated={async () => {
+                                    setExportConfigsReloader(exportConfigsReloader + 1);
+                                }}
+                                clearFieldsAfterSubmit
+                            />
+
+                            {project && <ExportConfigsTable project={project} tableReloader={exportConfigsReloader} />}
+                        </div>
                     </StepWrapper>
                 )}
             </Layout.Content>

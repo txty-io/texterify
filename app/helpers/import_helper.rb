@@ -33,7 +33,7 @@ module ImportHelper
       else
         raise 'NOTHING_IMPORTED'
       end
-    elsif file_format == 'go-i18n'
+    elsif file_format == 'toml'
       result = toml?(file_content)
       if result[:matches]
         return result[:content]
