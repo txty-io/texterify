@@ -395,17 +395,6 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                         style={{ width: "100%" }}
                     />
                 )}
-
-                <SupportedMachineTranslationLanguagesModal
-                    visible={this.state.supportedMachineTranslationLanguagesModalVisible}
-                    supportedSourceLanguages={this.state.supportedSourceLanguages}
-                    supportedTargetLanguages={this.state.supportedTargetLanguages}
-                    onCancelRequest={() => {
-                        this.setState({
-                            supportedMachineTranslationLanguagesModalVisible: false
-                        });
-                    }}
-                />
             </>
         );
     }
@@ -455,6 +444,17 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                             </a>
                         </div>
                     )}
+
+                    <SupportedMachineTranslationLanguagesModal
+                        visible={this.state.supportedMachineTranslationLanguagesModalVisible}
+                        supportedSourceLanguages={this.state.supportedSourceLanguages}
+                        supportedTargetLanguages={this.state.supportedTargetLanguages}
+                        onCancelRequest={() => {
+                            this.setState({
+                                supportedMachineTranslationLanguagesModalVisible: false
+                            });
+                        }}
+                    />
 
                     {!dashboardStore.getProjectOrganization() && (
                         <Alert
