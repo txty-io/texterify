@@ -15,6 +15,7 @@ import { IOrganization } from "../../stores/DashboardStore";
 import { IPlanIDS } from "../../types/IPlan";
 import { useQuery } from "../../ui/KeySearchSettings";
 import { LanguagesTable } from "../../ui/LanguagesTable";
+import { Loading } from "../../ui/Loading";
 import { getPlanById, handleCheckout, Licenses } from "../../ui/Licenses";
 import { TranslationFileImporter } from "../../ui/TranslationFileImporter";
 import { Utils } from "../../ui/Utils";
@@ -322,7 +323,18 @@ export function SetupSite(props: { step: number }) {
         }
 
         if (props.step === STEPS.ORGANIZATION) {
-            return Routes.DASHBOARD.SETUP_PLAN_RESOLVER({ organizationId: org.id });
+            if (IS_TEXTERIFY_CLOUD) {
+                if (project) {
+                    return Routes.DASHBOARD.SETUP_PROJECT_RESOLVER({
+                        organizationId: org.id,
+                        projectId: project.id
+                    });
+                } else {
+                    return Routes.DASHBOARD.SETUP_PROJECT_NEW_RESOLVER({ organizationId: org.id });
+                }
+            } else {
+                return Routes.DASHBOARD.SETUP_PLAN_RESOLVER({ organizationId: org.id });
+            }
         } else if (props.step === STEPS.PLAN) {
             if (project) {
                 return Routes.DASHBOARD.SETUP_PROJECT_RESOLVER({
@@ -360,7 +372,13 @@ export function SetupSite(props: { step: number }) {
         } else if (props.step === STEPS.PLAN) {
             return Routes.DASHBOARD.SETUP_ORGANIZATION_RESOLVER({ organizationId: organization.id });
         } else if (props.step === STEPS.PROJECT) {
-            return Routes.DASHBOARD.SETUP_PLAN_RESOLVER({ organizationId: organization.id });
+            if (IS_TEXTERIFY_CLOUD) {
+                return Routes.DASHBOARD.SETUP_PLAN_RESOLVER({ organizationId: organization.id });
+            } else {
+                return Routes.DASHBOARD.SETUP_ORGANIZATION_RESOLVER({
+                    organizationId: organization.id
+                });
+            }
         } else if (props.step === STEPS.LANGUAGES && project) {
             return Routes.DASHBOARD.SETUP_PROJECT_RESOLVER({
                 organizationId: organization.id,
@@ -630,6 +648,7 @@ export function SetupSite(props: { step: number }) {
                             />
 
                             {project && <LanguagesTable project={project} tableReloader={languagesTableReloader} />}
+                            {!project && <Loading />}
                         </div>
                     </StepWrapper>
                 )}

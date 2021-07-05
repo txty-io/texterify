@@ -26,6 +26,7 @@ import FlagIcon from "./FlagIcons";
 import { HoverCard } from "./HoverCard";
 import { LoadingOverlay } from "./LoadingOverlay";
 import { Styles } from "./Styles";
+import { Loading } from "./Loading";
 
 const SUPPORTED_FORMATS: {
     image: any;
@@ -163,6 +164,7 @@ export const TranslationFileImporter = observer((props: { onCreateLanguageClick?
     const params = useParams<{ organizationId?: string; projectId?: string }>();
 
     const [languagesResponse, setLanguagesResponse] = React.useState<IGetLanguagesResponse>();
+    const [languagesLoading, setLanguagesLoading] = React.useState<boolean>(true);
     const [selectedLanguageId, setSelectedLanguageId] = React.useState<string>();
     const [search, setSearch] = React.useState<string>("");
     const [showExportConfigSelect, setShowExportConfigSelect] = React.useState<boolean>(false);
@@ -186,6 +188,8 @@ export const TranslationFileImporter = observer((props: { onCreateLanguageClick?
             } catch (e) {
                 console.error(e);
             }
+
+            setLanguagesLoading(false);
         })();
     }, []);
 
@@ -290,6 +294,7 @@ export const TranslationFileImporter = observer((props: { onCreateLanguageClick?
 
     return (
         <div>
+            {languagesLoading && <Loading />}
             {languagesResponse?.data.length === 0 && (
                 <>
                     <Alert
