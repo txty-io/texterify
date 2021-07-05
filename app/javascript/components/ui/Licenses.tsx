@@ -1,6 +1,6 @@
 import { LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
-import { Button, InputNumber, Tooltip } from "antd";
+import { Button, InputNumber, Tooltip, Tag, message } from "antd";
 import * as React from "react";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
@@ -76,6 +76,18 @@ export const BUSINESS_PLAN: IPlan = {
     ]
 };
 
+export function getPlanById(planId: IPlanIDS) {
+    if (planId === "free") {
+        return FREE_PLAN;
+    } else if (planId === "basic") {
+        return BASIC_PLAN;
+    } else if (planId === "team") {
+        return TEAM_PLAN;
+    } else if (planId === "business") {
+        return BUSINESS_PLAN;
+    }
+}
+
 interface IPlan {
     id: IPlanIDS;
     name: string;
@@ -88,12 +100,14 @@ export type IHostingType = "on-premise" | "cloud";
 
 let stripePromise: Promise<Stripe>;
 
-const handleCheckout = async (
+export const handleCheckout = async (
     plan: IPlan,
     type: IHostingType,
     details: {
         quantity?: number;
         organizationId: string;
+        cancelUrl?: string;
+        successUrl?: string;
     }
 ) => {
     try {
@@ -104,6 +118,7 @@ const handleCheckout = async (
 
         if (!stripe) {
             console.error("Failed to load stripe.");
+            message.error("An error occurred loading our payment service provider.");
             history.push(Routes.ROOT);
 
             return;
@@ -121,7 +136,9 @@ const handleCheckout = async (
                 quantity: details.quantity,
                 user_id: authStore.currentUser.id,
                 organization_id: type === "cloud" ? details.organizationId : undefined,
-                email: authStore.currentUser.email
+                email: authStore.currentUser.email,
+                cancel_url: details.cancelUrl,
+                success_url: details.successUrl
             })
         });
 
@@ -163,6 +180,7 @@ function PaymentPlan(props: {
     annualBilling?: boolean;
     style?: React.CSSProperties;
     hideSelectButton?: boolean;
+    showFreeTrial?: boolean;
     onClick?(): void;
     onChangePlan?(plan: IPlan): void;
 }) {
@@ -194,6 +212,11 @@ function PaymentPlan(props: {
                 }}
             >
                 <h2 style={{ fontSize: 24 }}>{props.plan.name}</h2>
+                {props.showFreeTrial && (
+                    <div style={{ marginBottom: 16 }}>
+                        <Tag color="magenta">7 day free trial</Tag>
+                    </div>
+                )}
                 <div style={{ fontSize: 16 }}>
                     <div style={{ fontSize: 20, fontWeight: "bold" }}>{price} €</div>
                     user/month
@@ -293,6 +316,7 @@ export function Licenses(props: {
     annualBilling?: boolean;
     hideSelectButtons?: boolean;
     selectByPlanClick?: boolean;
+    showFreeTrial?: boolean;
     onChangePlan?(plan: IPlan): void;
 }) {
     return (
@@ -317,6 +341,7 @@ export function Licenses(props: {
                         props.onChangePlan(FREE_PLAN);
                     }
                 }}
+                showFreeTrial={props.showFreeTrial}
             />
             <PaymentPlan
                 plan={BASIC_PLAN}
@@ -333,6 +358,7 @@ export function Licenses(props: {
                         props.onChangePlan(BASIC_PLAN);
                     }
                 }}
+                showFreeTrial={props.showFreeTrial}
             />
             <PaymentPlan
                 plan={TEAM_PLAN}
@@ -349,6 +375,7 @@ export function Licenses(props: {
                         props.onChangePlan(TEAM_PLAN);
                     }
                 }}
+                showFreeTrial={props.showFreeTrial}
             />
             <PaymentPlan
                 plan={BUSINESS_PLAN}
@@ -365,6 +392,7 @@ export function Licenses(props: {
                         props.onChangePlan(BUSINESS_PLAN);
                     }
                 }}
+                showFreeTrial={props.showFreeTrial}
             />
         </div>
     );

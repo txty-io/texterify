@@ -96,7 +96,7 @@ class ProjectSite extends React.Component<IProps, IState> {
                 {this.state.languagesLoading && <Skeleton active />}
                 {!this.state.languagesLoading && languages.length === 0 && (
                     <Empty
-                        description="No data available"
+                        description="Add some languages to show your progress here"
                         style={{ margin: "40px 0" }}
                         image={Empty.PRESENTED_IMAGE_SIMPLE}
                     />

@@ -199,7 +199,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
         end
 
         if file_format == 'json-formatjs'
-          translation.content = json_value['defaultMessage']
+          translation.content = json_value['defaultMessage'] || json_value['message']
 
           key.description = json_value['description']
           key.save

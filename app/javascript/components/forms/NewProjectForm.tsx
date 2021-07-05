@@ -198,7 +198,9 @@ class NewProjectForm extends React.Component<IProps, IState> {
                 }}
                 ref={this.formRef}
             >
-                <div style={{ flexGrow: 2, marginRight: this.props.orientation === "vertical" ? 0 : 40 }}>
+                <div
+                    style={{ flexGrow: 2, flexShrink: 0, marginRight: this.props.orientation === "vertical" ? 0 : 40 }}
+                >
                     <h3>Name *</h3>
                     <Form.Item
                         name="name"
@@ -213,7 +215,7 @@ class NewProjectForm extends React.Component<IProps, IState> {
                     </Form.Item>
                 </div>
 
-                <div style={{ flexGrow: 1 }}>
+                <div style={{ flexGrow: 1, flexShrink: 0 }}>
                     <h3>Image</h3>
                     <Form.Item>
                         <div style={{ display: "flex" }}>

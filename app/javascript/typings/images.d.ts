@@ -10,5 +10,6 @@ declare module "images/android_logo.svg";
 declare module "images/go_logo_blue.svg";
 declare module "images/json_logo.svg";
 declare module "images/formatjs_logo.svg";
-declare module "images/toml_logo.png";
+declare module "images/toml_logo.svg";
 declare module "images/rails_logo.svg";
+declare module "images/chrome_logo.svg";
