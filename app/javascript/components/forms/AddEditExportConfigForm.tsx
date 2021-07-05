@@ -397,7 +397,7 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                             });
 
                             await this.reloadLanguageConfigs();
-                        } else {x
+                        } else {
                             this.setState({
                                 languageConfigsToCreate: [
                                     ...this.state.languageConfigsToCreate.filter((item) => {

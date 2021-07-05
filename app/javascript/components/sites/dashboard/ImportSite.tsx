@@ -13,7 +13,7 @@ import { DropZoneWrapper } from "../../ui/DropZoneWrapper";
 import FlagIcon from "../../ui/FlagIcons";
 import { LoadingOverlay } from "../../ui/LoadingOverlay";
 
-export type ImportFileFormats = "json" | "json-nested" | "json-formatjs" | "ios" | "android" | "toml" | "rails";
+export type ImportFileFormats = "json" | "json-nested" | "json-formatjs" | "ios" | "android" | "toml" | "rails";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
