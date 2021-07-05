@@ -112,6 +112,8 @@ Cypress.Commands.add("addOrganization", (name) => {
     cy.contains("button", "Create organization").click();
     cy.focused().type(name);
     cy.get('[data-id="new-organization-form-create-organization"]').click();
+    cy.get('[data-id="main-menu-organizations"]').click();
+    cy.contains(name).click();
     cy.location("pathname").should("contain", "/dashboard/organizations/");
 });
 

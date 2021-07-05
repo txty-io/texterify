@@ -408,6 +408,7 @@ export function SetupSite(props: { step: number }) {
                                 htmlType="submit"
                                 form="newOrganizationForm"
                                 loading={loading}
+                                data-id="new-organization-form-create-organization"
                                 onClick={() => {
                                     setLoading(true);
                                 }}
