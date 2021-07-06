@@ -415,7 +415,7 @@ export function SetupSite(props: { step: number }) {
                     organization={organization}
                     subscription={subscription}
                 />
-                {props.step === 0 && (
+                {props.step === STEPS.ORGANIZATION && (
                     <StepWrapper
                         title={params.organizationId ? "Edit organization details" : "Create an organization"}
                         description="Organizations help you to translate projects together with your team and manage your subscription."
