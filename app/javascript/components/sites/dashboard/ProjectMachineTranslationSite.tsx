@@ -91,10 +91,12 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
         this.setState({ supportedMachineTranslationLanguagesLoading: false });
     };
 
-    fetchLanguages = async (options?: IGetLanguagesOptions) => {
+    fetchLanguages = async () => {
         this.setState({ languagesLoading: true });
         try {
-            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, options);
+            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, {
+                showAll: true
+            });
             this.setState({
                 languagesResponse: responseLanguages
             });

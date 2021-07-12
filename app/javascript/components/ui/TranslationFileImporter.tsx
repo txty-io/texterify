@@ -178,7 +178,7 @@ export const TranslationFileImporter = observer((props: { onCreateLanguageClick?
     React.useEffect(() => {
         (async () => {
             try {
-                const responseLanguages = await LanguagesAPI.getLanguages(params.projectId);
+                const responseLanguages = await LanguagesAPI.getLanguages(params.projectId, { showAll: true });
                 const responseExportConfigs = await ExportConfigsAPI.getExportConfigs({
                     projectId: params.projectId
                 });

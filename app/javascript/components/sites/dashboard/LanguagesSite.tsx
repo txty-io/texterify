@@ -5,7 +5,7 @@ import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
-import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
+import { IGetLanguagesOptions, LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { AddEditLanguageFormModal } from "../../forms/AddEditLanguageFormModal";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
@@ -75,19 +75,10 @@ class LanguagesSite extends React.Component<IProps, IState> {
     };
 
     async componentDidMount() {
-        try {
-            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
-
-            this.setState({
-                languagesResponse: responseLanguages,
-                languages: responseLanguages.data
-            });
-        } catch (error) {
-            console.error(error);
-        }
+        this.reloadTable();
     }
 
-    fetchLanguages = async (options?: any) => {
+    fetchLanguages = async (options?: IGetLanguagesOptions) => {
         this.setState({ languagesLoading: true });
         try {
             const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, options);
@@ -101,7 +92,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
         this.setState({ languagesLoading: false });
     };
 
-    reloadTable = async (options?: any) => {
+    reloadTable = async (options?: IGetLanguagesOptions) => {
         const fetchOptions = options || {};
         fetchOptions.search = (options && options.search) || this.state.search;
         fetchOptions.page = (options && options.page) || this.state.page;
@@ -340,13 +331,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
                                 languageToEdit: null
                             });
 
-                            const responseLanguages = await LanguagesAPI.getLanguages(
-                                this.props.match.params.projectId
-                            );
-                            this.setState({
-                                languagesResponse: responseLanguages,
-                                languages: responseLanguages.data
-                            });
+                            this.reloadTable();
                         }
                     }}
                 />

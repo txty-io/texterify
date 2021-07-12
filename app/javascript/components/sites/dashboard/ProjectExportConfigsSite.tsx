@@ -40,7 +40,9 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                 projectId: this.props.match.params.projectId
             });
 
-            const languagesResponse = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
+            const languagesResponse = await LanguagesAPI.getLanguages(this.props.match.params.projectId, {
+                showAll: true
+            });
 
             this.setState({
                 projectExportConfigsResponse: projectExportConfigsResponse,

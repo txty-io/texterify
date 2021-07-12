@@ -52,7 +52,7 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
     async componentDidMount() {
         try {
             const exportConfigsResponse = await ExportConfigsAPI.getExportConfigs({ projectId: this.props.projectId });
-            const languagesResponse = await LanguagesAPI.getLanguages(this.props.projectId);
+            const languagesResponse = await LanguagesAPI.getLanguages(this.props.projectId, { showAll: true });
 
             let languageConfigsResponse = null;
             if (this.props.exportConfigToEdit) {

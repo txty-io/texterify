@@ -327,23 +327,25 @@ export function Licenses(props: {
                 justifyContent: "center"
             }}
         >
-            {props.showFreePlan && <PaymentPlan
-                plan={FREE_PLAN}
-                selected={props.selected === FREE_PLAN.id}
-                hasActivePlan={!!props.selected}
-                hostingType={props.hostingType}
-                organizationId={props.organizationId}
-                onChangePlan={props.onChangePlan}
-                style={{ marginRight: 16, cursor: props.selectByPlanClick ? "pointer" : "default" }}
-                annualBilling={props.annualBilling}
-                hideSelectButton={props.hideSelectButtons}
-                onClick={() => {
-                    if (props.selectByPlanClick && props.onChangePlan) {
-                        props.onChangePlan(FREE_PLAN);
-                    }
-                }}
-                showFreeTrial={props.showFreeTrial}
-            />}
+            {props.showFreePlan && (
+                <PaymentPlan
+                    plan={FREE_PLAN}
+                    selected={props.selected === FREE_PLAN.id}
+                    hasActivePlan={!!props.selected}
+                    hostingType={props.hostingType}
+                    organizationId={props.organizationId}
+                    onChangePlan={props.onChangePlan}
+                    style={{ marginRight: 16, cursor: props.selectByPlanClick ? "pointer" : "default" }}
+                    annualBilling={props.annualBilling}
+                    hideSelectButton={props.hideSelectButtons}
+                    onClick={() => {
+                        if (props.selectByPlanClick && props.onChangePlan) {
+                            props.onChangePlan(FREE_PLAN);
+                        }
+                    }}
+                    showFreeTrial={props.showFreeTrial}
+                />
+            )}
             <PaymentPlan
                 plan={BASIC_PLAN}
                 selected={props.selected === BASIC_PLAN.id}
