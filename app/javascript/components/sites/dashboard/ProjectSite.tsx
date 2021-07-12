@@ -1,5 +1,5 @@
 import { CrownOutlined, PicRightOutlined } from "@ant-design/icons";
-import { Button, Empty, Layout, message, Progress, Skeleton, Statistic, Tooltip } from "antd";
+import { Button, Empty, Layout, message, Pagination, Progress, Skeleton, Statistic, Tooltip } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as moment from "moment";
@@ -14,6 +14,7 @@ import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Activity } from "../../ui/Activity";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import FlagIcon from "../../ui/FlagIcons";
 import { ProjectAvatar } from "../../ui/ProjectAvatar";
@@ -25,6 +26,8 @@ interface IState {
     languagesLoading: boolean;
     projectActivityResponse: any;
     projectActivityLoading: boolean;
+    languagesPage: number;
+    languagesPerPage: number;
 }
 
 @observer
@@ -34,7 +37,9 @@ class ProjectSite extends React.Component<IProps, IState> {
         languagesResponse: null,
         languagesLoading: true,
         projectActivityResponse: null,
-        projectActivityLoading: true
+        projectActivityLoading: true,
+        languagesPage: 1,
+        languagesPerPage: DEFAULT_PAGE_SIZE
     };
 
     async componentDidMount() {
@@ -44,7 +49,10 @@ class ProjectSite extends React.Component<IProps, IState> {
     async fetchLanguages() {
         this.setState({ languagesLoading: true });
         try {
-            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
+            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, {
+                page: this.state.languagesPage,
+                perPage: this.state.languagesPerPage
+            });
 
             this.setState({
                 languagesResponse: responseLanguages
@@ -205,7 +213,34 @@ class ProjectSite extends React.Component<IProps, IState> {
                         <p style={{ marginTop: 16 }}>{dashboardStore.currentProject?.attributes.description}</p>
                     )}
                     <div style={{ display: "flex", marginTop: 40 }}>
-                        <div style={{ width: "50%", marginRight: 40 }}>{this.renderLanguagesProgress()}</div>
+                        <div style={{ width: "50%", marginRight: 40 }}>
+                            {this.renderLanguagesProgress()}
+
+                            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+                                <Pagination
+                                    pageSizeOptions={PAGE_SIZE_OPTIONS}
+                                    showSizeChanger
+                                    pageSize={this.state.languagesPerPage}
+                                    current={this.state.languagesPage}
+                                    total={
+                                        (this.state.languagesResponse &&
+                                            this.state.languagesResponse.data &&
+                                            this.state.languagesResponse.meta.total) ||
+                                        0
+                                    }
+                                    onChange={async (page: number, _perPage: number) => {
+                                        this.setState({ languagesPage: page }, () => {
+                                            this.fetchLanguages();
+                                        });
+                                    }}
+                                    onShowSizeChange={async (_current: number, size: number) => {
+                                        this.setState({ languagesPage: 1, languagesPerPage: size }, () => {
+                                            this.fetchLanguages();
+                                        });
+                                    }}
+                                />
+                            </div>
+                        </div>
 
                         <div style={{ width: "50%", marginLeft: 40 }}>
                             <h3>Statistics</h3>
