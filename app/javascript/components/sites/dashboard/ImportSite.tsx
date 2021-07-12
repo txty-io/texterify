@@ -45,7 +45,9 @@ class ImportSite extends React.Component<IProps, IState> {
 
     async componentDidMount() {
         try {
-            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, { showAll: true });
+            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, {
+                showAll: true
+            });
             const responseExportConfigs = await ExportConfigsAPI.getExportConfigs({
                 projectId: this.props.match.params.projectId
             });
