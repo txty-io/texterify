@@ -131,7 +131,9 @@ class KeysSite extends React.Component<IProps, IState> {
         await this.reloadTable();
 
         try {
-            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
+            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, {
+                showAll: true
+            });
             const exportConfigsResponse = await ExportConfigsAPI.getExportConfigs({
                 projectId: this.props.match.params.projectId
             });

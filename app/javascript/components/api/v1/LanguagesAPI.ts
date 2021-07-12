@@ -33,6 +33,7 @@ export interface IGetLanguagesOptions {
     search?: string;
     page?: number;
     perPage?: number;
+    showAll?: boolean;
 }
 
 const LanguagesAPI = {
@@ -40,7 +41,8 @@ const LanguagesAPI = {
         return API.getRequest(`projects/${projectId}/languages`, true, {
             search: options && options.search,
             page: options && options.page,
-            per_page: options && options.perPage
+            per_page: options && options.perPage,
+            show_all: options && options.showAll
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
