@@ -14,7 +14,7 @@ import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Activity } from "../../ui/Activity";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
-import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
+import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import FlagIcon from "../../ui/FlagIcons";
 import { ProjectAvatar } from "../../ui/ProjectAvatar";
@@ -39,7 +39,7 @@ class ProjectSite extends React.Component<IProps, IState> {
         projectActivityResponse: null,
         projectActivityLoading: true,
         languagesPage: 1,
-        languagesPerPage: DEFAULT_PAGE_SIZE
+        languagesPerPage: 5
     };
 
     async componentDidMount() {
@@ -121,59 +121,61 @@ class ProjectSite extends React.Component<IProps, IState> {
                         image={Empty.PRESENTED_IMAGE_SIMPLE}
                     />
                 )}
-                {languages.map((language, index) => {
-                    const countryCode = APIUtils.getIncludedObject(
-                        language.relationships.country_code.data,
-                        this.state.languagesResponse.included
-                    );
+                {!this.state.languagesLoading &&
+                    languages.map((language, index) => {
+                        const countryCode = APIUtils.getIncludedObject(
+                            language.relationships.country_code.data,
+                            this.state.languagesResponse.included
+                        );
 
-                    return (
-                        <div key={index}>
-                            <div style={{ display: "flex", marginTop: 24, alignItems: "center" }}>
-                                {language.attributes.is_default && (
-                                    <div style={{ textAlign: "center", marginRight: 8 }}>
-                                        <Tooltip title="Default language">
-                                            <CrownOutlined style={{ color: "#d6ad13", fontSize: 16 }} />
-                                        </Tooltip>
-                                    </div>
-                                )}
-                                {countryCode && (
-                                    <span style={{ marginRight: 8 }}>
-                                        <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
-                                    </span>
-                                )}
-                                <div style={{ color: "#a7a7a7" }}>{language.attributes.name}</div>
+                        return (
+                            <div key={index}>
+                                <div style={{ display: "flex", marginTop: 24, alignItems: "center" }}>
+                                    {language.attributes.is_default && (
+                                        <div style={{ textAlign: "center", marginRight: 8 }}>
+                                            <Tooltip title="Default language">
+                                                <CrownOutlined style={{ color: "#d6ad13", fontSize: 16 }} />
+                                            </Tooltip>
+                                        </div>
+                                    )}
+                                    {countryCode && (
+                                        <span style={{ marginRight: 8 }}>
+                                            <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
+                                        </span>
+                                    )}
+                                    <div style={{ color: "#a7a7a7" }}>{language.attributes.name}</div>
+                                </div>
+                                <Progress
+                                    style={{ marginTop: 8 }}
+                                    percent={parseFloat(language.attributes.progress.toFixed(2))}
+                                />
+                                <div style={{ marginTop: 4 }}>
+                                    <Link
+                                        to={
+                                            Routes.DASHBOARD.PROJECT_KEYS.replace(
+                                                ":projectId",
+                                                this.props.match.params.projectId
+                                            ) + `?ou=true&l=${language.id}`
+                                        }
+                                    >
+                                        Show all untranslated
+                                    </Link>
+                                    <Link
+                                        to={
+                                            Routes.DASHBOARD.PROJECT_KEYS.replace(
+                                                ":projectId",
+                                                this.props.match.params.projectId
+                                            ) +
+                                            `?ca=${moment().subtract(7, "days").format("YYYY-MM-DD")}&l=${language.id}`
+                                        }
+                                        style={{ marginLeft: 24 }}
+                                    >
+                                        Show changed in last 7 days
+                                    </Link>
+                                </div>
                             </div>
-                            <Progress
-                                style={{ marginTop: 8 }}
-                                percent={parseFloat(language.attributes.progress.toFixed(2))}
-                            />
-                            <div style={{ marginTop: 4 }}>
-                                <Link
-                                    to={
-                                        Routes.DASHBOARD.PROJECT_KEYS.replace(
-                                            ":projectId",
-                                            this.props.match.params.projectId
-                                        ) + `?ou=true&l=${language.id}`
-                                    }
-                                >
-                                    Show all untranslated
-                                </Link>
-                                <Link
-                                    to={
-                                        Routes.DASHBOARD.PROJECT_KEYS.replace(
-                                            ":projectId",
-                                            this.props.match.params.projectId
-                                        ) + `?ca=${moment().subtract(7, "days").format("YYYY-MM-DD")}&l=${language.id}`
-                                    }
-                                    style={{ marginLeft: 24 }}
-                                >
-                                    Show changed in last 7 days
-                                </Link>
-                            </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
             </>
         );
     };
