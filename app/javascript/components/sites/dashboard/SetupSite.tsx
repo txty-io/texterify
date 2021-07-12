@@ -324,6 +324,8 @@ export function SetupSite(props: { step: number }) {
 
         if (props.step === STEPS.ORGANIZATION) {
             if (IS_TEXTERIFY_CLOUD) {
+                return Routes.DASHBOARD.SETUP_PLAN_RESOLVER({ organizationId: org.id });
+            } else {
                 if (project) {
                     return Routes.DASHBOARD.SETUP_PROJECT_RESOLVER({
                         organizationId: org.id,
@@ -332,8 +334,6 @@ export function SetupSite(props: { step: number }) {
                 } else {
                     return Routes.DASHBOARD.SETUP_PROJECT_NEW_RESOLVER({ organizationId: org.id });
                 }
-            } else {
-                return Routes.DASHBOARD.SETUP_PLAN_RESOLVER({ organizationId: org.id });
             }
         } else if (props.step === STEPS.PLAN) {
             if (project) {
@@ -540,6 +540,7 @@ export function SetupSite(props: { step: number }) {
                                     setSelectedPlan(plan.id);
                                 }}
                                 showFreeTrial
+                                showFreePlan
                             />
                         )}
                     </StepWrapper>

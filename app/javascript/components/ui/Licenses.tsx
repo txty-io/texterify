@@ -316,6 +316,7 @@ export function Licenses(props: {
     annualBilling?: boolean;
     hideSelectButtons?: boolean;
     selectByPlanClick?: boolean;
+    showFreePlan?: boolean;
     showFreeTrial?: boolean;
     onChangePlan?(plan: IPlan): void;
 }) {
@@ -326,7 +327,7 @@ export function Licenses(props: {
                 justifyContent: "center"
             }}
         >
-            <PaymentPlan
+            {props.showFreePlan && <PaymentPlan
                 plan={FREE_PLAN}
                 selected={props.selected === FREE_PLAN.id}
                 hasActivePlan={!!props.selected}
@@ -342,7 +343,7 @@ export function Licenses(props: {
                     }
                 }}
                 showFreeTrial={props.showFreeTrial}
-            />
+            />}
             <PaymentPlan
                 plan={BASIC_PLAN}
                 selected={props.selected === BASIC_PLAN.id}
