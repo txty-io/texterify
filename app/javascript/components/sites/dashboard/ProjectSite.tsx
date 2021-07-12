@@ -104,7 +104,19 @@ class ProjectSite extends React.Component<IProps, IState> {
                 {this.state.languagesLoading && <Skeleton active />}
                 {!this.state.languagesLoading && languages.length === 0 && (
                     <Empty
-                        description="Add some languages to show your progress here"
+                        description={
+                            <>
+                                <Link
+                                    to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
+                                        ":projectId",
+                                        this.props.match.params.projectId
+                                    )}
+                                >
+                                    Add some languages
+                                </Link>{" "}
+                                to show your progress here
+                            </>
+                        }
                         style={{ margin: "40px 0" }}
                         image={Empty.PRESENTED_IMAGE_SIMPLE}
                     />
