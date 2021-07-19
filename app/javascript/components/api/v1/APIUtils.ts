@@ -1,5 +1,6 @@
 import { message } from "antd";
 import * as _ from "lodash";
+import moment from "moment";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
@@ -10,6 +11,8 @@ message.config({
     duration: 4,
     maxCount: 3
 });
+
+let LAST_SESSION_EXPIRED_MESSAGE_SHOWN: moment.Moment;
 
 const APIUtils = {
     saveTokenFromResponseIfAvailable: (response: any): void => {
@@ -36,11 +39,18 @@ const APIUtils = {
             if (Array.isArray(response.errors)) {
                 response.errors.forEach((error) => {
                     if (error.code === APIErrors.INVALID_ACCESS_TOKEN) {
-                        authStore.resetAuth();
-                        message.info("Your session expired. Please log in again.");
-                        history.push(Routes.AUTH.LOGIN);
+                        // Only show the session expired notification if it hasn't been shown in the last 5 minutes.
+                        if (
+                            !LAST_SESSION_EXPIRED_MESSAGE_SHOWN ||
+                            moment().isAfter(LAST_SESSION_EXPIRED_MESSAGE_SHOWN.add(5, "minutes"))
+                        ) {
+                            LAST_SESSION_EXPIRED_MESSAGE_SHOWN = moment();
+                            authStore.resetAuth();
+                            message.info("Your session expired. Please log in again.");
+                            history.push(Routes.AUTH.LOGIN);
 
-                        return;
+                            return;
+                        }
                     }
                 });
             }
