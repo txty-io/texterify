@@ -14,7 +14,8 @@ export function ConfirmEmailHint() {
                 background: "var(--primary-btn-color)",
                 display: "flex",
                 alignItems: "center",
-                minHeight: 56
+                minHeight: 56,
+                color: "#fff"
             }}
         >
             Please confirm your account by clicking on the confirmation button in the email we sent to you.
