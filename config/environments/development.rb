@@ -46,7 +46,8 @@ Rails.application.configure do
     :user_name => ENV["SMTP_USERNAME"].blank? ? nil : ENV["SMTP_USERNAME"],
     :password => ENV["SMTP_PASSWORD"].blank? ? nil : ENV["SMTP_PASSWORD"],
     :enable_starttls_auto => ENV["SMTP_ENABLE_STARTTLS_AUTO"].blank? ? nil : ENV["SMTP_ENABLE_STARTTLS_AUTO"],
-    :openssl_verify_mode => ENV["SMTP_OPENSSL_VERIFY_MODE"].blank? ? nil : ENV["SMTP_OPENSSL_VERIFY_MODE"]
+    :openssl_verify_mode => ENV["SMTP_OPENSSL_VERIFY_MODE"].blank? ? nil : ENV["SMTP_OPENSSL_VERIFY_MODE"],
+    :tls => ENV["SMTP_TLS"].blank? nil : ENV["SMTP_TLS"]
   }
 
   # Set host so asset_path returns a full URL instead of a relative path.
