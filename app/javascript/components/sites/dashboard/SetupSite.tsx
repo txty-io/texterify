@@ -50,6 +50,8 @@ if (IS_TEXTERIFY_CLOUD) {
     };
 }
 
+export { STEPS };
+
 function SetupSteps(props: {
     current: number;
     project: IProject;
@@ -89,11 +91,7 @@ function SetupSteps(props: {
                 />
             )}
             {STEPS.SUCCESS !== undefined && (
-                <Steps.Step
-                    title="Success"
-                    // description="Install and configure the CLI tool and other integrations."
-                    disabled={!props.organization || !props.project}
-                />
+                <Steps.Step title="Success" disabled={!props.organization || !props.project} />
             )}
         </Steps>
     );
@@ -202,8 +200,8 @@ function goToStep(options: {
             organizationId: options.organization.id,
             projectId: options.project.id
         });
-    } else if (options.step === STEPS.INTEGRATIONS) {
-        url = Routes.DASHBOARD.SETUP_PROJECT_INTEGRATIONS_RESOLVER({
+    } else if (options.step === STEPS.SUCCESS) {
+        url = Routes.DASHBOARD.SETUP_PROJECT_SUCCESS_RESOLVER({
             organizationId: options.organization.id,
             projectId: options.project.id
         });
@@ -315,7 +313,7 @@ export function SetupSite(props: { step: number }) {
     //     });
     // }, [selectedPlan]);
 
-    function getNextStep(options?: { organization: IOrganization; step?: number }) {
+    function getNextStep(options?: { organization: IOrganization }) {
         const org = organization || options?.organization;
 
         if (!org) {
@@ -355,7 +353,7 @@ export function SetupSite(props: { step: number }) {
                 projectId: project.id
             });
         } else if (props.step === STEPS.IMPORT && project) {
-            return Routes.DASHBOARD.SETUP_PROJECT_INTEGRATIONS_RESOLVER({
+            return Routes.DASHBOARD.SETUP_PROJECT_SUCCESS_RESOLVER({
                 organizationId: org.id,
                 projectId: project.id
             });
@@ -389,7 +387,7 @@ export function SetupSite(props: { step: number }) {
                 organizationId: organization.id,
                 projectId: project.id
             });
-        } else if (props.step === STEPS.INTEGRATIONS && project) {
+        } else if (props.step === STEPS.SUCCESS && project) {
             return Routes.DASHBOARD.SETUP_PROJECT_IMPORT_RESOLVER({
                 organizationId: organization.id,
                 projectId: project.id
@@ -470,7 +468,7 @@ export function SetupSite(props: { step: number }) {
                         title="Select a plan that fits your team"
                         description="You can always change you plan later on."
                         backTo={getPreviousStep()}
-                        // nextTo={getNextStep()}
+                        nextTo={subscription ? getNextStep() : undefined}
                         buttons={
                             <Button
                                 type="primary"
@@ -524,7 +522,11 @@ export function SetupSite(props: { step: number }) {
                                     }
                                 }}
                             >
-                                {project || subscription ? "Change plan" : "Select plan"}
+                                {subscription
+                                    ? subscription.attributes.plan === selectedPlan
+                                        ? "Continue with current plan"
+                                        : "Change plan"
+                                    : "Select plan"}
                             </Button>
                         }
                         fullWidth
@@ -688,20 +690,7 @@ export function SetupSite(props: { step: number }) {
                 )}
 
                 {props.step === STEPS.SUCCESS && (
-                    <StepWrapper
-                        // title="Integrations"
-                        backTo={getPreviousStep()}
-                        // buttons={
-                        //     <Button
-                        //         onClick={() => {
-                        //             history.push({ pathname: getNextStep(), search: history.location.search });
-                        //         }}
-                        //     >
-                        //         Skip integrations
-                        //     </Button>
-                        // }
-                        fullWidth
-                    >
+                    <StepWrapper backTo={getPreviousStep()} fullWidth>
                         {/* <div
                             style={{
                                 display: "grid",

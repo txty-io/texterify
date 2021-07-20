@@ -11,7 +11,7 @@ import styled from "styled-components";
 
 export const FREE_PLAN: IPlan = {
     id: "free",
-    name: "Free",
+    name: "Free 🌱",
     pricePerUserCloud: 0,
     pricePerUserOnPremise: 0,
     features: ["1 user", "1 project", "2 languages", "Unlimited keys", "Unlimited translations"]
@@ -19,7 +19,7 @@ export const FREE_PLAN: IPlan = {
 
 export const BASIC_PLAN: IPlan = {
     id: "basic",
-    name: "Basic",
+    name: "Basic 🌳",
     pricePerUserCloud: 9,
     pricePerUserOnPremise: 7,
     features: [
@@ -33,7 +33,7 @@ export const BASIC_PLAN: IPlan = {
 
 export const TEAM_PLAN: IPlan = {
     id: "team",
-    name: "Team",
+    name: "Team 🚀",
     pricePerUserCloud: 19,
     pricePerUserOnPremise: 14,
     features: [
@@ -53,7 +53,7 @@ export const TEAM_PLAN: IPlan = {
 
 export const BUSINESS_PLAN: IPlan = {
     id: "business",
-    name: "Business",
+    name: "Business 🌎",
     pricePerUserCloud: 39,
     pricePerUserOnPremise: 31,
     features: [

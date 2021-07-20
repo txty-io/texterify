@@ -1,7 +1,9 @@
 import {
     ArrowRightOutlined,
+    CloudOutlined,
     DeploymentUnitOutlined,
     GlobalOutlined,
+    HomeOutlined,
     KeyOutlined,
     ProjectOutlined,
     RobotOutlined,
@@ -15,6 +17,7 @@ import { Link } from "react-router-dom";
 import { IInstanceInfo, InstanceAPI } from "../../../api/v1/InstanceAPI";
 import { IGetMachineTranslationsUsage, MachineTranslationsAPI } from "../../../api/v1/MachineTranslationsAPI";
 import { Loading } from "../../../ui/Loading";
+import { IS_TEXTERIFY_CLOUD } from "../../../utilities/Env";
 
 export const InstanceSite = observer(() => {
     const [instanceInfos, setInstanceInfos] = React.useState<IInstanceInfo>();
@@ -92,13 +95,18 @@ export const InstanceSite = observer(() => {
                 </div>
 
                 <h3 style={{ marginTop: 40 }}>Application status</h3>
-                <ul>
-                    <Link to="/sidekiq" target="_blank">
-                        View background jobs <ArrowRightOutlined />
-                    </Link>
-                </ul>
                 <div style={{ display: "flex", flexWrap: "wrap" }}>
-                    <Card style={{ width: 240, marginBottom: 40 }}>
+                    <Card style={{ width: 240, marginBottom: 40, marginRight: 40 }}>
+                        <Link to="/sidekiq" target="_blank">
+                            View background jobs <ArrowRightOutlined />
+                        </Link>
+                        <Statistic
+                            title="Sidekiq processes"
+                            value={instanceInfos.sidekiq_processes}
+                            style={{ marginTop: 8 }}
+                        />
+                    </Card>
+                    <Card style={{ width: 240, marginBottom: 40, marginRight: 40 }}>
                         <Statistic
                             title="Machine Translations Usage"
                             valueRender={() => {
@@ -122,6 +130,24 @@ export const InstanceSite = observer(() => {
                                     </>
                                 );
                             }}
+                        />
+                    </Card>
+                    <Card style={{ width: 240, marginBottom: 40 }}>
+                        <Statistic
+                            title="Frontend mode"
+                            prefix={IS_TEXTERIFY_CLOUD ? <CloudOutlined /> : <HomeOutlined />}
+                            valueRender={() => {
+                                return IS_TEXTERIFY_CLOUD ? "cloud" : "on-premise";
+                            }}
+                        />
+
+                        <Statistic
+                            title="Backend mode"
+                            prefix={instanceInfos.is_cloud ? <CloudOutlined /> : <HomeOutlined />}
+                            valueRender={() => {
+                                return instanceInfos.is_cloud ? "cloud" : "on-premise";
+                            }}
+                            style={{ marginTop: 8 }}
                         />
                     </Card>
                 </div>

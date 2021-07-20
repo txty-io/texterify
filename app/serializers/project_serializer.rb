@@ -1,6 +1,8 @@
 class ProjectSerializer
   include FastJsonapi::ObjectSerializer
+  include EnabledFeaturesHelper
   extend ApplicationHelper
+
   attributes :id,
              :name,
              :description,
@@ -45,29 +47,7 @@ class ProjectSerializer
   end
 
   attribute :enabled_features do |object|
-    if object.organization&.trial_active
-      Organization::FEATURES_TRIAL
-    elsif object.organization&.active_subscription&.plan == Subscription::PLAN_BASIC
-      Organization::FEATURES_BASIC_PLAN
-    elsif object.organization&.active_subscription&.plan == Subscription::PLAN_TEAM
-      Organization::FEATURES_TEAM_PLAN
-    elsif object.organization&.active_subscription&.plan == Subscription::PLAN_BUSINESS
-      Organization::FEATURES_BUSINESS_PLAN
-    elsif !License.all.empty?
-      license = License.current_active
-
-      if license && license.restrictions[:plan] == 'basic'
-        Organization::FEATURES_BASIC_PLAN
-      elsif license && license.restrictions[:plan] == 'team'
-        Organization::FEATURES_TEAM_PLAN
-      elsif license && license.restrictions[:plan] == 'business'
-        Organization::FEATURES_BUSINESS_PLAN
-      else
-        []
-      end
-    else
-      []
-    end
+    enabled_features_organization(object.organization)
   end
 
   attribute :all_features do

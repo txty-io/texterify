@@ -1,32 +1,30 @@
 import { FileTextOutlined } from "@ant-design/icons";
-import { Alert, Button, message, Select, Tag, Input, Empty, Result } from "antd";
+import { Alert, Button, Empty, Input, message, Result, Select, Tag } from "antd";
 import AppleLogoBlack from "images/apple_logo_black.svg";
 import AppleLogoWhite from "images/apple_logo_white.svg";
-import AndroidLogo from "images/android_logo.svg";
 import ChromeLogo from "images/chrome_logo.svg";
 import FormatJSLogo from "images/formatjs_logo.svg";
 import GoLogo from "images/go_logo_blue.svg";
 import JSONLogo from "images/json_logo.svg";
 import TOMLLogo from "images/toml_logo.svg";
-import RailsLogo from "images/rails_logo.svg";
 import { observer } from "mobx-react";
 import * as React from "react";
 import Dropzone from "react-dropzone";
 import { useParams } from "react-router";
-import { Link } from "react-router-dom";
 import { APIUtils } from "../api/v1/APIUtils";
 import { ExportConfigsAPI, IGetExportConfigsResponse } from "../api/v1/ExportConfigsAPI";
 import { IGetLanguagesResponse, LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../api/v1/ProjectsAPI";
+import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
 import { ImportFileFormats } from "../sites/dashboard/ImportSite";
 import { generalStore } from "../stores/GeneralStore";
 import { DropZoneWrapper } from "./DropZoneWrapper";
 import FlagIcon from "./FlagIcons";
 import { HoverCard } from "./HoverCard";
+import { Loading } from "./Loading";
 import { LoadingOverlay } from "./LoadingOverlay";
 import { Styles } from "./Styles";
-import { Loading } from "./Loading";
 
 const SUPPORTED_FORMATS: {
     image: any;
@@ -303,16 +301,22 @@ export const TranslationFileImporter = observer((props: { onCreateLanguageClick?
                         message="No language"
                         description={
                             <p>
-                                <Link
-                                    to={
+                                <a
+                                    onClick={
                                         props.onCreateLanguageClick
-                                            ? undefined
-                                            : Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", params.projectId)
+                                            ? props.onCreateLanguageClick
+                                            : () => {
+                                                  history.push(
+                                                      Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
+                                                          ":projectId",
+                                                          params.projectId
+                                                      )
+                                                  );
+                                              }
                                     }
-                                    onClick={props.onCreateLanguageClick ? props.onCreateLanguageClick : undefined}
                                 >
                                     Create a language
-                                </Link>{" "}
+                                </a>{" "}
                                 to import your keys.
                             </p>
                         }

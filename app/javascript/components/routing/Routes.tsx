@@ -92,6 +92,13 @@ const Routes = {
                 options.organizationId
             ).replace(":projectId", options.projectId);
         },
+        SETUP_PROJECT_SUCCESS: "/dashboard/setup/organization/:organizationId/project/:projectId/success",
+        SETUP_PROJECT_SUCCESS_RESOLVER: (options: { organizationId: string; projectId: string }) => {
+            return Routes.DASHBOARD.SETUP_PROJECT_SUCCESS.replace(":organizationId", options.organizationId).replace(
+                ":projectId",
+                options.projectId
+            );
+        },
         ORGANIZATIONS: "/dashboard/organizations",
         ORGANIZATION: "/dashboard/organizations/:organizationId",
         ORGANIZATION_MEMBERS: "/dashboard/organizations/:organizationId/members",

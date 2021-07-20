@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { APIUtils } from "../../api/v1/APIUtils";
-import { IGetLanguagesOptions, IGetLanguagesResponse, ILanguage, LanguagesAPI } from "../../api/v1/LanguagesAPI";
+import { IGetLanguagesResponse, ILanguage, LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import {
     IGetMachineTranslationsSourceLanguages,
     IGetMachineTranslationsTargetLanguages,
@@ -133,72 +133,38 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
     }
 
     settingsTabContent() {
-        if (!dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE")) {
-            return <FeatureNotAvailable feature="FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE" />;
-        }
-
         return (
-            <Form
-                id="machineTranslationSettingsForm"
-                onFinish={this.handleSubmit}
-                style={{ maxWidth: "100%", marginTop: 24, display: "flex", flexDirection: "column" }}
-                initialValues={{
-                    machineTranslationEnabled: dashboardStore.currentProject.attributes.machine_translation_enabled,
-                    autoTranslateNewKeys: dashboardStore.currentProject.attributes.auto_translate_new_keys,
-                    autoTranslateNewLanguages: dashboardStore.currentProject.attributes.auto_translate_new_languages
-                }}
-            >
-                <Form.Item noStyle shouldUpdate>
-                    {() => {
-                        return (
-                            <>
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                    <Form.Item
-                                        name="machineTranslationEnabled"
-                                        rules={[{ required: false }]}
-                                        valuePropName="checked"
-                                        style={{ marginBottom: 0 }}
-                                    >
-                                        <Checkbox disabled={this.state.settingsSubmitting}>
-                                            <div style={{ display: "inline-block" }}>
-                                                <div style={{ fontWeight: "bold" }}>
-                                                    Enable auto machine translation
-                                                </div>
-                                                <div>Enable auto machine translation for this project.</div>
-                                            </div>
-                                        </Checkbox>
-                                    </Form.Item>
-                                </div>
-                            </>
-                        );
+            <>
+                {!dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE") && (
+                    <FeatureNotAvailable feature="FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE" />
+                )}
+                <Form
+                    id="machineTranslationSettingsForm"
+                    onFinish={this.handleSubmit}
+                    style={{ maxWidth: "100%", marginTop: 24, display: "flex", flexDirection: "column" }}
+                    initialValues={{
+                        machineTranslationEnabled: dashboardStore.currentProject.attributes.machine_translation_enabled,
+                        autoTranslateNewKeys: dashboardStore.currentProject.attributes.auto_translate_new_keys,
+                        autoTranslateNewLanguages: dashboardStore.currentProject.attributes.auto_translate_new_languages
                     }}
-                </Form.Item>
-
-                <div style={{ marginLeft: 40, marginTop: 24 }}>
+                >
                     <Form.Item noStyle shouldUpdate>
-                        {({ getFieldValue }) => {
+                        {() => {
                             return (
                                 <>
                                     <div style={{ display: "flex", alignItems: "center" }}>
                                         <Form.Item
-                                            name="autoTranslateNewKeys"
+                                            name="machineTranslationEnabled"
                                             rules={[{ required: false }]}
                                             valuePropName="checked"
                                             style={{ marginBottom: 0 }}
                                         >
-                                            <Checkbox
-                                                disabled={
-                                                    !getFieldValue("machineTranslationEnabled") ||
-                                                    this.state.settingsSubmitting
-                                                }
-                                            >
+                                            <Checkbox disabled={this.state.settingsSubmitting}>
                                                 <div style={{ display: "inline-block" }}>
                                                     <div style={{ fontWeight: "bold" }}>
-                                                        Automatically translate new keys
+                                                        Enable auto machine translation
                                                     </div>
-                                                    <div>
-                                                        Automatically translate new keys using machine translation.
-                                                    </div>
+                                                    <div>Enable auto machine translation for this project.</div>
                                                 </div>
                                             </Checkbox>
                                         </Form.Item>
@@ -208,63 +174,98 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                         }}
                     </Form.Item>
 
-                    <Form.Item noStyle shouldUpdate>
-                        {({ getFieldValue }) => {
-                            return (
-                                <>
-                                    <div
-                                        style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            marginTop: 24
-                                        }}
-                                    >
-                                        <Form.Item
-                                            name="autoTranslateNewLanguages"
-                                            rules={[{ required: false }]}
-                                            valuePropName="checked"
-                                            style={{ marginBottom: 0 }}
-                                        >
-                                            <Checkbox
-                                                disabled={
-                                                    !getFieldValue("machineTranslationEnabled") ||
-                                                    this.state.settingsSubmitting
-                                                }
+                    <div style={{ marginLeft: 40, marginTop: 24 }}>
+                        <Form.Item noStyle shouldUpdate>
+                            {({ getFieldValue }) => {
+                                return (
+                                    <>
+                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                            <Form.Item
+                                                name="autoTranslateNewKeys"
+                                                rules={[{ required: false }]}
+                                                valuePropName="checked"
+                                                style={{ marginBottom: 0 }}
                                             >
-                                                <div style={{ display: "inline-block" }}>
-                                                    <div style={{ fontWeight: "bold" }}>
-                                                        Automatically translate new languages
+                                                <Checkbox
+                                                    disabled={
+                                                        !getFieldValue("machineTranslationEnabled") ||
+                                                        this.state.settingsSubmitting
+                                                    }
+                                                >
+                                                    <div style={{ display: "inline-block" }}>
+                                                        <div style={{ fontWeight: "bold" }}>
+                                                            Automatically translate new keys
+                                                        </div>
+                                                        <div>
+                                                            Automatically translate new keys using machine translation.
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        When you add a new language all keys are automatically
-                                                        translated.
-                                                    </div>
-                                                </div>
-                                            </Checkbox>
-                                        </Form.Item>
-                                    </div>
-                                </>
-                            );
-                        }}
-                    </Form.Item>
-                </div>
+                                                </Checkbox>
+                                            </Form.Item>
+                                        </div>
+                                    </>
+                                );
+                            }}
+                        </Form.Item>
 
-                <Button
-                    form="machineTranslationSettingsForm"
-                    type="primary"
-                    htmlType="submit"
-                    style={{ alignSelf: "flex-end", marginTop: 24 }}
-                    loading={this.state.settingsSubmitting}
-                >
-                    Save
-                </Button>
-            </Form>
+                        <Form.Item noStyle shouldUpdate>
+                            {({ getFieldValue }) => {
+                                return (
+                                    <>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                marginTop: 24
+                                            }}
+                                        >
+                                            <Form.Item
+                                                name="autoTranslateNewLanguages"
+                                                rules={[{ required: false }]}
+                                                valuePropName="checked"
+                                                style={{ marginBottom: 0 }}
+                                            >
+                                                <Checkbox
+                                                    disabled={
+                                                        !getFieldValue("machineTranslationEnabled") ||
+                                                        this.state.settingsSubmitting
+                                                    }
+                                                >
+                                                    <div style={{ display: "inline-block" }}>
+                                                        <div style={{ fontWeight: "bold" }}>
+                                                            Automatically translate new languages
+                                                        </div>
+                                                        <div>
+                                                            When you add a new language all keys are automatically
+                                                            translated.
+                                                        </div>
+                                                    </div>
+                                                </Checkbox>
+                                            </Form.Item>
+                                        </div>
+                                    </>
+                                );
+                            }}
+                        </Form.Item>
+                    </div>
+
+                    <Button
+                        form="machineTranslationSettingsForm"
+                        type="primary"
+                        htmlType="submit"
+                        style={{ alignSelf: "flex-end", marginTop: 24 }}
+                        loading={this.state.settingsSubmitting}
+                    >
+                        Save
+                    </Button>
+                </Form>
+            </>
         );
     }
 
     translateTabContent(defaultLanguage: ILanguage) {
-        if (!dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE")) {
-            return <FeatureNotAvailable feature="FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE" />;
+        if (!dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_LANGUAGE")) {
+            return <FeatureNotAvailable feature="FEATURE_MACHINE_TRANSLATION_LANGUAGE" />;
         }
 
         return (
@@ -275,7 +276,7 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                         type="info"
                         message={
                             <>
-                                Machine translation with your default language as source is not supported.{" "}
+                                Machine translation with your default language as source is not supported. <br />
                                 <a
                                     onClick={() => {
                                         history.push(
@@ -365,7 +366,7 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                                                         languageId: item.id,
                                                         projectId: dashboardStore.currentProject.id
                                                     });
-                                                    message.success("Texts of language auto-translated.");
+                                                    message.success("Texts of language translated.");
                                                 } catch (error) {
                                                     console.error(error);
                                                     message.error("Failed to auto-translate language.");
