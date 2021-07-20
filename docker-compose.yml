@@ -30,3 +30,16 @@ services:
       - db
     volumes:
       - ./coverage:/var/www/texterify/coverage
+  sidekiq:
+    image: chrztoph/texterify:test
+    environment:
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - DB_TEST_HOST=${DB_TEST_HOST}
+      - DB_TEST_USERNAME=${DB_TEST_USERNAME}
+    depends_on:
+      - db
+      - redis
+    command: bundle exec sidekiq
+
+  redis:
+    image: redis:6.2.0-alpine
