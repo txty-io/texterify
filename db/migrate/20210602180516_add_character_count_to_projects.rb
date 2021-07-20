@@ -8,7 +8,7 @@ class AddCharacterCountToProjects < ActiveRecord::Migration[6.1]
       word_count = 0
 
       project.translations.each do |translation|
-        if !translation.key.html_enabled && translation.export_config_id.nil?
+        if !translation.key.html_enabled && translation.export_config_id.nil? && translation.content.present?
           character_count += translation.content.length
           word_count += translation.content.split(' ').length
         end
