@@ -280,7 +280,7 @@ export const TranslationFileImporter = observer((props: { onCreateLanguageClick?
                         type="primary"
                         key="import-another"
                         onClick={() => {
-                            setImportSuccessful(true);
+                            setImportSuccessful(false);
                         }}
                     >
                         Import another file
@@ -388,8 +388,8 @@ export const TranslationFileImporter = observer((props: { onCreateLanguageClick?
                             />
                             <div
                                 style={{
-                                    display: "grid",
-                                    gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 1fr",
+                                    display: "flex",
+                                    flexWrap: "wrap",
                                     columnGap: 24,
                                     rowGap: 24,
                                     margin: "24px 0"
@@ -435,6 +435,7 @@ export const TranslationFileImporter = observer((props: { onCreateLanguageClick?
                                                                 marginRight:
                                                                     index === supportedFormat.formats.length - 1 ? 0 : 4
                                                             }}
+                                                            key={format}
                                                         >
                                                             {format}
                                                         </Tag>
@@ -459,7 +460,15 @@ export const TranslationFileImporter = observer((props: { onCreateLanguageClick?
                             {selectedImportFormat && (
                                 <div style={{ display: "flex" }}>
                                     {(selectedImportFormat.documentationURL || selectedImportFormat.example) && (
-                                        <div style={{ marginRight: 40, padding: 12, width: "50%" }}>
+                                        <div
+                                            style={{
+                                                marginRight: 40,
+                                                padding: 12,
+                                                width: "50%",
+                                                display: "flex",
+                                                flexDirection: "column"
+                                            }}
+                                        >
                                             <div
                                                 style={{
                                                     fontWeight: "bold",
@@ -523,7 +532,7 @@ export const TranslationFileImporter = observer((props: { onCreateLanguageClick?
                                                     <DropZoneWrapper
                                                         {...getRootProps()}
                                                         disabled={!selectedImportFormat}
-                                                        style={{ minHeight: 400 }}
+                                                        style={{ minHeight: 320 }}
                                                     >
                                                         {files.length > 0 ? (
                                                             <p
@@ -543,7 +552,7 @@ export const TranslationFileImporter = observer((props: { onCreateLanguageClick?
                                                                 {files[0].name}
                                                             </p>
                                                         ) : (
-                                                            <p style={{ margin: 0 }}>
+                                                            <p style={{ margin: 0, padding: 24, textAlign: "center" }}>
                                                                 {!selectedImportFormat ? (
                                                                     <>Please select an import format.</>
                                                                 ) : (

@@ -13,3 +13,4 @@ declare module "images/formatjs_logo.svg";
 declare module "images/toml_logo.svg";
 declare module "images/rails_logo.svg";
 declare module "images/chrome_logo.svg";
+declare module "images/logo_white_background.png";
