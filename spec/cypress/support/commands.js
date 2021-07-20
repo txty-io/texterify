@@ -44,17 +44,15 @@ Cypress.Commands.add("signup", (username, email, password, passwordConfirmation,
     cy.get('[data-id="sign-up-submit"]').click();
 });
 
-Cypress.Commands.add("createProject", (projectName, projectType, fromOrganizationPage) => {
+Cypress.Commands.add("createProject", (projectName, fromOrganizationPage) => {
     if (fromOrganizationPage) {
         cy.get('[data-id="organization-create-project"]').click();
     } else {
-        cy.get('[data-id="projects-create-project"]').click();
-        if (projectType === "Private") {
-            cy.get('[data-id="new-project-form-select-private"]').click();
-        } else {
-            cy.get('[data-id="new-project-form-select-organization"]').click();
-        }
-        cy.contains("button", "Next").click();
+        cy.addOrganization("org-for-new-project");
+        cy.get('[data-id="organization-create-project"]').click();
+        // cy.get('[data-id="projects-create-project"]').click();
+        // cy.get('[data-id="new-project-form-select-organization"]').click();
+        // cy.contains("button", "Next").click();
     }
 
     cy.focused().type(projectName);

@@ -66,7 +66,7 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
         selectedOrganization: this.props.organization,
         organizationsResponse: null,
         organizationsLoading: false,
-        step: this.props.organization ? 3 : 1,
+        step: this.props.organization ? 2 : 1,
         search: null
     };
 
@@ -75,10 +75,6 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
     async componentDidMount() {
         await this.reloadOrganizations();
     }
-
-    isFormStep = () => {
-        return this.state.step === 2;
-    };
 
     reloadOrganizations = async (options?: IGetOrganizationsOptions) => {
         this.setState({ organizationsLoading: true });

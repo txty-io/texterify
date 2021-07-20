@@ -8,10 +8,10 @@ context("add-keys", () => {
         });
     });
 
-    it("creates a private project and adds some keys for a language", () => {
+    it("creates a project and adds some keys for a language", () => {
         cy.login(testData.login.user1.email, testData.login.user1.password);
 
-        cy.createProject("My test project", "Private");
+        cy.createProject("My test project");
 
         cy.addLanguage(
             testData.languages.german.languageCode,
