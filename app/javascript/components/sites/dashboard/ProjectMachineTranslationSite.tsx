@@ -161,10 +161,8 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                                         >
                                             <Checkbox disabled={this.state.settingsSubmitting}>
                                                 <div style={{ display: "inline-block" }}>
-                                                    <div style={{ fontWeight: "bold" }}>
-                                                        Enable auto machine translation
-                                                    </div>
-                                                    <div>Enable auto machine translation for this project.</div>
+                                                    <div style={{ fontWeight: "bold" }}>Enable machine translation</div>
+                                                    <div>Enable machine translation for this project.</div>
                                                 </div>
                                             </Checkbox>
                                         </Form.Item>
