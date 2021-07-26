@@ -127,7 +127,7 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
             this.state.languagesResponse.included
         );
 
-        return this.state.supportedTargetLanguages?.data.some((supportedTargetLanguage) => {
+        return this.state.supportedTargetLanguages?.data?.some((supportedTargetLanguage) => {
             return supportedTargetLanguage.attributes.language_code === languageLanguageCode.attributes.code;
         });
     }
