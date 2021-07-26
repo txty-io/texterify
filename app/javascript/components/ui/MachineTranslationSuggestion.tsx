@@ -133,9 +133,10 @@ export function MachineTranslationSuggestion(props: {
                                 </div>
                             )}
 
-                        {!dashboardStore.currentProject.attributes.machine_translation_active && (
-                            <Alert showIcon type="warning" message="Machine translation is not enabled." />
-                        )}
+                        {dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_SUGGESTIONS") &&
+                            !dashboardStore.currentProject.attributes.machine_translation_active && (
+                                <Alert showIcon type="warning" message="Machine translation is not enabled." />
+                            )}
 
                         {dashboardStore.currentProject.attributes.machine_translation_active &&
                             props.supportedSourceLanguages &&
