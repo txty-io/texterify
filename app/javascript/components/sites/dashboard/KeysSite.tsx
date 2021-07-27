@@ -826,12 +826,15 @@ class KeysSite extends React.Component<IProps, IState> {
                                                     keyId: newItem.key,
                                                     content: content
                                                 });
-                                                newItem[`translation-exists-for-${languageKey}`] = response.data.id;
 
                                                 if (response.errors) {
                                                     ErrorUtils.showErrors(response.errors);
 
                                                     return;
+                                                }
+
+                                                if (response.data) {
+                                                    newItem[`translation-exists-for-${languageKey}`] = response.data.id;
                                                 }
                                             }
                                         }
