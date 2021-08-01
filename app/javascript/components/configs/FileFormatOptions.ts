@@ -30,6 +30,10 @@ const FileFormatOptions = [
     {
         value: "toml",
         text: "TOML"
+    },
+    {
+        value: "properties",
+        text: "Java .properties"
     }
 ].sort((a, b) => {
     return a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 1;

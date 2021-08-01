@@ -5,6 +5,7 @@ import AppleLogoWhite from "images/apple_logo_white.svg";
 import ChromeLogo from "images/chrome_logo.svg";
 import FormatJSLogo from "images/formatjs_logo.svg";
 import GoLogo from "images/go_logo_blue.svg";
+import JavaLogo from "images/java_logo.svg";
 import JSONLogo from "images/json_logo.svg";
 import TOMLLogo from "images/toml_logo.svg";
 import { observer } from "mobx-react";
@@ -25,6 +26,8 @@ import { HoverCard } from "./HoverCard";
 import { Loading } from "./Loading";
 import { LoadingOverlay } from "./LoadingOverlay";
 import { Styles } from "./Styles";
+
+const ACCEPTED_FILE_FORMATS = [".json", ".strings", ".toml", ".properties"];
 
 const SUPPORTED_FORMATS: {
     image: any;
@@ -132,6 +135,19 @@ title = "This is another title"
 
 [groupTwo]
 title = "This is another title"
+...`}</pre>
+        )
+    },
+    {
+        image: JavaLogo,
+        name: "Java .properties",
+        formats: [".properties"],
+        id: "properties",
+        documentationURL: "https://docs.oracle.com/javase/10/docs/api/java/util/PropertyResourceBundle.html",
+        example: (
+            <pre style={{ whiteSpace: "break-spaces" }}>{`
+title = This is my title
+description = This is some description text
 ...`}</pre>
         )
     }
@@ -524,7 +540,7 @@ export const TranslationFileImporter = observer((props: { onCreateLanguageClick?
                                             onDrop={(acceptedFiles) => {
                                                 setFiles(acceptedFiles);
                                             }}
-                                            accept={[".json", ".strings", ".toml"]}
+                                            accept={ACCEPTED_FILE_FORMATS}
                                             disabled={!selectedImportFormat}
                                         >
                                             {({ getRootProps, getInputProps }) => {
@@ -568,7 +584,10 @@ export const TranslationFileImporter = observer((props: { onCreateLanguageClick?
                                                                 )}
                                                             </p>
                                                         )}
-                                                        <input {...getInputProps()} accept=".json,.strings,.toml" />
+                                                        <input
+                                                            {...getInputProps()}
+                                                            accept={ACCEPTED_FILE_FORMATS.join(",")}
+                                                        />
                                                     </DropZoneWrapper>
                                                 );
                                             }}

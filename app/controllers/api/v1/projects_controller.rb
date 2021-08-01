@@ -185,9 +185,15 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       key = project.keys.find_by(name: json_key)
 
       if key.present?
-        translation = key.translations.find_by(language: language)
+        # Load default translations or export config translations
+        if export_config
+          translation = key.translations.find_by(language: language, export_config: export_config)
+        else
+          translation = key.translations.find_by(language: language, export_config: nil)
+        end
 
-        if translation.blank?
+        # If there is no translation create a new one
+        if translation.nil?
           translation = Translation.new
           translation.content = json_value
           translation.key_id = key.id

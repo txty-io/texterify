@@ -83,6 +83,8 @@ class ExportConfig < ApplicationRecord
       rails(language, export_data)
     elsif file_format == 'toml'
       toml(language, export_data)
+    elsif file_format == 'properties'
+      properties(language, export_data)
     else
       json(language, export_data)
     end
@@ -188,6 +190,15 @@ class ExportConfig < ApplicationRecord
     language_file = Tempfile.new(language.id.to_s)
     toml = TomlRB.dump(export_data)
     language_file.puts(toml)
+    language_file.close
+
+    language_file
+  end
+
+  def properties(language, export_data)
+    language_file = Tempfile.new(language.id.to_s)
+    properties = JavaProperties.generate(export_data)
+    language_file.puts(properties)
     language_file.close
 
     language_file

@@ -4,7 +4,15 @@ import { RouteComponentProps } from "react-router-dom";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { TranslationFileImporter } from "../../ui/TranslationFileImporter";
 
-export type ImportFileFormats = "json" | "json-nested" | "json-formatjs" | "ios" | "android" | "toml" | "rails";
+export type ImportFileFormats =
+    | "json"
+    | "json-nested"
+    | "json-formatjs"
+    | "ios"
+    | "android"
+    | "toml"
+    | "rails"
+    | "properties";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 class ImportSite extends React.Component<IProps> {

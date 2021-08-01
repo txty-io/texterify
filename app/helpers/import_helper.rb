@@ -2,6 +2,7 @@ require 'json'
 require 'nokogiri'
 require 'yaml'
 require 'toml-rb'
+require 'java-properties'
 
 module ImportHelper
   REGEX_CONTENT = /"((\\"|[^"])+)"/.freeze
@@ -40,6 +41,13 @@ module ImportHelper
       else
         raise 'NOTHING_IMPORTED'
       end
+    elsif file_format == 'properties'
+      result = properties?(file_content)
+      if result[:matches]
+        return result[:content]
+      else
+        raise 'NOTHING_IMPORTED'
+      end
     end
 
     raise 'INVALID_FILE_FORMAT'
@@ -54,6 +62,13 @@ module ImportHelper
 
   def json_nested?(content)
     parsed = JSON.parse(content)
+    parsed.count > 0 ? { matches: true, content: parsed } : { matches: false }
+  rescue JSON::ParserError
+    { matches: false, invalid: true }
+  end
+
+  def properties?(content)
+    parsed = JavaProperties.parse(content)
     parsed.count > 0 ? { matches: true, content: parsed } : { matches: false }
   rescue JSON::ParserError
     { matches: false, invalid: true }

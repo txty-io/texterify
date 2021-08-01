@@ -108,3 +108,6 @@ gem 'sidekiq-scheduler'
 
 # For importing and exporting TOML.
 gem 'toml-rb'
+
+# For importing and exporting .properties.
+gem 'java-properties'
