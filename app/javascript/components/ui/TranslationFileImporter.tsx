@@ -3,6 +3,7 @@ import { Alert, Button, Empty, Input, message, Result, Select, Tag } from "antd"
 import AppleLogoBlack from "images/apple_logo_black.svg";
 import AppleLogoWhite from "images/apple_logo_white.svg";
 import ChromeLogo from "images/chrome_logo.svg";
+import DjangoLogo from "images/django_logo.svg";
 import FormatJSLogo from "images/formatjs_logo.svg";
 import GoLogo from "images/go_logo_blue.svg";
 import JavaLogo from "images/java_logo.svg";
@@ -27,7 +28,7 @@ import { Loading } from "./Loading";
 import { LoadingOverlay } from "./LoadingOverlay";
 import { Styles } from "./Styles";
 
-const ACCEPTED_FILE_FORMATS = [".json", ".strings", ".toml", ".properties"];
+const ACCEPTED_FILE_FORMATS = [".json", ".strings", ".toml", ".properties", ".po"];
 
 const SUPPORTED_FORMATS: {
     image: any;
@@ -148,6 +149,34 @@ title = "This is another title"
             <pre style={{ whiteSpace: "break-spaces" }}>{`
 title = This is my title
 description = This is some description text
+...`}</pre>
+        )
+    },
+    {
+        image: undefined,
+        name: "gettext .po",
+        formats: [".po"],
+        id: "po",
+        documentationURL: "https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html",
+        example: (
+            <pre style={{ whiteSpace: "break-spaces" }}>{`
+msgctxt "My description"
+msgid "app_title"
+msgstr "Awesome app"
+...`}</pre>
+        )
+    },
+    {
+        image: DjangoLogo,
+        name: "Django .po",
+        formats: [".po"],
+        id: "po",
+        documentationURL: "https://docs.djangoproject.com/en/3.2/topics/i18n/translation/",
+        example: (
+            <pre style={{ whiteSpace: "break-spaces" }}>{`
+msgctxt "My description"
+msgid "app_title"
+msgstr "Awesome app"
 ...`}</pre>
         )
     }

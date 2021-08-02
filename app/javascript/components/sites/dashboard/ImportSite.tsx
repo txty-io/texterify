@@ -12,7 +12,8 @@ export type ImportFileFormats =
     | "android"
     | "toml"
     | "rails"
-    | "properties";
+    | "properties"
+    | "po";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 class ImportSite extends React.Component<IProps> {

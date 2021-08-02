@@ -214,6 +214,11 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
           key.description = json_value[:description]
           key.save
+        elsif file_format == 'po' && json_value.is_a?(Hash)
+          translation.content = json_value[:value]
+
+          key.description = json_value[:description]
+          key.save
         else
           translation.content = json_value
         end

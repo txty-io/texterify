@@ -34,6 +34,10 @@ const FileFormatOptions = [
     {
         value: "properties",
         text: "Java .properties"
+    },
+    {
+        value: "po",
+        text: "PO"
     }
 ].sort((a, b) => {
     return a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 1;

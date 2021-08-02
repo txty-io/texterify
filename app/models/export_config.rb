@@ -85,6 +85,8 @@ class ExportConfig < ApplicationRecord
       toml(language, export_data)
     elsif file_format == 'properties'
       properties(language, export_data)
+    elsif file_format == 'po'
+      po(language, export_data)
     else
       json(language, export_data)
     end
@@ -199,6 +201,17 @@ class ExportConfig < ApplicationRecord
     language_file = Tempfile.new(language.id.to_s)
     properties = JavaProperties.generate(export_data)
     language_file.puts(properties)
+    language_file.close
+
+    language_file
+  end
+
+  def po(language, export_data)
+    language_file = Tempfile.new(language.id.to_s)
+    po = PoParser.parse_file(language_file)
+    po_data = export_data.map { |k, v| { msgid: k, msgstr: v } }
+    po << po_data
+    language_file.puts(po)
     language_file.close
 
     language_file

@@ -3,6 +3,7 @@ require 'nokogiri'
 require 'yaml'
 require 'toml-rb'
 require 'java-properties'
+require 'poparser'
 
 module ImportHelper
   REGEX_CONTENT = /"((\\"|[^"])+)"/.freeze
@@ -48,6 +49,13 @@ module ImportHelper
       else
         raise 'NOTHING_IMPORTED'
       end
+    elsif file_format == 'po'
+      result = po?(file_content)
+      if result[:matches]
+        return result[:content]
+      else
+        raise 'NOTHING_IMPORTED'
+      end
     end
 
     raise 'INVALID_FILE_FORMAT'
@@ -70,7 +78,24 @@ module ImportHelper
   def properties?(content)
     parsed = JavaProperties.parse(content)
     parsed.count > 0 ? { matches: true, content: parsed } : { matches: false }
-  rescue JSON::ParserError
+  rescue StandardError
+    { matches: false, invalid: true }
+  end
+
+  def po?(content)
+    parsed = PoParser.parse(content).to_h
+    json = {}
+
+    parsed.each do |entry|
+      if entry[:msgctxt]
+        json[entry[:msgid]] = { value: entry[:msgstr], description: entry[:msgctxt] }
+      else
+        json[entry[:msgid]] = entry[:msgstr]
+      end
+    end
+
+    json.count > 0 ? { matches: true, content: json } : { matches: false }
+  rescue StandardError
     { matches: false, invalid: true }
   end
 
