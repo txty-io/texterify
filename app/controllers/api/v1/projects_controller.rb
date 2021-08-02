@@ -232,6 +232,8 @@ class Api::V1::ProjectsController < Api::V1::ApiController
           key.description = json_value['description']
         elsif file_format == 'toml' && json_value.is_a?(Hash)
           key.description = json_value[:description]
+        elsif file_format == 'po' && json_value.is_a?(Hash)
+          key.description = json_value[:description]
         end
 
         if key.save
@@ -246,6 +248,8 @@ class Api::V1::ProjectsController < Api::V1::ApiController
           if file_format == 'json-formatjs'
             translation.content = json_value['defaultMessage']
           elsif file_format == 'toml' && json_value.is_a?(Hash)
+            translation.content = json_value[:value]
+          elsif file_format == 'po' && json_value.is_a?(Hash)
             translation.content = json_value[:value]
           else
             translation.content = json_value
