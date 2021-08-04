@@ -231,6 +231,15 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                                         >
                                             Reactivate
                                         </Button>
+                                        <Button
+                                            type="primary"
+                                            style={{ marginLeft: 16 }}
+                                            onClick={async () => {
+                                                await this.openCustomerPortal();
+                                            }}
+                                        >
+                                            Open customer portal
+                                        </Button>
                                     </div>
                                 )}
                             </Card.Grid>
