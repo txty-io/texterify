@@ -5,6 +5,7 @@ import AppleLogoWhite from "images/apple_logo_white.svg";
 import ChromeLogo from "images/chrome_logo.svg";
 import DjangoLogo from "images/django_logo.svg";
 import FormatJSLogo from "images/formatjs_logo.svg";
+import GNULogo from "images/gnu_logo.svg";
 import GoLogo from "images/go_logo_blue.svg";
 import JavaLogo from "images/java_logo.svg";
 import JSONLogo from "images/json_logo.svg";
@@ -153,7 +154,7 @@ description = This is some description text
         )
     },
     {
-        image: undefined,
+        image: GNULogo,
         name: "gettext .po",
         formats: [".po"],
         id: "po",

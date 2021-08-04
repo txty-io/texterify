@@ -16,3 +16,4 @@ declare module "images/chrome_logo.svg";
 declare module "images/logo_white_background.png";
 declare module "images/java_logo.svg";
 declare module "images/django_logo.svg";
+declare module "images/gnu_logo.svg";
