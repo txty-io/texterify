@@ -3,7 +3,7 @@ class User < ApplicationRecord
 
   # Include default devise modules. Others available are:
   # :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :confirmable
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :confirmable, :trackable
 
   validates :username, uniqueness: true, presence: true
 
@@ -43,4 +43,11 @@ class User < ApplicationRecord
   def confirmed
     !confirmed_at.nil?
   end
+
+  # We use the Devise::Trackable module to track sign-in count and current/last sign-in timestamp.
+  # However, we don't want to track IP address, but Trackable tries to, so we have to manually
+  # override the accessor methods so they do nothing.
+  def current_sign_in_ip; end
+  def last_sign_in_ip=(_ip); end
+  def current_sign_in_ip=(_ip); end
 end
