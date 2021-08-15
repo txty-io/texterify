@@ -8,10 +8,10 @@ context("add-language", () => {
         });
     });
 
-    it("creates a private project and adds up to 2 new languages", () => {
+    it("creates a project and adds 3 new languages", () => {
         cy.login(testData.login.user1.email, testData.login.user1.password);
 
-        cy.createProject("My test project", "Private");
+        cy.createProject("My test project");
 
         cy.addLanguage(
             testData.languages.german.languageCode,
@@ -33,14 +33,10 @@ context("add-language", () => {
             .and("contain", testData.languages.english.countryCodeShort)
             .and("contain", testData.languages.english.languageName);
 
-        // You can't add more than two languages to private projects.
         cy.addLanguage(
             testData.languages.spanish.languageCode,
             testData.languages.spanish.countryCode,
             testData.languages.spanish.languageName
-        );
-        cy.contains(
-            "You have reached the maximum number of languages for private projects. Move the project to an organization to create more languages."
         );
     });
 });

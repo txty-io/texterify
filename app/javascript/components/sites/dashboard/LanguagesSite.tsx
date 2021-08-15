@@ -5,8 +5,8 @@ import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
-import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
-import { AddEditLanguageForm } from "../../forms/AddEditLanguageForm";
+import { IGetLanguagesOptions, LanguagesAPI } from "../../api/v1/LanguagesAPI";
+import { AddEditLanguageFormModal } from "../../forms/AddEditLanguageFormModal";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
@@ -75,19 +75,10 @@ class LanguagesSite extends React.Component<IProps, IState> {
     };
 
     async componentDidMount() {
-        try {
-            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
-
-            this.setState({
-                languagesResponse: responseLanguages,
-                languages: responseLanguages.data
-            });
-        } catch (error) {
-            console.error(error);
-        }
+        this.reloadTable();
     }
 
-    fetchLanguages = async (options?: any) => {
+    fetchLanguages = async (options?: IGetLanguagesOptions) => {
         this.setState({ languagesLoading: true });
         try {
             const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, options);
@@ -101,7 +92,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
         this.setState({ languagesLoading: false });
     };
 
-    reloadTable = async (options?: any) => {
+    reloadTable = async (options?: IGetLanguagesOptions) => {
         const fetchOptions = options || {};
         fetchOptions.search = (options && options.search) || this.state.search;
         fetchOptions.page = (options && options.page) || this.state.page;
@@ -322,9 +313,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
                     </Layout.Content>
                 </Layout>
 
-                <AddEditLanguageForm
-                    projectId={this.props.match.params.projectId}
-                    languageToEdit={this.state.languageToEdit}
+                <AddEditLanguageFormModal
                     visible={this.state.addDialogVisible}
                     onCancelRequest={() => {
                         this.setState({
@@ -332,17 +321,18 @@ class LanguagesSite extends React.Component<IProps, IState> {
                             languageToEdit: null
                         });
                     }}
-                    onCreated={async () => {
-                        this.setState({
-                            addDialogVisible: false,
-                            languageToEdit: null
-                        });
+                    languageFormProps={{
+                        projectId: this.props.match.params.projectId,
+                        languageToEdit: this.state.languageToEdit,
 
-                        const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
-                        this.setState({
-                            languagesResponse: responseLanguages,
-                            languages: responseLanguages.data
-                        });
+                        onCreated: async () => {
+                            this.setState({
+                                addDialogVisible: false,
+                                languageToEdit: null
+                            });
+
+                            this.reloadTable();
+                        }
                     }}
                 />
             </>

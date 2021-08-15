@@ -2,6 +2,7 @@ import fileDownload from "js-file-download";
 import { ImportFileFormats } from "../../sites/dashboard/ImportSite";
 import { IFeature } from "../../types/IFeature";
 import { IPlanIDS } from "../../types/IPlan";
+import { IErrorsResponse } from "../../ui/ErrorUtils";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
@@ -46,6 +47,15 @@ export interface IGetProjects {
     };
 }
 
+export interface IGetProjectResponse {
+    data: IProject;
+    included: [];
+    errors?: IErrorsResponse;
+}
+
+export type IUpdateProjectResponse = IGetProjectResponse & { errors: IErrorsResponse; error: any; message: any };
+export type ICreateProjectResponse = IGetProjectResponse & { errors: IErrorsResponse; error: any; message: any };
+
 async function getBase64(file: any) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -74,11 +84,15 @@ const ProjectsAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    getProject: async (projectId: string): Promise<any> => {
+    getProject: async (projectId: string): Promise<IGetProjectResponse> => {
         return API.getRequest(`projects/${projectId}`, true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
     },
 
-    createProject: async (name: string, description: string, organizationId?: string): Promise<any> => {
+    createProject: async (
+        name: string,
+        description: string,
+        organizationId?: string
+    ): Promise<ICreateProjectResponse> => {
         return API.postRequest("projects", true, {
             name: name,
             description: description,
@@ -99,7 +113,7 @@ const ProjectsAPI = {
         machineTranslationEnabled?: boolean;
         autoTranslateNewKeys?: boolean;
         autoTranslateNewLanguages?: boolean;
-    }): Promise<any> => {
+    }): Promise<IUpdateProjectResponse> => {
         return API.putRequest(`projects/${options.projectId}`, true, {
             name: options.name,
             description: options.description,

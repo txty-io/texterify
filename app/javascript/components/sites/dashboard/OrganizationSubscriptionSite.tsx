@@ -6,6 +6,7 @@ import { ISubscription, OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
 import { MESSAGE_DURATION_IMPORTANT } from "../../configs/MessageDurations";
 import { Routes } from "../../routing/Routes";
 import { subscriptionService } from "../../services/SubscriptionService";
+import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { IPlanIDS } from "../../types/IPlan";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
@@ -82,6 +83,24 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
         await OrganizationsAPI.changeOrganizationSubscriptionPlan(this.props.match.params.organizationId, planID);
         await this.reload();
         message.success("Successfully changed subscription plan.", MESSAGE_DURATION_IMPORTANT);
+    }
+
+    async openCustomerPortal() {
+        const response = await fetch(
+            `${process.env.TEXTERIFY_PAYMENT_SERVER}/portal/${dashboardStore.currentOrganization.id}?return_url=${window.location}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    client: authStore.client,
+                    "access-token": authStore.accessToken,
+                    uid: authStore.currentUser && authStore.currentUser.email
+                }
+            }
+        );
+
+        const responseJSON = await response.json();
+        window.open(responseJSON.portal_url, "_blank");
     }
 
     render() {
@@ -175,6 +194,15 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                                         >
                                             Cancel subscription
                                         </Button>
+                                        <Button
+                                            type="primary"
+                                            style={{ marginLeft: 16 }}
+                                            onClick={async () => {
+                                                await this.openCustomerPortal();
+                                            }}
+                                        >
+                                            Open customer portal
+                                        </Button>
                                     </div>
                                 )}
 
@@ -203,6 +231,15 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                                         >
                                             Reactivate
                                         </Button>
+                                        <Button
+                                            type="primary"
+                                            style={{ marginLeft: 16 }}
+                                            onClick={async () => {
+                                                await this.openCustomerPortal();
+                                            }}
+                                        >
+                                            Open customer portal
+                                        </Button>
                                     </div>
                                 )}
                             </Card.Grid>
@@ -224,7 +261,7 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                                 "You are currently experiencing the trial period but you can already select a plan that fits your needs to continue using Texterify without interruptions. Your paid plan will start after your trial has ended."}
                             {dashboardStore.currentOrganization.attributes.trial_active &&
                                 !this.state.subscription &&
-                                "Select a subscription that fits your needs."}
+                                " Select a subscription that fits your needs."}
                         </p>
                         <p>You can upgrade, downgrade or cancel your plan at any time.</p>
                         <Licenses

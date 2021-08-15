@@ -1,5 +1,5 @@
 import { CrownOutlined, PicRightOutlined } from "@ant-design/icons";
-import { Button, Empty, Layout, message, Progress, Skeleton, Statistic, Tag, Tooltip } from "antd";
+import { Button, Empty, Layout, message, Pagination, Progress, Skeleton, Statistic, Tooltip } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as moment from "moment";
@@ -15,6 +15,7 @@ import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Activity } from "../../ui/Activity";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import FlagIcon from "../../ui/FlagIcons";
 import { ProjectAvatar } from "../../ui/ProjectAvatar";
@@ -28,6 +29,8 @@ interface IState {
     projectActivityLoading: boolean;
     validationViolationsCountResponse: IGetValidationViolationsCountResponse;
     validationViolationsLoading: boolean;
+    languagesPage: number;
+    languagesPerPage: number;
 }
 
 @observer
@@ -39,7 +42,9 @@ class ProjectSite extends React.Component<IProps, IState> {
         projectActivityResponse: null,
         projectActivityLoading: true,
         validationViolationsCountResponse: null,
-        validationViolationsLoading: true
+        validationViolationsLoading: true,
+        languagesPage: 1,
+        languagesPerPage: 5
     };
 
     async componentDidMount() {
@@ -55,7 +60,10 @@ class ProjectSite extends React.Component<IProps, IState> {
         this.setState({ languagesLoading: true });
 
         try {
-            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
+            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, {
+                page: this.state.languagesPage,
+                perPage: this.state.languagesPerPage
+            });
 
             this.setState({
                 languagesResponse: responseLanguages
@@ -137,64 +145,78 @@ class ProjectSite extends React.Component<IProps, IState> {
                 {this.state.languagesLoading && <Skeleton active />}
                 {!this.state.languagesLoading && languages.length === 0 && (
                     <Empty
-                        description="No data available"
+                        description={
+                            <>
+                                <Link
+                                    to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
+                                        ":projectId",
+                                        this.props.match.params.projectId
+                                    )}
+                                >
+                                    Add some languages
+                                </Link>{" "}
+                                to show your progress here
+                            </>
+                        }
                         style={{ margin: "40px 0" }}
                         image={Empty.PRESENTED_IMAGE_SIMPLE}
                     />
                 )}
-                {languages.map((language, index) => {
-                    const countryCode = APIUtils.getIncludedObject(
-                        language.relationships.country_code.data,
-                        this.state.languagesResponse.included
-                    );
+                {!this.state.languagesLoading &&
+                    languages.map((language, index) => {
+                        const countryCode = APIUtils.getIncludedObject(
+                            language.relationships.country_code.data,
+                            this.state.languagesResponse.included
+                        );
 
-                    return (
-                        <div key={index}>
-                            <div style={{ display: "flex", marginTop: 24, alignItems: "center" }}>
-                                {language.attributes.is_default && (
-                                    <div style={{ textAlign: "center", marginRight: 8 }}>
-                                        <Tooltip title="Default language">
-                                            <CrownOutlined style={{ color: "#d6ad13", fontSize: 16 }} />
-                                        </Tooltip>
-                                    </div>
-                                )}
-                                {countryCode && (
-                                    <span style={{ marginRight: 8 }}>
-                                        <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
-                                    </span>
-                                )}
-                                <div style={{ color: "#a7a7a7" }}>{language.attributes.name}</div>
+                        return (
+                            <div key={index}>
+                                <div style={{ display: "flex", marginTop: 24, alignItems: "center" }}>
+                                    {language.attributes.is_default && (
+                                        <div style={{ textAlign: "center", marginRight: 8 }}>
+                                            <Tooltip title="Default language">
+                                                <CrownOutlined style={{ color: "#d6ad13", fontSize: 16 }} />
+                                            </Tooltip>
+                                        </div>
+                                    )}
+                                    {countryCode && (
+                                        <span style={{ marginRight: 8 }}>
+                                            <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
+                                        </span>
+                                    )}
+                                    <div style={{ color: "#a7a7a7" }}>{language.attributes.name}</div>
+                                </div>
+                                <Progress
+                                    style={{ marginTop: 8 }}
+                                    percent={parseFloat(language.attributes.progress.toFixed(2))}
+                                />
+                                <div style={{ marginTop: 4 }}>
+                                    <Link
+                                        to={
+                                            Routes.DASHBOARD.PROJECT_KEYS.replace(
+                                                ":projectId",
+                                                this.props.match.params.projectId
+                                            ) + `?ou=true&l=${language.id}`
+                                        }
+                                    >
+                                        Show all untranslated
+                                    </Link>
+                                    <Link
+                                        to={
+                                            Routes.DASHBOARD.PROJECT_KEYS.replace(
+                                                ":projectId",
+                                                this.props.match.params.projectId
+                                            ) +
+                                            `?ca=${moment().subtract(7, "days").format("YYYY-MM-DD")}&l=${language.id}`
+                                        }
+                                        style={{ marginLeft: 24 }}
+                                    >
+                                        Show changed in last 7 days
+                                    </Link>
+                                </div>
                             </div>
-                            <Progress
-                                style={{ marginTop: 8 }}
-                                percent={parseFloat(language.attributes.progress.toFixed(2))}
-                            />
-                            <div style={{ marginTop: 4 }}>
-                                <Link
-                                    to={
-                                        Routes.DASHBOARD.PROJECT_KEYS.replace(
-                                            ":projectId",
-                                            this.props.match.params.projectId
-                                        ) + `?ou=true&l=${language.id}`
-                                    }
-                                >
-                                    Show all untranslated
-                                </Link>
-                                <Link
-                                    to={
-                                        Routes.DASHBOARD.PROJECT_KEYS.replace(
-                                            ":projectId",
-                                            this.props.match.params.projectId
-                                        ) + `?ca=${moment().subtract(7, "days").format("YYYY-MM-DD")}&l=${language.id}`
-                                    }
-                                    style={{ marginLeft: 24 }}
-                                >
-                                    Show changed in last 7 days
-                                </Link>
-                            </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
             </>
         );
     };
@@ -246,7 +268,34 @@ class ProjectSite extends React.Component<IProps, IState> {
                         <p style={{ marginTop: 16 }}>{dashboardStore.currentProject?.attributes.description}</p>
                     )}
                     <div style={{ display: "flex", marginTop: 40 }}>
-                        <div style={{ width: "50%", marginRight: 40 }}>{this.renderLanguagesProgress()}</div>
+                        <div style={{ width: "50%", marginRight: 40 }}>
+                            {this.renderLanguagesProgress()}
+
+                            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+                                <Pagination
+                                    pageSizeOptions={PAGE_SIZE_OPTIONS}
+                                    showSizeChanger
+                                    pageSize={this.state.languagesPerPage}
+                                    current={this.state.languagesPage}
+                                    total={
+                                        (this.state.languagesResponse &&
+                                            this.state.languagesResponse.data &&
+                                            this.state.languagesResponse.meta.total) ||
+                                        0
+                                    }
+                                    onChange={async (page: number, _perPage: number) => {
+                                        this.setState({ languagesPage: page }, () => {
+                                            this.fetchLanguages();
+                                        });
+                                    }}
+                                    onShowSizeChange={async (_current: number, size: number) => {
+                                        this.setState({ languagesPage: 1, languagesPerPage: size }, () => {
+                                            this.fetchLanguages();
+                                        });
+                                    }}
+                                />
+                            </div>
+                        </div>
 
                         <div style={{ width: "50%", marginLeft: 40 }}>
                             <h3>Validations</h3>

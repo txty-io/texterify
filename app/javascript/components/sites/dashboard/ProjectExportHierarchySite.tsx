@@ -27,7 +27,9 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
 
     async componentDidMount() {
         try {
-            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
+            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, {
+                showAll: true
+            });
             const treeData = this.buildTreeData(responseLanguages.data);
 
             const keys = [];

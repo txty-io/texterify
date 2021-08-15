@@ -51,6 +51,55 @@ const Routes = {
         TEAMS_NEW: "/dashboard/teams/new",
         MEMBERS: "/dashboard/members",
         SETTINGS: "/dashboard/settings",
+        SETUP: "/dashboard/setup",
+        SETUP_ORGANIZATION_NEW: "/dashboard/setup/organization",
+        SETUP_ORGANIZATION: "/dashboard/setup/organization/:organizationId",
+        SETUP_ORGANIZATION_RESOLVER: (options: { organizationId: string }) => {
+            return Routes.DASHBOARD.SETUP_ORGANIZATION.replace(":organizationId", options.organizationId);
+        },
+        SETUP_PLAN: "/dashboard/setup/organization/:organizationId/plan",
+        SETUP_PLAN_RESOLVER: (options: { organizationId: string }) => {
+            return Routes.DASHBOARD.SETUP_PLAN.replace(":organizationId", options.organizationId);
+        },
+        SETUP_PROJECT_NEW: "/dashboard/setup/organization/:organizationId/project",
+        SETUP_PROJECT_NEW_RESOLVER: (options: { organizationId: string }) => {
+            return Routes.DASHBOARD.SETUP_PROJECT_NEW.replace(":organizationId", options.organizationId);
+        },
+        SETUP_PROJECT: "/dashboard/setup/organization/:organizationId/project/:projectId",
+        SETUP_PROJECT_RESOLVER: (options: { organizationId: string; projectId: string }) => {
+            return Routes.DASHBOARD.SETUP_PROJECT.replace(":organizationId", options.organizationId).replace(
+                ":projectId",
+                options.projectId
+            );
+        },
+        SETUP_PROJECT_LANGUAGES: "/dashboard/setup/organization/:organizationId/project/:projectId/languages",
+        SETUP_PROJECT_LANGUAGES_RESOLVER: (options: { organizationId: string; projectId: string }) => {
+            return Routes.DASHBOARD.SETUP_PROJECT_LANGUAGES.replace(":organizationId", options.organizationId).replace(
+                ":projectId",
+                options.projectId
+            );
+        },
+        SETUP_PROJECT_IMPORT: "/dashboard/setup/organization/:organizationId/project/:projectId/import",
+        SETUP_PROJECT_IMPORT_RESOLVER: (options: { organizationId: string; projectId: string }) => {
+            return Routes.DASHBOARD.SETUP_PROJECT_IMPORT.replace(":organizationId", options.organizationId).replace(
+                ":projectId",
+                options.projectId
+            );
+        },
+        SETUP_PROJECT_INTEGRATIONS: "/dashboard/setup/organization/:organizationId/project/:projectId/integrations",
+        SETUP_PROJECT_INTEGRATIONS_RESOLVER: (options: { organizationId: string; projectId: string }) => {
+            return Routes.DASHBOARD.SETUP_PROJECT_INTEGRATIONS.replace(
+                ":organizationId",
+                options.organizationId
+            ).replace(":projectId", options.projectId);
+        },
+        SETUP_PROJECT_SUCCESS: "/dashboard/setup/organization/:organizationId/project/:projectId/success",
+        SETUP_PROJECT_SUCCESS_RESOLVER: (options: { organizationId: string; projectId: string }) => {
+            return Routes.DASHBOARD.SETUP_PROJECT_SUCCESS.replace(":organizationId", options.organizationId).replace(
+                ":projectId",
+                options.projectId
+            );
+        },
         ORGANIZATIONS: "/dashboard/organizations",
         ORGANIZATION: "/dashboard/organizations/:organizationId",
         ORGANIZATION_MEMBERS: "/dashboard/organizations/:organizationId/members",

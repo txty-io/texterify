@@ -50,7 +50,7 @@ export function MachineTranslationSuggestion(props: {
             props.languagesResponse.included
         );
 
-        return props.supportedTargetLanguages?.data.some((supportedTargetLanguage) => {
+        return props.supportedTargetLanguages?.data?.some((supportedTargetLanguage) => {
             return supportedTargetLanguage.attributes.language_code === languageLanguageCode.attributes.code;
         });
     }
@@ -125,15 +125,18 @@ export function MachineTranslationSuggestion(props: {
                         </h4>
                         {(translationSuggestionLoading ||
                             !props.supportedSourceLanguages ||
-                            !props.supportedTargetLanguages) && (
-                            <div style={{ marginTop: 16, marginBottom: 16 }}>
-                                <Skeleton active paragraph={{ rows: 2 }} title={false} />
-                            </div>
-                        )}
+                            !props.supportedTargetLanguages) &&
+                            dashboardStore.currentProject.attributes.machine_translation_active &&
+                            dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_SUGGESTIONS") && (
+                                <div style={{ marginTop: 16, marginBottom: 16 }}>
+                                    <Skeleton active paragraph={{ rows: 2 }} title={false} />
+                                </div>
+                            )}
 
-                        {!dashboardStore.currentProject.attributes.machine_translation_active && (
-                            <Alert showIcon type="warning" message="Machine translation is not enabled." />
-                        )}
+                        {dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_SUGGESTIONS") &&
+                            !dashboardStore.currentProject.attributes.machine_translation_active && (
+                                <Alert showIcon type="warning" message="Machine translation is not enabled." />
+                            )}
 
                         {dashboardStore.currentProject.attributes.machine_translation_active &&
                             props.supportedSourceLanguages &&
@@ -224,7 +227,9 @@ export function MachineTranslationSuggestion(props: {
                                         >
                                             {!props.defaultLanguageTranslationContent &&
                                                 "No translation in source language to translate."}
-                                            {!translationSuggestion && "Could not load translation suggestion."}
+                                            {props.defaultLanguageTranslationContent &&
+                                                !translationSuggestion &&
+                                                "Could not load translation suggestion."}
                                         </div>
                                     )}
                                 </div>

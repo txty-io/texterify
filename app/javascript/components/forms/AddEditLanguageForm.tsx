@@ -8,13 +8,13 @@ import { LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { dashboardStore } from "../stores/DashboardStore";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import FlagIcon from "../ui/FlagIcons";
-import { TexterifyModal } from "../ui/TexterifyModal";
 
-interface IProps {
+export interface IAddEditLanguageFormProps {
     languageToEdit?: any;
     projectId: string;
-    visible: boolean;
-    onCancelRequest();
+    hideDefaultSubmitButton?: boolean;
+    clearFieldsAfterSubmit?: boolean;
+    formId?: string;
     onCreated?(): void;
 }
 interface IState {
@@ -23,7 +23,7 @@ interface IState {
     userChangedName: boolean;
 }
 
-class AddEditLanguageForm extends React.Component<IProps, IState> {
+class AddEditLanguageForm extends React.Component<IAddEditLanguageFormProps, IState> {
     formRef = React.createRef<FormInstance>();
 
     state: IState = {
@@ -112,6 +112,10 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
             if (this.props.onCreated) {
                 this.props.onCreated();
             }
+
+            if (this.props.clearFieldsAfterSubmit) {
+                this.formRef.current.resetFields();
+            }
         }
     };
 
@@ -133,122 +137,100 @@ class AddEditLanguageForm extends React.Component<IProps, IState> {
 
     render() {
         return (
-            <TexterifyModal
-                title={this.props.languageToEdit ? "Edit language" : "Add a new language"}
-                visible={this.props.visible}
-                footer={
-                    <div style={{ margin: "6px 0" }}>
-                        <Button
-                            onClick={() => {
-                                this.props.onCancelRequest();
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button form="addEditLanguageForm" type="primary" htmlType="submit">
-                            {this.props.languageToEdit ? "Save changes" : "Create language"}
-                        </Button>
-                    </div>
-                }
-                onCancel={this.props.onCancelRequest}
-                afterClose={() => {
-                    this.setState({ userChangedName: false });
-                }}
-            >
-                <Form
-                    ref={this.formRef}
-                    onFinish={this.handleSubmit}
-                    style={{ maxWidth: "100%" }}
-                    id="addEditLanguageForm"
-                    initialValues={
-                        this.props.languageToEdit && {
-                            name: this.props.languageToEdit.attributes.name,
-                            countryCode: this.props.languageToEdit.relationships?.country_code?.data?.id,
-                            languageCode: this.props.languageToEdit.relationships?.language_code?.data?.id,
-                            is_default: this.props.languageToEdit.attributes.is_default || false
-                        }
+            <Form
+                ref={this.formRef}
+                onFinish={this.handleSubmit}
+                style={{ maxWidth: "100%", minWidth: 0 }}
+                id={this.props.formId}
+                initialValues={
+                    this.props.languageToEdit && {
+                        name: this.props.languageToEdit.attributes.name,
+                        countryCode: this.props.languageToEdit.relationships?.country_code?.data?.id,
+                        languageCode: this.props.languageToEdit.relationships?.language_code?.data?.id,
+                        is_default: this.props.languageToEdit.attributes.is_default || false
                     }
-                >
-                    <h3>
-                        Language
-                        <span style={{ fontSize: 12, marginLeft: 8, fontWeight: "bold" }}>(ISO 639-1 code)</span>
-                    </h3>
-                    <Form.Item name="languageCode" rules={[]}>
-                        <Select
-                            showSearch
-                            placeholder="Select a language"
-                            optionFilterProp="children"
-                            filterOption
-                            style={{ width: "100%" }}
-                            onSelect={this.prefillName}
-                        >
-                            {this.state.languageCodes.map((languageCode) => {
-                                return (
-                                    <Select.Option key={languageCode.id} value={undefined}>
-                                        {`${languageCode.attributes.name} (${languageCode.attributes.code})`}
-                                    </Select.Option>
-                                );
-                            })}
-                        </Select>
-                    </Form.Item>
-
-                    <h3>
-                        Country
-                        <span style={{ fontSize: 12, marginLeft: 8, fontWeight: "bold" }}>
-                            (ISO 3166-1 alpha-2 code)
-                        </span>
-                    </h3>
-                    <Form.Item name="countryCode" rules={[]}>
-                        <Select
-                            showSearch
-                            placeholder="Select a country"
-                            optionFilterProp="children"
-                            filterOption
-                            style={{ width: "100%" }}
-                        >
-                            {this.state.countryCodes.map((countryCode) => {
-                                return (
-                                    <Select.Option key={countryCode.id} value={undefined}>
-                                        <span style={{ marginRight: 8 }}>
-                                            <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
-                                        </span>
-                                        {`${countryCode.attributes.name} (${countryCode.attributes.code})`}
-                                    </Select.Option>
-                                );
-                            })}
-                        </Select>
-                    </Form.Item>
-
-                    <h3>Name *</h3>
-                    <Form.Item
-                        name="name"
-                        rules={[
-                            { required: true, whitespace: true, message: "Please enter the name of the language." }
-                        ]}
+                }
+            >
+                <h3>
+                    Language
+                    <span style={{ fontSize: 12, marginLeft: 8, fontWeight: "bold" }}>(ISO 639-1 code)</span>
+                </h3>
+                <Form.Item name="languageCode" rules={[]}>
+                    <Select
+                        showSearch
+                        placeholder="Select a language"
+                        optionFilterProp="children"
+                        filterOption
+                        style={{ width: "100%" }}
+                        onSelect={this.prefillName}
                     >
-                        <Input
-                            placeholder="Name"
-                            onChange={() => {
-                                this.setState({ userChangedName: true });
-                            }}
-                        />
-                    </Form.Item>
+                        {this.state.languageCodes.map((languageCode) => {
+                            return (
+                                <Select.Option key={languageCode.id} value={undefined}>
+                                    {`${languageCode.attributes.name} (${languageCode.attributes.code})`}
+                                </Select.Option>
+                            );
+                        })}
+                    </Select>
+                </Form.Item>
 
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <Form.Item
-                            name="is_default"
-                            rules={[{ required: false }]}
-                            valuePropName="checked"
-                            style={{ marginBottom: 0 }}
-                        >
-                            <Checkbox>Default language</Checkbox>
-                        </Form.Item>
-                        <Tooltip title="Mark the language as the default language. You can specify custom export settings and directly add a translation for new keys in the default language.">
-                            <QuestionCircleOutlined />
-                        </Tooltip>
-                    </div>
-                </Form>
-            </TexterifyModal>
+                <h3>
+                    Country
+                    <span style={{ fontSize: 12, marginLeft: 8, fontWeight: "bold" }}>(ISO 3166-1 alpha-2 code)</span>
+                </h3>
+                <Form.Item name="countryCode" rules={[]}>
+                    <Select
+                        showSearch
+                        placeholder="Select a country"
+                        optionFilterProp="children"
+                        filterOption
+                        style={{ width: "100%" }}
+                    >
+                        {this.state.countryCodes.map((countryCode) => {
+                            return (
+                                <Select.Option key={countryCode.id} value={undefined}>
+                                    <span style={{ marginRight: 8 }}>
+                                        <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
+                                    </span>
+                                    {`${countryCode.attributes.name} (${countryCode.attributes.code})`}
+                                </Select.Option>
+                            );
+                        })}
+                    </Select>
+                </Form.Item>
+
+                <h3>Name *</h3>
+                <Form.Item
+                    name="name"
+                    rules={[{ required: true, whitespace: true, message: "Please enter the name of the language." }]}
+                >
+                    <Input
+                        placeholder="Name"
+                        onChange={() => {
+                            this.setState({ userChangedName: true });
+                        }}
+                    />
+                </Form.Item>
+
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <Form.Item
+                        name="is_default"
+                        rules={[{ required: false }]}
+                        valuePropName="checked"
+                        style={{ marginBottom: 0 }}
+                    >
+                        <Checkbox>Default language</Checkbox>
+                    </Form.Item>
+                    <Tooltip title="Mark the language as the default language. You can specify custom export settings and directly add a translation for new keys in the default language.">
+                        <QuestionCircleOutlined />
+                    </Tooltip>
+                    {!this.props.hideDefaultSubmitButton && (
+                        <Button type="primary" htmlType="submit" style={{ marginLeft: "auto" }}>
+                            {this.props.languageToEdit ? "Save changes" : "Add language"}
+                        </Button>
+                    )}
+                </div>
+            </Form>
         );
     }
 }

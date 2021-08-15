@@ -131,7 +131,9 @@ class KeysSite extends React.Component<IProps, IState> {
         await this.reloadTable();
 
         try {
-            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
+            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, {
+                showAll: true
+            });
             const exportConfigsResponse = await ExportConfigsAPI.getExportConfigs({
                 projectId: this.props.match.params.projectId
             });
@@ -824,12 +826,15 @@ class KeysSite extends React.Component<IProps, IState> {
                                                     keyId: newItem.key,
                                                     content: content
                                                 });
-                                                newItem[`translation-exists-for-${languageKey}`] = response.data.id;
 
                                                 if (response.errors) {
                                                     ErrorUtils.showErrors(response.errors);
 
                                                     return;
+                                                }
+
+                                                if (response.data) {
+                                                    newItem[`translation-exists-for-${languageKey}`] = response.data.id;
                                                 }
                                             }
                                         }

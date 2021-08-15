@@ -8,25 +8,23 @@ context("add-user", () => {
         });
     });
 
-    it("creates a private project and adds a registered user to the project", () => {
+    it("creates a project and adds a registered user to the project", () => {
         cy.appScenario("set_on_premise");
         cy.login(testData.login.user1.email, testData.login.user1.password);
 
-        cy.createProject("My test project", "Private");
+        cy.createProject("My test project");
 
         cy.addUser(testData.login.user2.email);
-        cy.contains("This feature is not available for private projects. Please move your project to an organization.");
     });
 
-    it("creates a private project and adds an unregistered user to the project", () => {
+    it("creates a project and adds an unregistered user to the project", () => {
         cy.appScenario("set_on_premise");
         cy.login(testData.login.user1.email, testData.login.user1.password);
 
-        cy.createProject("My test project", "Private");
+        cy.createProject("My test project");
 
         cy.addUser(testData.login.invalidUser.email);
         cy.get(".ant-layout-content").should("not.contain", testData.login.invalidUser.email);
-        cy.contains("This feature is not available for private projects. Please move your project to an organization.");
     });
 
     it("creates a project and can't add a registered user to the project and shows an error message because plan is not high enough", () => {

@@ -81,8 +81,12 @@ class ExportConfig < ApplicationRecord
       ios(language, export_data)
     elsif file_format == 'rails'
       rails(language, export_data)
-    elsif file_format == 'go-i18n'
+    elsif file_format == 'toml'
       toml(language, export_data)
+    elsif file_format == 'properties'
+      properties(language, export_data)
+    elsif file_format == 'po'
+      po(language, export_data)
     else
       json(language, export_data)
     end
@@ -188,6 +192,26 @@ class ExportConfig < ApplicationRecord
     language_file = Tempfile.new(language.id.to_s)
     toml = TomlRB.dump(export_data)
     language_file.puts(toml)
+    language_file.close
+
+    language_file
+  end
+
+  def properties(language, export_data)
+    language_file = Tempfile.new(language.id.to_s)
+    properties = JavaProperties.generate(export_data)
+    language_file.puts(properties)
+    language_file.close
+
+    language_file
+  end
+
+  def po(language, export_data)
+    language_file = Tempfile.new(language.id.to_s)
+    po = PoParser.parse_file(language_file)
+    po_data = export_data.map { |k, v| { msgid: k, msgstr: v } }
+    po << po_data
+    language_file.puts(po)
     language_file.close
 
     language_file

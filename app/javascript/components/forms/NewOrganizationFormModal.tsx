@@ -36,7 +36,7 @@ class NewOrganizationFormModal extends React.Component<IProps> {
                 }
                 onCancel={this.props.onCancelRequest}
             >
-                <NewOrganizationForm {...this.props.newOrganizationFormProps} />
+                <NewOrganizationForm {...this.props.newOrganizationFormProps} orientation="vertical" />
             </TexterifyModal>
         );
     }

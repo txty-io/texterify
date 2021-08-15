@@ -9,6 +9,8 @@ export interface IInstanceInfo {
     keys_count: number;
     translations_count: number;
     releases_count: number;
+    is_cloud: number;
+    sidekiq_processes: number;
 }
 
 const InstanceAPI = {

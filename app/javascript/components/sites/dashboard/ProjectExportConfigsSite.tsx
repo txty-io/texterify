@@ -40,7 +40,9 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                 projectId: this.props.match.params.projectId
             });
 
-            const languagesResponse = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
+            const languagesResponse = await LanguagesAPI.getLanguages(this.props.match.params.projectId, {
+                showAll: true
+            });
 
             this.setState({
                 projectExportConfigsResponse: projectExportConfigsResponse,
@@ -176,7 +178,6 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                     <AddEditExportConfigForm
                         projectId={this.props.match.params.projectId}
                         exportConfigToEdit={this.state.exportConfigToEdit}
-                        visible={this.state.addEditExportConfigOpen}
                         onCreated={async () => {
                             this.setState({
                                 addEditExportConfigOpen: false,

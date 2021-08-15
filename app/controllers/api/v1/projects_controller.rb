@@ -185,9 +185,15 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       key = project.keys.find_by(name: json_key)
 
       if key.present?
-        translation = key.translations.find_by(language: language)
+        # Load default translations or export config translations
+        if export_config
+          translation = key.translations.find_by(language: language, export_config: export_config)
+        else
+          translation = key.translations.find_by(language: language, export_config: nil)
+        end
 
-        if translation.blank?
+        # If there is no translation create a new one
+        if translation.nil?
           translation = Translation.new
           translation.content = json_value
           translation.key_id = key.id
@@ -199,11 +205,16 @@ class Api::V1::ProjectsController < Api::V1::ApiController
         end
 
         if file_format == 'json-formatjs'
-          translation.content = json_value['defaultMessage']
+          translation.content = json_value['defaultMessage'] || json_value['message']
 
           key.description = json_value['description']
           key.save
-        elsif file_format == 'go-i18n' && json_value.is_a?(Hash)
+        elsif file_format == 'toml' && json_value.is_a?(Hash)
+          translation.content = json_value[:value]
+
+          key.description = json_value[:description]
+          key.save
+        elsif file_format == 'po' && json_value.is_a?(Hash)
           translation.content = json_value[:value]
 
           key.description = json_value[:description]
@@ -219,7 +230,9 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
         if file_format == 'json-formatjs'
           key.description = json_value['description']
-        elsif file_format == 'go-i18n' && json_value.is_a?(Hash)
+        elsif file_format == 'toml' && json_value.is_a?(Hash)
+          key.description = json_value[:description]
+        elsif file_format == 'po' && json_value.is_a?(Hash)
           key.description = json_value[:description]
         end
 
@@ -234,7 +247,9 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
           if file_format == 'json-formatjs'
             translation.content = json_value['defaultMessage']
-          elsif file_format == 'go-i18n' && json_value.is_a?(Hash)
+          elsif file_format == 'toml' && json_value.is_a?(Hash)
+            translation.content = json_value[:value]
+          elsif file_format == 'po' && json_value.is_a?(Hash)
             translation.content = json_value[:value]
           else
             translation.content = json_value

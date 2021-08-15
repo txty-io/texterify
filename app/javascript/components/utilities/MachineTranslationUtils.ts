@@ -18,7 +18,7 @@ const MachineTranslationUtils = {
             data.languagesResponse.included
         );
 
-        return data.supportedSourceLanguages?.data.some((supportedSourceLanguage) => {
+        return data.supportedSourceLanguages?.data?.some((supportedSourceLanguage) => {
             return supportedSourceLanguage.attributes.language_code === defaultLanguageLanguageCode.attributes.code;
         });
     }

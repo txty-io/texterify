@@ -9,10 +9,10 @@ context("export-config", () => {
         });
     });
 
-    it("creates a private project, creates a export config and exports it", () => {
+    it("creates a project, creates a export config and exports it", () => {
         cy.login(testData.login.user1.email, testData.login.user1.password);
 
-        cy.createProject("My test project", "Private");
+        cy.createProject("My test project");
 
         cy.addLanguage(
             testData.languages.german.languageCode,

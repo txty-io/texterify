@@ -106,5 +106,11 @@ gem 'rack-cors'
 gem 'sidekiq'
 gem 'sidekiq-scheduler'
 
-# For importing and exporting TOML.
+# For importing and exporting .toml files.
 gem 'toml-rb'
+
+# For importing and exporting .properties files.
+gem 'java-properties'
+
+# For importing and exporting .po files.
+gem 'PoParser'

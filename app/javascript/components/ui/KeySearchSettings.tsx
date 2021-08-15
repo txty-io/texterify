@@ -154,7 +154,7 @@ export function KeySearchSettings(props: {
         match
     ]);
 
-    const languagesForFilterSelectOptions = (props.languagesResponse || []).data.map((language) => {
+    const languagesForFilterSelectOptions = (props.languagesResponse?.data || []).map((language) => {
         const countryCode = APIUtils.getIncludedObject(
             language.relationships.country_code.data,
             props.languagesResponse.included

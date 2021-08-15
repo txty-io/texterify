@@ -4,6 +4,11 @@
   flex-grow: 1;
   min-height: 100%;
 
+  .ant-layout-content {
+    display: flex;
+    flex-direction: column;
+  }
+
   .ant-input-group {
     button:hover, button:focus {
       z-index: 1;

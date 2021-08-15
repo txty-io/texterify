@@ -16,6 +16,7 @@ import { OrganizationSidebar } from "../sites/dashboard/OrganizationSidebar";
 import { OrganizationsSite } from "../sites/dashboard/OrganizationsSite";
 import { ProjectSidebar } from "../sites/dashboard/ProjectSidebar";
 import { ProjectsSite } from "../sites/dashboard/ProjectsSite";
+import { SetupSite, STEPS } from "../sites/dashboard/SetupSite";
 import { UserAccessTokensSettingsSite } from "../sites/dashboard/UserAccessTokensSettingsSite";
 import { UserAccountSettingsSite } from "../sites/dashboard/UserAccountSettingsSite";
 import { UserLicensesSite } from "../sites/dashboard/UserLicensesSite";
@@ -308,6 +309,61 @@ class DashboardRouter extends React.Component<IProps, IState> {
                         {this.renderSidebar()}
 
                         <Switch>
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP}
+                                component={() => {
+                                    return <Redirect to={Routes.DASHBOARD.SETUP_ORGANIZATION_NEW} />;
+                                }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_ORGANIZATION_NEW}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.ORGANIZATION }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_ORGANIZATION}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.ORGANIZATION }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PLAN}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.PLAN }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PROJECT_NEW}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.PROJECT }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PROJECT}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.PROJECT }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PROJECT_LANGUAGES}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.LANGUAGES }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PROJECT_IMPORT}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.IMPORT }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PROJECT_SUCCESS}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.SUCCESS }}
+                            />
                             <PrivateRoute
                                 exact
                                 path={Routes.USER.SETTINGS.ACCOUNT}
