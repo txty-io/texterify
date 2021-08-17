@@ -1,4 +1,5 @@
-import { Empty, Layout, message, Pagination, Skeleton, Tag, Typography } from "antd";
+import { Empty, Layout, message, Popconfirm, Table } from "antd";
+import { TableRowSelection } from "antd/lib/table/interface";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -7,6 +8,7 @@ import { IKey } from "../../api/v1/KeysAPI";
 import { ITranslation } from "../../api/v1/TranslationsAPI";
 import { IValidation, ValidationsAPI } from "../../api/v1/ValidationsAPI";
 import {
+    IGetValidationViolationsOptions,
     IGetValidationViolationsResponse,
     IValidationViolation,
     ValidationViolationsAPI
@@ -14,8 +16,25 @@ import {
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
-import { HighlightBox } from "../../ui/HighlightBox";
-import { Styles } from "../../ui/Styles";
+import styled from "styled-components";
+
+const DeleteLink = styled.a`
+    && {
+        color: var(--error-color);
+
+        &:hover {
+            color: var(--error-color-hover);
+        }
+    }
+`;
+
+interface ITableRow {
+    key: string;
+    name: string;
+    content: React.ReactNode;
+    description: string;
+    controls: React.ReactNode;
+}
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -23,6 +42,7 @@ interface IState {
     validationViolationsLoading: boolean;
     page: number;
     perPage: number;
+    selectedRowKeys: any[];
 }
 
 @observer
@@ -31,7 +51,21 @@ class ProjectIssuesSite extends React.Component<IProps, IState> {
         validationViolationsResponse: null,
         validationViolationsLoading: true,
         page: 1,
-        perPage: 10
+        perPage: 10,
+        selectedRowKeys: []
+    };
+
+    rowSelection: TableRowSelection<ITableRow> = {
+        onChange: (selectedRowKeys, _selectedRows) => {
+            this.setState({
+                selectedRowKeys: selectedRowKeys
+            });
+        },
+        getCheckboxProps: () => {
+            return {
+                disabled: false
+            };
+        }
     };
 
     async componentDidMount() {
@@ -88,6 +122,92 @@ class ProjectIssuesSite extends React.Component<IProps, IState> {
         }
     }
 
+    getRows = () => {
+        if (!this.state.validationViolationsResponse || !this.state.validationViolationsResponse.data) {
+            return [];
+        }
+
+        return this.state.validationViolationsResponse.data.map((validationViolation) => {
+            const translation = APIUtils.getIncludedObject(
+                validationViolation.relationships.translation.data,
+                this.state.validationViolationsResponse.included
+            );
+
+            const validation = APIUtils.getIncludedObject(
+                validationViolation.relationships.validation.data,
+                this.state.validationViolationsResponse.included
+            );
+
+            return {
+                key: validationViolation.attributes.id,
+                name: this.getKeyForTranslation(this.getTranslationForViolation(validationViolation))?.attributes.name,
+                content: translation.attributes.content,
+                description: this.getValidationDescription(validationViolation, validation),
+                controls: (
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                        <Popconfirm
+                            title="Do you want to ignore this issue?"
+                            onConfirm={async () => {
+                                this.setState({ validationViolationsLoading: true });
+                                try {
+                                    await ValidationsAPI.deleteValidationViolation(
+                                        this.props.match.params.projectId,
+                                        validationViolation.id
+                                    );
+                                    dashboardStore.currentProject.attributes.issues_count--;
+                                    message.success("Issue ignored");
+                                } catch (error) {
+                                    console.error(error);
+                                    message.error("Failed to ignore issue.");
+                                }
+                                await this.loadValidationViolations();
+                            }}
+                            okText="Yes"
+                            cancelText="No"
+                            placement="top"
+                        >
+                            <DeleteLink>Ignore</DeleteLink>
+                        </Popconfirm>
+                    </div>
+                )
+            };
+        }, []);
+    };
+
+    getColumns = () => {
+        const columns: any[] = [
+            {
+                title: "Key",
+                dataIndex: "name",
+                key: "name"
+            },
+            {
+                title: "Content",
+                dataIndex: "content",
+                key: "content"
+            },
+            {
+                title: "Issue",
+                dataIndex: "description",
+                key: "description"
+            },
+            {
+                title: "",
+                dataIndex: "controls",
+                width: 50
+            }
+        ];
+
+        return columns;
+    };
+
+    reloadTable = async (options?: IGetValidationViolationsOptions) => {
+        const fetchOptions = options || {};
+        fetchOptions.page = (options && options.page) || this.state.page;
+        fetchOptions.perPage = (options && options.perPage) || this.state.perPage;
+        await this.loadValidationViolations(fetchOptions);
+    };
+
     render() {
         return (
             <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
@@ -104,136 +224,35 @@ class ProjectIssuesSite extends React.Component<IProps, IState> {
                 >
                     <h1>Issues</h1>
 
-                    {this.state.validationViolationsLoading && (
-                        <div style={{ maxWidth: 480, width: "100%" }}>
-                            <Skeleton active />
-                        </div>
-                    )}
-
-                    {!this.state.validationViolationsLoading &&
-                        this.state.validationViolationsResponse?.data.map((validationViolation) => {
-                            const translation = APIUtils.getIncludedObject(
-                                validationViolation.relationships.translation.data,
-                                this.state.validationViolationsResponse.included
-                            );
-
-                            const validation = APIUtils.getIncludedObject(
-                                validationViolation.relationships.validation.data,
-                                this.state.validationViolationsResponse.included
-                            );
-
-                            return (
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: 16,
-                                        marginTop: 16,
-                                        width: "100%"
-                                    }}
-                                    key={validationViolation.id}
-                                >
-                                    <div style={{ marginRight: "auto", width: "100%", display: "flex" }}>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                flexGrow: 1,
-                                                marginRight: 16
-                                            }}
-                                        >
-                                            <div>
-                                                <span style={{ fontWeight: "bolder", marginRight: 8 }}>Key:</span>
-                                                {
-                                                    this.getKeyForTranslation(
-                                                        this.getTranslationForViolation(validationViolation)
-                                                    )?.attributes.name
-                                                }
-                                            </div>
-                                            <div
-                                                style={{
-                                                    fontSize: 14,
-                                                    wordBreak: "break-word",
-                                                    marginTop: 8
-                                                }}
-                                            >
-                                                <Tag color="red">
-                                                    {this.getValidationDescription(validationViolation, validation)}
-                                                </Tag>
-                                            </div>
-                                            <div
-                                                style={{
-                                                    marginTop: 12,
-                                                    display: "grid",
-                                                    gridTemplateColumns: "1fr 1fr",
-                                                    columnGap: "24px",
-                                                    alignItems: "center"
-                                                }}
-                                            >
-                                                <HighlightBox
-                                                    style={{
-                                                        whiteSpace: "pre-wrap",
-                                                        textDecorationLine: "underline",
-                                                        textDecorationColor: "var(--error-color)",
-                                                        textUnderlinePosition: "under"
-                                                    }}
-                                                >
-                                                    {translation.attributes.content}
-                                                </HighlightBox>
-                                                <a
-                                                    onClick={async () => {
-                                                        try {
-                                                            await ValidationsAPI.deleteValidationViolation(
-                                                                this.props.match.params.projectId,
-                                                                validationViolation.id
-                                                            );
-                                                            dashboardStore.currentProject.attributes.issues_count--;
-                                                            message.success("Issue ignored");
-                                                        } catch (error) {
-                                                            console.error(error);
-                                                            message.error("Failed to delete issue.");
-                                                        }
-                                                        await this.loadValidationViolations();
-                                                    }}
-                                                >
-                                                    Ignore
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-
-                    {!this.state.validationViolationsLoading &&
-                        this.state.validationViolationsResponse?.data.length > 0 && (
-                            <Pagination
-                                pageSizeOptions={PAGE_SIZE_OPTIONS}
-                                showSizeChanger
-                                pageSize={this.state.perPage}
-                                current={this.state.page}
-                                total={
-                                    (this.state.validationViolationsResponse &&
-                                        this.state.validationViolationsResponse.meta &&
-                                        this.state.validationViolationsResponse.meta.total) ||
-                                    0
-                                }
-                                onChange={async (page: number, _perPage: number) => {
-                                    this.setState({ page: page });
-                                    await this.loadValidationViolations({ page: page });
-                                }}
-                                onShowSizeChange={async (_current: number, size: number) => {
-                                    this.setState({ page: 1, perPage: size });
-                                    await this.loadValidationViolations({ page: 1, perPage: size });
-                                }}
-                                style={{ marginTop: 24, marginLeft: "auto" }}
-                            />
-                        )}
-
-                    {!this.state.validationViolationsLoading &&
-                        this.state.validationViolationsResponse?.data.length === 0 && (
-                            <Empty description="No issues found." image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                        )}
+                    <Table
+                        rowSelection={this.rowSelection}
+                        dataSource={this.getRows()}
+                        columns={this.getColumns()}
+                        style={{ width: "100%" }}
+                        bordered
+                        loading={this.state.validationViolationsLoading}
+                        pagination={{
+                            pageSizeOptions: PAGE_SIZE_OPTIONS,
+                            showSizeChanger: true,
+                            current: this.state.page,
+                            pageSize: this.state.perPage,
+                            total:
+                                (this.state.validationViolationsResponse &&
+                                    this.state.validationViolationsResponse.meta.total) ||
+                                0,
+                            onChange: async (page: number, _perPage: number) => {
+                                this.setState({ page: page });
+                                await this.reloadTable({ page: page });
+                            },
+                            onShowSizeChange: async (_current: number, size: number) => {
+                                this.setState({ page: 1, perPage: size });
+                                await this.reloadTable({ page: 1, perPage: size });
+                            }
+                        }}
+                        locale={{
+                            emptyText: <Empty description="No issues found" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                        }}
+                    />
                 </Layout.Content>
             </Layout>
         );

@@ -1,17 +1,18 @@
-import { Button, Layout, message, Modal, Pagination, Skeleton, Statistic, Switch, Tag } from "antd";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { Button, Empty, Layout, message, Modal, Skeleton, Switch, Table, Tag } from "antd";
+import { TableRowSelection } from "antd/lib/table/interface";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import styled from "styled-components";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
-import { IGetValidationsResponse, ValidationsAPI } from "../../api/v1/ValidationsAPI";
+import { IGetValidationsOptions, IGetValidationsResponse, ValidationsAPI } from "../../api/v1/ValidationsAPI";
 import { IGetValidationViolationsCountResponse, ValidationViolationsAPI } from "../../api/v1/ValidationViolationsAPI";
 import { AddEditValidationForm } from "../../forms/AddEditValidationForm";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
-import { HighlightBox } from "../../ui/HighlightBox";
 
 const DeleteLink = styled.a`
     && {
@@ -24,6 +25,14 @@ const DeleteLink = styled.a`
     }
 `;
 
+interface ITableRow {
+    key: string;
+    name: string;
+    description: string;
+    validation: React.ReactNode;
+    controls: React.ReactNode;
+}
+
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     addDialogVisible: boolean;
@@ -35,6 +44,7 @@ interface IState {
     perPage: number;
     validationViolationsCountResponse: IGetValidationViolationsCountResponse;
     validationViolationsLoading: boolean;
+    selectedRowKeys: any[];
 }
 
 @observer
@@ -48,7 +58,21 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
         page: 1,
         perPage: 10,
         validationViolationsCountResponse: null,
-        validationViolationsLoading: true
+        validationViolationsLoading: true,
+        selectedRowKeys: []
+    };
+
+    rowSelection: TableRowSelection<ITableRow> = {
+        onChange: (selectedRowKeys, _selectedRows) => {
+            this.setState({
+                selectedRowKeys: selectedRowKeys
+            });
+        },
+        getCheckboxProps: () => {
+            return {
+                disabled: false
+            };
+        }
     };
 
     async componentDidMount() {
@@ -155,6 +179,132 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
         );
     };
 
+    getRows = () => {
+        if (!this.state.validationsResponse || !this.state.validationsResponse.data) {
+            return [];
+        }
+
+        return this.state.validationsResponse.data.map((validation) => {
+            return {
+                key: validation.attributes.id,
+                name: validation.attributes.name,
+                description: validation.attributes.description,
+                validation: (
+                    <>
+                        <b>{validation.attributes.match}</b> {validation.attributes.content}
+                    </>
+                ),
+                enabled: (
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                        <Switch
+                            defaultChecked={validation.attributes.enabled}
+                            loading={this.state.validationUpdating}
+                            checked={validation.attributes.enabled}
+                            onChange={async () => {
+                                this.setState({ validationUpdating: true });
+
+                                try {
+                                    await ValidationsAPI.updateValidation({
+                                        projectId: this.props.match.params.projectId,
+                                        validationId: validation.id,
+                                        enabled: !validation.attributes.enabled
+                                    });
+
+                                    message.success("Validation status changed.");
+
+                                    validation.attributes.enabled = !validation.attributes.enabled;
+                                } catch (error) {
+                                    console.error(error);
+                                    message.error("Failed to update validation status.");
+                                }
+
+                                this.setState({ validationUpdating: false });
+                            }}
+                        />
+                    </div>
+                ),
+                controls: (
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                        <a
+                            onClick={() => {
+                                this.setState({
+                                    addDialogVisible: true,
+                                    validationToEdit: validation
+                                });
+                            }}
+                        >
+                            Edit
+                        </a>
+                        <DeleteLink
+                            onClick={() => {
+                                Modal.confirm({
+                                    title: "Do you really want to delete this validation?",
+                                    content: "This cannot be undone.",
+                                    okText: "Yes",
+                                    okButtonProps: {
+                                        danger: true
+                                    },
+                                    cancelText: "No",
+                                    autoFocusButton: "cancel",
+                                    onOk: async () => {
+                                        await ValidationsAPI.deleteValidation(
+                                            this.props.match.params.projectId,
+                                            validation.id
+                                        );
+
+                                        await this.loadValidations();
+                                        message.success("Validation deleted");
+                                    }
+                                });
+                            }}
+                        >
+                            Delete
+                        </DeleteLink>
+                    </div>
+                )
+            };
+        }, []);
+    };
+
+    getColumns = () => {
+        const columns: any[] = [
+            {
+                title: "Name",
+                dataIndex: "name",
+                key: "name"
+            },
+            {
+                title: "Description",
+                dataIndex: "description",
+                key: "description"
+            },
+            {
+                title: "Report if",
+                dataIndex: "validation",
+                key: "validation"
+            },
+            {
+                title: "Enabled",
+                dataIndex: "enabled",
+                width: 50
+            },
+            {
+                title: "",
+                dataIndex: "controls",
+                width: 50
+            }
+        ];
+
+        return columns;
+    };
+
+    reloadTable = async (options?: IGetValidationsOptions) => {
+        const fetchOptions = options || {};
+        fetchOptions.page = (options && options.page) || this.state.page;
+        fetchOptions.perPage = (options && options.perPage) || this.state.perPage;
+        await this.loadValidations(fetchOptions);
+    };
+
     render() {
         return (
             <>
@@ -169,11 +319,26 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                         <div style={{ display: "flex", alignItems: "center" }}>
                             {this.state.validationViolationsLoading && (
                                 <div style={{ width: 80, marginRight: 8 }}>
-                                    <Skeleton active paragraph={false} className="skeleton-no-padding" />
+                                    <Skeleton
+                                        active
+                                        paragraph={false}
+                                        className="skeleton-no-padding skeleton-small-22"
+                                    />
                                 </div>
                             )}
                             {!this.state.validationViolationsLoading && this.state.validationViolationsCountResponse && (
-                                <Tag color={this.state.validationViolationsCountResponse.total > 0 ? "red" : "green"}>
+                                <Tag
+                                    icon={
+                                        this.state.validationViolationsCountResponse.total > 0 ? (
+                                            <ExclamationCircleOutlined />
+                                        ) : undefined
+                                    }
+                                    color={
+                                        this.state.validationViolationsCountResponse.total > 0
+                                            ? "var(--color-warn)"
+                                            : "var(--color-success)"
+                                    }
+                                >
                                     {this.state.validationViolationsCountResponse.total}{" "}
                                     {this.state.validationViolationsCountResponse.total === 1 ? "Issue" : "Issues"}
                                 </Tag>
@@ -196,7 +361,7 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                     display: "flex",
                                     flexDirection: "column",
                                     width: "100%",
-                                    maxWidth: 480,
+                                    maxWidth: 720,
                                     alignItems: "flex-start"
                                 }}
                             >
@@ -211,156 +376,39 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                     Create validation rule
                                 </Button>
 
-                                {this.state.validationsLoading && (
-                                    <div style={{ maxWidth: 480, width: "100%" }}>
-                                        <Skeleton active />
-                                    </div>
-                                )}
-
-                                {!this.state.validationsLoading &&
-                                    this.state.validationsResponse?.data.map((validation) => {
-                                        return (
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    marginBottom: 24,
-                                                    maxWidth: 480,
-                                                    width: "100%"
-                                                }}
-                                                key={validation.id}
-                                            >
-                                                {/* <div
-                                                    style={{
-                                                        width: 4,
-                                                        height: 4,
-                                                        background: validation.attributes.enabled
-                                                            ? "var(--color-success)"
-                                                            : "var(--error-color)",
-                                                        borderRadius: "100%",
-                                                        marginRight: 16,
-                                                        flexShrink: 0
-                                                    }}
-                                                /> */}
-                                                <div style={{ marginRight: "auto", width: "100%" }}>
-                                                    <div
-                                                        style={{
-                                                            fontSize: 16,
-                                                            fontWeight: "bold",
-                                                            wordBreak: "break-word"
-                                                        }}
-                                                    >
-                                                        {validation.attributes.name}
-                                                    </div>
-                                                    <div
-                                                        style={{ fontSize: 14, opacity: 0.75, wordBreak: "break-word" }}
-                                                    >
-                                                        {validation.attributes.description}
-                                                    </div>
-                                                    <HighlightBox
-                                                        style={{
-                                                            fontSize: 14,
-                                                            display: "flex",
-                                                            alignItems: "center",
-                                                            margin: "4px 0"
-                                                        }}
-                                                    >
-                                                        <span style={{ fontWeight: "bold" }}>
-                                                            {validation.attributes.match}
-                                                        </span>
-                                                        <span style={{ marginLeft: 8, wordBreak: "break-word" }}>
-                                                            {validation.attributes.content}
-                                                        </span>
-                                                    </HighlightBox>
-                                                    <div style={{ display: "flex" }}>
-                                                        <a
-                                                            onClick={() => {
-                                                                this.setState({
-                                                                    addDialogVisible: true,
-                                                                    validationToEdit: validation
-                                                                });
-                                                            }}
-                                                        >
-                                                            Edit
-                                                        </a>
-                                                        <DeleteLink
-                                                            onClick={() => {
-                                                                Modal.confirm({
-                                                                    title: "Do you really want to delete this validation?",
-                                                                    content: "This cannot be undone.",
-                                                                    okText: "Yes",
-                                                                    okButtonProps: {
-                                                                        danger: true
-                                                                    },
-                                                                    cancelText: "No",
-                                                                    autoFocusButton: "cancel",
-                                                                    onOk: async () => {
-                                                                        await ValidationsAPI.deleteValidation(
-                                                                            this.props.match.params.projectId,
-                                                                            validation.id
-                                                                        );
-
-                                                                        await this.loadValidations();
-                                                                        message.success("Validation deleted");
-                                                                    }
-                                                                });
-                                                            }}
-                                                        >
-                                                            Delete
-                                                        </DeleteLink>
-                                                    </div>
-                                                </div>
-                                                <Switch
-                                                    defaultChecked={validation.attributes.enabled}
-                                                    style={{ marginLeft: 24 }}
-                                                    loading={this.state.validationUpdating}
-                                                    checked={validation.attributes.enabled}
-                                                    onChange={async () => {
-                                                        this.setState({ validationUpdating: true });
-
-                                                        try {
-                                                            await ValidationsAPI.updateValidation({
-                                                                projectId: this.props.match.params.projectId,
-                                                                validationId: validation.id,
-                                                                enabled: !validation.attributes.enabled
-                                                            });
-
-                                                            message.success("Validation status changed.");
-
-                                                            validation.attributes.enabled =
-                                                                !validation.attributes.enabled;
-                                                        } catch (error) {
-                                                            console.error(error);
-                                                            message.error("Failed to update validation status.");
-                                                        }
-
-                                                        this.setState({ validationUpdating: false });
-                                                    }}
-                                                />
-                                            </div>
-                                        );
-                                    })}
-
-                                <Pagination
-                                    pageSizeOptions={PAGE_SIZE_OPTIONS}
-                                    showSizeChanger
-                                    pageSize={this.state.perPage}
-                                    current={this.state.page}
-                                    total={
-                                        (this.state.validationsResponse &&
-                                            this.state.validationsResponse.meta &&
-                                            this.state.validationsResponse.meta.total) ||
-                                        0
-                                    }
-                                    onChange={async (page: number, _perPage: number) => {
-                                        this.setState({ page: page });
-                                        await this.loadValidations({ page: page });
+                                <Table
+                                    rowSelection={this.rowSelection}
+                                    dataSource={this.getRows()}
+                                    columns={this.getColumns()}
+                                    style={{ width: "100%" }}
+                                    bordered
+                                    loading={this.state.validationsLoading}
+                                    pagination={{
+                                        pageSizeOptions: PAGE_SIZE_OPTIONS,
+                                        showSizeChanger: true,
+                                        current: this.state.page,
+                                        pageSize: this.state.perPage,
+                                        total:
+                                            (this.state.validationsResponse &&
+                                                this.state.validationsResponse.meta.total) ||
+                                            0,
+                                        onChange: async (page: number, _perPage: number) => {
+                                            this.setState({ page: page });
+                                            await this.reloadTable({ page: page });
+                                        },
+                                        onShowSizeChange: async (_current: number, size: number) => {
+                                            this.setState({ page: 1, perPage: size });
+                                            await this.reloadTable({ page: 1, perPage: size });
+                                        }
                                     }}
-                                    onShowSizeChange={async (_current: number, size: number) => {
-                                        this.setState({ page: 1, perPage: size });
-                                        await this.loadValidations({ page: 1, perPage: size });
+                                    locale={{
+                                        emptyText: (
+                                            <Empty
+                                                description="No validation rules found"
+                                                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                            />
+                                        )
                                     }}
-                                    style={{ marginTop: 24, marginLeft: "auto" }}
                                 />
                             </div>
                             <div

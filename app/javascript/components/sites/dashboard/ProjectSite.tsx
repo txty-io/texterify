@@ -1,5 +1,5 @@
 import { CrownOutlined, PicRightOutlined } from "@ant-design/icons";
-import { Button, Empty, Layout, message, Pagination, Progress, Skeleton, Statistic, Tooltip } from "antd";
+import { Button, Empty, Layout, message, Pagination, Progress, Skeleton, Statistic, Tag, Tooltip } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as moment from "moment";
@@ -298,17 +298,31 @@ class ProjectSite extends React.Component<IProps, IState> {
                         </div>
 
                         <div style={{ width: "50%", marginLeft: 40 }}>
-                            <h3>Validations</h3>
+                            <h3>Issues</h3>
 
-                            {this.state.validationViolationsLoading && <Skeleton active paragraph={false} />}
+                            {this.state.validationViolationsLoading && (
+                                <div style={{ width: 80 }}>
+                                    <Skeleton
+                                        active
+                                        paragraph={false}
+                                        className="skeleton-no-padding skeleton-small-22"
+                                    />
+                                </div>
+                            )}
                             {!this.state.validationViolationsLoading && this.state.validationViolationsCountResponse && (
-                                <Tag color={this.state.validationViolationsCountResponse.total > 0 ? "red" : "green"}>
+                                <Tag
+                                    color={
+                                        this.state.validationViolationsCountResponse.total > 0
+                                            ? "var(--color-warn)"
+                                            : "var(--color-success)"
+                                    }
+                                >
                                     {this.state.validationViolationsCountResponse.total}{" "}
                                     {this.state.validationViolationsCountResponse.total === 1 ? "Issue" : "Issues"}
                                 </Tag>
                             )}
 
-                            <div style={{ marginTop: 8 }}>
+                            <div style={{ marginTop: 4 }}>
                                 <a
                                     href={Routes.DASHBOARD.PROJECT_ISSUES.replace(
                                         ":projectId",

@@ -14,6 +14,7 @@ import {
     MenuUnfoldOutlined,
     MonitorOutlined,
     OneToOneOutlined,
+    RightSquareOutlined,
     RobotOutlined,
     SettingOutlined,
     SwapOutlined,
@@ -75,7 +76,12 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             {
                 icon: EditOutlined,
                 path: Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId),
-                text: "Editor",
+                text: (
+                    <span>
+                        Editor
+                        <RightSquareOutlined style={{ marginLeft: 16 }} />
+                    </span>
+                ),
                 dataId: "project-sidebar-editor"
             },
             {
@@ -149,7 +155,11 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     <span>
                         Issues
                         <Tag
-                            color={dashboardStore.currentProject?.attributes.issues_count > 0 ? "red" : "green"}
+                            color={
+                                dashboardStore.currentProject?.attributes.issues_count > 0
+                                    ? "var(--color-warn)"
+                                    : "var(--color-success)"
+                            }
                             style={{ marginLeft: 16 }}
                         >
                             {dashboardStore.currentProject?.attributes.issues_count}

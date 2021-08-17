@@ -131,13 +131,13 @@ class AddEditValidationForm extends React.Component<IProps, IState> {
 
                     <h3>Validation *</h3>
                     <div style={{ display: "flex", alignItems: "center", whiteSpace: "nowrap" }}>
-                        Report if text
+                        <span style={{ marginRight: 8 }}>Report if text</span>
                         <Form.Item
                             name="content"
-                            style={{ margin: 0 }}
+                            style={{ margin: 0, flexGrow: 1 }}
                             rules={[{ required: true, whitespace: true, message: "Please enter a validation." }]}
                         >
-                            <Input addonBefore={selectBefore} style={{ marginLeft: 8 }} />
+                            <Input addonBefore={selectBefore} />
                         </Form.Item>
                     </div>
                 </Form>
