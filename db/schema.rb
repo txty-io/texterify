@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_02_180516) do
+ActiveRecord::Schema.define(version: 2021_08_17_221424) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -168,6 +168,16 @@ ActiveRecord::Schema.define(version: 2021_06_02_180516) do
     t.index ["source_language_code_id"], name: "index_machine_translation_memories_on_source_language_code_id"
     t.index ["target_country_code_id"], name: "index_machine_translation_memories_on_target_country_code_id"
     t.index ["target_language_code_id"], name: "index_machine_translation_memories_on_target_language_code_id"
+  end
+
+  create_table "organization_invites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "email", null: false
+    t.string "role", default: "translator", null: false
+    t.uuid "organization_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["email", "organization_id"], name: "index_organization_invites_on_email_and_organization_id", unique: true
+    t.index ["organization_id"], name: "index_organization_invites_on_organization_id"
   end
 
   create_table "organizations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -398,6 +408,7 @@ ActiveRecord::Schema.define(version: 2021_06_02_180516) do
   add_foreign_key "machine_translation_memories", "country_codes", column: "target_country_code_id"
   add_foreign_key "machine_translation_memories", "language_codes", column: "source_language_code_id"
   add_foreign_key "machine_translation_memories", "language_codes", column: "target_language_code_id"
+  add_foreign_key "organization_invites", "organizations", on_delete: :cascade
   add_foreign_key "organizations_users", "organizations"
   add_foreign_key "organizations_users", "users"
   add_foreign_key "post_processing_rules", "export_configs"

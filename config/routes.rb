@@ -32,6 +32,8 @@ Rails
           delete :image, to: 'organizations#image_destroy'
           resources :members, only: [:create, :index, :destroy, :update], controller: 'organization_users'
           get :project_members, to: 'organization_users#project_users'
+
+          resources :invites, only: [:create, :index, :destroy], controller: 'organization_invites'
         end
 
         get 'instance', to: 'instance#show'

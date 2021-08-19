@@ -6,6 +6,11 @@ import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { APIErrors } from "./APIErrors";
 
+export interface IGenericAPIResponse {
+    error: boolean;
+    message: string;
+}
+
 message.config({
     top: 12,
     duration: 4,

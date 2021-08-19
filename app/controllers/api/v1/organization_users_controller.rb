@@ -41,7 +41,13 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
 
   def create
     organization = current_user.organizations.find(params[:organization_id])
-    user = User.find_by!(email: params[:email])
+    user = User.find_by(email: params[:email])
+
+    unless user
+      skip_authorization
+      render json: { error: true, message: 'USER_NOT_FOUND' }, status: :not_found
+      return
+    end
 
     organization_user = OrganizationUser.new
     organization_user.organization = organization
@@ -51,7 +57,7 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     if organization.users.exclude?(user)
       organization_user.save!
 
-      render json: { message: 'Successfully added user to the organization.' }
+      render json: { error: false, message: 'Successfully added user to the organization.' }
     else
       render json: { error: true, message: 'USER_ALREADY_ADDED' }, status: :bad_request
     end

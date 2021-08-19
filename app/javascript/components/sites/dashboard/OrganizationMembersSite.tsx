@@ -1,41 +1,51 @@
-import { Button, Input, Layout, message, Modal, Select, Table, Tag } from "antd";
+import { Button, Empty, Input, Layout, message, Modal, Popconfirm, Select, Table, Tag } from "antd";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
+import { IGetOrganizationInvitesResponse, OrganizationInvitesAPI } from "../../api/v1/OrganizationInvitesAPI";
 import { OrganizationMembersAPI } from "../../api/v1/OrganizationMembersAPI";
 import { OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
+import { IProject } from "../../api/v1/ProjectsAPI";
+import { InviteUserFormModal } from "../../forms/InviteUserFormModal";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
-import { dashboardStore, IProject } from "../../stores/DashboardStore";
+import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { ErrorUtils } from "../../ui/ErrorUtils";
 import { Loading } from "../../ui/Loading";
 import { RolesLegend } from "../../ui/RolesLegend";
 import { UserAvatar } from "../../ui/UserAvatar";
+import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
+import moment from "moment";
+import { UserAddOutlined } from "@ant-design/icons";
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {
-    userAddEmail: string;
     getMembersResponse: any;
     getProjectMembersResponse: any;
+    getOrganizationInvitesResponse: IGetOrganizationInvitesResponse;
     deleteDialogVisible: boolean;
     search: string;
     loading: boolean;
+    inviteDialogOpen: boolean;
+    inviteRole: string;
 }
 
 @observer
 class OrganizationMembersSite extends React.Component<IProps, IState> {
     state: IState = {
-        userAddEmail: "",
         getMembersResponse: null,
         getProjectMembersResponse: null,
+        getOrganizationInvitesResponse: null,
         deleteDialogVisible: false,
         search: "",
-        loading: true
+        loading: true,
+        inviteDialogOpen: false,
+        inviteRole: "translator"
     };
 
     debouncedSearchReloader = _.debounce(
@@ -66,10 +76,14 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                 this.props.match.params.organizationId,
                 options
             );
+            const responseGetOrganizationInvites = await OrganizationInvitesAPI.getAll({
+                organizationId: this.props.match.params.organizationId
+            });
 
             this.setState({
                 getMembersResponse: responseGetMembers,
-                getProjectMembersResponse: responseGetProjectMembers
+                getProjectMembersResponse: responseGetProjectMembers,
+                getOrganizationInvitesResponse: responseGetOrganizationInvites
             });
         } catch (e) {
             console.error(e);
@@ -173,6 +187,47 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
         return result;
     };
 
+    getOrganizationInvitesRows = () => {
+        if (!this.state.getOrganizationInvitesResponse.data) {
+            return [];
+        }
+
+        return this.state.getOrganizationInvitesResponse.data.map((invite) => {
+            return {
+                id: invite.id,
+                key: invite.id,
+                email: invite.attributes.email,
+                role: invite.attributes.role,
+                created_at: invite.attributes.created_at,
+                controls: (
+                    <Popconfirm
+                        title="Do you want to withdraw this invitation?"
+                        onConfirm={async () => {
+                            this.setState({ loading: true });
+                            try {
+                                await OrganizationInvitesAPI.delete({
+                                    organizationId: invite.attributes.organization_id,
+                                    inviteId: invite.id
+                                });
+
+                                await this.reload();
+                            } catch (error) {
+                                console.error(error);
+                            }
+
+                            this.setState({ loading: false });
+                        }}
+                        okText="Yes"
+                        cancelText="No"
+                        okButtonProps={{ danger: true }}
+                    >
+                        <Button danger>Withdraw invite</Button>
+                    </Popconfirm>
+                )
+            };
+        }, []);
+    };
+
     hasOnlyOneOwner = () => {
         const ownerRows = this.getRows().filter((row) => {
             return PermissionUtils.isOwner(row.role);
@@ -186,9 +241,9 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
             {
                 title: "",
                 key: "image",
-                width: 80,
+                width: 73, // width of cell with avatar in it
                 render: (_text, record) => {
-                    return <UserAvatar user={record.user.attributes} style={{ marginRight: 24 }} />;
+                    return <UserAvatar user={record.user.attributes} />;
                 }
             },
             {
@@ -216,6 +271,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                 {
                     title: "Role",
                     key: "role",
+                    width: 320,
                     render: (_text, record) => {
                         return (
                             <Select
@@ -223,7 +279,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                 placeholder="Select a role"
                                 optionFilterProp="children"
                                 filterOption
-                                style={{ marginRight: 24, width: 240 }}
+                                style={{ width: "100%" }}
                                 value={record.role}
                                 onChange={async (value: string) => {
                                     try {
@@ -449,6 +505,39 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
         return columns;
     };
 
+    getOrganizationInvitesColumns = () => {
+        return [
+            {
+                title: "E-Mail",
+                key: "email",
+                render: (_text, record) => {
+                    return <span style={{ color: "var(--full-color)" }}>{record.email}</span>;
+                }
+            },
+            {
+                title: "Role",
+                key: "role",
+                render: (_text, record) => {
+                    return (
+                        <Tag color={PermissionUtils.getColorByRole(record.role)}>{Utils.capitalize(record.role)}</Tag>
+                    );
+                }
+            },
+            {
+                title: "Invited at",
+                key: "sentAt",
+                render: (_text, record) => {
+                    return moment(record.created_at).format("DD.MM.YYYY HH:mm");
+                }
+            },
+            {
+                title: "",
+                dataIndex: "controls",
+                width: 50
+            }
+        ];
+    };
+
     onSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         this.debouncedSearchReloader(event.target.value);
     };
@@ -459,89 +548,107 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
         }
 
         return (
-            <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
-                <Breadcrumbs breadcrumbName="organizationMembers" />
-                <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
-                    <h1>Members</h1>
-                    <p>Invite users to your organization to help you localize your apps.</p>
-                    <div style={{ display: "flex" }}>
-                        <Input
-                            placeholder="Enter users email address"
-                            onChange={async (event) => {
-                                this.setState({
-                                    userAddEmail: event.target.value
-                                });
-                            }}
-                            value={this.state.userAddEmail}
-                            style={{ maxWidth: 400 }}
-                            disabled={!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentOrganizationRole())}
-                        />
-                        <Button
-                            style={{ marginLeft: 8 }}
-                            type="primary"
-                            onClick={async () => {
-                                const createMemberResponse = await OrganizationMembersAPI.createMember(
-                                    this.props.match.params.organizationId,
-                                    this.state.userAddEmail
-                                );
-
-                                if (createMemberResponse.error) {
-                                    if (
-                                        createMemberResponse.message === "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE"
-                                    ) {
-                                        ErrorUtils.showError(
-                                            "Please upgrade to a paid plan to add users to this organization."
-                                        );
-                                    } else if (createMemberResponse.message === "USER_ALREADY_ADDED") {
-                                        message.info("User has already been added to the organization.");
-                                    } else {
-                                        ErrorUtils.showError("An unknown error occurred.");
-                                    }
-                                } else if (createMemberResponse.errors) {
-                                    ErrorUtils.showErrors(createMemberResponse.errors);
-                                } else {
-                                    const getMembersResponse = await OrganizationMembersAPI.getMembers(
-                                        this.props.match.params.organizationId
-                                    );
-
-                                    this.setState({
-                                        getMembersResponse: getMembersResponse,
-                                        userAddEmail: ""
-                                    });
+            <>
+                <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
+                    <Breadcrumbs breadcrumbName="organizationMembers" />
+                    <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
+                        <h1>Users</h1>
+                        <div style={{ display: "flex" }}>
+                            <Button
+                                type="primary"
+                                onClick={async () => {
+                                    this.setState({ inviteDialogOpen: true });
+                                }}
+                                disabled={
+                                    !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentOrganizationRole())
                                 }
-                            }}
-                            disabled={this.state.userAddEmail === ""}
-                        >
-                            Invite
-                        </Button>
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", marginTop: 24 }}>
-                        <Input.Search placeholder="Search users" onChange={this.onSearch} style={{ maxWidth: "50%" }} />
+                            >
+                                <UserAddOutlined /> Invite a user
+                            </Button>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", marginTop: 16 }}>
+                            <Input.Search
+                                placeholder="Search users"
+                                onChange={this.onSearch}
+                                style={{ maxWidth: 560 }}
+                            />
 
-                        <RolesLegend style={{ marginLeft: "auto" }} />
-                    </div>
+                            <RolesLegend style={{ marginLeft: "auto" }} />
+                        </div>
 
-                    <div style={{ marginTop: 40 }}>
-                        <h3>Organization users</h3>
-                        <Table
-                            dataSource={this.getRows()}
-                            columns={this.getColumns("organization")}
-                            loading={this.state.loading}
-                            pagination={false}
-                        />
-                    </div>
+                        <div style={{ marginTop: 40 }}>
+                            <h3>Users</h3>
+                            <Table
+                                dataSource={this.getRows()}
+                                columns={this.getColumns("organization")}
+                                loading={this.state.loading}
+                                pagination={false}
+                                bordered
+                                locale={{
+                                    emptyText: (
+                                        <Empty
+                                            description={
+                                                this.state.search ? "No users for your search found" : "No users found"
+                                            }
+                                            image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                        />
+                                    )
+                                }}
+                            />
+                        </div>
 
-                    <div style={{ marginTop: 40 }}>
-                        <h3>External users</h3>
-                        <Table
-                            dataSource={this.getProjectMemberRows()}
-                            columns={this.getColumns("project")}
-                            loading={this.state.loading}
-                            pagination={false}
-                        />
-                    </div>
-                </Layout.Content>
-            </Layout>
+                        <div style={{ marginTop: 40 }}>
+                            <h3>External users</h3>
+                            <Table
+                                dataSource={this.getProjectMemberRows()}
+                                columns={this.getColumns("project")}
+                                loading={this.state.loading}
+                                pagination={false}
+                                bordered
+                                locale={{
+                                    emptyText: (
+                                        <Empty
+                                            description={
+                                                this.state.search ? "No users for your search found" : "No users found"
+                                            }
+                                            image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                        />
+                                    )
+                                }}
+                            />
+                        </div>
+
+                        <div style={{ marginTop: 40 }}>
+                            <h3>Invites</h3>
+                            <Table
+                                dataSource={this.getOrganizationInvitesRows()}
+                                columns={this.getOrganizationInvitesColumns()}
+                                loading={this.state.loading}
+                                pagination={false}
+                                bordered
+                                locale={{
+                                    emptyText: (
+                                        <Empty description="No invites found" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                                    )
+                                }}
+                            />
+                        </div>
+                    </Layout.Content>
+                </Layout>
+
+                <InviteUserFormModal
+                    organizationId={this.props.match.params.organizationId}
+                    visible={this.state.inviteDialogOpen}
+                    onCancelRequest={() => {
+                        this.setState({ inviteDialogOpen: false });
+                    }}
+                    onSuccess={async () => {
+                        this.setState({ inviteDialogOpen: false });
+
+                        await this.reload();
+                    }}
+                />
+            </>
         );
     }
 }

@@ -9,6 +9,7 @@ class Organization < ApplicationRecord
   has_many :project_users, through: :projects, dependent: :destroy
   has_many :subscriptions, dependent: :destroy
   has_many :sent_emails, dependent: :destroy
+  has_many :invites, class_name: 'OrganizationInvite', dependent: :destroy
 
   has_one_attached :image
 
