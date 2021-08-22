@@ -1,5 +1,5 @@
-import { UserAddOutlined } from "@ant-design/icons";
-import { Button, Empty, Input, Layout, message, Modal, Popconfirm, Select, Table, Tag } from "antd";
+import { QuestionCircleOutlined, UserAddOutlined } from "@ant-design/icons";
+import { Button, Empty, Input, Layout, message, Modal, Popconfirm, Select, Table, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
 import moment from "moment";
@@ -619,7 +619,12 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                         </div>
 
                         <div style={{ marginTop: 40 }}>
-                            <h3>Invites</h3>
+                            <h3>
+                                Invites{" "}
+                                <Tooltip title="Users who currently don't have an account. They will automatically be added after they create and confirm their account.">
+                                    <QuestionCircleOutlined style={{ marginLeft: 8 }} />
+                                </Tooltip>
+                            </h3>
                             <Table
                                 dataSource={this.getOrganizationInvitesRows()}
                                 columns={this.getOrganizationInvitesColumns()}
