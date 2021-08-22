@@ -34,9 +34,23 @@ class User < ApplicationRecord
   end
 
   # Override Devise::Confirmable#after_confirmation
+  # https://www.rubydoc.info/github/plataformatec/devise/Devise/Models/Confirmable:after_confirmation
   def after_confirmation
     if Texterify.cloud?
       UserMailer.welcome(email, username).deliver_later
+    end
+
+    # Add user to organizations with open invites.
+    organization_invites = OrganizationInvite.where(email: email, open: true)
+    organization_invites.each do |invite|
+      organization_user = OrganizationUser.new
+      organization_user.user = self
+      organization_user.organization = invite.organization
+      organization_user.role = invite.role
+      organization_user.save!
+
+      invite.open = false
+      invite.save!
     end
   end
 

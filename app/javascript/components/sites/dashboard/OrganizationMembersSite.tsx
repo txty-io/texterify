@@ -1,6 +1,8 @@
+import { UserAddOutlined } from "@ant-design/icons";
 import { Button, Empty, Input, Layout, message, Modal, Popconfirm, Select, Table, Tag } from "antd";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
+import moment from "moment";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
@@ -20,8 +22,6 @@ import { RolesLegend } from "../../ui/RolesLegend";
 import { UserAvatar } from "../../ui/UserAvatar";
 import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
-import moment from "moment";
-import { UserAddOutlined } from "@ant-design/icons";
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {

@@ -154,8 +154,8 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             {
                 icon: TeamOutlined,
                 path: Routes.DASHBOARD.PROJECT_MEMBERS.replace(":projectId", this.props.match.params.projectId),
-                text: "Members",
-                dataId: "project-sidebar-members"
+                text: "Users",
+                dataId: "project-sidebar-users"
             },
             {
                 icon: BlockOutlined,

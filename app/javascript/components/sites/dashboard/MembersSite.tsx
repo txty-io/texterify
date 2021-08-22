@@ -325,7 +325,7 @@ class MembersSite extends React.Component<IProps, IState> {
             <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%", maxWidth: 1200 }}>
                 <Breadcrumbs breadcrumbName="projectMembers" />
                 <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
-                    <h1>Members</h1>
+                    <h1>Users</h1>
                     <p>Add users to your project.</p>
                     <div style={{ display: "flex", width: "100%" }}>
                         <Form ref={this.formRef} style={{ width: "100%", maxWidth: 480 }}>
@@ -425,6 +425,7 @@ class MembersSite extends React.Component<IProps, IState> {
                             columns={this.getColumns()}
                             loading={this.state.loading}
                             pagination={false}
+                            bordered
                         />
                     </div>
 
@@ -435,6 +436,7 @@ class MembersSite extends React.Component<IProps, IState> {
                             columns={this.getColumns()}
                             loading={this.state.loading}
                             pagination={false}
+                            bordered
                         />
                     </div>
                 </Layout.Content>

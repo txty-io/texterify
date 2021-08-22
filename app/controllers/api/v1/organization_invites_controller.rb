@@ -16,7 +16,7 @@ class Api::V1::OrganizationInvitesController < Api::V1::ApiController
     authorize organization_invite
 
     # Check if there is already an invite for this organization or the user is already part of the organization.
-    if OrganizationInvite.exists?(organization_id: organization.id, email: email) ||
+    if OrganizationInvite.exists?(organization_id: organization.id, email: email, open: true) ||
          organization.users.exists?(email: email)
       render json: { error: true, message: 'USER_ALREADY_INVITED_OR_ADDED' }, status: :bad_request
     else
@@ -29,7 +29,7 @@ class Api::V1::OrganizationInvitesController < Api::V1::ApiController
   def index
     skip_authorization
     organization = current_user.organizations.find(params[:organization_id])
-    organization_invites = organization.invites.order(created_at: :desc)
+    organization_invites = organization.invites.where(open: true).order(created_at: :desc)
 
     render json: OrganizationInviteSerializer.new(organization_invites).serialized_json
   end
