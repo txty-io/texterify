@@ -186,13 +186,13 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
                 {this.state.step === 1 && (
                     <>
                         {!this.state.organizationsLoading &&
-                            this.state.organizationsResponse?.data.length === 0 &&
+                            this.state.organizationsResponse?.data?.length === 0 &&
                             !this.state.search &&
                             this.renderNoOrganizationsInfo()}
 
                         {(this.state.organizationsLoading ||
                             this.state.search ||
-                            this.state.organizationsResponse?.data.length > 0) && (
+                            this.state.organizationsResponse?.data?.length > 0) && (
                             <>
                                 <p>Select an organization for your new project.</p>
                                 <Select
@@ -207,7 +207,7 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
                                         this.reloadOrganizations({ search: value });
                                     }}
                                     onSelect={(organizationId) => {
-                                        const foundOrganization = this.state.organizationsResponse.data.find(
+                                        const foundOrganization = this.state.organizationsResponse?.data?.find(
                                             (organization) => {
                                                 return organization.id === organizationId;
                                             }
@@ -217,7 +217,7 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
                                     }}
                                     value={this.state.selectedOrganization?.id}
                                 >
-                                    {this.state.organizationsResponse?.data.map((organization) => {
+                                    {this.state.organizationsResponse?.data?.map((organization) => {
                                         return (
                                             <Select.Option value={organization.id} key={organization.id}>
                                                 <div style={{ display: "flex", alignItems: "center" }}>

@@ -97,7 +97,7 @@
     "test": "yarn test:backend && yarn test:frontend",
     "test:backend": "RAILS_ENV=test bundle exec rspec",
     "test:frontend": "yarn cypress install && yarn cypress:run",
-    "dangerous:recreate-database": "bundle exec rails db:drop && bundle exec rails db:create && bundle exec rails db:migrate && bundle exec rails db:seed",
+    "dangerous:recreate-database": "SKIP_TEST_DATABASE=true bundle exec rails db:drop && SKIP_TEST_DATABASE=true bundle exec rails db:create && SKIP_TEST_DATABASE=true bundle exec rails db:migrate && SKIP_TEST_DATABASE=true bundle exec rails db:seed",
     "webpack-bundle-analyzer": "bin/webpack --profile --json > webpacker-stats.json && node_modules/.bin/webpack-bundle-analyzer webpacker-stats.json public/packs",
     "cypress:open": "yarn cypress open --project ./spec",
     "cypress:run": "yarn cypress run --project ./spec",
