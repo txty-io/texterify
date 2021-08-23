@@ -38,7 +38,12 @@ class ProjectUserPolicy
     end
 
     is_higher_than_old_role =
-      ROLE_PRIORITY_MAP[project_user_role.to_sym] > ROLE_PRIORITY_MAP[project_user.role_before_update.to_sym]
+      if project_user.role_before_update.nil?
+        true
+      else
+        ROLE_PRIORITY_MAP[project_user_role.to_sym] > ROLE_PRIORITY_MAP[project_user.role_before_update.to_sym]
+      end
+
     is_higher_than_new_role = ROLE_PRIORITY_MAP[project_user_role.to_sym] > ROLE_PRIORITY_MAP[project_user.role.to_sym]
 
     is_higher_than_old_role && is_higher_than_new_role
