@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :organization_invite do
-    username { "MyString" }
+    username { 'MyString' }
   end
 end

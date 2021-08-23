@@ -73,6 +73,8 @@ Rails
           get :image, to: 'projects#image'
           post :image, to: 'projects#image_create'
           delete :image, to: 'projects#image_destroy'
+
+          resources :invites, only: [:create, :index, :destroy], controller: 'project_invites'
         end
 
         resources :access_tokens, only: [:create, :index, :destroy]

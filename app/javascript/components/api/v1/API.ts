@@ -60,7 +60,7 @@ async function request(options: {
             return {
                 error: true,
                 message: "FORBIDDEN"
-            }
+            };
         } else {
             APIUtils.saveTokenFromResponseIfAvailable(response);
         }

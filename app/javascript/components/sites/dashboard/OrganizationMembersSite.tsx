@@ -553,19 +553,18 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                     <Breadcrumbs breadcrumbName="organizationMembers" />
                     <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                         <h1>Users</h1>
-                        <div style={{ display: "flex" }}>
-                            <Button
-                                type="primary"
-                                onClick={async () => {
-                                    this.setState({ inviteDialogOpen: true });
-                                }}
-                                disabled={
-                                    !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentOrganizationRole())
-                                }
-                            >
-                                <UserAddOutlined /> Invite a user
-                            </Button>
-                        </div>
+
+                        <Button
+                            type="primary"
+                            onClick={async () => {
+                                this.setState({ inviteDialogOpen: true });
+                            }}
+                            disabled={!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentOrganizationRole())}
+                            style={{ alignSelf: "flex-start" }}
+                        >
+                            <UserAddOutlined /> Invite a user
+                        </Button>
+
                         <div style={{ display: "flex", alignItems: "center", marginTop: 16 }}>
                             <Input.Search
                                 placeholder="Search users"
@@ -644,6 +643,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                 <InviteUserFormModal
                     organizationId={this.props.match.params.organizationId}
                     visible={this.state.inviteDialogOpen}
+                    userRole={dashboardStore.getCurrentOrganizationRole()}
                     onCancelRequest={() => {
                         this.setState({ inviteDialogOpen: false });
                     }}

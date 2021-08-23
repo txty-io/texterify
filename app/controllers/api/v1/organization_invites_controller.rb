@@ -39,6 +39,7 @@ class Api::V1::OrganizationInvitesController < Api::V1::ApiController
     organization_invite = OrganizationInvite.find_by(id: params[:id], organization_id: organization.id)
 
     unless organization_invite
+      skip_authorization
       render json: { error: true, message: 'NOT_FOUND' }, status: :bad_request
       return
     end

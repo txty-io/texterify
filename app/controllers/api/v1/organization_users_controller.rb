@@ -57,7 +57,7 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     if organization.users.exclude?(user)
       organization_user.save!
 
-      render json: { error: false, message: 'Successfully added user to the organization.' }
+      render json: { error: false, message: 'OK' }
     else
       render json: { error: true, message: 'USER_ALREADY_ADDED' }, status: :bad_request
     end

@@ -2,6 +2,7 @@ import fileDownload from "js-file-download";
 import { ImportFileFormats } from "../../sites/dashboard/ImportSite";
 import { IFeature } from "../../types/IFeature";
 import { IPlanIDS } from "../../types/IPlan";
+import { IUserRole } from "../../types/IUserRole";
 import { IErrorsResponse } from "../../ui/ErrorUtils";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
@@ -10,8 +11,8 @@ interface IProjectAttributes {
     id: string;
     name: string;
     description: string;
-    current_user_role?: string;
-    current_user_role_source?: string;
+    current_user_role?: IUserRole;
+    current_user_role_source?: "project" | "organization";
     enabled_features: IFeature[];
     all_features: { [k in IFeature]: IPlanIDS[] };
     machine_translation_active: boolean;

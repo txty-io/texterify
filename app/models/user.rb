@@ -52,6 +52,19 @@ class User < ApplicationRecord
       invite.open = false
       invite.save!
     end
+
+    # Add user to projects with open invites.
+    project_invites = ProjectInvite.where(email: email, open: true)
+    project_invites.each do |invite|
+      project_user = ProjectUser.new
+      project_user.user = self
+      project_user.project = invite.project
+      project_user.role = invite.role
+      project_user.save!
+
+      invite.open = false
+      invite.save!
+    end
   end
 
   def confirmed

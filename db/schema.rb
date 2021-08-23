@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_22_002649) do
+ActiveRecord::Schema.define(version: 2021_08_23_100126) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -228,6 +228,17 @@ ActiveRecord::Schema.define(version: 2021_08_22_002649) do
     t.index ["user_id"], name: "index_project_columns_on_user_id"
   end
 
+  create_table "project_invites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "email", null: false
+    t.string "role", default: "translator", null: false
+    t.boolean "open", default: true, null: false
+    t.uuid "project_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["email", "project_id", "open"], name: "index_project_invites_on_email_and_project_id_and_open", unique: true
+    t.index ["project_id"], name: "index_project_invites_on_project_id"
+  end
+
   create_table "projects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "description"
@@ -416,6 +427,7 @@ ActiveRecord::Schema.define(version: 2021_08_22_002649) do
   add_foreign_key "post_processing_rules", "projects"
   add_foreign_key "project_columns", "projects"
   add_foreign_key "project_columns", "users"
+  add_foreign_key "project_invites", "projects", on_delete: :cascade
   add_foreign_key "projects", "organizations"
   add_foreign_key "projects_users", "projects"
   add_foreign_key "projects_users", "users"

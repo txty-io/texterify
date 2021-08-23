@@ -1,28 +1,34 @@
-import { Button, Input, Layout, message, Modal, Select, Tag, Tooltip, Form, Table } from "antd";
+import { QuestionCircleOutlined, UserAddOutlined } from "@ant-design/icons";
+import { Button, Input, Layout, message, Modal, Select, Table, Tag, Tooltip } from "antd";
+import { FormInstance } from "antd/lib/form";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { MembersAPI } from "../../api/v1/MembersAPI";
+import { IGetProjectInvitesResponse, ProjectInvitesAPI } from "../../api/v1/ProjectInvitesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
+import { InviteUserFormModal } from "../../forms/InviteUserFormModal";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { ErrorUtils } from "../../ui/ErrorUtils";
 import { Loading } from "../../ui/Loading";
+import { ProjectInvitesTable } from "../../ui/ProjectInvitesTable";
+import { RolesLegend } from "../../ui/RolesLegend";
 import { UserAvatar } from "../../ui/UserAvatar";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
-import { FormInstance } from "antd/lib/form";
-import { ErrorUtils, ERRORS } from "../../ui/ErrorUtils";
-import { RolesLegend } from "../../ui/RolesLegend";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
-    userAddEmail: string;
     getMembersResponse: any;
+    getProjectInvitesResponse: IGetProjectInvitesResponse;
     deleteDialogVisible: boolean;
     loading: boolean;
     search: string;
+    inviteDialogOpen: boolean;
+    inviteRole: string;
 }
 
 @observer
@@ -30,11 +36,13 @@ class MembersSite extends React.Component<IProps, IState> {
     formRef = React.createRef<FormInstance>();
 
     state: IState = {
-        userAddEmail: "",
         getMembersResponse: null,
+        getProjectInvitesResponse: null,
         deleteDialogVisible: false,
         loading: true,
-        search: ""
+        search: "",
+        inviteDialogOpen: false,
+        inviteRole: "translator"
     };
 
     debouncedSearchReloader = _.debounce(
@@ -70,8 +78,13 @@ class MembersSite extends React.Component<IProps, IState> {
                 }
             }
 
+            const responseGetProjectInvites = await ProjectInvitesAPI.getAll({
+                projectId: this.props.match.params.projectId
+            });
+
             this.setState({
-                getMembersResponse: responseGetMembers
+                getMembersResponse: responseGetMembers,
+                getProjectInvitesResponse: responseGetProjectInvites
             });
         } catch (e) {
             console.error(e);
@@ -322,125 +335,88 @@ class MembersSite extends React.Component<IProps, IState> {
         }
 
         return (
-            <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%", maxWidth: 1200 }}>
-                <Breadcrumbs breadcrumbName="projectMembers" />
-                <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
-                    <h1>Users</h1>
-                    <p>Add users to your project.</p>
-                    <div style={{ display: "flex", width: "100%" }}>
-                        <Form ref={this.formRef} style={{ width: "100%", maxWidth: 480 }}>
-                            <Form.Item name="name" style={{ marginBottom: 0 }}>
-                                <Input
-                                    placeholder="Enter users email address"
-                                    onChange={async (event) => {
-                                        this.setState({
-                                            userAddEmail: event.target.value
-                                        });
-                                    }}
-                                    value={this.state.userAddEmail}
-                                    disabled={!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())}
-                                />
-                            </Form.Item>
-                        </Form>
+            <>
+                <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%", maxWidth: 1200 }}>
+                    <Breadcrumbs breadcrumbName="projectMembers" />
+                    <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
+                        <h1>Users</h1>
+
                         <Button
-                            style={{ marginLeft: 8 }}
                             type="primary"
                             onClick={async () => {
-                                try {
-                                    const createMemberResponse = await MembersAPI.createMember(
-                                        this.props.match.params.projectId,
-                                        this.state.userAddEmail
-                                    );
-
-                                    if (createMemberResponse.error) {
-                                        if (
-                                            createMemberResponse.message ===
-                                            "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE"
-                                        ) {
-                                            if (dashboardStore.currentOrganization) {
-                                                ErrorUtils.showError(
-                                                    "Please upgrade to a paid plan to add users to this project."
-                                                );
-                                            } else {
-                                                ErrorUtils.showError(
-                                                    "This feature is not available for private projects. Please move your project to an organization."
-                                                );
-                                            }
-                                        } else if (createMemberResponse.message === "USER_ALREADY_ADDED") {
-                                            message.info("User has already been added to the project.");
-                                        } else {
-                                            ErrorUtils.showError("An unknown error occurred.");
-                                        }
-                                    } else if (createMemberResponse.errors) {
-                                        this.formRef.current.setFields([
-                                            {
-                                                name: "name",
-                                                errors: [
-                                                    ErrorUtils.getErrorMessage("user with that email", ERRORS.NOT_FOUND)
-                                                ]
-                                            }
-                                        ]);
-
-                                        return;
-                                    } else {
-                                        this.formRef.current.resetFields();
-
-                                        const getMembersResponse = await MembersAPI.getMembers(
-                                            this.props.match.params.projectId
-                                        );
-
-                                        this.setState({
-                                            getMembersResponse: getMembersResponse,
-                                            userAddEmail: ""
-                                        });
-                                    }
-                                } catch (error) {
-                                    message.error("Failed to add user.");
-                                }
+                                this.setState({ inviteDialogOpen: true });
                             }}
-                            disabled={
-                                this.state.userAddEmail === "" ||
-                                !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())
-                            }
+                            disabled={!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())}
+                            style={{ alignSelf: "flex-start" }}
                         >
-                            Invite
+                            <UserAddOutlined /> Invite a user
                         </Button>
-                    </div>
 
-                    <div style={{ display: "flex", alignItems: "center", marginTop: 24 }}>
-                        <Input.Search
-                            allowClear
-                            placeholder="Search users"
-                            onChange={this.onSearch}
-                            style={{ maxWidth: "50%" }}
-                        />
+                        <div style={{ display: "flex", alignItems: "center", marginTop: 16 }}>
+                            <Input.Search
+                                allowClear
+                                placeholder="Search users"
+                                onChange={this.onSearch}
+                                style={{ maxWidth: "50%" }}
+                            />
 
-                        <RolesLegend style={{ marginLeft: "auto" }} />
-                    </div>
+                            <RolesLegend style={{ marginLeft: "auto" }} />
+                        </div>
 
-                    <div style={{ marginTop: 24 }}>
-                        <h3>Project users</h3>
-                        <Table
-                            dataSource={this.getProjectRows()}
-                            columns={this.getColumns()}
-                            loading={this.state.loading}
-                            pagination={false}
-                            bordered
-                        />
-                    </div>
+                        <div style={{ marginTop: 24 }}>
+                            <h3>Project users</h3>
+                            <Table
+                                dataSource={this.getProjectRows()}
+                                columns={this.getColumns()}
+                                loading={this.state.loading}
+                                pagination={false}
+                                bordered
+                            />
+                        </div>
 
-                    <div style={{ marginTop: 40 }}>
-                        <h3>Users from organization</h3>
-                        <Table
-                            dataSource={this.getOrganizationRows()}
-                            columns={this.getColumns()}
-                            loading={this.state.loading}
-                            pagination={false}
-                            bordered
-                        />
-                    </div>
-                </Layout.Content>
-            </Layout>
+                        <div style={{ marginTop: 40 }}>
+                            <h3>Users from organization</h3>
+                            <Table
+                                dataSource={this.getOrganizationRows()}
+                                columns={this.getColumns()}
+                                loading={this.state.loading}
+                                pagination={false}
+                                bordered
+                            />
+                        </div>
+
+                        <div style={{ marginTop: 40 }}>
+                            <h3>
+                                Invites{" "}
+                                <Tooltip title="Users who currently don't have an account. They will automatically be added after they create and confirm their account.">
+                                    <QuestionCircleOutlined style={{ marginLeft: 8 }} />
+                                </Tooltip>
+                            </h3>
+                            <ProjectInvitesTable
+                                loading={this.state.loading}
+                                projectInvites={this.state.getProjectInvitesResponse?.data || []}
+                                onDelete={async () => {
+                                    await this.reload();
+                                }}
+                            />
+                        </div>
+                    </Layout.Content>
+                </Layout>
+
+                <InviteUserFormModal
+                    projectId={this.props.match.params.projectId}
+                    visible={this.state.inviteDialogOpen}
+                    userRole={dashboardStore.getCurrentRole()}
+                    onCancelRequest={() => {
+                        this.setState({ inviteDialogOpen: false });
+                    }}
+                    onSuccess={async () => {
+                        this.setState({ inviteDialogOpen: false });
+
+                        await this.reload();
+                    }}
+                />
+            </>
         );
     }
 }

@@ -19,7 +19,13 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
 
   def create
     project = current_user.projects.find(params[:project_id])
-    user = User.find_by!(email: params[:email])
+    user = User.find_by(email: params[:email])
+
+    unless user
+      skip_authorization
+      render json: { error: true, message: 'USER_NOT_FOUND' }, status: :not_found
+      return
+    end
 
     project_user = ProjectUser.new
     project_user.project = project
@@ -42,7 +48,7 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
       project_column.user = user
       project_column.save!
 
-      render json: { message: 'Successfully added user to the project.' }
+      render json: { error: false, message: 'OK' }
     else
       render json: { error: true, message: 'USER_ALREADY_ADDED' }, status: :bad_request
     end
