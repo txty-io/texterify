@@ -100,7 +100,7 @@ Cypress.Commands.add("addKey", (keyName, keyDescription, keyContent, isHtml) => 
 });
 
 Cypress.Commands.add("addUser", (userMail) => {
-    cy.get('[title="Members"] > a').click();
+    cy.get('[title="Users"] > a').click();
     cy.get("#name").type(userMail);
     cy.contains("button", "Invite").click();
 });
