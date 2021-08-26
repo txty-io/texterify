@@ -1,13 +1,10 @@
 context("basic plan", () => {
-    before(() => {
-        cy.appScenario("set_on_premise");
-    });
-
     beforeEach(() => {
         cy.visit("/");
     });
 
     it("imports the plan", () => {
+        cy.appScenario("set_on_premise");
         cy.login("test1@texterify.com", "password");
         cy.get('[data-id="main-menu-instance-settings"]').click();
         cy.get('[data-id="instance-sidebar-licenses"]').click();
