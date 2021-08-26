@@ -70,14 +70,15 @@ context("signup", () => {
             cy.contains("Projects");
         });
 
-        it("fails to create a second user for on premise free plan", () => {
-            cy.get('[data-id="sign-up-link"]').click();
+        // TODO: Enable after user signup check has been enabled again.
+        // it("fails to create a second user for on premise free plan", () => {
+        //     cy.get('[data-id="sign-up-link"]').click();
 
-            cy.signup("myusername", "test@texterify.com", "password", "password", true);
+        //     cy.signup("myusername", "test@texterify.com", "password", "password", true);
 
-            cy.contains(
-                "The maximum number of users for the instance license has been reached. Please inform the instance admin to upgrade the license."
-            );
-        });
+        //     cy.contains(
+        //         "The maximum number of users for the instance license has been reached. Please inform the instance admin to upgrade the license."
+        //     );
+        // });
     });
 });

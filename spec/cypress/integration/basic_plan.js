@@ -1,4 +1,8 @@
 context("basic plan", () => {
+    before(() => {
+        cy.appScenario("set_on_premise");
+    });
+
     beforeEach(() => {
         cy.visit("/");
     });
