@@ -54,28 +54,30 @@ class InstanceSidebar extends React.Component<IProps, IState> {
     };
 
     renderMenuItems = () => {
-        return this.navigationData
-            .filter((data) => {
-                if (data.texterifyInstanceOnly) {
-                    if (IS_TEXTERIFY_CLOUD) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                } else {
-                    return true;
-                }
-            })
-            .map((data: INavigationData, index: number) => {
-                return (
-                    <Menu.Item data-id={data.dataId} key={index} title={data.text}>
-                        <Link to={data.path}>
-                            <data.icon />
-                            <span>{data.text}</span>
-                        </Link>
-                    </Menu.Item>
-                );
-            });
+        return (
+            this.navigationData
+                // .filter((data) => {
+                //     if (data.texterifyInstanceOnly) {
+                //         if (IS_TEXTERIFY_CLOUD) {
+                //             return false;
+                //         } else {
+                //             return true;
+                //         }
+                //     } else {
+                //         return true;
+                //     }
+                // })
+                .map((data: INavigationData, index: number) => {
+                    return (
+                        <Menu.Item data-id={data.dataId} key={index} title={data.text}>
+                            <Link to={data.path}>
+                                <data.icon />
+                                <span>{data.text}</span>
+                            </Link>
+                        </Menu.Item>
+                    );
+                })
+        );
     };
 
     getSelectedItem = () => {
