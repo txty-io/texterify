@@ -26,7 +26,7 @@ class Api::V1::RegistrationsController < DeviseTokenAuth::RegistrationsControlle
       end
 
       # Check if a domain filter has been set and if the domain of the registration email matches the filter.
-      if Setting.domain_filter
+      if Setting.domain_filter.present?
         email_domain = email.split('@')[-1]
 
         if email_domain != Setting.domain_filter
