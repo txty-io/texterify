@@ -22,6 +22,8 @@ class Api::V1::OrganizationInvitesController < Api::V1::ApiController
     else
       organization_invite.save!
 
+      UserMailer.invite(email, current_user.username, Texterify.on_premise?).deliver_later
+
       render json: { error: false, message: 'OK' }
     end
   end

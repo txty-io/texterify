@@ -369,7 +369,9 @@
                     <tr>
                       <td>
                         <%= yield %>
-                        <p>Your Texterify Team</p>
+                        <% unless @on_premise %>
+                          <p>Your Texterify Team</p>
+                        <% end %>
                       </td>
                     </tr>
                   </table>
@@ -381,25 +383,29 @@
             <!-- END CENTERED WHITE CONTAINER -->
 
             <!-- START FOOTER -->
-            <div class="footer">
-              <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td class="content-block">
-                    <p>&copy; Texterify, aaa – all about apps GmbH, Siebenbrunnengasse 17 / TOP 3, A-1050 Wien</p>
-                    <p>
-                      Visit <a href="https://texterify.com">texterify.com</a> for more information.
-                    </p>
-                    <p>
-                      Questions? Contact us by sending an email to <a href="mailto:support@texterify.com">support@texterify.com</a>.
-                    </p>
-                    <p>Coded with love in beautiful Vienna.</p>
-                    <p style="font-size: 10px; line-height: 14px; margin-top: 24px">
-                      This is an automatically sent email by Texterify.
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </div>
+              <div class="footer">
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td class="content-block">
+                    <% if @on_premise %>
+                      <p>This is an email from an on-premise Texterify instance which is not officially affiliated with the cloud version of Texterify.</p>
+                    <% else %>
+                      <p>&copy; Texterify, aaa – all about apps GmbH, Siebenbrunnengasse 17 / TOP 3, A-1050 Wien</p>
+                      <p>
+                        Visit <a href="https://texterify.com">texterify.com</a> for more information.
+                      </p>
+                      <p>
+                        Questions? Contact us by sending an email to <a href="mailto:support@texterify.com">support@texterify.com</a>.
+                      </p>
+                      <p>Coded with love in beautiful Vienna.</p>
+                      <p style="font-size: 10px; line-height: 14px; margin-top: 24px">
+                        This is an automatically sent email by Texterify.
+                      </p>
+                    <% end %>
+                    </td>
+                  </tr>
+                </table>
+              </div>
             <!-- END FOOTER -->
 
           </div>
