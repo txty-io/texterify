@@ -46,7 +46,7 @@ jobs:
       - name: Tag image also as latest
         run: docker tag chrztoph/texterify:$GITHUB_SHA chrztoph/texterify:latest
       - name: Tag image if tag is given
-        run: docker tag chrztoph/texterify:$GITHUB_SHA chrztoph/texterify:${{ $RELEASE_VERSION }}
+        run: docker tag chrztoph/texterify:$GITHUB_SHA chrztoph/texterify:${{ env.RELEASE_VERSION }}
       - name: Push images
         run: |
           docker push chrztoph/texterify:$GITHUB_SHA
