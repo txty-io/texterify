@@ -101,8 +101,9 @@ Cypress.Commands.add("addKey", (keyName, keyDescription, keyContent, isHtml) => 
 
 Cypress.Commands.add("addUser", (userMail) => {
     cy.get('[title="Users"] > a').click();
-    cy.get("#name").type(userMail);
-    cy.contains("button", "Invite").click();
+    cy.get("#invite-user-open").click();
+    cy.get("#inviteUser_email").type(userMail);
+    cy.get("#invite-user-submit").click();
 });
 
 Cypress.Commands.add("addOrganization", (name) => {

@@ -561,6 +561,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                             }}
                             disabled={!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentOrganizationRole())}
                             style={{ alignSelf: "flex-start" }}
+                            id="invite-user-open"
                         >
                             <UserAddOutlined /> Invite a user
                         </Button>

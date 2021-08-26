@@ -158,7 +158,13 @@ function InviteUserFormModal(props: {
                         >
                             Cancel
                         </Button>
-                        <Button type="primary" htmlType="submit" form="inviteUserOrganization" loading={loading}>
+                        <Button
+                            id="invite-user-submit"
+                            type="primary"
+                            htmlType="submit"
+                            form="inviteUser"
+                            loading={loading}
+                        >
                             Send invite
                         </Button>
                     </div>
@@ -174,7 +180,7 @@ function InviteUserFormModal(props: {
                 </p>
                 <h3 style={{ marginTop: 24 }}>Enter an email address</h3>
                 <Form
-                    name="inviteUserOrganization"
+                    name="inviteUser"
                     onFinish={async () => {
                         if (props.projectId) {
                             await handleProjectInvite();

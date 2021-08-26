@@ -181,7 +181,7 @@ class MembersSite extends React.Component<IProps, IState> {
                 key: "image",
                 width: 80,
                 render: (_text, record) => {
-                    return <UserAvatar user={record} style={{ marginRight: 24 }} />;
+                    return <UserAvatar user={record} />;
                 }
             },
             {
@@ -348,6 +348,7 @@ class MembersSite extends React.Component<IProps, IState> {
                             }}
                             disabled={!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())}
                             style={{ alignSelf: "flex-start" }}
+                            id="invite-user-open"
                         >
                             <UserAddOutlined /> Invite a user
                         </Button>

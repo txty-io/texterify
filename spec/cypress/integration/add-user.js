@@ -17,14 +17,14 @@ context("add-user", () => {
         cy.addUser(testData.login.user2.email);
     });
 
-    it("creates a project and adds an unregistered user to the project", () => {
+    it("creates a project and adds an unregistered user to the project and shows an error message because plan is not high enough", () => {
         cy.appScenario("set_on_premise");
         cy.login(testData.login.user1.email, testData.login.user1.password);
 
         cy.createProject("My test project");
 
-        cy.addUser(testData.login.invalidUser.email);
-        cy.get(".ant-layout-content").should("not.contain", testData.login.invalidUser.email);
+        cy.addUser(testData.login.unregistered.email);
+        cy.contains("Please upgrade to a paid plan to add users to this project.");
     });
 
     it("creates a project and can't add a registered user to the project and shows an error message because plan is not high enough", () => {
@@ -56,8 +56,7 @@ context("add-user", () => {
         cy.addOrganization("My org");
         cy.createProject("My test project", "Organization", true);
 
-        cy.addUser(testData.login.invalidUser.email);
-        cy.get(".ant-layout-content").should("not.contain", testData.login.invalidUser.email);
-        cy.contains("User with that email could not be found.");
+        cy.addUser(testData.login.unregistered.email);
+        cy.get(".ant-layout-content").should("contain", testData.login.unregistered.email);
     });
 });

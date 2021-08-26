@@ -11,13 +11,13 @@
             "email": "test2@texterify.com",
             "password": "password"
         },
-        "invalidUser":
+        "unregistered":
         {
             "email": "invalidtest@texterify.com",
             "password": "password"
         }
     },
-    "languages": 
+    "languages":
     {
         "german":
         {
