@@ -39,6 +39,12 @@ class SignupForm extends React.Component<IProps, IState> {
                 ErrorUtils.showError(
                     "The maximum number of users for the instance license has been reached. Please inform the instance admin to upgrade the license."
                 );
+            } else if (response.message === "SIGN_UP_NOT_ENABLED") {
+                ErrorUtils.showError(
+                    "Registration has been disabled for this instance. You need an invite to be able to sign up."
+                );
+            } else if (response.message === "EMAIL_DOMAIN_IS_NOT_ALLOWED_TO_SIGN_UP") {
+                ErrorUtils.showError("You are not allowed to sign up with this email.");
             } else {
                 ErrorUtils.showError(response.message);
             }

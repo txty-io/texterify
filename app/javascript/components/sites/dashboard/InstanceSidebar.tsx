@@ -7,6 +7,7 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { SidebarTrigger } from "../../ui/SidebarTrigger";
+import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
 const { Sider } = Layout;
 
 interface INavigationData {
@@ -14,6 +15,7 @@ interface INavigationData {
     path: string;
     text: string;
     dataId: string;
+    texterifyInstanceOnly: boolean;
 }
 
 type IProps = RouteComponentProps<{}>;
@@ -28,19 +30,23 @@ class InstanceSidebar extends React.Component<IProps, IState> {
             icon: HomeOutlined,
             path: Routes.DASHBOARD.INSTANCE.ROOT,
             text: "Home",
-            dataId: "instance-sidebar-home"
+            dataId: "instance-sidebar-home",
+            texterifyInstanceOnly: false
         },
         {
             icon: FileTextOutlined,
             path: Routes.DASHBOARD.INSTANCE.LICENSES,
             text: "Licenses",
-            dataId: "instance-sidebar-licenses"
+            dataId: "instance-sidebar-licenses",
+            texterifyInstanceOnly: true
+        },
+        {
+            icon: ToolOutlined,
+            path: Routes.DASHBOARD.INSTANCE.SETTINGS,
+            text: "Settings",
+            dataId: "instance-sidebar-settings",
+            texterifyInstanceOnly: false
         }
-        // {
-        //     icon: ToolOutlined,
-        //     path: Routes.DASHBOARD.INSTANCE.SETTINGS,
-        //     text: "Settings"
-        // }
     ];
 
     state: IState = {
@@ -48,16 +54,28 @@ class InstanceSidebar extends React.Component<IProps, IState> {
     };
 
     renderMenuItems = () => {
-        return this.navigationData.map((data: INavigationData, index: number) => {
-            return (
-                <Menu.Item data-id={data.dataId} key={index} title={data.text}>
-                    <Link to={data.path}>
-                        <data.icon />
-                        <span>{data.text}</span>
-                    </Link>
-                </Menu.Item>
-            );
-        });
+        return this.navigationData
+            .filter((data) => {
+                if (data.texterifyInstanceOnly) {
+                    if (IS_TEXTERIFY_CLOUD) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
+            })
+            .map((data: INavigationData, index: number) => {
+                return (
+                    <Menu.Item data-id={data.dataId} key={index} title={data.text}>
+                        <Link to={data.path}>
+                            <data.icon />
+                            <span>{data.text}</span>
+                        </Link>
+                    </Menu.Item>
+                );
+            });
     };
 
     getSelectedItem = () => {

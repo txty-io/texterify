@@ -37,6 +37,8 @@ Rails
         end
 
         get 'instance', to: 'instance#show'
+        put 'instance/domain-filter', to: 'instance#domain_filter'
+        put 'instance/sign-up-enabled', to: 'instance#sign_up_enabled'
 
         get :recently_viewed_projects, to: 'projects#recently_viewed'
 
