@@ -55,7 +55,7 @@ class EditUserForm extends React.Component<IProps, IState> {
 
             if (response.errors) {
                 if (response.errors.username?.includes("has already been taken")) {
-                    this.formRef.current.setFields([
+                    this.formRef.current?.setFields([
                         {
                             name: "username",
                             errors: [ErrorUtils.getErrorMessage("username", ERRORS.TAKEN)]

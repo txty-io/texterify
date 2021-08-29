@@ -110,7 +110,7 @@ class UserAccessTokensSettingsSite extends React.Component<{}, IState> {
         if (response.errors) {
             response.errors.map((error) => {
                 if (error.details === AccessTokensAPIErrors.NAME_ALREADY_TAKEN) {
-                    this.formRef.current.setFieldsValue({
+                    this.formRef.current?.setFieldsValue({
                         name: {
                             value: values.name,
                             errors: [new Error(error.details)]
@@ -140,7 +140,7 @@ class UserAccessTokensSettingsSite extends React.Component<{}, IState> {
             getTokensResponse: getTokensResponse
         });
 
-        this.formRef.current.setFieldsValue({
+        this.formRef.current?.setFieldsValue({
             name: ""
         });
     };

@@ -88,14 +88,14 @@ class AddEditLanguageForm extends React.Component<IAddEditLanguageFormProps, ISt
             }
         } else if (response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
-                this.formRef.current.setFields([
+                this.formRef.current?.setFields([
                     {
                         name: "name",
                         errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
                     }
                 ]);
             } else if (ErrorUtils.hasError("name", ERRORS.INVALID, response.errors)) {
-                this.formRef.current.setFields([
+                this.formRef.current?.setFields([
                     {
                         name: "name",
                         errors: [
@@ -114,21 +114,21 @@ class AddEditLanguageForm extends React.Component<IAddEditLanguageFormProps, ISt
             }
 
             if (this.props.clearFieldsAfterSubmit) {
-                this.formRef.current.resetFields();
+                this.formRef.current?.resetFields();
             }
         }
     };
 
     prefillName = () => {
         if (!this.state.userChangedName && !this.props.languageToEdit) {
-            const languageCodeID = this.formRef.current.getFieldValue("languageCode");
+            const languageCodeID = this.formRef.current?.getFieldValue("languageCode");
 
             const language = this.state.languageCodes.find((languageCode) => {
                 return languageCode.id === languageCodeID;
             });
 
             if (language) {
-                this.formRef.current.setFieldsValue({
+                this.formRef.current?.setFieldsValue({
                     name: language.attributes.name
                 });
             }

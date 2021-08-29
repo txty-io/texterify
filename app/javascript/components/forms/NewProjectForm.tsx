@@ -91,7 +91,7 @@ class NewProjectForm extends React.Component<IProps, IState> {
                 return;
             } else if (response.errors) {
                 if (ErrorUtils.hasError("name", ERRORS.BLANK, response.errors)) {
-                    this.formRef.current.setFields([
+                    this.formRef.current?.setFields([
                         {
                             name: "name",
                             errors: [ErrorUtils.getErrorMessage("name", ERRORS.BLANK)]

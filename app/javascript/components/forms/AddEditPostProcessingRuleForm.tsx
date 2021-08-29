@@ -71,7 +71,7 @@ class AddEditPostProcessingRuleForm extends React.Component<IProps> {
 
         if (response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
-                this.formRef.current.setFields([
+                this.formRef.current?.setFields([
                     {
                         name: "name",
                         errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]

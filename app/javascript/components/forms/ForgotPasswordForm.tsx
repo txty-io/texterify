@@ -85,14 +85,14 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
             const response = await AuthAPI.sendPasswordRecoveryInstructions(values.email);
 
             if (response.errors) {
-                this.formRef.current.setFields([
+                this.formRef.current?.setFields([
                     {
                         name: "email",
                         errors: response.errors
                     }
                 ]);
             } else {
-                this.formRef.current.setFieldsValue({
+                this.formRef.current?.setFieldsValue({
                     email: undefined
                 });
 
