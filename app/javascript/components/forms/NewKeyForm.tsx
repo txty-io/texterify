@@ -224,7 +224,7 @@ class NewKeyForm extends React.Component<IProps> {
                 <KeystrokeHandler
                     keys={KEYSTROKE_DEFINITIONS.SUBMIT_MODAL_FORM}
                     onActivated={() => {
-                        this.formRef.current.submit();
+                        this.formRef.current?.submit();
                     }}
                 />
             </>
