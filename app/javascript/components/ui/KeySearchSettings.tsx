@@ -224,7 +224,7 @@ export function KeySearchSettings(props: {
                     mode="multiple"
                     defaultValue={selectedExportConfigs}
                 >
-                    {(props.exportConfigsResponse || []).data.map((exportConfig) => {
+                    {(props.exportConfigsResponse?.data || []).map((exportConfig) => {
                         return (
                             <Select.Option value={exportConfig.id} key={exportConfig.id}>
                                 {exportConfig.attributes.name}
