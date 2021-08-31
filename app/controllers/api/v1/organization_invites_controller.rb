@@ -58,9 +58,9 @@ class Api::V1::OrganizationInvitesController < Api::V1::ApiController
   private
 
   def ensure_feature_enabled
-    project = current_user.projects.find(params[:project_id])
+    organization = current_user.organizations.find(params[:organization_id])
 
-    if !project.feature_enabled?(Organization::FEATURE_BASIC_PERMISSION_SYSTEM)
+    if !organization.feature_enabled?(Organization::FEATURE_BASIC_PERMISSION_SYSTEM)
       skip_authorization
 
       render json: { error: true, message: 'BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE' }, status: :bad_request
