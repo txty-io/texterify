@@ -71,7 +71,7 @@ docker-compose exec app bin/rails db:create db:migrate db:seed
 # Service is now available at http://localhost. 🎉
 ```
 
-This will install the latest version of the service available at the time of setting up. For production you want to pin it to a specific version (see `TEXTERIFY_TAG`).
+This will install the latest version of the service available at the time of setting up. You can update to a newer version by changing `TEXTERIFY_TAG` and restarting your service. For available versions see [here](https://hub.docker.com/repository/docker/chrztoph/texterify).
 
 <h2 id="tools-and-integrations">🛠️ Tools & Integrations</h2>
 
