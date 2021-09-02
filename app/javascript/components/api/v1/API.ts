@@ -57,6 +57,10 @@ async function request(options: {
         });
 
         if (response.status === 403) {
+            const json = await response.json();
+
+            APIUtils.handleErrors(json);
+
             return {
                 error: true,
                 message: "FORBIDDEN"
