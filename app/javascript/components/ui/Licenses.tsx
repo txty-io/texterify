@@ -23,7 +23,7 @@ export const BASIC_PLAN: IPlan = {
     pricePerUserCloud: 9,
     pricePerUserOnPremise: 7,
     features: [
-        "Unlimited users",
+        "Multi-user",
         "Unlimited projects",
         "Unlimited languages",
         "Unlimited keys",
@@ -37,7 +37,7 @@ export const TEAM_PLAN: IPlan = {
     pricePerUserCloud: 19,
     pricePerUserOnPremise: 14,
     features: [
-        "Unlimited users",
+        "Multi-user",
         "Unlimited projects",
         "Unlimited languages",
         "Unlimited keys",
@@ -57,7 +57,7 @@ export const BUSINESS_PLAN: IPlan = {
     pricePerUserCloud: 39,
     pricePerUserOnPremise: 31,
     features: [
-        "Unlimited users",
+        "Multi-user",
         "Unlimited projects",
         "Unlimited languages",
         "Unlimited keys",
