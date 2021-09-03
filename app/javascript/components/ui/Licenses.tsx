@@ -22,13 +22,7 @@ export const BASIC_PLAN: IPlan = {
     name: "Basic 🌳",
     pricePerUserCloud: 9,
     pricePerUserOnPremise: 7,
-    features: [
-        "Multi-user",
-        "Unlimited projects",
-        "Unlimited languages",
-        "Unlimited keys",
-        "Unlimited translations"
-    ]
+    features: ["Multi-user", "Unlimited projects", "Unlimited languages", "Unlimited keys", "Unlimited translations"]
 };
 
 export const TEAM_PLAN: IPlan = {
