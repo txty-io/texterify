@@ -69,7 +69,8 @@ module Deepl
               params: {
                 auth_key: @auth_token
               }
-            }
+            },
+            proxy: ENV['http_proxy']
           )
         JSON.parse(response)
       rescue => e
