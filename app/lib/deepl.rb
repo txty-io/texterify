@@ -70,7 +70,7 @@ module Deepl
                 auth_key: @auth_token
               }
             },
-            proxy: ENV['http_proxy']
+            proxy: ENV['http_proxy_deepl']
           )
         JSON.parse(response)
       rescue => e
