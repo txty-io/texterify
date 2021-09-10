@@ -36,7 +36,7 @@ class Language < ApplicationRecord
   # Translates all non export config translations of all non HTML keys for the language which are empty using machine translation.
   def translate_untranslated_using_machine_translation
     if ENV['DEEPL_API_TOKEN'].present? && self.project.machine_translation_enabled &&
-         project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
+         project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_LANGUAGE)
       self
         .keys
         .where(html_enabled: false)
