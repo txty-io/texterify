@@ -55,12 +55,18 @@ class Language < ApplicationRecord
                 translation.key = key
                 translation.save!
               else
-                current_translation.update(content: content)
+                target_translation.update(content: content)
               end
             end
           end
         end
+
+      return true
     end
+
+    return false
+  rescue StandardError
+    return false
   end
 
   protected
