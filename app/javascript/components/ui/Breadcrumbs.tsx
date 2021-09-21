@@ -164,6 +164,14 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                 name: "Integrations",
                 path: Routes.DASHBOARD.PROJECT_INTEGRATIONS.replace(":projectId", this.props.match.params.projectId)
             },
+            projectIntegrationsWordpress: {
+                parent: "projectIntegrations",
+                name: "WordPress",
+                path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_RESOLVER({
+                    projectId: this.props.match.params.projectId,
+                    organizationId: this.props.match.params.organizationId
+                })
+            },
             projectPostProcessing: {
                 parent: "project",
                 name: "Post Processing",

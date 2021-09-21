@@ -22,6 +22,7 @@ import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
 import { ProjectIntegrationsSite } from "../sites/dashboard/ProjectIntegrationsSite";
 import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 import { ProjectMachineTranslationSite } from "../sites/dashboard/ProjectMachineTranslationSite";
+import { ProjectIntegrationsWordpressSite } from "../sites/dashboard/ProjectIntegrationsWordpressSite";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -86,6 +87,11 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         exact
                         path={Routes.DASHBOARD.PROJECT_INTEGRATIONS}
                         component={ProjectIntegrationsSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS}
+                        component={ProjectIntegrationsWordpressSite}
                     />
                     <PrivateRoute
                         exact

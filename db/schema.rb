@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_23_100126) do
+ActiveRecord::Schema.define(version: 2021_09_21_120944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -403,6 +403,34 @@ ActiveRecord::Schema.define(version: 2021_08_23_100126) do
     t.index ["project_id"], name: "index_versions_on_project_id"
   end
 
+  create_table "wordpress_contents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "wordpress_id", null: false
+    t.string "wordpress_slug", null: false
+    t.datetime "wordpress_modified", null: false
+    t.string "wordpress_type", null: false
+    t.string "wordpress_status", null: false
+    t.string "wordpress_content"
+    t.string "wordpress_content_type", null: false
+    t.string "wordpress_language_id"
+    t.string "wordpress_language_language_code"
+    t.string "wordpress_language_country_code"
+    t.uuid "project_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["project_id"], name: "index_wordpress_contents_on_project_id"
+    t.index ["wordpress_id", "wordpress_content_type"], name: "index_wp_id_wp_content_type", unique: true
+  end
+
+  create_table "wordpress_polylang_connections", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "wordpress_url"
+    t.string "auth_user"
+    t.string "auth_password"
+    t.uuid "project_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["project_id"], name: "index_wordpress_polylang_connections_on_project_id"
+  end
+
   add_foreign_key "access_tokens", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
@@ -442,5 +470,12 @@ ActiveRecord::Schema.define(version: 2021_08_23_100126) do
   add_foreign_key "translations", "keys"
   add_foreign_key "translations", "languages"
   add_foreign_key "user_licenses", "users"
+  add_foreign_key "validation_violations", "projects"
+  add_foreign_key "validation_violations", "translations"
+  add_foreign_key "validation_violations", "validations"
+  add_foreign_key "validations", "organizations"
+  add_foreign_key "validations", "projects"
   add_foreign_key "versions", "projects"
+  add_foreign_key "wordpress_contents", "projects", on_delete: :cascade
+  add_foreign_key "wordpress_polylang_connections", "projects", on_delete: :cascade
 end

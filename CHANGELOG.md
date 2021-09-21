@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.0.6
+
+- Fix machine translation bug for existing translations.
+
 ## v1.0.5
 
 - Fix machine translation of a language not working for team plans.

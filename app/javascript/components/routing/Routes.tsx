@@ -14,7 +14,8 @@ const Routes = {
     },
     OTHER: {
         TERMS_OF_SERVICE: "https://texterify.com/terms-of-service",
-        PRIVACY_POLICY: "https://texterify.com/privacy-policy"
+        PRIVACY_POLICY: "https://texterify.com/privacy-policy",
+        WORDPRESS_INTEGRATION_GUIDE: "https://docs.texterify.com/integrations/wordpress"
     },
     PRODUCT: {
         FEATURES: "/features",
@@ -41,6 +42,13 @@ const Routes = {
         PROJECT_KEYS: "/dashboard/projects/:projectId/keys",
         PROJECT_ACTIVITY: "/dashboard/projects/:projectId/activity",
         PROJECT_INTEGRATIONS: "/dashboard/projects/:projectId/integrations",
+        PROJECT_INTEGRATIONS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_INTEGRATIONS.replace(":projectId", options.projectId);
+        },
+        PROJECT_INTEGRATIONS_WORDPRESS: "/dashboard/projects/:projectId/integrations/wordpress",
+        PROJECT_INTEGRATIONS_WORDPRESS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS.replace(":projectId", options.projectId);
+        },
         PROJECT_VALIDATIONS: "/dashboard/projects/:projectId/validations",
         PROJECT_OTA: "/dashboard/projects/:projectId/over-the-air",
         PROJECT_POST_PROCESSING: "/dashboard/projects/:projectId/post-processing",

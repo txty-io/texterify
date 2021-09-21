@@ -17,6 +17,10 @@ class Project < ApplicationRecord
   has_many :releases, through: :export_configs, dependent: :destroy
   has_many :invites, class_name: 'ProjectInvite', dependent: :destroy
 
+  # WordPress integration
+  has_many :wordpress_contents, dependent: :destroy
+  has_one :wordpress_polylang_connection, dependent: :destroy
+
   has_one_attached :image
 
   def name=(name)
