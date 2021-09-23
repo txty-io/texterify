@@ -1,5 +1,7 @@
 import * as sanitizeHtml from "sanitize-html";
 
+export const DATE_TIME_FORMAT = "DD.MM.YYYY HH:mm";
+
 function escapeContent(htmlContent: string) {
     return sanitizeHtml(htmlContent, {
         allowedTags: ["b", "i", "a"]

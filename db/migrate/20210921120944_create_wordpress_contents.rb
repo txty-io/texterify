@@ -2,7 +2,7 @@ class CreateWordpressContents < ActiveRecord::Migration[6.1]
   def change
     create_table :wordpress_contents, id: :uuid do |t|
       t.integer :wordpress_id, null: false
-      t.string :wordpress_slug, null: false
+      t.string :wordpress_slug
       t.datetime :wordpress_modified, null: false
       t.string :wordpress_type, null: false
       t.string :wordpress_status, null: false
@@ -11,6 +11,8 @@ class CreateWordpressContents < ActiveRecord::Migration[6.1]
       t.string :wordpress_language_id
       t.string :wordpress_language_language_code
       t.string :wordpress_language_country_code
+      t.string :wordpress_title
+      t.string :wordpress_language_name
 
       t.references :project, index: true, null: false, type: :uuid, foreign_key: { on_delete: :cascade }
 

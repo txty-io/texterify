@@ -405,7 +405,7 @@ ActiveRecord::Schema.define(version: 2021_09_21_120944) do
 
   create_table "wordpress_contents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "wordpress_id", null: false
-    t.string "wordpress_slug", null: false
+    t.string "wordpress_slug"
     t.datetime "wordpress_modified", null: false
     t.string "wordpress_type", null: false
     t.string "wordpress_status", null: false
@@ -414,6 +414,8 @@ ActiveRecord::Schema.define(version: 2021_09_21_120944) do
     t.string "wordpress_language_id"
     t.string "wordpress_language_language_code"
     t.string "wordpress_language_country_code"
+    t.string "wordpress_title"
+    t.string "wordpress_language_name"
     t.uuid "project_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

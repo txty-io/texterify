@@ -18,11 +18,23 @@ class WordpressPolylangConnectionPolicy
     ROLES_DEVELOPER_UP.include? project_user_role
   end
 
+  def import?
+    ROLES_DEVELOPER_UP.include? project_user_role
+  end
+
+  def contents?
+    ROLES_DEVELOPER_UP.include? project_user_role
+  end
+
   def website_reachable?
     ROLES_DEVELOPER_UP.include? project_user_role
   end
 
   def wordpress_rest_activated?
+    ROLES_DEVELOPER_UP.include? project_user_role
+  end
+
+  def authentication_valid?
     ROLES_DEVELOPER_UP.include? project_user_role
   end
 

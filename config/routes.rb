@@ -78,13 +78,17 @@ Rails
 
           resources :invites, only: [:create, :index, :destroy], controller: 'project_invites'
 
-          # WordPress Polylang Integration
+          # WordPress Polylang integration
           get 'wordpress_polylang_connection', to: 'wordpress_polylang_connections#show'
           put 'wordpress_polylang_connection', to: 'wordpress_polylang_connections#update'
+          get 'wordpress_polylang_connection/contents', to: 'wordpress_polylang_connections#contents'
           post 'wordpress_polylang_connection/pull', to: 'wordpress_polylang_connections#pull'
+          post 'wordpress_polylang_connection/import', to: 'wordpress_polylang_connections#import'
           get 'wordpress_polylang_connection/website_reachable', to: 'wordpress_polylang_connections#website_reachable'
           get 'wordpress_polylang_connection/wordpress_rest_activated',
               to: 'wordpress_polylang_connections#wordpress_rest_activated'
+          get 'wordpress_polylang_connection/authentication_valid',
+              to: 'wordpress_polylang_connections#authentication_valid'
         end
 
         resources :access_tokens, only: [:create, :index, :destroy]

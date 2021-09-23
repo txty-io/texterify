@@ -14,6 +14,7 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 interface IFormValues {
     wordpressURL: string;
     authUser: string;
+    authPassword: string;
 }
 
 export const ProjectIntegrationsWordpressSite = observer(() => {
@@ -26,6 +27,9 @@ export const ProjectIntegrationsWordpressSite = observer(() => {
     const [websiteReachable, setWebsiteReachable] = React.useState<boolean>();
     const [wordpressRestActivatedLoading, setWordpressRestActivatedLoading] = React.useState<boolean>(true);
     const [wordpressRestActivated, setWordpressRestActivated] = React.useState<boolean>();
+    const [authenticationValidLoading, setAuthenticationValidLoading] = React.useState<boolean>(true);
+    const [authenticationValid, setAuthenticationValid] = React.useState<boolean>();
+    const [showPasswordField, setShowPasswordField] = React.useState<boolean>();
 
     async function loadWebsiteReachable() {
         try {
@@ -57,6 +61,21 @@ export const ProjectIntegrationsWordpressSite = observer(() => {
         }
     }
 
+    async function loadAuthenticationValid() {
+        try {
+            setAuthenticationValidLoading(true);
+            const response = await WordpressPolylangConnectionsAPI.authenticationValid({
+                projectId: params.projectId
+            });
+
+            setAuthenticationValid(response === true);
+            setAuthenticationValidLoading(false);
+        } catch (error) {
+            console.error(error);
+            message.error("An unknown error occurred.");
+        }
+    }
+
     React.useEffect(() => {
         Promise.all([
             (async () => {
@@ -66,6 +85,7 @@ export const ProjectIntegrationsWordpressSite = observer(() => {
                         projectId: params.projectId
                     });
                     setSettings(response);
+                    setShowPasswordField(!response.data.attributes.password_set);
                     setSettingsLoading(false);
                 } catch (error) {
                     console.error(error);
@@ -73,7 +93,8 @@ export const ProjectIntegrationsWordpressSite = observer(() => {
                 }
             })(),
             loadWebsiteReachable(),
-            loadWordpressRestActivated()
+            loadWordpressRestActivated(),
+            loadAuthenticationValid()
         ]);
     }, []);
 
@@ -83,11 +104,12 @@ export const ProjectIntegrationsWordpressSite = observer(() => {
             await WordpressPolylangConnectionsAPI.updateConnection({
                 projectId: params.projectId,
                 wordpressURL: values.wordpressURL,
-                authUser: values.authUser
+                authUser: values.authUser,
+                authPassword: values.authPassword
             });
             setSettingsUpdating(false);
 
-            await Promise.all([loadWebsiteReachable(), loadWordpressRestActivated()]);
+            await Promise.all([loadWebsiteReachable(), loadWordpressRestActivated(), loadAuthenticationValid()]);
         } catch (error) {
             console.error(error);
             message.error("An unknown error occurred.");
@@ -160,7 +182,21 @@ export const ProjectIntegrationsWordpressSite = observer(() => {
                                 <Input placeholder="Enter your WordPress website URL" />
                             </Form.Item>
 
-                            <h3>Application password</h3>
+                            <h3>Authentication</h3>
+                            <h4>Username</h4>
+                            <Form.Item
+                                name="authUser"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Please enter your username."
+                                    }
+                                ]}
+                            >
+                                <Input placeholder="Enter your username" />
+                            </Form.Item>
+
+                            <h4>Application password</h4>
                             <p>
                                 The application password you have created. Please read the{" "}
                                 <a href={Routes.OTHER.WORDPRESS_INTEGRATION_GUIDE} target="_blank">
@@ -169,17 +205,28 @@ export const ProjectIntegrationsWordpressSite = observer(() => {
                                 to learn how to create an application password. <b>Don't</b> use the password you
                                 normally use for logging in to WordPress.
                             </p>
-                            <Form.Item
-                                name="authUser"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "Please enter your application password."
-                                    }
-                                ]}
-                            >
-                                <Input placeholder="Enter your application password" />
-                            </Form.Item>
+                            {!showPasswordField && (
+                                <a
+                                    onClick={() => {
+                                        setShowPasswordField(true);
+                                    }}
+                                >
+                                    Change password
+                                </a>
+                            )}
+                            {showPasswordField && (
+                                <Form.Item
+                                    name="authPassword"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Please enter your application password."
+                                        }
+                                    ]}
+                                >
+                                    <Input.Password placeholder="Enter your application password" />
+                                </Form.Item>
+                            )}
 
                             <Button
                                 type="primary"
@@ -187,13 +234,13 @@ export const ProjectIntegrationsWordpressSite = observer(() => {
                                 loading={settingsUpdating}
                                 style={{ marginLeft: "auto" }}
                             >
-                                Authorize
+                                Save
                             </Button>
                         </Form>
                     )}
 
-                    <div style={{ width: "50%", marginLeft: 80 }}>
-                        <h3>Current status</h3>
+                    <div style={{ width: "50%", marginLeft: 80, display: "flex", flexDirection: "column" }}>
+                        <h3>Integration status</h3>
                         <List
                             style={{ width: "100%" }}
                             bordered
@@ -207,6 +254,11 @@ export const ProjectIntegrationsWordpressSite = observer(() => {
                                     name: "WordPress REST activated",
                                     valid: wordpressRestActivated,
                                     loading: wordpressRestActivatedLoading
+                                },
+                                {
+                                    name: "Authentication valid",
+                                    valid: authenticationValid,
+                                    loading: authenticationValidLoading
                                 }
                             ]}
                             renderItem={(item) => {
@@ -246,13 +298,18 @@ export const ProjectIntegrationsWordpressSite = observer(() => {
                         <Button
                             type="primary"
                             onClick={async () => {
-                                await WordpressPolylangConnectionsAPI.pullWordpressContent({
-                                    projectId: params.projectId
-                                });
+                                Promise.all([
+                                    loadWebsiteReachable(),
+                                    loadWordpressRestActivated(),
+                                    loadAuthenticationValid()
+                                ]);
                             }}
-                            style={{ marginTop: 24 }}
+                            style={{ marginTop: 24, marginLeft: "auto" }}
+                            loading={
+                                websiteReachableLoading || wordpressRestActivatedLoading || authenticationValidLoading
+                            }
                         >
-                            Pull content
+                            Check again
                         </Button>
                     </div>
                 </div>
