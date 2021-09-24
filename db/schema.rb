@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_21_120944) do
+ActiveRecord::Schema.define(version: 2021_09_23_230409) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -102,6 +102,16 @@ ActiveRecord::Schema.define(version: 2021_09_21_120944) do
     t.datetime "updated_at", null: false
     t.boolean "html_enabled", default: false, null: false
     t.index ["project_id"], name: "index_keys_on_project_id"
+  end
+
+  create_table "keys_tags", id: false, force: :cascade do |t|
+    t.uuid "tag_id", null: false
+    t.uuid "key_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["key_id"], name: "index_keys_tags_on_key_id"
+    t.index ["tag_id", "key_id"], name: "index_keys_tags_on_tag_id_and_key_id", unique: true
+    t.index ["tag_id"], name: "index_keys_tags_on_tag_id"
   end
 
   create_table "language_codes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -340,6 +350,16 @@ ActiveRecord::Schema.define(version: 2021_09_21_120944) do
     t.index ["organization_id"], name: "index_subscriptions_on_organization_id"
   end
 
+  create_table "tags", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.boolean "custom", null: false
+    t.uuid "project_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name", "custom", "project_id"], name: "index_tags_on_name_and_custom_and_project_id", unique: true
+    t.index ["project_id"], name: "index_tags_on_project_id"
+  end
+
   create_table "translations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "content"
     t.uuid "key_id", null: false
@@ -438,6 +458,8 @@ ActiveRecord::Schema.define(version: 2021_09_21_120944) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "export_configs", "projects"
   add_foreign_key "keys", "projects"
+  add_foreign_key "keys_tags", "keys", on_delete: :cascade
+  add_foreign_key "keys_tags", "tags", on_delete: :cascade
   add_foreign_key "language_configs", "export_configs"
   add_foreign_key "language_configs", "languages"
   add_foreign_key "languages", "country_codes"
@@ -468,6 +490,7 @@ ActiveRecord::Schema.define(version: 2021_09_21_120944) do
   add_foreign_key "sent_emails", "organizations"
   add_foreign_key "sent_emails", "users"
   add_foreign_key "subscriptions", "organizations"
+  add_foreign_key "tags", "projects", on_delete: :cascade
   add_foreign_key "translations", "export_configs"
   add_foreign_key "translations", "keys"
   add_foreign_key "translations", "languages"

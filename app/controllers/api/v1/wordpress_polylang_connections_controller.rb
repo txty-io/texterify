@@ -17,6 +17,7 @@ class Api::V1::WordpressPolylangConnectionsController < Api::V1::ApiController
     end
   end
 
+  # Fetches the content from the WordPress instance and stores it.
   def pull
     project = current_user.projects.find(params[:project_id])
     connection = project.wordpress_polylang_connection
@@ -44,6 +45,7 @@ class Api::V1::WordpressPolylangConnectionsController < Api::V1::ApiController
     render json: { error: true, message: 'FAILED_TO_PULL_POSTS' }, status: :bad_request
   end
 
+  # Update the connection settings.
   def update
     project = current_user.projects.find(params[:project_id])
     connection = project.wordpress_polylang_connection
@@ -65,6 +67,7 @@ class Api::V1::WordpressPolylangConnectionsController < Api::V1::ApiController
     connection.save!
   end
 
+  # Creates languages, keys and translations from the synced WordPress content.
   def import
     project = current_user.projects.find(params[:project_id])
     connection = project.wordpress_polylang_connection
@@ -107,10 +110,14 @@ class Api::V1::WordpressPolylangConnectionsController < Api::V1::ApiController
         language.save!
       end
 
+      # Create or update the key
       key_name = "wp_#{content.wordpress_id}_#{content.wordpress_type}_#{content.wordpress_content_type}"
       key = project.keys.find_or_initialize_by(name: key_name)
       key.project = project
       key.save!
+
+      # Add tag to mark the key as a WordPress key.
+      key.add_tag_if_not_added('WordPress', false)
 
       translation = project.translations.find_by(key_id: key.id, language_id: language.id, export_config_id: nil)
       if translation.blank?
@@ -126,6 +133,7 @@ class Api::V1::WordpressPolylangConnectionsController < Api::V1::ApiController
     render json: { error: false, message: 'OK' }, status: :bad_request
   end
 
+  # Returns the synced content that can be imported for translation.
   def contents
     project = current_user.projects.find(params[:project_id])
     connection = project.wordpress_polylang_connection

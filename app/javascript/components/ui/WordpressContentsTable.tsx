@@ -109,6 +109,7 @@ export function WordpressContentsTable(props: {
                 }}
                 type="primary"
                 style={{ alignSelf: "flex-start", marginTop: 8, marginBottom: 4 }}
+                loading={wordpressContentsLoading}
             >
                 Sync WordPress content
             </Button>

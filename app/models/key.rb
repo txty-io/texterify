@@ -17,6 +17,10 @@ class Key < ApplicationRecord
   belongs_to :project
   has_many :translations, dependent: :destroy
 
+  # A key has many tags
+  has_many :key_tags, dependent: :destroy
+  has_many :tags, through: :key_tags
+
   validates :name, presence: true
   validate :no_duplicate_keys_for_project
 
@@ -45,6 +49,23 @@ class Key < ApplicationRecord
     if default_language
       translations.find_by(language_id: default_language.id)
     end
+  end
+
+  # Creates the tag in the project if it does not exist and
+  # adds the tag to the key if it hasn't already been added.
+  # Returns the new or already added tag.
+  def add_tag_if_not_added(name, custom)
+    tag = self.project.create_tag_if_not_exists(name, custom)
+
+    key_has_tag = self.tags.exists?(id: tag.id)
+    unless key_has_tag
+      key_tag = KeyTag.new
+      key_tag.tag = tag
+      key_tag.key = self
+      key_tag.save!
+    end
+
+    tag
   end
 
   protected
