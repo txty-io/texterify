@@ -7,7 +7,6 @@ class CreateOrganizationInvites < ActiveRecord::Migration[6.1]
                    index: true,
                    null: true,
                    type: :uuid,
-                   foreign_key: true,
                    foreign_key: {
                      on_delete: :cascade
                    }
