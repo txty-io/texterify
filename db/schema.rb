@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_23_230409) do
+ActiveRecord::Schema.define(version: 2021_09_30_152549) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -143,6 +143,8 @@ ActiveRecord::Schema.define(version: 2021_09_23_230409) do
     t.uuid "parent_id"
     t.uuid "language_code_id"
     t.boolean "is_default", default: false, null: false
+    t.string "wordpress_language_id"
+    t.string "wordpress_language_code"
     t.index ["country_code_id"], name: "index_languages_on_country_code_id"
     t.index ["language_code_id"], name: "index_languages_on_language_code_id"
     t.index ["parent_id"], name: "index_languages_on_parent_id"
@@ -183,7 +185,7 @@ ActiveRecord::Schema.define(version: 2021_09_23_230409) do
   create_table "organization_invites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email", null: false
     t.string "role", default: "translator", null: false
-    t.uuid "organization_id"
+    t.uuid "organization_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "open", default: true, null: false
@@ -242,7 +244,7 @@ ActiveRecord::Schema.define(version: 2021_09_23_230409) do
     t.string "email", null: false
     t.string "role", default: "translator", null: false
     t.boolean "open", default: true, null: false
-    t.uuid "project_id"
+    t.uuid "project_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email", "project_id", "open"], name: "index_project_invites_on_email_and_project_id_and_open", unique: true
@@ -424,7 +426,7 @@ ActiveRecord::Schema.define(version: 2021_09_23_230409) do
   end
 
   create_table "wordpress_contents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.integer "wordpress_id", null: false
+    t.string "wordpress_id", null: false
     t.string "wordpress_slug"
     t.datetime "wordpress_modified", null: false
     t.string "wordpress_type", null: false
@@ -439,6 +441,8 @@ ActiveRecord::Schema.define(version: 2021_09_23_230409) do
     t.uuid "project_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.uuid "key_id"
+    t.index ["key_id"], name: "index_wordpress_contents_on_key_id"
     t.index ["project_id"], name: "index_wordpress_contents_on_project_id"
     t.index ["wordpress_id", "wordpress_content_type"], name: "index_wp_id_wp_content_type", unique: true
   end
@@ -447,7 +451,7 @@ ActiveRecord::Schema.define(version: 2021_09_23_230409) do
     t.string "wordpress_url"
     t.string "auth_user"
     t.string "auth_password"
-    t.uuid "project_id"
+    t.uuid "project_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["project_id"], name: "index_wordpress_polylang_connections_on_project_id"
@@ -495,12 +499,8 @@ ActiveRecord::Schema.define(version: 2021_09_23_230409) do
   add_foreign_key "translations", "keys"
   add_foreign_key "translations", "languages"
   add_foreign_key "user_licenses", "users"
-  add_foreign_key "validation_violations", "projects"
-  add_foreign_key "validation_violations", "translations"
-  add_foreign_key "validation_violations", "validations"
-  add_foreign_key "validations", "organizations"
-  add_foreign_key "validations", "projects"
   add_foreign_key "versions", "projects"
+  add_foreign_key "wordpress_contents", "keys", on_delete: :nullify
   add_foreign_key "wordpress_contents", "projects", on_delete: :cascade
   add_foreign_key "wordpress_polylang_connections", "projects", on_delete: :cascade
 end

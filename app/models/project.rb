@@ -20,7 +20,7 @@ class Project < ApplicationRecord
   # Tags
   has_many :tags, dependent: :destroy
 
-  # WordPress integration
+  # WordPress Polylang integration
   has_many :wordpress_contents, dependent: :destroy
   has_one :wordpress_polylang_connection, dependent: :destroy
 

@@ -113,6 +113,26 @@ export function WordpressContentsTable(props: {
             >
                 Sync WordPress content
             </Button>
+
+            <Button
+                onClick={async () => {
+                    setWordpressContentsLoading(true);
+                    try {
+                        await WordpressPolylangConnectionsAPI.pushWordpressContent({
+                            projectId: props.projectId
+                        });
+                    } catch (error) {
+                        console.error();
+                    }
+                    setWordpressContentsLoading(false);
+                }}
+                type="primary"
+                style={{ alignSelf: "flex-start", marginTop: 8, marginBottom: 4 }}
+                loading={wordpressContentsLoading}
+            >
+                Push WordPress content
+            </Button>
+
             <Table
                 style={props.style}
                 rowSelection={{

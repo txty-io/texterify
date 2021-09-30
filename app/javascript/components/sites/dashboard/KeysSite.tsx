@@ -303,11 +303,27 @@ class KeysSite extends React.Component<IProps, IState> {
             const overwrites = this.getKeyExportConfigOverwrites(key);
 
             return {
-                tags: key.attributes.html_enabled ? (
-                    <Tag color="magenta" style={{ margin: 0 }}>
-                        HTML
-                    </Tag>
-                ) : undefined,
+                tags: [
+                    ...key.relationships.tags.data.map((tag) => {
+                        const included = APIUtils.getIncludedObject(tag, this.state.keysResponse.included);
+
+                        return (
+                            <Tag color="magenta" style={{ margin: 0 }}>
+                                {included.attributes.name}
+                            </Tag>
+                        );
+                    }),
+                    key.attributes.html_enabled ? (
+                        <Tag color="magenta" style={{ margin: 0 }}>
+                            HTML
+                        </Tag>
+                    ) : undefined,
+                    key.attributes.wordpress_content_id ? (
+                        <Tag color="magenta" style={{ margin: 0 }}>
+                            WordPress
+                        </Tag>
+                    ) : undefined
+                ],
                 exportConfigOverwrites: overwrites.map((overwrite, index) => {
                     return (
                         <Tag color="cyan" key={index} style={{ margin: "0 4px 4px 0" }}>

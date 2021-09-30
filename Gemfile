@@ -119,3 +119,6 @@ gem 'PoParser'
 
 # For deserialization of serialized php objects.
 gem 'php-serialize'
+
+# For encoding and decoding HTML entities.
+gem 'htmlentities'

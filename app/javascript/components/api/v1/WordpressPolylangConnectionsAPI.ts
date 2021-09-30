@@ -81,6 +81,12 @@ const WordpressPolylangConnectionsAPI = {
             .catch(APIUtils.handleErrors);
     },
 
+    pushWordpressContent: async (options: { projectId: string }): Promise<void> => {
+        return API.postRequest(`projects/${options.projectId}/wordpress_polylang_connection/push`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
     getWordpressContent: async (options: { projectId: string }): Promise<IGetWordpressContentsResponse> => {
         return API.getRequest(`projects/${options.projectId}/wordpress_polylang_connection/contents`, true)
             .then(APIUtils.handleErrors)

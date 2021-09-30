@@ -15,10 +15,11 @@ class Key < ApplicationRecord
   scope :distinct_on_lower_name, -> { select('distinct on (lower("keys"."name")) keys.*') }
 
   belongs_to :project
+  has_many :wordpress_contents
   has_many :translations, dependent: :destroy
 
-  # A key has many tags
-  has_many :key_tags, dependent: :destroy
+  # A key has many tags attached.
+  has_many :key_tags, dependent: :delete_all
   has_many :tags, through: :key_tags
 
   validates :name, presence: true

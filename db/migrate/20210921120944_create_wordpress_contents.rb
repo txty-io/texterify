@@ -1,7 +1,7 @@
 class CreateWordpressContents < ActiveRecord::Migration[6.1]
   def change
     create_table :wordpress_contents, id: :uuid do |t|
-      t.integer :wordpress_id, null: false
+      t.string :wordpress_id, null: false
       t.string :wordpress_slug
       t.datetime :wordpress_modified, null: false
       t.string :wordpress_type, null: false

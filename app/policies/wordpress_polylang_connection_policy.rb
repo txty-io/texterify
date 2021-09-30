@@ -18,6 +18,10 @@ class WordpressPolylangConnectionPolicy
     ROLES_DEVELOPER_UP.include? project_user_role
   end
 
+  def push?
+    ROLES_DEVELOPER_UP.include? project_user_role
+  end
+
   def import?
     ROLES_DEVELOPER_UP.include? project_user_role
   end

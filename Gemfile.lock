@@ -160,6 +160,7 @@ GEM
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (~> 0.14)
+    htmlentities (4.3.4)
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -468,6 +469,7 @@ DEPENDENCIES
   fast_jsonapi
   gitlab-license
   google-cloud-storage (~> 1.11)
+  htmlentities
   java-properties
   license_finder
   listen

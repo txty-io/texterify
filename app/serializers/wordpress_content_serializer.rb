@@ -8,4 +8,6 @@ class WordpressContentSerializer
              :wordpress_content,
              :wordpress_content_type,
              :wordpress_title
+
+  belongs_to :key
 end

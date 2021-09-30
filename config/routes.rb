@@ -83,6 +83,7 @@ Rails
           put 'wordpress_polylang_connection', to: 'wordpress_polylang_connections#update'
           get 'wordpress_polylang_connection/contents', to: 'wordpress_polylang_connections#contents'
           post 'wordpress_polylang_connection/pull', to: 'wordpress_polylang_connections#pull'
+          post 'wordpress_polylang_connection/push', to: 'wordpress_polylang_connections#push'
           post 'wordpress_polylang_connection/import', to: 'wordpress_polylang_connections#import'
           get 'wordpress_polylang_connection/website_reachable', to: 'wordpress_polylang_connections#website_reachable'
           get 'wordpress_polylang_connection/wordpress_rest_activated',
