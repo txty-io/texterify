@@ -95,12 +95,16 @@
     }
 
     .ant-layout-sider-trigger {
+        color: var(--main-sidebar-color);
         background: var(--background-color);
         border-right: 1px solid var(--border-color);
 
-        &:hover,
+        &:hover {
+            color: var(--main-sidebar-hover-color);
+        }
+
         &:active {
-            color: var(--blue-color);
+            color: var(--main-sidebar-active-color);
         }
     }
 

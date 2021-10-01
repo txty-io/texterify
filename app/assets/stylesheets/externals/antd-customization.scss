@@ -65,54 +65,6 @@
     text-overflow: ellipsis;
   }
 
-  .ant-menu-vertical .ant-menu-item:after, .ant-menu-vertical-left .ant-menu-item:after, .ant-menu-vertical-right .ant-menu-item:after, .ant-menu-inline .ant-menu-item:after {
-    border-right-color: var(--blue-color);
-  }
-
-  .ant-menu-item > a:hover {
-    color: var(--blue-color);
-  }
-
-  .ant-menu-item-selected > a, .ant-menu-item-selected > a:hover {
-    color: var(--blue-color);
-  }
-
-  .ant-menu-item-selected {
-    color: var(--blue-color);
-    background: var(--primary-light-color);
-  }
-
-  .ant-menu-item:hover, .ant-menu-item-active, .ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open, .ant-menu-submenu-active, .ant-menu-submenu-title:hover {
-    color: var(--blue-color);
-  }
-
-  .ant-menu-submenu-selected {
-    color: var(--blue-color);
-  }
-
-  .ant-menu-submenu-title > a {
-    color: var(--background-color);
-  }
-
-  .ant-menu-submenu-selected .ant-menu-submenu-title > a {
-    color: var(--blue-color);
-  }
-
-  .ant-menu-submenu-inline > .ant-menu-submenu-title:hover .ant-menu-submenu-arrow::before,
-  .ant-menu-submenu-inline > .ant-menu-submenu-title:hover .ant-menu-submenu-arrow::after {
-    transition-property: transform, top;
-    background: var(--blue-color);
-  }
-
-  .ant-menu-submenu-selected > a {
-    color: var(--blue-color);
-    background: #f00;
-  }
-
-  .ant-menu-item > a, .ant-menu-submenu-title > a {
-    text-decoration: none;
-  }
-
   .ant-breadcrumb a {
     color: var(--blue-color);
 
@@ -233,6 +185,11 @@
     border-radius: 4px;
     border-color: var(--border-color);
 
+    .ant-card-actions {
+      background: var(--background-color);
+      border-top-color: var(--border-color);
+    }
+
     .ant-card-head {
       border-bottom: 0;
     }
@@ -266,6 +223,11 @@
   .ant-table-content {
     overflow-x: auto;
     overflow-y: hidden;
+    background: var(--table-background-color);
+  }
+
+  .ant-table.ant-table-bordered thead > tr > th {
+    background: var(--table-head-background-color);
   }
 
   .ant-modal-body {
