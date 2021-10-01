@@ -19,7 +19,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
              LanguageSerializer.new(
                show_all ? languages.order_by_name : languages.order_by_name.offset(page * per_page).limit(per_page),
                options
-              ).serialized_json
+             ).serialized_json
   end
 
   def create
@@ -84,7 +84,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
 
       render json: { success: true, details: 'Language successfully created.' }, status: :ok
 
-      if project.auto_translate_new_languages
+      if project.auto_translate_new_languages && project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
         language.translate_untranslated_using_machine_translation
       end
     else
