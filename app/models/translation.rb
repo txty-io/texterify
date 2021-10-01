@@ -48,11 +48,13 @@ class Translation < ApplicationRecord
   # Translations for HTML keys and export configs are ignored.
   def update_project_word_char_count
     if !self.key.html_enabled && self.export_config_id.nil?
-      old_character_count = paper_trail.previous_version&.content.present? ? paper_trail.previous_version.content.length : 0
+      old_character_count =
+        paper_trail.previous_version&.content.present? ? paper_trail.previous_version.content.length : 0
       new_character_count = self.content.present? ? self.content.length : 0
       character_count_diff = new_character_count - old_character_count
 
-      old_word_count = paper_trail.previous_version&.content.present? ? paper_trail.previous_version.content.split(' ').length : 0
+      old_word_count =
+        paper_trail.previous_version&.content.present? ? paper_trail.previous_version.content.split(' ').length : 0
       new_word_count = self.content.present? ? self.content.split(' ').length : 0
       word_count_diff = new_word_count - old_word_count
 
