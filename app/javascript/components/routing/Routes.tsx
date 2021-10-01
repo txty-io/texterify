@@ -33,6 +33,12 @@ const Routes = {
         PROJECT: "/dashboard/projects/:projectId",
         PROJECT_LANGUAGES: "/dashboard/projects/:projectId/languages",
         PROJECT_IMPORT: "/dashboard/projects/:projectId/import",
+        PROJECT_IMPORT_FILE: "/dashboard/projects/:projectId/import/file",
+        PROJECT_IMPORT_FILE_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_IMPORT_FILE.replace(":projectId", options.projectId);
+        },
+        PROJECT_IMPORT_WORDPRESS: "/dashboard/projects/:projectId/import/wordpress",
+        PROJECT_IMPORT_GITHUB: "/dashboard/projects/:projectId/import/github",
         PROJECT_EXPORT: "/dashboard/projects/:projectId/export",
         PROJECT_MEMBERS: "/dashboard/projects/:projectId/members",
         PROJECT_MACHINE_TRANSLATION: "/dashboard/projects/:projectId/machine-translation",

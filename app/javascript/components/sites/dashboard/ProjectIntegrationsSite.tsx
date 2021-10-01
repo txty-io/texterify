@@ -73,7 +73,7 @@ class ProjectIntegrationsSite extends React.Component<IProps> {
                     projectId: this.props.match.params.projectId
                 }),
                 hasSubpage: true,
-                buttonText: "Start integration"
+                buttonText: "Settings"
             }
         ] as IIntegration[];
     }
@@ -95,24 +95,22 @@ class ProjectIntegrationsSite extends React.Component<IProps> {
                 }}
             >
                 {integration.textLogo && (
-                    <div style={{ width: 56, fontSize: 24, color: "var(--full-color)", textAlign: "center" }}>
+                    <div style={{ width: 40, fontSize: 24, color: "var(--full-color)", textAlign: "center" }}>
                         {integration.textLogo}
                     </div>
                 )}
-                {integration.logo && <img src={integration.logo} style={{ width: 56 }} />}
+                {integration.logo && <img src={integration.logo} style={{ width: 40 }} />}
                 <div style={{ display: "flex", flexDirection: "column", margin: "0 40px", width: 560 }}>
                     <div
                         style={{
                             fontWeight: "bold",
                             fontSize: 22,
-                            marginBottom: 8,
-                            marginTop: 16,
                             color: "var(--full-color)"
                         }}
                     >
                         {integration.name}
                     </div>
-                    <div style={{ opacity: 0.75, fontSize: 14, marginBottom: 16 }}>{integration.description}</div>
+                    <div style={{ opacity: 0.75, fontSize: 14 }}>{integration.description}</div>
                 </div>
                 <Button
                     type="primary"

@@ -20,7 +20,7 @@ import { IGetLanguagesResponse, LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
-import { ImportFileFormats } from "../sites/dashboard/ImportSite";
+import { ImportFileFormats } from "../sites/dashboard/FileImportSite";
 import { generalStore } from "../stores/GeneralStore";
 import { DropZoneWrapper } from "./DropZoneWrapper";
 import FlagIcon from "./FlagIcons";

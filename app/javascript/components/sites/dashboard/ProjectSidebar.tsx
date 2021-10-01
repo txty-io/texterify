@@ -33,6 +33,7 @@ const { Sider } = Layout;
 interface INavigationData {
     icon: any;
     path?: string;
+    paths?: string[];
     text?: string;
     roles?: string[];
     dataId: string;
@@ -88,6 +89,11 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             {
                 icon: ImportOutlined,
                 path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
+                paths: [
+                    Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
+                    Routes.DASHBOARD.PROJECT_IMPORT_FILE.replace(":projectId", this.props.match.params.projectId),
+                    Routes.DASHBOARD.PROJECT_IMPORT_WORDPRESS.replace(":projectId", this.props.match.params.projectId)
+                ],
                 text: "Import",
                 roles: ROLES_DEVELOPER_UP,
                 dataId: "project-sidebar-import"
@@ -275,11 +281,11 @@ class ProjectSidebar extends React.Component<IProps, IState> {
 
     getSelectedItem = (): string[] => {
         return this.getNavigationData().map((data: INavigationData, index: number): string => {
-            if (data.path === this.props.location.pathname) {
+            if (data.paths?.includes(this.props.location.pathname)) {
                 return index.toString();
-            }
-
-            if (data.subItems) {
+            } else if (data.path === this.props.location.pathname) {
+                return index.toString();
+            } else if (data.subItems) {
                 let foundIndex;
 
                 data.subItems.forEach((item, submenuIndex) => {

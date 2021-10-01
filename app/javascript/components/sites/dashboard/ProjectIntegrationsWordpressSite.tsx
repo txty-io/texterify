@@ -84,8 +84,12 @@ export const ProjectIntegrationsWordpressSite = observer(() => {
                     const response = await WordpressPolylangConnectionsAPI.getConnection({
                         projectId: params.projectId
                     });
-                    setSettings(response);
-                    setShowPasswordField(!response.data.attributes.password_set);
+
+                    if (response && response.data) {
+                        setSettings(response);
+                        setShowPasswordField(!response.data.attributes.password_set);
+                    }
+
                     setSettingsLoading(false);
                 } catch (error) {
                     console.error(error);

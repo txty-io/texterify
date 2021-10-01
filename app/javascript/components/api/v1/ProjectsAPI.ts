@@ -1,5 +1,5 @@
 import fileDownload from "js-file-download";
-import { ImportFileFormats } from "../../sites/dashboard/ImportSite";
+import { ImportFileFormats } from "../../sites/dashboard/FileImportSite";
 import { IFeature } from "../../types/IFeature";
 import { IPlanIDS } from "../../types/IPlan";
 import { IUserRole } from "../../types/IUserRole";
