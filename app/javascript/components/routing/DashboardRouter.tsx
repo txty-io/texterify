@@ -45,14 +45,37 @@ export const MenuList = styled.li`
     display: flex;
 `;
 
-export const MenuLink = styled(Link)`
+interface IMenuLinkWrapperProps {
+    isActive: boolean;
+}
+
+export const MenuLinkWrapper = styled.div<IMenuLinkWrapperProps>`
     transition: none;
     margin-right: 8px;
     overflow: hidden;
     text-overflow: ellipsis;
+    border-radius: 4px;
+
+    background: ${(props: IMenuLinkWrapperProps) => {
+        return props.isActive ? "var(--header-menu-item-active-background)" : "none";
+    }};
 
     &:hover {
         text-decoration: none;
+    }
+
+    a {
+        text-decoration: none;
+        padding: 8px 20px;
+        display: inline-block;
+
+        color: ${(props: IMenuLinkWrapperProps) => {
+            return props.isActive ? "#fff" : "#ffffffbf";
+        }};
+
+        &:hover {
+            color: #fff;
+        }
     }
 `;
 
@@ -189,62 +212,39 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 marginBottom: 0,
                                 marginRight: 24,
                                 display: "flex",
-                                alignItems: "center"
+                                alignItems: "center",
+                                marginLeft: 50
                             }}
                         >
                             <MenuList>
-                                <MenuLink
-                                    to={Routes.DASHBOARD.PROJECTS}
-                                    style={{
-                                        background:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS
-                                                ? "var(--primary-light-color)"
-                                                : undefined,
-                                        color:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS
-                                                ? "var(--blue-color)"
-                                                : undefined
-                                    }}
+                                <MenuLinkWrapper
+                                    isActive={this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS}
                                     data-id="main-menu-projects"
                                 >
-                                    <ProjectOutlined style={{ marginRight: 8 }} /> Projects
-                                </MenuLink>
+                                    <Link to={Routes.DASHBOARD.PROJECTS}>
+                                        <ProjectOutlined style={{ marginRight: 8 }} /> Projects
+                                    </Link>
+                                </MenuLinkWrapper>
                             </MenuList>
                             <MenuList>
-                                <MenuLink
-                                    to={Routes.DASHBOARD.ORGANIZATIONS}
-                                    style={{
-                                        background:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS
-                                                ? "var(--primary-light-color)"
-                                                : undefined,
-                                        color:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS
-                                                ? "var(--blue-color)"
-                                                : undefined
-                                    }}
+                                <MenuLinkWrapper
+                                    isActive={this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS}
                                     data-id="main-menu-organizations"
                                 >
-                                    <DeploymentUnitOutlined style={{ marginRight: 8 }} /> Organizations
-                                </MenuLink>
+                                    <Link to={Routes.DASHBOARD.ORGANIZATIONS}>
+                                        <DeploymentUnitOutlined style={{ marginRight: 8 }} /> Organizations
+                                    </Link>
+                                </MenuLinkWrapper>
                             </MenuList>
                             <MenuList>
-                                <MenuLink
-                                    to={Routes.DASHBOARD.ACTIVITY}
-                                    style={{
-                                        background:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY
-                                                ? "var(--primary-light-color)"
-                                                : undefined,
-                                        color:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY
-                                                ? "var(--blue-color)"
-                                                : undefined
-                                    }}
+                                <MenuLinkWrapper
+                                    isActive={this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY}
                                     data-id="main-menu-activity"
                                 >
-                                    <LineChartOutlined style={{ marginRight: 8 }} /> Activity
-                                </MenuLink>
+                                    <Link to={Routes.DASHBOARD.ACTIVITY}>
+                                        <LineChartOutlined style={{ marginRight: 8 }} /> Activity
+                                    </Link>
+                                </MenuLinkWrapper>
                             </MenuList>
                         </ul>
 
@@ -276,25 +276,17 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 }}
                             >
                                 <MenuList>
-                                    <MenuLink
-                                        to={Routes.DASHBOARD.INSTANCE.ROOT}
-                                        style={{
-                                            background: this.props.history.location.pathname.startsWith(
-                                                Routes.DASHBOARD.INSTANCE.ROOT
-                                            )
-                                                ? "var(--primary-light-color)"
-                                                : undefined,
-                                            color: this.props.history.location.pathname.startsWith(
-                                                Routes.DASHBOARD.INSTANCE.ROOT
-                                            )
-                                                ? "var(--blue-color)"
-                                                : undefined
-                                        }}
+                                    <MenuLinkWrapper
+                                        isActive={this.props.history.location.pathname.startsWith(
+                                            Routes.DASHBOARD.INSTANCE.ROOT
+                                        )}
                                         data-id="main-menu-instance-settings"
                                     >
-                                        <HddOutlined style={{ marginRight: 8 }} />
-                                        Admin
-                                    </MenuLink>
+                                        <Link to={Routes.DASHBOARD.INSTANCE.ROOT}>
+                                            <HddOutlined style={{ marginRight: 8 }} />
+                                            Admin
+                                        </Link>
+                                    </MenuLinkWrapper>
                                 </MenuList>
                             </ul>
                         )}

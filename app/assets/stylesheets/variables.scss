@@ -13,8 +13,14 @@
   --color-success: #52c41a;
   --color-warn: #ff861d;
 
+  // alert
+  --alert-background-color: #f0f6ff;
+  --alert-border-color: #bad2ff;
+  --alert-icon-color: #0d141f;
+
   // header
   --header-background-color: #0d141f;
+  --header-menu-item-active-background: #1f2b4a;
 
   // button
   --primary-btn-color: #1c70f5;
@@ -55,7 +61,7 @@
   --background-color: var(--dark-color);
   --border-color: rgb(27, 31, 33);
   --border-color-flashier: #4e4e4e;
-  --blue-color: #61b6ff;
+  --blue-color: #67aaff;
   --blue-color-light: #61b6ffbf;
   --highlight-color: rgba(255, 255, 255, 0.85);
   --primary-light-color: #111d3a;
@@ -63,6 +69,14 @@
   --color-passive: #555;
   --color-passive-hover: #999;
   --color-warn: #ff861d;
+
+  // alert
+  --alert-background-color: #101929;
+  --alert-border-color: #2b4063;
+  --alert-icon-color: #fff;
+
+  // header
+  // same as for light mode
 
   // button
   --primary-btn-color: #065baa;

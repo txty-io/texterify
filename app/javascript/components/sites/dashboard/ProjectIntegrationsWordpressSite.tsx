@@ -1,4 +1,4 @@
-import { CheckCircleFilled, LoadingOutlined, WarningFilled } from "@ant-design/icons";
+import { ArrowLeftOutlined, CheckCircleFilled, LoadingOutlined, WarningFilled } from "@ant-design/icons";
 import { Button, Form, Input, Layout, List, message, Skeleton } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -139,7 +139,7 @@ export const ProjectIntegrationsWordpressSite = observer(() => {
                     })}
                     style={{ fontWeight: 600 }}
                 >
-                    Back to integrations
+                    <ArrowLeftOutlined /> <span style={{ marginLeft: 8 }}>Back to integrations</span>
                 </Link>
                 <p style={{ marginTop: 8, maxWidth: 800 }}>
                     With the WordPress integration you can sync your content between WordPress and Texterify with ease

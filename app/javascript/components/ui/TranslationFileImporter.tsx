@@ -205,7 +205,7 @@ function getFileEndingForSelectedFormat(selectedImportFormat: string) {
 }
 
 export const TranslationFileImporter = observer(
-    (props: { onCreateLanguageClick?(): void; style?: React.CSSProperties }) => {
+    (props: { style?: React.CSSProperties; onCreateLanguageClick?(): void }) => {
         const params = useParams<{ organizationId?: string; projectId?: string }>();
 
         const [languagesResponse, setLanguagesResponse] = React.useState<IGetLanguagesResponse>();
@@ -347,7 +347,7 @@ export const TranslationFileImporter = observer(
                             showIcon
                             message="No language"
                             description={
-                                <p>
+                                <>
                                     <a
                                         onClick={
                                             props.onCreateLanguageClick
@@ -365,7 +365,7 @@ export const TranslationFileImporter = observer(
                                         Create a language
                                     </a>{" "}
                                     to import your keys.
-                                </p>
+                                </>
                             }
                         />
                     </>

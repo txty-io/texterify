@@ -104,7 +104,7 @@ class ProjectIntegrationsSite extends React.Component<IProps> {
                     <div
                         style={{
                             fontWeight: "bold",
-                            fontSize: 22,
+                            fontSize: 18,
                             color: "var(--full-color)"
                         }}
                     >

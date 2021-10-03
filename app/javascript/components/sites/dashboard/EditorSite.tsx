@@ -17,7 +17,7 @@ import {
     MachineTranslationsAPI
 } from "../../api/v1/MachineTranslationsAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
-import { MenuLink, MenuList } from "../../routing/DashboardRouter";
+import { MenuLinkWrapper, MenuList } from "../../routing/DashboardRouter";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
@@ -295,25 +295,12 @@ class EditorSite extends React.Component<IProps, IState> {
                             }}
                         >
                             <MenuList>
-                                <MenuLink
-                                    to={Routes.DASHBOARD.INSTANCE.ROOT}
-                                    style={{
-                                        background: this.props.history.location.pathname.startsWith(
-                                            Routes.DASHBOARD.INSTANCE.ROOT
-                                        )
-                                            ? "var(--primary-light-color)"
-                                            : undefined,
-                                        color: this.props.history.location.pathname.startsWith(
-                                            Routes.DASHBOARD.INSTANCE.ROOT
-                                        )
-                                            ? "var(--blue-color)"
-                                            : undefined
-                                    }}
-                                    data-id="main-menu-instance-settings"
-                                >
-                                    <HddOutlined style={{ marginRight: 8 }} />
-                                    Admin
-                                </MenuLink>
+                                <MenuLinkWrapper data-id="main-menu-instance-settings">
+                                    <Link to={Routes.DASHBOARD.INSTANCE.ROOT}>
+                                        <HddOutlined style={{ marginRight: 8 }} />
+                                        Admin
+                                    </Link>
+                                </MenuLinkWrapper>
                             </MenuList>
                         </ul>
                     )}

@@ -56,7 +56,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                 message="No export configuration"
                 style={{ marginTop: this.state.languagesLoaded && this.state.languages.length === 0 ? 8 : 0 }}
                 description={
-                    <p>
+                    <>
                         <Link
                             to={Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
                                 ":projectId",
@@ -66,7 +66,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                             Create an export configuration
                         </Link>{" "}
                         to export your keys.
-                    </p>
+                    </>
                 }
             />
         );
@@ -89,7 +89,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                                 showIcon
                                 message="No language"
                                 description={
-                                    <p>
+                                    <>
                                         <Link
                                             to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
                                                 ":projectId",
@@ -99,7 +99,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                                             Create a language
                                         </Link>{" "}
                                         to export your keys.
-                                    </p>
+                                    </>
                                 }
                             />
                         </>
