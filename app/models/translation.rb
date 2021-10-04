@@ -9,7 +9,8 @@ class Translation < ApplicationRecord
   belongs_to :language
   belongs_to :export_config, optional: true
 
-  after_save :update_project_word_char_count
+  after_destroy :update_project_word_char_count_on_destroy
+  after_save :update_project_word_char_count_on_update
 
   def auto_translate_untranslated
     project = key.project
@@ -45,22 +46,40 @@ class Translation < ApplicationRecord
   private
 
   # Updates the project character and word count after a translation is updated.
-  # Translations for HTML keys and export configs are ignored.
-  def update_project_word_char_count
-    if !self.key.html_enabled && self.export_config_id.nil?
-      old_character_count =
-        paper_trail.previous_version&.content.present? ? paper_trail.previous_version.content.length : 0
-      new_character_count = self.content.present? ? self.content.length : 0
-      character_count_diff = new_character_count - old_character_count
+  # Translations for export configs are ignored.
+  def update_project_word_char_count_on_update
+    if self.export_config_id.nil? && self.saved_changes['content'].present?
+      content_before = self.saved_changes['content'][0] || '' # if it is a new key content[0] is nil
+      content_after = self.saved_changes['content'][1]
 
-      old_word_count =
-        paper_trail.previous_version&.content.present? ? paper_trail.previous_version.content.split(' ').length : 0
-      new_word_count = self.content.present? ? self.content.split(' ').length : 0
-      word_count_diff = new_word_count - old_word_count
+      # Try to convert it to the translated HTML content.
+      # If the function returns an empty string then use the content without conversion.
+      content_before_converted = ApplicationController.helpers.convert_html_translation(content_before)
+      content_after_converted = ApplicationController.helpers.convert_html_translation(content_after)
+
+      content_before = content_before_converted.nil? ? content_before : content_before_converted.to_s
+      content_after = content_after_converted.nil? ? content_after : content_after_converted.to_s
+
+      character_count_diff = content_after.length - content_before.length
+      word_count_diff = content_after.split(' ').length - content_before.split(' ').length
 
       project = key.project
       project.character_count += character_count_diff
       project.word_count += word_count_diff
+      project.save!
+    end
+  end
+
+  # Updates the project character and word count after a translation is destroyed.
+  # Translations for export configs are ignored.
+  def update_project_word_char_count_on_destroy
+    if self.export_config_id.nil?
+      translation_content_converted = ApplicationController.helpers.convert_html_translation(self.content)
+      translation_content = translation_content_converted.nil? ? self.content : translation_content_converted.to_s
+
+      project = key.project
+      project.character_count -= translation_content.length
+      project.word_count -= translation_content.split(' ').length
       project.save!
     end
   end
