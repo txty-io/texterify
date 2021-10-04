@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.1.0
+
+- Add WordPress integration.
+- Improve design and adjust color.
+- Fix character and word count not beeing calculated correctly.
+- Fix missing check if auto-translate feature is available.
+
 ## v1.0.6
 
 - Fix machine translation bug for existing translations.
