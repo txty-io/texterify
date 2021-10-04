@@ -10,7 +10,7 @@ class Api::V1::WordpressPolylangConnectionsController < Api::V1::ApiController
     if connection.blank?
       skip_authorization
 
-      render json: nil
+      render json: WordpressPolylangConnectionSerializer.new(WordpressPolylangConnection.new)
     else
       authorize connection
 
