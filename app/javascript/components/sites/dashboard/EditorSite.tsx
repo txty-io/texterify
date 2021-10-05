@@ -505,8 +505,21 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     </div>
                                                     <div style={{ marginLeft: 8, flexShrink: 0 }}>
                                                         {key.attributes.html_enabled && (
-                                                            <Tag color="magenta" className="editor-key-html">
+                                                            <Tag
+                                                                color="magenta"
+                                                                className="editor-key-html"
+                                                                style={{ margin: 0, marginRight: 4 }}
+                                                            >
                                                                 HTML
+                                                            </Tag>
+                                                        )}
+                                                        {key.relationships.wordpress_contents.data.length > 0 && (
+                                                            <Tag
+                                                                color="magenta"
+                                                                className="editor-key-html"
+                                                                style={{ margin: 0 }}
+                                                            >
+                                                                WordPress
                                                             </Tag>
                                                         )}
                                                     </div>

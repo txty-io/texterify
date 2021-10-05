@@ -308,13 +308,13 @@ class KeysSite extends React.Component<IProps, IState> {
                         const included = APIUtils.getIncludedObject(tag, this.state.keysResponse.included);
 
                         return (
-                            <Tag color="magenta" style={{ margin: 0 }}>
+                            <Tag color="magenta" style={{ margin: 0, marginRight: 4, marginBottom: 4 }}>
                                 {included.attributes.name}
                             </Tag>
                         );
                     }),
                     key.attributes.html_enabled ? (
-                        <Tag color="magenta" style={{ margin: 0 }}>
+                        <Tag color="magenta" style={{ margin: 0, marginRight: 4, marginBottom: 4 }}>
                             HTML
                         </Tag>
                     ) : undefined,
