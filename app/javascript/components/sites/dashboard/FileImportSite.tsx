@@ -1,11 +1,9 @@
-import { Layout, Tabs } from "antd";
+import { Layout } from "antd";
 import * as React from "react";
 import { useParams } from "react-router";
-import { Routes } from "../../routing/Routes";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { ImportSidebar } from "../../ui/ImportSidebar";
 import { TranslationFileImporter } from "../../ui/TranslationFileImporter";
-import { WordpressContentsTable } from "../../ui/WordpressContentsTable";
 
 export type ImportFileFormats =
     | "json"

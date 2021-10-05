@@ -91,8 +91,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
                 paths: [
                     Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
-                    Routes.DASHBOARD.PROJECT_IMPORT_FILE.replace(":projectId", this.props.match.params.projectId),
-                    Routes.DASHBOARD.PROJECT_IMPORT_WORDPRESS.replace(":projectId", this.props.match.params.projectId)
+                    Routes.DASHBOARD.PROJECT_IMPORT_FILE.replace(":projectId", this.props.match.params.projectId)
                 ],
                 text: "Import",
                 roles: ROLES_DEVELOPER_UP,
@@ -103,35 +102,44 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 text: "Export",
                 roles: ROLES_DEVELOPER_UP,
                 dataId: "project-sidebar-export",
-                subItems: [
-                    {
-                        icon: DownloadOutlined,
-                        path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
-                        text: "Download",
-                        roles: ROLES_DEVELOPER_UP,
-                        dataId: "project-sidebar-download"
-                    },
-                    {
-                        icon: SettingOutlined,
-                        path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
-                            ":projectId",
-                            this.props.match.params.projectId
-                        ),
-                        text: "Configurations",
-                        roles: ROLES_DEVELOPER_UP,
-                        dataId: "project-sidebar-configurations"
-                    },
-                    {
-                        icon: ClusterOutlined,
-                        path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(
-                            ":projectId",
-                            this.props.match.params.projectId
-                        ),
-                        text: "Hierarchy",
-                        roles: ROLES_DEVELOPER_UP,
-                        dataId: "project-sidebar-hierarchy"
-                    }
+                path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
+                paths: [
+                    Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
+                    Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
+                        ":projectId",
+                        this.props.match.params.projectId
+                    ),
+                    Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", this.props.match.params.projectId)
                 ]
+                // subItems: [
+                //     {
+                //         icon: DownloadOutlined,
+                //         path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
+                //         text: "Download",
+                //         roles: ROLES_DEVELOPER_UP,
+                //         dataId: "project-sidebar-download"
+                //     },
+                //     {
+                //         icon: SettingOutlined,
+                //         path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
+                //             ":projectId",
+                //             this.props.match.params.projectId
+                //         ),
+                //         text: "Configurations",
+                //         roles: ROLES_DEVELOPER_UP,
+                //         dataId: "project-sidebar-configurations"
+                //     },
+                //     {
+                //         icon: ClusterOutlined,
+                //         path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(
+                //             ":projectId",
+                //             this.props.match.params.projectId
+                //         ),
+                //         text: "Hierarchy",
+                //         roles: ROLES_DEVELOPER_UP,
+                //         dataId: "project-sidebar-hierarchy"
+                //     }
+                // ]
             },
             {
                 icon: LineChartOutlined,
@@ -168,7 +176,15 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 path: Routes.DASHBOARD.PROJECT_INTEGRATIONS.replace(":projectId", this.props.match.params.projectId),
                 text: "Integrations",
                 roles: ROLES_TRANSLATOR_UP,
-                dataId: "project-sidebar-integrations"
+                dataId: "project-sidebar-integrations",
+                paths: [
+                    Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    }),
+                    Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    })
+                ]
             },
             {
                 icon: SettingOutlined,

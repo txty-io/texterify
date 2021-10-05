@@ -23,7 +23,7 @@ class Api::V1::WordpressPolylangConnectionsController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     connection = project.wordpress_polylang_connection
 
-    unless connection.complete?
+    unless connection&.complete?
       skip_authorization
       render json: { error: true, message: 'CONNECTION_SETTINGS_NOT_COMPLETE' }, status: :bad_request
       return
@@ -50,13 +50,13 @@ class Api::V1::WordpressPolylangConnectionsController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     connection = project.wordpress_polylang_connection
 
-    authorize connection
-
-    unless connection.complete?
+    if connection.nil? || !connection.complete?
       skip_authorization
       render json: { error: true, message: 'CONNECTION_SETTINGS_NOT_COMPLETE' }, status: :bad_request
       return
     end
+
+    authorize connection
 
     failed_to_push_wordpress_contents = []
 
@@ -75,7 +75,12 @@ class Api::V1::WordpressPolylangConnectionsController < Api::V1::ApiController
           if wordpress_content_for_translation.present?
             begin
               payload = {}
-              payload[wordpress_content_for_translation.wordpress_content_type] = translation.content
+              if key.html_enabled
+                payload[wordpress_content_for_translation.wordpress_content_type] =
+                  ApplicationController.helpers.convert_html_translation(translation.content) || ''
+              else
+                payload[wordpress_content_for_translation.wordpress_content_type] = translation.content
+              end
 
               response =
                 RestClient::Request.new(

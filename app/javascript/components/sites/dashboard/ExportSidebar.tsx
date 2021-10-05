@@ -1,19 +1,27 @@
 import { Tag } from "antd";
 import * as React from "react";
-import { Routes } from "../routing/Routes";
-import { SubSidebar } from "./SubSidebar";
+import { Routes } from "../../routing/Routes";
+import { SubSidebar } from "../../ui/SubSidebar";
 
-export function ImportSidebar(props: { projectId: string }) {
+export function ExportSidebar(props: { projectId: string }) {
     return (
         <SubSidebar
             projectId={props.projectId}
             menuItems={[
                 {
-                    title: "Import",
+                    title: "Export",
                     items: [
                         {
-                            path: Routes.DASHBOARD.PROJECT_IMPORT_FILE,
-                            name: "File"
+                            path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", props.projectId),
+                            name: "Download"
+                        },
+                        {
+                            path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(":projectId", props.projectId),
+                            name: "Configurations"
+                        },
+                        {
+                            path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", props.projectId),
+                            name: "Hierarchy"
                         }
                     ]
                 },

@@ -1,6 +1,7 @@
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Redirect, RouteComponentProps, Switch } from "react-router-dom";
+import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 import { ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { FileImportSite } from "../sites/dashboard/FileImportSite";
 import { KeysSite } from "../sites/dashboard/KeysSite";
@@ -10,20 +11,19 @@ import { ProjectActivitySite } from "../sites/dashboard/ProjectActivitySite";
 import { ProjectExportConfigsSite } from "../sites/dashboard/ProjectExportConfigsSite";
 import { ProjectExportDownloadSite } from "../sites/dashboard/ProjectExportDownloadSite";
 import { ProjectExportHierarchySite } from "../sites/dashboard/ProjectExportHierarchySite";
+import { ProjectIntegrationsSite } from "../sites/dashboard/ProjectIntegrationsSite";
+import { ProjectIntegrationsWordpressSettingsSite } from "../sites/dashboard/ProjectIntegrationsWordpressSettingsSite";
+import { ProjectIntegrationsWordpressSyncSite } from "../sites/dashboard/ProjectIntegrationsWordpressSyncSite";
+import { ProjectMachineTranslationSite } from "../sites/dashboard/ProjectMachineTranslationSite";
+import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
+import { ProjectPostProcessingSite } from "../sites/dashboard/ProjectPostProcessingSite";
 import { ProjectSettingsSite } from "../sites/dashboard/ProjectSettingsSite";
 import { ProjectSite } from "../sites/dashboard/ProjectSite";
+import { ProjectValidationsSite } from "../sites/dashboard/ProjectValidationsSite";
 import { dashboardStore } from "../stores/DashboardStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
-import { ProjectPostProcessingSite } from "../sites/dashboard/ProjectPostProcessingSite";
-import { ProjectValidationsSite } from "../sites/dashboard/ProjectValidationsSite";
-import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
-import { ProjectIntegrationsSite } from "../sites/dashboard/ProjectIntegrationsSite";
-import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
-import { ProjectMachineTranslationSite } from "../sites/dashboard/ProjectMachineTranslationSite";
-import { ProjectIntegrationsWordpressSite } from "../sites/dashboard/ProjectIntegrationsWordpressSite";
-import { WordpressImportSite } from "../sites/dashboard/WordpressImportSite";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -87,11 +87,6 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         }}
                     />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_IMPORT_FILE} component={FileImportSite} />
-                    <PrivateRoute
-                        exact
-                        path={Routes.DASHBOARD.PROJECT_IMPORT_WORDPRESS}
-                        component={WordpressImportSite}
-                    />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_EXPORT} component={ProjectExportDownloadSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_MEMBERS} component={MembersSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_SETTINGS} component={ProjectSettingsSite} />
@@ -110,7 +105,25 @@ class ProjectRouter extends React.Component<IProps, IState> {
                     <PrivateRoute
                         exact
                         path={Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS}
-                        component={ProjectIntegrationsWordpressSite}
+                        component={() => {
+                            return (
+                                <Redirect
+                                    to={Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER({
+                                        projectId: this.props.match.params.projectId
+                                    })}
+                                />
+                            );
+                        }}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC}
+                        component={ProjectIntegrationsWordpressSyncSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS}
+                        component={ProjectIntegrationsWordpressSettingsSite}
                     />
                     <PrivateRoute
                         exact

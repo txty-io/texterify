@@ -15,7 +15,7 @@ class Key < ApplicationRecord
   scope :distinct_on_lower_name, -> { select('distinct on (lower("keys"."name")) keys.*') }
 
   belongs_to :project
-  has_many :wordpress_contents
+  has_many :wordpress_contents, dependent: :destroy
   has_many :translations, dependent: :destroy
 
   # A key has many tags attached.
@@ -27,6 +27,10 @@ class Key < ApplicationRecord
 
   before_validation :strip_leading_and_trailing_whitespace
   before_validation :check_html_allowed
+
+  def name_editable
+    self.wordpress_contents.empty?
+  end
 
   # Validates that there are no keys with same name for a project.
   def no_duplicate_keys_for_project

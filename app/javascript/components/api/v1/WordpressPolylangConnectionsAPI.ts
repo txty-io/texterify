@@ -1,5 +1,5 @@
 import { API } from "./API";
-import { APIUtils } from "./APIUtils";
+import { APIUtils, IGenericAPIResponse } from "./APIUtils";
 
 export interface IWordpressPolylangConnection {
     data: {
@@ -75,13 +75,13 @@ const WordpressPolylangConnectionsAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    pullWordpressContent: async (options: { projectId: string }): Promise<void> => {
+    pullWordpressContent: async (options: { projectId: string }): Promise<IGenericAPIResponse> => {
         return API.postRequest(`projects/${options.projectId}/wordpress_polylang_connection/pull`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },
 
-    pushWordpressContent: async (options: { projectId: string }): Promise<void> => {
+    pushWordpressContent: async (options: { projectId: string }): Promise<IGenericAPIResponse> => {
         return API.postRequest(`projects/${options.projectId}/wordpress_polylang_connection/push`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);

@@ -166,10 +166,20 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
             },
             projectIntegrationsWordpress: {
                 parent: "projectIntegrations",
-                name: "WordPress",
-                path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_RESOLVER({
-                    projectId: this.props.match.params.projectId,
-                    organizationId: this.props.match.params.organizationId
+                name: "WordPress"
+            },
+            projectIntegrationsWordpressSettings: {
+                parent: "projectIntegrationsWordpress",
+                name: "Settings",
+                path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
+                    projectId: this.props.match.params.projectId
+                })
+            },
+            projectIntegrationsWordpressSync: {
+                parent: "projectIntegrationsWordpress",
+                name: "Synchronize",
+                path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER({
+                    projectId: this.props.match.params.projectId
                 })
             },
             projectPostProcessing: {

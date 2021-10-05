@@ -318,7 +318,7 @@ class KeysSite extends React.Component<IProps, IState> {
                             HTML
                         </Tag>
                     ) : undefined,
-                    key.attributes.wordpress_content_id ? (
+                    key.relationships.wordpress_contents.data.length > 0 ? (
                         <Tag color="magenta" style={{ margin: 0 }}>
                             WordPress
                         </Tag>
@@ -338,6 +338,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 htmlEnabled: key.attributes.html_enabled,
                 ...translations,
                 ...translationExistsFor,
+                nameEditable: key.attributes.name_editable,
                 more: (
                     <Popover
                         placement="topRight"

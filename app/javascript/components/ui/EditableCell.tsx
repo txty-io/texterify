@@ -2,7 +2,7 @@ import { PermissionUtils } from "../utilities/PermissionUtils";
 import { dashboardStore } from "../stores/DashboardStore";
 import * as React from "react";
 import FormItem from "antd/lib/form/FormItem";
-import { Input, Form } from "antd";
+import { Input, Form, Tooltip } from "antd";
 
 interface IEditableRowProps {
     index: number;
@@ -43,15 +43,18 @@ export const EditableCell: React.FC<IEditableCellProps> = ({
     ...restProps
 }) => {
     const [editing, setEditing] = React.useState(false);
-    const inputRef = React.useRef();
+    const inputRef = React.useRef<any>();
     const form = React.useContext(EditableContext);
-    const isCellEditEnabled =
+
+    const isAllowedToChangeColumn =
         dataIndex !== "name" || PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole());
+    const canNameBeChangedIfName = (dataIndex === "name" && record.nameEditable) || dataIndex !== "name";
+    const isCellEditable = isAllowedToChangeColumn && canNameBeChangedIfName;
 
     React.useEffect(() => {
-        if (editing) {
+        if (editing && inputRef && inputRef.current) {
             // eslint-disable-next-line no-unused-expressions
-            inputRef.current?.focus();
+            inputRef.current.focus();
         }
     }, [editing]);
 
@@ -88,32 +91,46 @@ export const EditableCell: React.FC<IEditableCellProps> = ({
             {editable ? (
                 editing ? (
                     <FormItem style={{ margin: 0, minWidth: 320, maxWidth: "100%" }} name={dataIndex}>
-                        <Input.TextArea ref={inputRef} onPressEnter={save} onBlur={save} autoSize />
+                        <Input.TextArea
+                            ref={inputRef}
+                            onPressEnter={save}
+                            onBlur={save}
+                            autoSize
+                            disabled={!isCellEditable}
+                        />
                     </FormItem>
                 ) : (
-                    <div
-                        className={isCellEditEnabled ? "editable-cell-value-wrap" : undefined}
-                        style={{
-                            minWidth: 320,
-                            maxWidth: "100%",
-                            overflow: "auto",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            wordBreak: "break-word"
-                        }}
-                        onClick={isCellEditEnabled ? toggleEdit : undefined}
-                        role="button"
-                        dangerouslySetInnerHTML={
-                            record.htmlEnabled
-                                ? {
-                                      __html: children[1]
-                                  }
-                                : undefined
+                    <Tooltip
+                        title={
+                            canNameBeChangedIfName
+                                ? undefined
+                                : "The name of keys synced with WordPress can't be changed."
                         }
                     >
-                        {record.htmlEnabled ? undefined : children[1]}
-                    </div>
+                        <div
+                            className={isCellEditable ? "editable-cell-value-wrap" : undefined}
+                            style={{
+                                minWidth: 320,
+                                maxWidth: "100%",
+                                overflow: "auto",
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                wordBreak: "break-word"
+                            }}
+                            onClick={isCellEditable ? toggleEdit : undefined}
+                            role="button"
+                            dangerouslySetInnerHTML={
+                                record.htmlEnabled
+                                    ? {
+                                          __html: children[1]
+                                      }
+                                    : undefined
+                            }
+                        >
+                            {record.htmlEnabled ? undefined : children[1]}
+                        </div>
+                    </Tooltip>
                 )
             ) : (
                 children

@@ -1,11 +1,11 @@
 import { Button, Empty, message, Table } from "antd";
+import * as moment from "moment";
 import * as React from "react";
 import {
     IGetWordpressContentsResponse,
     WordpressPolylangConnectionsAPI
 } from "../api/v1/WordpressPolylangConnectionsAPI";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "./Config";
-import * as moment from "moment";
 import { DATE_TIME_FORMAT } from "./Utils";
 
 export function WordpressContentsTable(props: {
@@ -19,6 +19,7 @@ export function WordpressContentsTable(props: {
     const [wordpressContentsResponse, setWordpressContentsResponse] =
         React.useState<IGetWordpressContentsResponse>(null);
     const [wordpressContentsLoading, setWordpressContentsLoading] = React.useState<boolean>(false);
+    const [importingContent, setImportingContent] = React.useState<boolean>(false);
 
     async function reload(options?: any) {
         setWordpressContentsLoading(true);
@@ -91,48 +92,68 @@ export function WordpressContentsTable(props: {
 
     return (
         <div style={{ display: "flex", flexDirection: "column", minWidth: 0, alignContent: "flex-start" }}>
-            <Button
-                onClick={async () => {
-                    setWordpressContentsLoading(true);
-                    try {
-                        await WordpressPolylangConnectionsAPI.pullWordpressContent({
-                            projectId: props.projectId
-                        });
-                        const response = await WordpressPolylangConnectionsAPI.getWordpressContent({
-                            projectId: props.projectId
-                        });
-                        setWordpressContentsResponse(response);
-                    } catch (error) {
-                        console.error();
-                    }
-                    setWordpressContentsLoading(false);
-                }}
-                type="primary"
-                style={{ alignSelf: "flex-start", marginTop: 8, marginBottom: 4 }}
-                loading={wordpressContentsLoading}
-            >
-                Sync WordPress content
-            </Button>
+            <div style={{ display: "flex", margin: "8px 0" }}>
+                <Button
+                    onClick={async () => {
+                        setWordpressContentsLoading(true);
+                        try {
+                            const pullResponse = await WordpressPolylangConnectionsAPI.pullWordpressContent({
+                                projectId: props.projectId
+                            });
 
-            <Button
-                onClick={async () => {
-                    setWordpressContentsLoading(true);
-                    try {
-                        await WordpressPolylangConnectionsAPI.pushWordpressContent({
-                            projectId: props.projectId
-                        });
-                    } catch (error) {
-                        console.error();
-                    }
-                    setWordpressContentsLoading(false);
-                }}
-                type="primary"
-                style={{ alignSelf: "flex-start", marginTop: 8, marginBottom: 4 }}
-                loading={wordpressContentsLoading}
-            >
-                Push WordPress content
-            </Button>
+                            if (pullResponse.error) {
+                                if (pullResponse.message === "CONNECTION_SETTINGS_NOT_COMPLETE") {
+                                    message.error(
+                                        "Setup for WordPress integration not complete. Please check your integration settings."
+                                    );
+                                }
+                            } else {
+                                const response = await WordpressPolylangConnectionsAPI.getWordpressContent({
+                                    projectId: props.projectId
+                                });
+                                setWordpressContentsResponse(response);
+                            }
+                        } catch (error) {
+                            console.error();
+                        }
+                        setWordpressContentsLoading(false);
+                    }}
+                    type="primary"
+                    style={{ alignSelf: "flex-start" }}
+                    loading={wordpressContentsLoading}
+                >
+                    Reload WordPress content
+                </Button>
 
+                <Button
+                    onClick={async () => {
+                        setWordpressContentsLoading(true);
+                        try {
+                            const response = await WordpressPolylangConnectionsAPI.pushWordpressContent({
+                                projectId: props.projectId
+                            });
+
+                            if (response.error) {
+                                if (response.message === "CONNECTION_SETTINGS_NOT_COMPLETE") {
+                                    message.error(
+                                        "Setup for WordPress integration not complete. Please check your integration settings."
+                                    );
+                                }
+                            }
+                        } catch (error) {
+                            console.error();
+                        }
+                        setWordpressContentsLoading(false);
+                    }}
+                    type="primary"
+                    style={{ alignSelf: "flex-start", marginLeft: 8 }}
+                    loading={wordpressContentsLoading}
+                >
+                    Push imported content to WordPress
+                </Button>
+            </div>
+
+            <h3 style={{ marginTop: 24 }}>Select content to import</h3>
             <Table
                 style={props.style}
                 rowSelection={{
@@ -165,13 +186,21 @@ export function WordpressContentsTable(props: {
             <Button
                 disabled={selectedRowKeys.length === 0}
                 onClick={async () => {
-                    await WordpressPolylangConnectionsAPI.importWordpressContent({
-                        projectId: props.projectId,
-                        wordpressContentIds: selectedRowKeys as string[]
-                    });
-                    message.success("Your content has been successfully imported and is ready for translation.");
+                    setImportingContent(true);
+                    try {
+                        await WordpressPolylangConnectionsAPI.importWordpressContent({
+                            projectId: props.projectId,
+                            wordpressContentIds: selectedRowKeys as string[]
+                        });
+                        message.success("Your content has been successfully imported and is ready for translation.");
+                    } catch (error) {
+                        console.error(error);
+                        message.error("Failed to import translations.");
+                    }
+                    setImportingContent(false);
                 }}
                 style={{ marginLeft: "auto", marginTop: 24 }}
+                loading={importingContent}
             >
                 Import selected
             </Button>

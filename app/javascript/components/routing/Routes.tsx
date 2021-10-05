@@ -37,7 +37,6 @@ const Routes = {
         PROJECT_IMPORT_FILE_RESOLVER: (options: { projectId: string }) => {
             return Routes.DASHBOARD.PROJECT_IMPORT_FILE.replace(":projectId", options.projectId);
         },
-        PROJECT_IMPORT_WORDPRESS: "/dashboard/projects/:projectId/import/wordpress",
         PROJECT_IMPORT_GITHUB: "/dashboard/projects/:projectId/import/github",
         PROJECT_EXPORT: "/dashboard/projects/:projectId/export",
         PROJECT_MEMBERS: "/dashboard/projects/:projectId/members",
@@ -51,9 +50,17 @@ const Routes = {
         PROJECT_INTEGRATIONS_RESOLVER: (options: { projectId: string }) => {
             return Routes.DASHBOARD.PROJECT_INTEGRATIONS.replace(":projectId", options.projectId);
         },
+        PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS: "/dashboard/projects/:projectId/integrations/wordpress/settings",
+        PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS.replace(":projectId", options.projectId);
+        },
         PROJECT_INTEGRATIONS_WORDPRESS: "/dashboard/projects/:projectId/integrations/wordpress",
         PROJECT_INTEGRATIONS_WORDPRESS_RESOLVER: (options: { projectId: string }) => {
             return Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS.replace(":projectId", options.projectId);
+        },
+        PROJECT_INTEGRATIONS_WORDPRESS_SYNC: "/dashboard/projects/:projectId/integrations/wordpress/sync",
+        PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC.replace(":projectId", options.projectId);
         },
         PROJECT_VALIDATIONS: "/dashboard/projects/:projectId/validations",
         PROJECT_OTA: "/dashboard/projects/:projectId/over-the-air",

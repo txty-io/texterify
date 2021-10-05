@@ -69,7 +69,7 @@ class ProjectIntegrationsSite extends React.Component<IProps> {
                 logo: WordpressLogo,
                 name: "WordPress",
                 description: "Synchonize content between Texterify and WordPress with ease.",
-                link: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_RESOLVER({
+                link: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
                     projectId: this.props.match.params.projectId
                 }),
                 hasSubpage: true,

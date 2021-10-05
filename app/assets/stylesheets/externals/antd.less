@@ -7,30 +7,31 @@
 @import "antd-tabs.less";
 @import "antd-menu.less";
 @import "antd-alert.less";
+@import "antd-typography.less";
 
 // Fix wrong flex direction of main layout.
 .ant-layout.ant-layout-has-sider {
-    flex-direction: row;
+  flex-direction: row;
 }
 
 .ant-tag.ant-tag-checkable {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 // Fix checkbox in table header not centered.
 table tr th.ant-table-selection-column,
 table tr td.ant-table-selection-column {
-    text-align: center;
+  text-align: center;
 }
 
 // Fix hidden alert descriptions.
 .ant-alert-description {
-    display: block;
+  display: block;
 }
 
 // Padding of checkbox column for dark mode not the same as for light mode.
 table tr th.ant-table-selection-column,
 table tr td.ant-table-selection-column {
-    padding: 0 16px;
+  padding: 0 16px;
 }
