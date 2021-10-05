@@ -77,7 +77,7 @@ Cypress.Commands.add("addLanguage", (languageCode, countryCode, languageName, is
     if (isDefault) {
         cy.get("#is_default").click();
     }
-    cy.get(".ant-btn-primary").click();
+    cy.get('[data-id="language-form-submit-button"]').click();
 });
 
 Cypress.Commands.add("addKey", (keyName, keyDescription, keyContent, isHtml) => {

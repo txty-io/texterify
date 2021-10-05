@@ -225,7 +225,12 @@ class AddEditLanguageForm extends React.Component<IAddEditLanguageFormProps, ISt
                         <QuestionCircleOutlined />
                     </Tooltip>
                     {!this.props.hideDefaultSubmitButton && (
-                        <Button type="primary" htmlType="submit" style={{ marginLeft: "auto" }}>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            style={{ marginLeft: "auto" }}
+                            data-id="language-form-submit-button"
+                        >
                             {this.props.languageToEdit ? "Save changes" : "Add language"}
                         </Button>
                     )}

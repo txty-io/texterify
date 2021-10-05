@@ -27,7 +27,7 @@ class AddEditLanguageFormModal extends React.Component<IProps> {
                         >
                             Cancel
                         </Button>
-                        <Button form={formId} type="primary" htmlType="submit">
+                        <Button form={formId} type="primary" htmlType="submit" data-id="language-form-submit-button">
                             {this.props.languageFormProps.languageToEdit ? "Save changes" : "Create language"}
                         </Button>
                     </div>
