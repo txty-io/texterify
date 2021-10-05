@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Improve design and adjust color.
 - Fix character and word count not beeing calculated correctly.
 - Fix missing check if auto-translate feature is available.
+- Add new sidebars for easier navigation.
 
 ## v1.0.6
 
