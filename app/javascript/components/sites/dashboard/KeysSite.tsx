@@ -657,7 +657,7 @@ class KeysSite extends React.Component<IProps, IState> {
             showSizeChanger: true,
             current: this.state.page,
             pageSize: dashboardStore.keysPerPage,
-            total: this.state.keysResponse?.meta.total || 0,
+            total: this.state.keysResponse?.meta?.total || 0,
             onChange: async (page: number, _perPage: number) => {
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 this.setState({ page: page }, this.reloadTable);
