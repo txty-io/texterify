@@ -1,7 +1,5 @@
 import {
     BlockOutlined,
-    ClusterOutlined,
-    DownloadOutlined,
     EditOutlined,
     ExportOutlined,
     GlobalOutlined,

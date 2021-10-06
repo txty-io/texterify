@@ -121,6 +121,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                                 onClick={() => {
                                     this.setState({ addEditExportConfigOpen: true });
                                 }}
+                                data-id="configurations-site-new-button"
                             >
                                 Create new
                             </Button>

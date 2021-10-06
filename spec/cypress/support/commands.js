@@ -96,7 +96,7 @@ Cypress.Commands.add("addKey", (keyName, keyDescription, keyContent, isHtml) => 
     } else if (keyContent) {
         cy.get("#defaultLanguageContent").type(keyContent);
     }
-    cy.get(".ant-btn-primary").click();
+    cy.get('[data-id="key-form-submit-button"]').click();
 });
 
 Cypress.Commands.add("addUser", (userMail) => {

@@ -37,9 +37,9 @@ context("export-config", () => {
             .children()
             .should("contain", testData.keys.firstKey.value);
 
-        cy.contains("div", "Export").click();
+        cy.get('[data-id="project-sidebar-export"]').click();
         cy.contains("a", "Create an export configuration").click();
-        cy.get(".ant-btn").click();
+        cy.get('[data-id="configurations-site-new-button"]').click();
         cy.get("#name").type("name");
         cy.contains("div", "Select a file format").type("json");
         cy.get("body").type("{enter}");

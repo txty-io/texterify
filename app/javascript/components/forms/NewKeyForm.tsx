@@ -107,7 +107,7 @@ class NewKeyForm extends React.Component<IProps> {
                             >
                                 Cancel <KeystrokeButtonWrapper keys={KEYSTROKE_DEFINITIONS.CLOSE_MODAL} />
                             </Button>
-                            <Button form="newKeyForm" type="primary" htmlType="submit">
+                            <Button form="newKeyForm" type="primary" htmlType="submit" data-id="key-form-submit-button">
                                 Create key <KeystrokeButtonWrapper keys={KEYSTROKE_DEFINITIONS.SUBMIT_MODAL_FORM} />
                             </Button>
                         </div>
