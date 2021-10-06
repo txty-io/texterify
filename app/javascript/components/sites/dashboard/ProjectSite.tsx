@@ -263,14 +263,14 @@ class ProjectSite extends React.Component<IProps, IState> {
                                     title="Words"
                                     value={dashboardStore.currentProject?.attributes.word_count}
                                     loading={this.state.projectLoading}
-                                    className="big"
+                                    className="big data-id-project-home-word"
                                 />
                                 <Statistic
                                     title="Characters"
                                     value={dashboardStore.currentProject?.attributes.character_count}
                                     loading={this.state.projectLoading}
                                     style={{ marginLeft: 40 }}
-                                    className="big"
+                                    className="big data-id-project-home-characters"
                                 />
                             </div>
 

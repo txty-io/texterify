@@ -133,6 +133,11 @@ Cypress.Commands.add("goToKeys", () => {
     cy.get('[data-id="project-sidebar-keys"]').click();
 });
 
+Cypress.Commands.add("goToProjectHome", () => {
+    cy.get('[data-id="project-sidebar-home"]').click();
+});
+
 Cypress.Commands.add("clickOutside", () => {
-    return cy.get("body").click(0, 0);
+    cy.get("body").click(0, 0);
+    cy.wait(250);
 });

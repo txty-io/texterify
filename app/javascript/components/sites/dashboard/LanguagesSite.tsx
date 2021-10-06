@@ -270,6 +270,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
                                         !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())
                                     }
                                     loading={this.state.isDeleting}
+                                    data-id="languages-delete-selected"
                                 >
                                     Delete selected
                                 </Button>
