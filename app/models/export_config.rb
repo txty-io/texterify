@@ -135,12 +135,9 @@ class ExportConfig < ApplicationRecord
   def arb(language, export_data)
     language_file = Tempfile.new(language.id.to_s)
 
-    binding.pry
-
     data = {}
     export_data.each do |key, value|
       if value.is_a?(Hash)
-        binding.pry
         data[key] = value[:value]
         data["@#{key}"] = { description: Key.find_by(name: key)&.description }
       else
