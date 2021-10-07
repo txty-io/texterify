@@ -161,6 +161,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                                                         }
                                                     }}
                                                     icon={<DownloadOutlined />}
+                                                    style={{ marginLeft: 24 }}
                                                 >
                                                     Download
                                                 </Button>
