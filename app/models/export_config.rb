@@ -87,6 +87,8 @@ class ExportConfig < ApplicationRecord
       properties(language, export_data)
     elsif file_format == 'po'
       po(language, export_data)
+    elsif file_format == 'arb'
+      arb(language, export_data)
     else
       json(language, export_data)
     end
@@ -122,6 +124,28 @@ class ExportConfig < ApplicationRecord
     data = {}
     export_data.each do |key, value|
       data[key] = { defaultMessage: value, description: Key.find_by(name: key)&.description }
+    end
+
+    language_file.puts(JSON.pretty_generate(data))
+    language_file.close
+
+    language_file
+  end
+
+  def arb(language, export_data)
+    language_file = Tempfile.new(language.id.to_s)
+
+    binding.pry
+
+    data = {}
+    export_data.each do |key, value|
+      if value.is_a?(Hash)
+        binding.pry
+        data[key] = value[:value]
+        data["@#{key}"] = { description: Key.find_by(name: key)&.description }
+      else
+        data[key] = value
+      end
     end
 
     language_file.puts(JSON.pretty_generate(data))

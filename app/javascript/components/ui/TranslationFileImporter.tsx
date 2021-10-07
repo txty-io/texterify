@@ -4,6 +4,7 @@ import AppleLogoBlack from "images/apple_logo_black.svg";
 import AppleLogoWhite from "images/apple_logo_white.svg";
 import ChromeLogo from "images/chrome_logo.svg";
 import DjangoLogo from "images/django_logo.svg";
+import FlutterLogo from "images/flutter_logo.svg";
 import FormatJSLogo from "images/formatjs_logo.svg";
 import GNULogo from "images/gnu_logo.svg";
 import GoLogo from "images/go_logo_blue.svg";
@@ -29,7 +30,7 @@ import { Loading } from "./Loading";
 import { LoadingOverlay } from "./LoadingOverlay";
 import { Styles } from "./Styles";
 
-const ACCEPTED_FILE_FORMATS = [".json", ".strings", ".toml", ".properties", ".po"];
+const ACCEPTED_FILE_FORMATS = [".json", ".strings", ".toml", ".properties", ".po", ".arb"];
 
 const SUPPORTED_FORMATS: {
     image: any;
@@ -180,6 +181,26 @@ msgid "app_title"
 msgstr "Awesome app"
 ...`}</pre>
         )
+    },
+    {
+        image: FlutterLogo,
+        name: "Flutter .arb",
+        formats: [".arb"],
+        id: "arb",
+        documentationURL: "https://github.com/google/app-resource-bundle/wiki/ApplicationResourceBundleSpecification",
+        example: (
+            <pre style={{ whiteSpace: "break-spaces" }}>{`{
+    "@@locale": "en_US",
+
+    "title": "The cake is a lie.",
+    "@title": {
+        "description": "There is no cake so it is a lie."
+    },
+
+    "all_ok": "Everything is fine (but still no cake)."
+    ...
+}`}</pre>
+        )
     }
     // {
     //     image: RailsLogo,
@@ -201,6 +222,8 @@ function getFileEndingForSelectedFormat(selectedImportFormat: string) {
         return ".strings";
     } else if (selectedImportFormat === "toml") {
         return ".toml";
+    } else if (selectedImportFormat === "arb") {
+        return ".arb";
     }
 }
 

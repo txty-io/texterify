@@ -14,7 +14,8 @@ export type ImportFileFormats =
     | "toml"
     | "rails"
     | "properties"
-    | "po";
+    | "po"
+    | "arb";
 
 export function FileImportSite() {
     const params = useParams<{ projectId: string }>();

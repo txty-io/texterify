@@ -38,6 +38,10 @@ const FileFormatOptions = [
     {
         value: "po",
         text: "PO"
+    },
+    {
+        value: "arb",
+        text: "Flutter .arb"
     }
 ].sort((a, b) => {
     return a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 1;

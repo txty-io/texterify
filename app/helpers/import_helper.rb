@@ -56,6 +56,13 @@ module ImportHelper
       else
         raise 'NOTHING_IMPORTED'
       end
+    elsif file_format == 'arb'
+      result = arb?(file_content)
+      if result[:matches]
+        return result[:content]
+      else
+        raise 'NOTHING_IMPORTED'
+      end
     end
 
     raise 'INVALID_FILE_FORMAT'
@@ -71,6 +78,33 @@ module ImportHelper
   def json_nested?(content)
     parsed = JSON.parse(content)
     parsed.count > 0 ? { matches: true, content: parsed } : { matches: false }
+  rescue JSON::ParserError
+    { matches: false, invalid: true }
+  end
+
+  def arb?(content)
+    parsed = JSON.parse(content)
+    json = {}
+    parsed.each do |key, value|
+      if !key.start_with?('@@')
+        # If entry key is not a global field.
+
+        if key.start_with?('@')
+          # If the entry is a meta object.
+          key_name = key[1..]
+          content = ''
+          if json[key_name].present?
+            content = json[key_name]
+          end
+
+          json[key_name] = { value: content, description: value['description'] }
+        else
+          # If the entry is just a normal translation key.
+          json[key] = value
+        end
+      end
+    end
+    parsed.count > 0 ? { matches: true, content: json } : { matches: false }
   rescue JSON::ParserError
     { matches: false, invalid: true }
   end

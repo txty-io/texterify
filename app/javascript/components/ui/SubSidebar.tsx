@@ -48,7 +48,8 @@ export function SubSidebar(props: ISubSidebarProps) {
                 padding: "32px 0",
                 background: "var(--sidebar-background-color)",
                 borderRight: "1px solid var(--sidebar-border-color)",
-                minWidth: 200
+                minWidth: 200,
+                flexShrink: 0
             }}
         >
             {props.menuItems.map((menuItem, index) => {
