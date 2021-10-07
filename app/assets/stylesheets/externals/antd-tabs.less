@@ -1,12 +1,37 @@
 &,
 .dark-theme,
 .light-theme {
-  // :hover
   .ant-tabs {
     &.no-tab-left-padding {
       .ant-tabs-tab {
         padding-left: 0;
       }
     }
+  }
+
+  .ant-tabs-card.ant-tabs-top > .ant-tabs-nav .ant-tabs-tab-active,
+  .ant-tabs-card.ant-tabs-top > div > .ant-tabs-nav .ant-tabs-tab-active {
+    background: var(--background-color);
+  }
+
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn,
+  .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-active {
+    background: transparent;
+    border-color: var(--border-color);
+    color: var(--full-color);
+  }
+
+  .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab,
+  .ant-tabs-card > div > .ant-tabs-nav .ant-tabs-tab {
+    border-color: var(--border-color);
+    border-left: 0;
+    border-top: 0;
+  }
+
+  .ant-tabs-top > .ant-tabs-nav::before,
+  .ant-tabs-bottom > .ant-tabs-nav::before,
+  .ant-tabs-top > div > .ant-tabs-nav::before,
+  .ant-tabs-bottom > div > .ant-tabs-nav::before {
+    border-color: var(--border-color);
   }
 }
