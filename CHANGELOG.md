@@ -2,15 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.1.0
+## Next release
 
 - Add WordPress integration.
+- Add new sidebars for easier navigation.
+- Add .arb import/export.
 - Improve design and adjust color.
 - Fix character and word count not beeing calculated correctly.
 - Fix missing check if auto-translate feature is available.
 - Fix bug which caused to only return the first 10 export configs.
 - Fix bug where keys site crashes.
-- Add new sidebars for easier navigation.
 
 ## v1.0.6
 

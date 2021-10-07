@@ -32,7 +32,12 @@ export function ExportSidebar(props: { projectId: string }) {
                             path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_RESOLVER({
                                 projectId: props.projectId
                             }),
-                            name: "WordPress"
+                            disabled: true,
+                            name: (
+                                <>
+                                    WordPress <Tag style={{ marginLeft: 8 }}>coming soon</Tag>
+                                </>
+                            )
                         },
                         {
                             path: Routes.DASHBOARD.PROJECT_IMPORT_GITHUB,
