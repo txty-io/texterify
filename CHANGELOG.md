@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## Next release
 
 - Add WordPress integration.
+
+## v1.0.7
+
 - Add new sidebars for easier navigation.
 - Add .arb import/export.
 - Improve design and adjust color.
