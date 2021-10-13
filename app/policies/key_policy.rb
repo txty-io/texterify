@@ -3,7 +3,7 @@ class KeyPolicy
 
   def permitted_attributes
     if ROLES_DEVELOPER_UP.include? project_user_role
-      [:name, :description, :html_enabled]
+      [:name, :description, :html_enabled, :pluralization_enabled]
     else
       [:description]
     end

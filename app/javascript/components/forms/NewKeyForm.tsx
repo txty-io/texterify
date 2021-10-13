@@ -29,6 +29,7 @@ interface IFormValues {
     name: string;
     description: string;
     htmlEnabled: boolean;
+    pluralizationEnabled: boolean;
     defaultLanguageContent: string;
     defaultLanguageHTMLContent: string;
 }
@@ -163,9 +164,20 @@ class NewKeyForm extends React.Component<IProps> {
                                         {!dashboardStore.featureEnabled("FEATURE_HTML_EDITOR") && (
                                             <FeatureNotAvailable
                                                 feature="FEATURE_HTML_EDITOR"
-                                                style={{ marginBottom: 0 }}
+                                                style={{ marginBottom: 16 }}
                                             />
                                         )}
+
+                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                            <Form.Item
+                                                name="pluralizationEnabled"
+                                                rules={[{ required: false }]}
+                                                valuePropName="checked"
+                                                style={{ marginBottom: 0 }}
+                                            >
+                                                <Checkbox>Enable pluralization</Checkbox>
+                                            </Form.Item>
+                                        </div>
 
                                         {defaultLanguage && (
                                             <>

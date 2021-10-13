@@ -46,11 +46,19 @@ const KeysAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    update: async (projectId: string, keyId: string, name: string, description: string, htmlEnabled: boolean) => {
-        return API.putRequest(`projects/${projectId}/keys/${keyId}`, true, {
-            name: name,
-            description: description,
-            html_enabled: htmlEnabled
+    update: async (options: {
+        projectId: string;
+        keyId: string;
+        name: string;
+        description: string;
+        htmlEnabled: boolean;
+        pluralizationEnabled: boolean;
+    }) => {
+        return API.putRequest(`projects/${options.projectId}/keys/${options.keyId}`, true, {
+            name: options.name,
+            description: options.description,
+            html_enabled: options.htmlEnabled,
+            pluralization_enabled: options.pluralizationEnabled
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);

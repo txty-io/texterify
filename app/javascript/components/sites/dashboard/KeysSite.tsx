@@ -1,4 +1,4 @@
-import { CrownOutlined, MoreOutlined, QuestionCircleOutlined, SettingOutlined } from "@ant-design/icons";
+import { CheckOutlined, CrownOutlined, MoreOutlined, QuestionCircleOutlined, SettingOutlined } from "@ant-design/icons";
 import { Button, Drawer, Input, Layout, Modal, Pagination, PaginationProps, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
@@ -55,6 +55,8 @@ interface IState {
     keyToShowHistory: any;
     keyMenuVisible: string;
     searchSettings: ISearchSettings;
+    pluralizationEnabledUpdating: boolean;
+    htmlEnabledUpdating: boolean;
 }
 
 class KeysSite extends React.Component<IProps, IState> {
@@ -123,7 +125,9 @@ class KeysSite extends React.Component<IProps, IState> {
             editTranslationContentChanged: false,
             keyToShowHistory: null,
             keyMenuVisible: null,
-            searchSettings: parseKeySearchSettingsFromURL()
+            searchSettings: parseKeySearchSettingsFromURL(),
+            pluralizationEnabledUpdating: false,
+            htmlEnabledUpdating: false
         };
     }
 
@@ -318,8 +322,13 @@ class KeysSite extends React.Component<IProps, IState> {
                             HTML
                         </Tag>
                     ) : undefined,
+                    key.attributes.pluralization_enabled ? (
+                        <Tag color="geekblue" style={{ margin: 0, marginRight: 4, marginBottom: 4 }}>
+                            Pluralization
+                        </Tag>
+                    ) : undefined,
                     key.relationships.wordpress_contents.data.length > 0 ? (
-                        <Tag color="magenta" style={{ margin: 0 }}>
+                        <Tag color="volcano" style={{ margin: 0 }}>
                             WordPress
                         </Tag>
                     ) : undefined
@@ -371,6 +380,20 @@ class KeysSite extends React.Component<IProps, IState> {
                                             !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole()) ||
                                             !dashboardStore.featureEnabled("FEATURE_HTML_EDITOR")
                                         }
+                                        loading={this.state.htmlEnabledUpdating}
+                                    />
+                                </div>
+                                <div style={{ padding: "8px 16px", display: "flex", alignItems: "center" }}>
+                                    <div style={{ flexGrow: 1 }}>Enable pluralization</div>
+                                    <Switch
+                                        style={{ marginLeft: 16 }}
+                                        checked={key.attributes.pluralization_enabled}
+                                        onChange={async () => {
+                                            await this.changePluralizationEnabled(key);
+                                            await this.reloadTable();
+                                        }}
+                                        disabled={!PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())}
+                                        loading={this.state.pluralizationEnabledUpdating}
                                     />
                                 </div>
                                 <div
@@ -399,13 +422,41 @@ class KeysSite extends React.Component<IProps, IState> {
     };
 
     changeHTMLEnabled = async (key: any) => {
-        await KeysAPI.update(
-            this.props.match.params.projectId,
-            key.id,
-            key.attributes.name,
-            key.attributes.description,
-            !key.attributes.html_enabled
-        );
+        this.setState({ htmlEnabledUpdating: true });
+
+        try {
+            await KeysAPI.update({
+                projectId: this.props.match.params.projectId,
+                keyId: key.id,
+                name: key.attributes.name,
+                description: key.attributes.description,
+                htmlEnabled: !key.attributes.html_enabled,
+                pluralizationEnabled: key.attributes.pluralization_enabled
+            });
+        } catch (error) {
+            console.error(error);
+        }
+
+        this.setState({ htmlEnabledUpdating: false });
+    };
+
+    changePluralizationEnabled = async (key: any) => {
+        this.setState({ pluralizationEnabledUpdating: true });
+
+        try {
+            await KeysAPI.update({
+                projectId: this.props.match.params.projectId,
+                keyId: key.id,
+                name: key.attributes.name,
+                description: key.attributes.description,
+                htmlEnabled: key.attributes.html_enabled,
+                pluralizationEnabled: !key.attributes.pluralization_enabled
+            });
+        } catch (error) {
+            console.error(error);
+        }
+
+        this.setState({ pluralizationEnabledUpdating: false });
     };
 
     onDeleteKeys = async () => {
@@ -808,13 +859,14 @@ class KeysSite extends React.Component<IProps, IState> {
                             }}
                             onSave={async (oldRow, newRow) => {
                                 if (oldRow.name !== newRow.name || oldRow.description !== newRow.description) {
-                                    const response = await KeysAPI.update(
-                                        this.props.match.params.projectId,
-                                        newRow.key,
-                                        newRow.name,
-                                        newRow.description,
-                                        newRow.html_enabled
-                                    );
+                                    const response = await KeysAPI.update({
+                                        projectId: this.props.match.params.projectId,
+                                        keyId: newRow.key,
+                                        name: newRow.name,
+                                        description: newRow.description,
+                                        htmlEnabled: newRow.html_enabled,
+                                        pluralizationEnabled: newRow.html_enabled
+                                    });
 
                                     await this.reloadTable();
 
