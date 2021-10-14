@@ -1,6 +1,7 @@
-import { CheckOutlined, CrownOutlined, MoreOutlined, QuestionCircleOutlined, SettingOutlined } from "@ant-design/icons";
+import { CrownOutlined, MoreOutlined, QuestionCircleOutlined, SettingOutlined } from "@ant-design/icons";
 import { Button, Drawer, Input, Layout, Modal, Pagination, PaginationProps, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
+import * as queryString from "query-string";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
@@ -22,15 +23,14 @@ import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { ISearchSettings, KeySearchSettings, parseKeySearchSettingsFromURL } from "../../ui/KeySearchSettings";
 import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActiveFilters";
+import { KeystrokeButtonWrapper } from "../../ui/KeystrokeButtonWrapper";
+import { KEYSTROKE_DEFINITIONS } from "../../ui/KeystrokeDefinitions";
+import { KeystrokeHandler } from "../../ui/KeystrokeHandler";
 import { Loading } from "../../ui/Loading";
 import { TexterifyModal } from "../../ui/TexterifyModal";
 import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { TranslationCard } from "./editor/TranslationCard";
-import * as queryString from "query-string";
-import { KeystrokeButtonWrapper } from "../../ui/KeystrokeButtonWrapper";
-import { KeystrokeHandler } from "../../ui/KeystrokeHandler";
-import { KEYSTROKE_DEFINITIONS } from "../../ui/KeystrokeDefinitions";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
