@@ -26,6 +26,10 @@ class ProjectPolicy
     ROLES_DEVELOPER_UP.include? project_user_role
   end
 
+  def recheck_placeholders?
+    ROLES_DEVELOPER_UP.include? project_user_role
+  end
+
   def destroy?
     ROLES_OWNER_UP.include? project_user_role
   end

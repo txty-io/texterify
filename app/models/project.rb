@@ -82,4 +82,9 @@ class Project < ApplicationRecord
 
     tag
   end
+
+  # Rechecks placeholders of all keys of the project.
+  def recheck_placeholders
+    project.keys.each(&:recheck_placeholders)
+  end
 end

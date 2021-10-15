@@ -11,8 +11,12 @@ class ProjectSerializer
              :auto_translate_new_languages,
              :machine_translation_character_usage,
              :word_count,
-             :character_count
+             :character_count,
+             :placeholder_start,
+             :placeholder_end
+
   belongs_to :organization
+
   has_many :keys
   has_many :languages
   has_many :project_columns

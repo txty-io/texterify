@@ -17,7 +17,9 @@ import { ProjectIntegrationsWordpressSyncSite } from "../sites/dashboard/Project
 import { ProjectMachineTranslationSite } from "../sites/dashboard/ProjectMachineTranslationSite";
 import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
 import { ProjectPostProcessingSite } from "../sites/dashboard/ProjectPostProcessingSite";
-import { ProjectSettingsSite } from "../sites/dashboard/ProjectSettingsSite";
+import { ProjectSettingsAdvancedSite } from "../sites/dashboard/ProjectSettingsAdvancedSite";
+import { ProjectSettingsGeneralSite } from "../sites/dashboard/ProjectSettingsGeneralSite";
+import { ProjectSettingsPlaceholdersSite } from "../sites/dashboard/ProjectSettingsPlaceholdersSite";
 import { ProjectSite } from "../sites/dashboard/ProjectSite";
 import { ProjectValidationsSite } from "../sites/dashboard/ProjectValidationsSite";
 import { dashboardStore } from "../stores/DashboardStore";
@@ -89,7 +91,34 @@ class ProjectRouter extends React.Component<IProps, IState> {
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_IMPORT_FILE} component={FileImportSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_EXPORT} component={ProjectExportDownloadSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_MEMBERS} component={MembersSite} />
-                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_SETTINGS} component={ProjectSettingsSite} />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_SETTINGS}
+                        component={() => {
+                            return (
+                                <Redirect
+                                    to={Routes.DASHBOARD.PROJECT_SETTINGS_GENERAL_RESOLVER({
+                                        projectId: this.props.match.params.projectId
+                                    })}
+                                />
+                            );
+                        }}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_SETTINGS_GENERAL}
+                        component={ProjectSettingsGeneralSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_SETTINGS_PLACEHOLDERS}
+                        component={ProjectSettingsPlaceholdersSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_SETTINGS_ADVANCED}
+                        component={ProjectSettingsAdvancedSite}
+                    />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_LANGUAGES} component={LanguagesSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_ACTIVITY} component={ProjectActivitySite} />
                     <PrivateRoute

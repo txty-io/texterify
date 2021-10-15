@@ -141,8 +141,28 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
             },
             projectSettings: {
                 parent: "project",
-                name: "Settings",
-                path: Routes.DASHBOARD.PROJECT_SETTINGS.replace(":projectId", this.props.match.params.projectId)
+                name: "Settings"
+            },
+            projectSettingsGeneral: {
+                parent: "projectSettings",
+                name: "General",
+                path: Routes.DASHBOARD.PROJECT_SETTINGS_GENERAL_RESOLVER({
+                    projectId: this.props.match.params.projectId
+                })
+            },
+            projectSettingsAdvanced: {
+                parent: "projectSettings",
+                name: "Advanced",
+                path: Routes.DASHBOARD.PROJECT_SETTINGS_ADVANCED_RESOLVER({
+                    projectId: this.props.match.params.projectId
+                })
+            },
+            projectSettingsPlaceholders: {
+                parent: "projectSettings",
+                name: "Placeholders",
+                path: Routes.DASHBOARD.PROJECT_SETTINGS_PLACEHOLDERS_RESOLVER({
+                    projectId: this.props.match.params.projectId
+                })
             },
             projectActivity: {
                 parent: "project",

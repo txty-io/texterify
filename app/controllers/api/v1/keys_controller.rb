@@ -9,7 +9,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     key = project.keys.find(params[:id])
 
     options = {}
-    options[:include] = [:translations, :'translations.language']
+    options[:include] = [:translations, :'translations.language', :tags, :placeholders]
     render json: KeySerializer.new(key, options).serialized_json
   end
 

@@ -2,6 +2,7 @@ require 'json'
 require 'zip'
 
 class Api::V1::ProjectsController < Api::V1::ApiController
+  # Return the project image.
   def image
     skip_authorization
     project = current_user.projects.find(params[:project_id])
@@ -13,18 +14,21 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     end
   end
 
+  # Attach an image to a project.
   def image_create
     project = current_user.projects.find(params[:project_id])
     authorize project
     project.image.attach(params[:image])
   end
 
+  # Remove an image from a project.
   def image_destroy
     project = current_user.projects.find(params[:project_id])
     authorize project
     project.image.purge
   end
 
+  # Get a paginated list of all projects.
   def index
     skip_authorization
 
@@ -48,6 +52,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
            status: :ok
   end
 
+  # Create a new project.
   def create
     skip_authorization
 
@@ -102,6 +107,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     end
   end
 
+  # Update a project.
   def update
     project = current_user.projects.find(params[:id])
     authorize project
@@ -334,6 +340,13 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     render json: ProjectSerializer.new(projects.limit(per_page), options).serialized_json, status: :ok
   end
 
+  def recheck_placeholders
+    project = current_user.projects.find(params[:project_id])
+    authorize project
+    project.recheck_placeholders
+    render json: { error: false, message: 'OK' }
+  end
+
   private
 
   def project_params
@@ -342,7 +355,9 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       :description,
       :machine_translation_enabled,
       :auto_translate_new_keys,
-      :auto_translate_new_languages
+      :auto_translate_new_languages,
+      :placeholder_start,
+      :placeholder_end
     )
   end
 end

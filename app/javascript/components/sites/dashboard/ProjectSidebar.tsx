@@ -186,10 +186,23 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             },
             {
                 icon: SettingOutlined,
-                path: Routes.DASHBOARD.PROJECT_SETTINGS.replace(":projectId", this.props.match.params.projectId),
+                path: Routes.DASHBOARD.PROJECT_SETTINGS_RESOLVER({
+                    projectId: this.props.match.params.projectId
+                }),
                 text: "Settings",
                 roles: ROLES_MANAGER_UP,
-                dataId: "project-sidebar-settings"
+                dataId: "project-sidebar-settings",
+                paths: [
+                    Routes.DASHBOARD.PROJECT_SETTINGS_GENERAL_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    }),
+                    Routes.DASHBOARD.PROJECT_SETTINGS_ADVANCED_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    }),
+                    Routes.DASHBOARD.PROJECT_SETTINGS_PLACEHOLDERS_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    })
+                ]
             }
         ];
     }

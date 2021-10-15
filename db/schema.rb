@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_06_140340) do
+ActiveRecord::Schema.define(version: 2021_10_14_144420) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -101,6 +101,7 @@ ActiveRecord::Schema.define(version: 2021_10_06_140340) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "html_enabled", default: false, null: false
+    t.boolean "pluralization_enabled", default: false, null: false
     t.index ["project_id"], name: "index_keys_on_project_id"
   end
 
@@ -214,6 +215,16 @@ ActiveRecord::Schema.define(version: 2021_10_06_140340) do
     t.index ["user_id"], name: "index_organizations_users_on_user_id"
   end
 
+  create_table "placeholders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "description"
+    t.uuid "key_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["key_id"], name: "index_placeholders_on_key_id"
+    t.index ["name", "key_id"], name: "index_placeholders_on_name_and_key_id", unique: true
+  end
+
   create_table "post_processing_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "search_for", null: false
@@ -263,6 +274,8 @@ ActiveRecord::Schema.define(version: 2021_10_06_140340) do
     t.integer "machine_translation_character_usage", default: 0, null: false
     t.integer "character_count", default: 0
     t.integer "word_count", default: 0
+    t.string "placeholder_start"
+    t.string "placeholder_end"
     t.index ["organization_id"], name: "index_projects_on_organization_id"
   end
 
@@ -369,6 +382,11 @@ ActiveRecord::Schema.define(version: 2021_10_06_140340) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "export_config_id"
+    t.text "zero"
+    t.text "one"
+    t.text "two"
+    t.text "few"
+    t.text "many"
     t.index ["export_config_id"], name: "index_translations_on_export_config_id"
     t.index ["key_id"], name: "index_translations_on_key_id"
     t.index ["language_id"], name: "index_translations_on_language_id"
@@ -479,6 +497,7 @@ ActiveRecord::Schema.define(version: 2021_10_06_140340) do
   add_foreign_key "organization_invites", "organizations", on_delete: :cascade
   add_foreign_key "organizations_users", "organizations"
   add_foreign_key "organizations_users", "users"
+  add_foreign_key "placeholders", "keys", on_delete: :cascade
   add_foreign_key "post_processing_rules", "export_configs"
   add_foreign_key "post_processing_rules", "projects"
   add_foreign_key "project_columns", "projects"

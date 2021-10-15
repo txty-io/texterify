@@ -51,6 +51,7 @@ Rails
           put :project_columns, to: 'project_columns#update'
           resources :keys, only: [:create, :show, :index, :destroy, :update] do
             get :activity
+            resources :placeholders, only: [:create, :index, :destroy]
           end
           delete 'keys', to: 'keys#destroy_multiple'
           delete 'export_configs', to: 'export_configs#destroy_multiple'

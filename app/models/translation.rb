@@ -10,7 +10,7 @@ class Translation < ApplicationRecord
   belongs_to :export_config, optional: true
 
   after_destroy :update_project_word_char_count_on_destroy
-  after_save :update_project_word_char_count_on_update
+  after_save :update_project_word_char_count_on_update, :check_placeholders
 
   def auto_translate_untranslated
     project = key.project
@@ -41,6 +41,16 @@ class Translation < ApplicationRecord
           end
         end
     end
+  end
+
+  # Returns a list of all placeholder names present in the current translation content.
+  def placeholder_names
+    # Escape the placeholder start and ending characters.
+    escaped_placeholder_start = Regexp.escape(self.key.project.placeholder_start)
+    escaped_placeholder_end = Regexp.escape(self.key.project.placeholder_end)
+
+    names = self.content ? self.content.scan(/#{escaped_placeholder_start}(.*?)#{escaped_placeholder_end}/) : []
+    names.map { |name| "#{self.key.project.placeholder_start}#{name[0]}#{self.key.project.placeholder_end}" }
   end
 
   private
@@ -81,6 +91,21 @@ class Translation < ApplicationRecord
       project.character_count -= translation_content.length
       project.word_count -= translation_content.split(' ').length
       project.save!
+    end
+  end
+
+  # Returns true if the translation is the translation for the default language.
+  # Otherwise returns false.
+  def default_language_translation?
+    self.key.default_language ? self.language_id == self.key.default_language.id : false
+  end
+
+  # Checks the placeholders for the key of the translation.
+  def check_placeholders
+    if self.default_language_translation?
+      self.key.recheck_placeholders
+    else
+      # TODO: Check if validation errors have been fixed.
     end
   end
 end

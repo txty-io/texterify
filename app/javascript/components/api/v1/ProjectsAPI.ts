@@ -22,6 +22,8 @@ interface IProjectAttributes {
     auto_translate_new_languages: boolean;
     word_count: number;
     character_count: number;
+    placeholder_start: string;
+    placeholder_end: string;
 }
 
 export interface IProject {
@@ -110,6 +112,19 @@ const ProjectsAPI = {
             machine_translation_enabled: options.machineTranslationEnabled,
             auto_translate_new_keys: options.autoTranslateNewKeys,
             auto_translate_new_languages: options.autoTranslateNewLanguages
+        })
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    updateProjectPlaceholderSettings: async (options: {
+        projectId: string;
+        placeholderStart: string;
+        placeholderEnd: string;
+    }) => {
+        return API.putRequest(`projects/${options.projectId}`, true, {
+            placeholder_start: options.placeholderStart,
+            placeholder_end: options.placeholderEnd
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);

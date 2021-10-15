@@ -23,14 +23,16 @@ import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { DarkModeToggle } from "../../ui/DarkModeToggle";
+import { EditorSidebarInfo } from "../../ui/EditorSidebarInfo";
 import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { ISearchSettings, KeySearchSettings, parseKeySearchSettingsFromURL } from "../../ui/KeySearchSettings";
 import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActiveFilters";
 import { Styles } from "../../ui/Styles";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
-import { Utils } from "../../ui/Utils";
+import { DATE_TIME_FORMAT, Utils } from "../../ui/Utils";
 import { TranslationCard } from "./editor/TranslationCard";
+import * as moment from "moment";
 
 const Key = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
@@ -404,9 +406,57 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     this.state.keysResponse.included
                                                 );
 
-                                                const content = key.attributes.html_enabled
+                                                let content = key.attributes.html_enabled
                                                     ? Utils.getHTMLContentPreview(translation.attributes.content)
                                                     : translation.attributes.content;
+
+                                                if (!key.attributes.html_enabled && this.state.keyResponse) {
+                                                    let converted = [content];
+
+                                                    this.state.keyResponse.included
+                                                        .filter((included) => {
+                                                            return included.type === "placeholder";
+                                                        })
+                                                        .forEach((included) => {
+                                                            converted = converted.reduce((acc, element) => {
+                                                                if (typeof element === "string") {
+                                                                    const splitted = element.split(
+                                                                        included.attributes.name
+                                                                    );
+                                                                    const joined = splitted.reduce(
+                                                                        (arr, curr, currIndex) => {
+                                                                            if (currIndex > 0) {
+                                                                                return arr.concat([
+                                                                                    <Tag
+                                                                                        color="volcano"
+                                                                                        style={{
+                                                                                            margin: 0,
+                                                                                            padding: "0 4px",
+                                                                                            border: 0,
+                                                                                            borderRadius: 1
+                                                                                        }}
+                                                                                        key={`${included.attributes.name}-${currIndex}`}
+                                                                                    >
+                                                                                        {included.attributes.name}
+                                                                                    </Tag>,
+                                                                                    curr
+                                                                                ]);
+                                                                            } else {
+                                                                                return arr.concat([curr]);
+                                                                            }
+                                                                        },
+                                                                        []
+                                                                    );
+
+                                                                    return acc.concat(joined);
+                                                                } else {
+                                                                    return acc.concat([element]);
+                                                                }
+                                                            }, []);
+                                                        });
+
+                                                    content = converted;
+                                                }
 
                                                 keyContentPreview = (
                                                     <>
@@ -634,7 +684,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 </>
                                             }
                                             type="info"
-                                            style={{ marginBottom: 24 }}
+                                            style={{
+                                                marginBottom: 24
+                                            }}
                                         />
                                     )}
 
@@ -696,7 +748,37 @@ class EditorSite extends React.Component<IProps, IState> {
                                     flexShrink: 0
                                 }}
                             >
-                                <Tabs defaultActiveKey="history" type="card" style={{ overflow: "auto" }}>
+                                <Tabs defaultActiveKey="info" type="card" style={{ overflow: "auto" }}>
+                                    <Tabs.TabPane tab="Info" key="info" style={{ padding: "0 16px", overflow: "auto" }}>
+                                        {/* <KeyComments /> */}
+                                        <h3>General</h3>
+                                        <EditorSidebarInfo
+                                            name="Created at"
+                                            value={moment(this.state.keyResponse.data.attributes.created_at).format(
+                                                DATE_TIME_FORMAT
+                                            )}
+                                        />
+                                        <EditorSidebarInfo
+                                            name="Updated at"
+                                            value={moment(this.state.keyResponse.data.attributes.updated_at).format(
+                                                DATE_TIME_FORMAT
+                                            )}
+                                        />
+
+                                        <h3 style={{ marginTop: 24 }}>Placeholders</h3>
+                                        <p>Placeholders used in the default language.</p>
+                                        {this.state.keyResponse.included
+                                            .filter((included) => {
+                                                return included.type === "placeholder";
+                                            })
+                                            .map((included, index) => {
+                                                return (
+                                                    <Tag color="volcano" key={index}>
+                                                        {included.attributes.name}
+                                                    </Tag>
+                                                );
+                                            })}
+                                    </Tabs.TabPane>
                                     {/* <Tabs.TabPane tab="Comments" key="chat" style={{ padding: "0 16px", overflow: "auto" }} >
                                     <KeyComments />
                                     </Tabs.TabPane> */}

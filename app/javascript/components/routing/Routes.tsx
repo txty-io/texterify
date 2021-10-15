@@ -15,7 +15,8 @@ const Routes = {
     OTHER: {
         TERMS_OF_SERVICE: "https://texterify.com/terms-of-service",
         PRIVACY_POLICY: "https://texterify.com/privacy-policy",
-        WORDPRESS_INTEGRATION_GUIDE: "https://docs.texterify.com/integrations/wordpress"
+        WORDPRESS_INTEGRATION_GUIDE: "https://docs.texterify.com/integrations/wordpress",
+        PLACEHOLDERS: "https://docs.texterify.com/placeholders"
     },
     PRODUCT: {
         FEATURES: "/features",
@@ -44,6 +45,21 @@ const Routes = {
         PROJECT_EXPORT_CONFIGURATIONS: "/dashboard/projects/:projectId/export/configurations",
         PROJECT_EXPORT_HIERARCHY: "/dashboard/projects/:projectId/export/hierarchy",
         PROJECT_SETTINGS: "/dashboard/projects/:projectId/settings",
+        PROJECT_SETTINGS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_SETTINGS.replace(":projectId", options.projectId);
+        },
+        PROJECT_SETTINGS_GENERAL: "/dashboard/projects/:projectId/settings/general",
+        PROJECT_SETTINGS_GENERAL_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_SETTINGS_GENERAL.replace(":projectId", options.projectId);
+        },
+        PROJECT_SETTINGS_ADVANCED: "/dashboard/projects/:projectId/settings/advanced",
+        PROJECT_SETTINGS_ADVANCED_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_SETTINGS_ADVANCED.replace(":projectId", options.projectId);
+        },
+        PROJECT_SETTINGS_PLACEHOLDERS: "/dashboard/projects/:projectId/settings/placeholders",
+        PROJECT_SETTINGS_PLACEHOLDERS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_SETTINGS_PLACEHOLDERS.replace(":projectId", options.projectId);
+        },
         PROJECT_KEYS: "/dashboard/projects/:projectId/keys",
         PROJECT_ACTIVITY: "/dashboard/projects/:projectId/activity",
         PROJECT_INTEGRATIONS: "/dashboard/projects/:projectId/integrations",

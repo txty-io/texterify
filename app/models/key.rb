@@ -22,6 +22,8 @@ class Key < ApplicationRecord
   has_many :key_tags, dependent: :delete_all
   has_many :tags, through: :key_tags
 
+  has_many :placeholders, dependent: :destroy
+
   validates :name, presence: true
   validate :no_duplicate_keys_for_project
 
@@ -46,14 +48,24 @@ class Key < ApplicationRecord
     end
   end
 
+  # Returns the default language if available.
+  # Otherwise returns nil.
   def default_language
-    project.languages.find_by(is_default: true)
+    self.project.languages.find_by(is_default: true)
   end
 
+  # Returns the translation of the key for the default language.
+  # Otherwise returns nil.
   def default_language_translation
-    if default_language
-      translations.find_by(language_id: default_language.id)
+    if self.default_language
+      self.translations.find_by(language_id: self.default_language.id)
     end
+  end
+
+  # Returns all translations of the key except of the one for the default language.
+  # If no default language is set returns all translations.
+  def non_default_language_translations
+    default_language ? translations.where.not(language_id: default_language.id) : translations
   end
 
   # Creates the tag in the project if it does not exist and
@@ -73,6 +85,39 @@ class Key < ApplicationRecord
     tag
   end
 
+  # Rechecks all placeholders of the key.
+  def recheck_placeholders
+    # Check for all placeholders in the current default language translation.
+    existing_placeholders = []
+    self
+      .default_language_translation
+      .placeholder_names
+      .each do |placeholder_name|
+        placeholder = self.placeholders.find_by(name: placeholder_name)
+        unless placeholder
+          placeholder = Placeholder.new
+          placeholder.name = placeholder_name
+          placeholder.key = self
+          placeholder.save!
+        end
+
+        existing_placeholders << placeholder
+      end
+
+    # Remove placeholders that are no longer available.
+    self.placeholders.where.not(id: existing_placeholders.map(&:id)).each(&:destroy)
+
+    # Check if placeholders are used in other translations.
+    self.non_default_language_translations.each do |translation|
+      missing_placeholders = translation.placeholder_names - existing_placeholders.map(&:name)
+
+      unless missing_placeholders.empty?
+        binding.pry
+        # TODO: Create validation errors.
+      end
+    end
+  end
+
   protected
 
   def check_html_allowed
@@ -81,6 +126,7 @@ class Key < ApplicationRecord
     end
   end
 
+  # Removes the leading and trailing whitespace of the key name.
   def strip_leading_and_trailing_whitespace
     self.name = name.strip
   end
