@@ -114,7 +114,7 @@ class Api::V1::KeysController < Api::V1::ApiController
 
     options = {}
     options[:meta] = { total: keys.size }
-    options[:include] = [:translations, :'translations.language', :tags]
+    options[:include] = [:translations, :'translations.language', :tags, :placeholders]
     render json: KeySerializer.new(keys.offset(page * per_page).limit(per_page), options).serialized_json
   end
 

@@ -410,10 +410,10 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     ? Utils.getHTMLContentPreview(translation.attributes.content)
                                                     : translation.attributes.content;
 
-                                                if (!key.attributes.html_enabled && this.state.keyResponse) {
+                                                if (!key.attributes.html_enabled && this.state.keysResponse) {
                                                     let converted = [content];
 
-                                                    this.state.keyResponse.included
+                                                    this.state.keysResponse.included
                                                         .filter((included) => {
                                                             return included.type === "placeholder";
                                                         })
@@ -431,7 +431,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                                                                         color="volcano"
                                                                                         style={{
                                                                                             margin: 0,
-                                                                                            padding: "0 4px",
+                                                                                            padding: "0 0px",
                                                                                             border: 0,
                                                                                             borderRadius: 1
                                                                                         }}
