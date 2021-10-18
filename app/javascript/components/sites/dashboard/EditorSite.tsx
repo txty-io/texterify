@@ -193,7 +193,7 @@ class EditorSite extends React.Component<IProps, IState> {
     loadAndSetKey = async () => {
         const keyResponse = await KeysAPI.getKey(this.props.match.params.projectId, this.props.match.params.keyId);
 
-        if (keyResponse.data.id === this.props.match.params.keyId) {
+        if (keyResponse && keyResponse.data && keyResponse.data.id === this.props.match.params.keyId) {
             this.setState({
                 keyResponse: keyResponse
             });
