@@ -112,8 +112,7 @@ class Key < ApplicationRecord
       missing_placeholders = translation.placeholder_names - existing_placeholders.map(&:name)
 
       unless missing_placeholders.empty?
-        binding.pry
-        # TODO: Create validation errors.
+        # TODO: Create validation errors or remove them.
       end
     end
   end

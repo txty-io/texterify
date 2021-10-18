@@ -219,6 +219,36 @@ class TranslationCard extends React.Component<IProps, IState> {
             );
         }
 
+        let converted = [this.state.content];
+
+        this.props.keyResponse.included
+            .filter((included) => {
+                return included.type === "placeholder";
+            })
+            .forEach((included) => {
+                converted = converted.reduce((acc, element) => {
+                    if (typeof element === "string") {
+                        const splitted = element.split(included.attributes.name);
+                        const joined = splitted.reduce((arr, curr, currIndex) => {
+                            if (currIndex > 0) {
+                                return arr.concat([
+                                    <mark key={`${included.attributes.name}-${currIndex}`}>
+                                        {included.attributes.name}
+                                    </mark>,
+                                    curr
+                                ]);
+                            } else {
+                                return arr.concat([curr]);
+                            }
+                        }, []);
+
+                        return acc.concat(joined);
+                    } else {
+                        return acc.concat([element]);
+                    }
+                }, []);
+            });
+
         return (
             <div style={{ marginBottom: 24, width: "100%" }}>
                 {(!this.props.hideLanguageSelection || !this.props.hideSaveButton) && (
@@ -290,22 +320,40 @@ class TranslationCard extends React.Component<IProps, IState> {
                         {!this.state.editorLoaded && this.getEditorLoadingOverlay()}
                     </div>
                 ) : (
-                    <TextArea
-                        autoSize={{ minRows: 8, maxRows: 12 }}
-                        placeholder="Language translation content"
-                        onChange={(event) => {
-                            const changed = event.target.value !== this.state.translationForLanguage;
+                    <div style={{ position: "relative" }}>
+                        <div
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                                position: "absolute",
+                                top: 0,
+                                padding: "5px 12px",
+                                lineHeight: "1.5715",
+                                whiteSpace: "pre-wrap",
+                                wordWrap: "break-word"
+                            }}
+                        >
+                            {converted}
+                        </div>
 
-                            this.setState({ textareaContentChanged: changed });
+                        <TextArea
+                            autoSize={{ minRows: 8, maxRows: 12 }}
+                            placeholder="Language translation content"
+                            onChange={(event) => {
+                                const changed = event.target.value !== this.state.translationForLanguage;
 
-                            if (this.props.onChange) {
-                                this.props.onChange(changed, event.target.value);
-                            }
+                                this.setState({ textareaContentChanged: changed });
 
-                            this.setState({ content: event.target.value });
-                        }}
-                        value={this.state.content}
-                    />
+                                if (this.props.onChange) {
+                                    this.props.onChange(changed, event.target.value);
+                                }
+
+                                this.setState({ content: event.target.value });
+                            }}
+                            value={this.state.content}
+                            style={{ backgroundColor: "transparent" }}
+                        />
+                    </div>
                 )}
 
                 <MachineTranslationSuggestion
