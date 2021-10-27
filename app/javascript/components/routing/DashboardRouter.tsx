@@ -7,6 +7,7 @@ import Hotkeys from "react-hot-keys";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { ICurrentLicenseInformation, LicensesAPI } from "../api/v1/LicensesAPI";
+import { ICustomSubscription } from "../api/v1/OrganizationsAPI";
 import { UsersAPI } from "../api/v1/UsersAPI";
 import { AboutSite } from "../sites/dashboard/AboutSite";
 import { ActivitySite } from "../sites/dashboard/ActivitySite";
@@ -128,6 +129,9 @@ class DashboardRouter extends React.Component<IProps, IState> {
         const userInfoResponse = await UsersAPI.getCurrentUserInfo();
         authStore.confirmed = userInfoResponse.confirmed;
         authStore.version = userInfoResponse.version;
+        authStore.redeemableCustomSubscriptions = userInfoResponse.redeemable_custom_subscriptions
+            ? userInfoResponse.redeemable_custom_subscriptions.data
+            : [];
     }
 
     async loadCurrentLicense() {

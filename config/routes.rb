@@ -24,6 +24,8 @@ Rails
 
         resources :organizations do
           get :subscription, to: 'organizations#subscription'
+          get :custom_subscription, to: 'organizations#custom_subscription'
+          post :activate_custom_subscription, to: 'organizations#activate_custom_subscription'
           delete :cancel_subscription, to: 'organizations#cancel_subscription'
           post :reactivate_subscription, to: 'organizations#reactivate_subscription'
           put :change_subscription_plan, to: 'organizations#change_subscription_plan'

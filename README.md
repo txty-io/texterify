@@ -126,6 +126,14 @@ error Command failed with exit code 137.
 
 This usually happens when you start the development server for the first time and webpack has not yet compiled the required frontend assets and therefore some files can not be found. Run `yarn start` in a terminal and `yarn start:watcher` in another one and wait for the `yarn start:watcher` command to finish initial compilation (the terminal outputs `Compiled successfully`). Then reload the site. This can take some minutes initially.
 
+### I get the error "common.rb:156:in `parse': 783: unexpected token at '' (JSON::ParserError)" when starting the server during development?
+
+Try to run the following command:
+
+```sh
+rails webpacker:compile
+```
+
 <h2 id="security">🔒 Security</h2>
 
 Found a security issue? Please **don't** create an issue on GitHub. Instead send an email with your findings to [security@texterify.com](mailto:security@texterify.com) so a bugfix can be developed before the security flaw is publicly disclosed. We take security very seriously.

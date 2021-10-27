@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_06_140340) do
+ActiveRecord::Schema.define(version: 2021_10_25_105452) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -62,6 +62,23 @@ ActiveRecord::Schema.define(version: 2021_10_06_140340) do
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_country_codes_on_code"
     t.index ["name", "code"], name: "index_country_codes_on_name_and_code", unique: true
+  end
+
+  create_table "custom_subscriptions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "plan", null: false
+    t.string "provider", null: false
+    t.string "provider_plan"
+    t.string "provider_license_key"
+    t.string "invoice_id"
+    t.string "redeemable_by_email", null: false
+    t.integer "max_users"
+    t.integer "machine_translation_character_limit"
+    t.datetime "ends_at"
+    t.uuid "organization_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["organization_id"], name: "custom_subscriptions_organization_id_unique", unique: true
+    t.index ["organization_id"], name: "index_custom_subscriptions_on_organization_id"
   end
 
   create_table "deepl_source_languages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -460,6 +477,7 @@ ActiveRecord::Schema.define(version: 2021_10_06_140340) do
   add_foreign_key "access_tokens", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "custom_subscriptions", "organizations", on_delete: :nullify
   add_foreign_key "export_configs", "projects"
   add_foreign_key "keys", "projects"
   add_foreign_key "keys_tags", "keys", on_delete: :cascade

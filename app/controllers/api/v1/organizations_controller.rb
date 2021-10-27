@@ -107,8 +107,33 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
     skip_authorization
     organization = current_user.organizations.find(params[:organization_id])
 
-    options = {}
-    render json: SubscriptionSerializer.new(organization.active_subscription, options).serialized_json, status: :ok
+    render json: SubscriptionSerializer.new(organization.active_subscription).serialized_json, status: :ok
+  end
+
+  def custom_subscription
+    skip_authorization
+    organization = current_user.organizations.find(params[:organization_id])
+
+    render json: CustomSubscriptionSerializer.new(organization.custom_subscription).serialized_json, status: :ok
+  end
+
+  def activate_custom_subscription
+    organization = current_user.organizations.find(params[:organization_id])
+    authorize organization
+
+    # Link custom subscription to organization.
+    custom_subscription =
+      CustomSubscription.find_by(organization_id: nil, redeemable_by_email: current_user.email, id: params[:id])
+    custom_subscription.organization = organization
+    custom_subscription.save!
+
+    # Cancel any other active subscription.
+    organization.active_subscription&.interrupt
+
+    # Also cancel trial if active.
+    organization.cancel_trial
+
+    render json: { error: false, message: 'OK' }
   end
 
   def cancel_subscription

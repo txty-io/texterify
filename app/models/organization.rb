@@ -8,6 +8,7 @@ class Organization < ApplicationRecord
   has_many :projects, dependent: :destroy
   has_many :project_users, through: :projects, dependent: :destroy
   has_many :subscriptions, dependent: :destroy
+  has_one :custom_subscription, dependent: :nullify
   has_many :sent_emails, dependent: :destroy
   has_many :invites, class_name: 'OrganizationInvite', dependent: :destroy
 
@@ -18,7 +19,12 @@ class Organization < ApplicationRecord
   end
 
   def active_subscription
-    subscriptions.find_by(stripe_ended_at: nil)
+    # Only return active subscription if no custom subscription is active.
+    # Can happen if a subscription is active till the end of
+    # the month like a trial or already paid period.
+    unless self.custom_subscription
+      subscriptions.find_by(stripe_ended_at: nil)
+    end
   end
 
   def role_of(user)
@@ -44,6 +50,12 @@ class Organization < ApplicationRecord
 
   def trial_days_left
     trial_ends_at.present? ? ((trial_ends_at - Time.now.utc) / 1.day.to_i).ceil : 0
+  end
+
+  # Cancels the current active trial by setting the end date to nil.
+  def cancel_trial
+    self.trial_ends_at = nil
+    self.save!
   end
 
   # Basic plan features
@@ -110,7 +122,8 @@ class Organization < ApplicationRecord
     license = License.current_active
 
     return(
-      (trial_active && NOT_IN_TRIAL_AVAILABLE.exclude?(feature)) ||
+      (custom_subscription && feature_allowed_plans.include?(custom_subscription.plan)) ||
+        (trial_active && NOT_IN_TRIAL_AVAILABLE.exclude?(feature)) ||
         (active_subscription && feature_allowed_plans.include?(active_subscription.plan)) ||
         (license && feature_allowed_plans.include?(license.restrictions[:plan]))
     )

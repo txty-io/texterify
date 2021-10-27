@@ -2,7 +2,7 @@ import { Alert, Button, Card, Layout, message } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { ISubscription, OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
+import { ICustomSubscription, ISubscription, OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
 import { MESSAGE_DURATION_IMPORTANT } from "../../configs/MessageDurations";
 import { Routes } from "../../routing/Routes";
 import { subscriptionService } from "../../services/SubscriptionService";
@@ -10,6 +10,7 @@ import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { IPlanIDS } from "../../types/IPlan";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { CustomSubscription } from "../../ui/CustomSubscription";
 import { Features } from "../../ui/Features";
 import { BASIC_PLAN, BUSINESS_PLAN, Licenses, TEAM_PLAN } from "../../ui/Licenses";
 import { Loading } from "../../ui/Loading";
@@ -22,6 +23,7 @@ const gridStyle: React.CSSProperties = {
 type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {
     subscription: ISubscription;
+    customSubscription: ICustomSubscription;
     loading: boolean;
 }
 
@@ -29,6 +31,7 @@ interface IState {
 class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
     state: IState = {
         subscription: null,
+        customSubscription: null,
         loading: true
     };
 
@@ -41,12 +44,16 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
         const subscription = await subscriptionService.getActiveSubscription(this.props.match.params.organizationId, {
             forceReload: true
         });
+        const customSubscription = await subscriptionService.getCustomSubscription(
+            this.props.match.params.organizationId
+        );
         const getOrganizationResponse = await OrganizationsAPI.getOrganization(this.props.match.params.organizationId);
         if (!getOrganizationResponse.errors) {
             dashboardStore.currentOrganization = getOrganizationResponse.data;
         }
         this.setState({
             subscription: subscription,
+            customSubscription: customSubscription,
             loading: false
         });
     }
@@ -119,7 +126,46 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                         <Link to={Routes.USER.SETTINGS.LICENSES}>here</Link>.
                     </p>
 
-                    {dashboardStore.currentOrganization.attributes.trial_active && (
+                    {this.state.customSubscription && (
+                        <>
+                            <h3>Your active subscription</h3>
+                            <CustomSubscription customSubscription={this.state.customSubscription} />
+                        </>
+                    )}
+
+                    {!this.state.customSubscription && authStore.redeemableCustomSubscriptions.length > 0 && (
+                        <>
+                            <h3>Activate a special subscription</h3>
+                            <p>
+                                You are elligible for one or more special subscriptions that can be activated for this
+                                organization. If you activate a special subscription any other subscriptions or trials
+                                will be automatically cancelled.
+                            </p>
+                            {authStore.redeemableCustomSubscriptions.map((customSubscription) => {
+                                return (
+                                    <CustomSubscription
+                                        key={customSubscription.id}
+                                        customSubscription={customSubscription}
+                                        onClick={async () => {
+                                            try {
+                                                await OrganizationsAPI.activateCustomSubscription({
+                                                    organizationId: this.props.match.params.organizationId,
+                                                    customSubscriptionId: customSubscription.id
+                                                });
+                                                await this.reload();
+                                            } catch (error) {
+                                                console.error(error);
+                                                message.error("Failed to activate subscription.");
+                                            }
+                                        }}
+                                        style={{ marginBottom: 24 }}
+                                    />
+                                );
+                            })}
+                        </>
+                    )}
+
+                    {!this.state.customSubscription && dashboardStore.currentOrganization.attributes.trial_active && (
                         <>
                             <p style={{ marginTop: 24 }}>
                                 Your trial period ends on:{" "}
@@ -149,7 +195,7 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                         </>
                     )}
 
-                    {this.state.subscription && (
+                    {!this.state.customSubscription && this.state.subscription && (
                         <Card
                             type="inner"
                             title="Active plan"
@@ -251,28 +297,30 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                         </Card>
                     )}
 
-                    <div style={{ flexGrow: 1, maxWidth: 1000 }}>
-                        <h3 style={{ marginTop: 24 }}>
-                            {this.state.subscription ? "Change your plan" : "Choose a plan"}
-                        </h3>
-                        <p style={{ maxWidth: 480, marginTop: 16 }}>
-                            {dashboardStore.currentOrganization.attributes.trial_active &&
-                                !this.state.subscription &&
-                                "You are currently experiencing the trial period but you can already select a plan that fits your needs to continue using Texterify without interruptions. Your paid plan will start after your trial has ended."}
-                            {dashboardStore.currentOrganization.attributes.trial_active &&
-                                !this.state.subscription &&
-                                " Select a subscription that fits your needs."}
-                        </p>
-                        <p>You can upgrade, downgrade or cancel your plan at any time.</p>
-                        <Licenses
-                            hostingType="cloud"
-                            organizationId={this.props.match.params.organizationId}
-                            selected={this.state.subscription?.attributes.plan}
-                            onChangePlan={(plan) => {
-                                this.onChangeSubscriptionPlan(plan.id);
-                            }}
-                        />
-                    </div>
+                    {!this.state.customSubscription && (
+                        <div style={{ flexGrow: 1, maxWidth: 1000 }}>
+                            <h3 style={{ marginTop: 24 }}>
+                                {this.state.subscription ? "Change your plan" : "Choose a plan"}
+                            </h3>
+                            <p style={{ maxWidth: 480, marginTop: 16 }}>
+                                {dashboardStore.currentOrganization.attributes.trial_active &&
+                                    !this.state.subscription &&
+                                    "You are currently experiencing the trial period but you can already select a plan that fits your needs to continue using Texterify without interruptions. Your paid plan will start after your trial has ended."}
+                                {dashboardStore.currentOrganization.attributes.trial_active &&
+                                    !this.state.subscription &&
+                                    " Select a subscription that fits your needs."}
+                            </p>
+                            <p>You can upgrade, downgrade or cancel your plan at any time.</p>
+                            <Licenses
+                                hostingType="cloud"
+                                organizationId={this.props.match.params.organizationId}
+                                selected={this.state.subscription?.attributes.plan}
+                                onChangePlan={(plan) => {
+                                    this.onChangeSubscriptionPlan(plan.id);
+                                }}
+                            />
+                        </div>
+                    )}
                 </Layout.Content>
             </Layout>
         );
