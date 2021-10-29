@@ -40,7 +40,7 @@ export function CustomSubscription(props: {
                         <div>
                             {props.customSubscription.attributes.ends_at
                                 ? moment(props.customSubscription.attributes.ends_at).format(DATE_FORMAT)
-                                : "Unlimited"}
+                                : "Never"}
                         </div>
                     </div>
                 </div>

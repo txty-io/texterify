@@ -124,16 +124,20 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
     # Link custom subscription to organization.
     custom_subscription =
       CustomSubscription.find_by(organization_id: nil, redeemable_by_email: current_user.email, id: params[:id])
-    custom_subscription.organization = organization
-    custom_subscription.save!
+    if custom_subscription.present?
+      custom_subscription.organization = organization
+      custom_subscription.save!
 
-    # Cancel any other active subscription.
-    organization.active_subscription&.interrupt
+      # Cancel any other active subscription.
+      organization.active_subscription&.interrupt
 
-    # Also cancel trial if active.
-    organization.cancel_trial
+      # Also cancel trial if active.
+      organization.cancel_trial
 
-    render json: { error: false, message: 'OK' }
+      render json: { error: false, message: 'OK' }
+    else
+      render json: { error: true, message: 'NO_REDEEMABLE_SUBSCRIPTION_FOUND' }, status: :bad_request
+    end
   end
 
   def cancel_subscription
