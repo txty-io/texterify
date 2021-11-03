@@ -22,7 +22,7 @@ declare global {
     namespace Cypress {
         // eslint-disable-next-line @typescript-eslint/interface-name-prefix
         interface Chainable {
-            app(file: string): void;
+            app(command: "clean" | "factory_bot" | "load_seed_cli" | "load_seed" | "log_fail"): void;
             login(email: string, password: string): void;
             signup(
                 username: string,
@@ -32,9 +32,19 @@ declare global {
                 toggleTermsAndPrivacy: boolean
             ): void;
             addOrganization(name: string): void;
-            createProject(name: string): void;
-            addLanguage(languageCode: string, countryCode: string, languageName: string): void;
+            createProject(name: string, description?: string, fromOrganizationPage?: boolean): void;
+            addKey(name: string, description: string, content?: string, isHtml?: boolean): void;
+            appScenario(
+                scenario: "project_with_keys" | "project_with_languages" | "set_cloud" | "set_on_premise"
+            ): void;
+            addLanguage(languageCode: string, countryCode: string, languageName: string, isDefault?: boolean): void;
             goToKeys(): void;
+            goToProjectHome(): void;
+            goToLanguages(): void;
+            goToEditor(): void;
+            leaveEditor(): void;
+            clickOutside(): void;
+            addUser(email: string): void;
         }
     }
 }
