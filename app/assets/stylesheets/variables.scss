@@ -14,6 +14,10 @@
   --color-warn: #ff861d;
   --color-golden: #d5bc00;
 
+  // drawer
+  --drawer-background-color: var(--background-color);
+  --drawer-header-background-color: var(--header-background-color);
+
   // activity
   --activity-highlight-key-update-background-color: #ecf1ff;
   --activity-highlight-key-update-color: var(--blue-color);
@@ -75,6 +79,10 @@
   --color-passive-hover: #999;
   --color-warn: #ff861d;
   --color-golden: #fff900;
+
+  // drawer
+  --drawer-background-color: var(--background-color);
+  --drawer-header-background-color: var(--header-background-color);
 
   // activity
   --activity-highlight-key-update-background-color: #ecf1ff1f;
