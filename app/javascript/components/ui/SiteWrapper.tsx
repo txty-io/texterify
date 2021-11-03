@@ -83,7 +83,7 @@ class SiteWrapper extends React.Component<IProps> {
                 </div>
 
                 {true && (
-                    <div style={{ marginTop: "auto", padding: 24 }}>
+                    <div style={{ marginTop: "auto", padding: 24, color: "#fff" }}>
                         Copyright © Texterify. All rights reserved.
                         <a
                             href="https://texterify.com/privacy-policy"
