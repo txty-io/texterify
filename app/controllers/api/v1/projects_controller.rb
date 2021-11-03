@@ -182,10 +182,15 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     end
 
     parsed_data.each do |json_key, json_value|
+      # Skip "texterify_" keys because they are reserved and can't be imported.
+      if json_key.start_with?('texterify_')
+        next
+      end
+
       key = project.keys.find_by(name: json_key)
 
       if key.present?
-        # Load default translations or export config translations
+        # Load default translations or export config translations.
         if export_config
           translation = key.translations.find_by(language: language, export_config: export_config)
         else

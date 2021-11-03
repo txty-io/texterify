@@ -65,4 +65,34 @@ context("add-keys", () => {
             .children()
             .should("contain", testData.keys.secondKey.value);
     });
+
+    it("fails to add a key with the prefix 'texterify_' via new key dialog", () => {
+        cy.login(testData.login.user1.email, testData.login.user1.password);
+        cy.createProject("My test project");
+        cy.addLanguage(
+            testData.languages.german.languageCode,
+            testData.languages.german.countryCode,
+            testData.languages.german.languageName
+        );
+
+        cy.addKey("texterify_timestamp", testData.keys.firstKey.keyDescription);
+        cy.contains('Key names starting with "texterify_" are reserved and can\'t be used.');
+    });
+
+    it("fails to add a key with the prefix 'texterify_' via keys table", () => {
+        cy.login(testData.login.user1.email, testData.login.user1.password);
+        cy.createProject("My test project");
+        cy.addLanguage(
+            testData.languages.german.languageCode,
+            testData.languages.german.countryCode,
+            testData.languages.german.languageName
+        );
+
+        cy.addKey("texterify", "123");
+        cy.contains("texterify").click();
+        cy.contains("texterify").clear().type("texterify_");
+        cy.clickOutside();
+
+        cy.contains('Key names starting with "texterify_" are reserved and can\'t be used.');
+    });
 });

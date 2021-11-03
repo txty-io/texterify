@@ -412,6 +412,7 @@ export const TranslationFileImporter = observer(
                                             onChange={() => {
                                                 setSelectedLanguageId(language.id);
                                             }}
+                                            data-id="file-importer-language-tag"
                                         >
                                             {countryCode && (
                                                 <span style={{ marginRight: 8 }}>
@@ -483,6 +484,7 @@ export const TranslationFileImporter = observer(
                                                 onClick={() => {
                                                     setSelectedImportFormat(supportedFormat);
                                                 }}
+                                                data-id={`file-importer-file-format-${supportedFormat.id}`}
                                             >
                                                 {supportedFormat.image && (
                                                     <img
@@ -650,6 +652,7 @@ export const TranslationFileImporter = observer(
                                                             <input
                                                                 {...getInputProps()}
                                                                 accept={ACCEPTED_FILE_FORMATS.join(",")}
+                                                                data-id="file-importer-file-uploader"
                                                             />
                                                         </DropZoneWrapper>
                                                     );
@@ -669,6 +672,7 @@ export const TranslationFileImporter = observer(
                                                     type="primary"
                                                     disabled={files.length === 0 || !selectedLanguageId}
                                                     onClick={upload}
+                                                    data-id="file-importer-submit-button"
                                                 >
                                                     Import file
                                                 </Button>

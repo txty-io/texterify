@@ -52,6 +52,13 @@ class NewKeyForm extends React.Component<IProps> {
                         errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
                     }
                 ]);
+            } else if (ErrorUtils.hasError("name", ERRORS.KEY_NAME_RESERVED, response.errors)) {
+                this.formRef.current?.setFields([
+                    {
+                        name: "name",
+                        errors: [ErrorUtils.getErrorMessage("name", ERRORS.KEY_NAME_RESERVED)]
+                    }
+                ]);
             } else {
                 ErrorUtils.showErrors(response.errors);
             }

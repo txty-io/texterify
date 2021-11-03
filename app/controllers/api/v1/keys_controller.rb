@@ -128,7 +128,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     if key.save
       render json: KeySerializer.new(key).serialized_json
     else
-      render json: { errors: key.errors.details }, status: :bad_request
+      render json: { error: true, errors: key.errors.details }, status: :bad_request
     end
   end
 

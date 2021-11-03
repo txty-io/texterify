@@ -12,6 +12,8 @@ All notable changes to this project will be documented in this file.
 - Fix missing check if auto-translate feature is available.
 - Fix bug which caused to only return the first 10 export configs.
 - Fix bug where keys site crashes.
+- Fix organizations site display errors due to invalid keys.
+- Fix missing checks that allowed to create keys with name "texterify_*".
 
 ## v1.0.6
 

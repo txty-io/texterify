@@ -34,7 +34,7 @@ context("key", () => {
         });
     });
 
-    it.only("counts characters and words of translations correctly", () => {
+    it("counts characters and words of translations correctly", () => {
         cy.appScenario("project_with_keys");
         cy.login("project-with-keys@texterify.com", "password");
         cy.get('[data-id="project-e5705170-2bc1-4fd8-9b41-4fe2b46bfe74"]').click();
