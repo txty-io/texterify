@@ -263,7 +263,7 @@ class EditorSite extends React.Component<IProps, IState> {
                     // main menu bar is always in dark mode.
                     className="dark-theme"
                 >
-                    <div style={{ flexGrow: 1 }}>
+                    <div style={{ flexGrow: 1, whiteSpace: "nowrap" }}>
                         <Button
                             type="primary"
                             style={{
@@ -317,7 +317,8 @@ class EditorSite extends React.Component<IProps, IState> {
                                 borderRight: "1px solid var(--border-color)",
                                 overflow: "auto",
                                 width: "25%",
-                                flexShrink: 0
+                                flexShrink: 0,
+                                minWidth: 240
                             }}
                         >
                             <div style={{ margin: 24, width: "auto" }}>
@@ -428,7 +429,13 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 );
                                             } else {
                                                 keyContentPreview = (
-                                                    <div style={{ color: "var(--color-passive)" }}>
+                                                    <div
+                                                        style={{
+                                                            color: "var(--color-passive)",
+                                                            overflow: "hidden",
+                                                            textOverflow: "ellipsis"
+                                                        }}
+                                                    >
                                                         {countryCode && (
                                                             <span style={{ marginRight: 8 }}>
                                                                 <FlagIcon
@@ -443,7 +450,13 @@ class EditorSite extends React.Component<IProps, IState> {
                                         } else {
                                             if (this.state.languagesResponse) {
                                                 keyContentPreview = (
-                                                    <div style={{ color: "var(--color-passive)" }}>
+                                                    <div
+                                                        style={{
+                                                            color: "var(--color-passive)",
+                                                            overflow: "hidden",
+                                                            textOverflow: "ellipsis"
+                                                        }}
+                                                    >
                                                         Set a default language for preview.
                                                     </div>
                                                 );
@@ -679,7 +692,14 @@ class EditorSite extends React.Component<IProps, IState> {
                                 </div>
                             )}
                             {!this.keyLoaded() && !this.props.match.params.keyId && (
-                                <p style={{ color: Styles.COLOR_TEXT_DISABLED, fontStyle: "italic", margin: "auto" }}>
+                                <p
+                                    style={{
+                                        color: Styles.COLOR_TEXT_DISABLED,
+                                        fontStyle: "italic",
+                                        margin: "auto",
+                                        textAlign: "center"
+                                    }}
+                                >
                                     Select a key from the left to start editing.
                                 </p>
                             )}

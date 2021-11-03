@@ -275,25 +275,47 @@ class Activity extends React.Component<IProps> {
         }
     };
 
-    getStylesForEvent = (itemType: string, event: "create" | "update" | "destroy") => {
-        if (event === "create" && itemType !== "Translation") {
-            return {
-                iconColor: "#333",
-                color: Styles.COLOR_GREEN,
-                background: Styles.COLOR_GREEN_LIGHT
-            };
-        } else if (event === "update" || itemType === "Translation") {
-            return {
-                iconColor: "#333",
-                color: generalStore.theme === "light" ? Styles.COLOR_SECONDARY : "#fff",
-                background: generalStore.theme === "light" ? Styles.COLOR_SECONDARY_LIGHT : "#303030"
-            };
-        } else if (event === "destroy") {
-            return {
-                iconColor: "#333",
-                color: Styles.COLOR_RED,
-                background: Styles.COLOR_RED_LIGHT
-            };
+    getStylesForEvent = (itemType: "Key" | "Translation", event: "create" | "update" | "destroy") => {
+        if (itemType === "Key") {
+            if (event === "create") {
+                return {
+                    iconColor: "#333",
+                    color: Styles.COLOR_GREEN,
+                    background: Styles.COLOR_GREEN_LIGHT
+                };
+            } else if (event === "update") {
+                return {
+                    iconColor: "#333",
+                    color: "var(--activity-highlight-key-update-color)",
+                    background: "var(--activity-highlight-key-update-background-color)"
+                };
+            } else if (event === "destroy") {
+                return {
+                    iconColor: "#333",
+                    color: Styles.COLOR_RED,
+                    background: Styles.COLOR_RED_LIGHT
+                };
+            }
+        } else if (itemType === "Translation") {
+            if (event === "create") {
+                return {
+                    iconColor: "#333",
+                    color: generalStore.theme === "light" ? Styles.COLOR_SECONDARY : "#fff",
+                    background: generalStore.theme === "light" ? Styles.COLOR_SECONDARY_LIGHT : "#303030"
+                };
+            } else if (event === "update") {
+                return {
+                    iconColor: "#333",
+                    color: generalStore.theme === "light" ? Styles.COLOR_SECONDARY : "#fff",
+                    background: generalStore.theme === "light" ? Styles.COLOR_SECONDARY_LIGHT : "#303030"
+                };
+            } else if (event === "destroy") {
+                return {
+                    iconColor: "#333",
+                    color: Styles.COLOR_RED,
+                    background: Styles.COLOR_RED_LIGHT
+                };
+            }
         }
     };
 

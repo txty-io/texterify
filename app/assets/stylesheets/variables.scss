@@ -1,7 +1,7 @@
 :root {
   --full-color: #000;
   --background-color: #fff;
-  --dark-color: #0a101a;
+  --dark-color: #0a111e;
   --border-color: #d9d9d9;
   --border-color-flashier: #777;
   --blue-color: #568aea;
@@ -12,7 +12,11 @@
   --color-passive-hover: #333;
   --color-success: #52c41a;
   --color-warn: #ff861d;
-  --color-golden: #d5bc00;;
+  --color-golden: #d5bc00;
+
+  // activity
+  --activity-highlight-key-update-background-color: #ecf1ff;
+  --activity-highlight-key-update-color: var(--blue-color);
 
   // alert
   --alert-background-color: #f0f6ff;
@@ -71,6 +75,10 @@
   --color-passive-hover: #999;
   --color-warn: #ff861d;
   --color-golden: #fff900;
+
+  // activity
+  --activity-highlight-key-update-background-color: #ecf1ff1f;
+  --activity-highlight-key-update-color: #ecf1ff;
 
   // alert
   --alert-background-color: #101929;

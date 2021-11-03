@@ -78,6 +78,20 @@ export const MenuLinkWrapper = styled.div<IMenuLinkWrapperProps>`
             color: #fff;
         }
     }
+
+    @media (max-width: 1040px) {
+        flex-shrink: 0;
+    }
+`;
+
+const MenuLinkTextWrapper = styled.span`
+    display: none;
+    margin-left: 0;
+
+    @media (min-width: 1040px) {
+        display: inline;
+        margin-left: 8px;
+    }
 `;
 
 const SearchInputWrapper = styled.div`
@@ -225,8 +239,12 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     isActive={this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS}
                                     data-id="main-menu-projects"
                                 >
-                                    <Link to={Routes.DASHBOARD.PROJECTS}>
-                                        <ProjectOutlined style={{ marginRight: 8 }} /> Projects
+                                    <Link
+                                        to={Routes.DASHBOARD.PROJECTS}
+                                        style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                    >
+                                        <ProjectOutlined />
+                                        <MenuLinkTextWrapper>Projects</MenuLinkTextWrapper>
                                     </Link>
                                 </MenuLinkWrapper>
                             </MenuList>
@@ -235,8 +253,12 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     isActive={this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS}
                                     data-id="main-menu-organizations"
                                 >
-                                    <Link to={Routes.DASHBOARD.ORGANIZATIONS}>
-                                        <DeploymentUnitOutlined style={{ marginRight: 8 }} /> Organizations
+                                    <Link
+                                        to={Routes.DASHBOARD.ORGANIZATIONS}
+                                        style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                    >
+                                        <DeploymentUnitOutlined />
+                                        <MenuLinkTextWrapper>Organizations</MenuLinkTextWrapper>
                                     </Link>
                                 </MenuLinkWrapper>
                             </MenuList>
@@ -245,8 +267,12 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     isActive={this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY}
                                     data-id="main-menu-activity"
                                 >
-                                    <Link to={Routes.DASHBOARD.ACTIVITY}>
-                                        <LineChartOutlined style={{ marginRight: 8 }} /> Activity
+                                    <Link
+                                        to={Routes.DASHBOARD.ACTIVITY}
+                                        style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                    >
+                                        <LineChartOutlined />
+                                        <MenuLinkTextWrapper>Activity</MenuLinkTextWrapper>
                                     </Link>
                                 </MenuLinkWrapper>
                             </MenuList>
@@ -286,9 +312,12 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                         )}
                                         data-id="main-menu-instance-settings"
                                     >
-                                        <Link to={Routes.DASHBOARD.INSTANCE.ROOT}>
-                                            <HddOutlined style={{ marginRight: 8 }} />
-                                            Admin
+                                        <Link
+                                            to={Routes.DASHBOARD.INSTANCE.ROOT}
+                                            style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                        >
+                                            <HddOutlined />
+                                            <MenuLinkTextWrapper>Admin</MenuLinkTextWrapper>
                                         </Link>
                                     </MenuLinkWrapper>
                                 </MenuList>
