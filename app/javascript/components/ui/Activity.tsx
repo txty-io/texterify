@@ -1,5 +1,5 @@
 import { UserOutlined } from "@ant-design/icons";
-import { Empty, Tag, Timeline } from "antd";
+import { Empty, Skeleton, Tag, Timeline } from "antd";
 import * as moment from "moment";
 import * as React from "react";
 import { Link } from "react-router-dom";
@@ -11,6 +11,7 @@ import FlagIcon from "./FlagIcons";
 import { Styles } from "./Styles";
 import { UserAvatar } from "./UserAvatar";
 import { generalStore } from "../stores/GeneralStore";
+import { dashboardStore } from "../stores/DashboardStore";
 
 const ActivityItemWrapper = styled.div`
     word-break: break-word;
@@ -320,8 +321,8 @@ class Activity extends React.Component<IProps> {
     };
 
     render() {
-        if (!this.props.activitiesResponse || !this.props.activitiesResponse.data) {
-            return null;
+        if (!this.props.activitiesResponse?.data || dashboardStore.currentProject.attributes.current_user_deactivated) {
+            return <Skeleton active />;
         }
 
         if (this.props.activitiesResponse.data.length === 0) {
