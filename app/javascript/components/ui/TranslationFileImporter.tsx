@@ -363,7 +363,7 @@ export const TranslationFileImporter = observer(
         return (
             <div style={props.style}>
                 {languagesLoading && <Loading />}
-                {languagesResponse?.data.length === 0 && (
+                {languagesResponse?.data?.length === 0 && (
                     <>
                         <Alert
                             type="info"
@@ -393,7 +393,7 @@ export const TranslationFileImporter = observer(
                         />
                     </>
                 )}
-                {languagesResponse?.data.length > 0 && (
+                {languagesResponse?.data?.length > 0 && (
                     <>
                         <div style={{ marginBottom: 8 }}>
                             <h3>For which language do you want to import your existing translations?</h3>
