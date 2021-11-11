@@ -21,4 +21,14 @@ class OrganizationSerializer
   attribute :all_features do
     Organization::FEATURES_PLANS
   end
+
+  attribute :current_user_deactivated, if: proc { |_, params| params[:current_user] } do |object, params|
+    organization_user = OrganizationUser.find_by(organization_id: object.id, user_id: params[:current_user].id)
+    organization_user&.deactivated
+  end
+
+  attribute :current_user_deactivated_reason, if: proc { |_, params| params[:current_user] } do |object, params|
+    organization_user = OrganizationUser.find_by(organization_id: object.id, user_id: params[:current_user].id)
+    organization_user&.deactivated_reason
+  end
 end

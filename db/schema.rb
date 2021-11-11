@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_25_105452) do
+ActiveRecord::Schema.define(version: 2021_10_27_175039) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -226,6 +226,8 @@ ActiveRecord::Schema.define(version: 2021_10_25_105452) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "role", default: "translator", null: false
+    t.boolean "deactivated", default: false, null: false
+    t.text "deactivated_reason"
     t.index ["organization_id"], name: "index_organizations_users_on_organization_id"
     t.index ["user_id", "organization_id"], name: "index_organizations_users_on_user_id_and_organization_id", unique: true
     t.index ["user_id"], name: "index_organizations_users_on_user_id"
@@ -289,6 +291,8 @@ ActiveRecord::Schema.define(version: 2021_10_25_105452) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "role", default: "translator", null: false
+    t.boolean "deactivated", default: false, null: false
+    t.text "deactivated_reason"
     t.index ["project_id"], name: "index_projects_users_on_project_id"
     t.index ["user_id", "project_id"], name: "index_projects_users_on_user_id_and_project_id", unique: true
     t.index ["user_id"], name: "index_projects_users_on_user_id"
@@ -422,6 +426,8 @@ ActiveRecord::Schema.define(version: 2021_10_25_105452) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_superadmin"
+    t.boolean "deactivated", default: false, null: false
+    t.text "deactivated_reason"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

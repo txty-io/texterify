@@ -1,7 +1,7 @@
 class UserSerializer
   include FastJsonapi::ObjectSerializer
   extend ApplicationHelper
-  attributes :id, :username, :email, :is_superadmin
+  attributes :id, :username, :email, :is_superadmin, :deactivated, :deactivated_reason
 
   attribute :role, if: proc { |_, params| params[:project] } do |object, params|
     project_user = ProjectUser.find_by(project_id: params[:project].id, user_id: object.id)
