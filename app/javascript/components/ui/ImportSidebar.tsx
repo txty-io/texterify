@@ -13,7 +13,8 @@ export function ImportSidebar(props: { projectId: string }) {
                     items: [
                         {
                             path: Routes.DASHBOARD.PROJECT_IMPORT_FILE,
-                            name: "File"
+                            name: "File",
+                            id: "file"
                         }
                     ]
                 },
@@ -29,7 +30,8 @@ export function ImportSidebar(props: { projectId: string }) {
                                 <>
                                     WordPress <Tag style={{ marginLeft: 8 }}>coming soon</Tag>
                                 </>
-                            )
+                            ),
+                            id: "wordpress"
                         },
                         {
                             path: Routes.DASHBOARD.PROJECT_IMPORT_GITHUB,
@@ -38,7 +40,8 @@ export function ImportSidebar(props: { projectId: string }) {
                                 <>
                                     GitHub <Tag style={{ marginLeft: 8 }}>coming soon</Tag>
                                 </>
-                            )
+                            ),
+                            id: "github"
                         }
                     ]
                 }
