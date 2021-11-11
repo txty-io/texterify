@@ -1,5 +1,6 @@
 class Api::V1::ProjectUsersController < Api::V1::ApiController
   before_action :ensure_feature_enabled, only: [:create, :update]
+  before_action :check_if_user_activated, except: [:destroy]
 
   def index
     skip_authorization

@@ -1,7 +1,9 @@
 class Api::V1::OrganizationsController < Api::V1::ApiController
+  before_action :check_if_user_activated, except: [:create, :index, :show, :image]
+
   def image
     skip_authorization
-    organization = Organization.find(params[:organization_id])
+    organization = current_user.organizations.find(params[:organization_id])
 
     if organization
       render json: { image: organization.image.attached? ? url_for(organization.image) : nil }
@@ -11,13 +13,13 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
   end
 
   def image_create
-    organization = Organization.find(params[:organization_id])
+    organization = current_user.organizations.find(params[:organization_id])
     authorize organization
     organization.image.attach(params[:image])
   end
 
   def image_destroy
-    organization = Organization.find(params[:organization_id])
+    organization = current_user.organizations.find(params[:organization_id])
     authorize organization
     organization.image.purge
   end
@@ -91,7 +93,12 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
 
     options = {}
     options[:params] = { current_user: current_user }
-    options[:include] = [:projects, :subscriptions]
+
+    # Only if the user is not deactivated return the list of projects und subscriptions.
+    unless self.user_deactivated?
+      options[:include] = [:projects, :subscriptions]
+    end
+
     render json: OrganizationSerializer.new(organization, options).serialized_json, status: :ok
   end
 

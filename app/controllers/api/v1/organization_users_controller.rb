@@ -1,6 +1,10 @@
 class Api::V1::OrganizationUsersController < Api::V1::ApiController
   before_action :ensure_feature_enabled, only: [:create, :update]
 
+  # Allow :destroy because users should still be able to leave on organization
+  # even though there account has been deactivated.
+  before_action :check_if_user_activated, except: [:destroy]
+
   def index
     skip_authorization
     organization = current_user.organizations.find(params[:organization_id])
@@ -74,10 +78,7 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     end
 
     if current_user.id == params[:id] && organization.users.count == 1
-      render json: {
-               errors: [{ details: "You can't remove yourself from the organization if you are the only member" }]
-             },
-             status: :bad_request
+      render json: { error: true, message: 'LAST_USER_CANT_LEAVE' }, status: :bad_request
       return
     end
 

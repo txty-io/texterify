@@ -9,6 +9,7 @@ end
 
 class Api::V1::ReleasesController < Api::V1::ApiController
   skip_before_action :verify_signed_in, only: :release
+  before_action :check_if_user_activated, except: [:release]
 
   def index
     project = current_user.projects.find(params[:project_id])
@@ -93,7 +94,7 @@ class Api::V1::ReleasesController < Api::V1::ApiController
   end
 
   def create
-    project = Project.find(params[:project_id])
+    project = current_user.projects.find(params[:project_id])
 
     export_config = project.export_configs.find(params[:export_config_id])
 
