@@ -43,7 +43,9 @@ class ProjectSite extends React.Component<IProps, IState> {
     };
 
     async componentDidMount() {
-        await Promise.all([this.fetchLanguages(), this.fetchProject(), this.fetchProjectActivity()]);
+        if (!dashboardStore.currentProject.attributes.current_user_deactivated) {
+            await Promise.all([this.fetchLanguages(), this.fetchProject(), this.fetchProjectActivity()]);
+        }
     }
 
     async fetchLanguages() {
@@ -194,7 +196,10 @@ class ProjectSite extends React.Component<IProps, IState> {
                     }}
                 >
                     <div style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
-                        <h1 style={{ display: "flex", alignItems: "center", marginBottom: 0 }}>
+                        <h1
+                            style={{ display: "flex", alignItems: "center", marginBottom: 0 }}
+                            data-id="project-home-name"
+                        >
                             <ProjectAvatar project={dashboardStore.currentProject} style={{ marginRight: 16 }} />
                             {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
                         </h1>
@@ -224,7 +229,9 @@ class ProjectSite extends React.Component<IProps, IState> {
                         </div>
                     </div>
                     {dashboardStore.currentProject?.attributes.description && (
-                        <p style={{ marginTop: 16 }}>{dashboardStore.currentProject?.attributes.description}</p>
+                        <p style={{ marginTop: 16 }} data-id="project-home-description">
+                            {dashboardStore.currentProject?.attributes.description}
+                        </p>
                     )}
                     <div style={{ display: "flex", marginTop: 40 }}>
                         <div style={{ width: "50%", marginRight: 40 }}>

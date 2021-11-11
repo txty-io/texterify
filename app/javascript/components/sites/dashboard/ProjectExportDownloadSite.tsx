@@ -58,7 +58,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                 type="info"
                 showIcon
                 message="No export configuration"
-                style={{ marginTop: this.state.languagesLoaded && this.state.languages.length === 0 ? 8 : 0 }}
+                style={{ marginTop: this.state.languagesLoaded && this.state.languages?.length === 0 ? 8 : 0 }}
                 description={
                     <>
                         <Link
@@ -77,7 +77,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
     };
 
     hasExportConfigs = () => {
-        return this.state.responseExportConfigs && this.state.responseExportConfigs.data.length > 0;
+        return this.state.responseExportConfigs && this.state.responseExportConfigs?.data?.length > 0;
     };
 
     render() {
@@ -97,7 +97,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                             </>
                         )}
 
-                        {this.state.languagesLoaded && this.state.languages.length === 0 && (
+                        {this.state.languagesLoaded && this.state.languages?.length === 0 && (
                             <Alert
                                 type="info"
                                 showIcon

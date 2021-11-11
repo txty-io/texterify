@@ -270,7 +270,10 @@ class ProjectPostProcessingSite extends React.Component<IProps, IState> {
                             columns={this.getColumns()}
                             style={{ marginTop: 16 }}
                             bordered
-                            loading={this.state.rulesLoading}
+                            loading={
+                                this.state.rulesLoading ||
+                                dashboardStore.currentProject.attributes.current_user_deactivated
+                            }
                             pagination={{
                                 pageSizeOptions: PAGE_SIZE_OPTIONS,
                                 showSizeChanger: true,

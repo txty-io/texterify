@@ -287,7 +287,10 @@ class ProjectOTASite extends React.Component<IProps, IState> {
                             columns={this.getColumns()}
                             style={{ marginTop: 16 }}
                             bordered
-                            loading={this.state.releasesLoading}
+                            loading={
+                                this.state.releasesLoading ||
+                                dashboardStore.currentProject.attributes.current_user_deactivated
+                            }
                             pagination={{
                                 pageSizeOptions: PAGE_SIZE_OPTIONS,
                                 showSizeChanger: true,

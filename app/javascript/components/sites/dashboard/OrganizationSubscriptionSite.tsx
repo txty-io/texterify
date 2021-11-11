@@ -1,4 +1,4 @@
-import { Alert, Button, Card, Layout, message } from "antd";
+import { Alert, Button, Card, Layout, message, Skeleton } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
@@ -13,7 +13,6 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { CustomSubscription } from "../../ui/CustomSubscription";
 import { Features } from "../../ui/Features";
 import { BASIC_PLAN, BUSINESS_PLAN, Licenses, TEAM_PLAN } from "../../ui/Licenses";
-import { Loading } from "../../ui/Loading";
 import { Utils } from "../../ui/Utils";
 
 const gridStyle: React.CSSProperties = {
@@ -110,11 +109,209 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
         window.open(responseJSON.portal_url, "_blank");
     }
 
-    render() {
-        if (this.state.loading) {
-            return <Loading />;
-        }
+    renderActivatedUserContent() {
+        return (
+            <>
+                {this.state.customSubscription && (
+                    <>
+                        <h3>Your active subscription</h3>
+                        <CustomSubscription customSubscription={this.state.customSubscription} />
+                    </>
+                )}
 
+                {!this.state.customSubscription && authStore.redeemableCustomSubscriptions.length > 0 && (
+                    <>
+                        <h3>Activate a special subscription</h3>
+                        <p>
+                            You are elligible for one or more special subscriptions that can be activated for this
+                            organization. If you activate a special subscription any other subscriptions or trials will
+                            be automatically cancelled.
+                        </p>
+                        {authStore.redeemableCustomSubscriptions.map((customSubscription) => {
+                            return (
+                                <CustomSubscription
+                                    key={customSubscription.id}
+                                    customSubscription={customSubscription}
+                                    onClick={async () => {
+                                        try {
+                                            await OrganizationsAPI.activateCustomSubscription({
+                                                organizationId: this.props.match.params.organizationId,
+                                                customSubscriptionId: customSubscription.id
+                                            });
+                                            await this.reload();
+                                        } catch (error) {
+                                            console.error(error);
+                                            message.error("Failed to activate subscription.");
+                                        }
+                                    }}
+                                    style={{ marginBottom: 24 }}
+                                />
+                            );
+                        })}
+                    </>
+                )}
+
+                {!this.state.customSubscription && dashboardStore.currentOrganization.attributes.trial_active && (
+                    <>
+                        <p style={{ marginTop: 24 }}>
+                            Your trial period ends on:{" "}
+                            <span style={{ fontWeight: "bold", marginLeft: 8 }}>
+                                {dashboardStore.currentOrganization.attributes.trial_ends_at}
+                            </span>
+                        </p>
+                        {!this.state.subscription && (
+                            <Alert
+                                showIcon
+                                message={
+                                    <>
+                                        Your are currently on the trial period. You can experience all features during
+                                        the trial for free. Select a plan that fits your needs to continue using the
+                                        premium features after your trial end. If you have any questions contact us by
+                                        sending us an email to{" "}
+                                        <a href="mailto:support@texterify.com" target="_blank">
+                                            support@texterify.com
+                                        </a>
+                                        .
+                                    </>
+                                }
+                                type="info"
+                                style={{ maxWidth: 560, marginBottom: 24 }}
+                            />
+                        )}
+                    </>
+                )}
+
+                {!this.state.customSubscription && this.state.subscription && (
+                    <Card
+                        type="inner"
+                        title="Active plan"
+                        style={{ marginRight: 40, maxWidth: 880 }}
+                        bodyStyle={{ display: "flex" }}
+                    >
+                        <Card.Grid hoverable={false} style={gridStyle}>
+                            <div
+                                style={{
+                                    fontWeight: "bold",
+                                    fontSize: 20
+                                }}
+                            >
+                                {Utils.capitalize(this.state.subscription.attributes.plan)} Plan
+                            </div>
+                            <div style={{ fontSize: 14, marginTop: 8, display: "flex", alignItems: "center" }}>
+                                <div style={{ width: 200 }}>Users:</div>
+                                <div>{this.state.subscription.attributes.users_count}</div>
+                            </div>
+                            <div style={{ fontSize: 14, marginTop: 8, display: "flex", alignItems: "center" }}>
+                                <div style={{ width: 200 }}>
+                                    {this.state.subscription.attributes.canceled
+                                        ? "Open bill at end of month"
+                                        : "Current monthly bill"}
+                                    :
+                                </div>
+                                <div>{this.state.subscription.attributes.invoice_upcoming_total / 100} €</div>
+                            </div>
+                            <div style={{ fontSize: 14, marginTop: 8, display: "flex", alignItems: "center" }}>
+                                <div style={{ width: 200 }}>
+                                    {this.state.subscription.attributes.canceled ? "Ends on" : "Renews on"}:
+                                </div>
+                                <div>{this.state.subscription.attributes.renews_or_cancels_on}</div>
+                            </div>
+                            {!this.state.subscription.attributes.canceled && (
+                                <div style={{ marginTop: 24 }}>
+                                    <Button
+                                        danger
+                                        onClick={async () => {
+                                            await this.onCancelSubscription();
+                                        }}
+                                    >
+                                        Cancel subscription
+                                    </Button>
+                                    <Button
+                                        type="primary"
+                                        style={{ marginLeft: 16 }}
+                                        onClick={async () => {
+                                            await this.openCustomerPortal();
+                                        }}
+                                    >
+                                        Open customer portal
+                                    </Button>
+                                </div>
+                            )}
+
+                            {this.state.subscription.attributes.canceled && (
+                                <div style={{ marginTop: 24 }}>
+                                    <Alert
+                                        showIcon
+                                        message={
+                                            <>
+                                                You have canceled your subscription and will loose access to the premium
+                                                Texterify features on{" "}
+                                                <span style={{ fontWeight: "bold" }}>
+                                                    {this.state.subscription.attributes.renews_or_cancels_on}
+                                                </span>
+                                                . Click the button below to reactivate your subscription.
+                                            </>
+                                        }
+                                        type="warning"
+                                    />
+                                    <Button
+                                        type="primary"
+                                        onClick={async () => {
+                                            await this.onReactivateSubscription();
+                                        }}
+                                        style={{ marginTop: 16 }}
+                                    >
+                                        Reactivate
+                                    </Button>
+                                    <Button
+                                        type="primary"
+                                        style={{ marginLeft: 16 }}
+                                        onClick={async () => {
+                                            await this.openCustomerPortal();
+                                        }}
+                                    >
+                                        Open customer portal
+                                    </Button>
+                                </div>
+                            )}
+                        </Card.Grid>
+                        <Card.Grid hoverable={false} style={gridStyle}>
+                            <Features
+                                features={this.getPlanByPlanName(this.state.subscription.attributes.plan).features}
+                            />
+                        </Card.Grid>
+                    </Card>
+                )}
+
+                {!this.state.customSubscription && (
+                    <div style={{ flexGrow: 1, maxWidth: 1000 }}>
+                        <h3 style={{ marginTop: 24 }}>
+                            {this.state.subscription ? "Change your plan" : "Choose a plan"}
+                        </h3>
+                        <p style={{ maxWidth: 480, marginTop: 16 }}>
+                            {dashboardStore.currentOrganization.attributes.trial_active &&
+                                !this.state.subscription &&
+                                "You are currently experiencing the trial period but you can already select a plan that fits your needs to continue using Texterify without interruptions. Your paid plan will start after your trial has ended."}
+                            {dashboardStore.currentOrganization.attributes.trial_active &&
+                                !this.state.subscription &&
+                                " Select a subscription that fits your needs."}
+                        </p>
+                        <p>You can upgrade, downgrade or cancel your plan at any time.</p>
+                        <Licenses
+                            hostingType="cloud"
+                            organizationId={this.props.match.params.organizationId}
+                            selected={this.state.subscription?.attributes.plan}
+                            onChangePlan={(plan) => {
+                                this.onChangeSubscriptionPlan(plan.id);
+                            }}
+                        />
+                    </div>
+                )}
+            </>
+        );
+    }
+
+    render() {
         return (
             <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
                 <Breadcrumbs breadcrumbName="organizationSubscription" />
@@ -125,202 +322,11 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                         If you want to host Texterify in your own infrastructure you can get a license{" "}
                         <Link to={Routes.USER.SETTINGS.LICENSES}>here</Link>.
                     </p>
-
-                    {this.state.customSubscription && (
-                        <>
-                            <h3>Your active subscription</h3>
-                            <CustomSubscription customSubscription={this.state.customSubscription} />
-                        </>
-                    )}
-
-                    {!this.state.customSubscription && authStore.redeemableCustomSubscriptions.length > 0 && (
-                        <>
-                            <h3>Activate a special subscription</h3>
-                            <p>
-                                You are elligible for one or more special subscriptions that can be activated for this
-                                organization. If you activate a special subscription any other subscriptions or trials
-                                will be automatically cancelled.
-                            </p>
-                            {authStore.redeemableCustomSubscriptions.map((customSubscription) => {
-                                return (
-                                    <CustomSubscription
-                                        key={customSubscription.id}
-                                        customSubscription={customSubscription}
-                                        onClick={async () => {
-                                            try {
-                                                await OrganizationsAPI.activateCustomSubscription({
-                                                    organizationId: this.props.match.params.organizationId,
-                                                    customSubscriptionId: customSubscription.id
-                                                });
-                                                await this.reload();
-                                            } catch (error) {
-                                                console.error(error);
-                                                message.error("Failed to activate subscription.");
-                                            }
-                                        }}
-                                        style={{ marginBottom: 24 }}
-                                    />
-                                );
-                            })}
-                        </>
-                    )}
-
-                    {!this.state.customSubscription && dashboardStore.currentOrganization.attributes.trial_active && (
-                        <>
-                            <p style={{ marginTop: 24 }}>
-                                Your trial period ends on:{" "}
-                                <span style={{ fontWeight: "bold", marginLeft: 8 }}>
-                                    {dashboardStore.currentOrganization.attributes.trial_ends_at}
-                                </span>
-                            </p>
-                            {!this.state.subscription && (
-                                <Alert
-                                    showIcon
-                                    message={
-                                        <>
-                                            Your are currently on the trial period. You can experience all features
-                                            during the trial for free. Select a plan that fits your needs to continue
-                                            using the premium features after your trial end. If you have any questions
-                                            contact us by sending us an email to{" "}
-                                            <a href="mailto:support@texterify.com" target="_blank">
-                                                support@texterify.com
-                                            </a>
-                                            .
-                                        </>
-                                    }
-                                    type="info"
-                                    style={{ maxWidth: 560, marginBottom: 24 }}
-                                />
-                            )}
-                        </>
-                    )}
-
-                    {!this.state.customSubscription && this.state.subscription && (
-                        <Card
-                            type="inner"
-                            title="Active plan"
-                            style={{ marginRight: 40, maxWidth: 880 }}
-                            bodyStyle={{ display: "flex" }}
-                        >
-                            <Card.Grid hoverable={false} style={gridStyle}>
-                                <div
-                                    style={{
-                                        fontWeight: "bold",
-                                        fontSize: 20
-                                    }}
-                                >
-                                    {Utils.capitalize(this.state.subscription.attributes.plan)} Plan
-                                </div>
-                                <div style={{ fontSize: 14, marginTop: 8, display: "flex", alignItems: "center" }}>
-                                    <div style={{ width: 200 }}>Users:</div>
-                                    <div>{this.state.subscription.attributes.users_count}</div>
-                                </div>
-                                <div style={{ fontSize: 14, marginTop: 8, display: "flex", alignItems: "center" }}>
-                                    <div style={{ width: 200 }}>
-                                        {this.state.subscription.attributes.canceled
-                                            ? "Open bill at end of month"
-                                            : "Current monthly bill"}
-                                        :
-                                    </div>
-                                    <div>{this.state.subscription.attributes.invoice_upcoming_total / 100} €</div>
-                                </div>
-                                <div style={{ fontSize: 14, marginTop: 8, display: "flex", alignItems: "center" }}>
-                                    <div style={{ width: 200 }}>
-                                        {this.state.subscription.attributes.canceled ? "Ends on" : "Renews on"}:
-                                    </div>
-                                    <div>{this.state.subscription.attributes.renews_or_cancels_on}</div>
-                                </div>
-                                {!this.state.subscription.attributes.canceled && (
-                                    <div style={{ marginTop: 24 }}>
-                                        <Button
-                                            danger
-                                            onClick={async () => {
-                                                await this.onCancelSubscription();
-                                            }}
-                                        >
-                                            Cancel subscription
-                                        </Button>
-                                        <Button
-                                            type="primary"
-                                            style={{ marginLeft: 16 }}
-                                            onClick={async () => {
-                                                await this.openCustomerPortal();
-                                            }}
-                                        >
-                                            Open customer portal
-                                        </Button>
-                                    </div>
-                                )}
-
-                                {this.state.subscription.attributes.canceled && (
-                                    <div style={{ marginTop: 24 }}>
-                                        <Alert
-                                            showIcon
-                                            message={
-                                                <>
-                                                    You have canceled your subscription and will loose access to the
-                                                    premium Texterify features on{" "}
-                                                    <span style={{ fontWeight: "bold" }}>
-                                                        {this.state.subscription.attributes.renews_or_cancels_on}
-                                                    </span>
-                                                    . Click the button below to reactivate your subscription.
-                                                </>
-                                            }
-                                            type="warning"
-                                        />
-                                        <Button
-                                            type="primary"
-                                            onClick={async () => {
-                                                await this.onReactivateSubscription();
-                                            }}
-                                            style={{ marginTop: 16 }}
-                                        >
-                                            Reactivate
-                                        </Button>
-                                        <Button
-                                            type="primary"
-                                            style={{ marginLeft: 16 }}
-                                            onClick={async () => {
-                                                await this.openCustomerPortal();
-                                            }}
-                                        >
-                                            Open customer portal
-                                        </Button>
-                                    </div>
-                                )}
-                            </Card.Grid>
-                            <Card.Grid hoverable={false} style={gridStyle}>
-                                <Features
-                                    features={this.getPlanByPlanName(this.state.subscription.attributes.plan).features}
-                                />
-                            </Card.Grid>
-                        </Card>
-                    )}
-
-                    {!this.state.customSubscription && (
-                        <div style={{ flexGrow: 1, maxWidth: 1000 }}>
-                            <h3 style={{ marginTop: 24 }}>
-                                {this.state.subscription ? "Change your plan" : "Choose a plan"}
-                            </h3>
-                            <p style={{ maxWidth: 480, marginTop: 16 }}>
-                                {dashboardStore.currentOrganization.attributes.trial_active &&
-                                    !this.state.subscription &&
-                                    "You are currently experiencing the trial period but you can already select a plan that fits your needs to continue using Texterify without interruptions. Your paid plan will start after your trial has ended."}
-                                {dashboardStore.currentOrganization.attributes.trial_active &&
-                                    !this.state.subscription &&
-                                    " Select a subscription that fits your needs."}
-                            </p>
-                            <p>You can upgrade, downgrade or cancel your plan at any time.</p>
-                            <Licenses
-                                hostingType="cloud"
-                                organizationId={this.props.match.params.organizationId}
-                                selected={this.state.subscription?.attributes.plan}
-                                onChangePlan={(plan) => {
-                                    this.onChangeSubscriptionPlan(plan.id);
-                                }}
-                            />
-                        </div>
-                    )}
+                    {(!dashboardStore.currentOrganization ||
+                        dashboardStore.currentOrganization.attributes.current_user_deactivated) && <Skeleton active />}
+                    {dashboardStore.currentOrganization &&
+                        !dashboardStore.currentOrganization.attributes.current_user_deactivated &&
+                        this.renderActivatedUserContent()}
                 </Layout.Content>
             </Layout>
         );
