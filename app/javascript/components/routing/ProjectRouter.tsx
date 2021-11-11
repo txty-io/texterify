@@ -22,6 +22,7 @@ import { ProjectSite } from "../sites/dashboard/ProjectSite";
 import { ProjectValidationsSite } from "../sites/dashboard/ProjectValidationsSite";
 import { dashboardStore } from "../stores/DashboardStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
+import { UserDeactivatedProjectModal } from "../ui/UserDeactivatedProjectModal";
 import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
 
@@ -147,6 +148,8 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         component={ProjectExportHierarchySite}
                     />
                 </Switch>
+
+                {dashboardStore.currentProject?.attributes.current_user_deactivated && <UserDeactivatedProjectModal />}
             </>
         );
     }

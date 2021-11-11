@@ -9,6 +9,7 @@ import { OrganizationSite } from "../sites/dashboard/OrganizationSite";
 import { OrganizationSubscriptionSite } from "../sites/dashboard/OrganizationSubscriptionSite";
 import { dashboardStore } from "../stores/DashboardStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
+import { UserDeactivatedOrganizationModal } from "../ui/UserDeactivatedOrganizationModal";
 import { PrivateRoute } from "./PrivateRoute";
 import { PrivateRouteTexterifyCloud } from "./PrivateRouteTexterifyCloud";
 import { Routes } from "./Routes";
@@ -21,6 +22,12 @@ class OrganizationRouter extends React.Component<IProps> {
         await this.fetchOrganization();
     }
 
+    async componentDidUpdate() {
+        if (this.isCurrentOrganizationInvalid()) {
+            await this.fetchOrganization();
+        }
+    }
+
     fetchOrganization = async () => {
         const getOrganizationResponse = await OrganizationsAPI.getOrganization(this.props.match.params.organizationId);
         if (getOrganizationResponse.errors) {
@@ -28,12 +35,10 @@ class OrganizationRouter extends React.Component<IProps> {
         } else {
             dashboardStore.currentOrganization = getOrganizationResponse.data;
         }
-
-        this.forceUpdate();
     };
 
     render() {
-        if (this.isInvalidOrganization()) {
+        if (this.isCurrentOrganizationInvalid()) {
             return <LoadingOverlay isVisible loadingText="Organization is loading..." />;
         }
 
@@ -62,21 +67,19 @@ class OrganizationRouter extends React.Component<IProps> {
                         component={OrganizationSubscriptionSite}
                     />
                 </Switch>
+
+                {dashboardStore.currentOrganization?.attributes.current_user_deactivated && (
+                    <UserDeactivatedOrganizationModal />
+                )}
             </>
         );
     }
 
-    isInvalidOrganization = () => {
-        if (
+    isCurrentOrganizationInvalid = () => {
+        return (
             !dashboardStore.currentOrganization ||
             dashboardStore.currentOrganization.id !== this.props.match.params.organizationId
-        ) {
-            this.fetchOrganization();
-
-            return true;
-        } else {
-            return false;
-        }
+        );
     };
 }
 
