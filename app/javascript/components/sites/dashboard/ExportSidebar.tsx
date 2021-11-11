@@ -13,15 +13,18 @@ export function ExportSidebar(props: { projectId: string }) {
                     items: [
                         {
                             path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", props.projectId),
-                            name: "Download"
+                            name: "Download",
+                            id: "download"
                         },
                         {
                             path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(":projectId", props.projectId),
-                            name: "Configurations"
+                            name: "Configurations",
+                            id: "configurations"
                         },
                         {
                             path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", props.projectId),
-                            name: "Hierarchy"
+                            name: "Hierarchy",
+                            id: "hierarchy"
                         }
                     ]
                 },
@@ -37,7 +40,8 @@ export function ExportSidebar(props: { projectId: string }) {
                                 <>
                                     WordPress <Tag style={{ marginLeft: 8 }}>coming soon</Tag>
                                 </>
-                            )
+                            ),
+                            id: "wordpress"
                         },
                         {
                             path: Routes.DASHBOARD.PROJECT_IMPORT_GITHUB,
@@ -46,7 +50,8 @@ export function ExportSidebar(props: { projectId: string }) {
                                 <>
                                     GitHub <Tag style={{ marginLeft: 8 }}>coming soon</Tag>
                                 </>
-                            )
+                            ),
+                            id: "github"
                         }
                     ]
                 }
