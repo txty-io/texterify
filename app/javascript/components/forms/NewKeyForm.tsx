@@ -93,11 +93,13 @@ class NewKeyForm extends React.Component<IProps> {
     };
 
     render() {
-        const defaultLanguage = LanguageUtils.getDefaultLanguage(this.props.languagesResponse);
+        const defaultLanguage = this.props.languagesResponse?.data
+            ? LanguageUtils.getDefaultLanguage(this.props.languagesResponse)
+            : null;
 
         const countryCode = APIUtils.getIncludedObject(
             defaultLanguage?.relationships.country_code.data,
-            this.props.languagesResponse.included
+            this.props.languagesResponse?.included || []
         );
 
         return (

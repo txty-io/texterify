@@ -289,13 +289,16 @@ class LanguagesSite extends React.Component<IProps, IState> {
                             columns={this.getColumns()}
                             style={{ marginTop: 16 }}
                             bordered
-                            loading={this.state.languagesLoading}
+                            loading={
+                                this.state.languagesLoading ||
+                                dashboardStore.currentProject.attributes.current_user_deactivated
+                            }
                             pagination={{
                                 pageSizeOptions: PAGE_SIZE_OPTIONS,
                                 showSizeChanger: true,
                                 current: this.state.page,
                                 pageSize: this.state.perPage,
-                                total: (this.state.languagesResponse && this.state.languagesResponse.meta.total) || 0,
+                                total: this.state.languagesResponse?.meta?.total || 0,
                                 onChange: async (page: number, _perPage: number) => {
                                     this.setState({ page: page });
                                     await this.reloadTable({ page: page });

@@ -215,7 +215,7 @@ class EditorSite extends React.Component<IProps, IState> {
         let defaultLanguage;
         let defaultLanguageTranslationContent;
         let languagesWithoutDefault = [];
-        if (this.state.languagesResponse) {
+        if (this.state.languagesResponse?.data) {
             defaultLanguage = this.state.languagesResponse.data.find((language) => {
                 return language.attributes.is_default;
             });
@@ -373,8 +373,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                 }}
                             >
                                 {!this.state.keysLoading &&
-                                    this.state.keysResponse &&
-                                    this.state.keysResponse.data.map((key, index) => {
+                                    this.state.keysResponse?.data?.map((key, index) => {
                                         let keyContentPreview: JSX.Element;
 
                                         if (defaultLanguage) {
@@ -543,7 +542,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                 {this.state.keysLoading && (
                                     <LoadingOutlined style={{ fontSize: 24, margin: "auto" }} spin />
                                 )}
-                                {!this.state.keysLoading && this.state.keysResponse.data.length === 0 && (
+                                {!this.state.keysLoading && this.state.keysResponse?.data?.length === 0 && (
                                     <div
                                         style={{
                                             margin: "auto",
@@ -558,7 +557,7 @@ class EditorSite extends React.Component<IProps, IState> {
                             <Pagination
                                 size="small"
                                 current={this.state.page}
-                                total={(this.state.keysResponse && this.state.keysResponse.meta.total) || 0}
+                                total={this.state.keysResponse?.meta?.total || 0}
                                 onChange={async (page: number, _perPage: number) => {
                                     // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                     this.setState({ page: page }, this.fetchKeys);
@@ -585,33 +584,35 @@ class EditorSite extends React.Component<IProps, IState> {
                             {this.keyLoaded() && this.state.languagesResponse && (
                                 <div className="fade-in">
                                     <h2 style={{ fontSize: 16, wordBreak: "break-word" }}>
-                                        {this.state.keyResponse && this.state.keyResponse.data.attributes.name}
+                                        {this.state.keyResponse?.data && this.state.keyResponse.data.attributes.name}
                                     </h2>
                                     <p style={{ wordBreak: "break-word" }}>
-                                        {this.state.keyResponse && this.state.keyResponse.data.attributes.description}
+                                        {this.state.keyResponse?.data &&
+                                            this.state.keyResponse.data.attributes.description}
                                     </p>
 
-                                    {this.state.languagesResponse && this.state.languagesResponse.data.length === 0 && (
-                                        <Alert
-                                            type="info"
-                                            showIcon
-                                            message="No language"
-                                            description={
-                                                <p>
-                                                    <Link
-                                                        to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
-                                                            ":projectId",
-                                                            this.props.match.params.projectId
-                                                        )}
-                                                    >
-                                                        Create a language
-                                                    </Link>{" "}
-                                                    before you can translate your content.
-                                                </p>
-                                            }
-                                            style={{ marginBottom: 24 }}
-                                        />
-                                    )}
+                                    {this.state.languagesResponse?.data &&
+                                        this.state.languagesResponse.data.length === 0 && (
+                                            <Alert
+                                                type="info"
+                                                showIcon
+                                                message="No language"
+                                                description={
+                                                    <p>
+                                                        <Link
+                                                            to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
+                                                                ":projectId",
+                                                                this.props.match.params.projectId
+                                                            )}
+                                                        >
+                                                            Create a language
+                                                        </Link>{" "}
+                                                        before you can translate your content.
+                                                    </p>
+                                                }
+                                                style={{ marginBottom: 24 }}
+                                            />
+                                        )}
 
                                     {defaultLanguage ? (
                                         <TranslationCard

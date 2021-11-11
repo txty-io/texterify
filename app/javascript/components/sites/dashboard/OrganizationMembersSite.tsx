@@ -17,7 +17,6 @@ import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { ErrorUtils } from "../../ui/ErrorUtils";
-import { Loading } from "../../ui/Loading";
 import { RolesLegend } from "../../ui/RolesLegend";
 import { UserAvatar } from "../../ui/UserAvatar";
 import { Utils } from "../../ui/Utils";
@@ -93,7 +92,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
     };
 
     getRows = () => {
-        if (!this.state.getMembersResponse.data) {
+        if (!this.state.getMembersResponse?.data) {
             return [];
         }
 
@@ -130,7 +129,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
     };
 
     getProjectMemberRows = () => {
-        if (!this.state.getProjectMembersResponse.data) {
+        if (!this.state.getProjectMembersResponse?.data) {
             return [];
         }
 
@@ -188,7 +187,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
     };
 
     getOrganizationInvitesRows = () => {
-        if (!this.state.getOrganizationInvitesResponse.data) {
+        if (!this.state.getOrganizationInvitesResponse?.data) {
             return [];
         }
 
@@ -543,10 +542,6 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
     };
 
     render() {
-        if (!this.state.getMembersResponse) {
-            return <Loading />;
-        }
-
         return (
             <>
                 <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
@@ -581,7 +576,10 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                             <Table
                                 dataSource={this.getRows()}
                                 columns={this.getColumns("organization")}
-                                loading={this.state.loading}
+                                loading={
+                                    this.state.loading ||
+                                    dashboardStore.currentOrganization.attributes.current_user_deactivated
+                                }
                                 pagination={false}
                                 bordered
                                 locale={{
@@ -602,7 +600,10 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                             <Table
                                 dataSource={this.getProjectMemberRows()}
                                 columns={this.getColumns("project")}
-                                loading={this.state.loading}
+                                loading={
+                                    this.state.loading ||
+                                    dashboardStore.currentOrganization.attributes.current_user_deactivated
+                                }
                                 pagination={false}
                                 bordered
                                 locale={{
@@ -628,7 +629,10 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                             <Table
                                 dataSource={this.getOrganizationInvitesRows()}
                                 columns={this.getOrganizationInvitesColumns()}
-                                loading={this.state.loading}
+                                loading={
+                                    this.state.loading ||
+                                    dashboardStore.currentOrganization.attributes.current_user_deactivated
+                                }
                                 pagination={false}
                                 bordered
                                 locale={{

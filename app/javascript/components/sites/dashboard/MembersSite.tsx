@@ -94,16 +94,18 @@ class MembersSite extends React.Component<IProps, IState> {
     };
 
     getRows = () => {
-        return this.state.getMembersResponse.data.map((member: any) => {
-            return {
-                id: member.id,
-                key: member.id,
-                username: member.attributes.username,
-                email: member.attributes.email,
-                role: member.attributes.role,
-                roleSource: member.attributes.role_source
-            };
-        }, []);
+        return (
+            this.state.getMembersResponse?.data?.map((member: any) => {
+                return {
+                    id: member.id,
+                    key: member.id,
+                    username: member.attributes.username,
+                    email: member.attributes.email,
+                    role: member.attributes.role,
+                    roleSource: member.attributes.role_source
+                };
+            }, []) || []
+        );
     };
 
     getOrganizationRows = () => {
@@ -330,10 +332,6 @@ class MembersSite extends React.Component<IProps, IState> {
     };
 
     render() {
-        if (!this.state.getMembersResponse || !this.state.getMembersResponse.data) {
-            return <Loading />;
-        }
-
         return (
             <>
                 <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%", maxWidth: 1200 }}>
@@ -369,7 +367,10 @@ class MembersSite extends React.Component<IProps, IState> {
                             <Table
                                 dataSource={this.getProjectRows()}
                                 columns={this.getColumns()}
-                                loading={this.state.loading}
+                                loading={
+                                    this.state.loading ||
+                                    dashboardStore.currentProject.attributes.current_user_deactivated
+                                }
                                 pagination={false}
                                 bordered
                             />
@@ -380,7 +381,10 @@ class MembersSite extends React.Component<IProps, IState> {
                             <Table
                                 dataSource={this.getOrganizationRows()}
                                 columns={this.getColumns()}
-                                loading={this.state.loading}
+                                loading={
+                                    this.state.loading ||
+                                    dashboardStore.currentProject.attributes.current_user_deactivated
+                                }
                                 pagination={false}
                                 bordered
                             />
@@ -394,7 +398,10 @@ class MembersSite extends React.Component<IProps, IState> {
                                 </Tooltip>
                             </h3>
                             <ProjectInvitesTable
-                                loading={this.state.loading}
+                                loading={
+                                    this.state.loading ||
+                                    dashboardStore.currentProject.attributes.current_user_deactivated
+                                }
                                 projectInvites={this.state.getProjectInvitesResponse?.data || []}
                                 onDelete={async () => {
                                     await this.reload();

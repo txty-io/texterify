@@ -175,7 +175,7 @@ class KeysSite extends React.Component<IProps, IState> {
     };
 
     getColumns = () => {
-        const filteredLanguages = this.state.languages.filter((language) => {
+        const filteredLanguages = (this.state.languages || []).filter((language) => {
             return _.find(this.state.projectColumns.included, (o) => {
                 return o.attributes.id === language.attributes.id;
             });
@@ -183,55 +183,57 @@ class KeysSite extends React.Component<IProps, IState> {
 
         const columns = [];
 
-        if (this.isTagsColumnVisible()) {
-            columns.push({
-                title: "Tags",
-                dataIndex: "tags",
-                key: "tags",
-                width: 80
-            });
-        }
+        if (this.state.projectColumns) {
+            if (this.isTagsColumnVisible()) {
+                columns.push({
+                    title: "Tags",
+                    dataIndex: "tags",
+                    key: "tags",
+                    width: 80
+                });
+            }
 
-        if (this.isOverwritesColumnVisible()) {
-            columns.push({
-                title: (
-                    <div style={{ whiteSpace: "nowrap" }}>
-                        <span style={{ marginRight: 8 }}>Overwritten for</span>
-                        <Tooltip title="For which export configs at least one of the translations is overwritten.">
-                            <QuestionCircleOutlined />
-                        </Tooltip>
-                    </div>
-                ),
-                dataIndex: "exportConfigOverwrites",
-                key: "exportConfigOverwrites",
-                width: 80
-            });
-        }
+            if (this.isOverwritesColumnVisible()) {
+                columns.push({
+                    title: (
+                        <div style={{ whiteSpace: "nowrap" }}>
+                            <span style={{ marginRight: 8 }}>Overwritten for</span>
+                            <Tooltip title="For which export configs at least one of the translations is overwritten.">
+                                <QuestionCircleOutlined />
+                            </Tooltip>
+                        </div>
+                    ),
+                    dataIndex: "exportConfigOverwrites",
+                    key: "exportConfigOverwrites",
+                    width: 80
+                });
+            }
 
-        if (this.isNameColumnVisible()) {
-            columns.push({
-                title: "Name",
-                dataIndex: "name",
-                key: "name",
-                editable: true,
-                // defaultSortOrder: "ascend",
-                // sorter: (a, b) => {
-                //     return sortStrings(a.name, b.name, true);
-                // },
-                width: filteredLanguages.length > 0 || this.isDescriptionColumnVisible() ? 400 : undefined
-            });
-        }
+            if (this.isNameColumnVisible()) {
+                columns.push({
+                    title: "Name",
+                    dataIndex: "name",
+                    key: "name",
+                    editable: true,
+                    // defaultSortOrder: "ascend",
+                    // sorter: (a, b) => {
+                    //     return sortStrings(a.name, b.name, true);
+                    // },
+                    width: filteredLanguages.length > 0 || this.isDescriptionColumnVisible() ? 400 : undefined
+                });
+            }
 
-        if (this.isDescriptionColumnVisible()) {
-            columns.push({
-                title: "Description",
-                dataIndex: "description",
-                key: "description",
-                editable: true
-                // sorter: (a, b) => {
-                //     return sortStrings(a.description, b.description, true);
-                // }
-            });
+            if (this.isDescriptionColumnVisible()) {
+                columns.push({
+                    title: "Description",
+                    dataIndex: "description",
+                    key: "description",
+                    editable: true
+                    // sorter: (a, b) => {
+                    //     return sortStrings(a.description, b.description, true);
+                    // }
+                });
+            }
         }
 
         const languageColumns = filteredLanguages.map((language) => {
@@ -613,7 +615,7 @@ class KeysSite extends React.Component<IProps, IState> {
     };
 
     getKeyExportConfigOverwrites = (key: any) => {
-        if (this.state.exportConfigsResponse.data.length === 0) {
+        if (!this.state.exportConfigsResponse?.data) {
             return [];
         }
 
@@ -646,10 +648,6 @@ class KeysSite extends React.Component<IProps, IState> {
     };
 
     render() {
-        if (!this.state.projectColumns) {
-            return <Loading />;
-        }
-
         this.rowSelection.selectedRowKeys = this.state.selectedRowKeys;
 
         const paginationOptions: PaginationProps = {
@@ -773,7 +771,7 @@ class KeysSite extends React.Component<IProps, IState> {
                         </div>
                         <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", alignItems: "flex-end" }}>
                             <span style={{ marginRight: 8, fontWeight: "bold" }}>Columns:</span>
-                            {this.renderColumnTags()}
+                            {this.state.projectColumns && this.renderColumnTags()}
 
                             <div style={{ marginLeft: "auto", marginTop: 4 }}>
                                 <Pagination {...paginationOptions} />
@@ -785,7 +783,10 @@ class KeysSite extends React.Component<IProps, IState> {
                             columns={this.getColumns()}
                             style={{ marginTop: 16, maxWidth: "100%" }}
                             bordered
-                            loading={this.state.keysLoading}
+                            loading={
+                                this.state.keysLoading ||
+                                dashboardStore.currentProject.attributes.current_user_deactivated
+                            }
                             projectId={this.props.match.params.projectId}
                             onCellEdit={async (options: { languageId: string; keyId: string }) => {
                                 const keyResponse = await KeysAPI.getKey(
@@ -861,7 +862,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                 await this.reloadTable();
                             }}
                             expandedRowRender={
-                                this.state.exportConfigsResponse.data.length === 0
+                                (this.state.exportConfigsResponse?.data || []).length === 0
                                     ? undefined
                                     : (record) => {
                                           const data = [];
