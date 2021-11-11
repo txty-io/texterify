@@ -25,6 +25,8 @@ interface IOrganizationAttributes {
     all_features: { [k in IFeature]: IPlanIDS[] };
     machine_translation_character_usage: string;
     machine_translation_character_limit: string;
+    current_user_deactivated?: boolean;
+    current_user_deactivated_reason?: "manually_by_admin" | "expired_subscription";
 }
 
 class DashboardStore {
