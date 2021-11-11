@@ -22,6 +22,11 @@ interface IProjectAttributes {
     auto_translate_new_languages: boolean;
     word_count: number;
     character_count: number;
+    current_user_deactivated?: boolean;
+    current_user_deactivated_reason?: "manually_by_admin" | "expired_subscription";
+    current_user_in_project_organization?: boolean;
+    current_user_in_project?: boolean;
+    organization_id: string;
 }
 
 export interface IProject {
@@ -107,6 +112,8 @@ const ProjectsAPI = {
         autoTranslateNewLanguages?: boolean;
     }): Promise<IUpdateProjectResponse> => {
         return API.putRequest(`projects/${options.projectId}`, true, {
+            name: options.name,
+            description: options.description,
             machine_translation_enabled: options.machineTranslationEnabled,
             auto_translate_new_keys: options.autoTranslateNewKeys,
             auto_translate_new_languages: options.autoTranslateNewLanguages

@@ -137,6 +137,10 @@ Cypress.Commands.add("goToProjectHome", () => {
     cy.get('[data-id="project-sidebar-home"]').click();
 });
 
+Cypress.Commands.add("goToProjectSettings", () => {
+    cy.get('[data-id="project-sidebar-settings"]').click();
+});
+
 Cypress.Commands.add("clickOutside", () => {
     cy.get("body").click(0, 0);
     cy.wait(250);

@@ -41,6 +41,7 @@ declare global {
             goToKeys(): void;
             goToProjectHome(): void;
             goToLanguages(): void;
+            goToProjectSettings(): void;
             goToEditor(): void;
             leaveEditor(): void;
             clickOutside(): void;
