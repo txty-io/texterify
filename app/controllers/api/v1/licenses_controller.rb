@@ -1,5 +1,4 @@
 class Api::V1::LicensesController < Api::V1::ApiController
-  before_action :check_if_user_activated
   def index
     authorize License
 
