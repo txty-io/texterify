@@ -17,13 +17,15 @@ type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     isDeletingProject: boolean;
     transferProjectModalVisible: boolean;
+    projectUpdating: boolean;
 }
 
 @observer
 class ProjectSettingsSite extends React.Component<IProps, IState> {
     state: IState = {
         isDeletingProject: false,
-        transferProjectModalVisible: false
+        transferProjectModalVisible: false,
+        projectUpdating: false
     };
 
     onTransferProjectClick = () => {
@@ -65,6 +67,13 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                                     isEdit
                                     onChanged={() => {
                                         message.success("Successfully updated project settings.");
+                                        this.setState({ projectUpdating: false });
+                                    }}
+                                    onUpdating={() => {
+                                        this.setState({ projectUpdating: true });
+                                    }}
+                                    onError={() => {
+                                        this.setState({ projectUpdating: false });
                                     }}
                                 />
                                 <Button
@@ -72,6 +81,7 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                                     type="primary"
                                     htmlType="submit"
                                     style={{ alignSelf: "flex-end" }}
+                                    loading={this.state.projectUpdating}
                                 >
                                     Save
                                 </Button>
