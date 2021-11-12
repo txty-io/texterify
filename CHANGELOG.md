@@ -14,6 +14,8 @@ All notable changes to this project will be documented in this file.
 - Fix bug where keys site crashes.
 - Fix organizations site display errors due to invalid keys.
 - Fix missing checks that allowed to create keys with name "texterify_*".
+- Fix bug that caused the name and description of a project to not update.
+- Fix bug which caused the wrong image for an organization to be shown.
 
 ## v1.0.6
 
