@@ -2,7 +2,7 @@ require 'json'
 require 'zip'
 
 class Api::V1::ProjectsController < Api::V1::ApiController
-  before_action :check_if_user_activated, except: [:show, :image, :index, :recently_viewed]
+  before_action :check_if_user_activated, except: [:show, :image, :index, :create, :recently_viewed]
 
   def image
     skip_authorization
@@ -52,50 +52,20 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
   def create
     skip_authorization
+    organization = current_user.organizations.find(params[:organization_id])
 
-    if params[:organization_id]
-      organization = current_user.organizations.find(params[:organization_id])
-    end
-
-    if organization && !organization.feature_enabled?(Organization::FEATURE_UNLIMITED_PROJECTS) &&
-         organization.projects.size >= 1
-      render json: { error: true, message: 'MAXIMUM_NUMBER_OF_PROJECTS_REACHED' }, status: :bad_request
-      return
-    elsif !organization && current_user.private_projects.size >= 1
+    if !organization.feature_enabled?(Organization::FEATURE_UNLIMITED_PROJECTS) && organization.projects.size >= 1
       render json: { error: true, message: 'MAXIMUM_NUMBER_OF_PROJECTS_REACHED' }, status: :bad_request
       return
     end
 
     project = Project.new(project_params)
-
-    if params[:organization_id]
-      project.organization = organization
-    else
-      project_column = ProjectColumn.new
-      project_column.project = project
-      project_column.user = current_user
-    end
+    project.organization = organization
 
     ActiveRecord::Base.transaction do
       unless project.save
         render json: { errors: project.errors.details }, status: :bad_request
         raise ActiveRecord::Rollback
-      end
-
-      unless params[:organization_id]
-        unless project_column.save
-          render json: { errors: project_column.errors.details }, status: :bad_request
-          raise ActiveRecord::Rollback
-        end
-
-        project_user = ProjectUser.new
-        project_user.user_id = current_user.id
-        project_user.project_id = project.id
-        project_user.role = 'owner'
-        unless project_user.save
-          render json: { errors: project_user.errors.details }, status: :bad_request
-          raise ActiveRecord::Rollback
-        end
       end
 
       options = {}

@@ -10,7 +10,9 @@ ORGANIZATION_ATTRIBUTES = [
   'trial_active',
   'trial_ends_at',
   'machine_translation_character_limit',
-  'machine_translation_character_usage'
+  'machine_translation_character_usage',
+  'current_user_deactivated',
+  'current_user_deactivated_reason'
 ].freeze
 
 RSpec.describe Api::V1::OrganizationsController, type: :request do
