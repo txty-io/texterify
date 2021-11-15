@@ -1,6 +1,6 @@
 class Api::V1::MachineTranslationsController < Api::V1::ApiController
   before_action :verify_deepl_configured
-  before_action :check_if_user_activated, except: [:source_languages, :target_languages]
+  before_action :check_if_user_activated, except: [:usage, :source_languages, :target_languages]
 
   def usage
     authorize :machine_translation, :usage?
