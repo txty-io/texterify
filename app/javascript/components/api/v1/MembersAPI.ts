@@ -1,8 +1,9 @@
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
+import { IGetUsersResponse } from "./OrganizationMembersAPI";
 
 const MembersAPI = {
-    getMembers: async (projectId: string, options?: { search: string }): Promise<any> => {
+    getMembers: async (projectId: string, options?: { search: string }): Promise<IGetUsersResponse> => {
         return API.getRequest(`projects/${projectId}/members`, true, {
             search: options && options.search
         })

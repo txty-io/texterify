@@ -16,6 +16,11 @@ class UserSerializer
     end
   end
 
+  attribute :user_deactivated_for_project, if: proc { |_, params| params[:project] } do |object, params|
+    project_user = ProjectUser.find_by(project_id: params[:project].id, user_id: object.id)
+    project_user ? project_user.deactivated : nil
+  end
+
   attribute :role_source, if: proc { |_, params| params[:project] } do |object, params|
     project_user = ProjectUser.find_by(project_id: params[:project].id, user_id: object.id)
     project_user ? 'project' : 'organization'

@@ -23,7 +23,7 @@ interface IProjectAttributes {
     word_count: number;
     character_count: number;
     current_user_deactivated?: boolean;
-    current_user_deactivated_reason?: "manually_by_admin" | "expired_subscription";
+    current_user_deactivated_reason?: "manually_by_admin" | "user_limit_exceeded";
     current_user_in_project_organization?: boolean;
     current_user_in_project?: boolean;
     organization_id: string;

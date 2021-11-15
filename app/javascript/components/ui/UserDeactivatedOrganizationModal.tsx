@@ -9,7 +9,7 @@ import { TexterifyModal } from "./TexterifyModal";
 function getTextByDeactivatedReason(reason: IOrganization["attributes"]["current_user_deactivated_reason"]) {
     if (reason === "manually_by_admin") {
         return "Your accout has been disabled by an administrator of your organization. If you think this was a mistake please contact them to reactivate your account.";
-    } else if (reason === "expired_subscription") {
+    } else if (reason === "user_limit_exceeded") {
         return "Your account has been disabled because the subscription of your organization expired. Please contact your organization administrator to inform them that they need to resubscribe and then activate your account. Unless then you won't be able to use Texterify again within this organization.";
     } else {
         return "Your account has been disabled. Please contact your organization administrator to enable your account.";

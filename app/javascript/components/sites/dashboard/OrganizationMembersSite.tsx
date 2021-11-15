@@ -8,13 +8,19 @@ import { RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { IGetOrganizationInvitesResponse, OrganizationInvitesAPI } from "../../api/v1/OrganizationInvitesAPI";
-import { OrganizationMembersAPI } from "../../api/v1/OrganizationMembersAPI";
+import {
+    IGetOrganizationUsersResponse,
+    IGetProjectUsersResponse,
+    IUser,
+    OrganizationMembersAPI
+} from "../../api/v1/OrganizationMembersAPI";
 import { OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
 import { IProject } from "../../api/v1/ProjectsAPI";
 import { InviteUserFormModal } from "../../forms/InviteUserFormModal";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
+import { IUserRole } from "../../types/IUserRole";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { ErrorUtils } from "../../ui/ErrorUtils";
 import { RolesLegend } from "../../ui/RolesLegend";
@@ -24,27 +30,56 @@ import { PermissionUtils } from "../../utilities/PermissionUtils";
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {
-    getMembersResponse: any;
-    getProjectMembersResponse: any;
+    getOrganizationUsersResponse: IGetOrganizationUsersResponse;
+    getProjectUsersResponse: IGetProjectUsersResponse;
     getOrganizationInvitesResponse: IGetOrganizationInvitesResponse;
     deleteDialogVisible: boolean;
     search: string;
     loading: boolean;
     inviteDialogOpen: boolean;
     inviteRole: string;
+    userActivating: boolean;
+}
+
+interface IOrganizationUserRow {
+    id: string;
+    key: string;
+    user: IUser;
+    username: string;
+    email: string;
+    role: IUserRole;
+    deactivated_for_organization: boolean;
+    deactivated_for_instance: boolean;
+    projects: {
+        role: IUserRole;
+        project: IProject;
+    }[];
+}
+
+interface IProjectUserRow {
+    id: string;
+    key: string;
+    user: IUser;
+    deactivated_for_project: boolean;
+    deactivated_for_instance: boolean;
+    projects: {
+        role: IUserRole;
+        project: IProject;
+    }[];
 }
 
 @observer
 class OrganizationMembersSite extends React.Component<IProps, IState> {
     state: IState = {
-        getMembersResponse: null,
-        getProjectMembersResponse: null,
+        getOrganizationUsersResponse: null,
+        getProjectUsersResponse: null,
         getOrganizationInvitesResponse: null,
         deleteDialogVisible: false,
         search: "",
         loading: true,
         inviteDialogOpen: false,
-        inviteRole: "translator"
+        inviteRole: "translator",
+        userActivating: false
     };
 
     debouncedSearchReloader = _.debounce(
@@ -80,8 +115,8 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
             });
 
             this.setState({
-                getMembersResponse: responseGetMembers,
-                getProjectMembersResponse: responseGetProjectMembers,
+                getOrganizationUsersResponse: responseGetMembers,
+                getProjectUsersResponse: responseGetProjectMembers,
                 getOrganizationInvitesResponse: responseGetOrganizationInvites
             });
         } catch (e) {
@@ -91,12 +126,17 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
         this.setState({ loading: false });
     };
 
-    getRows = () => {
-        if (!this.state.getMembersResponse?.data) {
+    getOrganizationUsersRows = (): IOrganizationUserRow[] => {
+        if (!this.state.getOrganizationUsersResponse?.data) {
             return [];
         }
 
-        return this.state.getMembersResponse.data.map((user: any) => {
+        return this.state.getOrganizationUsersResponse.data.map((organizationUser) => {
+            const user: IUser = APIUtils.getIncludedObject(
+                organizationUser.relationships.user.data,
+                this.state.getOrganizationUsersResponse.included
+            );
+
             return {
                 id: user.id,
                 key: user.id,
@@ -104,19 +144,21 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                 username: user.attributes.username,
                 email: user.attributes.email,
                 role: user.attributes.role_organization,
-                projects: this.state.getProjectMembersResponse.data
+                deactivated_for_organization: organizationUser.attributes.deactivated,
+                deactivated_for_instance: user.attributes.deactivated,
+                projects: this.state.getProjectUsersResponse.data
                     .filter((projectUser) => {
                         const projectUserUser = APIUtils.getIncludedObject(
                             projectUser.relationships.user.data,
-                            this.state.getProjectMembersResponse.included
+                            this.state.getProjectUsersResponse.included
                         );
 
                         return user.id === projectUserUser.id;
                     })
                     .map((projectUser) => {
-                        const project = APIUtils.getIncludedObject(
+                        const project: IProject = APIUtils.getIncludedObject(
                             projectUser.relationships.project.data,
-                            this.state.getProjectMembersResponse.included
+                            this.state.getProjectUsersResponse.included
                         );
 
                         return {
@@ -128,58 +170,60 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
         }, []);
     };
 
-    getProjectMemberRows = () => {
-        if (!this.state.getProjectMembersResponse?.data) {
+    getProjectUsersRows = (): IProjectUserRow[] => {
+        if (!this.state.getProjectUsersResponse?.data) {
             return [];
         }
 
         const combined: {
             [key: string]: {
-                role: string;
+                role: IUserRole;
                 project: IProject;
             }[];
         } = {};
-        this.state.getProjectMembersResponse.data
+        this.state.getProjectUsersResponse.data
             .filter((projectUser) => {
-                return !this.state.getMembersResponse.data.find((user) => {
+                return !this.state.getOrganizationUsersResponse.data.find((user) => {
                     const projectUserUser = APIUtils.getIncludedObject(
                         projectUser.relationships.user.data,
-                        this.state.getProjectMembersResponse.included
+                        this.state.getProjectUsersResponse.included
                     );
 
                     return user.id === projectUserUser.id;
                 });
             })
             .forEach((projectUser) => {
-                const user = APIUtils.getIncludedObject(
-                    projectUser.relationships.user.data,
-                    this.state.getProjectMembersResponse.included
-                );
-
                 const project = APIUtils.getIncludedObject(
                     projectUser.relationships.project.data,
-                    this.state.getProjectMembersResponse.included
+                    this.state.getProjectUsersResponse.included
                 );
 
-                if (!combined[user.id]) {
-                    combined[user.id] = [];
+                if (!combined[projectUser.id]) {
+                    combined[projectUser.id] = [];
                 }
 
-                combined[user.id].push({
+                combined[projectUser.id].push({
                     role: projectUser.attributes.role,
                     project: project
                 });
             });
 
-        const result = [];
+        const result: IProjectUserRow[] = [];
         for (const [key, value] of Object.entries(combined)) {
+            const projectUser = this.state.getProjectUsersResponse?.data?.find((pu) => {
+                return pu.id === key;
+            });
+            const user = this.state.getProjectUsersResponse?.included?.find((included) => {
+                return included.type === "user" && included.id === projectUser.attributes.user_id;
+            }) as IUser;
+
             result.push({
                 id: key,
                 key: key,
-                user: this.state.getProjectMembersResponse.included.find((included) => {
-                    return included.type === "user" && included.id === key;
-                }),
-                projects: value
+                user: user,
+                projects: value,
+                deactivated_for_project: projectUser?.attributes.deactivated,
+                deactivated_for_instance: user?.attributes.deactivated
             });
         }
 
@@ -228,7 +272,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
     };
 
     hasOnlyOneOwner = () => {
-        const ownerRows = this.getRows().filter((row) => {
+        const ownerRows = this.getOrganizationUsersRows().filter((row) => {
             return PermissionUtils.isOwner(row.role);
         });
 
@@ -248,11 +292,36 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
             {
                 title: "Username",
                 key: "username",
-                render: (_text, record) => {
+                render: (_text, record: IOrganizationUserRow | IProjectUserRow) => {
                     return (
-                        <span style={{ color: "var(--full-color)", fontWeight: "bold" }}>
-                            {record.user.attributes.username}
-                        </span>
+                        <>
+                            <span style={{ color: "var(--full-color)", fontWeight: "bold" }}>
+                                {record.user.attributes.username}
+                            </span>
+                            {((record as IOrganizationUserRow).deactivated_for_organization ||
+                                (record as IProjectUserRow).deactivated_for_project) && (
+                                <Tooltip title="User has been deactivated for this organization.">
+                                    <Tag
+                                        className="texterify-table-row-disabled-skip"
+                                        style={{ marginLeft: 24 }}
+                                        color="red"
+                                    >
+                                        Deactivated
+                                    </Tag>
+                                </Tooltip>
+                            )}
+                            {record.deactivated_for_instance && (
+                                <Tooltip title="User account has been deactivated.">
+                                    <Tag
+                                        className="texterify-table-row-disabled-skip"
+                                        style={{ marginLeft: 24 }}
+                                        color="red"
+                                    >
+                                        Deactivated account
+                                    </Tag>
+                                </Tooltip>
+                            )}
+                        </>
                     );
                 }
             },
@@ -407,75 +476,123 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                     title: "",
                     key: "actions",
                     width: 80,
-                    render: (_text: any, record: any) => {
+                    render: (_text: any, record: IOrganizationUserRow) => {
                         return (
-                            <Button
-                                style={{ width: "100%" }}
-                                onClick={async () => {
-                                    this.setState({
-                                        deleteDialogVisible: true
-                                    });
-
-                                    Modal.confirm({
-                                        title:
-                                            record.email === authStore.currentUser.email
-                                                ? "Do you really want to leave this organization?"
-                                                : "Do you really want to remove this user from the organization?",
-                                        content: "This cannot be undone.",
-                                        okText: "Yes",
-                                        okButtonProps: {
-                                            danger: true
-                                        },
-                                        cancelText: "No",
-                                        autoFocusButton: "cancel",
-                                        visible: this.state.deleteDialogVisible,
-                                        onOk: async () => {
-                                            const response = await OrganizationMembersAPI.deleteMember(
-                                                this.props.match.params.organizationId,
-                                                record.key
-                                            );
-
-                                            if (response.error) {
-                                                if (response.message === "LAST_OWNER_CANT_BE_REMOVED") {
-                                                    message.error("The last user with an owner role can't be removed.");
+                            <div style={{ display: "flex" }} className="texterify-table-row-disabled-skip">
+                                {record.deactivated_for_organization && (
+                                    <div style={{ marginRight: 16 }}>
+                                        <Tooltip
+                                            title={
+                                                dashboardStore.currentOrganization.attributes.max_users_reached
+                                                    ? "You have reached the maximum number of users. Please upgrade your plan to activate this user."
+                                                    : undefined
+                                            }
+                                        >
+                                            <Popconfirm
+                                                title="Do you want to activate this user?"
+                                                onConfirm={async () => {
+                                                    this.setState({ userActivating: true });
+                                                    try {
+                                                        // await OrganizationInvitesAPI.delete({
+                                                        //     organizationId: invite.attributes.organization_id,
+                                                        //     inviteId: invite.id
+                                                        // });
+                                                        await this.reload();
+                                                    } catch (error) {
+                                                        console.error(error);
+                                                    }
+                                                    this.setState({ userActivating: false });
+                                                }}
+                                                okText="Yes"
+                                                cancelText="No"
+                                                disabled={
+                                                    dashboardStore.currentOrganization.attributes.max_users_reached
                                                 }
-                                            } else if (record.email === authStore.currentUser.email) {
-                                                this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
-                                            } else {
-                                                const getMembersResponse = await OrganizationMembersAPI.getMembers(
-                                                    this.props.match.params.organizationId
+                                            >
+                                                <Button
+                                                    type="primary"
+                                                    loading={this.state.userActivating}
+                                                    disabled={
+                                                        dashboardStore.currentOrganization.attributes.max_users_reached
+                                                    }
+                                                >
+                                                    Activate
+                                                </Button>
+                                            </Popconfirm>
+                                        </Tooltip>
+                                    </div>
+                                )}
+                                <Button
+                                    style={{ width: "100%" }}
+                                    onClick={async () => {
+                                        this.setState({
+                                            deleteDialogVisible: true
+                                        });
+
+                                        Modal.confirm({
+                                            title:
+                                                record.email === authStore.currentUser.email
+                                                    ? "Do you really want to leave this organization?"
+                                                    : "Do you really want to remove this user from the organization?",
+                                            content: "This cannot be undone.",
+                                            okText: "Yes",
+                                            okButtonProps: {
+                                                danger: true
+                                            },
+                                            cancelText: "No",
+                                            autoFocusButton: "cancel",
+                                            visible: this.state.deleteDialogVisible,
+                                            onOk: async () => {
+                                                const response = await OrganizationMembersAPI.deleteMember(
+                                                    this.props.match.params.organizationId,
+                                                    record.key
                                                 );
+
+                                                if (response.error) {
+                                                    if (response.message === "LAST_OWNER_CANT_BE_REMOVED") {
+                                                        message.error(
+                                                            "The last user with an owner role can't be removed."
+                                                        );
+                                                    }
+                                                } else if (record.email === authStore.currentUser.email) {
+                                                    this.props.history.push(Routes.DASHBOARD.ORGANIZATIONS);
+                                                } else {
+                                                    const getOrganizationUsersResponse =
+                                                        await OrganizationMembersAPI.getMembers(
+                                                            this.props.match.params.organizationId
+                                                        );
+                                                    this.setState({
+                                                        getOrganizationUsersResponse: getOrganizationUsersResponse,
+                                                        deleteDialogVisible: false
+                                                    });
+                                                }
+                                            },
+                                            onCancel: () => {
                                                 this.setState({
-                                                    getMembersResponse: getMembersResponse,
                                                     deleteDialogVisible: false
                                                 });
                                             }
-                                        },
-                                        onCancel: () => {
-                                            this.setState({
-                                                deleteDialogVisible: false
-                                            });
-                                        }
-                                    });
-                                }}
-                                danger
-                                disabled={
-                                    (!(
-                                        PermissionUtils.isManagerOrHigher(
-                                            dashboardStore.getCurrentOrganizationRole()
+                                        });
+                                    }}
+                                    danger
+                                    disabled={
+                                        (!(
+                                            PermissionUtils.isManagerOrHigher(
+                                                dashboardStore.getCurrentOrganizationRole()
+                                            ) &&
+                                            PermissionUtils.isHigherRole(
+                                                dashboardStore.getCurrentOrganizationRole(),
+                                                record.role
+                                            )
                                         ) &&
-                                        PermissionUtils.isHigherRole(
-                                            dashboardStore.getCurrentOrganizationRole(),
-                                            record.role
-                                        )
-                                    ) &&
-                                        !PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole()) &&
-                                        record.email !== authStore.currentUser.email) ||
-                                    this.state.getMembersResponse?.data.length === 1
-                                }
-                            >
-                                {record.id === authStore.currentUser.id ? "Leave" : "Remove"}
-                            </Button>
+                                            !PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole()) &&
+                                            record.email !== authStore.currentUser.email) ||
+                                        this.state.getOrganizationUsersResponse?.data.length === 1
+                                    }
+                                >
+                                    {record.id === authStore.currentUser.id ? "Leave" : "Remove"}
+                                </Button>
+                            </div>
                         );
                     }
                 }
@@ -574,7 +691,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                         <div style={{ marginTop: 40 }}>
                             <h3>Users</h3>
                             <Table
-                                dataSource={this.getRows()}
+                                dataSource={this.getOrganizationUsersRows()}
                                 columns={this.getColumns("organization")}
                                 loading={
                                     this.state.loading ||
@@ -582,6 +699,11 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                 }
                                 pagination={false}
                                 bordered
+                                rowClassName={(row: IOrganizationUserRow) => {
+                                    return row.deactivated_for_instance || row.deactivated_for_organization
+                                        ? "texterify-table-row-disabled"
+                                        : null;
+                                }}
                                 locale={{
                                     emptyText: (
                                         <Empty
@@ -598,7 +720,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                         <div style={{ marginTop: 40 }}>
                             <h3>External users</h3>
                             <Table
-                                dataSource={this.getProjectMemberRows()}
+                                dataSource={this.getProjectUsersRows()}
                                 columns={this.getColumns("project")}
                                 loading={
                                     this.state.loading ||
@@ -606,6 +728,11 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                 }
                                 pagination={false}
                                 bordered
+                                rowClassName={(row: IProjectUserRow) => {
+                                    return row.deactivated_for_instance || row.deactivated_for_project
+                                        ? "texterify-table-row-disabled"
+                                        : null;
+                                }}
                                 locale={{
                                     emptyText: (
                                         <Empty

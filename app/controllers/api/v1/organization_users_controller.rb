@@ -11,17 +11,18 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
 
     organization_users =
       if params[:search]
-        organization.users.where(
-          'users.username ilike :search or users.email ilike :search',
-          search: "%#{params[:search]}%"
-        )
+        organization
+          .organization_users
+          .joins(:user)
+          .where('users.username ilike :search or users.email ilike :search', search: "%#{params[:search]}%")
       else
-        organization.users
+        organization.organization_users
       end
 
     options = {}
     options[:params] = { organization: organization }
-    render json: UserSerializer.new(organization_users, options).serialized_json
+    options[:include] = [:organization, :user]
+    render json: OrganizationUserSerializer.new(organization_users, options).serialized_json
   end
 
   def project_users

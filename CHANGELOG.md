@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - Fix missing checks that allowed to create keys with name "texterify_*".
 - Fix bug that caused the name and description of a project to not update.
 - Fix bug which caused the wrong image for an organization to be shown.
+- Fix bug that caused the app to crash when languages are not loaded correctly for filters.
 
 ## v1.0.6
 
