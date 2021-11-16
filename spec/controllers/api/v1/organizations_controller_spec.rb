@@ -12,7 +12,8 @@ ORGANIZATION_ATTRIBUTES = [
   'machine_translation_character_limit',
   'machine_translation_character_usage',
   'current_user_deactivated',
-  'current_user_deactivated_reason'
+  'current_user_deactivated_reason',
+  'max_users_reached'
 ].freeze
 
 RSpec.describe Api::V1::OrganizationsController, type: :request do

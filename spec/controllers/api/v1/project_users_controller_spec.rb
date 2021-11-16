@@ -8,7 +8,8 @@ USER_ATTRIBUTES = [
   'role',
   'role_source',
   'deactivated',
-  'deactivated_reason'
+  'deactivated_reason',
+  'user_deactivated_for_project'
 ].freeze
 
 RSpec.describe Api::V1::ProjectUsersController, type: :request do
