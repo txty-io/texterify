@@ -48,15 +48,24 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     organization = current_user.organizations.find(params[:organization_id])
     user = User.find_by(email: params[:email])
 
+    # Check if the user exists.
     unless user
       skip_authorization
       render json: { error: true, message: 'USER_NOT_FOUND' }, status: :not_found
       return
     end
 
+    # Check if the role exists.
+    role = params[:role]
+    if role && ROLE_PRIORITY_MAP[role.to_sym].nil?
+      render json: { error: true, message: 'ROLE_NOT_FOUND' }, status: :bad_request
+      return
+    end
+
     organization_user = OrganizationUser.new
     organization_user.organization = organization
     organization_user.user = user
+    organization_user.role = role || ROLE_TRANSLATOR
     authorize organization_user
 
     if organization.users.exclude?(user)

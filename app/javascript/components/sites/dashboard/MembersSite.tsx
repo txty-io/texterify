@@ -262,7 +262,7 @@ class MembersSite extends React.Component<IProps, IState> {
                             filterOption
                             style={{ marginRight: 24, width: 240 }}
                             value={record.role}
-                            onChange={async (value: string) => {
+                            onChange={async (value: IUserRole) => {
                                 try {
                                     const response = await MembersAPI.updateMember(
                                         this.props.match.params.projectId,

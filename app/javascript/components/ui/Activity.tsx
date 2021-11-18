@@ -321,7 +321,10 @@ class Activity extends React.Component<IProps> {
     };
 
     render() {
-        if (!this.props.activitiesResponse?.data || dashboardStore.currentProject.attributes.current_user_deactivated) {
+        if (
+            !this.props.activitiesResponse?.data ||
+            dashboardStore.currentProject?.attributes.current_user_deactivated
+        ) {
             return <Skeleton active />;
         }
 

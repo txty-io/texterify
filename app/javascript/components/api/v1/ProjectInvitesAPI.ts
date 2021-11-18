@@ -1,3 +1,4 @@
+import { IUserRole } from "../../types/IUserRole";
 import { API } from "./API";
 import { APIUtils, IGenericAPIResponse } from "./APIUtils";
 
@@ -23,7 +24,7 @@ export interface IGetProjectInvitesResponse {
 }
 
 const ProjectInvitesAPI = {
-    create: async (options: { projectId: string; email: string; role?: string }): Promise<IGenericAPIResponse> => {
+    create: async (options: { projectId: string; email: string; role?: IUserRole }): Promise<IGenericAPIResponse> => {
         return API.postRequest(`projects/${options.projectId}/invites`, true, {
             email: options.email,
             role: options.role

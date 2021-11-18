@@ -97,9 +97,10 @@ const OrganizationMembersAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    createMember: async (organizationId: string, email: string): Promise<any> => {
+    createMember: async (organizationId: string, email: string, role: IUserRole): Promise<any> => {
         return API.postRequest(`organizations/${organizationId}/members`, true, {
-            email: email
+            email: email,
+            role: role
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
