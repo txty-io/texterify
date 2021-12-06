@@ -22,6 +22,8 @@
 - A big selection of integrations
 - Cloud and on-premise options
 
+For future features see our [public roadmap](https://github.com/texterify/texterify/projects/1).
+
 Find out more at [texterify.com](https://texterify.com) or [sign up](https://app.texterify.com/signup) here.
 
 <p align="center">
