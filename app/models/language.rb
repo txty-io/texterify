@@ -46,7 +46,15 @@ class Language < ApplicationRecord
           target_translation = key.translations.find_by(language_id: target_language.id, export_config_id: nil)
 
           if source_translation.present? && (target_translation.nil? || target_translation.content.empty?)
-            content = Texterify::MachineTranslation.translate(source_translation, target_language)
+            begin
+              content = Texterify::MachineTranslation.translate(source_translation, target_language)
+            rescue RestClient::RequestFailed => e
+              Sentry.capture_exception(e)
+              return false
+            rescue StandardError
+              Sentry.capture_exception(e)
+              return false
+            end
 
             unless content.nil?
               if target_translation.nil?
