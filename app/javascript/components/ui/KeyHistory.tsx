@@ -77,7 +77,7 @@ class KeyHistory extends React.Component<IProps, IState> {
                     : activity.attributes.object_changes.language_id[1];
 
                 if (!latestTranslations[translationLanguageId]) {
-                    latestTranslations[translationLanguageId] = activity.attributes.object_changes.content[1];
+                    latestTranslations[translationLanguageId] = activity.attributes.object_changes?.content[1] || "";
                 }
 
                 return (
@@ -91,7 +91,7 @@ class KeyHistory extends React.Component<IProps, IState> {
             const translationLanguageId = activity.attributes.object
                 ? activity.attributes.object.language_id
                 : activity.attributes.object_changes.language_id[1];
-            const newContent = activity.attributes.object_changes.content[1];
+            const newContent = activity.attributes.object_changes?.content[1] || "";
             const date = moment.utc(activity.attributes.created_at, "YYYY-MM-DD HH:mm:ss").local().format("LL");
             const time = moment.utc(activity.attributes.created_at, "YYYY-MM-DD HH:mm:ss").local().format("HH:mm");
             const key = APIUtils.getIncludedObject(
