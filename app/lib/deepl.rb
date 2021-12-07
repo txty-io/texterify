@@ -75,6 +75,7 @@ module Deepl
         JSON.parse(response)
       rescue => e
         Sentry.capture_exception(e)
+        nil
       end
     end
   end
