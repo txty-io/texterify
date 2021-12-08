@@ -25,12 +25,7 @@ export function ImportSidebar(props: { projectId: string }) {
                             path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_RESOLVER({
                                 projectId: props.projectId
                             }),
-                            disabled: true,
-                            name: (
-                                <>
-                                    WordPress <Tag style={{ marginLeft: 8 }}>coming soon</Tag>
-                                </>
-                            ),
+                            name: "WordPress",
                             id: "wordpress"
                         },
                         {
