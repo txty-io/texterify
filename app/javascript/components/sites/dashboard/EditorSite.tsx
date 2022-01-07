@@ -124,6 +124,7 @@ class EditorSite extends React.Component<IProps, IState> {
         const getProjectResponse = await ProjectsAPI.getProject(this.props.match.params.projectId);
         if (getProjectResponse.errors) {
             this.props.history.push(Routes.DASHBOARD.PROJECTS);
+            return;
         } else {
             dashboardStore.currentProject = getProjectResponse.data;
             dashboardStore.currentProjectIncluded = getProjectResponse.included;
