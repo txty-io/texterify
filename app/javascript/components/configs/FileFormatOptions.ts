@@ -3,10 +3,6 @@ const FileFormatOptions = [
         value: "json",
         text: "JSON Flat"
     },
-    // {
-    //     value: "json-nested",
-    //     text: "JSON Nested"
-    // },
     {
         value: "json-formatjs",
         text: "JSON Format.js"

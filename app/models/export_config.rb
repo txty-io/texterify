@@ -69,8 +69,6 @@ class ExportConfig < ApplicationRecord
   def file(language, export_data)
     if file_format == 'json'
       json(language, export_data)
-    elsif file_format == 'json-nested'
-      json(language, export_data)
     elsif file_format == 'json-formatjs'
       json_formatjs(language, export_data)
     elsif file_format == 'typescript'

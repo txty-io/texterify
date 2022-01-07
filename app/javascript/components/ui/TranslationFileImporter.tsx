@@ -214,8 +214,6 @@ msgstr "Awesome app"
 function getFileEndingForSelectedFormat(selectedImportFormat: string) {
     if (selectedImportFormat === "json") {
         return ".json";
-    } else if (selectedImportFormat === "json-nested") {
-        return ".json";
     } else if (selectedImportFormat === "json-formatjs") {
         return ".json";
     } else if (selectedImportFormat === "ios") {
