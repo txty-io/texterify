@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_27_175039) do
+ActiveRecord::Schema.define(version: 2022_01_25_022946) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -142,8 +142,8 @@ ActiveRecord::Schema.define(version: 2021_10_27_175039) do
 
   create_table "language_configs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "language_code", null: false
-    t.uuid "language_id"
-    t.uuid "export_config_id"
+    t.uuid "language_id", null: false
+    t.uuid "export_config_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["export_config_id"], name: "index_language_configs_on_export_config_id"
@@ -480,48 +480,48 @@ ActiveRecord::Schema.define(version: 2021_10_27_175039) do
     t.index ["project_id"], name: "index_wordpress_polylang_connections_on_project_id"
   end
 
-  add_foreign_key "access_tokens", "users"
+  add_foreign_key "access_tokens", "users", on_delete: :cascade
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "custom_subscriptions", "organizations", on_delete: :nullify
-  add_foreign_key "export_configs", "projects"
-  add_foreign_key "keys", "projects"
+  add_foreign_key "export_configs", "projects", on_delete: :cascade
+  add_foreign_key "keys", "projects", on_delete: :cascade
   add_foreign_key "keys_tags", "keys", on_delete: :cascade
   add_foreign_key "keys_tags", "tags", on_delete: :cascade
-  add_foreign_key "language_configs", "export_configs"
-  add_foreign_key "language_configs", "languages"
-  add_foreign_key "languages", "country_codes"
-  add_foreign_key "languages", "language_codes"
-  add_foreign_key "languages", "languages", column: "parent_id"
-  add_foreign_key "languages", "projects"
-  add_foreign_key "languages_project_columns", "languages"
-  add_foreign_key "languages_project_columns", "project_columns"
+  add_foreign_key "language_configs", "export_configs", on_delete: :cascade
+  add_foreign_key "language_configs", "languages", on_delete: :cascade
+  add_foreign_key "languages", "country_codes", on_delete: :nullify
+  add_foreign_key "languages", "language_codes", on_delete: :nullify
+  add_foreign_key "languages", "languages", column: "parent_id", on_delete: :nullify
+  add_foreign_key "languages", "projects", on_delete: :cascade
+  add_foreign_key "languages_project_columns", "languages", on_delete: :cascade
+  add_foreign_key "languages_project_columns", "project_columns", on_delete: :cascade
   add_foreign_key "machine_translation_memories", "country_codes", column: "source_country_code_id"
   add_foreign_key "machine_translation_memories", "country_codes", column: "target_country_code_id"
   add_foreign_key "machine_translation_memories", "language_codes", column: "source_language_code_id"
   add_foreign_key "machine_translation_memories", "language_codes", column: "target_language_code_id"
   add_foreign_key "organization_invites", "organizations", on_delete: :cascade
-  add_foreign_key "organizations_users", "organizations"
-  add_foreign_key "organizations_users", "users"
-  add_foreign_key "post_processing_rules", "export_configs"
-  add_foreign_key "post_processing_rules", "projects"
-  add_foreign_key "project_columns", "projects"
-  add_foreign_key "project_columns", "users"
+  add_foreign_key "organizations_users", "organizations", on_delete: :cascade
+  add_foreign_key "organizations_users", "users", on_delete: :cascade
+  add_foreign_key "post_processing_rules", "export_configs", on_delete: :cascade
+  add_foreign_key "post_processing_rules", "projects", on_delete: :cascade
+  add_foreign_key "project_columns", "projects", on_delete: :cascade
+  add_foreign_key "project_columns", "users", on_delete: :cascade
   add_foreign_key "project_invites", "projects", on_delete: :cascade
-  add_foreign_key "projects", "organizations"
-  add_foreign_key "projects_users", "projects"
-  add_foreign_key "projects_users", "users"
+  add_foreign_key "projects", "organizations", on_delete: :cascade
+  add_foreign_key "projects_users", "projects", on_delete: :cascade
+  add_foreign_key "projects_users", "users", on_delete: :cascade
   add_foreign_key "recently_viewed_projects", "projects", on_delete: :cascade
   add_foreign_key "recently_viewed_projects", "users", on_delete: :cascade
-  add_foreign_key "release_files", "releases"
-  add_foreign_key "releases", "export_configs"
-  add_foreign_key "sent_emails", "organizations"
-  add_foreign_key "sent_emails", "users"
+  add_foreign_key "release_files", "releases", on_delete: :cascade
+  add_foreign_key "releases", "export_configs", on_delete: :cascade
+  add_foreign_key "sent_emails", "organizations", on_delete: :cascade
+  add_foreign_key "sent_emails", "users", on_delete: :cascade
   add_foreign_key "subscriptions", "organizations"
   add_foreign_key "tags", "projects", on_delete: :cascade
-  add_foreign_key "translations", "export_configs"
-  add_foreign_key "translations", "keys"
-  add_foreign_key "translations", "languages"
+  add_foreign_key "translations", "export_configs", on_delete: :cascade
+  add_foreign_key "translations", "keys", on_delete: :cascade
+  add_foreign_key "translations", "languages", on_delete: :cascade
   add_foreign_key "user_licenses", "users"
   add_foreign_key "versions", "projects"
   add_foreign_key "wordpress_contents", "keys", on_delete: :nullify
