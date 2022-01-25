@@ -10,7 +10,7 @@ module ImportHelper
   REGEX_KEY_VALUE = /#{REGEX_CONTENT}\s*=\s*#{REGEX_CONTENT}*/.freeze
 
   def parse_file_content(_file_name, file_content, file_format)
-    if ['json', 'json-formatjs'].include?(file_format)
+    if ['json', 'json-formatjs', 'json-poeditor'].include?(file_format)
       result = json?(file_content)
 
       if result[:matches]

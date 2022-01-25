@@ -40,6 +40,7 @@ const SUPPORTED_FORMATS: {
     id: ImportFileFormats;
     documentationURL?: string;
     example?: React.ReactNode;
+    description?: string;
 }[] = [
     {
         image: AppleLogoBlack,
@@ -72,6 +73,27 @@ const SUPPORTED_FORMATS: {
     "welcome_message": "Hello world",
     ...
 }
+`}</pre>
+        )
+    },
+    {
+        image: JSONLogo,
+        name: "JSON POEditor",
+        description: "Use this format if you want to import exports of the POEditor translation management system.",
+        formats: [".json"],
+        id: "json-poeditor",
+        example: (
+            <pre style={{ whiteSpace: "break-spaces" }}>{`[
+    {
+        "term": "app_title",
+        "definition": "Texterify",
+        "context": "welcome screen",
+        "term_plural": "",
+        "reference": "",
+        "comment": "this comment is shown as description"
+    }
+    ...
+]
 `}</pre>
         )
     },
@@ -210,20 +232,6 @@ msgstr "Awesome app"
     //     disabled: true
     // }
 ];
-
-function getFileEndingForSelectedFormat(selectedImportFormat: string) {
-    if (selectedImportFormat === "json") {
-        return ".json";
-    } else if (selectedImportFormat === "json-formatjs") {
-        return ".json";
-    } else if (selectedImportFormat === "ios") {
-        return ".strings";
-    } else if (selectedImportFormat === "toml") {
-        return ".toml";
-    } else if (selectedImportFormat === "arb") {
-        return ".arb";
-    }
-}
 
 export const TranslationFileImporter = observer(
     (props: { style?: React.CSSProperties; onCreateLanguageClick?(): void }) => {
@@ -563,6 +571,11 @@ export const TranslationFileImporter = observer(
                                                     )}
                                                     {selectedImportFormat.name}
                                                 </div>
+                                                {selectedImportFormat.description && (
+                                                    <div style={{ marginTop: 8 }}>
+                                                        {selectedImportFormat.description}
+                                                    </div>
+                                                )}
                                                 {selectedImportFormat.documentationURL && (
                                                     <div style={{ marginTop: 8 }}>
                                                         <span style={{ fontWeight: "bold" }}>Documentation: </span>
@@ -638,8 +651,8 @@ export const TranslationFileImporter = observer(
                                                                         <>
                                                                             Drop a{" "}
                                                                             <b>
-                                                                                {getFileEndingForSelectedFormat(
-                                                                                    selectedImportFormat.id
+                                                                                {selectedImportFormat.formats.join(
+                                                                                    ", "
                                                                                 )}
                                                                             </b>{" "}
                                                                             file here or click to upload one.
