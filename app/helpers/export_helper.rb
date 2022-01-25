@@ -5,6 +5,10 @@ require 'zip'
 
 module ExportHelper
   def convert_html_translation(content)
+    if content.nil?
+      return nil
+    end
+
     json_content = JSON.parse(content)
 
     if json_content.is_a?(Numeric)
