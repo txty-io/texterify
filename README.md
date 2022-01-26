@@ -111,6 +111,8 @@ yarn start:watcher
 
 Having done that you can open [http://localhost:3000](http://localhost:3000) and see your local development instance of Texterify.
 
+Make sure to also check out our development docs page at [https://docs.texterify.com/development](https://docs.texterify.com/development).
+
 <h2 id="troubleshooting">👀 Troubleshooting</h2>
 
 ### Why is the watcher command failing randomly with exit code 137?

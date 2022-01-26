@@ -118,6 +118,7 @@ export const EditableCell: React.FC<IEditableCellProps> = ({
                                 justifyContent: "center",
                                 wordBreak: "break-word"
                             }}
+                            data-id="editable-cell-content"
                             onClick={isCellEditable ? toggleEdit : undefined}
                             role="button"
                             dangerouslySetInnerHTML={

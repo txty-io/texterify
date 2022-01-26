@@ -30,4 +30,29 @@ context("import", () => {
         cy.contains("texterify_").should("not.exist");
         cy.contains("texterify_whatever").should("not.exist");
     });
+
+    it("it imports POEditor json files", () => {
+        cy.login(testData.login.user1.email, testData.login.user1.password);
+
+        cy.createProject("My import test project");
+
+        cy.addLanguage(
+            testData.languages.german.languageCode,
+            testData.languages.german.countryCode,
+            testData.languages.german.languageName
+        );
+
+        cy.importFile("test_poeditor.json");
+
+        cy.checkIfKeyExists({
+            key: "welcome_screen.app_title",
+            content: "Texterify",
+            description: "this comment is shown as description"
+        });
+        cy.checkIfKeyExists({
+            key: "welcome_screen.app_welcome_text",
+            content: "Hello World!",
+            description: "this comment is shown as a welcome text"
+        });
+    });
 });

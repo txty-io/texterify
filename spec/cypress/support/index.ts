@@ -46,6 +46,8 @@ declare global {
             leaveEditor(): void;
             clickOutside(): void;
             addUser(email: string): void;
+            checkIfKeyExists(options: { key: string; description?: string; content?: string }): void;
+            importFile(fileName: string);
         }
     }
 }

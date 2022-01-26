@@ -141,6 +141,27 @@ Cypress.Commands.add("goToProjectSettings", () => {
     cy.get('[data-id="project-sidebar-settings"]').click();
 });
 
+Cypress.Commands.add("checkIfKeyExists", (options: { key: string; description?: string; content?: string }) => {
+    cy.goToKeys();
+    cy.get('[data-id="editable-cell-content"]').contains(options.key);
+
+    if (options.description) {
+        cy.get('[data-id="editable-cell-content"]').contains(options.description);
+    }
+
+    if (options.content) {
+        cy.get('[data-id="editable-cell-content"]').contains(options.content);
+    }
+});
+
+Cypress.Commands.add("importFile", (fileName: string) => {
+    cy.get('[data-id="project-sidebar-import"]').click();
+    cy.get('[data-id="file-importer-language-tag"]').click();
+    cy.get('[data-id="file-importer-file-format-json-poeditor"]').click();
+    cy.get('[data-id="file-importer-file-uploader"]').attachFile(fileName);
+    cy.get('[data-id="file-importer-submit-button"]').click();
+});
+
 Cypress.Commands.add("clickOutside", () => {
     cy.get("body").click(0, 0);
     cy.wait(250);
