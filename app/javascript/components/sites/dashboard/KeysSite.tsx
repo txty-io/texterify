@@ -22,7 +22,6 @@ import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { ISearchSettings, KeySearchSettings, parseKeySearchSettingsFromURL } from "../../ui/KeySearchSettings";
 import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActiveFilters";
-import { Loading } from "../../ui/Loading";
 import { TexterifyModal } from "../../ui/TexterifyModal";
 import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
@@ -452,6 +451,8 @@ class KeysSite extends React.Component<IProps, IState> {
             searchSettings: this.state.searchSettings
         };
         await this.fetchKeys(fetchOptions);
+
+        void dashboardStore.reloadCurrentProjectIssuesCount();
     };
 
     isTagsColumnVisible = () => {
@@ -821,8 +822,6 @@ class KeysSite extends React.Component<IProps, IState> {
 
                                     if (response.errors) {
                                         ErrorUtils.showErrors(response.errors);
-
-                                        return;
                                     }
                                 } else {
                                     const newItem = {
@@ -857,9 +856,9 @@ class KeysSite extends React.Component<IProps, IState> {
                                             }
                                         }
                                     }
-                                }
 
-                                await this.reloadTable();
+                                    await this.reloadTable();
+                                }
                             }}
                             expandedRowRender={
                                 (this.state.exportConfigsResponse?.data || []).length === 0

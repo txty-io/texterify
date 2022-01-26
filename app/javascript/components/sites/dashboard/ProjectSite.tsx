@@ -110,6 +110,8 @@ class ProjectSite extends React.Component<IProps, IState> {
                     projectId: this.props.match.params.projectId
                 });
 
+                dashboardStore.currentProject.attributes.issues_count = validationViolationsCountResponse.total;
+
                 this.setState({
                     validationViolationsCountResponse: validationViolationsCountResponse
                 });

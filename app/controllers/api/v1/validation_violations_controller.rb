@@ -25,7 +25,7 @@ class Api::V1::ValidationViolationsController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
 
     render json: {
-      total: project.validation_violations.size
+      total: project.issues_count
     }
   end
 

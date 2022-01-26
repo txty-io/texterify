@@ -84,6 +84,34 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 dataId: "project-sidebar-editor"
             },
             {
+                icon: MonitorOutlined,
+                path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
+                text: "Validations",
+                roles: ROLES_TRANSLATOR_UP,
+                dataId: "project-sidebar-validations"
+            },
+            {
+                icon: AlertOutlined,
+                path: Routes.DASHBOARD.PROJECT_ISSUES.replace(":projectId", this.props.match.params.projectId),
+                text: (
+                    <span>
+                        Issues
+                        <Tag
+                            color={
+                                dashboardStore.currentProject?.attributes.issues_count > 0
+                                    ? "var(--color-warn)"
+                                    : "var(--color-success)"
+                            }
+                            style={{ marginLeft: 16 }}
+                        >
+                            {dashboardStore.currentProject?.attributes.issues_count}
+                        </Tag>
+                    </span>
+                ),
+                roles: ROLES_TRANSLATOR_UP,
+                dataId: "project-sidebar-issues"
+            },
+            {
                 icon: RobotOutlined,
                 path: Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION.replace(
                     ":projectId",
@@ -152,34 +180,6 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 path: Routes.DASHBOARD.PROJECT_ACTIVITY.replace(":projectId", this.props.match.params.projectId),
                 text: "Activity",
                 dataId: "project-sidebar-activity"
-            },
-            {
-                icon: MonitorOutlined,
-                path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
-                text: "Validations",
-                roles: ROLES_TRANSLATOR_UP,
-                dataId: "project-sidebar-validations"
-            },
-            {
-                icon: AlertOutlined,
-                path: Routes.DASHBOARD.PROJECT_ISSUES.replace(":projectId", this.props.match.params.projectId),
-                text: (
-                    <span>
-                        Issues
-                        <Tag
-                            color={
-                                dashboardStore.currentProject?.attributes.issues_count > 0
-                                    ? "var(--color-warn)"
-                                    : "var(--color-success)"
-                            }
-                            style={{ marginLeft: 16 }}
-                        >
-                            {dashboardStore.currentProject?.attributes.issues_count}
-                        </Tag>
-                    </span>
-                ),
-                roles: ROLES_TRANSLATOR_UP,
-                dataId: "project-sidebar-issues"
             },
             {
                 icon: SwapOutlined,

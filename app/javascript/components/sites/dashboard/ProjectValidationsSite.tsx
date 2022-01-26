@@ -45,6 +45,7 @@ interface IState {
     validationViolationsCountResponse: IGetValidationViolationsCountResponse;
     validationViolationsLoading: boolean;
     selectedRowKeys: any[];
+    recheckingValidations: boolean;
 }
 
 @observer
@@ -59,7 +60,8 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
         perPage: 10,
         validationViolationsCountResponse: null,
         validationViolationsLoading: true,
-        selectedRowKeys: []
+        selectedRowKeys: [],
+        recheckingValidations: false
     };
 
     rowSelection: TableRowSelection<ITableRow> = {
@@ -316,7 +318,32 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                         <h1>Validations</h1>
                         <p>Create rules to ensure the quality of your translations.</p>
 
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <div style={{ display: "flex" }}>
+                            <Button
+                                type="primary"
+                                loading={this.state.recheckingValidations}
+                                onClick={async () => {
+                                    this.setState({ recheckingValidations: true });
+                                    try {
+                                        await ValidationsAPI.recheckValidations({
+                                            projectId: this.props.match.params.projectId
+                                        });
+                                        message.success(
+                                            "Successfully queued job to check all translations for issues."
+                                        );
+                                    } catch (error) {
+                                        console.error(error);
+                                        message.error("Failed to recheck validations.");
+                                    }
+
+                                    this.setState({ recheckingValidations: false });
+                                }}
+                            >
+                                Recheck all validations
+                            </Button>
+                        </div>
+
+                        <div style={{ display: "flex", alignItems: "center", marginTop: 24 }}>
                             {this.state.validationViolationsLoading && (
                                 <div style={{ width: 80, marginRight: 8 }}>
                                     <Skeleton

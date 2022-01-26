@@ -27,8 +27,6 @@ class Api::V1::ValidationsController < Api::V1::ApiController
 
     # return unless feature_enabled?(project, Organization::FEATURE_OTA)
 
-    CheckValidationsWorker.perform_async('test')
-
     if validation.save
       render json: { success: true, details: 'VALIDATION_CREATED' }, status: :ok
     else
@@ -58,6 +56,22 @@ class Api::V1::ValidationsController < Api::V1::ApiController
     validation.destroy!
 
     render json: { success: true, details: 'DESTROYED' }
+  end
+
+  # Allows to recheck all translations for validation violations.
+  # If a validation is given only that one is checked.
+  # Otherwise all validations are checked.
+  def recheck
+    project = current_user.projects.find(params[:project_id])
+
+    if params[:validation_id].present?
+      validation = Validation.find(params[:validation_id])
+      authorize validation
+    else
+      authorize project.validations.first
+    end
+
+    CheckValidationsWorker.perform_async(project.id, validation&.id)
   end
 
   private

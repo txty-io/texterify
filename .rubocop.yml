@@ -104,6 +104,9 @@ Style/RescueStandardError:
 Style/WhileUntilModifier:
   Enabled: false
 
+Style/SymbolProc:
+  Enabled: false
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: "indented"
 

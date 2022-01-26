@@ -36,6 +36,11 @@ class Project < ApplicationRecord
     organization ? User.where(id: users_project.pluck(:id) + organization.users.pluck(:id)) : users_project
   end
 
+  # The total number of validation violations.
+  def issues_count
+    validation_violations.size
+  end
+
   def role_of(user)
     project_user = project_users.find_by(user_id: user.id)
     project_user ? project_user.role : organization.organization_users.find_by(user_id: user.id).role

@@ -16,7 +16,8 @@ class ProjectSerializer
              :validate_trailing_whitespace,
              :validate_double_whitespace,
              :validate_https,
-             :organization_id
+             :organization_id,
+             :issues_count
   belongs_to :organization
   has_many :keys
   has_many :languages
@@ -62,10 +63,6 @@ class ProjectSerializer
 
   attribute :machine_translation_active do |object|
     ENV['DEEPL_API_TOKEN'].present? && object.machine_translation_enabled
-  end
-
-  attribute :issues_count do |object|
-    object.validation_violations.size
   end
 
   attribute :current_user_deactivated, if: proc { |_, params| params[:current_user] } do |object, params|

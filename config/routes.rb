@@ -95,10 +95,15 @@ Rails
           # Project users
           resources :members, only: [:create, :index, :destroy, :update], controller: 'project_users'
 
-          # Validations and violations
+          # Validations
           resources :validations, only: [:create, :index, :destroy, :update]
+          post :validations_recheck, to: 'validations#recheck'
+
+          # Validation violations
           resources :validation_violations, only: [:index, :destroy]
           get :validation_violations_count, to: 'validation_violations#count'
+
+          # Project invites
           resources :invites, only: [:create, :index, :destroy], controller: 'project_invites'
 
           # WordPress Polylang integration

@@ -3,6 +3,7 @@ import { observable } from "mobx";
 import { create, persist } from "mobx-persist";
 import { APIUtils } from "../api/v1/APIUtils";
 import { IProject, ProjectsAPI } from "../api/v1/ProjectsAPI";
+import { ValidationViolationsAPI } from "../api/v1/ValidationViolationsAPI";
 import { IFeature } from "../types/IFeature";
 import { IPlanIDS } from "../types/IPlan";
 import { IUserRole } from "../types/IUserRole";
@@ -76,6 +77,17 @@ class DashboardStore {
 
     featureEnabled(feature: IFeature) {
         return this.currentProject?.attributes.enabled_features.includes(feature);
+    }
+
+    // Reloads the issues count of the currently selected project.
+    async reloadCurrentProjectIssuesCount() {
+        if (this.featureEnabled("FEATURE_VALIDATIONS") && this.currentProject) {
+            const validationViolationsCountResponse = await ValidationViolationsAPI.getCount({
+                projectId: this.currentProject.id
+            });
+
+            this.currentProject.attributes.issues_count = validationViolationsCountResponse.total;
+        }
     }
 }
 

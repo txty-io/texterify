@@ -13,7 +13,8 @@ class Translation < ApplicationRecord
   after_save :update_project_word_char_count_on_update
 
   # Checks all enabled validations and creates violations if necessary.
-  def check_validations
+  # If a validation is given only that validation is checked.
+  def check_validations(validation_to_check = nil)
     project = key.project
 
     check_leading_whitespace(project)
@@ -21,8 +22,15 @@ class Translation < ApplicationRecord
     check_double_whitespace(project)
     check_https(project)
 
-    project.validations.where(enabled: true).each do |validation|
-      active_violation = ValidationViolation.find_by(project_id: project.id, translation_id: self.id, validation_id: validation.id)
+    if validation_to_check
+      validations_to_check = [validation_to_check]
+    else
+      validations_to_check = project.validations.where(enabled: true)
+    end
+
+    validations_to_check.each do |validation|
+      active_violation =
+        ValidationViolation.find_by(project_id: project.id, translation_id: self.id, validation_id: validation.id)
 
       matches = false
       if validation.match == 'contains'
@@ -44,11 +52,20 @@ class Translation < ApplicationRecord
   # Checks if the translation starts with a whitespace.
   def check_leading_whitespace(project)
     if project.validate_leading_whitespace
-      violation = ValidationViolation.find_by(project_id: project.id, translation_id: self.id, name: 'validate_leading_whitespace')
+      violation =
+        ValidationViolation.find_by(
+          project_id: project.id,
+          translation_id: self.id,
+          name: 'validate_leading_whitespace'
+        )
 
       if self.content.starts_with?(' ')
         if !violation
-          ValidationViolation.create!(project_id: project.id, translation_id: self.id, name: 'validate_leading_whitespace')
+          ValidationViolation.create!(
+            project_id: project.id,
+            translation_id: self.id,
+            name: 'validate_leading_whitespace'
+          )
         end
       else
         violation&.destroy!
@@ -59,11 +76,20 @@ class Translation < ApplicationRecord
   # Checks if the translation ends with a whitespace.
   def check_trailing_whitespace(project)
     if project.validate_trailing_whitespace
-      violation = ValidationViolation.find_by(project_id: project.id, translation_id: self.id, name: 'validate_trailing_whitespace')
+      violation =
+        ValidationViolation.find_by(
+          project_id: project.id,
+          translation_id: self.id,
+          name: 'validate_trailing_whitespace'
+        )
 
       if self.content.ends_with?(' ')
         if !violation
-          ValidationViolation.create!(project_id: project.id, translation_id: self.id, name: 'validate_trailing_whitespace')
+          ValidationViolation.create!(
+            project_id: project.id,
+            translation_id: self.id,
+            name: 'validate_trailing_whitespace'
+          )
         end
       else
         violation&.destroy!
@@ -74,11 +100,16 @@ class Translation < ApplicationRecord
   # Checks if the translation contains a double whitespace.
   def check_double_whitespace(project)
     if project.validate_double_whitespace
-      violation = ValidationViolation.find_by(project_id: project.id, translation_id: self.id, name: 'validate_double_whitespace')
+      violation =
+        ValidationViolation.find_by(project_id: project.id, translation_id: self.id, name: 'validate_double_whitespace')
 
       if self.content.include?('  ')
         if !violation
-          ValidationViolation.create!(project_id: project.id, translation_id: self.id, name: 'validate_double_whitespace')
+          ValidationViolation.create!(
+            project_id: project.id,
+            translation_id: self.id,
+            name: 'validate_double_whitespace'
+          )
         end
       else
         violation&.destroy!
