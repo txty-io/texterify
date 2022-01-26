@@ -1,8 +1,6 @@
 import {
     AlertOutlined,
     BlockOutlined,
-    ClusterOutlined,
-    DownloadOutlined,
     EditOutlined,
     ExportOutlined,
     GlobalOutlined,
@@ -37,6 +35,7 @@ interface INavigationData {
     icon: any;
     path?: string;
     text?: React.ReactNode;
+    paths?: string[];
     roles?: string[];
     dataId: string;
     subItems?: INavigationData[];
@@ -96,6 +95,10 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             {
                 icon: ImportOutlined,
                 path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
+                paths: [
+                    Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
+                    Routes.DASHBOARD.PROJECT_IMPORT_FILE.replace(":projectId", this.props.match.params.projectId)
+                ],
                 text: "Import",
                 roles: ROLES_DEVELOPER_UP,
                 dataId: "project-sidebar-import"
@@ -105,35 +108,44 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 text: "Export",
                 roles: ROLES_DEVELOPER_UP,
                 dataId: "project-sidebar-export",
-                subItems: [
-                    {
-                        icon: DownloadOutlined,
-                        path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
-                        text: "Download",
-                        roles: ROLES_DEVELOPER_UP,
-                        dataId: "project-sidebar-download"
-                    },
-                    {
-                        icon: SettingOutlined,
-                        path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
-                            ":projectId",
-                            this.props.match.params.projectId
-                        ),
-                        text: "Configurations",
-                        roles: ROLES_DEVELOPER_UP,
-                        dataId: "project-sidebar-configurations"
-                    },
-                    {
-                        icon: ClusterOutlined,
-                        path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(
-                            ":projectId",
-                            this.props.match.params.projectId
-                        ),
-                        text: "Hierarchy",
-                        roles: ROLES_DEVELOPER_UP,
-                        dataId: "project-sidebar-hierarchy"
-                    }
+                path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
+                paths: [
+                    Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
+                    Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
+                        ":projectId",
+                        this.props.match.params.projectId
+                    ),
+                    Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", this.props.match.params.projectId)
                 ]
+                // subItems: [
+                //     {
+                //         icon: DownloadOutlined,
+                //         path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
+                //         text: "Download",
+                //         roles: ROLES_DEVELOPER_UP,
+                //         dataId: "project-sidebar-download"
+                //     },
+                //     {
+                //         icon: SettingOutlined,
+                //         path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
+                //             ":projectId",
+                //             this.props.match.params.projectId
+                //         ),
+                //         text: "Configurations",
+                //         roles: ROLES_DEVELOPER_UP,
+                //         dataId: "project-sidebar-configurations"
+                //     },
+                //     {
+                //         icon: ClusterOutlined,
+                //         path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(
+                //             ":projectId",
+                //             this.props.match.params.projectId
+                //         ),
+                //         text: "Hierarchy",
+                //         roles: ROLES_DEVELOPER_UP,
+                //         dataId: "project-sidebar-hierarchy"
+                //     }
+                // ]
             },
             {
                 icon: LineChartOutlined,
@@ -185,15 +197,23 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             {
                 icon: TeamOutlined,
                 path: Routes.DASHBOARD.PROJECT_MEMBERS.replace(":projectId", this.props.match.params.projectId),
-                text: "Members",
-                dataId: "project-sidebar-members"
+                text: "Users",
+                dataId: "project-sidebar-users"
             },
             {
                 icon: BlockOutlined,
                 path: Routes.DASHBOARD.PROJECT_INTEGRATIONS.replace(":projectId", this.props.match.params.projectId),
                 text: "Integrations",
                 roles: ROLES_TRANSLATOR_UP,
-                dataId: "project-sidebar-integrations"
+                dataId: "project-sidebar-integrations",
+                paths: [
+                    Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    }),
+                    Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    })
+                ]
             },
             {
                 icon: SettingOutlined,
@@ -306,11 +326,11 @@ class ProjectSidebar extends React.Component<IProps, IState> {
 
     getSelectedItem = (): string[] => {
         return this.getNavigationData().map((data: INavigationData, index: number): string => {
-            if (data.path === this.props.location.pathname) {
+            if (data.paths?.includes(this.props.location.pathname)) {
                 return index.toString();
-            }
-
-            if (data.subItems) {
+            } else if (data.path === this.props.location.pathname) {
+                return index.toString();
+            } else if (data.subItems) {
                 let foundIndex;
 
                 data.subItems.forEach((item, submenuIndex) => {

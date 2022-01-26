@@ -17,7 +17,7 @@ import {
     MachineTranslationsAPI
 } from "../../api/v1/MachineTranslationsAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
-import { MenuLink, MenuList } from "../../routing/DashboardRouter";
+import { MenuLinkWrapper, MenuList } from "../../routing/DashboardRouter";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
@@ -124,6 +124,7 @@ class EditorSite extends React.Component<IProps, IState> {
         const getProjectResponse = await ProjectsAPI.getProject(this.props.match.params.projectId);
         if (getProjectResponse.errors) {
             this.props.history.push(Routes.DASHBOARD.PROJECTS);
+            return;
         } else {
             dashboardStore.currentProject = getProjectResponse.data;
             dashboardStore.currentProjectIncluded = getProjectResponse.included;
@@ -215,7 +216,7 @@ class EditorSite extends React.Component<IProps, IState> {
         let defaultLanguage;
         let defaultLanguageTranslationContent;
         let languagesWithoutDefault = [];
-        if (this.state.languagesResponse) {
+        if (this.state.languagesResponse?.data) {
             defaultLanguage = this.state.languagesResponse.data.find((language) => {
                 return language.attributes.is_default;
             });
@@ -263,7 +264,7 @@ class EditorSite extends React.Component<IProps, IState> {
                     // main menu bar is always in dark mode.
                     className="dark-theme"
                 >
-                    <div style={{ flexGrow: 1 }}>
+                    <div style={{ flexGrow: 1, whiteSpace: "nowrap" }}>
                         <Button
                             type="primary"
                             style={{
@@ -295,25 +296,12 @@ class EditorSite extends React.Component<IProps, IState> {
                             }}
                         >
                             <MenuList>
-                                <MenuLink
-                                    to={Routes.DASHBOARD.INSTANCE.ROOT}
-                                    style={{
-                                        background: this.props.history.location.pathname.startsWith(
-                                            Routes.DASHBOARD.INSTANCE.ROOT
-                                        )
-                                            ? "var(--primary-light-color)"
-                                            : undefined,
-                                        color: this.props.history.location.pathname.startsWith(
-                                            Routes.DASHBOARD.INSTANCE.ROOT
-                                        )
-                                            ? "var(--blue-color)"
-                                            : undefined
-                                    }}
-                                    data-id="main-menu-instance-settings"
-                                >
-                                    <HddOutlined style={{ marginRight: 8 }} />
-                                    Admin
-                                </MenuLink>
+                                <MenuLinkWrapper data-id="main-menu-instance-settings">
+                                    <Link to={Routes.DASHBOARD.INSTANCE.ROOT}>
+                                        <HddOutlined style={{ marginRight: 8 }} />
+                                        Admin
+                                    </Link>
+                                </MenuLinkWrapper>
                             </MenuList>
                         </ul>
                     )}
@@ -330,7 +318,8 @@ class EditorSite extends React.Component<IProps, IState> {
                                 borderRight: "1px solid var(--border-color)",
                                 overflow: "auto",
                                 width: "25%",
-                                flexShrink: 0
+                                flexShrink: 0,
+                                minWidth: 240
                             }}
                         >
                             <div style={{ margin: 24, width: "auto" }}>
@@ -385,8 +374,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                 }}
                             >
                                 {!this.state.keysLoading &&
-                                    this.state.keysResponse &&
-                                    this.state.keysResponse.data.map((key, index) => {
+                                    this.state.keysResponse?.data?.map((key, index) => {
                                         let keyContentPreview: JSX.Element;
 
                                         if (defaultLanguage) {
@@ -441,7 +429,13 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 );
                                             } else {
                                                 keyContentPreview = (
-                                                    <div style={{ color: "var(--color-passive)" }}>
+                                                    <div
+                                                        style={{
+                                                            color: "var(--color-passive)",
+                                                            overflow: "hidden",
+                                                            textOverflow: "ellipsis"
+                                                        }}
+                                                    >
                                                         {countryCode && (
                                                             <span style={{ marginRight: 8 }}>
                                                                 <FlagIcon
@@ -456,7 +450,13 @@ class EditorSite extends React.Component<IProps, IState> {
                                         } else {
                                             if (this.state.languagesResponse) {
                                                 keyContentPreview = (
-                                                    <div style={{ color: "var(--color-passive)" }}>
+                                                    <div
+                                                        style={{
+                                                            color: "var(--color-passive)",
+                                                            overflow: "hidden",
+                                                            textOverflow: "ellipsis"
+                                                        }}
+                                                    >
                                                         Set a default language for preview.
                                                     </div>
                                                 );
@@ -518,8 +518,21 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     </div>
                                                     <div style={{ marginLeft: 8, flexShrink: 0 }}>
                                                         {key.attributes.html_enabled && (
-                                                            <Tag color="magenta" className="editor-key-html">
+                                                            <Tag
+                                                                color="magenta"
+                                                                className="editor-key-html"
+                                                                style={{ margin: 0, marginRight: 4 }}
+                                                            >
                                                                 HTML
+                                                            </Tag>
+                                                        )}
+                                                        {key.relationships.wordpress_contents.data.length > 0 && (
+                                                            <Tag
+                                                                color="magenta"
+                                                                className="editor-key-html"
+                                                                style={{ margin: 0 }}
+                                                            >
+                                                                WordPress
                                                             </Tag>
                                                         )}
                                                     </div>
@@ -530,7 +543,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                 {this.state.keysLoading && (
                                     <LoadingOutlined style={{ fontSize: 24, margin: "auto" }} spin />
                                 )}
-                                {!this.state.keysLoading && this.state.keysResponse.data.length === 0 && (
+                                {!this.state.keysLoading && this.state.keysResponse?.data?.length === 0 && (
                                     <div
                                         style={{
                                             margin: "auto",
@@ -543,8 +556,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                 )}
                             </div>
                             <Pagination
+                                size="small"
                                 current={this.state.page}
-                                total={(this.state.keysResponse && this.state.keysResponse.meta.total) || 0}
+                                total={this.state.keysResponse?.meta?.total || 0}
                                 onChange={async (page: number, _perPage: number) => {
                                     // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                     this.setState({ page: page }, this.fetchKeys);
@@ -571,33 +585,35 @@ class EditorSite extends React.Component<IProps, IState> {
                             {this.keyLoaded() && this.state.languagesResponse && (
                                 <div className="fade-in">
                                     <h2 style={{ fontSize: 16, wordBreak: "break-word" }}>
-                                        {this.state.keyResponse && this.state.keyResponse.data.attributes.name}
+                                        {this.state.keyResponse?.data && this.state.keyResponse.data.attributes.name}
                                     </h2>
                                     <p style={{ wordBreak: "break-word" }}>
-                                        {this.state.keyResponse && this.state.keyResponse.data.attributes.description}
+                                        {this.state.keyResponse?.data &&
+                                            this.state.keyResponse.data.attributes.description}
                                     </p>
 
-                                    {this.state.languagesResponse && this.state.languagesResponse.data.length === 0 && (
-                                        <Alert
-                                            type="info"
-                                            showIcon
-                                            message="No language"
-                                            description={
-                                                <p>
-                                                    <Link
-                                                        to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
-                                                            ":projectId",
-                                                            this.props.match.params.projectId
-                                                        )}
-                                                    >
-                                                        Create a language
-                                                    </Link>{" "}
-                                                    before you can translate your content.
-                                                </p>
-                                            }
-                                            style={{ marginBottom: 24 }}
-                                        />
-                                    )}
+                                    {this.state.languagesResponse?.data &&
+                                        this.state.languagesResponse.data.length === 0 && (
+                                            <Alert
+                                                type="info"
+                                                showIcon
+                                                message="No language"
+                                                description={
+                                                    <p>
+                                                        <Link
+                                                            to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
+                                                                ":projectId",
+                                                                this.props.match.params.projectId
+                                                            )}
+                                                        >
+                                                            Create a language
+                                                        </Link>{" "}
+                                                        before you can translate your content.
+                                                    </p>
+                                                }
+                                                style={{ marginBottom: 24 }}
+                                            />
+                                        )}
 
                                     {defaultLanguage ? (
                                         <TranslationCard
@@ -678,7 +694,14 @@ class EditorSite extends React.Component<IProps, IState> {
                                 </div>
                             )}
                             {!this.keyLoaded() && !this.props.match.params.keyId && (
-                                <p style={{ color: Styles.COLOR_TEXT_DISABLED, fontStyle: "italic", margin: "auto" }}>
+                                <p
+                                    style={{
+                                        color: Styles.COLOR_TEXT_DISABLED,
+                                        fontStyle: "italic",
+                                        margin: "auto",
+                                        textAlign: "center"
+                                    }}
+                                >
                                     Select a key from the left to start editing.
                                 </p>
                             )}

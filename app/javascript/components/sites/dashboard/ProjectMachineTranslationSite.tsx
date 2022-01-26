@@ -108,13 +108,17 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
     };
 
     defaultLanguageSupportsMachineTranslation() {
-        const defaultLanguage = LanguageUtils.getDefaultLanguage(this.state.languagesResponse);
+        if (this.state.languagesResponse) {
+            const defaultLanguage = LanguageUtils.getDefaultLanguage(this.state.languagesResponse);
 
-        return MachineTranslationUtils.supportsMachineTranslationAsSourceLanguage({
-            language: defaultLanguage,
-            languagesResponse: this.state.languagesResponse,
-            supportedSourceLanguages: this.state.supportedSourceLanguages
-        });
+            return MachineTranslationUtils.supportsMachineTranslationAsSourceLanguage({
+                language: defaultLanguage,
+                languagesResponse: this.state.languagesResponse,
+                supportedSourceLanguages: this.state.supportedSourceLanguages
+            });
+        } else {
+            return false;
+        }
     }
 
     languageSupportsMachineTranslation(languageId: string) {
@@ -360,11 +364,16 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                                             onConfirm={async () => {
                                                 this.setState({ translatingLanguage: true });
                                                 try {
-                                                    await MachineTranslationsAPI.translateLanguage({
+                                                    const response = await MachineTranslationsAPI.translateLanguage({
                                                         languageId: item.id,
                                                         projectId: dashboardStore.currentProject.id
                                                     });
-                                                    message.success("Texts of language translated.");
+
+                                                    if (response.error) {
+                                                        message.error("Failed to machine translate.");
+                                                    } else {
+                                                        message.success("Texts of language translated.");
+                                                    }
                                                 } catch (error) {
                                                     console.error(error);
                                                     message.error("Failed to auto-translate language.");

@@ -5,6 +5,10 @@ require 'zip'
 
 module ExportHelper
   def convert_html_translation(content)
+    if content.nil?
+      return nil
+    end
+
     json_content = JSON.parse(content)
 
     if json_content.is_a?(Numeric)
@@ -34,7 +38,7 @@ module ExportHelper
 
     converted
   rescue JSON::ParserError
-    ''
+    nil
   end
 
   def create_language_export_data(project, export_config, language, post_processing_rules, **args)
@@ -60,7 +64,7 @@ module ExportHelper
         if key_translation.nil?
           content = ''
         elsif key.html_enabled
-          content = convert_html_translation(key_translation.content)
+          content = convert_html_translation(key_translation.content) || ''
         else
           content = key_translation.content
         end
@@ -102,7 +106,7 @@ module ExportHelper
           if key_translation.nil?
             content = ''
           elsif key.html_enabled
-            content = convert_html_translation(key_translation.content)
+            content = convert_html_translation(key_translation.content) || ''
           else
             content = key_translation.content
           end

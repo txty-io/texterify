@@ -15,13 +15,23 @@ class Key < ApplicationRecord
   scope :distinct_on_lower_name, -> { select('distinct on (lower("keys"."name")) keys.*') }
 
   belongs_to :project
+  has_many :wordpress_contents, dependent: :destroy
   has_many :translations, dependent: :destroy
+
+  # A key has many tags attached.
+  has_many :key_tags, dependent: :delete_all
+  has_many :tags, through: :key_tags
 
   validates :name, presence: true
   validate :no_duplicate_keys_for_project
+  validate :no_reserved_key_names
 
   before_validation :strip_leading_and_trailing_whitespace
   before_validation :check_html_allowed
+
+  def name_editable
+    self.wordpress_contents.empty?
+  end
 
   # Validates that there are no keys with same name for a project.
   def no_duplicate_keys_for_project
@@ -37,6 +47,14 @@ class Key < ApplicationRecord
     end
   end
 
+  # Checks if a key starts with the prefix "texterify_" which is reserved for special Texterify keys
+  # like the "texterify_timestamp".
+  def no_reserved_key_names
+    if self.name&.start_with?('texterify_')
+      errors.add(:name, :key_name_reserved)
+    end
+  end
+
   def default_language
     project.languages.find_by(is_default: true)
   end
@@ -45,6 +63,23 @@ class Key < ApplicationRecord
     if default_language
       translations.find_by(language_id: default_language.id)
     end
+  end
+
+  # Creates the tag in the project if it does not exist and
+  # adds the tag to the key if it hasn't already been added.
+  # Returns the new or already added tag.
+  def add_tag_if_not_added(name, custom)
+    tag = self.project.create_tag_if_not_exists(name, custom)
+
+    key_has_tag = self.tags.exists?(id: tag.id)
+    unless key_has_tag
+      key_tag = KeyTag.new
+      key_tag.tag = tag
+      key_tag.key = self
+      key_tag.save!
+    end
+
+    tag
   end
 
   protected

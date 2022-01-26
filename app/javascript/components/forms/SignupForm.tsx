@@ -7,6 +7,8 @@ import { ErrorUtils } from "../ui/ErrorUtils";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { SiteWrapperLink } from "../ui/SiteWrapperLink";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
+import * as queryString from "query-string";
+import { history } from "../routing/history";
 
 interface IProps {
     onAccountCreated(): any;
@@ -39,6 +41,12 @@ class SignupForm extends React.Component<IProps, IState> {
                 ErrorUtils.showError(
                     "The maximum number of users for the instance license has been reached. Please inform the instance admin to upgrade the license."
                 );
+            } else if (response.message === "SIGN_UP_NOT_ENABLED") {
+                ErrorUtils.showError(
+                    "Registration has been disabled for this instance. You need an invite to be able to sign up."
+                );
+            } else if (response.message === "EMAIL_DOMAIN_IS_NOT_ALLOWED_TO_SIGN_UP") {
+                ErrorUtils.showError("You are not allowed to sign up with this email.");
             } else {
                 ErrorUtils.showError(response.message);
             }
@@ -64,10 +72,12 @@ class SignupForm extends React.Component<IProps, IState> {
     };
 
     render() {
+        const currentQueryParams = queryString.parse(history.location.search);
+
         return (
             <>
                 <LoadingOverlay isVisible={this.state.isLoading} loadingText="We are creating your account..." />
-                <Form onFinish={this.handleSubmit}>
+                <Form onFinish={this.handleSubmit} initialValues={{ email: currentQueryParams.locked_email }}>
                     {(this.state.signupErrors.length > 0 || Object.keys(this.state.signupErrors).length > 0) && (
                         <Alert
                             showIcon
@@ -98,7 +108,11 @@ class SignupForm extends React.Component<IProps, IState> {
                             }
                         ]}
                     >
-                        <Input placeholder="Email address" autoComplete="email" />
+                        <Input
+                            placeholder="Email address"
+                            autoComplete="email"
+                            disabled={!!currentQueryParams.locked_email}
+                        />
                     </Form.Item>
 
                     <h3>Password</h3>

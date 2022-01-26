@@ -1,5 +1,5 @@
 import { DownloadOutlined } from "@ant-design/icons";
-import { Alert, Button, Layout, message } from "antd";
+import { Alert, Button, message, Skeleton } from "antd";
 import * as moment from "moment";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
@@ -9,6 +9,10 @@ import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { LayoutWithSubSidebar } from "../../ui/LayoutWithSubSidebar";
+import { LayoutWithSubSidebarInner } from "../../ui/LayoutWithSubSidebarInner";
+import { LayoutWithSubSidebarInnerContent } from "../../ui/LayoutWithSubSidebarInnerContent";
+import { ExportSidebar } from "./ExportSidebar";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -54,9 +58,9 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                 type="info"
                 showIcon
                 message="No export configuration"
-                style={{ marginTop: this.state.languagesLoaded && this.state.languages.length === 0 ? 8 : 0 }}
+                style={{ marginTop: this.state.languagesLoaded && this.state.languages?.length === 0 ? 8 : 0 }}
                 description={
-                    <p>
+                    <>
                         <Link
                             to={Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
                                 ":projectId",
@@ -66,30 +70,40 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                             Create an export configuration
                         </Link>{" "}
                         to export your keys.
-                    </p>
+                    </>
                 }
             />
         );
     };
 
     hasExportConfigs = () => {
-        return this.state.responseExportConfigs && this.state.responseExportConfigs.data.length > 0;
+        return this.state.responseExportConfigs && this.state.responseExportConfigs?.data?.length > 0;
     };
 
     render() {
         return (
-            <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
-                <Breadcrumbs breadcrumbName="projectExportDownload" />
-                <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360, maxWidth: 800 }}>
-                    <h1>Download translations</h1>
-                    {this.state.languagesLoaded && this.state.languages.length === 0 && (
-                        <>
+            <LayoutWithSubSidebar>
+                <ExportSidebar projectId={this.props.match.params.projectId} />
+
+                <LayoutWithSubSidebarInner smallWidth>
+                    <Breadcrumbs breadcrumbName="projectExportDownload" />
+                    <LayoutWithSubSidebarInnerContent>
+                        <h1>Download</h1>
+
+                        {!this.state.languagesLoaded && (
+                            <>
+                                <Skeleton />
+                                <Skeleton />
+                            </>
+                        )}
+
+                        {this.state.languagesLoaded && this.state.languages?.length === 0 && (
                             <Alert
                                 type="info"
                                 showIcon
                                 message="No language"
                                 description={
-                                    <p>
+                                    <>
                                         <Link
                                             to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
                                                 ":projectId",
@@ -99,60 +113,62 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                                             Create a language
                                         </Link>{" "}
                                         to export your keys.
-                                    </p>
+                                    </>
                                 }
                             />
-                        </>
-                    )}
-                    {this.state.responseExportConfigs !== null &&
-                        !this.hasExportConfigs() &&
-                        this.renderNoExportConfigsInfo()}
-                    {this.hasExportConfigs() && this.state.languages.length > 0 && (
-                        <div style={{ display: "flex" }}>
-                            <div style={{ display: "flex", flexDirection: "column", marginRight: 16 }}>
-                                <p>The configuration specifies the format of your exported files and translations.</p>
-                                {this.state.responseExportConfigs?.data.map((exportConfig) => {
-                                    return (
-                                        <div
-                                            key={exportConfig.id}
-                                            style={{
-                                                padding: "8px 0",
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                                alignItems: "center"
-                                            }}
-                                        >
-                                            {exportConfig.attributes.name}
-                                            <Button
-                                                type="primary"
-                                                loading={this.state.downloadLoading === exportConfig.attributes.id}
-                                                disabled={
-                                                    this.state.downloadLoading &&
-                                                    this.state.downloadLoading !== exportConfig.attributes.id
-                                                }
-                                                onClick={async () => {
-                                                    this.setState({ downloadLoading: exportConfig.attributes.id });
-                                                    const response = await ProjectsAPI.export({
-                                                        projectId: this.props.match.params.projectId,
-                                                        exportConfigId: exportConfig.attributes.id,
-                                                        fileName: `${
-                                                            dashboardStore.currentProject.attributes.name
-                                                        }-${moment().format("DD-MM-YYYY")}-${new Date().getTime()}`
-                                                    });
-                                                    this.setState({ downloadLoading: null });
-
-                                                    if (response.status !== 200) {
-                                                        message.error("An error occured during the export.");
-                                                    }
+                        )}
+                        {this.state.responseExportConfigs !== null &&
+                            !this.hasExportConfigs() &&
+                            this.renderNoExportConfigsInfo()}
+                        {this.hasExportConfigs() && this.state.languages.length > 0 && (
+                            <div style={{ display: "flex" }}>
+                                <div style={{ display: "flex", flexDirection: "column", marginRight: 16 }}>
+                                    <p>
+                                        The configuration specifies the format of your exported files and translations.
+                                    </p>
+                                    {this.state.responseExportConfigs?.data.map((exportConfig) => {
+                                        return (
+                                            <div
+                                                key={exportConfig.id}
+                                                style={{
+                                                    padding: "8px 0",
+                                                    display: "flex",
+                                                    justifyContent: "space-between",
+                                                    alignItems: "center"
                                                 }}
-                                                icon={<DownloadOutlined />}
                                             >
-                                                Download
-                                            </Button>
-                                        </div>
-                                    );
-                                })}
-                                {/* <Select
+                                                {exportConfig.attributes.name}
+                                                <Button
+                                                    type="primary"
+                                                    loading={this.state.downloadLoading === exportConfig.attributes.id}
+                                                    disabled={
+                                                        this.state.downloadLoading &&
+                                                        this.state.downloadLoading !== exportConfig.attributes.id
+                                                    }
+                                                    onClick={async () => {
+                                                        this.setState({ downloadLoading: exportConfig.attributes.id });
+                                                        const response = await ProjectsAPI.export({
+                                                            projectId: this.props.match.params.projectId,
+                                                            exportConfigId: exportConfig.attributes.id,
+                                                            fileName: `${
+                                                                dashboardStore.currentProject.attributes.name
+                                                            }-${moment().format("DD-MM-YYYY")}-${new Date().getTime()}`
+                                                        });
+                                                        this.setState({ downloadLoading: null });
+
+                                                        if (response.status !== 200) {
+                                                            message.error("An error occured during the export.");
+                                                        }
+                                                    }}
+                                                    icon={<DownloadOutlined />}
+                                                    style={{ marginLeft: 24 }}
+                                                >
+                                                    Download
+                                                </Button>
+                                            </div>
+                                        );
+                                    })}
+                                    {/* <Select
                                     placeholder="Select a configuration"
                                     style={{ width: "100%" }}
                                     onChange={(value: string) => {
@@ -193,11 +209,12 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                                         Export
                                     </Button>
                                 </div> */}
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </Layout.Content>
-            </Layout>
+                        )}
+                    </LayoutWithSubSidebarInnerContent>
+                </LayoutWithSubSidebarInner>
+            </LayoutWithSubSidebar>
         );
     }
 }

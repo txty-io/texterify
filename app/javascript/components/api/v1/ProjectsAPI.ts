@@ -1,7 +1,8 @@
 import fileDownload from "js-file-download";
-import { ImportFileFormats } from "../../sites/dashboard/ImportSite";
+import { ImportFileFormats } from "../../sites/dashboard/FileImportSite";
 import { IFeature } from "../../types/IFeature";
 import { IPlanIDS } from "../../types/IPlan";
+import { IUserRole } from "../../types/IUserRole";
 import { IErrorsResponse } from "../../ui/ErrorUtils";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
@@ -10,8 +11,8 @@ interface IProjectAttributes {
     id: string;
     name: string;
     description: string;
-    current_user_role?: string;
-    current_user_role_source?: string;
+    current_user_role?: IUserRole;
+    current_user_role_source?: "project" | "organization";
     enabled_features: IFeature[];
     all_features: { [k in IFeature]: IPlanIDS[] };
     machine_translation_active: boolean;
@@ -26,6 +27,11 @@ interface IProjectAttributes {
     validate_trailing_whitespace: boolean;
     validate_double_whitespace: boolean;
     validate_https: boolean;
+    current_user_deactivated?: boolean;
+    current_user_deactivated_reason?: "manually_by_admin" | "user_limit_exceeded";
+    current_user_in_project_organization?: boolean;
+    current_user_in_project?: boolean;
+    organization_id: string;
 }
 
 export interface IProject {

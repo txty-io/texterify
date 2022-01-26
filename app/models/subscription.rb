@@ -38,7 +38,7 @@ class Subscription < ApplicationRecord
   def interrupt
     if Texterify.cloud? && !canceled
       self.canceled = true
-      save
+      save!
 
       RestClient.put("#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/status?organization_id=#{organization.id}", {})
     end
@@ -47,7 +47,7 @@ class Subscription < ApplicationRecord
   def reactivate
     if Texterify.cloud? && canceled
       self.canceled = false
-      save
+      save!
 
       RestClient.put("#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/status?organization_id=#{organization.id}", {})
     end
@@ -58,7 +58,7 @@ class Subscription < ApplicationRecord
       if VALID_PLANS.include?(plan)
         self.plan = plan
         self.canceled = false
-        save
+        save!
 
         RestClient.put(
           "#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/plan?organization_id=#{organization.id}&plan=#{plan}",

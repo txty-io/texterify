@@ -3,7 +3,6 @@ import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { Routes } from "../routing/Routes";
-import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { SiteWrapperLink } from "../ui/SiteWrapperLink";
 
@@ -23,7 +22,7 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
     render() {
         return (
             <>
-                <p style={{ marginBottom: 16 }}>
+                <p style={{ marginBottom: 16, color: "#fff" }}>
                     Enter your email address and we will send you an email to reset your password.
                 </p>
 
@@ -85,14 +84,14 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
             const response = await AuthAPI.sendPasswordRecoveryInstructions(values.email);
 
             if (response.errors) {
-                this.formRef.current.setFields([
+                this.formRef.current?.setFields([
                     {
                         name: "email",
                         errors: response.errors
                     }
                 ]);
             } else {
-                this.formRef.current.setFieldsValue({
+                this.formRef.current?.setFieldsValue({
                     email: undefined
                 });
 

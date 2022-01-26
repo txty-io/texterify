@@ -14,7 +14,8 @@ const Routes = {
     },
     OTHER: {
         TERMS_OF_SERVICE: "https://texterify.com/terms-of-service",
-        PRIVACY_POLICY: "https://texterify.com/privacy-policy"
+        PRIVACY_POLICY: "https://texterify.com/privacy-policy",
+        WORDPRESS_INTEGRATION_GUIDE: "https://docs.texterify.com/integrations/wordpress"
     },
     PRODUCT: {
         FEATURES: "/features",
@@ -32,6 +33,11 @@ const Routes = {
         PROJECT: "/dashboard/projects/:projectId",
         PROJECT_LANGUAGES: "/dashboard/projects/:projectId/languages",
         PROJECT_IMPORT: "/dashboard/projects/:projectId/import",
+        PROJECT_IMPORT_FILE: "/dashboard/projects/:projectId/import/file",
+        PROJECT_IMPORT_FILE_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_IMPORT_FILE.replace(":projectId", options.projectId);
+        },
+        PROJECT_IMPORT_GITHUB: "/dashboard/projects/:projectId/import/github",
         PROJECT_EXPORT: "/dashboard/projects/:projectId/export",
         PROJECT_MEMBERS: "/dashboard/projects/:projectId/members",
         PROJECT_MACHINE_TRANSLATION: "/dashboard/projects/:projectId/machine-translation",
@@ -42,6 +48,21 @@ const Routes = {
         PROJECT_KEYS: "/dashboard/projects/:projectId/keys",
         PROJECT_ACTIVITY: "/dashboard/projects/:projectId/activity",
         PROJECT_INTEGRATIONS: "/dashboard/projects/:projectId/integrations",
+        PROJECT_INTEGRATIONS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_INTEGRATIONS.replace(":projectId", options.projectId);
+        },
+        PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS: "/dashboard/projects/:projectId/integrations/wordpress/settings",
+        PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS.replace(":projectId", options.projectId);
+        },
+        PROJECT_INTEGRATIONS_WORDPRESS: "/dashboard/projects/:projectId/integrations/wordpress",
+        PROJECT_INTEGRATIONS_WORDPRESS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS.replace(":projectId", options.projectId);
+        },
+        PROJECT_INTEGRATIONS_WORDPRESS_SYNC: "/dashboard/projects/:projectId/integrations/wordpress/sync",
+        PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC.replace(":projectId", options.projectId);
+        },
         PROJECT_VALIDATIONS: "/dashboard/projects/:projectId/validations",
         PROJECT_OTA: "/dashboard/projects/:projectId/over-the-air",
         PROJECT_POST_PROCESSING: "/dashboard/projects/:projectId/post-processing",

@@ -1,20 +1,27 @@
-import { Layout, Tree } from "antd";
+import { ArrowRightOutlined, RightOutlined, SwapRightOutlined } from "@ant-design/icons";
+import { Alert, Skeleton, Tree } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import { Link } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
+import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import FlagIcon from "../../ui/FlagIcons";
-const { Content } = Layout;
+import { LayoutWithSubSidebar } from "../../ui/LayoutWithSubSidebar";
+import { LayoutWithSubSidebarInner } from "../../ui/LayoutWithSubSidebarInner";
+import { LayoutWithSubSidebarInnerContent } from "../../ui/LayoutWithSubSidebarInnerContent";
+import { ExportSidebar } from "./ExportSidebar";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     treeData: any[];
     expandedKeys: any[];
     responseLanguages: any;
+    responseLanguagesLoading: boolean;
 }
 
 @observer
@@ -22,10 +29,13 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
     state: IState = {
         treeData: [],
         expandedKeys: [],
+        responseLanguagesLoading: true,
         responseLanguages: null
     };
 
     async componentDidMount() {
+        this.setState({ responseLanguagesLoading: true });
+
         try {
             const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, {
                 showAll: true
@@ -51,6 +61,8 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
         } catch (e) {
             console.error(e);
         }
+
+        this.setState({ responseLanguagesLoading: false });
     }
 
     findElementForKey = (data: any[], key: string, callback: any, parent: any): any => {
@@ -189,59 +201,84 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
 
     render() {
         return (
-            <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
-                <Breadcrumbs breadcrumbName="projectExportHiearchy" />
-                <Content
-                    style={{
-                        margin: "24px 16px 0",
-                        minHeight: 360,
-                        display: "flex",
-                        flexDirection: "column",
-                        maxWidth: 800
-                    }}
-                >
-                    <h1>Export hierarchy</h1>
-                    <p>
-                        Build a hierarchy by making use of drag and drop to specify which translations should be used
-                        when there is no translation for the key available. If a translation is not found the hierarchy
-                        is traversed upwards until a translation has been found or the end is reached.
-                    </p>
+            <LayoutWithSubSidebar>
+                <ExportSidebar projectId={this.props.match.params.projectId} />
 
-                    {!dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY") && (
-                        <FeatureNotAvailable feature="FEATURE_EXPORT_HIERARCHY" />
-                    )}
+                <LayoutWithSubSidebarInner smallWidth>
+                    <Breadcrumbs breadcrumbName="projectExportHiearchy" />
+                    <LayoutWithSubSidebarInnerContent>
+                        <h1>Hierarchy</h1>
+                        <p>
+                            Build a hierarchy by making use of drag and drop to specify which translations should be
+                            used when there is no translation for the key available. If a translation is not found the
+                            hierarchy is traversed upwards until a translation has been found or the end is reached.
+                        </p>
 
-                    {this.state.responseLanguages && this.state.responseLanguages.data.length > 0 && (
-                        <Tree
-                            draggable
-                            onDrop={this.onDrop}
-                            expandedKeys={this.state.expandedKeys}
-                            showIcon
-                            disabled={!dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY")}
-                            onExpand={(expandedKeys: string[], options: { expanded?: boolean; node: any }) => {
-                                if (options.expanded) {
-                                    expandedKeys.push(options.node.props.eventKey);
-                                    this.setState({
-                                        expandedKeys: expandedKeys
-                                    });
-                                } else {
-                                    this.setState({
-                                        expandedKeys: this.state.expandedKeys.filter((key) => {
-                                            return key !== options.node.props.eventKey;
-                                        })
-                                    });
+                        {this.state.responseLanguagesLoading && (
+                            <>
+                                <Skeleton />
+                                <Skeleton />
+                            </>
+                        )}
+
+                        {!dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY") && (
+                            <FeatureNotAvailable feature="FEATURE_EXPORT_HIERARCHY" />
+                        )}
+
+                        {this.state.responseLanguages && this.state.responseLanguages.data.length < 2 && (
+                            <Alert
+                                type="info"
+                                showIcon
+                                message="Create more languages"
+                                description={
+                                    <>
+                                        You need at least 2 languages to build a hierarchy.
+                                        <br />
+                                        <Link
+                                            to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
+                                                ":projectId",
+                                                this.props.match.params.projectId
+                                            )}
+                                        >
+                                            Add another language
+                                        </Link>
+                                    </>
                                 }
-                            }}
-                        >
-                            {this.loop(this.state.treeData)}
-                        </Tree>
-                    )}
+                            />
+                        )}
 
-                    {this.state.responseLanguages &&
-                        this.state.responseLanguages.data.length === 0 &&
-                        "No languages available."}
-                </Content>
-            </Layout>
+                        {this.state.responseLanguages && this.state.responseLanguages.data.length > 1 && (
+                            <Tree
+                                draggable
+                                onDrop={this.onDrop}
+                                expandedKeys={this.state.expandedKeys}
+                                showIcon
+                                disabled={!dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY")}
+                                onExpand={(expandedKeys: string[], options: { expanded?: boolean; node: any }) => {
+                                    if (options.expanded) {
+                                        expandedKeys.push(options.node.props.eventKey);
+                                        this.setState({
+                                            expandedKeys: expandedKeys
+                                        });
+                                    } else {
+                                        this.setState({
+                                            expandedKeys: this.state.expandedKeys.filter((key) => {
+                                                return key !== options.node.props.eventKey;
+                                            })
+                                        });
+                                    }
+                                }}
+                            >
+                                {this.loop(this.state.treeData)}
+                            </Tree>
+                        )}
+
+                        {this.state.responseLanguages &&
+                            this.state.responseLanguages.data.length === 0 &&
+                            "No languages available."}
+                    </LayoutWithSubSidebarInnerContent>
+                </LayoutWithSubSidebarInner>
+            </LayoutWithSubSidebar>
         );
     }
 }

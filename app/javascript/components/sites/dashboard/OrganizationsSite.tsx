@@ -1,17 +1,18 @@
-import { Button, Empty, Input, Layout, List, message, Pagination } from "antd";
+import { ExclamationCircleFilled } from "@ant-design/icons";
+import { Button, Empty, Input, Layout, List, message, Pagination, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import { OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
+import styled from "styled-components";
+import { IGetOrganizationsOptions, IGetOrganizationsResponse, OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
 import { NewOrganizationFormModal } from "../../forms/NewOrganizationFormModal";
+import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
+import { IOrganization } from "../../stores/DashboardStore";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { ListContent } from "../../ui/ListContent";
 import { OrganizationAvatar } from "../../ui/OrganizationAvatar";
 import { PrimaryButton } from "../../ui/PrimaryButton";
-import styled from "styled-components";
-import { IOrganization } from "../../stores/DashboardStore";
-import { history } from "../../routing/history";
 
 const OrganizationInfoWrapper = styled.div`
     text-overflow: ellipsis;
@@ -24,7 +25,7 @@ const OrganizationInfoWrapper = styled.div`
 
 type IProps = RouteComponentProps;
 interface IState {
-    organizationsResponse: any;
+    organizationsResponse: IGetOrganizationsResponse;
     addDialogVisible: boolean;
     loading: boolean;
     perPage: number;
@@ -33,7 +34,7 @@ interface IState {
 }
 
 class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
-    debouncedSearchReloader: any = _.debounce(
+    debouncedSearchReloader = _.debounce(
         async (value) => {
             this.setState({ search: value, page: 1 });
             await this.reloadTable({ search: value, page: 1 });
@@ -55,7 +56,7 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
         await this.reloadTable();
     }
 
-    fetchOrganizations = async (options?: any) => {
+    fetchOrganizations = async (options?: IGetOrganizationsOptions) => {
         try {
             const responseOrganizations = await OrganizationsAPI.getOrganizations(options);
 
@@ -64,10 +65,11 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
             });
         } catch (e) {
             console.error(e);
+            message.error("Failed to load organizations.");
         }
     };
 
-    reloadTable = async (options?: any) => {
+    reloadTable = async (options?: IGetOrganizationsOptions) => {
         this.setState({ loading: true });
         const fetchOptions = options || {};
         fetchOptions.search = (options && options.search) || this.state.search;
@@ -77,24 +79,15 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
         this.setState({ loading: false });
     };
 
-    getRows = (): any[] => {
+    getRows = () => {
         if (!this.state.organizationsResponse) {
             return [];
         }
 
-        return (
-            this.state.organizationsResponse.data &&
-            this.state.organizationsResponse.data.map((organization: any) => {
-                return {
-                    key: organization.id,
-                    name: organization.attributes.name,
-                    description: organization.attributes.description
-                };
-            }, [])
-        );
+        return this.state.organizationsResponse.data;
     };
 
-    openOrganization = (organization: any) => {
+    openOrganization = (organization: IOrganization) => {
         this.props.history.push(Routes.DASHBOARD.ORGANIZATION.replace(":organizationId", organization.id));
     };
 
@@ -113,7 +106,6 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
                             <div style={{ flexGrow: 1 }}>
                                 <PrimaryButton
                                     onClick={() => {
-                                        // this.setState({ addDialogVisible: true });
                                         history.push(Routes.DASHBOARD.SETUP_ORGANIZATION_NEW);
                                     }}
                                 >
@@ -138,14 +130,14 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
                             dataSource={this.getRows()}
                             renderItem={(item) => {
                                 return (
-                                    <List.Item key={item.title}>
+                                    <List.Item key={item.id}>
                                         <List.Item.Meta
                                             title={
                                                 <ListContent
                                                     onClick={(): void => {
                                                         this.openOrganization(
                                                             _.find(this.state.organizationsResponse.data, {
-                                                                id: item.key
+                                                                id: item.id
                                                             })
                                                         );
                                                     }}
@@ -153,21 +145,27 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
                                                 >
                                                     <OrganizationAvatar
                                                         organization={_.find(this.state.organizationsResponse.data, {
-                                                            id: item.key
+                                                            id: item.id
                                                         })}
                                                         style={{ marginRight: 16 }}
                                                     />
                                                     <OrganizationInfoWrapper>
-                                                        {item.name}
-                                                        <div style={{ fontSize: 12 }}>{item.description}</div>
+                                                        {item.attributes.name}
                                                     </OrganizationInfoWrapper>
                                                 </ListContent>
                                             }
                                         />
+                                        {item.attributes.current_user_deactivated && (
+                                            <Tooltip title="Your account has been disabled for this organization.">
+                                                <ExclamationCircleFilled
+                                                    style={{ color: "var(--color-warn)", marginRight: 24 }}
+                                                />
+                                            </Tooltip>
+                                        )}
                                         <Button
                                             onClick={(): void => {
                                                 this.openOrganization(
-                                                    _.find(this.state.organizationsResponse.data, { id: item.key })
+                                                    _.find(this.state.organizationsResponse.data, { id: item.id })
                                                 );
                                             }}
                                         >
@@ -223,5 +221,5 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
     }
 }
 
-const OrganizationsSite: any = withRouter(OrganizationsSiteUnwrapped);
+const OrganizationsSite = withRouter(OrganizationsSiteUnwrapped);
 export { OrganizationsSite };

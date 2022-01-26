@@ -20,4 +20,19 @@ module ApplicationHelper
       ROLES_BELOW_TRANSLATOR
     end
   end
+
+  # Parsed locales in the format of "en_US".
+  def parse_locale(locale)
+    splitted = locale.split('_')
+
+    language_code = splitted[0]
+
+    if splitted.length == 1
+      country_code = nil
+    else
+      country_code = splitted[1]
+    end
+
+    { language_code: language_code, country_code: country_code }
+  end
 end

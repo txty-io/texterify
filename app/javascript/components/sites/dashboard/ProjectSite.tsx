@@ -48,12 +48,14 @@ class ProjectSite extends React.Component<IProps, IState> {
     };
 
     async componentDidMount() {
-        await Promise.all([
-            this.fetchLanguages(),
-            this.fetchProject(),
-            this.fetchProjectActivity(),
-            this.fetchValidationViolations()
-        ]);
+        if (!dashboardStore.currentProject.attributes.current_user_deactivated) {
+            await Promise.all([
+                this.fetchLanguages(),
+                this.fetchProject(),
+                this.fetchProjectActivity(),
+                this.fetchValidationViolations()
+            ]);
+        }
     }
 
     async fetchLanguages() {
@@ -235,7 +237,10 @@ class ProjectSite extends React.Component<IProps, IState> {
                     }}
                 >
                     <div style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
-                        <h1 style={{ display: "flex", alignItems: "center", marginBottom: 0 }}>
+                        <h1
+                            style={{ display: "flex", alignItems: "center", marginBottom: 0 }}
+                            data-id="project-home-name"
+                        >
                             <ProjectAvatar project={dashboardStore.currentProject} style={{ marginRight: 16 }} />
                             {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
                         </h1>
@@ -265,7 +270,9 @@ class ProjectSite extends React.Component<IProps, IState> {
                         </div>
                     </div>
                     {dashboardStore.currentProject?.attributes.description && (
-                        <p style={{ marginTop: 16 }}>{dashboardStore.currentProject?.attributes.description}</p>
+                        <p style={{ marginTop: 16 }} data-id="project-home-description">
+                            {dashboardStore.currentProject?.attributes.description}
+                        </p>
                     )}
                     <div style={{ display: "flex", marginTop: 40 }}>
                         <div style={{ width: "50%", marginRight: 40 }}>
@@ -339,14 +346,14 @@ class ProjectSite extends React.Component<IProps, IState> {
                                     title="Words"
                                     value={dashboardStore.currentProject?.attributes.word_count}
                                     loading={this.state.projectLoading}
-                                    className="big"
+                                    className="big data-id-project-home-word"
                                 />
                                 <Statistic
                                     title="Characters"
                                     value={dashboardStore.currentProject?.attributes.character_count}
                                     loading={this.state.projectLoading}
                                     style={{ marginLeft: 40 }}
-                                    className="big"
+                                    className="big data-id-project-home-characters"
                                 />
                             </div>
 

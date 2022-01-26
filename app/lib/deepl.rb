@@ -3,7 +3,7 @@ require 'rest-client'
 module Deepl
   module V2
     class Client
-      API_ENDPOINT = 'https://api-free.deepl.com/v2/'.freeze
+      API_ENDPOINT = ENV['DEEPL_API_ENDPOINT'] || 'https://api-free.deepl.com/v2/'
 
       attr_reader :auth_token
 
@@ -69,11 +69,13 @@ module Deepl
               params: {
                 auth_key: @auth_token
               }
-            }
+            },
+            proxy: ENV['http_proxy_deepl']
           )
         JSON.parse(response)
       rescue => e
         Sentry.capture_exception(e)
+        nil
       end
     end
   end

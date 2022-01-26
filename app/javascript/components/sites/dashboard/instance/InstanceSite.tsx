@@ -5,12 +5,13 @@ import {
     GlobalOutlined,
     HomeOutlined,
     KeyOutlined,
+    MailOutlined,
     ProjectOutlined,
     RobotOutlined,
     SwapOutlined,
     TeamOutlined
 } from "@ant-design/icons";
-import { Card, Layout, Statistic } from "antd";
+import { Alert, Card, Layout, Statistic } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link } from "react-router-dom";
@@ -54,6 +55,8 @@ export const InstanceSite = observer(() => {
         <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
             <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                 <h1>Instance overview</h1>
+
+                <h3 style={{ marginTop: 40 }}>Statistics</h3>
                 <div style={{ display: "flex", flexWrap: "wrap" }}>
                     <Card style={{ width: 240, marginBottom: 40, marginRight: 40 }}>
                         <Statistic title="Users" value={instanceInfos?.users_count} prefix={<TeamOutlined />} />
@@ -105,6 +108,13 @@ export const InstanceSite = observer(() => {
                             value={instanceInfos.sidekiq_processes}
                             style={{ marginTop: 8 }}
                         />
+                        {instanceInfos.sidekiq_processes === 0 && (
+                            <Alert
+                                type="error"
+                                message="No Sidekiq processes are running. Some functionality might not work as expected."
+                                style={{ marginTop: 16 }}
+                            />
+                        )}
                     </Card>
                     <Card style={{ width: 240, marginBottom: 40, marginRight: 40 }}>
                         <Statistic
@@ -132,7 +142,7 @@ export const InstanceSite = observer(() => {
                             }}
                         />
                     </Card>
-                    <Card style={{ width: 240, marginBottom: 40 }}>
+                    <Card style={{ width: 240, marginBottom: 40, marginRight: 40 }}>
                         <Statistic
                             title="Frontend mode"
                             prefix={IS_TEXTERIFY_CLOUD ? <CloudOutlined /> : <HomeOutlined />}
@@ -146,6 +156,33 @@ export const InstanceSite = observer(() => {
                             prefix={instanceInfos.is_cloud ? <CloudOutlined /> : <HomeOutlined />}
                             valueRender={() => {
                                 return instanceInfos.is_cloud ? "cloud" : "on-premise";
+                            }}
+                            style={{ marginTop: 8 }}
+                        />
+                    </Card>
+                    <Card style={{ width: 240, marginBottom: 40 }}>
+                        <Statistic
+                            title="Email confirmation required"
+                            prefix={<MailOutlined />}
+                            valueRender={() => {
+                                return instanceInfos.email_confirmation_required ? "Yes" : "No";
+                            }}
+                        />
+                        <Statistic
+                            title="Domain filter"
+                            valueRender={() => {
+                                return (
+                                    instanceInfos.domain_filter || (
+                                        <i style={{ color: "var(--color-passive)" }}>no filter</i>
+                                    )
+                                );
+                            }}
+                            style={{ marginTop: 8 }}
+                        />
+                        <Statistic
+                            title="Sign up enabled"
+                            valueRender={() => {
+                                return instanceInfos.sign_up_enabled ? "Yes" : "No";
                             }}
                             style={{ marginTop: 8 }}
                         />

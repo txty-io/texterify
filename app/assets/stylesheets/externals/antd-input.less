@@ -1,25 +1,31 @@
 // Fix input color
-&, .dark-theme, .light-theme {
-    // :hover
-    .ant-input:hover,
-    .ant-input-search .ant-input:hover,
-    .ant-input-affix-wrapper:hover,
-    .ant-input-search .ant-input-search-button.ant-btn:hover {
-        border-color: var(--input-border-hover-color) !important;
-    }
+&,
+.dark-theme,
+.light-theme {
+  // :hover
+  .ant-input:hover,
+  .ant-input-search .ant-input:hover,
+  .ant-input-affix-wrapper:hover,
+  .ant-input-search .ant-input-search-button.ant-btn:hover {
+    border-color: var(--input-border-hover-color) !important;
+  }
 
-    // :focus
-    .ant-input:focus,
-    .ant-input-search .ant-input:focus,
-    .ant-input-focused,
-    .ant-input-affix-wrapper:focus,
-    .ant-input-affix-wrapper-focused,
-    .ant-input-search .ant-input-search-button.ant-btn:focus {
-        border-color: var(--input-border-focus-color) !important;
-    }
+  .ant-input[disabled]:hover {
+    border-color: var(--input-border-color) !important;
+  }
 
-    // :active
-    .ant-input-search .ant-input-search-button.ant-btn:active {
-        border-color: var(--input-border-focus-color) !important;
-    }
+  // :focus
+  .ant-input:focus,
+  .ant-input-search .ant-input:focus,
+  .ant-input-focused,
+  .ant-input-affix-wrapper:focus,
+  .ant-input-affix-wrapper-focused,
+  .ant-input-search .ant-input-search-button.ant-btn:focus {
+    border-color: var(--input-border-focus-color) !important;
+  }
+
+  // :active
+  .ant-input-search .ant-input-search-button.ant-btn:active {
+    border-color: var(--input-border-focus-color) !important;
+  }
 }

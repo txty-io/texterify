@@ -2,7 +2,7 @@ import { IOrganization } from "../../stores/DashboardStore";
 import { IPlanIDS } from "../../types/IPlan";
 import { IErrorsResponse } from "../../ui/ErrorUtils";
 import { API } from "./API";
-import { APIUtils } from "./APIUtils";
+import { APIUtils, IGenericAPIResponse } from "./APIUtils";
 
 export interface IGetOrganizationsOptions {
     search?: string;
@@ -27,6 +27,21 @@ export interface IGetOrganizationResponse {
 export type IUpdateOrganizationResponse = IGetOrganizationResponse & { errors: IErrorsResponse };
 export type ICreateOrganizationResponse = IGetOrganizationResponse & { errors: IErrorsResponse };
 
+export interface ICustomSubscription {
+    id: string;
+    type: "custom_subscription";
+    attributes: {
+        id: string;
+        plan: IPlanIDS;
+        provider: string;
+        provider_plan: string;
+        provider_license_key: string;
+        max_users: number;
+        machine_translation_character_limit: number;
+        ends_at: string;
+    };
+}
+
 export interface ISubscription {
     id: string;
     type: "subscription";
@@ -39,6 +54,10 @@ export interface ISubscription {
         invoice_upcoming_total: number;
         canceled: boolean;
     };
+}
+
+export interface IGetOrganizationCustomSubscription {
+    data: ICustomSubscription;
 }
 
 export interface IGetOrganizationSubscription {
@@ -58,6 +77,23 @@ const OrganizationsAPI = {
 
     getOrganization: async (organizationId: string): Promise<IGetOrganizationResponse> => {
         return API.getRequest(`organizations/${organizationId}`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    getOrganizationCustomSubscription: async (organizationId: string): Promise<IGetOrganizationCustomSubscription> => {
+        return API.getRequest(`organizations/${organizationId}/custom_subscription`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    activateCustomSubscription: async (options: {
+        organizationId: string;
+        customSubscriptionId: string;
+    }): Promise<IGenericAPIResponse> => {
+        return API.postRequest(`organizations/${options.organizationId}/activate_custom_subscription`, true, {
+            id: options.customSubscriptionId
+        })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },

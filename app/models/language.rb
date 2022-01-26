@@ -36,7 +36,7 @@ class Language < ApplicationRecord
   # Translates all non export config translations of all non HTML keys for the language which are empty using machine translation.
   def translate_untranslated_using_machine_translation
     if ENV['DEEPL_API_TOKEN'].present? && self.project.machine_translation_enabled &&
-         project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
+         project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_LANGUAGE)
       self
         .keys
         .where(html_enabled: false)
@@ -46,7 +46,15 @@ class Language < ApplicationRecord
           target_translation = key.translations.find_by(language_id: target_language.id, export_config_id: nil)
 
           if source_translation.present? && (target_translation.nil? || target_translation.content.empty?)
-            content = Texterify::MachineTranslation.translate(source_translation, target_language)
+            begin
+              content = Texterify::MachineTranslation.translate(source_translation, target_language)
+            rescue RestClient::RequestFailed => e
+              Sentry.capture_exception(e)
+              return false
+            rescue StandardError
+              Sentry.capture_exception(e)
+              return false
+            end
 
             unless content.nil?
               if target_translation.nil?
@@ -55,12 +63,18 @@ class Language < ApplicationRecord
                 translation.key = key
                 translation.save!
               else
-                current_translation.update(content: content)
+                target_translation.update(content: content)
               end
             end
           end
         end
+
+      return true
     end
+
+    return false
+  rescue StandardError
+    return false
   end
 
   protected

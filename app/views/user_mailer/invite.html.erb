@@ -1,0 +1,28 @@
+<% content_for :title do %>You haven been invited to Texterify<% end %>
+<% content_for :preheader do %>ou haven been invited to Texterify<% end %>
+
+<h1>You have been invited to Texterify</h1>
+
+<p>Hello,</p>
+
+<p>the user <b><%= @invite_from %></b> invited you to join Texterify and work together on their translations.</p>
+
+<% if @on_premise %>
+    <p>This is an invite to an on-premise instance of Texterify which can be found on <a href="<%= root_url %>"><%= root_url %></a> and is not affiliated with the cloud version of Texterify over at <a href="https://texterify.com">texterify.com</a>.</p>
+<% end %>
+
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
+  <tbody>
+    <tr>
+      <td align="left">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td><%= link_to "Create your account", root_url.html_safe %></td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>

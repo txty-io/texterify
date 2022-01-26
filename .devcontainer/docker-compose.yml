@@ -11,6 +11,8 @@ networks:
     external:
       name: texterify-network
 
+# Use "host.docker.internal:<port>"" to access other docker services.
+
 services:
   db:
     ports:

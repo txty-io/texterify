@@ -17,13 +17,15 @@ type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     isDeletingProject: boolean;
     transferProjectModalVisible: boolean;
+    projectUpdating: boolean;
 }
 
 @observer
 class ProjectSettingsSite extends React.Component<IProps, IState> {
     state: IState = {
         isDeletingProject: false,
-        transferProjectModalVisible: false
+        transferProjectModalVisible: false,
+        projectUpdating: false
     };
 
     onTransferProjectClick = () => {
@@ -58,13 +60,20 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                 <Breadcrumbs breadcrumbName="projectSettings" />
                 <Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}>
                     <h1>Settings</h1>
-                    <Collapse bordered={false} defaultActiveKey="general">
+                    <Collapse bordered={false}>
                         <Collapse.Panel header="General settings" key="general">
                             <SettingsSectionWrapper>
                                 <NewProjectForm
                                     isEdit
                                     onChanged={() => {
                                         message.success("Successfully updated project settings.");
+                                        this.setState({ projectUpdating: false });
+                                    }}
+                                    onUpdating={() => {
+                                        this.setState({ projectUpdating: true });
+                                    }}
+                                    onError={() => {
+                                        this.setState({ projectUpdating: false });
                                     }}
                                 />
                                 <Button
@@ -72,6 +81,7 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                                     type="primary"
                                     htmlType="submit"
                                     style={{ alignSelf: "flex-end" }}
+                                    loading={this.state.projectUpdating}
                                 >
                                     Save
                                 </Button>

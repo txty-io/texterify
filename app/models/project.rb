@@ -17,6 +17,14 @@ class Project < ApplicationRecord
   has_many :releases, through: :export_configs, dependent: :destroy
   has_many :validations, dependent: :destroy
   has_many :validation_violations, dependent: :destroy
+  has_many :invites, class_name: 'ProjectInvite', dependent: :destroy
+
+  # Tags
+  has_many :tags, dependent: :destroy
+
+  # WordPress Polylang integration
+  has_many :wordpress_contents, dependent: :destroy
+  has_one :wordpress_polylang_connection, dependent: :destroy
 
   has_one_attached :image
 
@@ -59,5 +67,21 @@ class Project < ApplicationRecord
         false
       end
     end
+  end
+
+  # Creates the tag if it does not exist.
+  # Returns the new or already existing tag.
+  def create_tag_if_not_exists(name, custom)
+    tag = tags.find_by(name: name, custom: custom)
+
+    if tag.blank?
+      tag = Tag.new
+      tag.name = name
+      tag.custom = custom
+      tag.project = self
+      tag.save!
+    end
+
+    tag
   end
 end

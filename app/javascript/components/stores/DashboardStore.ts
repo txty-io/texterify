@@ -5,6 +5,7 @@ import { APIUtils } from "../api/v1/APIUtils";
 import { IProject, ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { IFeature } from "../types/IFeature";
 import { IPlanIDS } from "../types/IPlan";
+import { IUserRole } from "../types/IUserRole";
 import { DEFAULT_PAGE_SIZE } from "../ui/Config";
 
 export interface IOrganization {
@@ -17,13 +18,16 @@ export interface IOrganization {
 interface IOrganizationAttributes {
     id: string;
     name: string;
-    current_user_role?: string;
+    current_user_role?: IUserRole;
     trial_ends_at: string;
     trial_active: boolean;
     enabled_features: IFeature[];
     all_features: { [k in IFeature]: IPlanIDS[] };
     machine_translation_character_usage: string;
     machine_translation_character_limit: string;
+    current_user_deactivated?: boolean;
+    current_user_deactivated_reason?: "manually_by_admin" | "user_limit_exceeded";
+    max_users_reached: boolean;
 }
 
 class DashboardStore {
@@ -62,12 +66,12 @@ class DashboardStore {
         );
     };
 
-    getCurrentRole = () => {
-        return this.currentProject && this.currentProject.attributes.current_user_role;
+    getCurrentRole = (): IUserRole => {
+        return this.currentProject?.attributes.current_user_role;
     };
 
-    getCurrentOrganizationRole = () => {
-        return this.currentOrganization && this.currentOrganization.attributes.current_user_role;
+    getCurrentOrganizationRole = (): IUserRole => {
+        return this.currentOrganization?.attributes.current_user_role;
     };
 
     featureEnabled(feature: IFeature) {

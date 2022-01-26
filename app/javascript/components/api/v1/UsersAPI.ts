@@ -1,8 +1,17 @@
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
+import { ICustomSubscription } from "./OrganizationsAPI";
+
+export interface IGetUserRedeemableCustomSubscriptions {
+    data: ICustomSubscription[];
+}
 
 const UsersAPI = {
-    getCurrentUserInfo: async (): Promise<{ confirmed: boolean; version: string }> => {
+    getCurrentUserInfo: async (): Promise<{
+        confirmed: boolean;
+        version: string;
+        redeemable_custom_subscriptions: IGetUserRedeemableCustomSubscriptions;
+    }> => {
         return API.getRequest("users/info", true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
     },
 

@@ -10,13 +10,11 @@ class Api::V1::ValidationsController < Api::V1::ApiController
     options = {}
     options[:meta] = { total: project.validations.size }
     options[:include] = []
-    render json: ValidationSerializer.new(
-      project.validations
-        .order('name ASC')
-        .offset(page * per_page)
-        .limit(per_page),
-      options
-    ).serialized_json
+    render json:
+             ValidationSerializer.new(
+               project.validations.order('name ASC').offset(page * per_page).limit(per_page),
+               options
+             ).serialized_json
   end
 
   def create
@@ -29,15 +27,12 @@ class Api::V1::ValidationsController < Api::V1::ApiController
 
     # return unless feature_enabled?(project, Organization::FEATURE_OTA)
 
+    CheckValidationsWorker.perform_async('test')
+
     if validation.save
-      render json: {
-        success: true,
-        details: 'VALIDATION_CREATED'
-      }, status: :ok
+      render json: { success: true, details: 'VALIDATION_CREATED' }, status: :ok
     else
-      render json: {
-        errors: language.errors.details
-      }, status: :bad_request
+      render json: { errors: language.errors.details }, status: :bad_request
     end
   end
 
@@ -50,9 +45,7 @@ class Api::V1::ValidationsController < Api::V1::ApiController
     if validation.update(validation_params)
       render json: ValidationSerializer.new(validation).serialized_json
     else
-      render json: {
-        errors: validation.errors.details
-      }, status: :bad_request
+      render json: { errors: validation.errors.details }, status: :bad_request
     end
   end
 
@@ -64,10 +57,7 @@ class Api::V1::ValidationsController < Api::V1::ApiController
 
     validation.destroy!
 
-    render json: {
-      success: true,
-      details: 'DESTROYED'
-    }
+    render json: { success: true, details: 'DESTROYED' }
   end
 
   private

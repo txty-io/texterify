@@ -64,7 +64,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
             this.setState({
                 projectsLoading: false,
                 projectsResponse: responseProjects,
-                projects: responseProjects.data
+                projects: responseProjects.data || []
             });
         } catch (error) {
             console.error(error);
@@ -121,7 +121,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                         {this.state.projectsLoading ||
                         this.state.organizationsLoading ||
                         this.state.projects.length > 0 ||
-                        this.state.organizationsResponse?.data.length > 0 ? (
+                        this.state.organizationsResponse?.data?.length > 0 ? (
                             <>
                                 <div style={{ flexGrow: 1, flexShrink: 0, flexBasis: 0, marginRight: 80 }}>
                                     <h1 style={{ flexGrow: 1 }}>Your projects</h1>

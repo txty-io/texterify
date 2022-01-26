@@ -164,6 +164,24 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                 name: "Integrations",
                 path: Routes.DASHBOARD.PROJECT_INTEGRATIONS.replace(":projectId", this.props.match.params.projectId)
             },
+            projectIntegrationsWordpress: {
+                parent: "projectIntegrations",
+                name: "WordPress"
+            },
+            projectIntegrationsWordpressSettings: {
+                parent: "projectIntegrationsWordpress",
+                name: "Settings",
+                path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
+                    projectId: this.props.match.params.projectId
+                })
+            },
+            projectIntegrationsWordpressSync: {
+                parent: "projectIntegrationsWordpress",
+                name: "Synchronize",
+                path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER({
+                    projectId: this.props.match.params.projectId
+                })
+            },
             projectPostProcessing: {
                 parent: "project",
                 name: "Post Processing",
@@ -216,7 +234,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
 
         resolvedBreadcrumbs.map((breadcrumb: any, index: number) => {
             items.push(
-                <Breadcrumb.Item key={index}>
+                <Breadcrumb.Item key={index} style={{ whiteSpace: "nowrap" }}>
                     {breadcrumb.path && index !== resolvedBreadcrumbs.length - 1 ? (
                         <Link to={breadcrumb.path} style={{ display: "flex", alignItems: "center" }}>
                             {breadcrumb.name}

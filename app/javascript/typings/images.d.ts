@@ -17,3 +17,6 @@ declare module "images/logo_white_background.png";
 declare module "images/java_logo.svg";
 declare module "images/django_logo.svg";
 declare module "images/gnu_logo.svg";
+declare module "images/visual_studio_code_logo.svg";
+declare module "images/wordpress_logo.svg";
+declare module "images/flutter_logo.svg";

@@ -24,6 +24,8 @@ Rails
 
         resources :organizations do
           get :subscription, to: 'organizations#subscription'
+          get :custom_subscription, to: 'organizations#custom_subscription'
+          post :activate_custom_subscription, to: 'organizations#activate_custom_subscription'
           delete :cancel_subscription, to: 'organizations#cancel_subscription'
           post :reactivate_subscription, to: 'organizations#reactivate_subscription'
           put :change_subscription_plan, to: 'organizations#change_subscription_plan'
@@ -32,9 +34,13 @@ Rails
           delete :image, to: 'organizations#image_destroy'
           resources :members, only: [:create, :index, :destroy, :update], controller: 'organization_users'
           get :project_members, to: 'organization_users#project_users'
+
+          resources :invites, only: [:create, :index, :destroy], controller: 'organization_invites'
         end
 
         get 'instance', to: 'instance#show'
+        put 'instance/domain-filter', to: 'instance#domain_filter'
+        put 'instance/sign-up-enabled', to: 'instance#sign_up_enabled'
 
         get :recently_viewed_projects, to: 'projects#recently_viewed'
 
@@ -93,6 +99,20 @@ Rails
           resources :validations, only: [:create, :index, :destroy, :update]
           resources :validation_violations, only: [:index, :destroy]
           get :validation_violations_count, to: 'validation_violations#count'
+          resources :invites, only: [:create, :index, :destroy], controller: 'project_invites'
+
+          # WordPress Polylang integration
+          get 'wordpress_polylang_connection', to: 'wordpress_polylang_connections#show'
+          put 'wordpress_polylang_connection', to: 'wordpress_polylang_connections#update'
+          get 'wordpress_polylang_connection/contents', to: 'wordpress_polylang_connections#contents'
+          post 'wordpress_polylang_connection/pull', to: 'wordpress_polylang_connections#pull'
+          post 'wordpress_polylang_connection/push', to: 'wordpress_polylang_connections#push'
+          post 'wordpress_polylang_connection/import', to: 'wordpress_polylang_connections#import'
+          get 'wordpress_polylang_connection/website_reachable', to: 'wordpress_polylang_connections#website_reachable'
+          get 'wordpress_polylang_connection/wordpress_rest_activated',
+              to: 'wordpress_polylang_connections#wordpress_rest_activated'
+          get 'wordpress_polylang_connection/authentication_valid',
+              to: 'wordpress_polylang_connections#authentication_valid'
         end
 
         resources :access_tokens, only: [:create, :index, :destroy]

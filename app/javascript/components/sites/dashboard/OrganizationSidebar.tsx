@@ -48,7 +48,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                 ":organizationId",
                 this.props.match.params.organizationId
             ),
-            text: "Members",
+            text: "Users",
             texterifyCloudOnly: false
         },
         {

@@ -56,7 +56,7 @@ class AddReleaseForm extends React.Component<IProps, IState> {
 
             if (response.errors) {
                 if (response.errors[0]?.code === "NO_LANGUAGES_WITH_LANGUAGE_CODE") {
-                    this.formRef.current.setFields([
+                    this.formRef.current?.setFields([
                         {
                             name: "exportConfig",
                             errors: [
@@ -82,7 +82,7 @@ class AddReleaseForm extends React.Component<IProps, IState> {
     };
 
     hasExportConfigs = () => {
-        return this.state.exportConfigsLoading || this.state.exportConfigsResponse.data.length > 0;
+        return this.state.exportConfigsLoading || this.state.exportConfigsResponse?.data?.length > 0;
     };
 
     render() {

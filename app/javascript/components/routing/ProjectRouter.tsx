@@ -1,8 +1,9 @@
 import { observer } from "mobx-react";
 import * as React from "react";
-import { RouteComponentProps, Switch } from "react-router-dom";
+import { Redirect, RouteComponentProps, Switch } from "react-router-dom";
+import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 import { ProjectsAPI } from "../api/v1/ProjectsAPI";
-import { ImportSite } from "../sites/dashboard/ImportSite";
+import { FileImportSite } from "../sites/dashboard/FileImportSite";
 import { KeysSite } from "../sites/dashboard/KeysSite";
 import { LanguagesSite } from "../sites/dashboard/LanguagesSite";
 import { MembersSite } from "../sites/dashboard/MembersSite";
@@ -10,19 +11,21 @@ import { ProjectActivitySite } from "../sites/dashboard/ProjectActivitySite";
 import { ProjectExportConfigsSite } from "../sites/dashboard/ProjectExportConfigsSite";
 import { ProjectExportDownloadSite } from "../sites/dashboard/ProjectExportDownloadSite";
 import { ProjectExportHierarchySite } from "../sites/dashboard/ProjectExportHierarchySite";
+import { ProjectIntegrationsSite } from "../sites/dashboard/ProjectIntegrationsSite";
+import { ProjectIntegrationsWordpressSettingsSite } from "../sites/dashboard/ProjectIntegrationsWordpressSettingsSite";
+import { ProjectIntegrationsWordpressSyncSite } from "../sites/dashboard/ProjectIntegrationsWordpressSyncSite";
+import { ProjectIssuesSite } from "../sites/dashboard/ProjectIssuesSite";
+import { ProjectMachineTranslationSite } from "../sites/dashboard/ProjectMachineTranslationSite";
+import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
+import { ProjectPostProcessingSite } from "../sites/dashboard/ProjectPostProcessingSite";
 import { ProjectSettingsSite } from "../sites/dashboard/ProjectSettingsSite";
 import { ProjectSite } from "../sites/dashboard/ProjectSite";
+import { ProjectValidationsSite } from "../sites/dashboard/ProjectValidationsSite";
 import { dashboardStore } from "../stores/DashboardStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
+import { UserDeactivatedProjectModal } from "../ui/UserDeactivatedProjectModal";
 import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
-import { ProjectPostProcessingSite } from "../sites/dashboard/ProjectPostProcessingSite";
-import { ProjectValidationsSite } from "../sites/dashboard/ProjectValidationsSite";
-import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
-import { ProjectIntegrationsSite } from "../sites/dashboard/ProjectIntegrationsSite";
-import { ProjectIssuesSite } from "../sites/dashboard/ProjectIssuesSite";
-import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
-import { ProjectMachineTranslationSite } from "../sites/dashboard/ProjectMachineTranslationSite";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -73,7 +76,20 @@ class ProjectRouter extends React.Component<IProps, IState> {
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT} component={ProjectSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_ISSUES} component={ProjectIssuesSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_KEYS} component={KeysSite} />
-                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_IMPORT} component={ImportSite} />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_IMPORT}
+                        component={() => {
+                            return (
+                                <Redirect
+                                    to={Routes.DASHBOARD.PROJECT_IMPORT_FILE_RESOLVER({
+                                        projectId: this.props.match.params.projectId
+                                    })}
+                                />
+                            );
+                        }}
+                    />
+                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_IMPORT_FILE} component={FileImportSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_EXPORT} component={ProjectExportDownloadSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_MEMBERS} component={MembersSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_SETTINGS} component={ProjectSettingsSite} />
@@ -88,6 +104,29 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         exact
                         path={Routes.DASHBOARD.PROJECT_INTEGRATIONS}
                         component={ProjectIntegrationsSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS}
+                        component={() => {
+                            return (
+                                <Redirect
+                                    to={Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER({
+                                        projectId: this.props.match.params.projectId
+                                    })}
+                                />
+                            );
+                        }}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC}
+                        component={ProjectIntegrationsWordpressSyncSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS}
+                        component={ProjectIntegrationsWordpressSettingsSite}
                     />
                     <PrivateRoute
                         exact
@@ -111,6 +150,8 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         component={ProjectExportHierarchySite}
                     />
                 </Switch>
+
+                {dashboardStore.currentProject?.attributes.current_user_deactivated && <UserDeactivatedProjectModal />}
             </>
         );
     }

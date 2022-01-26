@@ -50,4 +50,5 @@ DeviseTokenAuth.setup do |config|
   config.default_password_reset_url = "/password-reset"
 
   config.remove_tokens_after_password_reset = true
+  # config.send_confirmation_email = true
 end

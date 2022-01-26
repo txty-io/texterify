@@ -1,28 +1,46 @@
-import { Button, Input, Layout, message, Modal, Select, Tag, Tooltip, Form, Table } from "antd";
+import { QuestionCircleOutlined, UserAddOutlined } from "@ant-design/icons";
+import { Button, Input, Layout, message, Modal, Select, Table, Tag, Tooltip } from "antd";
+import { FormInstance } from "antd/lib/form";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { MembersAPI } from "../../api/v1/MembersAPI";
+import { IGetUsersResponse, IUserRoleSource } from "../../api/v1/OrganizationMembersAPI";
+import { IGetProjectInvitesResponse, ProjectInvitesAPI } from "../../api/v1/ProjectInvitesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
+import { InviteUserFormModal } from "../../forms/InviteUserFormModal";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
+import { IUserRole } from "../../types/IUserRole";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
-import { Loading } from "../../ui/Loading";
+import { ErrorUtils } from "../../ui/ErrorUtils";
+import { ProjectInvitesTable } from "../../ui/ProjectInvitesTable";
+import { RolesLegend } from "../../ui/RolesLegend";
 import { UserAvatar } from "../../ui/UserAvatar";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
-import { FormInstance } from "antd/lib/form";
-import { ErrorUtils, ERRORS } from "../../ui/ErrorUtils";
-import { RolesLegend } from "../../ui/RolesLegend";
+
+interface IUserRow {
+    id: string;
+    key: string;
+    username: string;
+    email: string;
+    role: IUserRole;
+    roleSource: IUserRoleSource;
+    deactivated_for_project: boolean;
+    deactivated_for_instance: boolean;
+}
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
-    userAddEmail: string;
-    getMembersResponse: any;
+    getUsersResponse: IGetUsersResponse;
+    getProjectInvitesResponse: IGetProjectInvitesResponse;
     deleteDialogVisible: boolean;
     loading: boolean;
     search: string;
+    inviteDialogOpen: boolean;
+    inviteRole: string;
 }
 
 @observer
@@ -30,11 +48,13 @@ class MembersSite extends React.Component<IProps, IState> {
     formRef = React.createRef<FormInstance>();
 
     state: IState = {
-        userAddEmail: "",
-        getMembersResponse: null,
+        getUsersResponse: null,
+        getProjectInvitesResponse: null,
         deleteDialogVisible: false,
         loading: true,
-        search: ""
+        search: "",
+        inviteDialogOpen: false,
+        inviteRole: "translator"
     };
 
     debouncedSearchReloader = _.debounce(
@@ -70,8 +90,13 @@ class MembersSite extends React.Component<IProps, IState> {
                 }
             }
 
+            const responseGetProjectInvites = await ProjectInvitesAPI.getAll({
+                projectId: this.props.match.params.projectId
+            });
+
             this.setState({
-                getMembersResponse: responseGetMembers
+                getUsersResponse: responseGetMembers,
+                getProjectInvitesResponse: responseGetProjectInvites
             });
         } catch (e) {
             console.error(e);
@@ -81,16 +106,20 @@ class MembersSite extends React.Component<IProps, IState> {
     };
 
     getRows = () => {
-        return this.state.getMembersResponse.data.map((member: any) => {
-            return {
-                id: member.id,
-                key: member.id,
-                username: member.attributes.username,
-                email: member.attributes.email,
-                role: member.attributes.role,
-                roleSource: member.attributes.role_source
-            };
-        }, []);
+        return (
+            this.state.getUsersResponse?.data?.map((user) => {
+                return {
+                    id: user.id,
+                    key: user.id,
+                    username: user.attributes.username,
+                    email: user.attributes.email,
+                    role: user.attributes.role,
+                    roleSource: user.attributes.role_source,
+                    deactivated_for_project: user.attributes.user_deactivated_for_project,
+                    deactivated_for_instance: user.attributes.deactivated
+                };
+            }, []) || []
+        );
     };
 
     getOrganizationRows = () => {
@@ -135,9 +164,9 @@ class MembersSite extends React.Component<IProps, IState> {
                             this.props.history.push(Routes.DASHBOARD.PROJECTS);
                         }
                     } else {
-                        const getMembersResponse = await MembersAPI.getMembers(this.props.match.params.projectId);
+                        const getUsersResponse = await MembersAPI.getMembers(this.props.match.params.projectId);
                         this.setState({
-                            getMembersResponse: getMembersResponse,
+                            getUsersResponse: getUsersResponse,
                             deleteDialogVisible: false
                         });
                     }
@@ -168,14 +197,40 @@ class MembersSite extends React.Component<IProps, IState> {
                 key: "image",
                 width: 80,
                 render: (_text, record) => {
-                    return <UserAvatar user={record} style={{ marginRight: 24 }} />;
+                    return <UserAvatar user={record} />;
                 }
             },
             {
                 title: "Username",
                 key: "username",
-                render: (_text, record) => {
-                    return <span style={{ color: "var(--full-color)", fontWeight: "bold" }}>{record.username}</span>;
+                render: (_text, record: IUserRow) => {
+                    return (
+                        <>
+                            <span style={{ color: "var(--full-color)", fontWeight: "bold" }}>{record.username}</span>
+                            {record.deactivated_for_project && (
+                                <Tooltip title="User has been deactivated for this organization. Go to your organization users site to activate this user.">
+                                    <Tag
+                                        className="texterify-table-row-disabled-skip"
+                                        style={{ marginLeft: 24 }}
+                                        color="red"
+                                    >
+                                        Deactivated
+                                    </Tag>
+                                </Tooltip>
+                            )}
+                            {record.deactivated_for_instance && (
+                                <Tooltip title="User account has been deactivated.">
+                                    <Tag
+                                        className="texterify-table-row-disabled-skip"
+                                        style={{ marginLeft: 24 }}
+                                        color="red"
+                                    >
+                                        Deactivated account
+                                    </Tag>
+                                </Tooltip>
+                            )}
+                        </>
+                    );
                 }
             },
             {
@@ -207,7 +262,7 @@ class MembersSite extends React.Component<IProps, IState> {
                             filterOption
                             style={{ marginRight: 24, width: 240 }}
                             value={record.role}
-                            onChange={async (value: string) => {
+                            onChange={async (value: IUserRole) => {
                                 try {
                                     const response = await MembersAPI.updateMember(
                                         this.props.match.params.projectId,
@@ -299,7 +354,7 @@ class MembersSite extends React.Component<IProps, IState> {
                                                 record.role
                                             ) &&
                                             record.email !== authStore.currentUser.email) ||
-                                        this.state.getMembersResponse?.data.length === 1
+                                        this.state.getUsersResponse?.data.length === 1
                                     }
                                 >
                                     {record.id === authStore.currentUser.id ? "Leave" : "Remove"}
@@ -317,128 +372,109 @@ class MembersSite extends React.Component<IProps, IState> {
     };
 
     render() {
-        if (!this.state.getMembersResponse || !this.state.getMembersResponse.data) {
-            return <Loading />;
-        }
-
         return (
-            <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%", maxWidth: 1200 }}>
-                <Breadcrumbs breadcrumbName="projectMembers" />
-                <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
-                    <h1>Members</h1>
-                    <p>Add users to your project.</p>
-                    <div style={{ display: "flex", width: "100%" }}>
-                        <Form ref={this.formRef} style={{ width: "100%", maxWidth: 480 }}>
-                            <Form.Item name="name" style={{ marginBottom: 0 }}>
-                                <Input
-                                    placeholder="Enter users email address"
-                                    onChange={async (event) => {
-                                        this.setState({
-                                            userAddEmail: event.target.value
-                                        });
-                                    }}
-                                    value={this.state.userAddEmail}
-                                    disabled={!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())}
-                                />
-                            </Form.Item>
-                        </Form>
+            <>
+                <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%", maxWidth: 1200 }}>
+                    <Breadcrumbs breadcrumbName="projectMembers" />
+                    <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
+                        <h1>Users</h1>
+
                         <Button
-                            style={{ marginLeft: 8 }}
                             type="primary"
                             onClick={async () => {
-                                try {
-                                    const createMemberResponse = await MembersAPI.createMember(
-                                        this.props.match.params.projectId,
-                                        this.state.userAddEmail
-                                    );
-
-                                    if (createMemberResponse.error) {
-                                        if (
-                                            createMemberResponse.message ===
-                                            "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE"
-                                        ) {
-                                            if (dashboardStore.currentOrganization) {
-                                                ErrorUtils.showError(
-                                                    "Please upgrade to a paid plan to add users to this project."
-                                                );
-                                            } else {
-                                                ErrorUtils.showError(
-                                                    "This feature is not available for private projects. Please move your project to an organization."
-                                                );
-                                            }
-                                        } else if (createMemberResponse.message === "USER_ALREADY_ADDED") {
-                                            message.info("User has already been added to the project.");
-                                        } else {
-                                            ErrorUtils.showError("An unknown error occurred.");
-                                        }
-                                    } else if (createMemberResponse.errors) {
-                                        this.formRef.current.setFields([
-                                            {
-                                                name: "name",
-                                                errors: [
-                                                    ErrorUtils.getErrorMessage("user with that email", ERRORS.NOT_FOUND)
-                                                ]
-                                            }
-                                        ]);
-
-                                        return;
-                                    } else {
-                                        this.formRef.current.resetFields();
-
-                                        const getMembersResponse = await MembersAPI.getMembers(
-                                            this.props.match.params.projectId
-                                        );
-
-                                        this.setState({
-                                            getMembersResponse: getMembersResponse,
-                                            userAddEmail: ""
-                                        });
-                                    }
-                                } catch (error) {
-                                    message.error("Failed to add user.");
-                                }
+                                this.setState({ inviteDialogOpen: true });
                             }}
-                            disabled={
-                                this.state.userAddEmail === "" ||
-                                !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())
-                            }
+                            disabled={!PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole())}
+                            style={{ alignSelf: "flex-start" }}
+                            id="invite-user-open"
                         >
-                            Invite
+                            <UserAddOutlined /> Invite a user
                         </Button>
-                    </div>
 
-                    <div style={{ display: "flex", alignItems: "center", marginTop: 24 }}>
-                        <Input.Search
-                            allowClear
-                            placeholder="Search users"
-                            onChange={this.onSearch}
-                            style={{ maxWidth: "50%" }}
-                        />
+                        <div style={{ display: "flex", alignItems: "center", marginTop: 16 }}>
+                            <Input.Search
+                                allowClear
+                                placeholder="Search users"
+                                onChange={this.onSearch}
+                                style={{ maxWidth: "50%" }}
+                            />
 
-                        <RolesLegend style={{ marginLeft: "auto" }} />
-                    </div>
+                            <RolesLegend style={{ marginLeft: "auto" }} />
+                        </div>
 
-                    <div style={{ marginTop: 24 }}>
-                        <h3>Project users</h3>
-                        <Table
-                            dataSource={this.getProjectRows()}
-                            columns={this.getColumns()}
-                            loading={this.state.loading}
-                            pagination={false}
-                        />
-                    </div>
+                        <div style={{ marginTop: 24 }}>
+                            <h3>Project users</h3>
+                            <Table
+                                dataSource={this.getProjectRows()}
+                                columns={this.getColumns()}
+                                loading={
+                                    this.state.loading ||
+                                    dashboardStore.currentProject.attributes.current_user_deactivated
+                                }
+                                pagination={false}
+                                bordered
+                                rowClassName={(row: IUserRow) => {
+                                    return row.deactivated_for_instance || row.deactivated_for_project
+                                        ? "texterify-table-row-disabled"
+                                        : null;
+                                }}
+                            />
+                        </div>
 
-                    <div style={{ marginTop: 40 }}>
-                        <h3>Users from organization</h3>
-                        <Table
-                            dataSource={this.getOrganizationRows()}
-                            columns={this.getColumns()}
-                            loading={this.state.loading}
-                            pagination={false}
-                        />
-                    </div>
-                </Layout.Content>
-            </Layout>
+                        <div style={{ marginTop: 40 }}>
+                            <h3>Users from organization</h3>
+                            <Table
+                                dataSource={this.getOrganizationRows()}
+                                columns={this.getColumns()}
+                                loading={
+                                    this.state.loading ||
+                                    dashboardStore.currentProject.attributes.current_user_deactivated
+                                }
+                                pagination={false}
+                                bordered
+                                // rowClassName={(row: IUserRow) => {
+                                //     return row.deactivated_for_instance || row.deactivated_for_organization
+                                //         ? "texterify-table-row-disabled"
+                                //         : null;
+                                // }}
+                            />
+                        </div>
+
+                        <div style={{ marginTop: 40 }}>
+                            <h3>
+                                Invites{" "}
+                                <Tooltip title="Users who currently don't have an account. They will automatically be added after they create and confirm their account.">
+                                    <QuestionCircleOutlined style={{ marginLeft: 8 }} />
+                                </Tooltip>
+                            </h3>
+                            <ProjectInvitesTable
+                                loading={
+                                    this.state.loading ||
+                                    dashboardStore.currentProject.attributes.current_user_deactivated
+                                }
+                                projectInvites={this.state.getProjectInvitesResponse?.data || []}
+                                onDelete={async () => {
+                                    await this.reload();
+                                }}
+                            />
+                        </div>
+                    </Layout.Content>
+                </Layout>
+
+                <InviteUserFormModal
+                    projectId={this.props.match.params.projectId}
+                    visible={this.state.inviteDialogOpen}
+                    userRole={dashboardStore.getCurrentRole()}
+                    onCancelRequest={() => {
+                        this.setState({ inviteDialogOpen: false });
+                    }}
+                    onSuccess={async () => {
+                        this.setState({ inviteDialogOpen: false });
+
+                        await this.reload();
+                    }}
+                />
+            </>
         );
     }
 }

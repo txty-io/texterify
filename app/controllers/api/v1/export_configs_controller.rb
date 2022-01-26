@@ -1,19 +1,17 @@
 class Api::V1::ExportConfigsController < Api::V1::ApiController
+  before_action :check_if_user_activated
+
   def index
     project = current_user.projects.find(params[:project_id])
 
     authorize ExportConfig.new(project_id: project.id)
-
-    page = parse_page(params[:page])
-    per_page = parse_per_page(params[:per_page])
 
     export_configs = project.export_configs.order_by_name
 
     options = {}
     options[:meta] = { total: export_configs.size }
     options[:include] = [:language_configs]
-    render json:
-             ExportConfigSerializer.new(export_configs.offset(page * per_page).limit(per_page), options).serialized_json
+    render json: ExportConfigSerializer.new(export_configs, options).serialized_json
   end
 
   def create

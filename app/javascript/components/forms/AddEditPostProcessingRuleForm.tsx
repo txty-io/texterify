@@ -71,7 +71,7 @@ class AddEditPostProcessingRuleForm extends React.Component<IProps> {
 
         if (response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
-                this.formRef.current.setFields([
+                this.formRef.current?.setFields([
                     {
                         name: "name",
                         errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
@@ -176,14 +176,13 @@ class AddEditPostProcessingRuleForm extends React.Component<IProps> {
                             }}
                             allowClear
                         >
-                            {this.state.responseExportConfigs &&
-                                this.state.responseExportConfigs.data.map((exportConfig) => {
-                                    return (
-                                        <Select.Option value={exportConfig.id} key={exportConfig.id}>
-                                            {exportConfig.attributes.name}
-                                        </Select.Option>
-                                    );
-                                })}
+                            {this.state.responseExportConfigs?.data?.map((exportConfig) => {
+                                return (
+                                    <Select.Option value={exportConfig.id} key={exportConfig.id}>
+                                        {exportConfig.attributes.name}
+                                    </Select.Option>
+                                );
+                            })}
                         </Select>
                     </Form.Item>
                 </Form>

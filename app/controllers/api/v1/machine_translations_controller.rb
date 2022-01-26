@@ -1,5 +1,6 @@
 class Api::V1::MachineTranslationsController < Api::V1::ApiController
   before_action :verify_deepl_configured
+  before_action :check_if_user_activated, except: [:usage, :source_languages, :target_languages]
 
   def usage
     authorize :machine_translation, :usage?
@@ -104,9 +105,13 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
 
     authorize language
 
-    language.translate_untranslated_using_machine_translation
+    translation_success = language.translate_untranslated_using_machine_translation
 
-    render json: { success: true, details: 'OK' }
+    if translation_success
+      render json: { error: false, message: 'OK' }
+    else
+      render json: { error: true, message: 'FAILED_TO_MACHINE_TRANSLATE' }
+    end
   end
 
   private

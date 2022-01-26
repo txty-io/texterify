@@ -78,7 +78,7 @@ class AddEditLanguageForm extends React.Component<IAddEditLanguageFormProps, ISt
             if (response.message === "MAXIMUM_NUMBER_OF_LANGUAGES_REACHED") {
                 if (dashboardStore.getProjectOrganization()) {
                     ErrorUtils.showError(
-                        "You have reached the maximum number of languages for a project on the free plan. Please upgrade to a paid plan to create more projects."
+                        "You have reached the maximum number of languages for a project on the free plan. Please upgrade to a paid plan to add more languages."
                     );
                 } else {
                     ErrorUtils.showError(
@@ -88,14 +88,14 @@ class AddEditLanguageForm extends React.Component<IAddEditLanguageFormProps, ISt
             }
         } else if (response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
-                this.formRef.current.setFields([
+                this.formRef.current?.setFields([
                     {
                         name: "name",
                         errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
                     }
                 ]);
             } else if (ErrorUtils.hasError("name", ERRORS.INVALID, response.errors)) {
-                this.formRef.current.setFields([
+                this.formRef.current?.setFields([
                     {
                         name: "name",
                         errors: [
@@ -114,21 +114,21 @@ class AddEditLanguageForm extends React.Component<IAddEditLanguageFormProps, ISt
             }
 
             if (this.props.clearFieldsAfterSubmit) {
-                this.formRef.current.resetFields();
+                this.formRef.current?.resetFields();
             }
         }
     };
 
     prefillName = () => {
         if (!this.state.userChangedName && !this.props.languageToEdit) {
-            const languageCodeID = this.formRef.current.getFieldValue("languageCode");
+            const languageCodeID = this.formRef.current?.getFieldValue("languageCode");
 
             const language = this.state.languageCodes.find((languageCode) => {
                 return languageCode.id === languageCodeID;
             });
 
             if (language) {
-                this.formRef.current.setFieldsValue({
+                this.formRef.current?.setFieldsValue({
                     name: language.attributes.name
                 });
             }
@@ -225,7 +225,12 @@ class AddEditLanguageForm extends React.Component<IAddEditLanguageFormProps, ISt
                         <QuestionCircleOutlined />
                     </Tooltip>
                     {!this.props.hideDefaultSubmitButton && (
-                        <Button type="primary" htmlType="submit" style={{ marginLeft: "auto" }}>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            style={{ marginLeft: "auto" }}
+                            data-id="language-form-submit-button"
+                        >
                             {this.props.languageToEdit ? "Save changes" : "Add language"}
                         </Button>
                     )}
