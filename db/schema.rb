@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_25_022946) do
+ActiveRecord::Schema.define(version: 2022_01_26_130539) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -54,6 +54,18 @@ ActiveRecord::Schema.define(version: 2022_01_25_022946) do
     t.uuid "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "background_jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "project_id", null: false
+    t.uuid "user_id", null: false
+    t.string "status", null: false
+    t.integer "progress", default: 0, null: false
+    t.string "job_type", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["project_id"], name: "index_background_jobs_on_project_id"
+    t.index ["user_id"], name: "index_background_jobs_on_user_id"
   end
 
   create_table "country_codes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -516,6 +528,8 @@ ActiveRecord::Schema.define(version: 2022_01_25_022946) do
   add_foreign_key "access_tokens", "users", on_delete: :cascade
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "background_jobs", "projects", on_delete: :cascade
+  add_foreign_key "background_jobs", "users", on_delete: :nullify
   add_foreign_key "custom_subscriptions", "organizations", on_delete: :nullify
   add_foreign_key "export_configs", "projects", on_delete: :cascade
   add_foreign_key "keys", "projects", on_delete: :cascade

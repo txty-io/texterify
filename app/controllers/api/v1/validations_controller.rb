@@ -71,7 +71,16 @@ class Api::V1::ValidationsController < Api::V1::ApiController
       authorize project.validations.first
     end
 
-    CheckValidationsWorker.perform_async(project.id, validation&.id)
+    unless BackgroundJob.exists?(status: ['CREATED', 'RUNNING'])
+      background_job = BackgroundJob.new
+      background_job.status = 'CREATED'
+      background_job.job_type = 'RECHECK_ALL_VALIDATIONS'
+      background_job.user_id = current_user.id
+      background_job.project_id = project.id
+      background_job.save!
+
+      CheckValidationsWorker.perform_async(background_job.id, project.id, validation&.id)
+    end
   end
 
   private

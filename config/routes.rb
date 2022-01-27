@@ -103,6 +103,9 @@ Rails
           resources :validation_violations, only: [:index, :destroy]
           get :validation_violations_count, to: 'validation_violations#count'
 
+          # Background jobs
+          resources :background_jobs, only: [:index]
+
           # Project invites
           resources :invites, only: [:create, :index, :destroy], controller: 'project_invites'
 

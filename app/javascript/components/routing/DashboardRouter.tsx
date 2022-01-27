@@ -1,4 +1,4 @@
-import { DeploymentUnitOutlined, HddOutlined, LineChartOutlined, ProjectOutlined } from "@ant-design/icons";
+import { DeploymentUnitOutlined, HddFilled, LineChartOutlined, ProjectOutlined, SyncOutlined } from "@ant-design/icons";
 import * as antd from "antd";
 import WhiteLogoWithText from "images/logo_white_text.svg";
 import { observer } from "mobx-react";
@@ -7,7 +7,6 @@ import Hotkeys from "react-hot-keys";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { ICurrentLicenseInformation, LicensesAPI } from "../api/v1/LicensesAPI";
-import { ICustomSubscription } from "../api/v1/OrganizationsAPI";
 import { UsersAPI } from "../api/v1/UsersAPI";
 import { AboutSite } from "../sites/dashboard/AboutSite";
 import { ActivitySite } from "../sites/dashboard/ActivitySite";
@@ -23,6 +22,7 @@ import { UserAccountSettingsSite } from "../sites/dashboard/UserAccountSettingsS
 import { UserLicensesSite } from "../sites/dashboard/UserLicensesSite";
 import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
 import { authStore } from "../stores/AuthStore";
+import { dashboardStore } from "../stores/DashboardStore";
 import { ConfirmEmailHint } from "../ui/ConfirmEmailHint";
 import { DarkModeToggle } from "../ui/DarkModeToggle";
 import { getKeystrokePreview } from "../ui/KeystrokePreview";
@@ -146,6 +146,10 @@ class DashboardRouter extends React.Component<IProps, IState> {
         authStore.redeemableCustomSubscriptions = userInfoResponse.redeemable_custom_subscriptions
             ? userInfoResponse.redeemable_custom_subscriptions.data
             : [];
+
+        if (this.props.match.params.projectId) {
+            await dashboardStore.loadBackgroundJobs(this.props.match.params.projectId);
+        }
     }
 
     async loadCurrentLicense() {
@@ -316,13 +320,55 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                             to={Routes.DASHBOARD.INSTANCE.ROOT}
                                             style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
                                         >
-                                            <HddOutlined />
+                                            <HddFilled />
                                             <MenuLinkTextWrapper>Admin</MenuLinkTextWrapper>
                                         </Link>
                                     </MenuLinkWrapper>
                                 </MenuList>
                             </ul>
                         )}
+
+                        <div style={{ position: "relative", marginRight: 40 }}>
+                            <antd.Tooltip title="Click to view background jobs">
+                                <SyncOutlined
+                                    style={{
+                                        animation:
+                                            dashboardStore.activeBackgroundJobsResponse?.meta.total > 0
+                                                ? "rotating 2s linear infinite"
+                                                : undefined,
+                                        cursor: "pointer"
+                                    }}
+                                />
+                                {dashboardStore.activeBackgroundJobsResponse && (
+                                    <div
+                                        style={{
+                                            position: "absolute",
+                                            right: -8,
+                                            bottom: -8,
+                                            width: 16,
+                                            height: 16,
+                                            background:
+                                                dashboardStore.activeBackgroundJobsResponse.meta.total > 0
+                                                    ? "var(--color-warn)"
+                                                    : "#fff",
+                                            borderRadius: 40,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            color:
+                                                dashboardStore.activeBackgroundJobsResponse.meta.total > 0
+                                                    ? "#fff"
+                                                    : "var(--dark-color)",
+                                            fontWeight: "bold",
+                                            fontSize: 10,
+                                            cursor: "pointer"
+                                        }}
+                                    >
+                                        {dashboardStore.activeBackgroundJobsResponse.meta.total}
+                                    </div>
+                                )}
+                            </antd.Tooltip>
+                        </div>
 
                         {/* <MessageOutlined style={{ marginRight: 40 }} /> */}
 

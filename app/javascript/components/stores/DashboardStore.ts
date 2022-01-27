@@ -2,6 +2,7 @@ import * as localforage from "localforage";
 import { observable } from "mobx";
 import { create, persist } from "mobx-persist";
 import { APIUtils } from "../api/v1/APIUtils";
+import { BackgroundJobsAPI, IGetBackgroundJobsResponse } from "../api/v1/BackgroundJobsAPI";
 import { IProject, ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { ValidationViolationsAPI } from "../api/v1/ValidationViolationsAPI";
 import { IFeature } from "../types/IFeature";
@@ -39,6 +40,7 @@ class DashboardStore {
     @observable @persist keysPerPage = DEFAULT_PAGE_SIZE;
     @observable @persist keysPerPageEditor = DEFAULT_PAGE_SIZE;
     @observable hydrationFinished = false;
+    @observable activeBackgroundJobsResponse: IGetBackgroundJobsResponse = null;
 
     loadProject = async (projectId) => {
         const getProjectResponse = await ProjectsAPI.getProject(projectId);
@@ -47,6 +49,17 @@ class DashboardStore {
             this.currentProjectIncluded = getProjectResponse.included;
         }
     };
+
+    async loadBackgroundJobs(projectId: string) {
+        try {
+            const getBackgroundJobsResponse = await BackgroundJobsAPI.getBackgroundJobs(projectId, {
+                status: ["CREATED", "RUNNING"]
+            });
+            this.activeBackgroundJobsResponse = getBackgroundJobsResponse;
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
     getOrganizationId = (organizationId?: string) => {
         return (this.getProjectOrganization() && this.getProjectOrganization().id) || organizationId;

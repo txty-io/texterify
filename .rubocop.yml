@@ -167,3 +167,6 @@ RSpec/ExampleLength:
 
 RSpec/MultipleExpectations:
   Enabled: false
+
+RSpec/EmptyExampleGroup:
+  Enabled: false

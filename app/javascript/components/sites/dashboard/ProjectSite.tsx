@@ -18,6 +18,7 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import FlagIcon from "../../ui/FlagIcons";
+import { IssuesTag } from "../../ui/IssuesTag";
 import { ProjectAvatar } from "../../ui/ProjectAvatar";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
@@ -308,35 +309,19 @@ class ProjectSite extends React.Component<IProps, IState> {
 
                         <div style={{ width: "50%", marginLeft: 40 }}>
                             <h3>Issues</h3>
+                            <div style={{ display: "flex" }}>
+                                <IssuesTag
+                                    loading={this.state.validationViolationsLoading}
+                                    projectId={this.props.match.params.projectId}
+                                    issuesCount={this.state.validationViolationsCountResponse?.total || 0}
+                                />
 
-                            {this.state.validationViolationsLoading && (
-                                <div style={{ width: 80 }}>
-                                    <Skeleton
-                                        active
-                                        paragraph={false}
-                                        className="skeleton-no-padding skeleton-small-22"
-                                    />
-                                </div>
-                            )}
-                            {!this.state.validationViolationsLoading && this.state.validationViolationsCountResponse && (
-                                <Tag
-                                    color={
-                                        this.state.validationViolationsCountResponse.total > 0
-                                            ? "var(--color-warn)"
-                                            : "var(--color-success)"
-                                    }
-                                >
-                                    {this.state.validationViolationsCountResponse.total}{" "}
-                                    {this.state.validationViolationsCountResponse.total === 1 ? "Issue" : "Issues"}
-                                </Tag>
-                            )}
-
-                            <div style={{ marginTop: 4 }}>
                                 <a
                                     href={Routes.DASHBOARD.PROJECT_ISSUES.replace(
                                         ":projectId",
                                         this.props.match.params.projectId
                                     )}
+                                    style={{ marginLeft: 24 }}
                                 >
                                     View issues
                                 </a>

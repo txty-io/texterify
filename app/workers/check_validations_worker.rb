@@ -3,7 +3,11 @@
 class CheckValidationsWorker
   include Sidekiq::Worker
 
-  def perform(project_id, validation_id = nil)
+  def perform(background_job_id, project_id, validation_id = nil)
+    background_job = BackgroundJob.find(background_job_id)
+    background_job.status = 'RUNNING'
+    background_job.progress = 20
+    background_job.save!
     project = Project.find(project_id)
 
     if validation_id
@@ -12,5 +16,9 @@ class CheckValidationsWorker
     else
       project.translations.each { |translation| translation.check_validations }
     end
+
+    # background_job.status = 'COMPLETED'
+    # background_job.progress = 100
+    # background_job.save!
   end
 end

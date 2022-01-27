@@ -1,18 +1,21 @@
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { Button, Empty, Layout, message, Modal, Skeleton, Switch, Table, Tag } from "antd";
+import { Button, Empty, Layout, message, Modal, Popconfirm, Skeleton, Switch, Table, Tag, Tooltip } from "antd";
 import { TableRowSelection } from "antd/lib/table/interface";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import styled from "styled-components";
+import { BackgroundJobsAPI, IGetBackgroundJobsResponse } from "../../api/v1/BackgroundJobsAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { IGetValidationsOptions, IGetValidationsResponse, ValidationsAPI } from "../../api/v1/ValidationsAPI";
 import { IGetValidationViolationsCountResponse, ValidationViolationsAPI } from "../../api/v1/ValidationViolationsAPI";
 import { AddEditValidationForm } from "../../forms/AddEditValidationForm";
+import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
+import { IssuesTag } from "../../ui/IssuesTag";
 
 const DeleteLink = styled.a`
     && {
@@ -46,6 +49,7 @@ interface IState {
     validationViolationsLoading: boolean;
     selectedRowKeys: any[];
     recheckingValidations: boolean;
+    getBackgroundJobsResponse: IGetBackgroundJobsResponse;
 }
 
 @observer
@@ -61,7 +65,8 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
         validationViolationsCountResponse: null,
         validationViolationsLoading: true,
         selectedRowKeys: [],
-        recheckingValidations: false
+        recheckingValidations: false,
+        getBackgroundJobsResponse: null
     };
 
     rowSelection: TableRowSelection<ITableRow> = {
@@ -78,8 +83,24 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
     };
 
     async componentDidMount() {
-        await this.loadValidations();
-        await this.fetchValidationViolations();
+        await Promise.all([this.fetchValidationViolations(), this.loadValidations(), this.loadBackgroundJobs()]);
+    }
+
+    async loadBackgroundJobs() {
+        try {
+            const getBackgroundJobsResponse = await BackgroundJobsAPI.getBackgroundJobs(
+                this.props.match.params.projectId,
+                {
+                    status: ["CREATED", "RUNNING"],
+                    jobTypes: ["RECHECK_ALL_VALIDATIONS"]
+                }
+            );
+            this.setState({
+                getBackgroundJobsResponse: getBackgroundJobsResponse
+            });
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     async loadValidations(options?: { page?: number; perPage?: number }) {
@@ -307,6 +328,10 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
         await this.loadValidations(fetchOptions);
     };
 
+    isAlreadyRecheckingAllValidations = () => {
+        return this.state.getBackgroundJobsResponse?.meta?.total > 0;
+    };
+
     render() {
         return (
             <>
@@ -318,67 +343,62 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                         <h1>Validations</h1>
                         <p>Create rules to ensure the quality of your translations.</p>
 
-                        <div style={{ display: "flex" }}>
-                            <Button
-                                type="primary"
-                                loading={this.state.recheckingValidations}
-                                onClick={async () => {
-                                    this.setState({ recheckingValidations: true });
-                                    try {
-                                        await ValidationsAPI.recheckValidations({
-                                            projectId: this.props.match.params.projectId
-                                        });
-                                        message.success(
-                                            "Successfully queued job to check all translations for issues."
-                                        );
-                                    } catch (error) {
-                                        console.error(error);
-                                        message.error("Failed to recheck validations.");
-                                    }
+                        <div style={{ display: "flex", alignItems: "center", maxWidth: 1280 }}>
+                            <IssuesTag
+                                loading={this.state.validationViolationsLoading}
+                                projectId={this.props.match.params.projectId}
+                                issuesCount={this.state.validationViolationsCountResponse?.total || 0}
+                            />
 
-                                    this.setState({ recheckingValidations: false });
-                                }}
-                            >
-                                Recheck all validations
-                            </Button>
-                        </div>
-
-                        <div style={{ display: "flex", alignItems: "center", marginTop: 24 }}>
-                            {this.state.validationViolationsLoading && (
-                                <div style={{ width: 80, marginRight: 8 }}>
-                                    <Skeleton
-                                        active
-                                        paragraph={false}
-                                        className="skeleton-no-padding skeleton-small-22"
-                                    />
-                                </div>
-                            )}
-                            {!this.state.validationViolationsLoading && this.state.validationViolationsCountResponse && (
-                                <Tag
-                                    icon={
-                                        this.state.validationViolationsCountResponse.total > 0 ? (
-                                            <ExclamationCircleOutlined />
-                                        ) : undefined
-                                    }
-                                    color={
-                                        this.state.validationViolationsCountResponse.total > 0
-                                            ? "var(--color-warn)"
-                                            : "var(--color-success)"
-                                    }
-                                >
-                                    {this.state.validationViolationsCountResponse.total}{" "}
-                                    {this.state.validationViolationsCountResponse.total === 1 ? "Issue" : "Issues"}
-                                </Tag>
-                            )}
                             <a
                                 href={Routes.DASHBOARD.PROJECT_ISSUES.replace(
                                     ":projectId",
                                     this.props.match.params.projectId
                                 )}
-                                style={{ marginLeft: 12, lineHeight: 0 }}
+                                style={{ marginLeft: 12, marginRight: 40, lineHeight: 0 }}
                             >
                                 View issues
                             </a>
+
+                            <Popconfirm
+                                title="Do you want to run all enabled validations against your translations?"
+                                onConfirm={async () => {
+                                    this.setState({ recheckingValidations: true });
+                                    try {
+                                        await ValidationsAPI.recheckValidations({
+                                            projectId: this.props.match.params.projectId
+                                        });
+                                        await Promise.all([
+                                            await this.loadBackgroundJobs(),
+                                            await dashboardStore.loadBackgroundJobs(this.props.match.params.projectId)
+                                        ]);
+                                        message.success(
+                                            "Successfully queued job to check all translations for issues."
+                                        );
+                                    } catch (error) {
+                                        console.error(error);
+                                        message.error("Failed to queue job for checking all translations for issues.");
+                                    }
+
+                                    this.setState({ recheckingValidations: false });
+                                }}
+                                okText="Yes"
+                                cancelText="No"
+                                okButtonProps={{ danger: true }}
+                            >
+                                <Button
+                                    type="primary"
+                                    loading={
+                                        this.state.recheckingValidations || this.isAlreadyRecheckingAllValidations()
+                                    }
+                                    style={{ marginLeft: "auto" }}
+                                    disabled={!this.state.getBackgroundJobsResponse}
+                                >
+                                    {this.state.recheckingValidations || this.isAlreadyRecheckingAllValidations()
+                                        ? "Rechecking validations..."
+                                        : "Recheck all validations"}
+                                </Button>
+                            </Popconfirm>
                         </div>
 
                         <div style={{ display: "flex", marginTop: 24 }}>
@@ -392,7 +412,7 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                     alignItems: "flex-start"
                                 }}
                             >
-                                <h3>Custom validations</h3>
+                                <h3>Validation rules</h3>
                                 <Button
                                     type="default"
                                     style={{ marginBottom: 16 }}
