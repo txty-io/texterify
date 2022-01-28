@@ -17,8 +17,10 @@ class CheckValidationsWorker
       project.translations.each { |translation| translation.check_validations }
     end
 
-    # background_job.status = 'COMPLETED'
-    # background_job.progress = 100
-    # background_job.save!
+    background_job.status = 'COMPLETED'
+    background_job.progress = 100
+    background_job.save!
+
+    JobsChannel.broadcast_to(background_job.user, type: 'RECHECK_ALL_VALIDATIONS')
   end
 end

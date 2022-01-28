@@ -137,6 +137,8 @@ Rails
       end
     end
 
+    mount ActionCable.server => '/cable'
+
     root to: 'application#app'
     get '*path',
         to: 'application#app',

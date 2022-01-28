@@ -336,7 +336,11 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       :description,
       :machine_translation_enabled,
       :auto_translate_new_keys,
-      :auto_translate_new_languages, :validate_leading_whitespace, :validate_trailing_whitespace, :validate_double_whitespace, :validate_https
+      :auto_translate_new_languages,
+      :validate_leading_whitespace,
+      :validate_trailing_whitespace,
+      :validate_double_whitespace,
+      :validate_https
     )
   end
 end

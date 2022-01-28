@@ -8,6 +8,7 @@ import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { ICurrentLicenseInformation, LicensesAPI } from "../api/v1/LicensesAPI";
 import { UsersAPI } from "../api/v1/UsersAPI";
+import eventBus from "../EventBus";
 import { AboutSite } from "../sites/dashboard/AboutSite";
 import { ActivitySite } from "../sites/dashboard/ActivitySite";
 import { DashboardNotFoundSite } from "../sites/dashboard/DashboardNotFoundSite";
@@ -31,6 +32,7 @@ import { LicenseFreeTrial } from "../ui/LicenseFreeVersion";
 import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
+import { consumer } from "../WebsocketClient";
 import { InstanceRouter } from "./InstanceRouter";
 import { OrganizationRouter } from "./OrganizationRouter";
 import { PrivateRoute } from "./PrivateRoute";
@@ -149,6 +151,19 @@ class DashboardRouter extends React.Component<IProps, IState> {
 
         if (this.props.match.params.projectId) {
             await dashboardStore.loadBackgroundJobs(this.props.match.params.projectId);
+            const projectId = this.props.match.params.projectId;
+
+            consumer.subscriptions.create(
+                { channel: "JobsChannel" },
+                {
+                    received(data: { type: "RECHECK_ALL_VALIDATIONS" }) {
+                        dashboardStore.loadBackgroundJobs(projectId);
+                        if (data.type === "RECHECK_ALL_VALIDATIONS") {
+                            eventBus.dispatch("RECHECK_ALL_VALIDATIONS", {});
+                        }
+                    }
+                }
+            );
         }
     }
 

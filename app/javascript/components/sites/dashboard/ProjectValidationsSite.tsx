@@ -9,6 +9,7 @@ import { BackgroundJobsAPI, IGetBackgroundJobsResponse } from "../../api/v1/Back
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { IGetValidationsOptions, IGetValidationsResponse, ValidationsAPI } from "../../api/v1/ValidationsAPI";
 import { IGetValidationViolationsCountResponse, ValidationViolationsAPI } from "../../api/v1/ValidationViolationsAPI";
+import eventBus from "../../EventBus";
 import { AddEditValidationForm } from "../../forms/AddEditValidationForm";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
@@ -16,6 +17,7 @@ import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { IssuesTag } from "../../ui/IssuesTag";
+import { consumer } from "../../WebsocketClient";
 
 const DeleteLink = styled.a`
     && {
@@ -84,6 +86,10 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
 
     async componentDidMount() {
         await Promise.all([this.fetchValidationViolations(), this.loadValidations(), this.loadBackgroundJobs()]);
+
+        eventBus.on("RECHECK_ALL_VALIDATIONS", () => {
+            void this.loadBackgroundJobs();
+        });
     }
 
     async loadBackgroundJobs() {
