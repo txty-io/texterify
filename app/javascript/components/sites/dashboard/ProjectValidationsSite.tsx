@@ -89,6 +89,7 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
 
         eventBus.on("RECHECK_ALL_VALIDATIONS", () => {
             void this.loadBackgroundJobs();
+            message.success("Rechecking all validations completed.");
         });
     }
 
@@ -199,7 +200,11 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                             return;
                         }
 
-                        message.success("Validation status changed.");
+                        message.success(
+                            !dashboardStore.currentProject.attributes[props.property]
+                                ? "Validation enabled."
+                                : "Validation disabled."
+                        );
                         dashboardStore.currentProject.attributes[props.property] =
                             !dashboardStore.currentProject.attributes[props.property];
                     }}
@@ -239,7 +244,9 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                         enabled: !validation.attributes.enabled
                                     });
 
-                                    message.success("Validation status changed.");
+                                    message.success(
+                                        !validation.attributes.enabled ? "Validation enabled." : "Validation disabled."
+                                    );
 
                                     validation.attributes.enabled = !validation.attributes.enabled;
                                 } catch (error) {
@@ -374,13 +381,13 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                         await ValidationsAPI.recheckValidations({
                                             projectId: this.props.match.params.projectId
                                         });
+                                        message.success(
+                                            "Successfully queued job to check all translations for issues."
+                                        );
                                         await Promise.all([
                                             await this.loadBackgroundJobs(),
                                             await dashboardStore.loadBackgroundJobs(this.props.match.params.projectId)
                                         ]);
-                                        message.success(
-                                            "Successfully queued job to check all translations for issues."
-                                        );
                                     } catch (error) {
                                         console.error(error);
                                         message.error("Failed to queue job for checking all translations for issues.");

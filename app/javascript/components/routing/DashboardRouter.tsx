@@ -158,6 +158,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                 {
                     received(data: { type: "RECHECK_ALL_VALIDATIONS" }) {
                         dashboardStore.loadBackgroundJobs(projectId);
+
                         if (data.type === "RECHECK_ALL_VALIDATIONS") {
                             eventBus.dispatch("RECHECK_ALL_VALIDATIONS", {});
                         }
