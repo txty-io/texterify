@@ -10,6 +10,11 @@ export interface ITranslation {
         key_id: string;
         language_id: string;
     };
+    relationships: {
+        export_config?: { data: any };
+        key?: { data: any };
+        language?: { data: any };
+    };
 }
 
 const TranslationsAPI = {

@@ -21,6 +21,6 @@ class CheckValidationsWorker
     background_job.progress = 100
     background_job.save!
 
-    JobsChannel.broadcast_to(background_job.user, type: 'RECHECK_ALL_VALIDATIONS')
+    JobsChannel.broadcast_to(background_job.user, type: 'RECHECK_ALL_VALIDATIONS_FINISHED', project_id: project_id)
   end
 end

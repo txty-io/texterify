@@ -41,6 +41,7 @@ class DashboardStore {
     @observable @persist keysPerPageEditor = DEFAULT_PAGE_SIZE;
     @observable hydrationFinished = false;
     @observable activeBackgroundJobsResponse: IGetBackgroundJobsResponse = null;
+    @observable activeBackgroundJobsResponseProjectId: string = null;
 
     loadProject = async (projectId) => {
         const getProjectResponse = await ProjectsAPI.getProject(projectId);
@@ -51,6 +52,8 @@ class DashboardStore {
     };
 
     async loadBackgroundJobs(projectId: string) {
+        this.activeBackgroundJobsResponseProjectId = projectId;
+
         try {
             const getBackgroundJobsResponse = await BackgroundJobsAPI.getBackgroundJobs(projectId, {
                 status: ["CREATED", "RUNNING"]

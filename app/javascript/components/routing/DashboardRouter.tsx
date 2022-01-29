@@ -8,7 +8,6 @@ import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { ICurrentLicenseInformation, LicensesAPI } from "../api/v1/LicensesAPI";
 import { UsersAPI } from "../api/v1/UsersAPI";
-import eventBus from "../EventBus";
 import { AboutSite } from "../sites/dashboard/AboutSite";
 import { ActivitySite } from "../sites/dashboard/ActivitySite";
 import { DashboardNotFoundSite } from "../sites/dashboard/DashboardNotFoundSite";
@@ -40,6 +39,9 @@ import { PrivateRouteTexterifyCloud } from "./PrivateRouteTexterifyCloud";
 import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
 import { SuperadminRoute } from "./SuperadminRoute";
+import PubSub from "pubsub-js";
+import { RECHECK_ALL_VALIDATIONS_FINISHED } from "../utilities/Events";
+import { history } from "./history";
 
 export const MenuList = styled.li`
     overflow: hidden;
@@ -118,6 +120,7 @@ type IProps = RouteComponentProps<{ projectId?: string }>;
 interface IState {
     hasSidebar: boolean;
     accountMenuVisible: boolean;
+    backgroundJobsVisible: boolean;
     searchOverlayVisible: boolean;
     currentLicenseInfo: ICurrentLicenseInformation | null;
     currentLicenseInfoLoaded: boolean;
@@ -128,6 +131,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
     state: IState = {
         hasSidebar: false,
         accountMenuVisible: false,
+        backgroundJobsVisible: false,
         searchOverlayVisible: false,
         currentLicenseInfo: null,
         currentLicenseInfoLoaded: false
@@ -149,23 +153,23 @@ class DashboardRouter extends React.Component<IProps, IState> {
             ? userInfoResponse.redeemable_custom_subscriptions.data
             : [];
 
-        if (this.props.match.params.projectId) {
-            await dashboardStore.loadBackgroundJobs(this.props.match.params.projectId);
-            const projectId = this.props.match.params.projectId;
+        // Listen for job updates.
+        consumer.subscriptions.create(
+            { channel: "JobsChannel" },
+            {
+                received: (data: { type: "RECHECK_ALL_VALIDATIONS_FINISHED"; project_id: string }) => {
+                    // Only care about the finished job if it is a job of the currently selected project.
+                    if (data.project_id === this.props.match.params.projectId) {
+                        dashboardStore.loadBackgroundJobs(data.project_id);
 
-            consumer.subscriptions.create(
-                { channel: "JobsChannel" },
-                {
-                    received(data: { type: "RECHECK_ALL_VALIDATIONS" }) {
-                        dashboardStore.loadBackgroundJobs(projectId);
-
-                        if (data.type === "RECHECK_ALL_VALIDATIONS") {
-                            eventBus.dispatch("RECHECK_ALL_VALIDATIONS", {});
+                        // Send an event that the recheck all validations job has finished.
+                        if (data.type === RECHECK_ALL_VALIDATIONS_FINISHED) {
+                            PubSub.publish(RECHECK_ALL_VALIDATIONS_FINISHED, { projectId: data.project_id });
                         }
                     }
                 }
-            );
-        }
+            }
+        );
     }
 
     async loadCurrentLicense() {
@@ -185,6 +189,13 @@ class DashboardRouter extends React.Component<IProps, IState> {
             this.setState({
                 hasSidebar: this.hasSidebar()
             });
+        }
+
+        if (
+            this.props.match.params.projectId &&
+            this.props.match.params.projectId !== dashboardStore.activeBackgroundJobsResponseProjectId
+        ) {
+            dashboardStore.loadBackgroundJobs(this.props.match.params.projectId);
         }
     }
 
@@ -344,47 +355,76 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             </ul>
                         )}
 
-                        <div style={{ position: "relative", marginRight: 40 }}>
-                            <antd.Tooltip title="Click to view background jobs">
-                                <SyncOutlined
-                                    style={{
-                                        animation:
-                                            dashboardStore.activeBackgroundJobsResponse?.meta.total > 0
-                                                ? "rotating 2s linear infinite"
-                                                : undefined,
-                                        cursor: "pointer"
+                        {this.props.match.params.projectId && (
+                            <div
+                                onClick={() => {
+                                    this.setState({ backgroundJobsVisible: true });
+                                }}
+                                role="button"
+                                style={{ cursor: "pointer" }}
+                                data-id="background-jobs-menu"
+                            >
+                                <antd.Popover
+                                    title="Background jobs"
+                                    placement="bottom"
+                                    trigger="click"
+                                    visible={this.state.backgroundJobsVisible}
+                                    onVisibleChange={() => {
+                                        this.setState({ backgroundJobsVisible: false });
                                     }}
-                                />
-                                {dashboardStore.activeBackgroundJobsResponse && (
+                                    overlayClassName="popover-no-padding"
+                                    content={<>hello</>}
+                                >
                                     <div
                                         style={{
-                                            position: "absolute",
-                                            right: -8,
-                                            bottom: -8,
-                                            width: 16,
-                                            height: 16,
-                                            background:
-                                                dashboardStore.activeBackgroundJobsResponse.meta.total > 0
-                                                    ? "var(--color-warn)"
-                                                    : "#fff",
-                                            borderRadius: 40,
+                                            height: 40,
                                             display: "flex",
                                             alignItems: "center",
-                                            justifyContent: "center",
-                                            color:
-                                                dashboardStore.activeBackgroundJobsResponse.meta.total > 0
-                                                    ? "#fff"
-                                                    : "var(--dark-color)",
-                                            fontWeight: "bold",
-                                            fontSize: 10,
-                                            cursor: "pointer"
+                                            position: "relative",
+                                            marginRight: 40
                                         }}
                                     >
-                                        {dashboardStore.activeBackgroundJobsResponse.meta.total}
+                                        <SyncOutlined
+                                            style={{
+                                                animation:
+                                                    dashboardStore.activeBackgroundJobsResponse?.meta.total > 0
+                                                        ? "rotating 2s linear infinite"
+                                                        : undefined,
+                                                cursor: "pointer"
+                                            }}
+                                        />
+                                        {dashboardStore.activeBackgroundJobsResponse && (
+                                            <div
+                                                style={{
+                                                    position: "absolute",
+                                                    right: -8,
+                                                    bottom: 4,
+                                                    width: 16,
+                                                    height: 16,
+                                                    background:
+                                                        dashboardStore.activeBackgroundJobsResponse.meta.total > 0
+                                                            ? "var(--color-warn)"
+                                                            : "#fff",
+                                                    borderRadius: 40,
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    color:
+                                                        dashboardStore.activeBackgroundJobsResponse.meta.total > 0
+                                                            ? "#fff"
+                                                            : "var(--dark-color)",
+                                                    fontWeight: "bold",
+                                                    fontSize: 10,
+                                                    cursor: "pointer"
+                                                }}
+                                            >
+                                                {dashboardStore.activeBackgroundJobsResponse.meta.total}
+                                            </div>
+                                        )}
                                     </div>
-                                )}
-                            </antd.Tooltip>
-                        </div>
+                                </antd.Popover>
+                            </div>
+                        )}
 
                         {/* <MessageOutlined style={{ marginRight: 40 }} /> */}
 

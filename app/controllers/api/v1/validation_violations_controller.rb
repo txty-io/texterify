@@ -9,14 +9,20 @@ class Api::V1::ValidationViolationsController < Api::V1::ApiController
 
     options = {}
     options[:meta] = { total: project.validation_violations.size }
-    options[:include] = [:project, :validation, :translation, :'translation.key']
-    render json: ValidationViolationSerializer.new(
-      project.validation_violations
-        .order('id ASC')
-        .offset(page * per_page)
-        .limit(per_page),
-      options
-    ).serialized_json
+    options[:include] = [
+      :project,
+      :validation,
+      :translation,
+      :'translation.key',
+      :'translation.language',
+      :'translation.language.language_code',
+      :'translation.language.country_code'
+    ]
+    render json:
+             ValidationViolationSerializer.new(
+               project.validation_violations.order('id ASC').offset(page * per_page).limit(per_page),
+               options
+             ).serialized_json
   end
 
   def count
@@ -24,9 +30,7 @@ class Api::V1::ValidationViolationsController < Api::V1::ApiController
 
     project = current_user.projects.find(params[:project_id])
 
-    render json: {
-      total: project.issues_count
-    }
+    render json: { total: project.issues_count }
   end
 
   def destroy
@@ -35,9 +39,6 @@ class Api::V1::ValidationViolationsController < Api::V1::ApiController
     authorize validation_violation
     validation_violation.destroy
 
-    render json: {
-      success: true,
-      details: 'VALIDATION_VIOLATION_DELETED'
-    }
+    render json: { success: true, details: 'VALIDATION_VIOLATION_DELETED' }
   end
 end

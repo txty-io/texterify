@@ -1,4 +1,4 @@
-import { Empty, Layout, message, Popconfirm, Table } from "antd";
+import { Empty, Layout, message, Popconfirm, Table, Tag } from "antd";
 import { TableRowSelection } from "antd/lib/table/interface";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -17,6 +17,10 @@ import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { Routes } from "../../routing/Routes";
+import { ILanguage } from "../../api/v1/LanguagesAPI";
+import { Flag } from "../../ui/Flag";
 
 const DeleteLink = styled.a`
     && {
@@ -30,9 +34,10 @@ const DeleteLink = styled.a`
 
 interface ITableRow {
     key: string;
-    name: string;
+    language: React.ReactNode;
+    name: React.ReactNode;
     content: React.ReactNode;
-    description: string;
+    description: React.ReactNode;
     controls: React.ReactNode;
 }
 
@@ -118,7 +123,11 @@ class ProjectIssuesSite extends React.Component<IProps, IState> {
                 return validationViolation.attributes.name;
             }
         } else {
-            return `Text ${validation.attributes.match} ${validation.attributes.content}`;
+            return (
+                <>
+                    Text {validation.attributes.match} <Tag color="red">{validation.attributes.content}</Tag>
+                </>
+            );
         }
     }
 
@@ -128,25 +137,52 @@ class ProjectIssuesSite extends React.Component<IProps, IState> {
         }
 
         return this.state.validationViolationsResponse.data.map((validationViolation) => {
-            const translation = APIUtils.getIncludedObject(
+            const translation: ITranslation = APIUtils.getIncludedObject(
                 validationViolation.relationships.translation.data,
                 this.state.validationViolationsResponse.included
             );
 
-            const validation = APIUtils.getIncludedObject(
+            const language: ILanguage = APIUtils.getIncludedObject(
+                translation.relationships.language.data,
+                this.state.validationViolationsResponse.included
+            );
+
+            const countryCode = APIUtils.getIncludedObject(
+                language.relationships.country_code.data,
+                this.state.validationViolationsResponse.included
+            );
+
+            const languageCode = APIUtils.getIncludedObject(
+                language.relationships.language_code.data,
+                this.state.validationViolationsResponse.included
+            );
+
+            const validation: IValidation = APIUtils.getIncludedObject(
                 validationViolation.relationships.validation.data,
                 this.state.validationViolationsResponse.included
             );
 
+            const key = this.getKeyForTranslation(this.getTranslationForViolation(validationViolation));
+
             return {
                 key: validationViolation.attributes.id,
-                name: this.getKeyForTranslation(this.getTranslationForViolation(validationViolation))?.attributes.name,
+                name: (
+                    <Link
+                        to={Routes.DASHBOARD.PROJECT_EDITOR_KEY.replace(
+                            ":projectId",
+                            this.props.match.params.projectId
+                        ).replace(":keyId", key.id)}
+                    >
+                        {key?.attributes.name}
+                    </Link>
+                ),
+                language: <Flag language={language} countryCode={countryCode} languageCode={languageCode} />,
                 content: translation.attributes.content,
                 description: this.getValidationDescription(validationViolation, validation),
                 controls: (
                     <div style={{ display: "flex", justifyContent: "center" }}>
                         <Popconfirm
-                            title="Do you want to ignore this issue?"
+                            title="Do you want to delete this issue?"
                             onConfirm={async () => {
                                 this.setState({ validationViolationsLoading: true });
                                 try {
@@ -155,10 +191,10 @@ class ProjectIssuesSite extends React.Component<IProps, IState> {
                                         validationViolation.id
                                     );
                                     dashboardStore.currentProject.attributes.issues_count--;
-                                    message.success("Issue ignored");
+                                    message.success("Issue deleted");
                                 } catch (error) {
                                     console.error(error);
-                                    message.error("Failed to ignore issue.");
+                                    message.error("Failed to delete issue.");
                                 }
                                 await this.loadValidationViolations();
                             }}
@@ -166,7 +202,7 @@ class ProjectIssuesSite extends React.Component<IProps, IState> {
                             cancelText="No"
                             placement="top"
                         >
-                            <DeleteLink>Ignore</DeleteLink>
+                            <DeleteLink>Delete</DeleteLink>
                         </Popconfirm>
                     </div>
                 )
@@ -180,6 +216,11 @@ class ProjectIssuesSite extends React.Component<IProps, IState> {
                 title: "Key",
                 dataIndex: "name",
                 key: "name"
+            },
+            {
+                title: "Language",
+                dataIndex: "language",
+                key: "language"
             },
             {
                 title: "Content",
@@ -219,7 +260,7 @@ class ProjectIssuesSite extends React.Component<IProps, IState> {
                         paddingBottom: 40,
                         display: "flex",
                         flexDirection: "column",
-                        maxWidth: 800
+                        maxWidth: 1200
                     }}
                 >
                     <h1>Issues</h1>

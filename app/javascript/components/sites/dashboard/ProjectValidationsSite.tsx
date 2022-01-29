@@ -1,5 +1,4 @@
-import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { Button, Empty, Layout, message, Modal, Popconfirm, Skeleton, Switch, Table, Tag, Tooltip } from "antd";
+import { Button, Empty, Layout, message, Modal, Popconfirm, Switch, Table } from "antd";
 import { TableRowSelection } from "antd/lib/table/interface";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -9,15 +8,14 @@ import { BackgroundJobsAPI, IGetBackgroundJobsResponse } from "../../api/v1/Back
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { IGetValidationsOptions, IGetValidationsResponse, ValidationsAPI } from "../../api/v1/ValidationsAPI";
 import { IGetValidationViolationsCountResponse, ValidationViolationsAPI } from "../../api/v1/ValidationViolationsAPI";
-import eventBus from "../../EventBus";
 import { AddEditValidationForm } from "../../forms/AddEditValidationForm";
-import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { IssuesTag } from "../../ui/IssuesTag";
-import { consumer } from "../../WebsocketClient";
+import PubSub from "pubsub-js";
+import { RECHECK_ALL_VALIDATIONS_FINISHED } from "../../utilities/Events";
 
 const DeleteLink = styled.a`
     && {
@@ -84,13 +82,25 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
         }
     };
 
+    eventSubscription: string;
+
+    callback = (_event: string, data: { projectId: string }) => {
+        if (data.projectId === this.props.match.params.projectId) {
+            void this.loadBackgroundJobs();
+            message.success("Rechecking all validations completed.");
+        }
+    };
+
     async componentDidMount() {
         await Promise.all([this.fetchValidationViolations(), this.loadValidations(), this.loadBackgroundJobs()]);
 
-        eventBus.on("RECHECK_ALL_VALIDATIONS", () => {
-            void this.loadBackgroundJobs();
-            message.success("Rechecking all validations completed.");
-        });
+        this.eventSubscription = PubSub.subscribe(RECHECK_ALL_VALIDATIONS_FINISHED, this.callback);
+    }
+
+    componentWillUnmount() {
+        if (this.eventSubscription) {
+            PubSub.unsubscribe(this.eventSubscription);
+        }
     }
 
     async loadBackgroundJobs() {

@@ -68,7 +68,9 @@ class Api::V1::ValidationsController < Api::V1::ApiController
       validation = Validation.find(params[:validation_id])
       authorize validation
     else
-      authorize project.validations.first
+      validation = Validation.new
+      validation.project = project
+      authorize validation
     end
 
     unless BackgroundJob.exists?(status: ['CREATED', 'RUNNING'])
