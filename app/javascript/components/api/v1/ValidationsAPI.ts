@@ -77,12 +77,6 @@ const ValidationsAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    deleteValidationViolation: async (projectId: string, validationViolationId: string) => {
-        return API.deleteRequest(`projects/${projectId}/validation_violations/${validationViolationId}`, true)
-            .then(APIUtils.handleErrors)
-            .catch(APIUtils.handleErrors);
-    },
-
     recheckValidations: async (options: { projectId: string; validationId?: string }) => {
         return API.postRequest(`projects/${options.projectId}/validations_recheck`, true, {
             validation_id: options.validationId

@@ -39,7 +39,7 @@ class Project < ApplicationRecord
 
   # The total number of validation violations.
   def issues_count
-    validation_violations.size
+    validation_violations.where(ignored: false).size
   end
 
   def role_of(user)

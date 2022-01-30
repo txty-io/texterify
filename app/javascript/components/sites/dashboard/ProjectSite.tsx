@@ -111,7 +111,9 @@ class ProjectSite extends React.Component<IProps, IState> {
                     projectId: this.props.match.params.projectId
                 });
 
-                dashboardStore.currentProject.attributes.issues_count = validationViolationsCountResponse.total;
+                if (dashboardStore.currentProject) {
+                    dashboardStore.currentProject.attributes.issues_count = validationViolationsCountResponse.total;
+                }
 
                 this.setState({
                     validationViolationsCountResponse: validationViolationsCountResponse
@@ -316,15 +318,15 @@ class ProjectSite extends React.Component<IProps, IState> {
                                     issuesCount={this.state.validationViolationsCountResponse?.total || 0}
                                 />
 
-                                <a
-                                    href={Routes.DASHBOARD.PROJECT_ISSUES.replace(
+                                <Link
+                                    to={Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(
                                         ":projectId",
                                         this.props.match.params.projectId
                                     )}
                                     style={{ marginLeft: 24 }}
                                 >
                                     View issues
-                                </a>
+                                </Link>
                             </div>
 
                             <h3 style={{ marginTop: 40 }}>Statistics</h3>

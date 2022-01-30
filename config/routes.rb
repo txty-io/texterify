@@ -100,8 +100,12 @@ Rails
           post :validations_recheck, to: 'validations#recheck'
 
           # Validation violations
-          resources :validation_violations, only: [:index, :destroy]
+          resources :validation_violations, only: [:index, :destroy, :update] do
+            put :ignore, to: 'validation_violations#ignore'
+          end
           get :validation_violations_count, to: 'validation_violations#count'
+          delete :validation_violations, to: 'validation_violations#destroy_multiple'
+          put :validation_violations, to: 'validation_violations#update_multiple'
 
           # Background jobs
           resources :background_jobs, only: [:index]

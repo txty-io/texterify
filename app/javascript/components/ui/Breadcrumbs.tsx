@@ -209,10 +209,15 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                 name: "Hierarchy",
                 path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", this.props.match.params.projectId)
             },
-            projectIssues: {
+            projectActiveIssues: {
                 parent: "project",
                 name: "Issues",
-                path: Routes.DASHBOARD.PROJECT_ISSUES.replace(":projectId", this.props.match.params.projectId)
+                path: Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(":projectId", this.props.match.params.projectId)
+            },
+            projectIssuesIgnored: {
+                parent: "project",
+                name: "Ignored issues",
+                path: Routes.DASHBOARD.PROJECT_ISSUES_IGNORED.replace(":projectId", this.props.match.params.projectId)
             }
         };
 

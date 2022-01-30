@@ -16,6 +16,7 @@ import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { IssuesTag } from "../../ui/IssuesTag";
 import PubSub from "pubsub-js";
 import { RECHECK_ALL_VALIDATIONS_FINISHED } from "../../utilities/Events";
+import { Link } from "react-router-dom";
 
 const DeleteLink = styled.a`
     && {
@@ -87,6 +88,8 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
     callback = (_event: string, data: { projectId: string }) => {
         if (data.projectId === this.props.match.params.projectId) {
             void this.loadBackgroundJobs();
+            void this.fetchValidationViolations();
+            void dashboardStore.reloadCurrentProjectIssuesCount();
             message.success("Rechecking all validations completed.");
         }
     };
@@ -373,15 +376,15 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                 issuesCount={this.state.validationViolationsCountResponse?.total || 0}
                             />
 
-                            <a
-                                href={Routes.DASHBOARD.PROJECT_ISSUES.replace(
+                            <Link
+                                to={Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(
                                     ":projectId",
                                     this.props.match.params.projectId
                                 )}
-                                style={{ marginLeft: 12, marginRight: 40, lineHeight: 0 }}
+                                style={{ marginLeft: 24, marginRight: 40, lineHeight: 0 }}
                             >
                                 View issues
-                            </a>
+                            </Link>
 
                             <Popconfirm
                                 title="Do you want to run all enabled validations against your translations?"

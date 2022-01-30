@@ -14,7 +14,8 @@ import { ProjectExportHierarchySite } from "../sites/dashboard/ProjectExportHier
 import { ProjectIntegrationsSite } from "../sites/dashboard/ProjectIntegrationsSite";
 import { ProjectIntegrationsWordpressSettingsSite } from "../sites/dashboard/ProjectIntegrationsWordpressSettingsSite";
 import { ProjectIntegrationsWordpressSyncSite } from "../sites/dashboard/ProjectIntegrationsWordpressSyncSite";
-import { ProjectIssuesSite } from "../sites/dashboard/ProjectIssuesSite";
+import { ProjectIssuesActiveSite } from "../sites/dashboard/ProjectIssuesActiveSite";
+import { ProjectIssuesIgnoredSite } from "../sites/dashboard/ProjectIssuesIgnoredSite";
 import { ProjectMachineTranslationSite } from "../sites/dashboard/ProjectMachineTranslationSite";
 import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
 import { ProjectPostProcessingSite } from "../sites/dashboard/ProjectPostProcessingSite";
@@ -74,7 +75,16 @@ class ProjectRouter extends React.Component<IProps, IState> {
             <>
                 <Switch>
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT} component={ProjectSite} />
-                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_ISSUES} component={ProjectIssuesSite} />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE}
+                        component={ProjectIssuesActiveSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_ISSUES_IGNORED}
+                        component={ProjectIssuesIgnoredSite}
+                    />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_KEYS} component={KeysSite} />
                     <PrivateRoute
                         exact

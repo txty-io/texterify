@@ -23,7 +23,7 @@ export function IssuesTag(props: {
             icon={props.issuesCount > 0 ? <ExclamationCircleOutlined /> : undefined}
             color={props.issuesCount > 0 ? "var(--color-warn)" : "var(--color-success)"}
             onClick={() => {
-                history.push(Routes.DASHBOARD.PROJECT_ISSUES.replace(":projectId", props.projectId));
+                history.push(Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(":projectId", props.projectId));
             }}
             style={{ cursor: "pointer", marginRight: 0, ...props.style }}
         >

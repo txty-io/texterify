@@ -92,20 +92,26 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             },
             {
                 icon: AlertOutlined,
-                path: Routes.DASHBOARD.PROJECT_ISSUES.replace(":projectId", this.props.match.params.projectId),
+                path: Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(":projectId", this.props.match.params.projectId),
+                paths: [
+                    Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(":projectId", this.props.match.params.projectId),
+                    Routes.DASHBOARD.PROJECT_ISSUES_IGNORED.replace(":projectId", this.props.match.params.projectId)
+                ],
                 text: (
                     <span>
                         Issues
-                        <Tag
-                            color={
-                                dashboardStore.currentProject?.attributes.issues_count > 0
-                                    ? "var(--color-warn)"
-                                    : "var(--color-success)"
-                            }
-                            style={{ marginLeft: 16 }}
-                        >
-                            {dashboardStore.currentProject?.attributes.issues_count}
-                        </Tag>
+                        {dashboardStore.currentProject && (
+                            <Tag
+                                color={
+                                    dashboardStore.currentProject.attributes.issues_count > 0
+                                        ? "var(--color-warn)"
+                                        : "var(--color-success)"
+                                }
+                                style={{ marginLeft: 16 }}
+                            >
+                                {dashboardStore.currentProject.attributes.issues_count}
+                            </Tag>
+                        )}
                     </span>
                 ),
                 roles: ROLES_TRANSLATOR_UP,
