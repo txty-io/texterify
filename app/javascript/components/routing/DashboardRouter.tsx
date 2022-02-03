@@ -42,6 +42,7 @@ import { SuperadminRoute } from "./SuperadminRoute";
 import PubSub from "pubsub-js";
 import { RECHECK_ALL_VALIDATIONS_FINISHED } from "../utilities/Events";
 import { history } from "./history";
+import { BackgroundJobsPopupContent } from "../ui/BackgroundJobsPopupContent";
 
 export const MenuList = styled.li`
     overflow: hidden;
@@ -373,7 +374,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                         this.setState({ backgroundJobsVisible: false });
                                     }}
                                     overlayClassName="popover-no-padding"
-                                    content={<>hello</>}
+                                    content={<BackgroundJobsPopupContent />}
                                 >
                                     <div
                                         style={{

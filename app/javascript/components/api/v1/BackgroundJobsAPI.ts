@@ -6,9 +6,9 @@ export interface IBackgroundJob {
     type: "background_job";
     attributes: {
         id: string;
-        status: string;
+        status: "COMPLETED" | "RUNNING" | "FAILED";
         progress: number;
-        type: string;
+        job_type: "RECHECK_ALL_VALIDATIONS";
     };
 }
 
