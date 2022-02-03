@@ -6,6 +6,6 @@ module Texterify
   end
 
   def self.on_premise?
-    ENV['PROPRIETARY_MODE'] == 'false'
+    ENV['PROPRIETARY_MODE'] != 'true'
   end
 end
