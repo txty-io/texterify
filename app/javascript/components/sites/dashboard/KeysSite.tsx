@@ -657,15 +657,19 @@ class KeysSite extends React.Component<IProps, IState> {
             current: this.state.page,
             pageSize: dashboardStore.keysPerPage,
             total: this.state.keysResponse?.meta?.total || 0,
-            onChange: async (page: number, _perPage: number) => {
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                this.setState({ page: page }, this.reloadTable);
+            onChange: async (page: number, perPage: number) => {
+                const isPageSizeChange = perPage !== dashboardStore.keysPerPage;
+
+                if (isPageSizeChange) {
+                    dashboardStore.keysPerPage = perPage;
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                    this.setState({ page: 1 }, this.reloadTable);
+                } else {
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                    this.setState({ page: page }, this.reloadTable);
+                }
+
                 window.scrollTo(0, 0);
-            },
-            onShowSizeChange: async (_current: number, size: number) => {
-                dashboardStore.keysPerPage = size;
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                this.setState({ page: 1 }, this.reloadTable);
             },
             hideOnSinglePage: false
         };

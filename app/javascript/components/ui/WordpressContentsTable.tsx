@@ -170,13 +170,17 @@ export function WordpressContentsTable(props: {
                     showSizeChanger: true,
                     current: page,
                     pageSize: perPage,
-                    onChange: async (newPage) => {
-                        setPage(newPage);
-                        reload({ page: newPage });
-                    },
-                    onShowSizeChange: async (_, newPerPage) => {
-                        setPerPage(newPerPage);
-                        reload({ page: 1, perPage: newPerPage });
+                    onChange: async (newPage, newPerPage) => {
+                        const isPageSizeChange = perPage !== newPerPage;
+
+                        if (isPageSizeChange) {
+                            setPage(1);
+                            setPerPage(newPerPage);
+                            reload({ page: 1, perPage: newPerPage });
+                        } else {
+                            setPage(newPage);
+                            reload({ page: newPage });
+                        }
                     }
                 }}
                 locale={{

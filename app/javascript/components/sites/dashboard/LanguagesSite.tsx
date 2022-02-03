@@ -92,11 +92,11 @@ class LanguagesSite extends React.Component<IProps, IState> {
         this.setState({ languagesLoading: false });
     };
 
-    reloadTable = async (options?: IGetLanguagesOptions) => {
+    reloadTable = async (options: IGetLanguagesOptions = {}) => {
         const fetchOptions = options || {};
-        fetchOptions.search = (options && options.search) || this.state.search;
-        fetchOptions.page = (options && options.page) || this.state.page;
-        fetchOptions.perPage = (options && options.perPage) || this.state.perPage;
+        fetchOptions.search = options.search !== undefined ? options.search : this.state.search;
+        fetchOptions.page = options.page !== undefined ? options.page : this.state.page;
+        fetchOptions.perPage = options.perPage !== undefined ? options.perPage : this.state.perPage;
         await this.fetchLanguages(fetchOptions);
     };
 
@@ -299,13 +299,16 @@ class LanguagesSite extends React.Component<IProps, IState> {
                                 current: this.state.page,
                                 pageSize: this.state.perPage,
                                 total: this.state.languagesResponse?.meta?.total || 0,
-                                onChange: async (page: number, _perPage: number) => {
-                                    this.setState({ page: page });
-                                    await this.reloadTable({ page: page });
-                                },
-                                onShowSizeChange: async (_current: number, size: number) => {
-                                    this.setState({ page: 1, perPage: size });
-                                    await this.reloadTable({ page: 1, perPage: size });
+                                onChange: async (page: number, perPage: number) => {
+                                    const isPageSizeChange = perPage !== this.state.perPage;
+
+                                    if (isPageSizeChange) {
+                                        this.setState({ page: 1, perPage: perPage });
+                                        await this.reloadTable({ page: 1, perPage: perPage });
+                                    } else {
+                                        this.setState({ page: page, perPage: perPage });
+                                        await this.reloadTable({ page: page, perPage: perPage });
+                                    }
                                 }
                             }}
                             locale={{

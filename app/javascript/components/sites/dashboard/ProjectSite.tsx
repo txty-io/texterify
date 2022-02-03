@@ -295,13 +295,20 @@ class ProjectSite extends React.Component<IProps, IState> {
                                             this.state.languagesResponse.meta.total) ||
                                         0
                                     }
-                                    onChange={async (page: number, _perPage: number) => {
+                                    onChange={async (page: number, perPage: number) => {
+                                        const isPageSizeChange = perPage !== this.state.languagesPerPage;
+
+                                        if (isPageSizeChange) {
+                                            this.setState({ languagesPage: 1, languagesPerPage: perPage }, () => {
+                                                this.fetchLanguages();
+                                            });
+                                        } else {
+                                            this.setState({ languagesPage: page }, () => {
+                                                this.fetchLanguages();
+                                            });
+                                        }
+
                                         this.setState({ languagesPage: page }, () => {
-                                            this.fetchLanguages();
-                                        });
-                                    }}
-                                    onShowSizeChange={async (_current: number, size: number) => {
-                                        this.setState({ languagesPage: 1, languagesPerPage: size }, () => {
                                             this.fetchLanguages();
                                         });
                                     }}

@@ -187,13 +187,16 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
                                         this.state.organizationsResponse.meta.total) ||
                                     0
                                 }
-                                onChange={async (page: number, _perPage: number) => {
-                                    this.setState({ page: page });
-                                    await this.reloadTable({ page: page });
-                                }}
-                                onShowSizeChange={async (_current: number, size: number) => {
-                                    this.setState({ page: 1, perPage: size });
-                                    await this.reloadTable({ page: 1, perPage: size });
+                                onChange={async (page: number, perPage: number) => {
+                                    const isPageSizeChange = perPage !== this.state.perPage;
+
+                                    if (isPageSizeChange) {
+                                        this.setState({ page: 1, perPage: perPage });
+                                        await this.reloadTable({ page: 1, perPage: perPage });
+                                    } else {
+                                        this.setState({ page: page, perPage: perPage });
+                                        await this.reloadTable({ page: page, perPage: perPage });
+                                    }
                                 }}
                             />
                         </div>

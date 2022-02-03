@@ -23,7 +23,10 @@ export function LanguagesTable(props: { project: IProject; tableReloader?: numbe
         setLanguagesLoading(true);
 
         try {
-            const newLanguagesResponse = await LanguagesAPI.getLanguages(props.project.id, options);
+            const newLanguagesResponse = await LanguagesAPI.getLanguages(props.project.id, {
+                page: options.page || page,
+                perPage: options.perPage || perPage
+            });
             setLanguagesResponse(newLanguagesResponse);
         } catch (error) {
             console.error(error);
@@ -201,13 +204,17 @@ export function LanguagesTable(props: { project: IProject; tableReloader?: numbe
                     current: page,
                     pageSize: perPage,
                     total: languagesResponse?.meta.total || 0,
-                    onChange: async (newPage) => {
-                        setPage(newPage);
-                        reload({ page: newPage });
-                    },
-                    onShowSizeChange: async (_, newPerPage) => {
-                        setPerPage(newPerPage);
-                        reload({ page: 1, perPage: newPerPage });
+                    onChange: async (newPage, newPerPage) => {
+                        const isPageSizeChange = perPage !== newPerPage;
+
+                        if (isPageSizeChange) {
+                            setPage(1);
+                            setPerPage(newPerPage);
+                            reload({ page: 1, perPage: newPerPage });
+                        } else {
+                            setPage(newPage);
+                            reload({ page: newPage });
+                        }
                     }
                 }}
                 locale={{

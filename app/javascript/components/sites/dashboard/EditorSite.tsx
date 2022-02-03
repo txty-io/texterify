@@ -559,14 +559,17 @@ class EditorSite extends React.Component<IProps, IState> {
                                 size="small"
                                 current={this.state.page}
                                 total={this.state.keysResponse?.meta?.total || 0}
-                                onChange={async (page: number, _perPage: number) => {
-                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                    this.setState({ page: page }, this.fetchKeys);
-                                }}
-                                onShowSizeChange={async (_current: number, size: number) => {
-                                    dashboardStore.keysPerPageEditor = size;
-                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                    this.setState({ page: 1 }, this.fetchKeys);
+                                onChange={async (page: number, perPage: number) => {
+                                    const isPageSizeChange = dashboardStore.keysPerPageEditor !== perPage;
+
+                                    if (isPageSizeChange) {
+                                        dashboardStore.keysPerPageEditor = size;
+                                        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                        this.setState({ page: 1 }, this.fetchKeys);
+                                    } else {
+                                        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                        this.setState({ page: page }, this.fetchKeys);
+                                    }
                                 }}
                                 style={{ alignSelf: "center", margin: 16 }}
                                 pageSize={dashboardStore.keysPerPageEditor}
