@@ -38,12 +38,12 @@ context("key", () => {
         cy.appScenario("project_with_keys");
         cy.login("project-with-keys@texterify.com", "password");
         cy.get('[data-id="project-e5705170-2bc1-4fd8-9b41-4fe2b46bfe74"]').click();
-        cy.addLanguage(
-            testData.languages.english.languageCode,
-            testData.languages.english.countryCode,
-            testData.languages.english.languageName,
-            true
-        );
+        cy.addLanguage({
+            languageCode: testData.languages.english.languageCode,
+            countryCode: testData.languages.english.countryCode,
+            languageName: testData.languages.english.languageName,
+            isDefault: true
+        });
 
         // add some content
         cy.goToKeys();
@@ -100,12 +100,12 @@ context("key", () => {
         cy.get(".data-id-project-home-word").should("contain", totalWords);
         cy.get(".data-id-project-home-characters").should("contain", totalCharacters);
 
-        cy.addLanguage(
-            testData.languages.german.languageCode,
-            testData.languages.german.countryCode,
-            testData.languages.german.languageName,
-            false
-        );
+        cy.addLanguage({
+            languageCode: testData.languages.german.languageCode,
+            countryCode: testData.languages.german.countryCode,
+            languageName: testData.languages.german.languageName,
+            isDefault: false
+        });
 
         // Add text to another language of a key
         const part6 = "hello in other language";

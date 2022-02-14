@@ -18,6 +18,8 @@ All notable changes to this project will be documented in this file.
 - Fix bug which caused the wrong image for an organization to be shown.
 - Fix bug that caused the app to crash when languages are not loaded correctly for filters.
 - Fix bug where activity history would crash.
+- Fix bug where key history would crash.
+- Fix bug where selected target language is not saved when switching beteen keys.
 
 ## v1.0.6
 

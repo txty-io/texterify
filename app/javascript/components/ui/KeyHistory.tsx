@@ -69,25 +69,26 @@ class KeyHistory extends React.Component<IProps, IState> {
 
         const latestTranslations = {};
 
-        const keyActivityElements = this.state.keyActivityResponse.data.filter((activity) => {
-            const itemType = activity.attributes.item_type;
-            if (itemType === "Translation") {
-                const translationLanguageId = activity.attributes.object
-                    ? activity.attributes.object.language_id
-                    : activity.attributes.object_changes.language_id[1];
+        const keyActivityElements =
+            this.state.keyActivityResponse?.data?.filter((activity) => {
+                const itemType = activity.attributes.item_type;
+                if (itemType === "Translation") {
+                    const translationLanguageId = activity.attributes.object
+                        ? activity.attributes.object.language_id
+                        : activity.attributes.object_changes.language_id[1];
 
-                if (!latestTranslations[translationLanguageId]) {
-                    latestTranslations[translationLanguageId] = activity.attributes.object_changes.content
-                        ? activity.attributes.object_changes.content[1]
-                        : "";
+                    if (!latestTranslations[translationLanguageId]) {
+                        latestTranslations[translationLanguageId] = activity.attributes.object_changes.content
+                            ? activity.attributes.object_changes.content[1]
+                            : "";
+                    }
+
+                    return (
+                        translationLanguageId === this.state.selectedLanguageId ||
+                        this.state.selectedLanguageId === "all-languages"
+                    );
                 }
-
-                return (
-                    translationLanguageId === this.state.selectedLanguageId ||
-                    this.state.selectedLanguageId === "all-languages"
-                );
-            }
-        });
+            }) || [];
 
         const keyActivities = keyActivityElements.map((activity) => {
             const translationLanguageId = activity.attributes.object
@@ -217,8 +218,8 @@ class KeyHistory extends React.Component<IProps, IState> {
                     value={this.state.selectedLanguageId}
                 >
                     <Select.Option value="all-languages">All languages</Select.Option>
-                    {this.state.keyActivityResponse.included
-                        .filter((included) => {
+                    {this.state.keyActivityResponse?.included
+                        ?.filter((included) => {
                             return included.type === "language";
                         })
                         .map((language) => {

@@ -90,6 +90,7 @@ class TranslationCard extends React.Component<IProps, IState> {
             languageId: this.state.selectedLanguageId,
             keyResponse: this.props.keyResponse
         })?.attributes.content;
+
         const isHTMLKey = this.props.keyResponse
             ? this.props.keyResponse.data.attributes.html_enabled
             : this.props.isHTMLKey;
@@ -220,7 +221,7 @@ class TranslationCard extends React.Component<IProps, IState> {
         }
 
         return (
-            <div style={{ marginBottom: 24, width: "100%" }}>
+            <div style={{ marginBottom: 24, width: "100%" }} data-id="translation-card">
                 {(!this.props.hideLanguageSelection || !this.props.hideSaveButton) && (
                     <div style={{ marginBottom: 8, display: "flex" }}>
                         {!this.props.hideLanguageSelection && !this.props.isDefaultLanguage && (
