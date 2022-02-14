@@ -77,10 +77,12 @@ class Translation < ApplicationRecord
       translation_content_converted = ApplicationController.helpers.convert_html_translation(self.content)
       translation_content = translation_content_converted.nil? ? self.content : translation_content_converted.to_s
 
-      project = key.project
-      project.character_count -= translation_content.length
-      project.word_count -= translation_content.split(' ').length
-      project.save!
+      unless translation_content.nil?
+        project = key.project
+        project.character_count -= translation_content.length
+        project.word_count -= translation_content.split(' ').length
+        project.save!
+      end
     end
   end
 end
