@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - Fix bug where key history would crash.
 - Fix bug where selected target language is not saved when switching beteen keys.
 - Fix bug that caused some keys not to be deleteable.
+- Fix bug that caused some projects not to be deleteable and improve delete performance.
 
 ## v1.0.6
 
