@@ -96,12 +96,12 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                         >
                             <SettingsSectionWrapper>
                                 <Alert
-                                    message="Remove project"
+                                    message="Delete project"
                                     description={
                                         <>
                                             <p>
-                                                Removing the project will delete the project and all ressources related
-                                                to the project.
+                                                Deleting the project will delete the project and all ressources related
+                                                to it.
                                             </p>
                                             <p>
                                                 <b>This cannot be undone.</b>
@@ -116,8 +116,9 @@ class ProjectSettingsSite extends React.Component<IProps, IState> {
                                     onClick={this.onDeleteProjectClick}
                                     style={{ alignSelf: "flex-end", marginTop: 16 }}
                                     disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}
+                                    data-id="project-advanced-settings-delete"
                                 >
-                                    Remove project
+                                    Delete project
                                 </Button>
 
                                 <Alert
