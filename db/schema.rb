@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_25_022946) do
+ActiveRecord::Schema.define(version: 2022_02_15_002456) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -523,7 +523,7 @@ ActiveRecord::Schema.define(version: 2022_01_25_022946) do
   add_foreign_key "translations", "keys", on_delete: :cascade
   add_foreign_key "translations", "languages", on_delete: :cascade
   add_foreign_key "user_licenses", "users"
-  add_foreign_key "versions", "projects"
+  add_foreign_key "versions", "projects", on_delete: :cascade
   add_foreign_key "wordpress_contents", "keys", on_delete: :nullify
   add_foreign_key "wordpress_contents", "projects", on_delete: :cascade
   add_foreign_key "wordpress_polylang_connections", "projects", on_delete: :cascade
