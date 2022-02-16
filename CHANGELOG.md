@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - Fix bug where selected target language is not saved when switching beteen keys.
 - Fix bug that caused some keys not to be deleteable.
 - Fix bug that caused some projects not to be deleteable and improve delete performance.
+- Fix bug that caused machine translation site to crash.
 
 ## v1.0.6
 
