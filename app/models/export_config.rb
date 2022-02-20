@@ -108,9 +108,26 @@ class ExportConfig < ApplicationRecord
 
   private
 
+  # Sets the value to the hash at the specified path.
+  def deep_set(hash, value, *keys)
+    hash.default_proc = proc { |h, k| h[k] = Hash.new(&h.default_proc) }
+    keys[0...-1].inject(hash) { |acc, h| acc.public_send(:[], h) }.public_send(:[]=, keys.last, value)
+  end
+
   def json(language, export_data)
     language_file = Tempfile.new(language.id.to_s)
-    language_file.puts(JSON.pretty_generate(export_data))
+    converted_data = export_data
+
+    # If the export config has a split_on specified split it.
+    unless self.split_on.nil?
+      converted_data = {}
+      export_data.each do |key, value|
+        splitted = key.split(self.split_on)
+        deep_set(converted_data, value, *splitted)
+      end
+    end
+
+    language_file.puts(JSON.pretty_generate(converted_data))
     language_file.close
 
     language_file
