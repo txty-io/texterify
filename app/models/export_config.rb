@@ -67,6 +67,9 @@ class ExportConfig < ApplicationRecord
   end
 
   def file(language, export_data)
+    # stringify in case export_data has symbols in it
+    export_data.deep_stringify_keys!
+
     if file_format == 'json'
       json(language, export_data)
     elsif file_format == 'json-formatjs'
@@ -111,7 +114,16 @@ class ExportConfig < ApplicationRecord
   # Sets the value to the hash at the specified path.
   def deep_set(hash, value, *keys)
     hash.default_proc = proc { |h, k| h[k] = Hash.new(&h.default_proc) }
-    keys[0...-1].inject(hash) { |acc, h| acc.public_send(:[], h) }.public_send(:[]=, keys.last, value)
+
+    keys[0...-1].inject(hash) do |acc, h|
+      current_val = acc.public_send(:[], h)
+
+      if current_val.is_a?(String) || current_val.nil?
+        acc[h] = {}
+      else
+        current_val
+      end
+    end.public_send(:[]=, keys.last, value)
   end
 
   def json(language, export_data)
