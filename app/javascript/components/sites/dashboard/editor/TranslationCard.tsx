@@ -6,6 +6,8 @@ import TextArea from "antd/lib/input/TextArea";
 import * as React from "react";
 import styled from "styled-components";
 import { APIUtils } from "../../../api/v1/APIUtils";
+import { IGetKeyResponse } from "../../../api/v1/KeysAPI";
+import { IGetLanguagesResponse, ILanguage } from "../../../api/v1/LanguagesAPI";
 import {
     IGetMachineTranslationsSourceLanguages,
     IGetMachineTranslationsTargetLanguages,
@@ -34,17 +36,17 @@ const EditorWrapper = styled.div`
 
 interface IProps {
     projectId: string;
-    languages?: any;
-    languagesResponse: any;
-    defaultSelected: any;
-    keyResponse?: any;
+    languages?: ILanguage[];
+    languagesResponse: IGetLanguagesResponse;
+    defaultSelected: string;
+    keyResponse?: IGetKeyResponse;
     isHTMLKey?: boolean;
     hideLanguageSelection?: boolean;
     hideSaveButton?: boolean;
     exportConfigId?: string;
     initialValue?: string;
     isDefaultLanguage?: boolean;
-    defaultLanguage?: any;
+    defaultLanguage?: ILanguage;
     defaultLanguageTranslationContent?: string;
     supportedSourceLanguages?: IGetMachineTranslationsSourceLanguages;
     supportedTargetLanguages?: IGetMachineTranslationsTargetLanguages;
@@ -96,12 +98,16 @@ class TranslationCard extends React.Component<IProps, IState> {
             : this.props.isHTMLKey;
 
         if (isHTMLKey) {
+            let successfullyParsed = false;
             let htmlData;
             try {
                 htmlData = JSON.parse(this.props.initialValue || translationForLanguage);
+                successfullyParsed = true;
             } catch (e) {
-                //
+                htmlData = this.props.initialValue || translationForLanguage;
             }
+
+            console.error(htmlData);
 
             this.editor = new EditorJS({
                 holder: `codex-editor-${this.state.selectedLanguageId}`,
@@ -119,7 +125,11 @@ class TranslationCard extends React.Component<IProps, IState> {
                     }
                     this.setState({ editorContentChanged: true });
                 },
-                data: isHTMLKey ? Utils.escapeEditorContent(htmlData) : undefined
+                data: successfullyParsed
+                    ? Utils.escapeEditorContent(htmlData)
+                    : {
+                          blocks: [{ data: { text: htmlData }, type: "paragraph" }]
+                      }
             });
             await this.editor.isReady;
         } else {

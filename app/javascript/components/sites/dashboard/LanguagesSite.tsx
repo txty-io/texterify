@@ -5,7 +5,7 @@ import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
-import { IGetLanguagesOptions, LanguagesAPI } from "../../api/v1/LanguagesAPI";
+import { IGetLanguagesOptions, IGetLanguagesResponse, ILanguage, LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { AddEditLanguageFormModal } from "../../forms/AddEditLanguageFormModal";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
@@ -15,17 +15,17 @@ import { PermissionUtils } from "../../utilities/PermissionUtils";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
-    languages: any[];
+    languages: ILanguage[];
     selectedRowLanguages: any[];
     isDeleting: boolean;
     deleteDialogVisible: boolean;
-    languagesResponse: any;
+    languagesResponse: IGetLanguagesResponse;
     addDialogVisible: boolean;
     perPage: number;
     page: number;
     search: string;
     languagesLoading: boolean;
-    languageToEdit: any;
+    languageToEdit: ILanguage;
 }
 
 interface ITableRow {
@@ -142,7 +142,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
         return columns;
     };
 
-    onEditLanguageClick = (language: any) => {
+    onEditLanguageClick = (language: ILanguage) => {
         this.setState({ addDialogVisible: true, languageToEdit: language });
     };
 
@@ -151,7 +151,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
             return [];
         }
 
-        return this.state.languages.map((language: any) => {
+        return this.state.languages.map((language) => {
             const countryCode = APIUtils.getIncludedObject(
                 language.relationships.country_code.data,
                 this.state.languagesResponse.included

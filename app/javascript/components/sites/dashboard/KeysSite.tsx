@@ -1,11 +1,12 @@
 import { CrownOutlined, MoreOutlined, QuestionCircleOutlined, SettingOutlined } from "@ant-design/icons";
 import { Button, Drawer, Input, Layout, Modal, Pagination, PaginationProps, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
+import * as queryString from "query-string";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
-import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
-import { IGetKeysOptions, KeysAPI } from "../../api/v1/KeysAPI";
+import { ExportConfigsAPI, IExportConfig } from "../../api/v1/ExportConfigsAPI";
+import { IGetKeysOptions, IKey, KeysAPI } from "../../api/v1/KeysAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
 import { TranslationsAPI } from "../../api/v1/TranslationsAPI";
@@ -22,19 +23,17 @@ import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { ISearchSettings, KeySearchSettings, parseKeySearchSettingsFromURL } from "../../ui/KeySearchSettings";
 import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActiveFilters";
-import { Loading } from "../../ui/Loading";
+import { KeystrokeButtonWrapper } from "../../ui/KeystrokeButtonWrapper";
+import { KEYSTROKE_DEFINITIONS } from "../../ui/KeystrokeDefinitions";
+import { KeystrokeHandler } from "../../ui/KeystrokeHandler";
 import { TexterifyModal } from "../../ui/TexterifyModal";
 import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { TranslationCard } from "./editor/TranslationCard";
-import * as queryString from "query-string";
-import { KeystrokeButtonWrapper } from "../../ui/KeystrokeButtonWrapper";
-import { KeystrokeHandler } from "../../ui/KeystrokeHandler";
-import { KEYSTROKE_DEFINITIONS } from "../../ui/KeystrokeDefinitions";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
-    keys: any[];
+    keys: IKey[];
     languages: any[];
     selectedRowKeys: any[];
     isDeleting: boolean;
@@ -283,7 +282,7 @@ class KeysSite extends React.Component<IProps, IState> {
             return [];
         }
 
-        return this.state.keys.map((key: any) => {
+        return this.state.keys.map((key) => {
             const translations = {};
 
             // Stores for which languages a translation exists.
@@ -310,25 +309,25 @@ class KeysSite extends React.Component<IProps, IState> {
                         const included = APIUtils.getIncludedObject(tag, this.state.keysResponse.included);
 
                         return (
-                            <Tag color="magenta" style={{ margin: 0, marginRight: 4, marginBottom: 4 }}>
+                            <Tag key={tag.id} color="magenta" style={{ margin: 0, marginRight: 4, marginBottom: 4 }}>
                                 {included.attributes.name}
                             </Tag>
                         );
                     }),
                     key.attributes.html_enabled ? (
-                        <Tag color="magenta" style={{ margin: 0, marginRight: 4, marginBottom: 4 }}>
+                        <Tag key="html_enabled" color="magenta" style={{ margin: 0, marginRight: 4, marginBottom: 4 }}>
                             HTML
                         </Tag>
                     ) : undefined,
                     key.relationships.wordpress_contents.data.length > 0 ? (
-                        <Tag color="magenta" style={{ margin: 0 }}>
+                        <Tag key="wordpress" color="magenta" style={{ margin: 0 }}>
                             WordPress
                         </Tag>
                     ) : undefined
                 ],
-                exportConfigOverwrites: overwrites.map((overwrite, index) => {
+                exportConfigOverwrites: overwrites.map((overwrite) => {
                     return (
-                        <Tag color="cyan" key={index} style={{ margin: "0 4px 4px 0" }}>
+                        <Tag key={overwrite.id} color="cyan" style={{ margin: "0 4px 4px 0" }}>
                             {overwrite}
                         </Tag>
                     );
@@ -400,7 +399,7 @@ class KeysSite extends React.Component<IProps, IState> {
         }, []);
     };
 
-    changeHTMLEnabled = async (key: any) => {
+    changeHTMLEnabled = async (key: IKey) => {
         await KeysAPI.update(
             this.props.match.params.projectId,
             key.id,
@@ -614,12 +613,12 @@ class KeysSite extends React.Component<IProps, IState> {
         );
     };
 
-    getKeyExportConfigOverwrites = (key: any) => {
+    getKeyExportConfigOverwrites = (key: IKey) => {
         if (!this.state.exportConfigsResponse?.data) {
             return [];
         }
 
-        const exportConfigs = [];
+        const exportConfigs: IExportConfig[] = [];
         this.state.exportConfigsResponse.data.map((exportConfig) => {
             const currentKey = this.state.keys.find((k) => {
                 return key.id === k.id;
