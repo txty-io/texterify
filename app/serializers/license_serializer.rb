@@ -14,6 +14,10 @@ class LicenseSerializer
     license.license.expires_at
   end
 
+  attribute :expired do |license|
+    license.license.expires_at < Time.now.utc
+  end
+
   attribute :restrictions do |license|
     license.license.restrictions
   end

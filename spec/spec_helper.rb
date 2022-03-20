@@ -1,6 +1,4 @@
-if Rails.env.development?
-  require 'pry'
-end
+# require 'pry'
 
 require 'simplecov'
 SimpleCov.start 'rails'
