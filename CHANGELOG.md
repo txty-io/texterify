@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 - Add WordPress integration.
 - Add new sidebars for easier navigation.
 - Add .arb import/export.
+- Add info to instance licenses when they are expired.
 - Improve design and adjust color.
 - Fix character and word count not beeing calculated correctly.
 - Fix missing check if auto-translate feature is available.
@@ -23,6 +24,7 @@ All notable changes to this project will be documented in this file.
 - Fix bug that caused some keys not to be deleteable.
 - Fix bug that caused some projects not to be deleteable and improve delete performance.
 - Fix bug that caused machine translation site to crash.
+- Fix bug where HTML editor content is empty when editing after importing translations.
 
 ## v1.0.6
 
