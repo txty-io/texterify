@@ -19,6 +19,7 @@ import { Routes } from "../routing/Routes";
 import { dashboardStore } from "../stores/DashboardStore";
 import { PAGE_SIZE_OPTIONS } from "./Config";
 import { Flag } from "./Flag";
+import { Utils } from "./Utils";
 
 const DeleteLink = styled.a`
     && {
@@ -185,7 +186,9 @@ class IssuesTable extends React.Component<IProps, IState> {
                     </Link>
                 ),
                 language: <Flag language={language} countryCode={countryCode} languageCode={languageCode} />,
-                content: translation.attributes.content,
+                content: key.attributes.html_enabled
+                    ? Utils.getHTMLContentPreview(translation.attributes.content)
+                    : translation.attributes.content,
                 description: this.getValidationDescription(validationViolation, validation),
                 controls: (
                     <div style={{ display: "flex", justifyContent: "center" }}>
