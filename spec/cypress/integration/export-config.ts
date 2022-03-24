@@ -14,13 +14,16 @@ context("export-config", () => {
 
         cy.createProject("My test project");
 
-        cy.addLanguage(
-            testData.languages.german.languageCode,
-            testData.languages.german.countryCode,
-            testData.languages.german.languageName
-        );
+        cy.addLanguage({
+            languageCode: testData.languages.german.languageCode,
+            countryCode: testData.languages.german.countryCode,
+            languageName: testData.languages.german.languageName
+        });
 
-        cy.addKey(testData.keys.firstKey.keyName, testData.keys.firstKey.keyDescription);
+        cy.addKey({
+            name: testData.keys.firstKey.keyName,
+            description: testData.keys.firstKey.keyDescription
+        });
 
         cy.contains(testData.keys.firstKey.keyName).parent().next().next().children().click();
         cy.contains(testData.keys.firstKey.keyName)

@@ -10,11 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_26_130539) do
+ActiveRecord::Schema.define(version: 2022_02_19_162219) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
-  enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -120,6 +119,7 @@ ActiveRecord::Schema.define(version: 2022_01_26_130539) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "file_format", null: false
+    t.string "split_on"
     t.index ["project_id", "name"], name: "index_export_configs_on_project_id_and_name", unique: true
     t.index ["project_id"], name: "index_export_configs_on_project_id"
   end
@@ -575,7 +575,7 @@ ActiveRecord::Schema.define(version: 2022_01_26_130539) do
   add_foreign_key "validation_violations", "validations"
   add_foreign_key "validations", "organizations"
   add_foreign_key "validations", "projects"
-  add_foreign_key "versions", "projects"
+  add_foreign_key "versions", "projects", on_delete: :cascade
   add_foreign_key "wordpress_contents", "keys", on_delete: :nullify
   add_foreign_key "wordpress_contents", "projects", on_delete: :cascade
   add_foreign_key "wordpress_polylang_connections", "projects", on_delete: :cascade

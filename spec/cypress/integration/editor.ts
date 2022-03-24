@@ -16,13 +16,16 @@ context("editor", () => {
         cy.addOrganization("My org");
         cy.createProject("My test project", "Organization", true);
 
-        cy.addLanguage(
-            testData.languages.german.languageCode,
-            testData.languages.german.countryCode,
-            testData.languages.german.languageName
-        );
+        cy.addLanguage({
+            languageCode: testData.languages.german.languageCode,
+            countryCode: testData.languages.german.countryCode,
+            languageName: testData.languages.german.languageName
+        });
 
-        cy.addKey(testData.keys.firstKey.keyName, testData.keys.firstKey.keyDescription);
+        cy.addKey({
+            name: testData.keys.firstKey.keyName,
+            description: testData.keys.firstKey.keyDescription
+        });
 
         cy.goToEditor();
 
@@ -36,12 +39,12 @@ context("editor", () => {
         cy.leaveEditor();
         cy.goToLanguages();
 
-        cy.addLanguage(
-            testData.languages.english.languageCode,
-            testData.languages.english.countryCode,
-            testData.languages.english.languageName,
-            true
-        );
+        cy.addLanguage({
+            languageCode: testData.languages.english.languageCode,
+            countryCode: testData.languages.english.countryCode,
+            languageName: testData.languages.english.languageName,
+            isDefault: true
+        });
 
         cy.goToEditor();
 
@@ -55,12 +58,12 @@ context("editor", () => {
         cy.leaveEditor();
         cy.goToKeys();
 
-        cy.addKey(
-            testData.keys.secondKey.keyName,
-            testData.keys.secondKey.keyDescription,
-            testData.keys.secondKey.value,
-            true
-        );
+        cy.addKey({
+            name: testData.keys.secondKey.keyName,
+            description: testData.keys.secondKey.keyDescription,
+            content: testData.keys.secondKey.value,
+            isHtml: true
+        });
 
         cy.goToEditor();
 
@@ -71,5 +74,59 @@ context("editor", () => {
         cy.get(".editor-key-name").eq(1).should("contain", testData.keys.secondKey.keyName);
         cy.get(".editor-key-content").eq(1).should("contain", testData.keys.secondKey.value);
         cy.get(".editor-key-html").should("be.visible");
+
+        cy.selectKeyInEditor(testData.keys.firstKey.keyName);
+        cy.get('[data-id="translation-card"]').should("be.visible");
+        cy.selectKeyInEditor(testData.keys.secondKey.keyName);
+        cy.get('[data-id="translation-card"]').should("be.visible");
+    });
+
+    it("the editor site don't crashes if no language or country code has been set", () => {
+        cy.appScenario("set_cloud");
+
+        cy.login(testData.login.user1.email, testData.login.user1.password);
+
+        cy.addOrganization("My org");
+        cy.createProject("My test project", "Organization", true);
+
+        cy.addLanguage({
+            languageName: testData.languages.german.languageName,
+            isDefault: true
+        });
+
+        cy.addKey({ name: testData.keys.firstKey.keyName, description: testData.keys.firstKey.keyDescription });
+
+        cy.goToEditor();
+
+        cy.get(".editor-key").should("have.length", 1);
+        cy.get(".editor-key-name").should("have.length", 1);
+        cy.get(".editor-key-content").should("have.length", 1);
+        cy.get(".editor-key-name").should("contain", testData.keys.firstKey.keyName);
+        cy.get(".editor-key-content").should("contain", "No content");
+        cy.get(".editor-key-html").should("not.exist");
+
+        cy.leaveEditor();
+        cy.goToKeys();
+
+        cy.addKey({
+            name: testData.keys.secondKey.keyName,
+            description: testData.keys.secondKey.keyDescription,
+            isHtml: true
+        });
+
+        cy.goToEditor();
+
+        cy.get(".editor-key").should("have.length", 2);
+        cy.get(".editor-key-name").should("have.length", 2);
+        cy.get(".editor-key-content").should("have.length", 2);
+
+        cy.get(".editor-key-name").eq(1).should("contain", testData.keys.secondKey.keyName);
+        cy.get(".editor-key-content").eq(1).should("contain", "No content");
+        cy.get(".editor-key-html").should("be.visible");
+
+        cy.selectKeyInEditor(testData.keys.firstKey.keyName);
+        cy.get('[data-id="translation-card"]').should("be.visible");
+        cy.selectKeyInEditor(testData.keys.secondKey.keyName);
+        cy.get('[data-id="translation-card"]').should("be.visible");
     });
 });

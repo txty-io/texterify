@@ -122,17 +122,10 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
     }
 
     languageSupportsMachineTranslation(languageId: string) {
-        const language = this.state.languagesResponse.data.find((l) => {
-            return l.id === languageId;
-        });
-
-        const languageLanguageCode = APIUtils.getIncludedObject(
-            language.relationships.language_code.data,
-            this.state.languagesResponse.included
-        );
-
-        return this.state.supportedTargetLanguages?.data?.some((supportedTargetLanguage) => {
-            return supportedTargetLanguage.attributes.language_code === languageLanguageCode.attributes.code;
+        return MachineTranslationUtils.supportsMachineTranslationAsTargetLanguage({
+            languageId: languageId,
+            languagesResponse: this.state.languagesResponse,
+            supportedTargetLanguages: this.state.supportedTargetLanguages
         });
     }
 

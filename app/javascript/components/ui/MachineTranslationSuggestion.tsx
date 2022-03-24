@@ -41,17 +41,10 @@ export function MachineTranslationSuggestion(props: {
     }
 
     function languageSupportsMachineTranslation(languageId: string) {
-        const language = props.languagesResponse.data.find((l) => {
-            return l.id === languageId;
-        });
-
-        const languageLanguageCode = APIUtils.getIncludedObject(
-            language.relationships.language_code.data,
-            props.languagesResponse.included
-        );
-
-        return props.supportedTargetLanguages?.data?.some((supportedTargetLanguage) => {
-            return supportedTargetLanguage.attributes.language_code === languageLanguageCode.attributes.code;
+        return MachineTranslationUtils.supportsMachineTranslationAsTargetLanguage({
+            languageId: languageId,
+            languagesResponse: props.languagesResponse,
+            supportedTargetLanguages: props.supportedTargetLanguages
         });
     }
 
@@ -141,7 +134,8 @@ export function MachineTranslationSuggestion(props: {
                         {dashboardStore.currentProject.attributes.machine_translation_active &&
                             props.supportedSourceLanguages &&
                             props.supportedTargetLanguages &&
-                            !machineTranslationsSupported(props.selectedLanguageId) && (
+                            !machineTranslationsSupported(props.selectedLanguageId) &&
+                            dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_SUGGESTIONS") && (
                                 <Alert
                                     showIcon
                                     type="info"

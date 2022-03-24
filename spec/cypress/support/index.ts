@@ -33,16 +33,22 @@ declare global {
             ): void;
             addOrganization(name: string): void;
             createProject(name: string, description?: string, fromOrganizationPage?: boolean): void;
-            addKey(name: string, description: string, content?: string, isHtml?: boolean): void;
+            addKey(data: { name: string; description?: string; content?: string; isHtml?: boolean }): void;
             appScenario(
                 scenario: "project_with_keys" | "project_with_languages" | "set_cloud" | "set_on_premise"
             ): void;
-            addLanguage(languageCode: string, countryCode: string, languageName: string, isDefault?: boolean): void;
+            addLanguage(data: {
+                languageName: string;
+                languageCode?: string;
+                countryCode?: string;
+                isDefault?: boolean;
+            }): void;
             goToKeys(): void;
             goToProjectHome(): void;
             goToLanguages(): void;
             goToProjectSettings(): void;
             goToEditor(): void;
+            selectKeyInEditor(name: string);
             leaveEditor(): void;
             clickOutside(): void;
             addUser(email: string): void;

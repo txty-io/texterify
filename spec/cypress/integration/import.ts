@@ -13,11 +13,11 @@ context("import", () => {
 
         cy.createProject("My import test project");
 
-        cy.addLanguage(
-            testData.languages.german.languageCode,
-            testData.languages.german.countryCode,
-            testData.languages.german.languageName
-        );
+        cy.addLanguage({
+            languageCode: testData.languages.german.languageCode,
+            countryCode: testData.languages.german.countryCode,
+            languageName: testData.languages.german.languageName
+        });
 
         cy.get('[data-id="project-sidebar-import"]').click();
         cy.get('[data-id="file-importer-language-tag"]').click();
@@ -36,11 +36,11 @@ context("import", () => {
 
         cy.createProject("My import test project");
 
-        cy.addLanguage(
-            testData.languages.german.languageCode,
-            testData.languages.german.countryCode,
-            testData.languages.german.languageName
-        );
+        cy.addLanguage({
+            languageCode: testData.languages.german.languageCode,
+            countryCode: testData.languages.german.countryCode,
+            languageName: testData.languages.german.languageName
+        });
 
         cy.importFile("test_poeditor.json");
 

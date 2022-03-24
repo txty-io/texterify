@@ -13,30 +13,30 @@ context("add-language", () => {
 
         cy.createProject("My test project");
 
-        cy.addLanguage(
-            testData.languages.german.languageCode,
-            testData.languages.german.countryCode,
-            testData.languages.german.languageName
-        );
+        cy.addLanguage({
+            languageCode: testData.languages.german.languageCode,
+            countryCode: testData.languages.german.countryCode,
+            languageName: testData.languages.german.languageName
+        });
         cy.get(".ant-table-container")
             .should("contain", testData.languages.german.languageCodeShort)
             .and("contain", testData.languages.german.countryCodeShort)
             .and("contain", testData.languages.german.languageName);
 
-        cy.addLanguage(
-            testData.languages.english.languageCode,
-            testData.languages.english.countryCode,
-            testData.languages.english.languageName
-        );
+        cy.addLanguage({
+            languageCode: testData.languages.english.languageCode,
+            countryCode: testData.languages.english.countryCode,
+            languageName: testData.languages.english.languageName
+        });
         cy.get(".ant-table-container")
             .should("contain", testData.languages.english.languageCodeShort)
             .and("contain", testData.languages.english.countryCodeShort)
             .and("contain", testData.languages.english.languageName);
 
-        cy.addLanguage(
-            testData.languages.spanish.languageCode,
-            testData.languages.spanish.countryCode,
-            testData.languages.spanish.languageName
-        );
+        cy.addLanguage({
+            languageCode: testData.languages.spanish.languageCode,
+            countryCode: testData.languages.spanish.countryCode,
+            languageName: testData.languages.spanish.languageName
+        });
     });
 });

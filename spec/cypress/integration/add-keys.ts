@@ -13,17 +13,20 @@ context("add-keys", () => {
 
         cy.createProject("My test project");
 
-        cy.addLanguage(
-            testData.languages.german.languageCode,
-            testData.languages.german.countryCode,
-            testData.languages.german.languageName
-        );
+        cy.addLanguage({
+            languageCode: testData.languages.german.languageCode,
+            countryCode: testData.languages.german.countryCode,
+            languageName: testData.languages.german.languageName
+        });
         cy.get(".ant-table-container")
             .should("contain", testData.languages.german.languageCodeShort)
             .and("contain", testData.languages.german.countryCodeShort)
             .and("contain", testData.languages.german.languageName);
 
-        cy.addKey(testData.keys.firstKey.keyName, testData.keys.firstKey.keyDescription);
+        cy.addKey({
+            name: testData.keys.firstKey.keyName,
+            description: testData.keys.firstKey.keyDescription
+        });
 
         cy.get(".ant-table-container")
             .should("contain", testData.keys.firstKey.keyName)
@@ -44,7 +47,7 @@ context("add-keys", () => {
             .children()
             .should("contain", testData.keys.firstKey.value);
 
-        cy.addKey(testData.keys.secondKey.keyName, testData.keys.secondKey.keyDescription);
+        cy.addKey({ name: testData.keys.secondKey.keyName, description: testData.keys.secondKey.keyDescription });
 
         cy.get(".ant-table-container")
             .should("contain", testData.keys.secondKey.keyName)
@@ -69,26 +72,26 @@ context("add-keys", () => {
     it("fails to add a key with the prefix 'texterify_' via new key dialog", () => {
         cy.login(testData.login.user1.email, testData.login.user1.password);
         cy.createProject("My test project");
-        cy.addLanguage(
-            testData.languages.german.languageCode,
-            testData.languages.german.countryCode,
-            testData.languages.german.languageName
-        );
+        cy.addLanguage({
+            languageCode: testData.languages.german.languageCode,
+            countryCode: testData.languages.german.countryCode,
+            languageName: testData.languages.german.languageName
+        });
 
-        cy.addKey("texterify_timestamp", testData.keys.firstKey.keyDescription);
+        cy.addKey({ name: "texterify_timestamp", description: testData.keys.firstKey.keyDescription });
         cy.contains('Key names starting with "texterify_" are reserved and can\'t be used.');
     });
 
     it("fails to add a key with the prefix 'texterify_' via keys table", () => {
         cy.login(testData.login.user1.email, testData.login.user1.password);
         cy.createProject("My test project");
-        cy.addLanguage(
-            testData.languages.german.languageCode,
-            testData.languages.german.countryCode,
-            testData.languages.german.languageName
-        );
+        cy.addLanguage({
+            languageCode: testData.languages.german.languageCode,
+            countryCode: testData.languages.german.countryCode,
+            languageName: testData.languages.german.languageName
+        });
 
-        cy.addKey("texterify", "123");
+        cy.addKey({ name: "texterify", description: "123" });
         cy.contains("texterify").click();
         cy.contains("texterify").clear().type("texterify_");
         cy.clickOutside();

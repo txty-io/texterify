@@ -1,8 +1,9 @@
 import { APIUtils } from "../api/v1/APIUtils";
+import { IGetKeyResponse } from "../api/v1/KeysAPI";
 
 const TranslationUtils = {
     // Checks if the given language supports machine translation as source.
-    getTranslationForLanguage(data: { languageId: string; keyResponse: any; exportConfigId?: string }) {
+    getTranslationForLanguage(data: { languageId: string; keyResponse: IGetKeyResponse; exportConfigId?: string }) {
         if (!data.languageId) {
             return null;
         }

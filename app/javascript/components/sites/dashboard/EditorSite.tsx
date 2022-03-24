@@ -327,7 +327,6 @@ class EditorSite extends React.Component<IProps, IState> {
                                     languagesResponse={this.state.languagesResponse}
                                     exportConfigsResponse={this.state.exportConfigsResponse}
                                 />
-                                {/* <Search placeholder="Search keys and translations" onChange={this.onSearch} /> */}
                                 <Input.Group
                                     compact
                                     style={{
@@ -661,7 +660,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                             projectId={this.props.match.params.projectId}
                                             languagesResponse={this.state.languagesResponse}
                                             languages={languagesWithoutDefault}
-                                            defaultSelected={languagesWithoutDefault[0].id}
+                                            defaultSelected={
+                                                this.state.selectedLanguageIdTo || languagesWithoutDefault[0].id
+                                            }
                                             keyResponse={this.state.keyResponse}
                                             defaultLanguage={defaultLanguage}
                                             defaultLanguageTranslationContent={defaultLanguageTranslationContent}
@@ -671,6 +672,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 if (this.keyHistoryRef) {
                                                     this.keyHistoryRef.reload();
                                                 }
+                                            }}
+                                            onSelectedLanguageIdChange={(languageId) => {
+                                                this.setState({ selectedLanguageIdTo: languageId });
                                             }}
                                         />
                                     ) : (

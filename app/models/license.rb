@@ -26,7 +26,7 @@ class License < ApplicationRecord
   class << self
     def current_active
       license = License.order(created_at: :desc).first
-      if license && license.license.expires_at > Time.now.utc
+      if license && license.license.expires_at >= Time.now.utc
         license.license
       end
     end

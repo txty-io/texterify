@@ -66,35 +66,45 @@ Cypress.Commands.add("createProject", (projectName, fromOrganizationPage) => {
     }
 });
 
-Cypress.Commands.add("addLanguage", (languageCode, countryCode, languageName, isDefault) => {
-    cy.get('[title="Languages"] > a').click();
-    cy.get(".ant-btn-default").click();
-    cy.contains("div", "Select a language").type(languageCode);
-    cy.get("body").type("{enter}");
-    cy.contains("div", "Select a country").type(countryCode);
-    cy.get("body").type("{enter}");
-    cy.get("#name").clear().type(languageName);
-    if (isDefault) {
-        cy.get("#is_default").click();
-    }
-    cy.get('[data-id="language-form-submit-button"]').click();
-});
+Cypress.Commands.add(
+    "addLanguage",
+    (data: { languageName: string; languageCode?: string; countryCode?: string; isDefault?: boolean }) => {
+        cy.get('[title="Languages"] > a').click();
+        cy.get(".ant-btn-default").click();
 
-Cypress.Commands.add("addKey", (keyName, keyDescription, keyContent, isHtml) => {
+        if (data.languageCode) {
+            cy.contains("div", "Select a language").type(data.languageCode);
+            cy.get("body").type("{enter}");
+        }
+
+        if (data.countryCode) {
+            cy.contains("div", "Select a country").type(data.countryCode);
+            cy.get("body").type("{enter}");
+        }
+
+        cy.get("#name").clear().type(data.languageName);
+        if (data.isDefault) {
+            cy.get("#is_default").click();
+        }
+        cy.get('[data-id="language-form-submit-button"]').click();
+    }
+);
+
+Cypress.Commands.add("addKey", (data: { name: string; description?: string; content?: string; isHtml?: boolean }) => {
     cy.get('[title="Keys"] > a').click();
     cy.get(".ant-btn-default").click();
-    cy.get("#name").type(keyName);
-    cy.get("#description").type(keyDescription);
-    if (isHtml) {
+    cy.get("#name").type(data.name);
+    cy.get("#description").type(data.description);
+    if (data.isHtml) {
         cy.get("#htmlEnabled").click();
 
-        if (keyContent) {
+        if (data.content) {
             cy.wait(1000); // wait until the editor has loaded
-            cy.get(".defaultLanguageHTMLContent").find(".codex-editor").type(keyContent);
+            cy.get(".defaultLanguageHTMLContent").find(".codex-editor").type(data.content);
             cy.wait(500); // wait until editor has saved content
         }
-    } else if (keyContent) {
-        cy.get("#defaultLanguageContent").type(keyContent);
+    } else if (data.content) {
+        cy.get("#defaultLanguageContent").type(data.content);
     }
     cy.get('[data-id="key-form-submit-button"]').click();
 });
@@ -165,4 +175,8 @@ Cypress.Commands.add("importFile", (fileName: string) => {
 Cypress.Commands.add("clickOutside", () => {
     cy.get("body").click(0, 0);
     cy.wait(250);
+});
+
+Cypress.Commands.add("selectKeyInEditor", (name: string) => {
+    cy.get(".editor-key-name").contains(name).click(0, 0);
 });
