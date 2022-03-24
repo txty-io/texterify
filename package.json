@@ -94,7 +94,7 @@
     "format": "yarn format:frontend && yarn format:backend",
     "format:frontend": "prettier --write 'app/**/*.{js,ts,tsx}'",
     "format:backend": "prettier --write 'app/**/*.rb'",
-    "start": "yarn start:mailcatcher 2> /dev/null; rm /workspace/tmp/pids/server.pid 2> /dev/null; bundle exec rails server -p 3000 -b \"0.0.0.0\"",
+    "start": "yarn start:mailcatcher 2> /dev/null; rm /workspace/tmp/pids/server.pid 2> /dev/null; bundle exec sidekiq & bundle exec rails server -p 3000 -b \"0.0.0.0\"",
     "start:no-container-webpacker": "WEBPACKER_DEV_SERVER_PORT=3012 WEBPACKER_DEV_SERVER_PUBLIC=host.docker.internal:3012 WEBPACKER_DEV_SERVER_HOST=host.docker.internal yarn start",
     "start:watcher": "./bin/webpack-dev-server",
     "start:watcher:no-container-webpacker": "WEBPACKER_DEV_SERVER_PORT=3012 WEBPACKER_DEV_SERVER_PUBLIC=0.0.0.0:3012 ./bin/webpack-dev-server",
