@@ -5,9 +5,9 @@ class CheckValidationsWorker
 
   def perform(background_job_id, project_id, validation_id = nil)
     background_job = BackgroundJob.find(background_job_id)
-    background_job.status = 'RUNNING'
-    background_job.progress = 20
-    background_job.save!
+    background_job.start!
+    background_job.progress!(20)
+
     project = Project.find(project_id)
 
     if validation_id
@@ -17,10 +17,6 @@ class CheckValidationsWorker
       project.translations.each { |translation| translation.check_validations }
     end
 
-    background_job.status = 'COMPLETED'
-    background_job.progress = 100
-    background_job.save!
-
-    JobsChannel.broadcast_to(background_job.user, type: 'RECHECK_ALL_VALIDATIONS_FINISHED', project_id: project_id)
+    background_job.complete!
   end
 end

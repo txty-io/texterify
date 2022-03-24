@@ -1,8 +1,10 @@
 import { Button, Empty, Layout, message, Modal, Popconfirm, Switch, Table } from "antd";
 import { TableRowSelection } from "antd/lib/table/interface";
 import { observer } from "mobx-react";
+import PubSub from "pubsub-js";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { BackgroundJobsAPI, IGetBackgroundJobsResponse } from "../../api/v1/BackgroundJobsAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
@@ -14,9 +16,11 @@ import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { IssuesTag } from "../../ui/IssuesTag";
-import PubSub from "pubsub-js";
-import { RECHECK_ALL_VALIDATIONS_FINISHED } from "../../utilities/Events";
-import { Link } from "react-router-dom";
+import {
+    PUBSUB_EVENTS,
+    PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED,
+    PUBSUB_RECHECK_ALL_VALIDATIONS_PROGRESS
+} from "../../utilities/PubSubEvents";
 
 const DeleteLink = styled.a`
     && {
@@ -83,26 +87,35 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
         }
     };
 
-    eventSubscription: string;
+    eventSubscriptionFinished: string;
+    eventSubscriptionProgress: string;
 
-    callback = (_event: string, data: { projectId: string }) => {
+    onPubSubEvent = (event: PUBSUB_EVENTS, data: { projectId: string }) => {
         if (data.projectId === this.props.match.params.projectId) {
             void this.loadBackgroundJobs();
-            void this.fetchValidationViolations();
-            void dashboardStore.reloadCurrentProjectIssuesCount();
-            message.success("Rechecking all validations completed.");
+
+            if (event === PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED) {
+                void this.fetchValidationViolations();
+                void dashboardStore.reloadCurrentProjectIssuesCount();
+                message.success("Rechecking all validations completed.");
+            }
         }
     };
 
     async componentDidMount() {
         await Promise.all([this.fetchValidationViolations(), this.loadValidations(), this.loadBackgroundJobs()]);
 
-        this.eventSubscription = PubSub.subscribe(RECHECK_ALL_VALIDATIONS_FINISHED, this.callback);
+        this.eventSubscriptionFinished = PubSub.subscribe(PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED, this.onPubSubEvent);
+        this.eventSubscriptionProgress = PubSub.subscribe(PUBSUB_RECHECK_ALL_VALIDATIONS_PROGRESS, this.onPubSubEvent);
     }
 
     componentWillUnmount() {
-        if (this.eventSubscription) {
-            PubSub.unsubscribe(this.eventSubscription);
+        if (this.eventSubscriptionFinished) {
+            PubSub.unsubscribe(this.eventSubscriptionFinished);
+        }
+
+        if (this.eventSubscriptionProgress) {
+            PubSub.unsubscribe(this.eventSubscriptionProgress);
         }
     }
 

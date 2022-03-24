@@ -2,6 +2,7 @@ import { DeploymentUnitOutlined, HddFilled, LineChartOutlined, ProjectOutlined, 
 import * as antd from "antd";
 import WhiteLogoWithText from "images/logo_white_text.svg";
 import { observer } from "mobx-react";
+import PubSub from "pubsub-js";
 import * as React from "react";
 import Hotkeys from "react-hot-keys";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
@@ -23,6 +24,7 @@ import { UserLicensesSite } from "../sites/dashboard/UserLicensesSite";
 import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
 import { authStore } from "../stores/AuthStore";
 import { dashboardStore } from "../stores/DashboardStore";
+import { BackgroundJobsPopupContent } from "../ui/BackgroundJobsPopupContent";
 import { ConfirmEmailHint } from "../ui/ConfirmEmailHint";
 import { DarkModeToggle } from "../ui/DarkModeToggle";
 import { getKeystrokePreview } from "../ui/KeystrokePreview";
@@ -31,6 +33,16 @@ import { LicenseFreeTrial } from "../ui/LicenseFreeVersion";
 import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
+import {
+    IJobsChannelEvent,
+    JOBS_CHANNEL_EVENT_JOB_COMPLETED,
+    JOBS_CHANNEL_EVENT_JOB_PROGRESS,
+    JOBS_CHANNEL_TYPE_RECHECK_ALL_VALIDATIONS
+} from "../utilities/JobsChannelEvents";
+import {
+    PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED,
+    PUBSUB_RECHECK_ALL_VALIDATIONS_PROGRESS
+} from "../utilities/PubSubEvents";
 import { consumer } from "../WebsocketClient";
 import { InstanceRouter } from "./InstanceRouter";
 import { OrganizationRouter } from "./OrganizationRouter";
@@ -39,10 +51,6 @@ import { PrivateRouteTexterifyCloud } from "./PrivateRouteTexterifyCloud";
 import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
 import { SuperadminRoute } from "./SuperadminRoute";
-import PubSub from "pubsub-js";
-import { RECHECK_ALL_VALIDATIONS_FINISHED } from "../utilities/Events";
-import { history } from "./history";
-import { BackgroundJobsPopupContent } from "../ui/BackgroundJobsPopupContent";
 
 export const MenuList = styled.li`
     overflow: hidden;
@@ -158,14 +166,25 @@ class DashboardRouter extends React.Component<IProps, IState> {
         consumer.subscriptions.create(
             { channel: "JobsChannel" },
             {
-                received: (data: { type: "RECHECK_ALL_VALIDATIONS_FINISHED"; project_id: string }) => {
+                received: (data: IJobsChannelEvent) => {
                     // Only care about the finished job if it is a job of the currently selected project.
                     if (data.project_id === this.props.match.params.projectId) {
                         dashboardStore.loadBackgroundJobs(data.project_id);
 
+                        // Send an event that a new job update has occurred.
+                        if (
+                            data.type === JOBS_CHANNEL_TYPE_RECHECK_ALL_VALIDATIONS &&
+                            data.event === JOBS_CHANNEL_EVENT_JOB_PROGRESS
+                        ) {
+                            PubSub.publish(PUBSUB_RECHECK_ALL_VALIDATIONS_PROGRESS, { projectId: data.project_id });
+                        }
+
                         // Send an event that the recheck all validations job has finished.
-                        if (data.type === RECHECK_ALL_VALIDATIONS_FINISHED) {
-                            PubSub.publish(RECHECK_ALL_VALIDATIONS_FINISHED, { projectId: data.project_id });
+                        if (
+                            data.type === JOBS_CHANNEL_TYPE_RECHECK_ALL_VALIDATIONS &&
+                            data.event === JOBS_CHANNEL_EVENT_JOB_COMPLETED
+                        ) {
+                            PubSub.publish(PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED, { projectId: data.project_id });
                         }
                     }
                 }

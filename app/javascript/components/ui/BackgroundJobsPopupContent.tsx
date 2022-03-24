@@ -27,12 +27,18 @@ function getJobTypeText(jobType: IBackgroundJob["attributes"]["job_type"]) {
 
 export const BackgroundJobsPopupContent = observer(() => {
     if (!dashboardStore.activeBackgroundJobsResponse) {
-        return <div style={{ color: Styles.COLOR_TEXT_DISABLED, fontStyle: "italic" }}>Loading background jobs...</div>;
+        return (
+            <div style={{ padding: "4px 16px", color: Styles.COLOR_TEXT_DISABLED, fontStyle: "italic" }}>
+                Loading background jobs...
+            </div>
+        );
     }
 
     if (dashboardStore.activeBackgroundJobsResponse.data.length === 0) {
         return (
-            <div style={{ color: Styles.COLOR_TEXT_DISABLED, fontStyle: "italic" }}>No running background jobs.</div>
+            <div style={{ padding: "4px 16px", color: Styles.COLOR_TEXT_DISABLED, fontStyle: "italic" }}>
+                No running background jobs.
+            </div>
         );
     }
 
