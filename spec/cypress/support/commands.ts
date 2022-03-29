@@ -127,6 +127,10 @@ Cypress.Commands.add("addOrganization", (name) => {
     cy.location("pathname").should("contain", "/dashboard/organizations/");
 });
 
+Cypress.Commands.add("goToProject", (projectId: string) => {
+    cy.get(`[data-id="project-${projectId}"]`).click();
+});
+
 Cypress.Commands.add("goToEditor", () => {
     cy.get('[data-id="project-sidebar-editor"]').click();
 });
@@ -137,6 +141,10 @@ Cypress.Commands.add("leaveEditor", () => {
 
 Cypress.Commands.add("goToLanguages", () => {
     cy.get('[data-id="project-sidebar-languages"]').click();
+});
+
+Cypress.Commands.add("goToValidations", () => {
+    cy.get('[data-id="project-sidebar-validations"]').click();
 });
 
 Cypress.Commands.add("goToKeys", () => {
@@ -177,6 +185,14 @@ Cypress.Commands.add("clickOutside", () => {
     cy.wait(250);
 });
 
+Cypress.Commands.add("clickDataId", (id: string) => {
+    cy.get(`[data-id="${id}"]`).click();
+});
+
 Cypress.Commands.add("selectKeyInEditor", (name: string) => {
     cy.get(".editor-key-name").contains(name).click(0, 0);
+});
+
+Cypress.Commands.add("featureNotAvailableInPlanShown", (id: string) => {
+    cy.get(`[data-id="${id}"]`).should("contain", "This feature is not available on your current plan");
 });

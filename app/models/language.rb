@@ -80,6 +80,6 @@ class Language < ApplicationRecord
   protected
 
   def strip_leading_and_trailing_whitespace
-    self.name = name.strip
+    self.name = name&.strip
   end
 end

@@ -20,6 +20,10 @@ class Project < ApplicationRecord
   has_many :invites, class_name: 'ProjectInvite', dependent: :destroy
   has_many :background_jobs, dependent: :destroy
 
+  # Forbidden words
+  has_many :forbidden_words_lists, dependent: :destroy
+  has_many :forbidden_words, through: :forbidden_words_lists
+
   # Tags
   has_many :tags, dependent: :destroy
 

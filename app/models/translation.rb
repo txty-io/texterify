@@ -15,9 +15,11 @@ class Translation < ApplicationRecord
 
   # Checks all enabled validations and creates violations if necessary.
   # If a validation is given only that validation is checked.
+  # Note: The predefined validations are still run even when a validation is given.
   def check_validations(validation_to_check = nil)
     project = key.project
 
+    # Check predefined validations
     check_leading_whitespace(project)
     check_trailing_whitespace(project)
     check_double_whitespace(project)
@@ -29,6 +31,7 @@ class Translation < ApplicationRecord
       validations_to_check = project.validations.where(enabled: true)
     end
 
+    # Check custom validations
     validations_to_check.each do |validation|
       active_violation =
         ValidationViolation.find_by(project_id: project.id, translation_id: self.id, validation_id: validation.id)
@@ -43,6 +46,35 @@ class Translation < ApplicationRecord
       if matches
         if !active_violation
           ValidationViolation.create!(project_id: project.id, translation_id: self.id, validation_id: validation.id)
+        end
+      else
+        active_violation&.destroy!
+      end
+    end
+
+    # Check forbidden words
+    project.forbidden_words.each do |forbidden_word|
+      active_violation =
+        ValidationViolation.find_by(
+          project_id: project.id,
+          translation_id: self.id,
+          forbidden_word_id: forbidden_word.id
+        )
+
+      translation_fw_matches_language =
+        forbidden_word.forbidden_words_list.language_id.nil? ||
+          forbidden_word.forbidden_words_list.language_id == self.language_id
+
+      is_violation =
+        self.content.present? && translation_fw_matches_language && self.content.include?(forbidden_word.content)
+
+      if is_violation
+        if !active_violation
+          ValidationViolation.create!(
+            project_id: project.id,
+            translation_id: self.id,
+            forbidden_word_id: forbidden_word.id
+          )
         end
       else
         active_violation&.destroy!

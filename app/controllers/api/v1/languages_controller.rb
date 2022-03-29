@@ -24,6 +24,17 @@ class Api::V1::LanguagesController < Api::V1::ApiController
              ).serialized_json
   end
 
+  def show
+    skip_authorization
+    project = current_user.projects.find(params[:project_id])
+
+    language = project.languages.find(params[:id])
+
+    options = {}
+    options[:include] = [:country_code, :language_code]
+    render json: LanguageSerializer.new(language).serialized_json
+  end
+
   def create
     if params[:name].blank?
       render json: { errors: [{ details: 'Missing required parameters' }] }, status: :bad_request

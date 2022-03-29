@@ -3,8 +3,8 @@ import { TableRowSelection } from "antd/lib/table/interface";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link } from "react-router-dom";
-import styled from "styled-components";
 import { APIUtils } from "../api/v1/APIUtils";
+import { IForbiddenWord } from "../api/v1/ForbiddenWordsListsAPI";
 import { IKey } from "../api/v1/KeysAPI";
 import { ILanguage } from "../api/v1/LanguagesAPI";
 import { ITranslation } from "../api/v1/TranslationsAPI";
@@ -18,18 +18,9 @@ import {
 import { Routes } from "../routing/Routes";
 import { dashboardStore } from "../stores/DashboardStore";
 import { PAGE_SIZE_OPTIONS } from "./Config";
+import { DeleteLink } from "./DeleteLink";
 import { Flag } from "./Flag";
 import { Utils } from "./Utils";
-
-const DeleteLink = styled.a`
-    && {
-        color: var(--error-color);
-
-        &:hover {
-            color: var(--error-color-hover);
-        }
-    }
-`;
 
 interface ITableRow {
     key: string;
@@ -118,25 +109,38 @@ class IssuesTable extends React.Component<IProps, IState> {
         }) as IKey;
     }
 
-    getValidationDescription(validationViolation: IValidationViolation, validation: IValidation) {
-        if (validationViolation.attributes.name) {
-            if (validationViolation.attributes.name === "validate_double_whitespace") {
+    getValidationDescription(options: {
+        validationViolation: IValidationViolation;
+        validation: IValidation | null;
+        forbiddenWord: IForbiddenWord | null;
+    }) {
+        if (options.validationViolation.attributes.name) {
+            if (options.validationViolation.attributes.name === "validate_double_whitespace") {
                 return "Text contains a double whitespace";
-            } else if (validationViolation.attributes.name === "validate_leading_whitespace") {
+            } else if (options.validationViolation.attributes.name === "validate_leading_whitespace") {
                 return "Text starts with a whitespace";
-            } else if (validationViolation.attributes.name === "validate_trailing_whitespace") {
+            } else if (options.validationViolation.attributes.name === "validate_trailing_whitespace") {
                 return "Text ends with a whitespace";
-            } else if (validationViolation.attributes.name === "validate_https") {
+            } else if (options.validationViolation.attributes.name === "validate_https") {
                 return "Text contains an insecure http:// link";
             } else {
-                return validationViolation.attributes.name;
+                return options.validationViolation.attributes.name;
             }
         } else {
-            return (
-                <>
-                    Text {validation.attributes.match} <Tag color="red">{validation.attributes.content}</Tag>
-                </>
-            );
+            if (options.validation) {
+                return (
+                    <>
+                        Text {options.validation.attributes.match}{" "}
+                        <Tag color="red">{options.validation.attributes.content}</Tag>
+                    </>
+                );
+            } else if (options.forbiddenWord) {
+                return (
+                    <>
+                        Text contains forbidden word <Tag color="red">{options.forbiddenWord.attributes.content}</Tag>
+                    </>
+                );
+            }
         }
     }
 
@@ -171,6 +175,11 @@ class IssuesTable extends React.Component<IProps, IState> {
                 this.state.validationViolationsResponse.included
             );
 
+            const forbiddenWord: IForbiddenWord = APIUtils.getIncludedObject(
+                validationViolation.relationships.forbidden_word.data,
+                this.state.validationViolationsResponse.included
+            );
+
             const key = this.getKeyForTranslation(this.getTranslationForViolation(validationViolation));
 
             return {
@@ -189,7 +198,11 @@ class IssuesTable extends React.Component<IProps, IState> {
                 content: key.attributes.html_enabled
                     ? Utils.getHTMLContentPreview(translation.attributes.content)
                     : translation.attributes.content,
-                description: this.getValidationDescription(validationViolation, validation),
+                description: this.getValidationDescription({
+                    validationViolation: validationViolation,
+                    validation: validation,
+                    forbiddenWord: forbiddenWord
+                }),
                 controls: (
                     <div style={{ display: "flex", justifyContent: "center" }}>
                         <Popconfirm

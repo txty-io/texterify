@@ -11,7 +11,7 @@ import { PermissionUtils } from "../utilities/PermissionUtils";
 import { Constants } from "./Constants";
 import { Utils } from "./Utils";
 
-export function FeatureNotAvailable(props: { feature: IFeature; style?: React.CSSProperties }) {
+export function FeatureNotAvailable(props: { feature: IFeature; dataId?: string; style?: React.CSSProperties }) {
     if (!dashboardStore.currentProject) {
         return null;
     }
@@ -30,6 +30,7 @@ export function FeatureNotAvailable(props: { feature: IFeature; style?: React.CS
                 }
                 type="info"
                 style={{ marginBottom: 16, maxWidth: 400, ...props.style }}
+                data-id={props.dataId}
             />
         );
     }
@@ -82,6 +83,7 @@ export function FeatureNotAvailable(props: { feature: IFeature; style?: React.CS
             }
             type="info"
             style={{ marginBottom: 16, maxWidth: 400, ...props.style }}
+            data-id={props.dataId}
         />
     );
 }

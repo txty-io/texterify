@@ -23,6 +23,7 @@ class Api::V1::ValidationViolationsController < Api::V1::ApiController
       :project,
       :validation,
       :translation,
+      :forbidden_word,
       :'translation.key',
       :'translation.language',
       :'translation.language.language_code',

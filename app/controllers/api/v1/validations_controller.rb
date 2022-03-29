@@ -18,7 +18,7 @@ class Api::V1::ValidationsController < Api::V1::ApiController
   end
 
   def create
-    project = Project.find(params[:project_id])
+    project = current_user.projects.find(params[:project_id])
 
     validation = Validation.new(validation_params)
     validation.project = project

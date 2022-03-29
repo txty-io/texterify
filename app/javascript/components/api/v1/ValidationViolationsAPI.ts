@@ -23,6 +23,7 @@ export interface IValidationViolation {
         project: { data: { id: string; type: "project" } | null };
         translation: { data: { id: string; type: "translation" } | null };
         validation: { data: { id: string; type: "validation" } | null };
+        forbidden_word: { data: { id: string; type: "forbidden_word" } | null };
     };
 }
 

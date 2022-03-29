@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_19_162219) do
+ActiveRecord::Schema.define(version: 2022_03_29_205211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -122,6 +122,25 @@ ActiveRecord::Schema.define(version: 2022_02_19_162219) do
     t.string "split_on"
     t.index ["project_id", "name"], name: "index_export_configs_on_project_id_and_name", unique: true
     t.index ["project_id"], name: "index_export_configs_on_project_id"
+  end
+
+  create_table "forbidden_words", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "content"
+    t.uuid "forbidden_words_list_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["forbidden_words_list_id"], name: "index_forbidden_words_on_forbidden_words_list_id"
+  end
+
+  create_table "forbidden_words_lists", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "content"
+    t.uuid "project_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "language_id"
+    t.index ["language_id"], name: "index_forbidden_words_lists_on_language_id"
+    t.index ["project_id"], name: "index_forbidden_words_lists_on_project_id"
   end
 
   create_table "keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -460,6 +479,8 @@ ActiveRecord::Schema.define(version: 2022_02_19_162219) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "name"
     t.uuid "translation_id"
+    t.uuid "forbidden_word_id"
+    t.index ["forbidden_word_id"], name: "index_validation_violations_on_forbidden_word_id"
     t.index ["name", "project_id", "translation_id", "validation_id"], name: "index_validation_violations_uniqueness", unique: true
     t.index ["project_id"], name: "index_validation_violations_on_project_id"
     t.index ["translation_id"], name: "index_validation_violations_on_translation_id"
@@ -532,6 +553,9 @@ ActiveRecord::Schema.define(version: 2022_02_19_162219) do
   add_foreign_key "background_jobs", "users", on_delete: :nullify
   add_foreign_key "custom_subscriptions", "organizations", on_delete: :nullify
   add_foreign_key "export_configs", "projects", on_delete: :cascade
+  add_foreign_key "forbidden_words", "forbidden_words_lists", on_delete: :cascade
+  add_foreign_key "forbidden_words_lists", "languages", on_delete: :cascade
+  add_foreign_key "forbidden_words_lists", "projects", on_delete: :cascade
   add_foreign_key "keys", "projects", on_delete: :cascade
   add_foreign_key "keys_tags", "keys", on_delete: :cascade
   add_foreign_key "keys_tags", "tags", on_delete: :cascade
@@ -570,11 +594,12 @@ ActiveRecord::Schema.define(version: 2022_02_19_162219) do
   add_foreign_key "translations", "keys", on_delete: :cascade
   add_foreign_key "translations", "languages", on_delete: :cascade
   add_foreign_key "user_licenses", "users"
-  add_foreign_key "validation_violations", "projects"
-  add_foreign_key "validation_violations", "translations"
-  add_foreign_key "validation_violations", "validations"
-  add_foreign_key "validations", "organizations"
-  add_foreign_key "validations", "projects"
+  add_foreign_key "validation_violations", "forbidden_words", on_delete: :cascade
+  add_foreign_key "validation_violations", "projects", on_delete: :cascade
+  add_foreign_key "validation_violations", "translations", on_delete: :cascade
+  add_foreign_key "validation_violations", "validations", on_delete: :cascade
+  add_foreign_key "validations", "organizations", on_delete: :cascade
+  add_foreign_key "validations", "projects", on_delete: :cascade
   add_foreign_key "versions", "projects", on_delete: :cascade
   add_foreign_key "wordpress_contents", "keys", on_delete: :nullify
   add_foreign_key "wordpress_contents", "projects", on_delete: :cascade

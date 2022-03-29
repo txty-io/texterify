@@ -83,6 +83,21 @@ const ValidationsAPI = {
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
+    },
+
+    getForbiddenWordsLists: (options: { projectId: string }) => {
+        return API.getRequest(`projects/${options.projectId}/forbidden_words_lists`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    getForbiddenWordsList: (options: { projectId: string; forbiddenWordListId: string }) => {
+        return API.getRequest(
+            `projects/${options.projectId}/forbidden_words_lists/${options.forbiddenWordListId}`,
+            true
+        )
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
     }
 };
 

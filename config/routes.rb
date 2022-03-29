@@ -77,7 +77,7 @@ Rails
           delete 'post_processing_rules', to: 'post_processing_rules#destroy_multiple'
 
           # Languages
-          resources :languages, only: [:create, :index, :destroy, :update] do
+          resources :languages, only: [:create, :index, :show, :destroy, :update] do
             post :machine_translate, to: 'machine_translations#machine_translate_language'
           end
           delete 'languages', to: 'languages#destroy_multiple'
@@ -112,6 +112,11 @@ Rails
 
           # Project invites
           resources :invites, only: [:create, :index, :destroy], controller: 'project_invites'
+
+          # Forbidden words lists
+          resources :forbidden_words_lists,
+                    only: [:create, :index, :update, :destroy],
+                    controller: 'forbidden_words_lists'
 
           # WordPress Polylang integration
           get 'wordpress_polylang_connection', to: 'wordpress_polylang_connections#show'

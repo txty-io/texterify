@@ -1,0 +1,158 @@
+{
+      "data" => [
+    [0] {
+                 "id" => "83dceff3-a228-4fe7-871e-f7519cd22413",
+               "type" => "forbidden_words_list",
+         "attributes" => {
+                 "id" => "83dceff3-a228-4fe7-871e-f7519cd22413",
+               "name" => "my name",
+            "content" => "my content",
+         "project_id" => "3341caa7-d261-4a5e-a76e-eb71470f8042",
+        "language_id" => nil,
+        "words_count" => 1
+      },
+      "relationships" => {
+        "project" => {
+          "data" => {
+              "id" => "3341caa7-d261-4a5e-a76e-eb71470f8042",
+            "type" => "project"
+          }
+        }
+      }
+    }
+  ],
+  "included" => [
+    [0] {
+                 "id" => "3341caa7-d261-4a5e-a76e-eb71470f8042",
+               "type" => "project",
+         "attributes" => {
+                                         "id" => "3341caa7-d261-4a5e-a76e-eb71470f8042",
+                                       "name" => "Project 3",
+                                "description" => nil,
+                "machine_translation_enabled" => true,
+                    "auto_translate_new_keys" => false,
+               "auto_translate_new_languages" => false,
+        "machine_translation_character_usage" => 0,
+                                 "word_count" => 0,
+                            "character_count" => 0,
+                "validate_leading_whitespace" => true,
+               "validate_trailing_whitespace" => true,
+                 "validate_double_whitespace" => true,
+                             "validate_https" => true,
+                            "organization_id" => "194c811a-fb3c-4063-8ce1-cfb9191e7afa",
+                               "issues_count" => 0,
+                           "enabled_features" => [
+          [ 0] "FEATURE_UNLIMITED_PROJECTS",
+          [ 1] "FEATURE_UNLIMITED_LANGUAGES",
+          [ 2] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_VALIDATIONS",
+          [ 4] "FEATURE_KEY_HISTORY",
+          [ 5] "FEATURE_EXPORT_HIERARCHY",
+          [ 6] "FEATURE_POST_PROCESSING",
+          [ 7] "FEATURE_PROJECT_ACTIVITY",
+          [ 8] "FEATURE_TAG_MANAGEMENT",
+          [ 9] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [10] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
+          [11] "FEATURE_OTA",
+          [12] "FEATURE_HTML_EDITOR",
+          [13] "FEATURE_TEMPLATES",
+          [14] "FEATURE_PROJECT_GROUPS"
+        ],
+                               "all_features" => {
+                          "FEATURE_UNLIMITED_PROJECTS" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                         "FEATURE_UNLIMITED_LANGUAGES" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                                 "FEATURE_VALIDATIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                 "FEATURE_KEY_HISTORY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_EXPORT_HIERARCHY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                             "FEATURE_POST_PROCESSING" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_PROJECT_ACTIVITY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                              "FEATURE_TAG_MANAGEMENT" => [
+            [0] "team",
+            [1] "business"
+          ],
+             "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
+            [0] "team",
+            [1] "business"
+          ],
+                  "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
+            [0] "business"
+          ],
+                                         "FEATURE_OTA" => [
+            [0] "business"
+          ],
+                                 "FEATURE_HTML_EDITOR" => [
+            [0] "business"
+          ],
+                                   "FEATURE_TEMPLATES" => [
+            [0] "business"
+          ],
+                              "FEATURE_PROJECT_GROUPS" => [
+            [0] "business"
+          ],
+          "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE" => [
+            [0] "business"
+          ]
+        },
+                 "machine_translation_active" => false
+      },
+      "relationships" => {
+           "organization" => {
+          "data" => {
+              "id" => "194c811a-fb3c-4063-8ce1-cfb9191e7afa",
+            "type" => "organization"
+          }
+        },
+                   "keys" => {
+          "data" => []
+        },
+              "languages" => {
+          "data" => []
+        },
+        "project_columns" => {
+          "data" => []
+        },
+               "releases" => {
+          "data" => []
+        },
+                   "tags" => {
+          "data" => []
+        }
+      }
+    }
+  ],
+      "meta" => {
+    "total" => 1
+  }
+}

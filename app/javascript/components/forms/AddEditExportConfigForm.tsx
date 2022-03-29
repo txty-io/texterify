@@ -6,7 +6,7 @@ import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
 import { ExportConfigsAPI } from "../api/v1/ExportConfigsAPI";
 import { IGetLanguageConfigsResponse, LanguageConfigsAPI } from "../api/v1/LanguageConfigsAPI";
-import { LanguagesAPI } from "../api/v1/LanguagesAPI";
+import { IGetLanguagesResponse, LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { FileFormatOptions } from "../configs/FileFormatOptions";
 import { ImportFileFormats } from "../sites/dashboard/FileImportSite";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
@@ -30,7 +30,7 @@ interface IProps {
 }
 interface IState {
     exportConfigsResponse: any;
-    languagesResponse: any;
+    languagesResponse: IGetLanguagesResponse;
     languageConfigsResponse: IGetLanguageConfigsResponse;
     languageConfigsLoading: boolean;
     addEditExportConfigLanguageConfigOpen: boolean;

@@ -35,7 +35,12 @@ declare global {
             createProject(name: string, description?: string, fromOrganizationPage?: boolean): void;
             addKey(data: { name: string; description?: string; content?: string; isHtml?: boolean }): void;
             appScenario(
-                scenario: "project_with_keys" | "project_with_languages" | "set_cloud" | "set_on_premise"
+                scenario:
+                    | "project_with_keys"
+                    | "project_with_languages"
+                    | "set_cloud"
+                    | "set_on_premise"
+                    | "all_entities"
             ): void;
             addLanguage(data: {
                 languageName: string;
@@ -44,13 +49,17 @@ declare global {
                 isDefault?: boolean;
             }): void;
             goToKeys(): void;
+            goToProject(projectId: string): void;
             goToProjectHome(): void;
             goToLanguages(): void;
+            goToValidations(): void;
             goToProjectSettings(): void;
             goToEditor(): void;
             selectKeyInEditor(name: string);
             leaveEditor(): void;
             clickOutside(): void;
+            clickDataId(id: string): void;
+            featureNotAvailableInPlanShown(id: string): void;
             addUser(email: string): void;
             checkIfKeyExists(options: { key: string; description?: string; content?: string }): void;
             importFile(fileName: string);
