@@ -48,12 +48,17 @@ module Deepl
       end
 
       def translate(text, source_lang, target_lang)
-        data = { text: text, source_lang: source_lang, target_lang: target_lang }
+        # For testing return the reversed text.
+        if Rails.env.test?
+          text.reverse
+        else
+          data = { text: text, source_lang: source_lang, target_lang: target_lang }
 
-        json = request(:post, 'translate', data)
+          json = request(:post, 'translate', data)
 
-        unless json.nil?
-          json['translations'][0]['text']
+          unless json.nil?
+            json['translations'][0]['text']
+          end
         end
       end
 

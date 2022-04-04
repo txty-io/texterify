@@ -85,10 +85,13 @@ class Api::V1::LanguagesController < Api::V1::ApiController
       end
 
       render json: { success: true, details: 'Language successfully created.' }, status: :ok
-
       if project.auto_translate_new_languages && project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
         # TODO: Handle machine translation errors. Fix it by moving this to a background job that will display errors if failed.
-        language.translate_untranslated_using_machine_translation
+        begin
+          language.translate_untranslated_using_machine_translation
+        rescue OrganizationMachineTranslationUsageExceededException
+          # ignored
+        end
       end
     else
       render json: { errors: language.errors.details }, status: :bad_request
