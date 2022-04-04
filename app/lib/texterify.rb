@@ -26,6 +26,7 @@ module Texterify
         content = machine_translation_memory.to
       else
         organization = project.organization
+        character_count = source_translation.content.length
 
         # Check if the characters exceed the limit of the organization.
         if organization.exceeds_machine_translation_usage?(character_count)
