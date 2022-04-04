@@ -11,7 +11,14 @@ module Texterify
   # Texterify::MachineTranslation
   # @throws OrganizationMachineTranslationUsageExceededException
   class MachineTranslation
+    # Returns nil if the translation couldn't be translated.
+    # Otherwise returns the translated content.
     def self.translate(project, source_translation, target_language)
+      # Check if source and target language code are set.
+      if source_translation.language.language_code.nil? || target_language.language_code.nil?
+        return nil
+      end
+
       # First check if the source translation has already
       # been translated in the target language.
       machine_translation_memory =
@@ -28,7 +35,7 @@ module Texterify
         organization = project.organization
         character_count = source_translation.content.length
 
-        # Check if the characters exceed the limit of the organization.
+        # Check if the organization has exceeded their machine translation usage.
         if organization.exceeds_machine_translation_usage?(character_count)
           raise OrganizationMachineTranslationUsageExceededException.new(
                   {

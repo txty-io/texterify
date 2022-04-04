@@ -15,7 +15,7 @@ FactoryBot.define do
     end
   end
 
-  trait :with_organization_business_plan do
+  trait :with_business_plan do
     after(:create) do |project|
       organization = project.organization
       custom_subscription = CustomSubscription.new
@@ -29,10 +29,13 @@ FactoryBot.define do
 
   trait :with_default_language_keys_and_translations do
     after(:create) do |project|
+      language_code_en = LanguageCode.find_by(code: 'en')
+
       language = Language.new
       language.name = 'English'
       language.project_id = project.id
       language.is_default = true
+      language.language_code_id = language_code_en.id
       language.save!
 
       key1 = create(:key, project_id: project.id)
