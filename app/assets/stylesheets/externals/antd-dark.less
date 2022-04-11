@@ -66,6 +66,13 @@
         border-color: #303030;
     }
 
+    .ant-table-tbody > tr.texterify-table-row-disabled {
+        td > *:not(.texterify-table-row-disabled-skip) {
+            pointer-events: none;
+            filter: opacity(0.25);
+        }
+    }
+
     .ant-table-thead > tr > th,
     .ant-table-tbody > tr.ant-table-row:hover > td {
         background: rgba(255, 255, 255, 0.05);

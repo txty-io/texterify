@@ -44,6 +44,8 @@ const Routes = {
         PROJECT_MACHINE_TRANSLATION: "/dashboard/projects/:projectId/machine-translation",
         PROJECT_EXPORT_CONFIGURATIONS: "/dashboard/projects/:projectId/export/configurations",
         PROJECT_EXPORT_HIERARCHY: "/dashboard/projects/:projectId/export/hierarchy",
+        PROJECT_ISSUES_ACTIVE: "/dashboard/projects/:projectId/active-issues",
+        PROJECT_ISSUES_IGNORED: "/dashboard/projects/:projectId/ignored-issues",
         PROJECT_SETTINGS: "/dashboard/projects/:projectId/settings",
         PROJECT_SETTINGS_RESOLVER: (options: { projectId: string }) => {
             return Routes.DASHBOARD.PROJECT_SETTINGS.replace(":projectId", options.projectId);

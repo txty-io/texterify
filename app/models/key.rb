@@ -26,6 +26,7 @@ class Key < ApplicationRecord
 
   validates :name, presence: true
   validate :no_duplicate_keys_for_project
+  validate :no_reserved_key_names
 
   before_validation :strip_leading_and_trailing_whitespace
   before_validation :check_html_allowed
@@ -45,6 +46,14 @@ class Key < ApplicationRecord
       if !updating_key
         errors.add(:name, :taken)
       end
+    end
+  end
+
+  # Checks if a key starts with the prefix "texterify_" which is reserved for special Texterify keys
+  # like the "texterify_timestamp".
+  def no_reserved_key_names
+    if self.name&.start_with?('texterify_')
+      errors.add(:name, :key_name_reserved)
     end
   end
 

@@ -15,7 +15,14 @@ class Project < ApplicationRecord
   has_many :versions, class_name: 'PaperTrail::Version', dependent: :delete_all
   has_many :users_project, through: :project_users, source: :user
   has_many :releases, through: :export_configs, dependent: :destroy
+  has_many :validations, dependent: :destroy
+  has_many :validation_violations, dependent: :destroy
   has_many :invites, class_name: 'ProjectInvite', dependent: :destroy
+  has_many :background_jobs, dependent: :destroy
+
+  # Forbidden words
+  has_many :forbidden_words_lists, dependent: :destroy
+  has_many :forbidden_words, through: :forbidden_words_lists
 
   # Tags
   has_many :tags, dependent: :destroy
@@ -32,6 +39,11 @@ class Project < ApplicationRecord
 
   def users
     organization ? User.where(id: users_project.pluck(:id) + organization.users.pluck(:id)) : users_project
+  end
+
+  # The total number of validation violations.
+  def issues_count
+    validation_violations.where(ignored: false).size
   end
 
   def role_of(user)

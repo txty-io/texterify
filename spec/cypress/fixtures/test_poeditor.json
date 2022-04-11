@@ -1,0 +1,18 @@
+[
+    {
+        "term": "app_title",
+        "definition": "Texterify",
+        "context": "welcome_screen",
+        "term_plural": "",
+        "reference": "",
+        "comment": "this comment is shown as description"
+    },
+    {
+        "term": "app_welcome_text",
+        "definition": "Hello World!",
+        "context": "welcome_screen",
+        "term_plural": "",
+        "reference": "",
+        "comment": "this comment is shown as a welcome text"
+    }
+]

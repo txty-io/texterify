@@ -6,17 +6,19 @@ import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
 import { ExportConfigsAPI } from "../api/v1/ExportConfigsAPI";
 import { IGetLanguageConfigsResponse, LanguageConfigsAPI } from "../api/v1/LanguageConfigsAPI";
-import { LanguagesAPI } from "../api/v1/LanguagesAPI";
+import { IGetLanguagesResponse, LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { FileFormatOptions } from "../configs/FileFormatOptions";
+import { ImportFileFormats } from "../sites/dashboard/FileImportSite";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import FlagIcon from "../ui/FlagIcons";
 import { AddEditExportConfigLanguageForm, ICreateUpdateLanguageConfig } from "./AddEditExportConfigLanguageForm";
 
 interface IFormValues {
     name: string;
-    fileFormat: string;
+    fileFormat: ImportFileFormats;
     filePath: string;
     defaultLanguageFilePath: string;
+    splitOn: string;
 }
 
 interface IProps {
@@ -28,12 +30,13 @@ interface IProps {
 }
 interface IState {
     exportConfigsResponse: any;
-    languagesResponse: any;
+    languagesResponse: IGetLanguagesResponse;
     languageConfigsResponse: IGetLanguageConfigsResponse;
     languageConfigsLoading: boolean;
     addEditExportConfigLanguageConfigOpen: boolean;
     exportConfigLanguageConfigToEdit: ICreateUpdateLanguageConfig;
     languageConfigsToCreate: ICreateUpdateLanguageConfig[];
+    selectedFileFormat: ImportFileFormats | null;
 }
 
 class AddEditExportConfigForm extends React.Component<IProps, IState> {
@@ -46,7 +49,8 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
         languageConfigsLoading: true,
         addEditExportConfigLanguageConfigOpen: false,
         exportConfigLanguageConfigToEdit: null,
-        languageConfigsToCreate: []
+        languageConfigsToCreate: [],
+        selectedFileFormat: null
     };
 
     async componentDidMount() {
@@ -83,7 +87,8 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                 fileFormat: values.fileFormat,
                 exportConfigId: this.props.exportConfigToEdit.id,
                 filePath: values.filePath,
-                name: values.name
+                name: values.name,
+                splitOn: values.splitOn
             });
         } else {
             response = await ExportConfigsAPI.createExportConfig({
@@ -91,7 +96,8 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                 defaultLanguageFilePath: values.defaultLanguageFilePath,
                 fileFormat: values.fileFormat,
                 filePath: values.filePath,
-                name: values.name
+                name: values.name,
+                splitOn: values.splitOn
             });
         }
 
@@ -283,6 +289,11 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                             defaultLanguageFilePath: this.props.exportConfigToEdit.attributes.default_language_file_path
                         }
                     }
+                    onValuesChange={(changedValues: IFormValues) => {
+                        if (changedValues.fileFormat) {
+                            this.setState({ selectedFileFormat: changedValues.fileFormat });
+                        }
+                    }}
                 >
                     <h3>Name *</h3>
                     <Form.Item
@@ -317,6 +328,21 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                             })}
                         </Select>
                     </Form.Item>
+
+                    {(this.state.selectedFileFormat === "json" ||
+                        (this.state.selectedFileFormat === null &&
+                            this.props.exportConfigToEdit?.attributes.file_format)) && (
+                        <>
+                            <h3>Split keys on</h3>
+                            <p>
+                                Provide a string upon which the JSON keys are split and grouped together. This way you
+                                can created nested JSON.
+                            </p>
+                            <Form.Item name="splitOn">
+                                <Input placeholder="For example: ." />
+                            </Form.Item>
+                        </>
+                    )}
 
                     <h3>File path *</h3>
                     <p>The file path specifies where files are placed in the exported folder.</p>

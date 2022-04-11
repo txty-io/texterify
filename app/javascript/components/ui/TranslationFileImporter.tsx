@@ -40,6 +40,7 @@ const SUPPORTED_FORMATS: {
     id: ImportFileFormats;
     documentationURL?: string;
     example?: React.ReactNode;
+    description?: string;
 }[] = [
     {
         image: AppleLogoBlack,
@@ -72,6 +73,27 @@ const SUPPORTED_FORMATS: {
     "welcome_message": "Hello world",
     ...
 }
+`}</pre>
+        )
+    },
+    {
+        image: JSONLogo,
+        name: "JSON POEditor",
+        description: "Use this format if you want to import exports of the POEditor translation management system.",
+        formats: [".json"],
+        id: "json-poeditor",
+        example: (
+            <pre style={{ whiteSpace: "break-spaces" }}>{`[
+    {
+        "term": "app_title",
+        "definition": "Texterify",
+        "context": "welcome screen",
+        "term_plural": "",
+        "reference": "",
+        "comment": "this comment is shown as description"
+    }
+    ...
+]
 `}</pre>
         )
     },
@@ -211,22 +233,6 @@ msgstr "Awesome app"
     // }
 ];
 
-function getFileEndingForSelectedFormat(selectedImportFormat: string) {
-    if (selectedImportFormat === "json") {
-        return ".json";
-    } else if (selectedImportFormat === "json-nested") {
-        return ".json";
-    } else if (selectedImportFormat === "json-formatjs") {
-        return ".json";
-    } else if (selectedImportFormat === "ios") {
-        return ".strings";
-    } else if (selectedImportFormat === "toml") {
-        return ".toml";
-    } else if (selectedImportFormat === "arb") {
-        return ".arb";
-    }
-}
-
 export const TranslationFileImporter = observer(
     (props: { style?: React.CSSProperties; onCreateLanguageClick?(): void }) => {
         const params = useParams<{ organizationId?: string; projectId?: string }>();
@@ -363,7 +369,7 @@ export const TranslationFileImporter = observer(
         return (
             <div style={props.style}>
                 {languagesLoading && <Loading />}
-                {languagesResponse?.data.length === 0 && (
+                {languagesResponse?.data?.length === 0 && (
                     <>
                         <Alert
                             type="info"
@@ -393,7 +399,7 @@ export const TranslationFileImporter = observer(
                         />
                     </>
                 )}
-                {languagesResponse?.data.length > 0 && (
+                {languagesResponse?.data?.length > 0 && (
                     <>
                         <div style={{ marginBottom: 8 }}>
                             <h3>For which language do you want to import your existing translations?</h3>
@@ -412,6 +418,7 @@ export const TranslationFileImporter = observer(
                                             onChange={() => {
                                                 setSelectedLanguageId(language.id);
                                             }}
+                                            data-id="file-importer-language-tag"
                                         >
                                             {countryCode && (
                                                 <span style={{ marginRight: 8 }}>
@@ -483,6 +490,7 @@ export const TranslationFileImporter = observer(
                                                 onClick={() => {
                                                     setSelectedImportFormat(supportedFormat);
                                                 }}
+                                                data-id={`file-importer-file-format-${supportedFormat.id}`}
                                             >
                                                 {supportedFormat.image && (
                                                     <img
@@ -563,6 +571,11 @@ export const TranslationFileImporter = observer(
                                                     )}
                                                     {selectedImportFormat.name}
                                                 </div>
+                                                {selectedImportFormat.description && (
+                                                    <div style={{ marginTop: 8 }}>
+                                                        {selectedImportFormat.description}
+                                                    </div>
+                                                )}
                                                 {selectedImportFormat.documentationURL && (
                                                     <div style={{ marginTop: 8 }}>
                                                         <span style={{ fontWeight: "bold" }}>Documentation: </span>
@@ -638,8 +651,8 @@ export const TranslationFileImporter = observer(
                                                                         <>
                                                                             Drop a{" "}
                                                                             <b>
-                                                                                {getFileEndingForSelectedFormat(
-                                                                                    selectedImportFormat.id
+                                                                                {selectedImportFormat.formats.join(
+                                                                                    ", "
                                                                                 )}
                                                                             </b>{" "}
                                                                             file here or click to upload one.
@@ -650,6 +663,7 @@ export const TranslationFileImporter = observer(
                                                             <input
                                                                 {...getInputProps()}
                                                                 accept={ACCEPTED_FILE_FORMATS.join(",")}
+                                                                data-id="file-importer-file-uploader"
                                                             />
                                                         </DropZoneWrapper>
                                                     );
@@ -669,6 +683,7 @@ export const TranslationFileImporter = observer(
                                                     type="primary"
                                                     disabled={files.length === 0 || !selectedLanguageId}
                                                     onClick={upload}
+                                                    data-id="file-importer-submit-button"
                                                 >
                                                     Import file
                                                 </Button>

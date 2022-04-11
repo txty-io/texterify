@@ -21,7 +21,10 @@ export const DarkModeToggle = observer(
         }
 
         const toggle = (
-            <span onClick={toggleLightDarkTheme} style={{ cursor: "pointer", ...props.style }}>
+            <div
+                style={{ height: 40, display: "flex", alignItems: "center", cursor: "pointer", ...props.style }}
+                onClick={toggleLightDarkTheme}
+            >
                 {props.text && <span style={{ marginRight: 16 }}>{props.text}</span>}
                 <Element
                     style={{
@@ -29,7 +32,7 @@ export const DarkModeToggle = observer(
                         color: generalStore.theme === "light" ? "#fff" : undefined
                     }}
                 />
-            </span>
+            </div>
         );
 
         if (props.disableTooltip) {

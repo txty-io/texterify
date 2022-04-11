@@ -70,7 +70,10 @@ class OrganizationMachineTranslationSite extends React.Component<IProps, IState>
                                 <h3>Usage by project</h3>
                                 <List
                                     itemLayout="horizontal"
-                                    loading={this.state.organizationLoading}
+                                    loading={
+                                        this.state.organizationLoading ||
+                                        dashboardStore.currentOrganization.attributes.current_user_deactivated
+                                    }
                                     dataSource={this.getProjects()?.map((project) => {
                                         return {
                                             project: project

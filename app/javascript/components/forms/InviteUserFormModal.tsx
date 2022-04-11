@@ -31,7 +31,7 @@ function InviteUserFormModal(props: {
         setLoading(true);
 
         try {
-            const createMemberResponse = await OrganizationMembersAPI.createMember(props.organizationId, email);
+            const createMemberResponse = await OrganizationMembersAPI.createMember(props.organizationId, email, role);
 
             if (createMemberResponse.error) {
                 if (createMemberResponse.message === "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE") {
@@ -84,7 +84,7 @@ function InviteUserFormModal(props: {
         setLoading(true);
 
         try {
-            const createMemberResponse = await MembersAPI.createMember(props.projectId, email);
+            const createMemberResponse = await MembersAPI.createMember(props.projectId, email, role);
 
             if (createMemberResponse.error) {
                 if (createMemberResponse.message === "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE") {

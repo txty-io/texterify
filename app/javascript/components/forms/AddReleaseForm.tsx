@@ -82,7 +82,7 @@ class AddReleaseForm extends React.Component<IProps, IState> {
     };
 
     hasExportConfigs = () => {
-        return this.state.exportConfigsLoading || this.state.exportConfigsResponse.data.length > 0;
+        return this.state.exportConfigsLoading || this.state.exportConfigsResponse?.data?.length > 0;
     };
 
     render() {

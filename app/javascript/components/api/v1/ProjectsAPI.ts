@@ -24,6 +24,16 @@ interface IProjectAttributes {
     character_count: number;
     placeholder_start: string;
     placeholder_end: string;
+    issues_count: number;
+    validate_leading_whitespace: boolean;
+    validate_trailing_whitespace: boolean;
+    validate_double_whitespace: boolean;
+    validate_https: boolean;
+    current_user_deactivated?: boolean;
+    current_user_deactivated_reason?: "manually_by_admin" | "user_limit_exceeded";
+    current_user_in_project_organization?: boolean;
+    current_user_in_project?: boolean;
+    organization_id: string;
 }
 
 export interface IProject {
@@ -104,11 +114,21 @@ const ProjectsAPI = {
         projectId: string;
         name?: string;
         description?: string;
+        validateLeadingWhitespace?: boolean;
+        validateTrailingWhitespace?: boolean;
+        validateDoubleWhitespace?: boolean;
+        validateHTTPS?: boolean;
         machineTranslationEnabled?: boolean;
         autoTranslateNewKeys?: boolean;
         autoTranslateNewLanguages?: boolean;
     }): Promise<IUpdateProjectResponse> => {
         return API.putRequest(`projects/${options.projectId}`, true, {
+            name: options.name,
+            description: options.description,
+            validate_leading_whitespace: options.validateLeadingWhitespace,
+            validate_trailing_whitespace: options.validateTrailingWhitespace,
+            validate_double_whitespace: options.validateDoubleWhitespace,
+            validate_https: options.validateHTTPS,
             machine_translation_enabled: options.machineTranslationEnabled,
             auto_translate_new_keys: options.autoTranslateNewKeys,
             auto_translate_new_languages: options.autoTranslateNewLanguages

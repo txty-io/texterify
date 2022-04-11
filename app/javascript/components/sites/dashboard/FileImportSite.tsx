@@ -7,8 +7,8 @@ import { TranslationFileImporter } from "../../ui/TranslationFileImporter";
 
 export type ImportFileFormats =
     | "json"
-    | "json-nested"
     | "json-formatjs"
+    | "json-poeditor"
     | "ios"
     | "android"
     | "toml"

@@ -2,41 +2,35 @@ import { Layout, message } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { ISubscription, OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
+import { OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
 import { IProject } from "../../api/v1/ProjectsAPI";
 import { NewProjectFormModal } from "../../forms/NewProjectFormModal";
 import { Routes } from "../../routing/Routes";
-import { subscriptionService } from "../../services/SubscriptionService";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { OrganizationAvatar } from "../../ui/OrganizationAvatar";
 import { PrimaryButton } from "../../ui/PrimaryButton";
 import { ProjectsList } from "../../ui/ProjectsList";
-import { Utils } from "../../ui/Utils";
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {
     addDialogVisible: boolean;
     responseOrganization: any;
-    subscription: ISubscription;
 }
 
 @observer
 class OrganizationSite extends React.Component<IProps, IState> {
     state: IState = {
         addDialogVisible: false,
-        responseOrganization: null,
-        subscription: null
+        responseOrganization: null
     };
 
     async componentDidMount() {
         try {
             const responseOrganization = await OrganizationsAPI.getOrganization(this.props.match.params.organizationId);
-            const subscription = await subscriptionService.getActiveSubscription(dashboardStore.currentOrganization.id);
 
             this.setState({
-                responseOrganization: responseOrganization,
-                subscription: subscription
+                responseOrganization: responseOrganization
             });
         } catch (error) {
             console.error(error);
@@ -68,25 +62,15 @@ class OrganizationSite extends React.Component<IProps, IState> {
                                     Create project
                                 </PrimaryButton>
                             </h1>
-                            {this.state.subscription && (
-                                <div
-                                    style={{
-                                        marginLeft: 120,
-                                        borderRadius: 4,
-                                        padding: "8px 24px",
-                                        background: "var(--primary-light-color)",
-                                        color: "var(--blue-color)"
-                                    }}
-                                >
-                                    {Utils.capitalize(this.state.subscription.attributes.plan)} Plan
-                                </div>
-                            )}
                         </div>
                         <div style={{ display: "flex", marginTop: 40 }}>
                             <div style={{ width: "100%" }}>
                                 <h3 style={{ marginBottom: 24 }}>Projects</h3>
                                 <ProjectsList
-                                    loading={!this.state.responseOrganization}
+                                    loading={
+                                        !this.state.responseOrganization ||
+                                        dashboardStore.currentOrganization.attributes.current_user_deactivated
+                                    }
                                     projects={
                                         this.state.responseOrganization && this.state.responseOrganization.included
                                             ? this.state.responseOrganization.included.filter((included) => {

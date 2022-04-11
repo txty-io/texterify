@@ -14,6 +14,8 @@ import { ProjectExportHierarchySite } from "../sites/dashboard/ProjectExportHier
 import { ProjectIntegrationsSite } from "../sites/dashboard/ProjectIntegrationsSite";
 import { ProjectIntegrationsWordpressSettingsSite } from "../sites/dashboard/ProjectIntegrationsWordpressSettingsSite";
 import { ProjectIntegrationsWordpressSyncSite } from "../sites/dashboard/ProjectIntegrationsWordpressSyncSite";
+import { ProjectIssuesActiveSite } from "../sites/dashboard/ProjectIssuesActiveSite";
+import { ProjectIssuesIgnoredSite } from "../sites/dashboard/ProjectIssuesIgnoredSite";
 import { ProjectMachineTranslationSite } from "../sites/dashboard/ProjectMachineTranslationSite";
 import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
 import { ProjectPostProcessingSite } from "../sites/dashboard/ProjectPostProcessingSite";
@@ -24,6 +26,7 @@ import { ProjectSite } from "../sites/dashboard/ProjectSite";
 import { ProjectValidationsSite } from "../sites/dashboard/ProjectValidationsSite";
 import { dashboardStore } from "../stores/DashboardStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
+import { UserDeactivatedProjectModal } from "../ui/UserDeactivatedProjectModal";
 import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
 
@@ -74,6 +77,16 @@ class ProjectRouter extends React.Component<IProps, IState> {
             <>
                 <Switch>
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT} component={ProjectSite} />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE}
+                        component={ProjectIssuesActiveSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_ISSUES_IGNORED}
+                        component={ProjectIssuesIgnoredSite}
+                    />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_KEYS} component={KeysSite} />
                     <PrivateRoute
                         exact
@@ -176,6 +189,8 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         component={ProjectExportHierarchySite}
                     />
                 </Switch>
+
+                {dashboardStore.currentProject?.attributes.current_user_deactivated && <UserDeactivatedProjectModal />}
             </>
         );
     }

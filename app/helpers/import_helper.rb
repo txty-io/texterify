@@ -10,19 +10,17 @@ module ImportHelper
   REGEX_KEY_VALUE = /#{REGEX_CONTENT}\s*=\s*#{REGEX_CONTENT}*/.freeze
 
   def parse_file_content(_file_name, file_content, file_format)
-    if ['json', 'json-formatjs'].include?(file_format)
+    if ['json', 'json-formatjs', 'json-poeditor'].include?(file_format)
       result = json?(file_content)
+
       if result[:matches]
-        return result[:content]
-      elsif result[:invalid]
-        raise 'INVALID_JSON'
-      else
-        raise 'NOTHING_IMPORTED'
-      end
-    elsif file_format == 'json-nested'
-      result = json_nested?(file_content)
-      if result[:matches]
-        return result[:content]
+        # For normal JSON files without a special format
+        # flatten the keys to support also nested JSON.
+        if file_format == 'json'
+          return flatten_nested_keys(result[:content])
+        else
+          return result[:content]
+        end
       elsif result[:invalid]
         raise 'INVALID_JSON'
       else
@@ -68,14 +66,26 @@ module ImportHelper
     raise 'INVALID_FILE_FORMAT'
   end
 
-  def json?(content)
-    parsed = JSON.parse(content)
-    parsed.count > 0 ? { matches: true, content: parsed } : { matches: false }
-  rescue JSON::ParserError
-    { matches: false, invalid: true }
+  # Flattens a nested hash.
+  def flatten_nested_keys(content, flattened_content = {}, name_prefix = '')
+    content.each do |key, value|
+      if name_prefix.blank?
+        combined_name = key
+      else
+        combined_name = "#{name_prefix}.#{key}"
+      end
+
+      if value.is_a?(Hash)
+        flatten_nested_keys(value, flattened_content, combined_name)
+      else
+        flattened_content[combined_name] = value
+      end
+    end
+
+    return flattened_content
   end
 
-  def json_nested?(content)
+  def json?(content)
     parsed = JSON.parse(content)
     parsed.count > 0 ? { matches: true, content: parsed } : { matches: false }
   rescue JSON::ParserError

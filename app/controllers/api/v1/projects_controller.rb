@@ -2,6 +2,8 @@ require 'json'
 require 'zip'
 
 class Api::V1::ProjectsController < Api::V1::ApiController
+  before_action :check_if_user_activated, except: [:show, :image, :index, :create, :recently_viewed]
+
   # Return the project image.
   def image
     skip_authorization
@@ -55,50 +57,20 @@ class Api::V1::ProjectsController < Api::V1::ApiController
   # Create a new project.
   def create
     skip_authorization
+    organization = current_user.organizations.find(params[:organization_id])
 
-    if params[:organization_id]
-      organization = current_user.organizations.find(params[:organization_id])
-    end
-
-    if organization && !organization.feature_enabled?(Organization::FEATURE_UNLIMITED_PROJECTS) &&
-         organization.projects.size >= 1
-      render json: { error: true, message: 'MAXIMUM_NUMBER_OF_PROJECTS_REACHED' }, status: :bad_request
-      return
-    elsif !organization && current_user.private_projects.size >= 1
+    if !organization.feature_enabled?(Organization::FEATURE_UNLIMITED_PROJECTS) && organization.projects.size >= 1
       render json: { error: true, message: 'MAXIMUM_NUMBER_OF_PROJECTS_REACHED' }, status: :bad_request
       return
     end
 
     project = Project.new(project_params)
-
-    if params[:organization_id]
-      project.organization = organization
-    else
-      project_column = ProjectColumn.new
-      project_column.project = project
-      project_column.user = current_user
-    end
+    project.organization = organization
 
     ActiveRecord::Base.transaction do
       unless project.save
         render json: { errors: project.errors.details }, status: :bad_request
         raise ActiveRecord::Rollback
-      end
-
-      unless params[:organization_id]
-        unless project_column.save
-          render json: { errors: project_column.errors.details }, status: :bad_request
-          raise ActiveRecord::Rollback
-        end
-
-        project_user = ProjectUser.new
-        project_user.user_id = current_user.id
-        project_user.project_id = project.id
-        project_user.role = 'owner'
-        unless project_user.save
-          render json: { errors: project_user.errors.details }, status: :bad_request
-          raise ActiveRecord::Rollback
-        end
       end
 
       options = {}
@@ -188,10 +160,21 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     end
 
     parsed_data.each do |json_key, json_value|
-      key = project.keys.find_by(name: json_key)
+      if file_format == 'json-poeditor'
+        key_name = "#{json_key['context']}.#{json_key['term']}"
+      else
+        key_name = json_key
+      end
+
+      # Skip "texterify_" keys because they are reserved and can't be imported.
+      if key_name.start_with?('texterify_')
+        next
+      end
+
+      key = project.keys.find_by(name: key_name)
 
       if key.present?
-        # Load default translations or export config translations
+        # Load default translations or export config translations.
         if export_config
           translation = key.translations.find_by(language: language, export_config: export_config)
         else
@@ -215,6 +198,11 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
           key.description = json_value['description']
           key.save
+        elsif file_format == 'json-poeditor'
+          translation.content = json_key['definition']
+
+          key.description = json_key['comment']
+          key.save
         elsif file_format == 'toml' && json_value.is_a?(Hash)
           translation.content = json_value[:value]
 
@@ -236,11 +224,13 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
         translation.save
       else
-        key = Key.new(name: json_key)
+        key = Key.new(name: key_name)
         key.project_id = project.id
 
         if file_format == 'json-formatjs'
           key.description = json_value['description']
+        elsif file_format == 'json-poeditor'
+          key.description = json_key['comment']
         elsif file_format == 'toml' && json_value.is_a?(Hash)
           key.description = json_value[:description]
         elsif file_format == 'po' && json_value.is_a?(Hash)
@@ -260,6 +250,8 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
           if file_format == 'json-formatjs'
             translation.content = json_value['defaultMessage']
+          elsif file_format == 'json-poeditor'
+            translation.content = json_key['definition']
           elsif file_format == 'toml' && json_value.is_a?(Hash)
             translation.content = json_value[:value]
           elsif file_format == 'po' && json_value.is_a?(Hash)
@@ -281,7 +273,9 @@ class Api::V1::ProjectsController < Api::V1::ApiController
   def destroy
     project = current_user.projects.find(params[:id])
     authorize project
-    project.destroy
+
+    # Don'f fire callbacks like the translation characters count callback.
+    project.delete
 
     render json: { message: 'Project deleted' }
   end
@@ -357,7 +351,11 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       :auto_translate_new_keys,
       :auto_translate_new_languages,
       :placeholder_start,
-      :placeholder_end
+      :placeholder_end,
+      :validate_leading_whitespace,
+      :validate_trailing_whitespace,
+      :validate_double_whitespace,
+      :validate_https
     )
   end
 end

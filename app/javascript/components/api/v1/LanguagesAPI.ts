@@ -29,6 +29,12 @@ export interface IGetLanguagesResponse {
     meta: { total: number };
 }
 
+export interface IGetLanguageResponse {
+    data: ILanguage;
+    included: ILanguageCode[];
+    meta: { total: number };
+}
+
 export interface IGetLanguagesOptions {
     search?: string;
     page?: number;
@@ -44,6 +50,12 @@ const LanguagesAPI = {
             per_page: options && options.perPage,
             show_all: options && options.showAll
         })
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    getLanguage: async (projectId: string, languageId: string): Promise<IGetLanguageResponse> => {
+        return API.getRequest(`projects/${projectId}/languages/${languageId}`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },

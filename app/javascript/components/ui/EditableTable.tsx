@@ -3,6 +3,7 @@ import { SizeType } from "antd/lib/config-provider/SizeContext";
 import * as React from "react";
 import { EditableRow, EditableCell } from "./EditableCell";
 import { TablePaginationConfig } from "antd/lib/table";
+import { IKey } from "../api/v1/KeysAPI";
 
 interface IEditableTableProps {
     dataSource: any;
@@ -20,7 +21,7 @@ interface IEditableTableProps {
     onSave(oldRow: any, newRow: any): Promise<void>;
     onCellEdit(options: { languageId: string; keyId: string; exportConfigId?: string }): void;
     onTranslationUpdated(translation: any): void;
-    onKeyUpdated(key: any): void;
+    onKeyUpdated(key: IKey): void;
 }
 interface IEditableTableState {
     dataSource: any[];
@@ -41,7 +42,7 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
         };
     }
 
-    handleDelete = (key: any) => {
+    handleDelete = (key: IKey) => {
         const dataSource = [...this.state.dataSource];
         this.setState({
             dataSource: dataSource.filter((item) => {

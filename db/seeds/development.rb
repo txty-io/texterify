@@ -31,6 +31,13 @@ else
   puts "User '#{user_3.email}' with password 'password' created."
 end
 
+organization_1_id = '22e6b4da-4beb-4cad-ae8f-27e6026dd1a2'
+
+organization = Organization.find_or_create_by!(id: organization_1_id, name: 'My Test Organization')
+organization.users << user_1
+organization.users << user_2
+organization.users << user_3
+
 project_1_id = '0e4a88fd-1d86-4ddd-bbaa-c5784ea5624f'
 project_2_id = 'd7876785-356a-4b95-8733-933545281fa2'
 project_3_id = '19ad8104-3a8c-4437-9838-f47022e76e4a'

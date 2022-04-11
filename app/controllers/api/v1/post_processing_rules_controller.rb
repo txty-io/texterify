@@ -1,4 +1,6 @@
 class Api::V1::PostProcessingRulesController < Api::V1::ApiController
+  before_action :check_if_user_activated
+
   def index
     skip_authorization
     project = current_user.projects.find(params[:project_id])

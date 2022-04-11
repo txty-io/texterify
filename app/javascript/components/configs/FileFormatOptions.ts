@@ -1,12 +1,12 @@
-const FileFormatOptions = [
+const FileFormatOptions: { value: string; text: string }[] = [
     {
         value: "json",
         text: "JSON Flat"
     },
-    // {
-    //     value: "json-nested",
-    //     text: "JSON Nested"
-    // },
+    {
+        value: "json-poeditor",
+        text: "JSON POEditor"
+    },
     {
         value: "json-formatjs",
         text: "JSON Format.js"

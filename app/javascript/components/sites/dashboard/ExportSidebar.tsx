@@ -13,15 +13,18 @@ export function ExportSidebar(props: { projectId: string }) {
                     items: [
                         {
                             path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", props.projectId),
-                            name: "Download"
+                            name: "Download",
+                            id: "download"
                         },
                         {
                             path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(":projectId", props.projectId),
-                            name: "Configurations"
+                            name: "Configurations",
+                            id: "configurations"
                         },
                         {
                             path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", props.projectId),
-                            name: "Hierarchy"
+                            name: "Hierarchy",
+                            id: "hierarchy"
                         }
                     ]
                 },
@@ -32,12 +35,12 @@ export function ExportSidebar(props: { projectId: string }) {
                             path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_RESOLVER({
                                 projectId: props.projectId
                             }),
-                            disabled: true,
                             name: (
                                 <>
-                                    WordPress <Tag style={{ marginLeft: 8 }}>coming soon</Tag>
+                                    WordPress <Tag style={{ marginLeft: 8 }}>beta</Tag>
                                 </>
-                            )
+                            ),
+                            id: "wordpress"
                         },
                         {
                             path: Routes.DASHBOARD.PROJECT_IMPORT_GITHUB,
@@ -46,7 +49,8 @@ export function ExportSidebar(props: { projectId: string }) {
                                 <>
                                     GitHub <Tag style={{ marginLeft: 8 }}>coming soon</Tag>
                                 </>
-                            )
+                            ),
+                            id: "github"
                         }
                     ]
                 }

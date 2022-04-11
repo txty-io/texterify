@@ -52,6 +52,13 @@ class NewKeyForm extends React.Component<IProps> {
                         errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
                     }
                 ]);
+            } else if (ErrorUtils.hasError("name", ERRORS.KEY_NAME_RESERVED, response.errors)) {
+                this.formRef.current?.setFields([
+                    {
+                        name: "name",
+                        errors: [ErrorUtils.getErrorMessage("name", ERRORS.KEY_NAME_RESERVED)]
+                    }
+                ]);
             } else {
                 ErrorUtils.showErrors(response.errors);
             }
@@ -86,11 +93,13 @@ class NewKeyForm extends React.Component<IProps> {
     };
 
     render() {
-        const defaultLanguage = LanguageUtils.getDefaultLanguage(this.props.languagesResponse);
+        const defaultLanguage = this.props.languagesResponse?.data
+            ? LanguageUtils.getDefaultLanguage(this.props.languagesResponse)
+            : null;
 
         const countryCode = APIUtils.getIncludedObject(
             defaultLanguage?.relationships.country_code.data,
-            this.props.languagesResponse.included
+            this.props.languagesResponse?.included || []
         );
 
         return (

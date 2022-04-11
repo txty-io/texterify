@@ -14,13 +14,15 @@ export function SidebarWordpressIntegration(props: { projectId: string }) {
                             path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
                                 projectId: props.projectId
                             }),
-                            name: "Settings"
+                            name: "Settings",
+                            id: "settings"
                         },
                         {
                             path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER({
                                 projectId: props.projectId
                             }),
-                            name: "Synchronize"
+                            name: "Synchronize",
+                            id: "synchronize"
                         }
                     ]
                 }

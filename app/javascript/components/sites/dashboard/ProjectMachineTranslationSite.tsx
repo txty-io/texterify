@@ -108,27 +108,24 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
     };
 
     defaultLanguageSupportsMachineTranslation() {
-        const defaultLanguage = LanguageUtils.getDefaultLanguage(this.state.languagesResponse);
+        if (this.state.languagesResponse) {
+            const defaultLanguage = LanguageUtils.getDefaultLanguage(this.state.languagesResponse);
 
-        return MachineTranslationUtils.supportsMachineTranslationAsSourceLanguage({
-            language: defaultLanguage,
-            languagesResponse: this.state.languagesResponse,
-            supportedSourceLanguages: this.state.supportedSourceLanguages
-        });
+            return MachineTranslationUtils.supportsMachineTranslationAsSourceLanguage({
+                language: defaultLanguage,
+                languagesResponse: this.state.languagesResponse,
+                supportedSourceLanguages: this.state.supportedSourceLanguages
+            });
+        } else {
+            return false;
+        }
     }
 
     languageSupportsMachineTranslation(languageId: string) {
-        const language = this.state.languagesResponse.data.find((l) => {
-            return l.id === languageId;
-        });
-
-        const languageLanguageCode = APIUtils.getIncludedObject(
-            language.relationships.language_code.data,
-            this.state.languagesResponse.included
-        );
-
-        return this.state.supportedTargetLanguages?.data?.some((supportedTargetLanguage) => {
-            return supportedTargetLanguage.attributes.language_code === languageLanguageCode.attributes.code;
+        return MachineTranslationUtils.supportsMachineTranslationAsTargetLanguage({
+            languageId: languageId,
+            languagesResponse: this.state.languagesResponse,
+            supportedTargetLanguages: this.state.supportedTargetLanguages
         });
     }
 

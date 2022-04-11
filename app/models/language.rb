@@ -34,8 +34,9 @@ class Language < ApplicationRecord
   end
 
   # Translates all non export config translations of all non HTML keys for the language which are empty using machine translation.
+  # @throws OrganizationMachineTranslationUsageExceededException
   def translate_untranslated_using_machine_translation
-    if ENV['DEEPL_API_TOKEN'].present? && self.project.machine_translation_enabled &&
+    if (ENV['DEEPL_API_TOKEN'].present? || Rails.env.test?) && self.project.machine_translation_enabled &&
          project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_LANGUAGE)
       self
         .keys
@@ -46,7 +47,7 @@ class Language < ApplicationRecord
           target_translation = key.translations.find_by(language_id: target_language.id, export_config_id: nil)
 
           if source_translation.present? && (target_translation.nil? || target_translation.content.empty?)
-            content = Texterify::MachineTranslation.translate(source_translation, target_language)
+            content = Texterify::MachineTranslation.translate(self.project, source_translation, target_language)
 
             unless content.nil?
               if target_translation.nil?
@@ -72,6 +73,6 @@ class Language < ApplicationRecord
   protected
 
   def strip_leading_and_trailing_whitespace
-    self.name = name.strip
+    self.name = name&.strip
   end
 end

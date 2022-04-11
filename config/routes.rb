@@ -24,6 +24,8 @@ Rails
 
         resources :organizations do
           get :subscription, to: 'organizations#subscription'
+          get :custom_subscription, to: 'organizations#custom_subscription'
+          post :activate_custom_subscription, to: 'organizations#activate_custom_subscription'
           delete :cancel_subscription, to: 'organizations#cancel_subscription'
           post :reactivate_subscription, to: 'organizations#reactivate_subscription'
           put :change_subscription_plan, to: 'organizations#change_subscription_plan'
@@ -47,37 +49,75 @@ Rails
           get 'exports/:id', to: 'projects#export'
           get :activity
           post :transfer
+
+          # Project columns
           get :project_columns, to: 'project_columns#show'
           put :project_columns, to: 'project_columns#update'
+
+          # Keys
           resources :keys, only: [:create, :show, :index, :destroy, :update] do
             get :activity
             resources :placeholders, only: [:create, :index, :destroy]
           end
           delete 'keys', to: 'keys#destroy_multiple'
+
+          # Export configs
           delete 'export_configs', to: 'export_configs#destroy_multiple'
           resources :export_configs, only: [:create, :index, :destroy, :update] do
             resources :language_configs, only: [:create, :index, :destroy, :update]
             resources :releases, only: [:create]
             get :release, to: 'releases#release'
           end
+
+          # Releases
           get 'releases', to: 'releases#index'
           delete 'releases', to: 'releases#destroy_multiple'
 
+          # Post processing rules
           resources :post_processing_rules, only: [:create, :index, :destroy, :update]
           delete 'post_processing_rules', to: 'post_processing_rules#destroy_multiple'
-          resources :languages, only: [:create, :index, :destroy, :update] do
+
+          # Languages
+          resources :languages, only: [:create, :index, :show, :destroy, :update] do
             post :machine_translate, to: 'machine_translations#machine_translate_language'
           end
           delete 'languages', to: 'languages#destroy_multiple'
+
+          # Translations
           resources :translations, only: [:create] do
             post :machine_translation_suggestion, to: 'machine_translations#suggestion'
           end
-          resources :members, only: [:create, :index, :destroy, :update], controller: 'project_users'
+
+          # Project image
           get :image, to: 'projects#image'
           post :image, to: 'projects#image_create'
           delete :image, to: 'projects#image_destroy'
 
+          # Project users
+          resources :members, only: [:create, :index, :destroy, :update], controller: 'project_users'
+
+          # Validations
+          resources :validations, only: [:create, :index, :destroy, :update]
+          post :validations_recheck, to: 'validations#recheck'
+
+          # Validation violations
+          resources :validation_violations, only: [:index, :destroy, :update] do
+            put :ignore, to: 'validation_violations#ignore'
+          end
+          get :validation_violations_count, to: 'validation_violations#count'
+          delete :validation_violations, to: 'validation_violations#destroy_multiple'
+          put :validation_violations, to: 'validation_violations#update_multiple'
+
+          # Background jobs
+          resources :background_jobs, only: [:index]
+
+          # Project invites
           resources :invites, only: [:create, :index, :destroy], controller: 'project_invites'
+
+          # Forbidden words lists
+          resources :forbidden_words_lists,
+                    only: [:create, :index, :update, :destroy],
+                    controller: 'forbidden_words_lists'
 
           # WordPress Polylang integration
           get 'wordpress_polylang_connection', to: 'wordpress_polylang_connections#show'
@@ -106,6 +146,8 @@ Rails
         delete 'users/image', to: 'users#image_destroy'
       end
     end
+
+    mount ActionCable.server => '/cable'
 
     root to: 'application#app'
     get '*path',

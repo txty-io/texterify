@@ -20,6 +20,8 @@ class User < ApplicationRecord
 
   has_many :recently_viewed_projects, dependent: :destroy
 
+  has_many :background_jobs, dependent: :nullify
+
   def projects
     Project.where(id: user_projects.pluck(:id) + organization_projects.pluck(:id))
   end

@@ -67,9 +67,10 @@ class ExportConfig < ApplicationRecord
   end
 
   def file(language, export_data)
+    # stringify in case export_data has symbols in it
+    export_data.deep_stringify_keys!
+
     if file_format == 'json'
-      json(language, export_data)
-    elsif file_format == 'json-nested'
       json(language, export_data)
     elsif file_format == 'json-formatjs'
       json_formatjs(language, export_data)
@@ -110,9 +111,35 @@ class ExportConfig < ApplicationRecord
 
   private
 
+  # Sets the value to the hash at the specified path.
+  def deep_set(hash, value, *keys)
+    hash.default_proc = proc { |h, k| h[k] = Hash.new(&h.default_proc) }
+
+    keys[0...-1].inject(hash) do |acc, h|
+      current_val = acc.public_send(:[], h)
+
+      if current_val.is_a?(String) || current_val.nil?
+        acc[h] = {}
+      else
+        current_val
+      end
+    end.public_send(:[]=, keys.last, value)
+  end
+
   def json(language, export_data)
     language_file = Tempfile.new(language.id.to_s)
-    language_file.puts(JSON.pretty_generate(export_data))
+    converted_data = export_data
+
+    # If the export config has a split_on specified split it.
+    unless self.split_on.nil?
+      converted_data = {}
+      export_data.each do |key, value|
+        splitted = key.split(self.split_on)
+        deep_set(converted_data, value, *splitted)
+      end
+    end
+
+    language_file.puts(JSON.pretty_generate(converted_data))
     language_file.close
 
     language_file

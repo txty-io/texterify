@@ -1,7 +1,8 @@
-import { DeploymentUnitOutlined, HddOutlined, LineChartOutlined, ProjectOutlined } from "@ant-design/icons";
+import { DeploymentUnitOutlined, HddFilled, LineChartOutlined, ProjectOutlined, SyncOutlined } from "@ant-design/icons";
 import * as antd from "antd";
 import WhiteLogoWithText from "images/logo_white_text.svg";
 import { observer } from "mobx-react";
+import PubSub from "pubsub-js";
 import * as React from "react";
 import Hotkeys from "react-hot-keys";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
@@ -22,6 +23,8 @@ import { UserAccountSettingsSite } from "../sites/dashboard/UserAccountSettingsS
 import { UserLicensesSite } from "../sites/dashboard/UserLicensesSite";
 import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
 import { authStore } from "../stores/AuthStore";
+import { dashboardStore } from "../stores/DashboardStore";
+import { BackgroundJobsPopupContent } from "../ui/BackgroundJobsPopupContent";
 import { ConfirmEmailHint } from "../ui/ConfirmEmailHint";
 import { DarkModeToggle } from "../ui/DarkModeToggle";
 import { getKeystrokePreview } from "../ui/KeystrokePreview";
@@ -30,6 +33,17 @@ import { LicenseFreeTrial } from "../ui/LicenseFreeVersion";
 import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
+import {
+    IJobsChannelEvent,
+    JOBS_CHANNEL_EVENT_JOB_COMPLETED,
+    JOBS_CHANNEL_EVENT_JOB_PROGRESS,
+    JOBS_CHANNEL_TYPE_RECHECK_ALL_VALIDATIONS
+} from "../utilities/JobsChannelEvents";
+import {
+    PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED,
+    PUBSUB_RECHECK_ALL_VALIDATIONS_PROGRESS
+} from "../utilities/PubSubEvents";
+import { consumer } from "../WebsocketClient";
 import { InstanceRouter } from "./InstanceRouter";
 import { OrganizationRouter } from "./OrganizationRouter";
 import { PrivateRoute } from "./PrivateRoute";
@@ -77,6 +91,20 @@ export const MenuLinkWrapper = styled.div<IMenuLinkWrapperProps>`
             color: #fff;
         }
     }
+
+    @media (max-width: 1040px) {
+        flex-shrink: 0;
+    }
+`;
+
+const MenuLinkTextWrapper = styled.span`
+    display: none;
+    margin-left: 0;
+
+    @media (min-width: 1040px) {
+        display: inline;
+        margin-left: 8px;
+    }
 `;
 
 const SearchInputWrapper = styled.div`
@@ -101,6 +129,7 @@ type IProps = RouteComponentProps<{ projectId?: string }>;
 interface IState {
     hasSidebar: boolean;
     accountMenuVisible: boolean;
+    backgroundJobsVisible: boolean;
     searchOverlayVisible: boolean;
     currentLicenseInfo: ICurrentLicenseInformation | null;
     currentLicenseInfoLoaded: boolean;
@@ -111,6 +140,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
     state: IState = {
         hasSidebar: false,
         accountMenuVisible: false,
+        backgroundJobsVisible: false,
         searchOverlayVisible: false,
         currentLicenseInfo: null,
         currentLicenseInfoLoaded: false
@@ -128,6 +158,38 @@ class DashboardRouter extends React.Component<IProps, IState> {
         const userInfoResponse = await UsersAPI.getCurrentUserInfo();
         authStore.confirmed = userInfoResponse.confirmed;
         authStore.version = userInfoResponse.version;
+        authStore.redeemableCustomSubscriptions = userInfoResponse.redeemable_custom_subscriptions
+            ? userInfoResponse.redeemable_custom_subscriptions.data
+            : [];
+
+        // Listen for job updates.
+        consumer.subscriptions.create(
+            { channel: "JobsChannel" },
+            {
+                received: (data: IJobsChannelEvent) => {
+                    // Only care about the finished job if it is a job of the currently selected project.
+                    if (data.project_id === this.props.match.params.projectId) {
+                        dashboardStore.loadBackgroundJobs(data.project_id);
+
+                        // Send an event that a new job update has occurred.
+                        if (
+                            data.type === JOBS_CHANNEL_TYPE_RECHECK_ALL_VALIDATIONS &&
+                            data.event === JOBS_CHANNEL_EVENT_JOB_PROGRESS
+                        ) {
+                            PubSub.publish(PUBSUB_RECHECK_ALL_VALIDATIONS_PROGRESS, { projectId: data.project_id });
+                        }
+
+                        // Send an event that the recheck all validations job has finished.
+                        if (
+                            data.type === JOBS_CHANNEL_TYPE_RECHECK_ALL_VALIDATIONS &&
+                            data.event === JOBS_CHANNEL_EVENT_JOB_COMPLETED
+                        ) {
+                            PubSub.publish(PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED, { projectId: data.project_id });
+                        }
+                    }
+                }
+            }
+        );
     }
 
     async loadCurrentLicense() {
@@ -147,6 +209,13 @@ class DashboardRouter extends React.Component<IProps, IState> {
             this.setState({
                 hasSidebar: this.hasSidebar()
             });
+        }
+
+        if (
+            this.props.match.params.projectId &&
+            this.props.match.params.projectId !== dashboardStore.activeBackgroundJobsResponseProjectId
+        ) {
+            dashboardStore.loadBackgroundJobs(this.props.match.params.projectId);
         }
     }
 
@@ -221,8 +290,12 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     isActive={this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS}
                                     data-id="main-menu-projects"
                                 >
-                                    <Link to={Routes.DASHBOARD.PROJECTS}>
-                                        <ProjectOutlined style={{ marginRight: 8 }} /> Projects
+                                    <Link
+                                        to={Routes.DASHBOARD.PROJECTS}
+                                        style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                    >
+                                        <ProjectOutlined />
+                                        <MenuLinkTextWrapper>Projects</MenuLinkTextWrapper>
                                     </Link>
                                 </MenuLinkWrapper>
                             </MenuList>
@@ -231,8 +304,12 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     isActive={this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS}
                                     data-id="main-menu-organizations"
                                 >
-                                    <Link to={Routes.DASHBOARD.ORGANIZATIONS}>
-                                        <DeploymentUnitOutlined style={{ marginRight: 8 }} /> Organizations
+                                    <Link
+                                        to={Routes.DASHBOARD.ORGANIZATIONS}
+                                        style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                    >
+                                        <DeploymentUnitOutlined />
+                                        <MenuLinkTextWrapper>Organizations</MenuLinkTextWrapper>
                                     </Link>
                                 </MenuLinkWrapper>
                             </MenuList>
@@ -241,8 +318,12 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     isActive={this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY}
                                     data-id="main-menu-activity"
                                 >
-                                    <Link to={Routes.DASHBOARD.ACTIVITY}>
-                                        <LineChartOutlined style={{ marginRight: 8 }} /> Activity
+                                    <Link
+                                        to={Routes.DASHBOARD.ACTIVITY}
+                                        style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                    >
+                                        <LineChartOutlined />
+                                        <MenuLinkTextWrapper>Activity</MenuLinkTextWrapper>
                                     </Link>
                                 </MenuLinkWrapper>
                             </MenuList>
@@ -282,13 +363,87 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                         )}
                                         data-id="main-menu-instance-settings"
                                     >
-                                        <Link to={Routes.DASHBOARD.INSTANCE.ROOT}>
-                                            <HddOutlined style={{ marginRight: 8 }} />
-                                            Admin
+                                        <Link
+                                            to={Routes.DASHBOARD.INSTANCE.ROOT}
+                                            style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                        >
+                                            <HddFilled />
+                                            <MenuLinkTextWrapper>Admin</MenuLinkTextWrapper>
                                         </Link>
                                     </MenuLinkWrapper>
                                 </MenuList>
                             </ul>
+                        )}
+
+                        {this.props.match.params.projectId && (
+                            <div
+                                onClick={() => {
+                                    this.setState({ backgroundJobsVisible: true });
+                                }}
+                                role="button"
+                                style={{ cursor: "pointer" }}
+                                data-id="background-jobs-menu"
+                            >
+                                <antd.Popover
+                                    title="Background jobs"
+                                    placement="bottom"
+                                    trigger="click"
+                                    visible={this.state.backgroundJobsVisible}
+                                    onVisibleChange={() => {
+                                        this.setState({ backgroundJobsVisible: false });
+                                    }}
+                                    overlayClassName="popover-no-padding"
+                                    content={<BackgroundJobsPopupContent />}
+                                >
+                                    <div
+                                        style={{
+                                            height: 40,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            position: "relative",
+                                            marginRight: 40
+                                        }}
+                                    >
+                                        <SyncOutlined
+                                            style={{
+                                                animation:
+                                                    dashboardStore.activeBackgroundJobsResponse?.meta.total > 0
+                                                        ? "rotating 2s linear infinite"
+                                                        : undefined,
+                                                cursor: "pointer"
+                                            }}
+                                        />
+                                        {dashboardStore.activeBackgroundJobsResponse && (
+                                            <div
+                                                style={{
+                                                    position: "absolute",
+                                                    right: -8,
+                                                    bottom: 4,
+                                                    width: 16,
+                                                    height: 16,
+                                                    background:
+                                                        dashboardStore.activeBackgroundJobsResponse.meta.total > 0
+                                                            ? "var(--color-warn)"
+                                                            : "#fff",
+                                                    borderRadius: 40,
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    color:
+                                                        dashboardStore.activeBackgroundJobsResponse.meta.total > 0
+                                                            ? "#fff"
+                                                            : "var(--dark-color)",
+                                                    fontWeight: "bold",
+                                                    fontSize: 10,
+                                                    cursor: "pointer"
+                                                }}
+                                            >
+                                                {dashboardStore.activeBackgroundJobsResponse.meta.total}
+                                            </div>
+                                        )}
+                                    </div>
+                                </antd.Popover>
+                            </div>
                         )}
 
                         {/* <MessageOutlined style={{ marginRight: 40 }} /> */}

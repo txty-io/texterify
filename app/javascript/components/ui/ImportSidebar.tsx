@@ -13,7 +13,8 @@ export function ImportSidebar(props: { projectId: string }) {
                     items: [
                         {
                             path: Routes.DASHBOARD.PROJECT_IMPORT_FILE,
-                            name: "File"
+                            name: "File",
+                            id: "file"
                         }
                     ]
                 },
@@ -24,12 +25,12 @@ export function ImportSidebar(props: { projectId: string }) {
                             path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_RESOLVER({
                                 projectId: props.projectId
                             }),
-                            disabled: true,
                             name: (
                                 <>
-                                    WordPress <Tag style={{ marginLeft: 8 }}>coming soon</Tag>
+                                    WordPress <Tag style={{ marginLeft: 8 }}>beta</Tag>
                                 </>
-                            )
+                            ),
+                            id: "wordpress"
                         },
                         {
                             path: Routes.DASHBOARD.PROJECT_IMPORT_GITHUB,
@@ -38,7 +39,8 @@ export function ImportSidebar(props: { projectId: string }) {
                                 <>
                                     GitHub <Tag style={{ marginLeft: 8 }}>coming soon</Tag>
                                 </>
-                            )
+                            ),
+                            id: "github"
                         }
                     ]
                 }

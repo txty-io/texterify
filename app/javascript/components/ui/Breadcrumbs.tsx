@@ -228,6 +228,16 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                 parent: "projectExport",
                 name: "Hierarchy",
                 path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", this.props.match.params.projectId)
+            },
+            projectActiveIssues: {
+                parent: "project",
+                name: "Issues",
+                path: Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(":projectId", this.props.match.params.projectId)
+            },
+            projectIssuesIgnored: {
+                parent: "project",
+                name: "Ignored issues",
+                path: Routes.DASHBOARD.PROJECT_ISSUES_IGNORED.replace(":projectId", this.props.match.params.projectId)
             }
         };
 
@@ -249,7 +259,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
 
         resolvedBreadcrumbs.map((breadcrumb: any, index: number) => {
             items.push(
-                <Breadcrumb.Item key={index}>
+                <Breadcrumb.Item key={index} style={{ whiteSpace: "nowrap" }}>
                     {breadcrumb.path && index !== resolvedBreadcrumbs.length - 1 ? (
                         <Link to={breadcrumb.path} style={{ display: "flex", alignItems: "center" }}>
                             {breadcrumb.name}

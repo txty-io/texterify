@@ -25,9 +25,9 @@ function ProjectSettingsPlaceholdersSite() {
                 <LayoutWithSubSidebarInnerContent verySmallWidth>
                     <h1>Placeholder settings</h1>
                     <p>Define the format of your placeholders.</p>
-                    <a href={Routes.OTHER.PLACEHOLDERS} target="_blank" style={{ alignSelf: "flex-start" }}>
+                    {/* <a href={Routes.OTHER.PLACEHOLDERS} target="_blank" style={{ alignSelf: "flex-start" }}>
                         Learn more here
-                    </a>
+                    </a> */}
                     <SettingsSectionWrapper>
                         {!dashboardStore.currentProject && <Skeleton active />}
                         {dashboardStore.currentProject && (

@@ -2,7 +2,10 @@ import * as localforage from "localforage";
 import { observable } from "mobx";
 import { create, persist } from "mobx-persist";
 import { APIUtils } from "../api/v1/APIUtils";
+import { BackgroundJobsAPI, IGetBackgroundJobsResponse } from "../api/v1/BackgroundJobsAPI";
+import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 import { IProject, ProjectsAPI } from "../api/v1/ProjectsAPI";
+import { ValidationViolationsAPI } from "../api/v1/ValidationViolationsAPI";
 import { IFeature } from "../types/IFeature";
 import { IPlanIDS } from "../types/IPlan";
 import { IUserRole } from "../types/IUserRole";
@@ -25,6 +28,9 @@ interface IOrganizationAttributes {
     all_features: { [k in IFeature]: IPlanIDS[] };
     machine_translation_character_usage: string;
     machine_translation_character_limit: string;
+    current_user_deactivated?: boolean;
+    current_user_deactivated_reason?: "manually_by_admin" | "user_limit_exceeded";
+    max_users_reached: boolean;
 }
 
 class DashboardStore {
@@ -35,6 +41,8 @@ class DashboardStore {
     @observable @persist keysPerPage = DEFAULT_PAGE_SIZE;
     @observable @persist keysPerPageEditor = DEFAULT_PAGE_SIZE;
     @observable hydrationFinished = false;
+    @observable activeBackgroundJobsResponse: IGetBackgroundJobsResponse = null;
+    @observable activeBackgroundJobsResponseProjectId: string = null;
 
     loadProject = async (projectId) => {
         const getProjectResponse = await ProjectsAPI.getProject(projectId);
@@ -43,6 +51,19 @@ class DashboardStore {
             this.currentProjectIncluded = getProjectResponse.included;
         }
     };
+
+    async loadBackgroundJobs(projectId: string) {
+        this.activeBackgroundJobsResponseProjectId = projectId;
+
+        try {
+            const getBackgroundJobsResponse = await BackgroundJobsAPI.getBackgroundJobs(projectId, {
+                status: ["CREATED", "RUNNING"]
+            });
+            this.activeBackgroundJobsResponse = getBackgroundJobsResponse;
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
     getOrganizationId = (organizationId?: string) => {
         return (this.getProjectOrganization() && this.getProjectOrganization().id) || organizationId;
@@ -68,11 +89,28 @@ class DashboardStore {
     };
 
     getCurrentOrganizationRole = (): IUserRole => {
-        return this.currentOrganization?.attributes.current_user_role;
+        if (this.currentOrganization) {
+            return this.currentOrganization.attributes.current_user_role;
+        } else {
+            if (this.currentProject?.attributes.organization_id) {
+                return this.getProjectOrganization()?.attributes.current_user_role;
+            }
+        }
     };
 
     featureEnabled(feature: IFeature) {
         return this.currentProject?.attributes.enabled_features.includes(feature);
+    }
+
+    // Reloads the issues count of the currently selected project.
+    async reloadCurrentProjectIssuesCount() {
+        if (this.featureEnabled("FEATURE_VALIDATIONS") && this.currentProject) {
+            const validationViolationsCountResponse = await ValidationViolationsAPI.getCount({
+                projectId: this.currentProject.id
+            });
+
+            this.currentProject.attributes.issues_count = validationViolationsCountResponse.total;
+        }
     }
 }
 
