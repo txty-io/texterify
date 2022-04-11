@@ -179,17 +179,21 @@ class Translation < ApplicationRecord
           target_translation = key.translations.find_by(language_id: target_language.id, export_config_id: nil)
 
           if source_translation.present? && (target_translation.nil? || target_translation.content.empty?)
-            content = Texterify::MachineTranslation.translate(source_translation, target_language)
+            begin
+              content = Texterify::MachineTranslation.translate(project, source_translation, target_language)
 
-            unless content.nil?
-              if target_translation.nil?
-                translation = Translation.new(content: content)
-                translation.language = target_language
-                translation.key = key
-                translation.save!
-              else
-                target_translation.update(content: content)
+              unless content.nil?
+                if target_translation.nil?
+                  translation = Translation.new(content: content)
+                  translation.language = target_language
+                  translation.key = key
+                  translation.save!
+                else
+                  target_translation.update(content: content)
+                end
               end
+            rescue OrganizationMachineTranslationUsageExceededException
+              # ignored
             end
           end
         end

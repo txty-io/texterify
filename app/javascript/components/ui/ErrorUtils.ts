@@ -28,6 +28,10 @@ export interface IErrorsResponse {
 
 export const ErrorUtils = {
     hasError(field: string, error: ERRORS_MESSAGE_IDS, errors: IErrorsResponse) {
+        if (!errors) {
+            return false;
+        }
+
         const fieldErrors = errors[field];
         return fieldErrors?.some((fieldError) => {
             return fieldError.error === error;
