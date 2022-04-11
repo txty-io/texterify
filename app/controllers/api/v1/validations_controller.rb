@@ -4,6 +4,10 @@ class Api::V1::ValidationsController < Api::V1::ApiController
 
     project = current_user.projects.find(params[:project_id])
 
+    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+      return
+    end
+
     page = parse_page(params[:page])
     per_page = parse_per_page(params[:per_page])
 
@@ -20,12 +24,14 @@ class Api::V1::ValidationsController < Api::V1::ApiController
   def create
     project = current_user.projects.find(params[:project_id])
 
+    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+      return
+    end
+
     validation = Validation.new(validation_params)
     validation.project = project
 
     authorize validation
-
-    # return unless feature_enabled?(project, Organization::FEATURE_OTA)
 
     if validation.save
       render json: { success: true, details: 'VALIDATION_CREATED' }, status: :ok
@@ -36,6 +42,11 @@ class Api::V1::ValidationsController < Api::V1::ApiController
 
   def update
     project = current_user.projects.find(params[:project_id])
+
+    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+      return
+    end
+
     validation = project.validations.find(params[:id])
 
     authorize validation
@@ -49,6 +60,11 @@ class Api::V1::ValidationsController < Api::V1::ApiController
 
   def destroy
     project = current_user.projects.find(params[:project_id])
+
+    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+      return
+    end
+
     validation = project.validations.find(params[:id])
 
     authorize validation
@@ -64,14 +80,18 @@ class Api::V1::ValidationsController < Api::V1::ApiController
   def recheck
     project = current_user.projects.find(params[:project_id])
 
+    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+      return
+    end
+
     if params[:validation_id].present?
       validation = Validation.find(params[:validation_id])
-      authorize validation
     else
       validation = Validation.new
       validation.project = project
-      authorize validation
     end
+
+    authorize validation
 
     unless BackgroundJob.exists?(status: ['CREATED', 'RUNNING'])
       background_job = BackgroundJob.new

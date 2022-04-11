@@ -3,6 +3,7 @@ import { observable } from "mobx";
 import { create, persist } from "mobx-persist";
 import { APIUtils } from "../api/v1/APIUtils";
 import { BackgroundJobsAPI, IGetBackgroundJobsResponse } from "../api/v1/BackgroundJobsAPI";
+import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 import { IProject, ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { ValidationViolationsAPI } from "../api/v1/ValidationViolationsAPI";
 import { IFeature } from "../types/IFeature";
@@ -88,7 +89,13 @@ class DashboardStore {
     };
 
     getCurrentOrganizationRole = (): IUserRole => {
-        return this.currentOrganization?.attributes.current_user_role;
+        if (this.currentOrganization) {
+            return this.currentOrganization.attributes.current_user_role;
+        } else {
+            if (this.currentProject?.attributes.organization_id) {
+                return this.getProjectOrganization()?.attributes.current_user_role;
+            }
+        }
     };
 
     featureEnabled(feature: IFeature) {

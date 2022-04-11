@@ -10,6 +10,7 @@ import {
 } from "../api/v1/ForbiddenWordsListsAPI";
 import { IGetLanguagesResponse, LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { AddEditForbiddenWordsListForm } from "../forms/AddEditForbiddenWordListForm";
+import { dashboardStore } from "../stores/DashboardStore";
 import { PAGE_SIZE_OPTIONS } from "./Config";
 import { DATA_IDS } from "./DataIds";
 import { DeleteLink } from "./DeleteLink";
@@ -62,21 +63,23 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
     }
 
     async loadForbiddenWordsLists(options?: IGetForbiddenWordsListsOptions) {
-        this.setState({ forbiddenWordsListsLoading: true });
+        if (dashboardStore.featureEnabled("FEATURE_VALIDATIONS")) {
+            this.setState({ forbiddenWordsListsLoading: true });
 
-        try {
-            const forbiddenWordsListsResponse = await ForbiddenWordsListsAPI.getForbiddenWordsLists({
-                projectId: options.projectId,
-                page: options?.page,
-                perPage: options?.perPage
-            });
-            this.setState({ forbiddenWordsListsResponse: forbiddenWordsListsResponse });
-        } catch (error) {
-            console.error(error);
-            message.error("Failed to load forbidden words lists.");
+            try {
+                const forbiddenWordsListsResponse = await ForbiddenWordsListsAPI.getForbiddenWordsLists({
+                    projectId: options.projectId,
+                    page: options?.page,
+                    perPage: options?.perPage
+                });
+                this.setState({ forbiddenWordsListsResponse: forbiddenWordsListsResponse });
+            } catch (error) {
+                console.error(error);
+                message.error("Failed to load forbidden words lists.");
+            }
+
+            this.setState({ forbiddenWordsListsLoading: false });
         }
-
-        this.setState({ forbiddenWordsListsLoading: false });
     }
 
     getRows = () => {
@@ -242,6 +245,7 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
                             this.setState({ addForbiddenWordListDialogVisible: true });
                         }}
                         data-id={DATA_IDS.FORBIDDEN_WORDS_LIST_BUTTON_NEW}
+                        disabled={!dashboardStore.featureEnabled("FEATURE_VALIDATIONS")}
                     >
                         Create new list
                     </Button>
@@ -250,7 +254,10 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
                         columns={this.getColumns()}
                         style={{ width: "100%" }}
                         bordered
-                        loading={this.state.forbiddenWordsListsLoading}
+                        loading={
+                            !dashboardStore.featureEnabled("FEATURE_VALIDATIONS") ||
+                            this.state.forbiddenWordsListsLoading
+                        }
                         pagination={{
                             pageSizeOptions: PAGE_SIZE_OPTIONS,
                             showSizeChanger: true,

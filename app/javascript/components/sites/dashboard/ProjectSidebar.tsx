@@ -100,7 +100,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 text: (
                     <span>
                         Issues
-                        {dashboardStore.currentProject && (
+                        {dashboardStore.currentProject && dashboardStore.featureEnabled("FEATURE_VALIDATIONS") && (
                             <Tag
                                 color={
                                     dashboardStore.currentProject.attributes.issues_count > 0

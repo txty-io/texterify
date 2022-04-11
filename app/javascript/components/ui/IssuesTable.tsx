@@ -19,6 +19,7 @@ import { Routes } from "../routing/Routes";
 import { dashboardStore } from "../stores/DashboardStore";
 import { PAGE_SIZE_OPTIONS } from "./Config";
 import { DeleteLink } from "./DeleteLink";
+import { FeatureNotAvailable } from "./FeatureNotAvailable";
 import { Flag } from "./Flag";
 import { Utils } from "./Utils";
 
@@ -76,25 +77,27 @@ class IssuesTable extends React.Component<IProps, IState> {
     }
 
     async loadValidationViolations(options?: { page?: number; perPage?: number }) {
-        this.setState({ validationViolationsLoading: true });
+        if (dashboardStore.featureEnabled("FEATURE_VALIDATIONS")) {
+            this.setState({ validationViolationsLoading: true });
 
-        try {
-            const validationViolationsResponse = await ValidationViolationsAPI.getAll({
-                projectId: this.props.projectId,
-                options: {
-                    page: options?.page,
-                    perPage: options?.perPage,
-                    onlyIgnored: this.props.issuesType === "ignored",
-                    onlyUnignored: this.props.issuesType === "unignored"
-                }
-            });
-            this.setState({ validationViolationsResponse: validationViolationsResponse });
-        } catch (error) {
-            console.error(error);
-            message.error("Failed to load validation violations.");
+            try {
+                const validationViolationsResponse = await ValidationViolationsAPI.getAll({
+                    projectId: this.props.projectId,
+                    options: {
+                        page: options?.page,
+                        perPage: options?.perPage,
+                        onlyIgnored: this.props.issuesType === "ignored",
+                        onlyUnignored: this.props.issuesType === "unignored"
+                    }
+                });
+                this.setState({ validationViolationsResponse: validationViolationsResponse });
+            } catch (error) {
+                console.error(error);
+                message.error("Failed to load validation violations.");
+            }
+
+            this.setState({ validationViolationsLoading: false });
         }
-
-        this.setState({ validationViolationsLoading: false });
     }
 
     getTranslationForViolation(violation: IValidationViolation): ITranslation {
@@ -456,6 +459,10 @@ class IssuesTable extends React.Component<IProps, IState> {
     render() {
         return (
             <div style={{ display: "flex", flexDirection: "column" }}>
+                {!dashboardStore.featureEnabled("FEATURE_VALIDATIONS") && (
+                    <FeatureNotAvailable feature="FEATURE_VALIDATIONS" style={{ marginBottom: 24 }} />
+                )}
+
                 <div style={{ marginBottom: 24, display: "flex" }}>
                     <Button
                         danger

@@ -18,16 +18,18 @@ export const IssuesSidebar = observer((props: { projectId: string }) => {
                             name: (
                                 <span>
                                     Issues
-                                    <Tag
-                                        color={
-                                            dashboardStore.currentProject?.attributes.issues_count > 0
-                                                ? "var(--color-warn)"
-                                                : "var(--color-success)"
-                                        }
-                                        style={{ marginLeft: 16 }}
-                                    >
-                                        {dashboardStore.currentProject?.attributes.issues_count}
-                                    </Tag>
+                                    {dashboardStore.featureEnabled("FEATURE_VALIDATIONS") && (
+                                        <Tag
+                                            color={
+                                                dashboardStore.currentProject?.attributes.issues_count > 0
+                                                    ? "var(--color-warn)"
+                                                    : "var(--color-success)"
+                                            }
+                                            style={{ marginLeft: 16 }}
+                                        >
+                                            {dashboardStore.currentProject?.attributes.issues_count}
+                                        </Tag>
+                                    )}
                                 </span>
                             ),
                             id: "issues-active"

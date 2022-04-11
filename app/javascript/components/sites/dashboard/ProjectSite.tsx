@@ -122,11 +122,11 @@ class ProjectSite extends React.Component<IProps, IState> {
                 console.error(error);
                 message.error("Failed to load violations.");
             }
-
-            this.setState({
-                validationViolationsLoading: false
-            });
         }
+
+        this.setState({
+            validationViolationsLoading: false
+        });
     }
 
     async fetchProject() {
@@ -319,21 +319,29 @@ class ProjectSite extends React.Component<IProps, IState> {
                         <div style={{ width: "50%", marginLeft: 40 }}>
                             <h3>Issues</h3>
                             <div style={{ display: "flex" }}>
-                                <IssuesTag
-                                    loading={this.state.validationViolationsLoading}
-                                    projectId={this.props.match.params.projectId}
-                                    issuesCount={this.state.validationViolationsCountResponse?.total || 0}
-                                />
+                                {dashboardStore.featureEnabled("FEATURE_VALIDATIONS") && (
+                                    <>
+                                        <IssuesTag
+                                            loading={this.state.validationViolationsLoading}
+                                            projectId={this.props.match.params.projectId}
+                                            issuesCount={this.state.validationViolationsCountResponse?.total || 0}
+                                        />
 
-                                <Link
-                                    to={Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(
-                                        ":projectId",
-                                        this.props.match.params.projectId
-                                    )}
-                                    style={{ marginLeft: 24 }}
-                                >
-                                    View issues
-                                </Link>
+                                        <Link
+                                            to={Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(
+                                                ":projectId",
+                                                this.props.match.params.projectId
+                                            )}
+                                            style={{ marginLeft: 24 }}
+                                        >
+                                            View issues
+                                        </Link>
+                                    </>
+                                )}
+
+                                {!dashboardStore.featureEnabled("FEATURE_VALIDATIONS") && (
+                                    <FeatureNotAvailable feature="FEATURE_VALIDATIONS" />
+                                )}
                             </div>
 
                             <h3 style={{ marginTop: 40 }}>Statistics</h3>
