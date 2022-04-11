@@ -1,6 +1,8 @@
 require_relative './deepl'
 
 class OrganizationMachineTranslationUsageExceededException < StandardError
+  attr_reader :details
+
   def initialize(details)
     @details = details
     super()
@@ -9,10 +11,10 @@ end
 
 module Texterify
   # Texterify::MachineTranslation
-  # @throws OrganizationMachineTranslationUsageExceededException
   class MachineTranslation
     # Returns nil if the translation couldn't be translated.
     # Otherwise returns the translated content.
+    # @throws OrganizationMachineTranslationUsageExceededException
     def self.translate(project, source_translation, target_language)
       # Check if source and target language code are set.
       if source_translation.language.language_code.nil? || target_language.language_code.nil?

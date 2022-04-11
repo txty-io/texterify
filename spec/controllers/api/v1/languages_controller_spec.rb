@@ -97,6 +97,7 @@ RSpec.describe Api::V1::LanguagesController, type: :request do
       project_user.role = 'owner'
       project_user.save!
 
+      expect(project.organization.machine_translation_character_usage).to eq(0)
       expect(project.machine_translation_character_usage).to eq(0)
       expect(project.translations.size).to eq(4)
       expect(project.languages.size).to eq(1)
@@ -116,6 +117,7 @@ RSpec.describe Api::V1::LanguagesController, type: :request do
       expect(project.translations.size).to eq(8)
       expect(project.languages.size).to eq(2)
 
+      # Check if the organization and project translation character usage has been updated.
       project.reload
       expect(project.machine_translation_character_usage).to eq('Translation X'.size * 4)
     end
