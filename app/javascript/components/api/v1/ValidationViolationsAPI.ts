@@ -18,12 +18,15 @@ export interface IValidationViolation {
         project_id: string;
         validation_id: string;
         translation_id: string;
+        forbidden_word_id: string;
+        placeholder_id: string;
     };
     relationships: {
         project: { data: { id: string; type: "project" } | null };
         translation: { data: { id: string; type: "translation" } | null };
         validation: { data: { id: string; type: "validation" } | null };
         forbidden_word: { data: { id: string; type: "forbidden_word" } | null };
+        placeholder: { data: { id: string; type: "placeholder" } | null };
     };
 }
 

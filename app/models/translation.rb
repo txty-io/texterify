@@ -261,10 +261,6 @@ class Translation < ApplicationRecord
 
   # Checks the placeholders for the key of the translation.
   def check_placeholders
-    if self.default_language_translation?
-      self.key.recheck_placeholders
-    else
-      # TODO: Check if validation errors have been fixed.
-    end
+    self.key.recheck_placeholders
   end
 end

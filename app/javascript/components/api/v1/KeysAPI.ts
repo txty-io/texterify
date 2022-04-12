@@ -14,6 +14,8 @@ export interface IKey {
         description: string | null;
         html_enabled: boolean;
         name_editable: boolean;
+        created_at: string;
+        updated_at: string;
     };
     relationships: {
         translations: {
@@ -30,9 +32,18 @@ export interface IGetKeysResponse {
     meta: { total: number };
 }
 
+export interface IPlaceholder {
+    id: string;
+    type: "placeholder";
+    attributes: {
+        id: string;
+        name: string;
+    };
+}
+
 export interface IGetKeyResponse {
     data: IKey;
-    included: (ITranslation | ILanguage)[];
+    included: (ITranslation | ILanguage | IPlaceholder)[];
     meta: { total: number };
 }
 
@@ -41,26 +52,6 @@ export interface IGetKeysOptions {
     page?: number;
     perPage?: number;
     searchSettings?: ISearchSettings;
-}
-
-export interface IKey {
-    id: string;
-    type: "key";
-    attributes: {
-        id: string;
-        project_id: string;
-        name: string;
-        description: string;
-        html_enabled: boolean;
-    };
-    relationships: {
-        translations: { data: any };
-    };
-}
-export interface IGetKeysResponse {
-    data: IKey[];
-    included: any[];
-    meta: { total: number };
 }
 
 const KeysAPI = {

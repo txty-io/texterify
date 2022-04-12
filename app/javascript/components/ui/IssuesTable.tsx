@@ -5,7 +5,7 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { APIUtils } from "../api/v1/APIUtils";
 import { IForbiddenWord } from "../api/v1/ForbiddenWordsListsAPI";
-import { IKey } from "../api/v1/KeysAPI";
+import { IKey, IPlaceholder } from "../api/v1/KeysAPI";
 import { ILanguage } from "../api/v1/LanguagesAPI";
 import { ITranslation } from "../api/v1/TranslationsAPI";
 import { IValidation } from "../api/v1/ValidationsAPI";
@@ -116,6 +116,7 @@ class IssuesTable extends React.Component<IProps, IState> {
         validationViolation: IValidationViolation;
         validation: IValidation | null;
         forbiddenWord: IForbiddenWord | null;
+        placeholder: IPlaceholder | null;
     }) {
         if (options.validationViolation.attributes.name) {
             if (options.validationViolation.attributes.name === "validate_double_whitespace") {
@@ -134,13 +135,27 @@ class IssuesTable extends React.Component<IProps, IState> {
                 return (
                     <>
                         Text {options.validation.attributes.match}{" "}
-                        <Tag color="red">{options.validation.attributes.content}</Tag>
+                        <Tag color="red" style={{ margin: 0 }}>
+                            {options.validation.attributes.content}
+                        </Tag>
                     </>
                 );
             } else if (options.forbiddenWord) {
                 return (
                     <>
-                        Text contains forbidden word <Tag color="red">{options.forbiddenWord.attributes.content}</Tag>
+                        Text contains forbidden word{" "}
+                        <Tag color="red" style={{ margin: 0 }}>
+                            {options.forbiddenWord.attributes.content}
+                        </Tag>
+                    </>
+                );
+            } else if (options.placeholder) {
+                return (
+                    <>
+                        Missing placeholder{" "}
+                        <Tag color="red" style={{ margin: 0 }}>
+                            {options.placeholder.attributes.name}
+                        </Tag>
                     </>
                 );
             }
@@ -183,6 +198,11 @@ class IssuesTable extends React.Component<IProps, IState> {
                 this.state.validationViolationsResponse.included
             );
 
+            const placeholder: IPlaceholder = APIUtils.getIncludedObject(
+                validationViolation.relationships.placeholder.data,
+                this.state.validationViolationsResponse.included
+            );
+
             const key = this.getKeyForTranslation(this.getTranslationForViolation(validationViolation));
 
             return {
@@ -204,7 +224,8 @@ class IssuesTable extends React.Component<IProps, IState> {
                 description: this.getValidationDescription({
                     validationViolation: validationViolation,
                     validation: validation,
-                    forbiddenWord: forbiddenWord
+                    forbiddenWord: forbiddenWord,
+                    placeholder: placeholder
                 }),
                 controls: (
                     <div style={{ display: "flex", justifyContent: "center" }}>

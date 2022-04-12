@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
-import { IGetKeysOptions, KeysAPI } from "../../api/v1/KeysAPI";
+import { IGetKeyResponse, IGetKeysOptions, IPlaceholder, KeysAPI } from "../../api/v1/KeysAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import {
     IGetMachineTranslationsSourceLanguages,
@@ -65,7 +65,7 @@ const Key = styled.div<{ isSelected: boolean }>`
 type IProps = RouteComponentProps<{ projectId: string; keyId?: string }>;
 interface IState {
     keysResponse: any;
-    keyResponse: any;
+    keyResponse: IGetKeyResponse;
     keysLoading: boolean;
     languagesResponse: any;
     exportConfigsResponse: any;
@@ -612,7 +612,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                     const isPageSizeChange = dashboardStore.keysPerPageEditor !== perPage;
 
                                     if (isPageSizeChange) {
-                                        dashboardStore.keysPerPageEditor = size;
+                                        dashboardStore.keysPerPageEditor = perPage;
                                         // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                         this.setState({ page: 1 }, this.fetchKeys);
                                     } else {
@@ -787,20 +787,16 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 DATE_TIME_FORMAT
                                             )}
                                         />
-                                        <EditorSidebarInfo
-                                            name="Updated at"
-                                            value={moment(this.state.keyResponse.data.attributes.updated_at).format(
-                                                DATE_TIME_FORMAT
-                                            )}
-                                        />
 
                                         <h3 style={{ marginTop: 24 }}>Placeholders</h3>
-                                        <p>Placeholders used in the default language.</p>
+                                        <div style={{ marginBottom: 8 }}>
+                                            Placeholders used in the default language.
+                                        </div>
                                         {this.state.keyResponse.included
                                             .filter((included) => {
                                                 return included.type === "placeholder";
                                             })
-                                            .map((included, index) => {
+                                            .map((included: IPlaceholder, index) => {
                                                 return (
                                                     <Tag color="volcano" key={index}>
                                                         {included.attributes.name}

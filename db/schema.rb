@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_29_205211) do
+ActiveRecord::Schema.define(version: 2022_04_12_000536) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -492,8 +492,10 @@ ActiveRecord::Schema.define(version: 2022_03_29_205211) do
     t.string "name"
     t.uuid "translation_id"
     t.uuid "forbidden_word_id"
+    t.uuid "placeholder_id"
     t.index ["forbidden_word_id"], name: "index_validation_violations_on_forbidden_word_id"
     t.index ["name", "project_id", "translation_id", "validation_id"], name: "index_validation_violations_uniqueness", unique: true
+    t.index ["placeholder_id"], name: "index_validation_violations_on_placeholder_id"
     t.index ["project_id"], name: "index_validation_violations_on_project_id"
     t.index ["translation_id"], name: "index_validation_violations_on_translation_id"
     t.index ["validation_id"], name: "index_validation_violations_on_validation_id"
@@ -608,6 +610,7 @@ ActiveRecord::Schema.define(version: 2022_03_29_205211) do
   add_foreign_key "translations", "languages", on_delete: :cascade
   add_foreign_key "user_licenses", "users"
   add_foreign_key "validation_violations", "forbidden_words", on_delete: :cascade
+  add_foreign_key "validation_violations", "placeholders", on_delete: :cascade
   add_foreign_key "validation_violations", "projects", on_delete: :cascade
   add_foreign_key "validation_violations", "translations", on_delete: :cascade
   add_foreign_key "validation_violations", "validations", on_delete: :cascade

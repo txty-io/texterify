@@ -94,7 +94,8 @@ class Key < ApplicationRecord
     tag
   end
 
-  # Rechecks all placeholders of the key.
+  # Rechecks all placeholders of the key and creates validation violations if
+  # a placeholder in the source translation is missing in the other translations.
   def recheck_placeholders
     # Check for all placeholders in the current default language translation.
     existing_placeholders = []
@@ -113,15 +114,37 @@ class Key < ApplicationRecord
         existing_placeholders << placeholder
       end
 
-    # Remove placeholders that are no longer available.
+    # Remove placeholders that are no longer available in the source translation.
     self.placeholders.where.not(id: existing_placeholders.map(&:id)).each(&:destroy)
 
-    # Check if placeholders are used in other translations.
+    # Check if placeholders are used in other non-source translations.
     self.non_default_language_translations.each do |translation|
-      missing_placeholders = translation.placeholder_names - existing_placeholders.map(&:name)
+      translation_placeholders = translation.placeholder_names
+      missing_placeholders = existing_placeholders.map(&:name) - translation_placeholders
 
-      unless missing_placeholders.empty?
-        # TODO: Create validation errors or remove them.
+      # Create validation errors for all missing placeholders.
+      missing_placeholders.each do |missing_placeholder|
+        ValidationViolation.find_or_create_by!(
+          project_id: project.id,
+          translation_id: translation.id,
+          placeholder_id: self.placeholders.find_by(name: missing_placeholder).id
+        )
+      end
+
+      # Remove placeholder issues that are now fixed.
+      translation_placeholders.each do |translation_placeholder|
+        placeholder = self.placeholders.find_by(name: translation_placeholder)
+
+        if placeholder
+          issue =
+            ValidationViolation.find_by(
+              project_id: project.id,
+              translation_id: translation.id,
+              placeholder_id: placeholder.id
+            )
+
+          issue&.destroy!
+        end
       end
     end
   end
