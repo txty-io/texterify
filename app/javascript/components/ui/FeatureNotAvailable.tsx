@@ -59,6 +59,7 @@ export function FeatureNotAvailable(props: { feature: IFeature; dataId?: string;
 
     const unlockButton = (
         <Button
+            data-id={props.dataId}
             type="primary"
             style={{
                 cursor: buttonEnabled ? "pointer" : "default"

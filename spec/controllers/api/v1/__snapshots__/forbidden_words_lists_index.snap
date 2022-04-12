@@ -1,20 +1,20 @@
 {
       "data" => [
     [0] {
-                 "id" => "83dceff3-a228-4fe7-871e-f7519cd22413",
+                 "id" => "__REMOVED__",
                "type" => "forbidden_words_list",
          "attributes" => {
-                 "id" => "83dceff3-a228-4fe7-871e-f7519cd22413",
+                 "id" => "__REMOVED__",
                "name" => "my name",
             "content" => "my content",
-         "project_id" => "3341caa7-d261-4a5e-a76e-eb71470f8042",
+         "project_id" => "__REMOVED__",
         "language_id" => nil,
         "words_count" => 1
       },
       "relationships" => {
         "project" => {
           "data" => {
-              "id" => "3341caa7-d261-4a5e-a76e-eb71470f8042",
+              "id" => "__REMOVED__",
             "type" => "project"
           }
         }
@@ -23,11 +23,11 @@
   ],
   "included" => [
     [0] {
-                 "id" => "3341caa7-d261-4a5e-a76e-eb71470f8042",
+                 "id" => "__REMOVED__",
                "type" => "project",
          "attributes" => {
-                                         "id" => "3341caa7-d261-4a5e-a76e-eb71470f8042",
-                                       "name" => "Project 3",
+                                         "id" => "__REMOVED__",
+                                       "name" => "My project",
                                 "description" => nil,
                 "machine_translation_enabled" => true,
                     "auto_translate_new_keys" => false,
@@ -39,7 +39,7 @@
                "validate_trailing_whitespace" => true,
                  "validate_double_whitespace" => true,
                              "validate_https" => true,
-                            "organization_id" => "194c811a-fb3c-4063-8ce1-cfb9191e7afa",
+                            "organization_id" => "__REMOVED__",
                                "issues_count" => 0,
                            "enabled_features" => [
           [ 0] "FEATURE_UNLIMITED_PROJECTS",
@@ -130,7 +130,7 @@
       "relationships" => {
            "organization" => {
           "data" => {
-              "id" => "194c811a-fb3c-4063-8ce1-cfb9191e7afa",
+              "id" => "__REMOVED__",
             "type" => "organization"
           }
         },
