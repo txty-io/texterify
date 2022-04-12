@@ -30,7 +30,6 @@ RSpec.describe Api::V1::ForbiddenWordsListsController, type: :request do
 
     it 'returns forbidden words lists' do
       fwl = ForbiddenWordsList.new
-      fwl.id = '83dceff3-a228-4fe7-871e-f7519cd22413'
       fwl.project = @project
       fwl.name = 'my name'
       fwl.content = 'my content'
@@ -41,7 +40,7 @@ RSpec.describe Api::V1::ForbiddenWordsListsController, type: :request do
       body = JSON.parse(response.body)
 
       expect(body['data'][0]['attributes']['content']).to eq('my content')
-      expect(body).to match_snapshot('forbidden_words_lists_index')
+      expect(body).to match_snapshot('forbidden_words_lists_index', { snapshot_serializer: StripSerializer })
     end
   end
 
