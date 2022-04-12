@@ -29,6 +29,9 @@ RSpec.describe Api::V1::ForbiddenWordsListsController, type: :request do
     end
 
     it 'returns forbidden words lists' do
+      @project.name = 'My project'
+      @project.save!
+
       fwl = ForbiddenWordsList.new
       fwl.project = @project
       fwl.name = 'my name'

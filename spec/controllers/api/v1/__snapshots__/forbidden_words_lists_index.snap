@@ -27,7 +27,7 @@
                "type" => "project",
          "attributes" => {
                                          "id" => "__REMOVED__",
-                                       "name" => "Project 1",
+                                       "name" => "My project",
                                 "description" => nil,
                 "machine_translation_enabled" => true,
                     "auto_translate_new_keys" => false,
