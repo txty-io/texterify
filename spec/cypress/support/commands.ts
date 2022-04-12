@@ -194,5 +194,5 @@ Cypress.Commands.add("selectKeyInEditor", (name: string) => {
 });
 
 Cypress.Commands.add("featureNotAvailableInPlanShown", (id: string) => {
-    cy.get(`[data-id="${id}"]`).should("contain", "This feature is not available on your current plan");
+    cy.get(`[data-id="${id}"]`).should("contain", "Upgrade to unlock");
 });

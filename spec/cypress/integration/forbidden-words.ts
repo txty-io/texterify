@@ -20,7 +20,6 @@ context("forbidden-words", () => {
         cy.goToValidations();
         cy.clickDataId("forbidden-words-list-button-new");
         cy.get("#name").type("my-forbidden-list");
-        cy.get("#languageId").type("d35fa760-dc8a-4ce4-a3d4-2d856f212541");
         cy.get("#content").type("bad\nverybad");
         cy.clickDataId("forbidden-words-list-form-submit");
     });
