@@ -44,6 +44,9 @@ interface IState {
     page: number;
     search: string | undefined;
     keysLoading: boolean;
+    languagesLoading: boolean;
+    exportConfigsLoading: boolean;
+    projectColumnsLoading: boolean;
     projectColumns: any;
     editTranslationCellOpen: boolean;
     editTranslationKeyId: string;
@@ -112,7 +115,10 @@ class KeysSite extends React.Component<IProps, IState> {
             addDialogVisible: false,
             page: 1,
             search: currentQueryParams.q as string,
-            keysLoading: false,
+            keysLoading: true,
+            languagesLoading: true,
+            exportConfigsLoading: true,
+            projectColumnsLoading: true,
             projectColumns: null,
             editTranslationCellOpen: false,
             editTranslationKeyId: "",
@@ -142,8 +148,11 @@ class KeysSite extends React.Component<IProps, IState> {
             this.setState({
                 languages: responseLanguages.data,
                 languagesResponse: responseLanguages,
+                languagesLoading: false,
                 projectColumns: projectColumns,
-                exportConfigsResponse: exportConfigsResponse
+                projectColumnsLoading: false,
+                exportConfigsResponse: exportConfigsResponse,
+                exportConfigsLoading: false
             });
         } catch (error) {
             console.error(error);
@@ -790,6 +799,9 @@ class KeysSite extends React.Component<IProps, IState> {
                             bordered
                             loading={
                                 this.state.keysLoading ||
+                                this.state.languagesLoading ||
+                                this.state.exportConfigsLoading ||
+                                this.state.projectColumnsLoading ||
                                 dashboardStore.currentProject.attributes.current_user_deactivated
                             }
                             projectId={this.props.match.params.projectId}

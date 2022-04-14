@@ -21,7 +21,7 @@ import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
 import { ProjectPostProcessingSite } from "../sites/dashboard/ProjectPostProcessingSite";
 import { ProjectSettingsAdvancedSite } from "../sites/dashboard/ProjectSettingsAdvancedSite";
 import { ProjectSettingsGeneralSite } from "../sites/dashboard/ProjectSettingsGeneralSite";
-import { ProjectSettingsPlaceholdersSite } from "../sites/dashboard/ProjectSettingsPlaceholdersSite";
+import { ProjectPlaceholdersSite } from "../sites/dashboard/ProjectPlaceholdersSite";
 import { ProjectSite } from "../sites/dashboard/ProjectSite";
 import { ProjectValidationsSite } from "../sites/dashboard/ProjectValidationsSite";
 import { dashboardStore } from "../stores/DashboardStore";
@@ -124,8 +124,8 @@ class ProjectRouter extends React.Component<IProps, IState> {
                     />
                     <PrivateRoute
                         exact
-                        path={Routes.DASHBOARD.PROJECT_SETTINGS_PLACEHOLDERS}
-                        component={ProjectSettingsPlaceholdersSite}
+                        path={Routes.DASHBOARD.PROJECT_PLACEHOLDERS}
+                        component={ProjectPlaceholdersSite}
                     />
                     <PrivateRoute
                         exact

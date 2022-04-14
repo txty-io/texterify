@@ -802,7 +802,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                                         {included.attributes.name}
                                                     </Tag>
                                                 );
-                                            })}
+                                            }) || "No placeholders found."}
                                     </Tabs.TabPane>
                                     {/* <Tabs.TabPane tab="Comments" key="chat" style={{ padding: "0 16px", overflow: "auto" }} >
                                     <KeyComments />

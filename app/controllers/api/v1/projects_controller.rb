@@ -334,10 +334,10 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     render json: ProjectSerializer.new(projects.limit(per_page), options).serialized_json, status: :ok
   end
 
-  def recheck_placeholders
+  def check_placeholders
     project = current_user.projects.find(params[:project_id])
     authorize project
-    project.recheck_placeholders
+    project.check_placeholders
     render json: { error: false, message: 'OK' }
   end
 

@@ -96,7 +96,7 @@ class Project < ApplicationRecord
   end
 
   # Rechecks placeholders of all keys of the project.
-  def recheck_placeholders
-    project.keys.each(&:recheck_placeholders)
+  def check_placeholders
+    project.keys.each(&:check_placeholders)
   end
 end

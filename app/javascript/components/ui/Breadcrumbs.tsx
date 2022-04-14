@@ -157,10 +157,10 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                     projectId: this.props.match.params.projectId
                 })
             },
-            projectSettingsPlaceholders: {
-                parent: "projectSettings",
+            projectPlaceholders: {
+                parent: "projectValidations",
                 name: "Placeholders",
-                path: Routes.DASHBOARD.PROJECT_SETTINGS_PLACEHOLDERS_RESOLVER({
+                path: Routes.DASHBOARD.PROJECT_PLACEHOLDERS_RESOLVER({
                     projectId: this.props.match.params.projectId
                 })
             },

@@ -58,10 +58,6 @@ const Routes = {
         PROJECT_SETTINGS_ADVANCED_RESOLVER: (options: { projectId: string }) => {
             return Routes.DASHBOARD.PROJECT_SETTINGS_ADVANCED.replace(":projectId", options.projectId);
         },
-        PROJECT_SETTINGS_PLACEHOLDERS: "/dashboard/projects/:projectId/settings/placeholders",
-        PROJECT_SETTINGS_PLACEHOLDERS_RESOLVER: (options: { projectId: string }) => {
-            return Routes.DASHBOARD.PROJECT_SETTINGS_PLACEHOLDERS.replace(":projectId", options.projectId);
-        },
         PROJECT_KEYS: "/dashboard/projects/:projectId/keys",
         PROJECT_ACTIVITY: "/dashboard/projects/:projectId/activity",
         PROJECT_INTEGRATIONS: "/dashboard/projects/:projectId/integrations",
@@ -81,6 +77,10 @@ const Routes = {
             return Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC.replace(":projectId", options.projectId);
         },
         PROJECT_VALIDATIONS: "/dashboard/projects/:projectId/validations",
+        PROJECT_PLACEHOLDERS: "/dashboard/projects/:projectId/placeholders",
+        PROJECT_PLACEHOLDERS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_PLACEHOLDERS.replace(":projectId", options.projectId);
+        },
         PROJECT_OTA: "/dashboard/projects/:projectId/over-the-air",
         PROJECT_POST_PROCESSING: "/dashboard/projects/:projectId/post-processing",
         PROJECT_EDITOR: "/dashboard/projects/:projectId/editor",

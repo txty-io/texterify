@@ -261,6 +261,6 @@ class Translation < ApplicationRecord
 
   # Checks the placeholders for the key of the translation.
   def check_placeholders
-    self.key.recheck_placeholders
+    self.key.check_placeholders
   end
 end

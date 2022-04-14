@@ -96,7 +96,7 @@ class Key < ApplicationRecord
 
   # Rechecks all placeholders of the key and creates validation violations if
   # a placeholder in the source translation is missing in the other translations.
-  def recheck_placeholders
+  def check_placeholders
     if self.default_language_translation.nil?
       return
     end

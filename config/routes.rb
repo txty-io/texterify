@@ -99,6 +99,7 @@ Rails
           # Validations
           resources :validations, only: [:create, :index, :destroy, :update]
           post :validations_recheck, to: 'validations#recheck'
+          post :placeholders_check, to: 'placeholders#check'
 
           # Validation violations
           resources :validation_violations, only: [:index, :destroy, :update] do

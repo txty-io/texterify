@@ -93,7 +93,11 @@ class Api::V1::ValidationsController < Api::V1::ApiController
 
     authorize validation
 
-    unless BackgroundJob.exists?(status: ['CREATED', 'RUNNING'])
+    unless BackgroundJob.exists?(
+             project_id: project.id,
+             job_type: 'RECHECK_ALL_VALIDATIONS',
+             status: ['CREATED', 'RUNNING']
+           )
       background_job = BackgroundJob.new
       background_job.status = 'CREATED'
       background_job.job_type = 'RECHECK_ALL_VALIDATIONS'

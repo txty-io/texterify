@@ -2,32 +2,39 @@ import { Button, Skeleton } from "antd";
 import * as React from "react";
 import { useParams } from "react-router";
 import { PlaceholderSettingsForm } from "../../forms/PlaceholderSettingsForm";
-import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import { LayoutWithSubSidebar } from "../../ui/LayoutWithSubSidebar";
 import { LayoutWithSubSidebarInner } from "../../ui/LayoutWithSubSidebarInner";
 import { LayoutWithSubSidebarInnerContent } from "../../ui/LayoutWithSubSidebarInnerContent";
 import { SettingsSectionWrapper } from "../../ui/SettingsSectionWrapper";
-import { ProjectSettingsSidebar } from "./ProjectSettingsSidebar";
+import { ValidationsSidebar } from "../../ui/ValidationsSidebar";
 
-function ProjectSettingsPlaceholdersSite() {
+function ProjectPlaceholdersSite() {
     const params = useParams<{ projectId: string }>();
 
     const [loading, setLoading] = React.useState<boolean>(false);
 
     return (
         <LayoutWithSubSidebar>
-            <ProjectSettingsSidebar projectId={params.projectId} />
+            <ValidationsSidebar projectId={params.projectId} />
 
             <LayoutWithSubSidebarInner smallWidth>
-                <Breadcrumbs breadcrumbName="projectSettingsPlaceholders" />
+                <Breadcrumbs breadcrumbName="projectPlaceholders" />
                 <LayoutWithSubSidebarInnerContent verySmallWidth>
-                    <h1>Placeholder settings</h1>
+                    <h1>Placeholders</h1>
                     <p>Define the format of your placeholders.</p>
                     {/* <a href={Routes.OTHER.PLACEHOLDERS} target="_blank" style={{ alignSelf: "flex-start" }}>
                         Learn more here
                     </a> */}
+                    {!dashboardStore.featureEnabled("FEATURE_VALIDATIONS") && (
+                        <FeatureNotAvailable
+                            feature="FEATURE_VALIDATIONS"
+                            dataId="FEATURE_VALIDATIONS_NOT_AVAILABLE"
+                            style={{ marginBottom: 24 }}
+                        />
+                    )}
                     <SettingsSectionWrapper>
                         {!dashboardStore.currentProject && <Skeleton active />}
                         {dashboardStore.currentProject && (
@@ -49,6 +56,7 @@ function ProjectSettingsPlaceholdersSite() {
                                     htmlType="submit"
                                     style={{ alignSelf: "flex-end" }}
                                     loading={loading}
+                                    disabled={!dashboardStore.featureEnabled("FEATURE_VALIDATIONS")}
                                 >
                                     Save
                                 </Button>
@@ -61,4 +69,4 @@ function ProjectSettingsPlaceholdersSite() {
     );
 }
 
-export { ProjectSettingsPlaceholdersSite };
+export { ProjectPlaceholdersSite };

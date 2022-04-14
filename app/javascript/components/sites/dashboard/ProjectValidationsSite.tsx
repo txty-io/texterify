@@ -29,6 +29,10 @@ import { DeleteLink } from "../../ui/DeleteLink";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import { ForbiddenWordsListsTable } from "../../ui/ForbiddenWordsListsTable";
 import { IssuesTag } from "../../ui/IssuesTag";
+import { LayoutWithSidebar } from "../../ui/LayoutWithSidebar";
+import { LayoutWithSidebarContentWrapper } from "../../ui/LayoutWithSidebarContentWrapper";
+import { LayoutWithSidebarContentWrapperInner } from "../../ui/LayoutWithSidebarContentWrapperInner";
+import { ValidationsSidebar } from "../../ui/ValidationsSidebar";
 import {
     PUBSUB_EVENTS,
     PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED,
@@ -368,205 +372,209 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
     render() {
         return (
             <>
-                <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
-                    <Breadcrumbs breadcrumbName="projectValidations" />
-                    <Layout.Content
-                        style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}
-                    >
-                        <h1>Validations</h1>
-                        <p>Create rules to ensure the quality of your translations.</p>
+                <LayoutWithSidebar>
+                    <ValidationsSidebar projectId={this.props.match.params.projectId} />
 
-                        {!dashboardStore.featureEnabled("FEATURE_VALIDATIONS") && (
-                            <FeatureNotAvailable
-                                feature="FEATURE_VALIDATIONS"
-                                dataId="FEATURE_VALIDATIONS_NOT_AVAILABLE"
-                                style={{ marginBottom: 24 }}
-                            />
-                        )}
+                    <LayoutWithSidebarContentWrapper>
+                        <Breadcrumbs breadcrumbName="projectValidations" />
+                        <LayoutWithSidebarContentWrapperInner>
+                            <h1>Validations</h1>
+                            <p>Create rules to ensure the quality of your translations.</p>
 
-                        {/* {dashboardStore.featureEnabled("FEATURE_VALIDATIONS") && ( */}
-                        <>
-                            <div style={{ display: "flex", alignItems: "center" }}>
-                                <IssuesTag
-                                    loading={this.state.validationViolationsLoading}
-                                    projectId={this.props.match.params.projectId}
-                                    issuesCount={this.state.validationViolationsCountResponse?.total || 0}
+                            {!dashboardStore.featureEnabled("FEATURE_VALIDATIONS") && (
+                                <FeatureNotAvailable
+                                    feature="FEATURE_VALIDATIONS"
+                                    dataId="FEATURE_VALIDATIONS_NOT_AVAILABLE"
+                                    style={{ marginBottom: 24 }}
                                 />
+                            )}
 
-                                <Link
-                                    to={Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(
-                                        ":projectId",
-                                        this.props.match.params.projectId
-                                    )}
-                                    style={{ marginLeft: 24, marginRight: 40, lineHeight: 0 }}
-                                >
-                                    View issues
-                                </Link>
-
-                                <Popconfirm
-                                    title="Do you want to run all enabled validations against your translations?"
-                                    onConfirm={async () => {
-                                        this.setState({ recheckingValidations: true });
-                                        try {
-                                            await ValidationsAPI.recheckValidations({
-                                                projectId: this.props.match.params.projectId
-                                            });
-                                            message.success(
-                                                "Successfully queued job to check all translations for issues."
-                                            );
-                                            await Promise.all([
-                                                await this.loadBackgroundJobs(),
-                                                await dashboardStore.loadBackgroundJobs(
-                                                    this.props.match.params.projectId
-                                                )
-                                            ]);
-                                        } catch (error) {
-                                            console.error(error);
-                                            message.error(
-                                                "Failed to queue job for checking all translations for issues."
-                                            );
-                                        }
-
-                                        this.setState({ recheckingValidations: false });
-                                    }}
-                                    okText="Yes"
-                                    cancelText="No"
-                                    okButtonProps={{ danger: true }}
-                                >
-                                    <Button
-                                        type="primary"
-                                        loading={
-                                            this.state.recheckingValidations || this.isAlreadyRecheckingAllValidations()
-                                        }
-                                        style={{ marginLeft: 80 }}
-                                        disabled={
-                                            !this.state.getBackgroundJobsResponse ||
-                                            !dashboardStore.featureEnabled("FEATURE_VALIDATIONS")
-                                        }
-                                    >
-                                        {this.state.recheckingValidations || this.isAlreadyRecheckingAllValidations()
-                                            ? "Rechecking validations..."
-                                            : "Recheck all validations"}
-                                    </Button>
-                                </Popconfirm>
-                            </div>
-
-                            <div style={{ display: "flex", marginTop: 24 }}>
-                                <div
-                                    style={{
-                                        marginRight: 80,
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        width: "100%",
-                                        maxWidth: 720,
-                                        alignItems: "flex-start"
-                                    }}
-                                >
-                                    <h3>Validation rules</h3>
-                                    <Button
-                                        type="default"
-                                        style={{ marginBottom: 16 }}
-                                        onClick={() => {
-                                            this.setState({ addValidationDialogVisible: true });
-                                        }}
-                                        disabled={!dashboardStore.featureEnabled("FEATURE_VALIDATIONS")}
-                                    >
-                                        Create validation rule
-                                    </Button>
-
-                                    <Table
-                                        dataSource={this.getRows()}
-                                        columns={this.getColumns()}
-                                        style={{ width: "100%" }}
-                                        bordered
-                                        loading={
-                                            !dashboardStore.featureEnabled("FEATURE_VALIDATIONS") ||
-                                            this.state.validationsLoading
-                                        }
-                                        pagination={{
-                                            pageSizeOptions: PAGE_SIZE_OPTIONS,
-                                            showSizeChanger: true,
-                                            current: this.state.page,
-                                            pageSize: this.state.perPage,
-                                            total:
-                                                (this.state.validationsResponse &&
-                                                    this.state.validationsResponse.meta.total) ||
-                                                0,
-                                            onChange: async (page: number, perPage: number) => {
-                                                const isPageSizeChange = perPage !== this.state.perPage;
-
-                                                if (isPageSizeChange) {
-                                                    this.setState({ page: 1, perPage: perPage });
-                                                    await this.reloadTable({ page: 1, perPage: perPage });
-                                                } else {
-                                                    this.setState({ page: page, perPage: perPage });
-                                                    await this.reloadTable({ page: page, perPage: perPage });
-                                                }
-                                            }
-                                        }}
-                                        locale={{
-                                            emptyText: (
-                                                <Empty
-                                                    description="No validation rules found"
-                                                    image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                                />
-                                            )
-                                        }}
+                            {/* {dashboardStore.featureEnabled("FEATURE_VALIDATIONS") && ( */}
+                            <>
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    <IssuesTag
+                                        loading={this.state.validationViolationsLoading}
+                                        projectId={this.props.match.params.projectId}
+                                        issuesCount={this.state.validationViolationsCountResponse?.total || 0}
                                     />
-                                </div>
-                                <div
-                                    style={{
-                                        marginRight: 80,
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        width: "100%",
-                                        maxWidth: 720,
-                                        alignItems: "flex-start"
-                                    }}
-                                >
-                                    <ForbiddenWordsListsTable projectId={this.props.match.params.projectId} />
-                                </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        width: "100%",
-                                        maxWidth: 480,
-                                        alignItems: "flex-start"
-                                    }}
-                                >
-                                    <h3 style={{ marginBottom: 16 }}>Default validations</h3>
-                                    {this.renderValidationRule({
-                                        name: "Leading whitespace",
-                                        description: "Checks if a translation starts with a whitespace.",
-                                        property: "validate_leading_whitespace"
-                                    })}
 
-                                    {this.renderValidationRule({
-                                        name: "Trailing whitespace",
-                                        description: "Checks if a translation ends with a whitespace.",
-                                        property: "validate_trailing_whitespace"
-                                    })}
+                                    <Link
+                                        to={Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(
+                                            ":projectId",
+                                            this.props.match.params.projectId
+                                        )}
+                                        style={{ marginLeft: 24, marginRight: 40, lineHeight: 0 }}
+                                    >
+                                        View issues
+                                    </Link>
 
-                                    {this.renderValidationRule({
-                                        name: "Double whitespace",
-                                        description:
-                                            "Checks if a translation contains two or more whitespaces in a row.",
-                                        property: "validate_double_whitespace"
-                                    })}
+                                    <Popconfirm
+                                        title="Do you want to run all enabled validations against your translations?"
+                                        onConfirm={async () => {
+                                            this.setState({ recheckingValidations: true });
+                                            try {
+                                                await ValidationsAPI.recheckValidations({
+                                                    projectId: this.props.match.params.projectId
+                                                });
+                                                message.success(
+                                                    "Successfully queued job to check all translations for issues."
+                                                );
+                                                await Promise.all([
+                                                    await this.loadBackgroundJobs(),
+                                                    await dashboardStore.loadBackgroundJobs(
+                                                        this.props.match.params.projectId
+                                                    )
+                                                ]);
+                                            } catch (error) {
+                                                console.error(error);
+                                                message.error(
+                                                    "Failed to queue job for checking all translations for issues."
+                                                );
+                                            }
 
-                                    {this.renderValidationRule({
-                                        name: "Insecure HTTP URL",
-                                        description:
-                                            "Checks if insecure HTTP URLs (http://) are used inside the translations. The secure protocol HTTPS (https://) should be used instead.",
-                                        property: "validate_https"
-                                    })}
+                                            this.setState({ recheckingValidations: false });
+                                        }}
+                                        okText="Yes"
+                                        cancelText="No"
+                                        okButtonProps={{ danger: true }}
+                                    >
+                                        <Button
+                                            type="primary"
+                                            loading={
+                                                this.state.recheckingValidations ||
+                                                this.isAlreadyRecheckingAllValidations()
+                                            }
+                                            style={{ marginLeft: 80 }}
+                                            disabled={
+                                                !this.state.getBackgroundJobsResponse ||
+                                                !dashboardStore.featureEnabled("FEATURE_VALIDATIONS")
+                                            }
+                                        >
+                                            {this.state.recheckingValidations ||
+                                            this.isAlreadyRecheckingAllValidations()
+                                                ? "Rechecking validations..."
+                                                : "Recheck all validations"}
+                                        </Button>
+                                    </Popconfirm>
                                 </div>
-                            </div>
-                        </>
-                        {/* )} */}
-                    </Layout.Content>
-                </Layout>
+
+                                <div style={{ display: "flex", marginTop: 24 }}>
+                                    <div
+                                        style={{
+                                            marginRight: 80,
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            width: "100%",
+                                            maxWidth: 720,
+                                            alignItems: "flex-start"
+                                        }}
+                                    >
+                                        <h3>Validation rules</h3>
+                                        <Button
+                                            type="default"
+                                            style={{ marginBottom: 16 }}
+                                            onClick={() => {
+                                                this.setState({ addValidationDialogVisible: true });
+                                            }}
+                                            disabled={!dashboardStore.featureEnabled("FEATURE_VALIDATIONS")}
+                                        >
+                                            Create validation rule
+                                        </Button>
+
+                                        <Table
+                                            dataSource={this.getRows()}
+                                            columns={this.getColumns()}
+                                            style={{ width: "100%" }}
+                                            bordered
+                                            loading={
+                                                !dashboardStore.featureEnabled("FEATURE_VALIDATIONS") ||
+                                                this.state.validationsLoading
+                                            }
+                                            pagination={{
+                                                pageSizeOptions: PAGE_SIZE_OPTIONS,
+                                                showSizeChanger: true,
+                                                current: this.state.page,
+                                                pageSize: this.state.perPage,
+                                                total:
+                                                    (this.state.validationsResponse &&
+                                                        this.state.validationsResponse.meta.total) ||
+                                                    0,
+                                                onChange: async (page: number, perPage: number) => {
+                                                    const isPageSizeChange = perPage !== this.state.perPage;
+
+                                                    if (isPageSizeChange) {
+                                                        this.setState({ page: 1, perPage: perPage });
+                                                        await this.reloadTable({ page: 1, perPage: perPage });
+                                                    } else {
+                                                        this.setState({ page: page, perPage: perPage });
+                                                        await this.reloadTable({ page: page, perPage: perPage });
+                                                    }
+                                                }
+                                            }}
+                                            locale={{
+                                                emptyText: (
+                                                    <Empty
+                                                        description="No validation rules found"
+                                                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                                    />
+                                                )
+                                            }}
+                                        />
+                                    </div>
+                                    <div
+                                        style={{
+                                            marginRight: 80,
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            width: "100%",
+                                            maxWidth: 720,
+                                            alignItems: "flex-start"
+                                        }}
+                                    >
+                                        <ForbiddenWordsListsTable projectId={this.props.match.params.projectId} />
+                                    </div>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            width: "100%",
+                                            maxWidth: 480,
+                                            alignItems: "flex-start"
+                                        }}
+                                    >
+                                        <h3 style={{ marginBottom: 16 }}>Default validations</h3>
+                                        {this.renderValidationRule({
+                                            name: "Leading whitespace",
+                                            description: "Checks if a translation starts with a whitespace.",
+                                            property: "validate_leading_whitespace"
+                                        })}
+
+                                        {this.renderValidationRule({
+                                            name: "Trailing whitespace",
+                                            description: "Checks if a translation ends with a whitespace.",
+                                            property: "validate_trailing_whitespace"
+                                        })}
+
+                                        {this.renderValidationRule({
+                                            name: "Double whitespace",
+                                            description:
+                                                "Checks if a translation contains two or more whitespaces in a row.",
+                                            property: "validate_double_whitespace"
+                                        })}
+
+                                        {this.renderValidationRule({
+                                            name: "Insecure HTTP URL",
+                                            description:
+                                                "Checks if insecure HTTP URLs (http://) are used inside the translations. The secure protocol HTTPS (https://) should be used instead.",
+                                            property: "validate_https"
+                                        })}
+                                    </div>
+                                </div>
+                            </>
+                            {/* )} */}
+                        </LayoutWithSidebarContentWrapperInner>
+                    </LayoutWithSidebarContentWrapper>
+                </LayoutWithSidebar>
 
                 <AddEditValidationForm
                     projectId={this.props.match.params.projectId}

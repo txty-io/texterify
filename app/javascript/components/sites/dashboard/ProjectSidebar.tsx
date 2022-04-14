@@ -88,7 +88,14 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
                 text: "Validations",
                 roles: ROLES_TRANSLATOR_UP,
-                dataId: "project-sidebar-validations"
+                dataId: "project-sidebar-validations",
+                paths: [
+                    Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
+                    ,
+                    Routes.DASHBOARD.PROJECT_PLACEHOLDERS_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    })
+                ]
             },
             {
                 icon: AlertOutlined,
@@ -234,9 +241,6 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                         projectId: this.props.match.params.projectId
                     }),
                     Routes.DASHBOARD.PROJECT_SETTINGS_ADVANCED_RESOLVER({
-                        projectId: this.props.match.params.projectId
-                    }),
-                    Routes.DASHBOARD.PROJECT_SETTINGS_PLACEHOLDERS_RESOLVER({
                         projectId: this.props.match.params.projectId
                     })
                 ]

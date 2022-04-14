@@ -1,7 +1,9 @@
 import { CheckCircleFilled } from "@ant-design/icons";
 import { Button, Form, Input, message } from "antd";
 import * as React from "react";
+import { PlaceholdersAPI } from "../api/v1/PlaceholdersAPI";
 import { ProjectsAPI } from "../api/v1/ProjectsAPI";
+import { dashboardStore } from "../stores/DashboardStore";
 import { TexterifyModal } from "../ui/TexterifyModal";
 
 interface IFormValues {
@@ -10,7 +12,7 @@ interface IFormValues {
 }
 
 function PlaceholderSettingsForm(props: {
-    projectId?: string;
+    projectId: string;
     placeholderStart: string;
     placeholderEnd: string;
     onSaving?(): void;
@@ -73,7 +75,10 @@ function PlaceholderSettingsForm(props: {
                         }
                     ]}
                 >
-                    <Input placeholder="e.g. {" disabled={loading} />
+                    <Input
+                        placeholder="e.g. {"
+                        disabled={loading || !dashboardStore.featureEnabled("FEATURE_VALIDATIONS")}
+                    />
                 </Form.Item>
 
                 <h3 style={{ marginTop: 24 }}>Enter the placeholder end</h3>
@@ -87,12 +92,15 @@ function PlaceholderSettingsForm(props: {
                         }
                     ]}
                 >
-                    <Input placeholder="e.g. }" disabled={loading} />
+                    <Input
+                        placeholder="e.g. }"
+                        disabled={loading || !dashboardStore.featureEnabled("FEATURE_VALIDATIONS")}
+                    />
                 </Form.Item>
             </Form>
 
             <TexterifyModal
-                title="Recheck placeholders"
+                title="Check placeholders"
                 visible={updatePlaceholdersModalVisible}
                 footer={
                     <div style={{ margin: "6px 0" }}>
@@ -103,8 +111,24 @@ function PlaceholderSettingsForm(props: {
                         >
                             Skip
                         </Button>
-                        <Button type="primary" htmlType="submit" data-id="update-placeholders-of-all-keys-button">
-                            Recheck placeholders of all keys
+                        <Button
+                            type="primary"
+                            data-id="check-placeholders-of-all-keys-button"
+                            onClick={async () => {
+                                try {
+                                    await PlaceholdersAPI.checkPlaceholders({
+                                        projectId: props.projectId
+                                    });
+                                    message.success("Successfully queued job to check placeholders for issues.");
+                                    setUpdatePlaceholdersModalVisible(false);
+                                    await dashboardStore.loadBackgroundJobs(props.projectId);
+                                } catch (error) {
+                                    console.error(error);
+                                    message.error("Failed to queue job for checking placeholders.");
+                                }
+                            }}
+                        >
+                            Check placeholders of all keys
                         </Button>
                     </div>
                 }
@@ -119,8 +143,8 @@ function PlaceholderSettingsForm(props: {
                 settings have been updated.
                 <br />
                 <br />
-                Do you want to recheck all your keys for placeholders? Existing placeholders will be removed from keys
-                if they can't be found anymore in your source translations based on your new settings and new found
+                Do you want to check all your keys for placeholders? Existing placeholders will be removed from keys if
+                they can't be found anymore in your source translations based on your new settings and new found
                 placeholders will be added automatically.
             </TexterifyModal>
         </>

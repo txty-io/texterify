@@ -12,17 +12,13 @@ export function ProjectSettingsSidebar(props: { projectId: string }) {
                     items: [
                         {
                             path: Routes.DASHBOARD.PROJECT_SETTINGS_GENERAL_RESOLVER({ projectId: props.projectId }),
-                            name: "General"
+                            name: "General",
+                            id: "settings-sidebar-general"
                         },
                         {
                             path: Routes.DASHBOARD.PROJECT_SETTINGS_ADVANCED_RESOLVER({ projectId: props.projectId }),
-                            name: "Advanced"
-                        },
-                        {
-                            path: Routes.DASHBOARD.PROJECT_SETTINGS_PLACEHOLDERS_RESOLVER({
-                                projectId: props.projectId
-                            }),
-                            name: "Placeholders"
+                            name: "Advanced",
+                            id: "settings-sidebar-advanced"
                         }
                     ]
                 }
