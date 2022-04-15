@@ -16,7 +16,9 @@ import { ProjectIntegrationsWordpressSettingsSite } from "../sites/dashboard/Pro
 import { ProjectIntegrationsWordpressSyncSite } from "../sites/dashboard/ProjectIntegrationsWordpressSyncSite";
 import { ProjectIssuesActiveSite } from "../sites/dashboard/ProjectIssuesActiveSite";
 import { ProjectIssuesIgnoredSite } from "../sites/dashboard/ProjectIssuesIgnoredSite";
+import { ProjectMachineTranslationSettingsSite } from "../sites/dashboard/ProjectMachineTranslationSettingsSite";
 import { ProjectMachineTranslationSite } from "../sites/dashboard/ProjectMachineTranslationSite";
+import { ProjectMachineTranslationUsageSite } from "../sites/dashboard/ProjectMachineTranslationUsageSite";
 import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
 import { ProjectPostProcessingSite } from "../sites/dashboard/ProjectPostProcessingSite";
 import { ProjectSettingsSite } from "../sites/dashboard/ProjectSettingsSite";
@@ -109,6 +111,16 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         exact
                         path={Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION}
                         component={ProjectMachineTranslationSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION_SETTINGS}
+                        component={ProjectMachineTranslationSettingsSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION_USAGE}
+                        component={ProjectMachineTranslationUsageSite}
                     />
                     <PrivateRoute
                         exact

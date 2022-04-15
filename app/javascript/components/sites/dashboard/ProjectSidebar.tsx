@@ -124,7 +124,21 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     this.props.match.params.projectId
                 ),
                 text: "Machine Translation",
-                dataId: "project-sidebar-machine-translation"
+                dataId: "project-sidebar-machine-translation",
+                paths: [
+                    Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION.replace(
+                        ":projectId",
+                        this.props.match.params.projectId
+                    ),
+                    Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION_SETTINGS.replace(
+                        ":projectId",
+                        this.props.match.params.projectId
+                    ),
+                    Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION_USAGE.replace(
+                        ":projectId",
+                        this.props.match.params.projectId
+                    )
+                ]
             },
             {
                 icon: ImportOutlined,
