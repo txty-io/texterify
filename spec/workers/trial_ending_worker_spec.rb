@@ -15,7 +15,7 @@ RSpec.describe TrialEndingWorker, type: :worker do
     expect(described_class).to have_enqueued_sidekiq_job
   end
 
-  it 'enqueues a trial ending worker' do
+  it 'enqueues a TrialEndingWorker' do
     user = FactoryBot.create(:user_with_organizations, organizations_count: 1)
     organization = user.organizations.first
 

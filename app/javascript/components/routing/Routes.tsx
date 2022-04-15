@@ -42,6 +42,8 @@ const Routes = {
         PROJECT_EXPORT: "/dashboard/projects/:projectId/export",
         PROJECT_MEMBERS: "/dashboard/projects/:projectId/members",
         PROJECT_MACHINE_TRANSLATION: "/dashboard/projects/:projectId/machine-translation",
+        PROJECT_MACHINE_TRANSLATION_SETTINGS: "/dashboard/projects/:projectId/machine-translation/settings",
+        PROJECT_MACHINE_TRANSLATION_USAGE: "/dashboard/projects/:projectId/machine-translation/usage",
         PROJECT_EXPORT_CONFIGURATIONS: "/dashboard/projects/:projectId/export/configurations",
         PROJECT_EXPORT_HIERARCHY: "/dashboard/projects/:projectId/export/hierarchy",
         PROJECT_ISSUES_ACTIVE: "/dashboard/projects/:projectId/active-issues",

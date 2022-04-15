@@ -139,6 +139,22 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                     this.props.match.params.projectId
                 )
             },
+            projectMachineTranslationSettings: {
+                parent: "projectMachineTranslation",
+                name: "Settings",
+                path: Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION_SETTINGS.replace(
+                    ":projectId",
+                    this.props.match.params.projectId
+                )
+            },
+            projectMachineTranslationUsage: {
+                parent: "projectMachineTranslation",
+                name: "Usage",
+                path: Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION_USAGE.replace(
+                    ":projectId",
+                    this.props.match.params.projectId
+                )
+            },
             projectSettings: {
                 parent: "project",
                 name: "Settings"
