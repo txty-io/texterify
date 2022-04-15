@@ -478,26 +478,28 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                             <h4 style={{ fontWeight: "bold" }}>Source language</h4>
                             <div>Your default language is used as the source for your machine translations.</div>
                             <div style={{ marginTop: 16, display: "flex" }}>
-                                <span style={{ width: 80, display: "inline-block" }}>
-                                    {defaultLanguageCountryCode && (
-                                        <>
-                                            <span style={{ width: 24, display: "inline-block" }}>
-                                                <FlagIcon
-                                                    code={defaultLanguageCountryCode.attributes.code.toLowerCase()}
-                                                />
-                                            </span>
-                                            <span style={{ marginLeft: 8 }}>
-                                                {defaultLanguageCountryCode.attributes.code}
-                                            </span>
-                                        </>
-                                    )}
-                                    {defaultLanguageCountryCode && defaultLanguageLanguageCode && <span>-</span>}
-                                    {defaultLanguageLanguageCode && (
-                                        <span>{defaultLanguageLanguageCode.attributes.code}</span>
-                                    )}
-                                </span>
+                                {(defaultLanguageCountryCode || defaultLanguageLanguageCode) && (
+                                    <span style={{ width: 80, display: "inline-block", marginRight: 24 }}>
+                                        {defaultLanguageCountryCode && (
+                                            <>
+                                                <span style={{ width: 24, display: "inline-block" }}>
+                                                    <FlagIcon
+                                                        code={defaultLanguageCountryCode.attributes.code.toLowerCase()}
+                                                    />
+                                                </span>
+                                                <span style={{ marginLeft: 8 }}>
+                                                    {defaultLanguageCountryCode.attributes.code}
+                                                </span>
+                                            </>
+                                        )}
+                                        {defaultLanguageCountryCode && defaultLanguageLanguageCode && <span>-</span>}
+                                        {defaultLanguageLanguageCode && (
+                                            <span>{defaultLanguageLanguageCode.attributes.code}</span>
+                                        )}
+                                    </span>
+                                )}
 
-                                <div style={{ marginLeft: 24 }}>
+                                <div>
                                     <div style={{ fontWeight: "bold" }}>{defaultLanguage.attributes.name}</div>
                                     <div style={{ marginTop: 8 }}>
                                         {
