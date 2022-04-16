@@ -9,7 +9,7 @@ export const ValidationsSidebar = observer((props: { projectId: string }) => {
             projectId={props.projectId}
             menuItems={[
                 {
-                    title: "Validations",
+                    title: "QA",
                     items: [
                         {
                             path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", props.projectId),

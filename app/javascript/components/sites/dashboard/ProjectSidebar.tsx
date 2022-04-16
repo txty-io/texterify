@@ -86,7 +86,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             {
                 icon: MonitorOutlined,
                 path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
-                text: "Validations",
+                text: "QA",
                 roles: ROLES_TRANSLATOR_UP,
                 dataId: "project-sidebar-validations",
                 paths: [

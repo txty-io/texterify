@@ -37,9 +37,12 @@ import {
     IJobsChannelEvent,
     JOBS_CHANNEL_EVENT_JOB_COMPLETED,
     JOBS_CHANNEL_EVENT_JOB_PROGRESS,
+    JOBS_CHANNEL_TYPE_CHECK_PLACEHOLDERS,
     JOBS_CHANNEL_TYPE_RECHECK_ALL_VALIDATIONS
 } from "../utilities/JobsChannelEvents";
 import {
+    PUBSUB_CHECK_PLACEHOLDERS_FINISHED,
+    PUBSUB_CHECK_PLACEHOLDERS_PROGRESS,
     PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED,
     PUBSUB_RECHECK_ALL_VALIDATIONS_PROGRESS
 } from "../utilities/PubSubEvents";
@@ -185,6 +188,22 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             data.event === JOBS_CHANNEL_EVENT_JOB_COMPLETED
                         ) {
                             PubSub.publish(PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED, { projectId: data.project_id });
+                        }
+
+                        // Send an event that a new job update has occurred.
+                        if (
+                            data.type === JOBS_CHANNEL_TYPE_CHECK_PLACEHOLDERS &&
+                            data.event === JOBS_CHANNEL_EVENT_JOB_PROGRESS
+                        ) {
+                            PubSub.publish(PUBSUB_CHECK_PLACEHOLDERS_PROGRESS, { projectId: data.project_id });
+                        }
+
+                        // Send an event that the check placeholders job has finished.
+                        if (
+                            data.type === JOBS_CHANNEL_TYPE_CHECK_PLACEHOLDERS &&
+                            data.event === JOBS_CHANNEL_EVENT_JOB_COMPLETED
+                        ) {
+                            PubSub.publish(PUBSUB_CHECK_PLACEHOLDERS_FINISHED, { projectId: data.project_id });
                         }
                     }
                 }

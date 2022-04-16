@@ -8,7 +8,7 @@ export interface IBackgroundJob {
         id: string;
         status: "COMPLETED" | "RUNNING" | "FAILED";
         progress: number;
-        job_type: "RECHECK_ALL_VALIDATIONS";
+        job_type: "RECHECK_ALL_VALIDATIONS" | "CHECK_PLACEHOLDERS";
     };
 }
 
@@ -19,7 +19,7 @@ export interface IGetBackgroundJobsResponse {
 
 export interface IGetBackgroundJobsOptions {
     status?: ("CREATED" | "RUNNING" | "COMPLETED")[];
-    jobTypes?: "RECHECK_ALL_VALIDATIONS"[];
+    jobTypes?: ("RECHECK_ALL_VALIDATIONS" | "CHECK_PLACEHOLDERS")[];
     page?: number;
     perPage?: number;
 }

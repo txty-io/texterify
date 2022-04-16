@@ -17,7 +17,7 @@ class Api::V1::PlaceholdersController < Api::V1::ApiController
       background_job.project_id = project.id
       background_job.save!
 
-      CheckPlaceholdersWorker.perform_async(background_job.id, project.id, validation&.id)
+      CheckPlaceholdersWorker.perform_async(background_job.id, project.id)
     end
   end
 end

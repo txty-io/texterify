@@ -19,7 +19,9 @@ function getProgressStatus(status: IBackgroundJob["attributes"]["status"]) {
 
 function getJobTypeText(jobType: IBackgroundJob["attributes"]["job_type"]) {
     if (jobType === "RECHECK_ALL_VALIDATIONS") {
-        return "Rechecking all validations";
+        return "Checking for validation issues";
+    } else if (jobType === "CHECK_PLACEHOLDERS") {
+        return "Checking for placeholder issues";
     } else {
         return jobType;
     }

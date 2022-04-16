@@ -86,7 +86,7 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
             if (event === PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED) {
                 void this.fetchValidationViolations();
                 void dashboardStore.reloadCurrentProjectIssuesCount();
-                message.success("Rechecking all validations completed.");
+                message.success("Checking translations for validation issues completed.");
             }
         }
     };
@@ -417,7 +417,7 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                                     projectId: this.props.match.params.projectId
                                                 });
                                                 message.success(
-                                                    "Successfully queued job to check all translations for issues."
+                                                    "Successfully queued job to check translations for validation issues."
                                                 );
                                                 await Promise.all([
                                                     await this.loadBackgroundJobs(),
@@ -428,7 +428,7 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                             } catch (error) {
                                                 console.error(error);
                                                 message.error(
-                                                    "Failed to queue job for checking all translations for issues."
+                                                    "Failed to queue job for checking translations for validation issues."
                                                 );
                                             }
 
@@ -452,8 +452,8 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                         >
                                             {this.state.recheckingValidations ||
                                             this.isAlreadyRecheckingAllValidations()
-                                                ? "Rechecking validations..."
-                                                : "Recheck all validations"}
+                                                ? "Checking translations..."
+                                                : "Check translations for validation issues"}
                                         </Button>
                                     </Popconfirm>
                                 </div>

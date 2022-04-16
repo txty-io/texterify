@@ -19,7 +19,6 @@ function PlaceholderSettingsForm(props: {
     onSaved?(): void;
 }) {
     const [loading, setLoading] = React.useState<boolean>(false);
-    const [updatePlaceholdersModalVisible, setUpdatePlaceholdersModalVisible] = React.useState<boolean>(false);
 
     async function handleSubmit(values: IFormValues) {
         setLoading(true);
@@ -39,8 +38,6 @@ function PlaceholderSettingsForm(props: {
                 message.error("An error occurred while udpating project settings.");
             } else {
                 message.success("Project settings successfully updated.");
-
-                setUpdatePlaceholdersModalVisible(true);
             }
         } catch (error) {
             console.error(error);
@@ -98,55 +95,6 @@ function PlaceholderSettingsForm(props: {
                     />
                 </Form.Item>
             </Form>
-
-            <TexterifyModal
-                title="Check placeholders"
-                visible={updatePlaceholdersModalVisible}
-                footer={
-                    <div style={{ margin: "6px 0" }}>
-                        <Button
-                            onClick={() => {
-                                setUpdatePlaceholdersModalVisible(false);
-                            }}
-                        >
-                            Skip
-                        </Button>
-                        <Button
-                            type="primary"
-                            data-id="check-placeholders-of-all-keys-button"
-                            onClick={async () => {
-                                try {
-                                    await PlaceholdersAPI.checkPlaceholders({
-                                        projectId: props.projectId
-                                    });
-                                    message.success("Successfully queued job to check placeholders for issues.");
-                                    setUpdatePlaceholdersModalVisible(false);
-                                    await dashboardStore.loadBackgroundJobs(props.projectId);
-                                } catch (error) {
-                                    console.error(error);
-                                    message.error("Failed to queue job for checking placeholders.");
-                                }
-                            }}
-                        >
-                            Check placeholders of all keys
-                        </Button>
-                    </div>
-                }
-                onCancel={() => {
-                    setUpdatePlaceholdersModalVisible(false);
-                }}
-                afterClose={() => {
-                    setUpdatePlaceholdersModalVisible(false);
-                }}
-            >
-                <CheckCircleFilled style={{ marginRight: 8, color: "var(--color-success)" }} /> Your placeholder
-                settings have been updated.
-                <br />
-                <br />
-                Do you want to check all your keys for placeholders? Existing placeholders will be removed from keys if
-                they can't be found anymore in your source translations based on your new settings and new found
-                placeholders will be added automatically.
-            </TexterifyModal>
         </>
     );
 }
