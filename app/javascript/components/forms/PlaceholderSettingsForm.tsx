@@ -1,10 +1,7 @@
-import { CheckCircleFilled } from "@ant-design/icons";
-import { Button, Form, Input, message } from "antd";
+import { Form, Input, message } from "antd";
 import * as React from "react";
-import { PlaceholdersAPI } from "../api/v1/PlaceholdersAPI";
 import { ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { dashboardStore } from "../stores/DashboardStore";
-import { TexterifyModal } from "../ui/TexterifyModal";
 
 interface IFormValues {
     placeholderStart: string;
@@ -15,6 +12,7 @@ function PlaceholderSettingsForm(props: {
     projectId: string;
     placeholderStart: string;
     placeholderEnd: string;
+    style?: React.CSSProperties;
     onSaving?(): void;
     onSaved?(): void;
 }) {
@@ -60,6 +58,7 @@ function PlaceholderSettingsForm(props: {
                     placeholderStart: props.placeholderStart,
                     placeholderEnd: props.placeholderEnd
                 }}
+                style={props.style}
             >
                 <h3>Enter the placeholder start</h3>
                 <Form.Item
