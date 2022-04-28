@@ -24,8 +24,8 @@ export function LanguagesTable(props: { project: IProject; tableReloader?: numbe
 
         try {
             const newLanguagesResponse = await LanguagesAPI.getLanguages(props.project.id, {
-                page: options.page || page,
-                perPage: options.perPage || perPage
+                page: options?.page || page,
+                perPage: options?.perPage || perPage
             });
             setLanguagesResponse(newLanguagesResponse);
         } catch (error) {
