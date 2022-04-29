@@ -79,6 +79,10 @@ const Routes = {
             return Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC.replace(":projectId", options.projectId);
         },
         PROJECT_VALIDATIONS: "/dashboard/projects/:projectId/validations",
+        PROJECT_FORBIDDEN_WORDS_LISTS: "/dashboard/projects/:projectId/forbidden-words-lists",
+        PROJECT_FORBIDDEN_WORDS_LISTS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_LISTS.replace(":projectId", options.projectId);
+        },
         PROJECT_PLACEHOLDERS: "/dashboard/projects/:projectId/placeholders",
         PROJECT_PLACEHOLDERS_RESOLVER: (options: { projectId: string }) => {
             return Routes.DASHBOARD.PROJECT_PLACEHOLDERS.replace(":projectId", options.projectId);

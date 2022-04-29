@@ -10,8 +10,13 @@ export interface IForbiddenWordsList {
         content: string;
         project_id: string;
         organization_id: string;
-        language_id: string;
+        language_code_id: string;
+        country_code_id: string;
         words_count: number;
+    };
+    relationships: {
+        country_code: { data: null | { id: string; type: "country_code" } };
+        language_code: { data: null | { id: string; type: "language_code" } };
     };
 }
 
@@ -27,6 +32,7 @@ export interface IForbiddenWord {
 export interface IGetForbiddenWordsListsResponse {
     data: IForbiddenWordsList[];
     meta: { total: number };
+    included: any[]
 }
 
 export type IForbiddenWordsListLinkedTo = "project" | "organization";
@@ -55,12 +61,14 @@ const ForbiddenWordsListsAPI = {
         linkedType: IForbiddenWordsListLinkedTo;
         name: string;
         content?: string;
-        languageId?: string;
+        languageCodeId?: string;
+        countryCodeId?: string;
     }) => {
         return API.postRequest(`${options.linkedType}s/${options.linkedId}/forbidden_words_lists`, true, {
             name: options.name,
             content: options.content,
-            language_id: options.languageId
+            language_code_id: options.languageCodeId,
+            country_code_id: options.countryCodeId
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
@@ -72,7 +80,8 @@ const ForbiddenWordsListsAPI = {
         forbiddenWordsListId: string;
         name: string;
         content: string;
-        languageId: string;
+        languageCodeId: string;
+        countryCodeId: string;
     }) => {
         return API.putRequest(
             `${options.linkedType}s/${options.linkedId}/forbidden_words_lists/${options.forbiddenWordsListId}`,
@@ -80,7 +89,8 @@ const ForbiddenWordsListsAPI = {
             {
                 name: options.name,
                 content: options.content,
-                language_id: options.languageId
+                language_code_id: options.languageCodeId,
+                country_code_id: options.countryCodeId
             }
         )
             .then(APIUtils.handleErrors)

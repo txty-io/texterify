@@ -1,4 +1,4 @@
-import { Button, Empty, message, Modal, Popconfirm, Table } from "antd";
+import { Button, Empty, message, Modal, Popconfirm, Table, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link } from "react-router-dom";
@@ -10,7 +10,6 @@ import {
     IGetForbiddenWordsListsOptions,
     IGetForbiddenWordsListsResponse
 } from "../api/v1/ForbiddenWordsListsAPI";
-import { IGetLanguagesResponse, LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { AddEditForbiddenWordsListForm } from "../forms/AddEditForbiddenWordListForm";
 import { Routes } from "../routing/Routes";
 import { dashboardStore } from "../stores/DashboardStore";
@@ -28,7 +27,6 @@ interface IProps {
 
 interface IState {
     addForbiddenWordListDialogVisible: boolean;
-    languagesResponse: IGetLanguagesResponse;
     forbiddenWordsListToEdit: IForbiddenWordsList;
     forbiddenWordsListsResponse: IGetForbiddenWordsListsResponse;
     forbiddenWordsListsUpdating: boolean;
@@ -43,7 +41,6 @@ interface IState {
 class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
     state: IState = {
         addForbiddenWordListDialogVisible: false,
-        languagesResponse: null,
         forbiddenWordsListToEdit: null,
         forbiddenWordsListsResponse: null,
         forbiddenWordsListsUpdating: false,
@@ -56,16 +53,6 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
 
     async componentDidMount() {
         await this.reloadTable();
-
-        if (this.props.linkedType === "project") {
-            try {
-                const languagesResponse = await LanguagesAPI.getLanguages(this.props.linkedId, { showAll: true });
-                this.setState({ languagesResponse });
-            } catch (error) {
-                console.error(error);
-                ErrorUtils.showError("Failed to load languages.");
-            }
-        }
     }
 
     async loadForbiddenWordsLists(options?: IGetForbiddenWordsListsOptions) {
@@ -94,43 +81,27 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
             return [];
         }
 
-        if (
-            this.props.linkedType === "project" &&
-            (!this.state.languagesResponse || !this.state.languagesResponse.data)
-        ) {
-            return [];
-        }
-
         return this.state.forbiddenWordsListsResponse.data.map((forbiddenWordsList) => {
-            let checkedFor;
+            const languageCode = APIUtils.getIncludedObject(
+                forbiddenWordsList?.relationships.language_code.data,
+                this.state.forbiddenWordsListsResponse.included
+            );
 
-            if (this.props.linkedType === "project") {
-                const language = this.state.languagesResponse.data.find((languageToCheck) => {
-                    return forbiddenWordsList.attributes.language_id === languageToCheck.id;
-                });
+            const countryCode = APIUtils.getIncludedObject(
+                forbiddenWordsList?.relationships.country_code.data,
+                this.state.forbiddenWordsListsResponse.included
+            );
 
-                const countryCode = APIUtils.getIncludedObject(
-                    language?.relationships.country_code.data,
-                    this.state.languagesResponse.included
-                );
-
-                checkedFor = forbiddenWordsList.attributes.language_id ? (
+            const checkedFor =
+                languageCode || countryCode ? (
                     <LanguageNameWithFlag
-                        languageName={language.attributes.name}
+                        languageName={languageCode?.attributes.code}
                         countryCode={countryCode?.attributes.code}
+                        showNameWithCountryCode
                     />
                 ) : (
-                    <span style={{ fontStyle: "italic", color: Styles.COLOR_TEXT_DISABLED }}>
-                        Checked for all languages
-                    </span>
+                    <span style={{ color: Styles.COLOR_TEXT_DISABLED }}>all languages</span>
                 );
-            } else {
-                checkedFor = (
-                    <span style={{ fontStyle: "italic", color: Styles.COLOR_TEXT_DISABLED }}>
-                        Checked for all languages
-                    </span>
-                );
-            }
 
             return {
                 key: forbiddenWordsList.attributes.id,
@@ -138,16 +109,18 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
                 wordsCount: forbiddenWordsList.attributes.words_count,
                 checkedFor: checkedFor,
                 controls: (
-                    <div style={{ display: "flex", justifyContent: "center" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
                         {this.props.linkedType === "project" && forbiddenWordsList.attributes.organization_id ? (
-                            <Link
-                                to={Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
-                                    organizationId: forbiddenWordsList.attributes.organization_id
-                                })}
-                                style={{ fontStyle: "italic" }}
-                            >
-                                Organization validation
-                            </Link>
+                            <Tooltip title="Click to edit in organization">
+                                <Link
+                                    to={Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
+                                        organizationId: forbiddenWordsList.attributes.organization_id
+                                    })}
+                                    style={{ whiteSpace: "nowrap" }}
+                                >
+                                    Inherited
+                                </Link>
+                            </Tooltip>
                         ) : (
                             <>
                                 <a

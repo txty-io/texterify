@@ -15,7 +15,7 @@ class Api::V1::ForbiddenWordsListsController < Api::V1::ApiController
 
     options = {}
     options[:meta] = { total: forbidden_words_lists.size }
-    options[:include] = [:project]
+    options[:include] = [:project, :language_code, :country_code]
     render json:
              ForbiddenWordsListSerializer.new(
                forbidden_words_lists.order('id ASC').offset(page * per_page).limit(per_page),
@@ -29,12 +29,6 @@ class Api::V1::ForbiddenWordsListsController < Api::V1::ApiController
 
       unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
         render json: { error: true, details: 'FEATURE_NOT_AVAILABLE_FOR_PLAN' }
-        return
-      end
-
-      if params[:language_id] && !project.languages.exists?(id: params[:language_id])
-        skip_authorization
-        render json: { error: true, details: 'LANGUAGE_NOT_FOUND' }, status: :bad_request
         return
       end
 
@@ -82,18 +76,7 @@ class Api::V1::ForbiddenWordsListsController < Api::V1::ApiController
 
     authorize forbidden_words_list
 
-    if project && params[:language_id] && !project.languages.exists?(id: params[:language_id])
-      skip_authorization
-      render json: { error: true, details: 'LANGUAGE_NOT_FOUND' }, status: :bad_request
-      return
-    end
-
-    forbidden_words_list.name = params[:name]
-    forbidden_words_list.content = params[:content]
-
-    if project && params[:language_id]
-      forbidden_words_list.language_id = params[:language_id]
-    end
+    forbidden_words_list.update(forbidden_words_list_params)
 
     if forbidden_words_list.save
       render json: { error: false, details: 'FORBIDDEN_WORDS_LIST_UPDATED' }
@@ -113,7 +96,7 @@ class Api::V1::ForbiddenWordsListsController < Api::V1::ApiController
 
     authorize forbidden_words_list
 
-    forbidden_words_lists.destroy
+    forbidden_words_list.destroy
 
     render json: { error: false, details: 'FORBIDDEN_WORDS_LIST_DELETED' }
   end
@@ -121,6 +104,6 @@ class Api::V1::ForbiddenWordsListsController < Api::V1::ApiController
   private
 
   def forbidden_words_list_params
-    params.permit(:name, :content, :language_id)
+    params.permit(:name, :content, :country_code_id, :language_code_id)
   end
 end

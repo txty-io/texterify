@@ -94,6 +94,9 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     ,
                     Routes.DASHBOARD.PROJECT_PLACEHOLDERS_RESOLVER({
                         projectId: this.props.match.params.projectId
+                    }),
+                    Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_LISTS_RESOLVER({
+                        projectId: this.props.match.params.projectId
                     })
                 ]
             },
@@ -287,7 +290,8 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     height: 48,
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: dashboardStore.sidebarMinimized ? "center" : undefined
+                    justifyContent: dashboardStore.sidebarMinimized ? "center" : undefined,
+                    overflow: "hidden"
                 }}
             >
                 <Link

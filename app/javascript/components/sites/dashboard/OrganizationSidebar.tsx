@@ -114,7 +114,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
     renderMenuItems = (): JSX.Element[] => {
         return [
             <Menu.Item
-                key={"title"}
+                key="title"
                 title={dashboardStore.currentOrganization && dashboardStore.currentOrganization.attributes.name}
                 style={{
                     height: 48,
@@ -129,7 +129,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                         ":organizationId",
                         dashboardStore.currentOrganization && dashboardStore.currentOrganization.id
                     )}
-                    style={{ overflow: "hidden", textOverflow: "ellipsis" }}
+                    style={{ overflow: "hidden", textOverflow: "ellipsis", color: "var(--highlight-color)" }}
                 >
                     <span style={{ fontWeight: "bold" }}>
                         {!dashboardStore.sidebarMinimized &&

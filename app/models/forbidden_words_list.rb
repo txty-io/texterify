@@ -1,7 +1,8 @@
 class ForbiddenWordsList < ApplicationRecord
   belongs_to :project, optional: true
   belongs_to :organization, optional: true
-  belongs_to :language, optional: true
+  belongs_to :language_code, optional: true
+  belongs_to :country_code, optional: true
 
   has_many :forbidden_words, dependent: :destroy
 

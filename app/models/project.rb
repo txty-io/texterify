@@ -24,6 +24,9 @@ class Project < ApplicationRecord
 
   # Forbidden words
   has_many :forbidden_words_lists, dependent: :destroy
+
+  # Only returns the forbidden words of the project and not also the one
+  # from the organization.
   has_many :forbidden_words, through: :forbidden_words_lists
 
   # Tags

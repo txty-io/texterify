@@ -52,32 +52,39 @@ class Translation < ApplicationRecord
       end
     end
 
-    # Check forbidden words
-    project.forbidden_words.each do |forbidden_word|
-      active_violation =
-        ValidationViolation.find_by(
-          project_id: project.id,
-          translation_id: self.id,
-          forbidden_word_id: forbidden_word.id
-        )
-
-      translation_fw_matches_language =
-        forbidden_word.forbidden_words_list.language_id.nil? ||
-          forbidden_word.forbidden_words_list.language_id == self.language_id
-
-      is_violation =
-        self.content.present? && translation_fw_matches_language && self.content.include?(forbidden_word.content)
-
-      if is_violation
-        if !active_violation
-          ValidationViolation.create!(
+    # Check forbidden words for issues.
+    project.forbidden_words_lists.each do |forbidden_words_list|
+      forbidden_words_list.forbidden_words.each do |forbidden_word|
+        active_violation =
+          ValidationViolation.find_by(
             project_id: project.id,
             translation_id: self.id,
             forbidden_word_id: forbidden_word.id
           )
+
+        translation_fw_matches_language_code =
+          forbidden_word.forbidden_words_list.language_code_id.nil? ||
+            forbidden_word.forbidden_words_list.language_code_id == self.language.language_code_id
+
+        translation_fw_matches_country_code =
+          forbidden_word.forbidden_words_list.country_code_id.nil? ||
+            forbidden_word.forbidden_words_list.country_code_id == self.language.country_code_id
+
+        is_violation =
+          self.content.present? && translation_fw_matches_language_code && translation_fw_matches_country_code &&
+            self.content.include?(forbidden_word.content)
+
+        if is_violation
+          if !active_violation
+            ValidationViolation.create!(
+              project_id: project.id,
+              translation_id: self.id,
+              forbidden_word_id: forbidden_word.id
+            )
+          end
+        else
+          active_violation&.destroy!
         end
-      else
-        active_violation&.destroy!
       end
     end
   end

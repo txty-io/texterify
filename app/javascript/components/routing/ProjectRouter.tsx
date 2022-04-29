@@ -31,6 +31,7 @@ import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { UserDeactivatedProjectModal } from "../ui/UserDeactivatedProjectModal";
 import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
+import { ProjectForbiddenWordsListsSite } from "../sites/dashboard/ProjectForbiddenWordsListsSite";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -188,6 +189,11 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         exact
                         path={Routes.DASHBOARD.PROJECT_VALIDATIONS}
                         component={ProjectValidationsSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_LISTS}
+                        component={ProjectForbiddenWordsListsSite}
                     />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_OTA} component={ProjectOTASite} />
                     <PrivateRoute

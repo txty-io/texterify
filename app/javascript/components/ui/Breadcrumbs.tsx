@@ -187,6 +187,13 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                     projectId: this.props.match.params.projectId
                 })
             },
+            projectForbiddenWords: {
+                parent: "projectValidations",
+                name: "Forbidden words",
+                path: Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_LISTS_RESOLVER({
+                    projectId: this.props.match.params.projectId
+                })
+            },
             projectActivity: {
                 parent: "project",
                 name: "Activity",

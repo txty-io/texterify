@@ -12,6 +12,8 @@ export interface IValidation {
         content: string;
         project_id: string;
         organization_id: string;
+        language_code_id: string;
+        country_code_id: string;
         enabled: boolean;
     };
 }

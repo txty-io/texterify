@@ -1,7 +1,11 @@
 import * as React from "react";
 import FlagIcon from "./FlagIcons";
 
-export function LanguageNameWithFlag(props: { languageName: string; countryCode: string }) {
+export function LanguageNameWithFlag(props: {
+    languageName: string;
+    countryCode: string;
+    showNameWithCountryCode?: boolean;
+}) {
     return (
         <>
             {props.countryCode && (
@@ -10,6 +14,7 @@ export function LanguageNameWithFlag(props: { languageName: string; countryCode:
                 </span>
             )}
             {props.languageName}
+            {props.showNameWithCountryCode && <>-{props.countryCode}</>}
         </>
     );
 }

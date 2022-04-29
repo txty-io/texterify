@@ -1,10 +1,8 @@
-import { Button, Empty, message, Modal, Popconfirm, Switch, Table, Tooltip } from "antd";
+import { Button, Empty, message, Modal, Switch, Table, Tooltip } from "antd";
 import { observer } from "mobx-react";
-import PubSub from "pubsub-js";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
-import { BackgroundJobsAPI, IGetBackgroundJobsResponse } from "../../api/v1/BackgroundJobsAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import {
     IGetValidationsOptions,
@@ -12,7 +10,6 @@ import {
     IValidation,
     ValidationsAPI
 } from "../../api/v1/ValidationsAPI";
-import { IGetValidationViolationsCountResponse, ValidationViolationsAPI } from "../../api/v1/ValidationViolationsAPI";
 import { AddEditValidationForm } from "../../forms/AddEditValidationForm";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
@@ -20,105 +17,39 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { DeleteLink } from "../../ui/DeleteLink";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
-import { ForbiddenWordsListsTable } from "../../ui/ForbiddenWordsListsTable";
-import { IssuesTag } from "../../ui/IssuesTag";
 import { LayoutWithSidebar } from "../../ui/LayoutWithSidebar";
 import { LayoutWithSidebarContentWrapper } from "../../ui/LayoutWithSidebarContentWrapper";
 import { LayoutWithSidebarContentWrapperInner } from "../../ui/LayoutWithSidebarContentWrapperInner";
-import { Styles } from "../../ui/Styles";
+import { ValidationSiteHeader } from "../../ui/ValidationSiteHeader";
 import { ValidationsSidebar } from "../../ui/ValidationsSidebar";
-import {
-    PUBSUB_EVENTS,
-    PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED,
-    PUBSUB_RECHECK_ALL_VALIDATIONS_PROGRESS
-} from "../../utilities/PubSubEvents";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
-    // validations
     addValidationDialogVisible: boolean;
     validationToEdit: IValidation;
     validationsResponse: IGetValidationsResponse;
     validationsLoading: boolean;
     validationUpdating: boolean;
 
-    // validation violations
-    validationViolationsCountResponse: IGetValidationViolationsCountResponse;
-    validationViolationsLoading: boolean;
-
     page: number;
     perPage: number;
-    checkingValidations: boolean;
-    getBackgroundJobsResponse: IGetBackgroundJobsResponse;
 }
 
 @observer
 class ProjectValidationsSite extends React.Component<IProps, IState> {
     state: IState = {
-        // validations
         addValidationDialogVisible: false,
         validationToEdit: null,
         validationsResponse: null,
         validationsLoading: false,
         validationUpdating: false,
 
-        // validation violations
-        validationViolationsCountResponse: null,
-        validationViolationsLoading: true,
-
         page: 1,
-        perPage: 10,
-        checkingValidations: false,
-        getBackgroundJobsResponse: null
-    };
-
-    eventSubscriptionFinished: string;
-    eventSubscriptionProgress: string;
-
-    onPubSubEvent = (event: PUBSUB_EVENTS, data: { projectId: string }) => {
-        if (data.projectId === this.props.match.params.projectId) {
-            void this.loadBackgroundJobs();
-
-            if (event === PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED) {
-                void this.fetchValidationViolations();
-                void dashboardStore.reloadCurrentProjectIssuesCount();
-                message.success("Checking translations for validation issues completed.");
-            }
-        }
+        perPage: 10
     };
 
     async componentDidMount() {
-        await Promise.all([this.fetchValidationViolations(), this.loadValidations(), this.loadBackgroundJobs()]);
-
-        this.eventSubscriptionFinished = PubSub.subscribe(PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED, this.onPubSubEvent);
-        this.eventSubscriptionProgress = PubSub.subscribe(PUBSUB_RECHECK_ALL_VALIDATIONS_PROGRESS, this.onPubSubEvent);
-    }
-
-    componentWillUnmount() {
-        if (this.eventSubscriptionFinished) {
-            PubSub.unsubscribe(this.eventSubscriptionFinished);
-        }
-
-        if (this.eventSubscriptionProgress) {
-            PubSub.unsubscribe(this.eventSubscriptionProgress);
-        }
-    }
-
-    async loadBackgroundJobs() {
-        try {
-            const getBackgroundJobsResponse = await BackgroundJobsAPI.getBackgroundJobs(
-                this.props.match.params.projectId,
-                {
-                    status: ["CREATED", "RUNNING"],
-                    jobTypes: ["RECHECK_ALL_VALIDATIONS"]
-                }
-            );
-            this.setState({
-                getBackgroundJobsResponse: getBackgroundJobsResponse
-            });
-        } catch (e) {
-            console.error(e);
-        }
+        await Promise.all([this.loadValidations()]);
     }
 
     async loadValidations(options?: { page?: number; perPage?: number }) {
@@ -141,29 +72,6 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
             }
 
             this.setState({ validationsLoading: false });
-        }
-    }
-
-    async fetchValidationViolations() {
-        if (dashboardStore.featureEnabled("FEATURE_VALIDATIONS")) {
-            this.setState({ validationViolationsLoading: true });
-
-            try {
-                const validationViolationsCountResponse = await ValidationViolationsAPI.getCount({
-                    projectId: this.props.match.params.projectId
-                });
-
-                this.setState({
-                    validationViolationsCountResponse: validationViolationsCountResponse
-                });
-            } catch (error) {
-                console.error(error);
-                message.error("Failed to load violations.");
-            }
-
-            this.setState({
-                validationViolationsLoading: false
-            });
         }
     }
 
@@ -293,16 +201,18 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                     </div>
                 ),
                 controls: (
-                    <div style={{ display: "flex", justifyContent: "center" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
                         {validation.attributes.organization_id ? (
-                            <Link
-                                to={Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
-                                    organizationId: validation.attributes.organization_id
-                                })}
-                                style={{ fontStyle: "italic" }}
-                            >
-                                Organization validation
-                            </Link>
+                            <Tooltip title="Click to edit in organization">
+                                <Link
+                                    to={Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
+                                        organizationId: validation.attributes.organization_id
+                                    })}
+                                    style={{ whiteSpace: "nowrap" }}
+                                >
+                                    Inherited
+                                </Link>
+                            </Tooltip>
                         ) : (
                             <>
                                 <a
@@ -392,10 +302,6 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
         await this.loadValidations(fetchOptions);
     };
 
-    isAlreadyRecheckingAllValidations = () => {
-        return this.state.getBackgroundJobsResponse?.meta?.total > 0;
-    };
-
     render() {
         return (
             <>
@@ -412,81 +318,15 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                 <FeatureNotAvailable
                                     feature="FEATURE_VALIDATIONS"
                                     dataId="FEATURE_VALIDATIONS_NOT_AVAILABLE"
-                                    style={{ marginBottom: 24 }}
                                 />
                             )}
 
                             {dashboardStore.featureEnabled("FEATURE_VALIDATIONS") && (
                                 <>
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                        <IssuesTag
-                                            loading={this.state.validationViolationsLoading}
-                                            projectId={this.props.match.params.projectId}
-                                            issuesCount={this.state.validationViolationsCountResponse?.total || 0}
-                                        />
-
-                                        <Link
-                                            to={Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(
-                                                ":projectId",
-                                                this.props.match.params.projectId
-                                            )}
-                                            style={{ marginLeft: 24, marginRight: 40 }}
-                                        >
-                                            View issues
-                                        </Link>
-
-                                        <Popconfirm
-                                            title="Do you want to run all enabled validations against your translations?"
-                                            onConfirm={async () => {
-                                                this.setState({ checkingValidations: true });
-
-                                                try {
-                                                    await ValidationsAPI.checkValidations({
-                                                        linkedType: "project",
-                                                        linkedId: this.props.match.params.projectId
-                                                    });
-
-                                                    message.success(
-                                                        "Successfully queued job to check translations for validation issues."
-                                                    );
-                                                    await Promise.all([
-                                                        this.loadBackgroundJobs(),
-                                                        dashboardStore.loadBackgroundJobs(
-                                                            this.props.match.params.projectId
-                                                        )
-                                                    ]);
-                                                } catch (error) {
-                                                    console.error(error);
-                                                    message.error(
-                                                        "Failed to queue job for checking translations for validation issues."
-                                                    );
-                                                }
-
-                                                this.setState({ checkingValidations: false });
-                                            }}
-                                            okText="Yes"
-                                            cancelText="No"
-                                            okButtonProps={{ danger: true }}
-                                        >
-                                            <Button
-                                                type="primary"
-                                                loading={
-                                                    this.state.checkingValidations ||
-                                                    this.isAlreadyRecheckingAllValidations()
-                                                }
-                                                style={{ marginLeft: 80 }}
-                                                disabled={
-                                                    !this.state.getBackgroundJobsResponse ||
-                                                    !dashboardStore.featureEnabled("FEATURE_VALIDATIONS")
-                                                }
-                                            >
-                                                {this.state.checkingValidations ||
-                                                this.isAlreadyRecheckingAllValidations()
-                                                    ? "Checking translations..."
-                                                    : "Check translations for validation issues"}
-                                            </Button>
-                                        </Popconfirm>
-                                    </div>
+                                    <ValidationSiteHeader
+                                        projectId={this.props.match.params.projectId}
+                                        checkFor="validations"
+                                    />
 
                                     <div style={{ display: "flex", marginTop: 24 }}>
                                         <div
@@ -556,21 +396,6 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                                         />
                                                     )
                                                 }}
-                                            />
-                                        </div>
-                                        <div
-                                            style={{
-                                                marginRight: 80,
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                width: "100%",
-                                                maxWidth: 720,
-                                                alignItems: "flex-start"
-                                            }}
-                                        >
-                                            <ForbiddenWordsListsTable
-                                                linkedType="project"
-                                                linkedId={this.props.match.params.projectId}
                                             />
                                         </div>
                                         <div

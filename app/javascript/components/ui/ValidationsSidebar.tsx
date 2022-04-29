@@ -20,6 +20,13 @@ export const ValidationsSidebar = observer((props: { projectId: string }) => {
                             path: Routes.DASHBOARD.PROJECT_PLACEHOLDERS_RESOLVER({ projectId: props.projectId }),
                             name: "Placeholders",
                             id: "validations-sidebar-placeholders"
+                        },
+                        {
+                            path: Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_LISTS_RESOLVER({
+                                projectId: props.projectId
+                            }),
+                            name: "Forbidden words",
+                            id: "validations-sidebar-forbidden-words-lists"
                         }
                     ]
                 }

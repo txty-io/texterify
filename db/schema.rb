@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_28_232602) do
+ActiveRecord::Schema.define(version: 2022_04_29_163253) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -138,9 +138,11 @@ ActiveRecord::Schema.define(version: 2022_04_28_232602) do
     t.uuid "project_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.uuid "language_id"
     t.uuid "organization_id"
-    t.index ["language_id"], name: "index_forbidden_words_lists_on_language_id"
+    t.uuid "country_code_id"
+    t.uuid "language_code_id"
+    t.index ["country_code_id"], name: "index_forbidden_words_lists_on_country_code_id"
+    t.index ["language_code_id"], name: "index_forbidden_words_lists_on_language_code_id"
     t.index ["organization_id"], name: "index_forbidden_words_lists_on_organization_id"
     t.index ["project_id"], name: "index_forbidden_words_lists_on_project_id"
   end
@@ -513,6 +515,10 @@ ActiveRecord::Schema.define(version: 2022_04_28_232602) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "enabled", default: true, null: false
+    t.uuid "country_code_id"
+    t.uuid "language_code_id"
+    t.index ["country_code_id"], name: "index_validations_on_country_code_id"
+    t.index ["language_code_id"], name: "index_validations_on_language_code_id"
     t.index ["organization_id"], name: "index_validations_on_organization_id"
     t.index ["project_id"], name: "index_validations_on_project_id"
   end
@@ -570,7 +576,8 @@ ActiveRecord::Schema.define(version: 2022_04_28_232602) do
   add_foreign_key "custom_subscriptions", "organizations", on_delete: :nullify
   add_foreign_key "export_configs", "projects", on_delete: :cascade
   add_foreign_key "forbidden_words", "forbidden_words_lists", on_delete: :cascade
-  add_foreign_key "forbidden_words_lists", "languages", on_delete: :cascade
+  add_foreign_key "forbidden_words_lists", "country_codes", on_delete: :cascade
+  add_foreign_key "forbidden_words_lists", "language_codes", on_delete: :cascade
   add_foreign_key "forbidden_words_lists", "organizations", on_delete: :cascade
   add_foreign_key "forbidden_words_lists", "projects", on_delete: :cascade
   add_foreign_key "keys", "projects", on_delete: :cascade
@@ -616,6 +623,8 @@ ActiveRecord::Schema.define(version: 2022_04_28_232602) do
   add_foreign_key "validation_violations", "placeholders", on_delete: :cascade
   add_foreign_key "validation_violations", "projects", on_delete: :cascade
   add_foreign_key "validation_violations", "translations", on_delete: :cascade
+  add_foreign_key "validations", "country_codes", on_delete: :cascade
+  add_foreign_key "validations", "language_codes", on_delete: :cascade
   add_foreign_key "validations", "organizations", on_delete: :cascade
   add_foreign_key "validations", "projects", on_delete: :cascade
   add_foreign_key "versions", "projects", on_delete: :cascade
