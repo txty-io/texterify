@@ -1,16 +1,10 @@
-import { Button, Empty, Layout, message, Modal, Popconfirm, Switch, Table } from "antd";
-import { TableRowSelection } from "antd/lib/table/interface";
+import { Button, Empty, message, Modal, Popconfirm, Switch, Table, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import PubSub from "pubsub-js";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
 import { BackgroundJobsAPI, IGetBackgroundJobsResponse } from "../../api/v1/BackgroundJobsAPI";
-import {
-    ForbiddenWordsListsAPI,
-    IForbiddenWordsList,
-    IGetForbiddenWordsListsResponse
-} from "../../api/v1/ForbiddenWordsListsAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import {
     IGetValidationsOptions,
@@ -19,7 +13,6 @@ import {
     ValidationsAPI
 } from "../../api/v1/ValidationsAPI";
 import { IGetValidationViolationsCountResponse, ValidationViolationsAPI } from "../../api/v1/ValidationViolationsAPI";
-import { AddEditForbiddenWordsListForm } from "../../forms/AddEditForbiddenWordListForm";
 import { AddEditValidationForm } from "../../forms/AddEditValidationForm";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
@@ -32,6 +25,7 @@ import { IssuesTag } from "../../ui/IssuesTag";
 import { LayoutWithSidebar } from "../../ui/LayoutWithSidebar";
 import { LayoutWithSidebarContentWrapper } from "../../ui/LayoutWithSidebarContentWrapper";
 import { LayoutWithSidebarContentWrapperInner } from "../../ui/LayoutWithSidebarContentWrapperInner";
+import { Styles } from "../../ui/Styles";
 import { ValidationsSidebar } from "../../ui/ValidationsSidebar";
 import {
     PUBSUB_EVENTS,
@@ -54,7 +48,7 @@ interface IState {
 
     page: number;
     perPage: number;
-    recheckingValidations: boolean;
+    checkingValidations: boolean;
     getBackgroundJobsResponse: IGetBackgroundJobsResponse;
 }
 
@@ -74,7 +68,7 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
 
         page: 1,
         perPage: 10,
-        recheckingValidations: false,
+        checkingValidations: false,
         getBackgroundJobsResponse: null
     };
 
@@ -132,7 +126,9 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
             this.setState({ validationsLoading: true });
 
             try {
-                const validationsResponse = await ValidationsAPI.getValidations(this.props.match.params.projectId, {
+                const validationsResponse = await ValidationsAPI.getValidations({
+                    linkedId: this.props.match.params.projectId,
+                    linkedType: "project",
                     page: options?.page,
                     perPage: options?.perPage
                 });
@@ -255,73 +251,99 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                 ),
                 enabled: (
                     <div style={{ display: "flex", justifyContent: "center" }}>
-                        <Switch
-                            defaultChecked={validation.attributes.enabled}
-                            loading={this.state.validationUpdating}
-                            checked={validation.attributes.enabled}
-                            onChange={async () => {
-                                this.setState({ validationUpdating: true });
+                        <Tooltip
+                            title={
+                                validation.attributes.organization_id
+                                    ? "Change in your organization validation settings."
+                                    : undefined
+                            }
+                        >
+                            <Switch
+                                defaultChecked={validation.attributes.enabled}
+                                loading={this.state.validationUpdating}
+                                checked={validation.attributes.enabled}
+                                disabled={!!validation.attributes.organization_id}
+                                onChange={async () => {
+                                    this.setState({ validationUpdating: true });
 
-                                try {
-                                    await ValidationsAPI.updateValidation({
-                                        projectId: this.props.match.params.projectId,
-                                        validationId: validation.id,
-                                        enabled: !validation.attributes.enabled
-                                    });
+                                    try {
+                                        await ValidationsAPI.updateValidation({
+                                            linkedId: this.props.match.params.projectId,
+                                            linkedType: "project",
+                                            validationId: validation.id,
+                                            enabled: !validation.attributes.enabled
+                                        });
 
-                                    message.success(
-                                        !validation.attributes.enabled ? "Validation enabled." : "Validation disabled."
-                                    );
+                                        message.success(
+                                            !validation.attributes.enabled
+                                                ? "Validation enabled."
+                                                : "Validation disabled."
+                                        );
 
-                                    validation.attributes.enabled = !validation.attributes.enabled;
-                                } catch (error) {
-                                    console.error(error);
-                                    message.error("Failed to update validation status.");
-                                }
+                                        validation.attributes.enabled = !validation.attributes.enabled;
+                                    } catch (error) {
+                                        console.error(error);
+                                        message.error("Failed to update validation status.");
+                                    }
 
-                                this.setState({ validationUpdating: false });
-                            }}
-                        />
+                                    this.setState({ validationUpdating: false });
+                                }}
+                            />
+                        </Tooltip>
                     </div>
                 ),
                 controls: (
                     <div style={{ display: "flex", justifyContent: "center" }}>
-                        <a
-                            onClick={() => {
-                                this.setState({
-                                    addValidationDialogVisible: true,
-                                    validationToEdit: validation
-                                });
-                            }}
-                        >
-                            Edit
-                        </a>
-                        <DeleteLink
-                            onClick={() => {
-                                Modal.confirm({
-                                    title: "Do you really want to delete this validation?",
-                                    content: "This cannot be undone.",
-                                    okText: "Yes",
-                                    okButtonProps: {
-                                        danger: true
-                                    },
-                                    cancelText: "No",
-                                    autoFocusButton: "cancel",
-                                    onOk: async () => {
-                                        await ValidationsAPI.deleteValidation(
-                                            this.props.match.params.projectId,
-                                            validation.id
-                                        );
+                        {validation.attributes.organization_id ? (
+                            <Link
+                                to={Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
+                                    organizationId: validation.attributes.organization_id
+                                })}
+                                style={{ fontStyle: "italic" }}
+                            >
+                                Organization validation
+                            </Link>
+                        ) : (
+                            <>
+                                <a
+                                    onClick={() => {
+                                        this.setState({
+                                            addValidationDialogVisible: true,
+                                            validationToEdit: validation
+                                        });
+                                    }}
+                                >
+                                    Edit
+                                </a>
+                                <DeleteLink
+                                    onClick={() => {
+                                        Modal.confirm({
+                                            title: "Do you really want to delete this validation?",
+                                            content: "This cannot be undone.",
+                                            okText: "Yes",
+                                            okButtonProps: {
+                                                danger: true
+                                            },
+                                            cancelText: "No",
+                                            autoFocusButton: "cancel",
+                                            onOk: async () => {
+                                                await ValidationsAPI.deleteValidation({
+                                                    linkedId: this.props.match.params.projectId,
+                                                    linkedType: "project",
+                                                    validationId: validation.id
+                                                });
 
-                                        await this.loadValidations();
-                                        message.success("Validation deleted");
-                                    }
-                                });
-                            }}
-                            style={{ marginLeft: 16 }}
-                        >
-                            Delete
-                        </DeleteLink>
+                                                await this.loadValidations();
+                                                message.success("Validation deleted");
+                                            }
+                                        });
+                                    }}
+                                    style={{ marginLeft: 16 }}
+                                >
+                                    Delete
+                                </DeleteLink>
+                            </>
+                        )}
                     </div>
                 )
             };
@@ -361,7 +383,10 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
     };
 
     reloadTable = async (options?: IGetValidationsOptions) => {
-        const fetchOptions = options || {};
+        const fetchOptions: IGetValidationsOptions = options || {
+            linkedId: this.props.match.params.projectId,
+            linkedType: "project"
+        };
         fetchOptions.page = (options && options.page) || this.state.page;
         fetchOptions.perPage = (options && options.perPage) || this.state.perPage;
         await this.loadValidations(fetchOptions);
@@ -413,11 +438,12 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                         <Popconfirm
                                             title="Do you want to run all enabled validations against your translations?"
                                             onConfirm={async () => {
-                                                this.setState({ recheckingValidations: true });
+                                                this.setState({ checkingValidations: true });
 
                                                 try {
-                                                    await ValidationsAPI.recheckValidations({
-                                                        projectId: this.props.match.params.projectId
+                                                    await ValidationsAPI.checkValidations({
+                                                        linkedType: "project",
+                                                        linkedId: this.props.match.params.projectId
                                                     });
 
                                                     message.success(
@@ -436,7 +462,7 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                                     );
                                                 }
 
-                                                this.setState({ recheckingValidations: false });
+                                                this.setState({ checkingValidations: false });
                                             }}
                                             okText="Yes"
                                             cancelText="No"
@@ -445,7 +471,7 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                             <Button
                                                 type="primary"
                                                 loading={
-                                                    this.state.recheckingValidations ||
+                                                    this.state.checkingValidations ||
                                                     this.isAlreadyRecheckingAllValidations()
                                                 }
                                                 style={{ marginLeft: 80 }}
@@ -454,7 +480,7 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                                     !dashboardStore.featureEnabled("FEATURE_VALIDATIONS")
                                                 }
                                             >
-                                                {this.state.recheckingValidations ||
+                                                {this.state.checkingValidations ||
                                                 this.isAlreadyRecheckingAllValidations()
                                                     ? "Checking translations..."
                                                     : "Check translations for validation issues"}
@@ -499,19 +525,26 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                                     showSizeChanger: true,
                                                     current: this.state.page,
                                                     pageSize: this.state.perPage,
-                                                    total:
-                                                        (this.state.validationsResponse &&
-                                                            this.state.validationsResponse.meta.total) ||
-                                                        0,
+                                                    total: this.state.validationsResponse?.meta?.total || 0,
                                                     onChange: async (page: number, perPage: number) => {
                                                         const isPageSizeChange = perPage !== this.state.perPage;
 
                                                         if (isPageSizeChange) {
                                                             this.setState({ page: 1, perPage: perPage });
-                                                            await this.reloadTable({ page: 1, perPage: perPage });
+                                                            await this.reloadTable({
+                                                                page: 1,
+                                                                perPage: perPage,
+                                                                linkedId: this.props.match.params.projectId,
+                                                                linkedType: "project"
+                                                            });
                                                         } else {
                                                             this.setState({ page: page, perPage: perPage });
-                                                            await this.reloadTable({ page: page, perPage: perPage });
+                                                            await this.reloadTable({
+                                                                page: page,
+                                                                perPage: perPage,
+                                                                linkedId: this.props.match.params.projectId,
+                                                                linkedType: "project"
+                                                            });
                                                         }
                                                     }
                                                 }}
@@ -535,7 +568,10 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                                 alignItems: "flex-start"
                                             }}
                                         >
-                                            <ForbiddenWordsListsTable projectId={this.props.match.params.projectId} />
+                                            <ForbiddenWordsListsTable
+                                                linkedType="project"
+                                                linkedId={this.props.match.params.projectId}
+                                            />
                                         </div>
                                         <div
                                             style={{
@@ -581,7 +617,8 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                 </LayoutWithSidebar>
 
                 <AddEditValidationForm
-                    projectId={this.props.match.params.projectId}
+                    linkedId={this.props.match.params.projectId}
+                    linkedType="project"
                     validationToEdit={this.state.validationToEdit}
                     visible={this.state.addValidationDialogVisible}
                     onCancelRequest={() => {
@@ -597,9 +634,10 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                             validationsLoading: true
                         });
 
-                        const validationsResponse = await ValidationsAPI.getValidations(
-                            this.props.match.params.projectId
-                        );
+                        const validationsResponse = await ValidationsAPI.getValidations({
+                            linkedId: this.props.match.params.projectId,
+                            linkedType: "project"
+                        });
                         this.setState({
                             validationsResponse: validationsResponse,
                             validationsLoading: false

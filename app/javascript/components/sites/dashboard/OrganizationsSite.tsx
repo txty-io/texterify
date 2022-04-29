@@ -181,12 +181,7 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
                                 showSizeChanger
                                 pageSize={this.state.perPage}
                                 current={this.state.page}
-                                total={
-                                    (this.state.organizationsResponse &&
-                                        this.state.organizationsResponse.data &&
-                                        this.state.organizationsResponse.meta.total) ||
-                                    0
-                                }
+                                total={this.state.organizationsResponse?.meta?.total || 0}
                                 onChange={async (page: number, perPage: number) => {
                                     const isPageSizeChange = perPage !== this.state.perPage;
 

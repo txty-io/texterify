@@ -12,6 +12,13 @@ class Organization < ApplicationRecord
   has_many :sent_emails, dependent: :destroy
   has_many :invites, class_name: 'OrganizationInvite', dependent: :destroy
 
+  # Validations
+  has_many :validations, dependent: :destroy
+
+  # Forbidden words
+  has_many :forbidden_words_lists, dependent: :destroy
+  has_many :forbidden_words, through: :forbidden_words_lists
+
   has_one_attached :image
 
   def name=(name)

@@ -169,7 +169,7 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
                     showSizeChanger: true,
                     current: page,
                     pageSize: perPage,
-                    total: exportConfigResponse?.meta.total || 0,
+                    total: exportConfigResponse?.meta?.total || 0,
                     onChange: async (newPage, newPerPage) => {
                         const isPageSizeChange = perPage !== newPerPage;
 

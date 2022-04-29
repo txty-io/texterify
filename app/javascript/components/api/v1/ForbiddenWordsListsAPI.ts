@@ -9,6 +9,7 @@ export interface IForbiddenWordsList {
         name: string;
         content: string;
         project_id: string;
+        organization_id: string;
         language_id: string;
         words_count: number;
     };
@@ -28,8 +29,11 @@ export interface IGetForbiddenWordsListsResponse {
     meta: { total: number };
 }
 
+export type IForbiddenWordsListLinkedTo = "project" | "organization";
+
 export interface IGetForbiddenWordsListsOptions {
-    projectId: string;
+    linkedId: string;
+    linkedType: IForbiddenWordsListLinkedTo;
     page?: number;
     perPage?: number;
 }
@@ -38,7 +42,7 @@ const ForbiddenWordsListsAPI = {
     getForbiddenWordsLists: async (
         options: IGetForbiddenWordsListsOptions
     ): Promise<IGetForbiddenWordsListsResponse> => {
-        return API.getRequest(`projects/${options.projectId}/forbidden_words_lists`, true, {
+        return API.getRequest(`${options.linkedType}s/${options.linkedId}/forbidden_words_lists`, true, {
             page: options && options.page,
             per_page: options && options.perPage
         })
@@ -47,12 +51,13 @@ const ForbiddenWordsListsAPI = {
     },
 
     createForbiddenWordsList: async (options: {
-        projectId: string;
+        linkedId: string;
+        linkedType: IForbiddenWordsListLinkedTo;
         name: string;
         content?: string;
         languageId?: string;
     }) => {
-        return API.postRequest(`projects/${options.projectId}/forbidden_words_lists`, true, {
+        return API.postRequest(`${options.linkedType}s/${options.linkedId}/forbidden_words_lists`, true, {
             name: options.name,
             content: options.content,
             language_id: options.languageId
@@ -62,14 +67,15 @@ const ForbiddenWordsListsAPI = {
     },
 
     updateForbiddenWordsList: async (options: {
-        projectId: string;
+        linkedId: string;
+        linkedType: IForbiddenWordsListLinkedTo;
         forbiddenWordsListId: string;
         name: string;
         content: string;
         languageId: string;
     }) => {
         return API.putRequest(
-            `projects/${options.projectId}/forbidden_words_lists/${options.forbiddenWordsListId}`,
+            `${options.linkedType}s/${options.linkedId}/forbidden_words_lists/${options.forbiddenWordsListId}`,
             true,
             {
                 name: options.name,
@@ -81,9 +87,13 @@ const ForbiddenWordsListsAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    deleteForbiddenWordsList: async (options: { projectId: string; forbiddenWordsListId: string }) => {
+    deleteForbiddenWordsList: async (options: {
+        linkedId: string;
+        linkedType: IForbiddenWordsListLinkedTo;
+        forbiddenWordsListId: string;
+    }) => {
         return API.deleteRequest(
-            `projects/${options.projectId}/forbidden_words_lists/${options.forbiddenWordsListId}`,
+            `${options.linkedType}s/${options.linkedId}/forbidden_words_lists/${options.forbiddenWordsListId}`,
             true
         )
             .then(APIUtils.handleErrors)

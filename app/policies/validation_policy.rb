@@ -29,6 +29,6 @@ class ValidationPolicy
   private
 
   def project_user_role
-    validation.project.role_of(user)
+    validation.project&.role_of(user) || validation.organization&.role_of(user)
   end
 end

@@ -2,15 +2,19 @@ class Api::V1::ForbiddenWordsListsController < Api::V1::ApiController
   def index
     skip_authorization
 
-    project = current_user.projects.find(params[:project_id])
-
     page = parse_page(params[:page])
     per_page = parse_per_page(params[:per_page])
 
-    forbidden_words_lists = project.forbidden_words_lists
+    if params[:project_id]
+      project = current_user.projects.find(params[:project_id])
+      forbidden_words_lists = project.forbidden_words_lists
+    else
+      organization = current_user.organizations.find(params[:organization_id])
+      forbidden_words_lists = organization.forbidden_words_lists
+    end
 
     options = {}
-    options[:meta] = { total: project.forbidden_words_lists.size }
+    options[:meta] = { total: forbidden_words_lists.size }
     options[:include] = [:project]
     render json:
              ForbiddenWordsListSerializer.new(
@@ -20,46 +24,65 @@ class Api::V1::ForbiddenWordsListsController < Api::V1::ApiController
   end
 
   def create
-    project = current_user.projects.find(params[:project_id])
+    if params[:project_id]
+      project = current_user.projects.find(params[:project_id])
 
-    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
-      render json: { error: true, details: 'FEATURE_NOT_AVAILABLE_FOR_PLAN' }
-      return
+      unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+        render json: { error: true, details: 'FEATURE_NOT_AVAILABLE_FOR_PLAN' }
+        return
+      end
+
+      if params[:language_id] && !project.languages.exists?(id: params[:language_id])
+        skip_authorization
+        render json: { error: true, details: 'LANGUAGE_NOT_FOUND' }, status: :bad_request
+        return
+      end
+
+      forbidden_words_list = ForbiddenWordsList.new(forbidden_words_list_params)
+      forbidden_words_list.project = project
+    else
+      organization = current_user.organizations.find(params[:organization_id])
+
+      unless feature_enabled?(organization, Organization::FEATURE_VALIDATIONS)
+        render json: { error: true, details: 'FEATURE_NOT_AVAILABLE_FOR_PLAN' }
+        return
+      end
+
+      forbidden_words_list = ForbiddenWordsList.new(forbidden_words_list_params)
+      forbidden_words_list.organization = organization
     end
-
-    if params[:language_id] && !project.languages.exists?(id: params[:language_id])
-      skip_authorization
-      render json: { error: true, details: 'LANGUAGE_NOT_FOUND' }, status: :bad_request
-      return
-    end
-
-    forbidden_words_list = ForbiddenWordsList.new(forbidden_words_list_params)
-    forbidden_words_list.project = project
 
     authorize forbidden_words_list
-
-    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
-      return
-    end
 
     if forbidden_words_list.save
       render json: { error: false, details: 'FORBIDDEN_WORDS_LIST_CREATED' }, status: :ok
     else
-      render json: { error: false, details: language.errors.details }, status: :bad_request
+      render json: { error: false, details: forbidden_words_list.errors.details }, status: :bad_request
     end
   end
 
   def update
-    project = current_user.projects.find(params[:project_id])
-    forbidden_words_list = project.forbidden_words_lists.find(params[:id])
-    authorize forbidden_words_list
+    if params[:project_id]
+      project = current_user.projects.find(params[:project_id])
+      forbidden_words_list = project.forbidden_words_lists.find(params[:id])
 
-    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
-      render json: { error: true, details: 'FEATURE_NOT_AVAILABLE_FOR_PLAN' }
-      return
+      unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+        render json: { error: true, details: 'FEATURE_NOT_AVAILABLE_FOR_PLAN' }
+        return
+      end
+    else
+      organization = current_user.organizations.find(params[:organization_id])
+      forbidden_words_list = organization.forbidden_words_lists.find(params[:id])
+
+      unless feature_enabled?(organization, Organization::FEATURE_VALIDATIONS)
+        render json: { error: true, details: 'FEATURE_NOT_AVAILABLE_FOR_PLAN' }
+        return
+      end
     end
 
-    if params[:language_id] && !project.languages.exists?(id: params[:language_id])
+    authorize forbidden_words_list
+
+    if project && params[:language_id] && !project.languages.exists?(id: params[:language_id])
       skip_authorization
       render json: { error: true, details: 'LANGUAGE_NOT_FOUND' }, status: :bad_request
       return
@@ -67,7 +90,10 @@ class Api::V1::ForbiddenWordsListsController < Api::V1::ApiController
 
     forbidden_words_list.name = params[:name]
     forbidden_words_list.content = params[:content]
-    forbidden_words_list.language_id = params[:language_id]
+
+    if project && params[:language_id]
+      forbidden_words_list.language_id = params[:language_id]
+    end
 
     if forbidden_words_list.save
       render json: { error: false, details: 'FORBIDDEN_WORDS_LIST_UPDATED' }
@@ -77,9 +103,16 @@ class Api::V1::ForbiddenWordsListsController < Api::V1::ApiController
   end
 
   def destroy
-    project = current_user.projects.find(params[:project_id])
-    forbidden_words_lists = project.forbidden_words_lists.find(params[:id])
-    authorize forbidden_words_lists
+    if params[:project_id]
+      project = current_user.projects.find(params[:project_id])
+      forbidden_words_list = project.forbidden_words_lists.find(params[:id])
+    else
+      organization = current_user.organizations.find(params[:organization_id])
+      forbidden_words_list = organization.forbidden_words_lists.find(params[:id])
+    end
+
+    authorize forbidden_words_list
+
     forbidden_words_lists.destroy
 
     render json: { error: false, details: 'FORBIDDEN_WORDS_LIST_DELETED' }

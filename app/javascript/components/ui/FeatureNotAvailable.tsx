@@ -12,33 +12,35 @@ import { PermissionUtils } from "../utilities/PermissionUtils";
 import { Constants } from "./Constants";
 
 export function FeatureNotAvailable(props: { feature: IFeature; dataId?: string; style?: React.CSSProperties }) {
-    if (!dashboardStore.currentProject) {
-        return null;
-    }
+    let currentOrganization;
 
-    const currentOrganizationRelationship = dashboardStore.currentProject.relationships.organization.data;
+    if (dashboardStore.currentProject) {
+        const currentOrganizationRelationship = dashboardStore.currentProject.relationships.organization.data;
 
-    if (!currentOrganizationRelationship) {
-        return (
-            <Alert
-                showIcon
-                message={
-                    <>
-                        Premium features are not available for private projects. Please move your project to an
-                        organization.
-                    </>
-                }
-                type="info"
-                style={{ marginBottom: 16, maxWidth: 400, ...props.style }}
-                data-id={props.dataId}
-            />
+        if (!currentOrganizationRelationship) {
+            return (
+                <Alert
+                    showIcon
+                    message={
+                        <>
+                            Premium features are not available for private projects. Please move your project to an
+                            organization.
+                        </>
+                    }
+                    type="info"
+                    style={{ marginBottom: 16, maxWidth: 400, ...props.style }}
+                    data-id={props.dataId}
+                />
+            );
+        }
+
+        currentOrganization = APIUtils.getIncludedObject(
+            currentOrganizationRelationship,
+            dashboardStore.currentProjectIncluded
         );
+    } else {
+        currentOrganization = dashboardStore.currentOrganization;
     }
-
-    const currentOrganization = APIUtils.getIncludedObject(
-        currentOrganizationRelationship,
-        dashboardStore.currentProjectIncluded
-    );
 
     if (!currentOrganization) {
         return null;

@@ -289,12 +289,7 @@ class ProjectSite extends React.Component<IProps, IState> {
                                     showSizeChanger
                                     pageSize={this.state.languagesPerPage}
                                     current={this.state.languagesPage}
-                                    total={
-                                        (this.state.languagesResponse &&
-                                            this.state.languagesResponse.data &&
-                                            this.state.languagesResponse.meta.total) ||
-                                        0
-                                    }
+                                    total={this.state.languagesResponse?.meta?.total || 0}
                                     onChange={async (page: number, perPage: number) => {
                                         const isPageSizeChange = perPage !== this.state.languagesPerPage;
 

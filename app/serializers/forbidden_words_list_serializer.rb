@@ -1,6 +1,6 @@
 class ForbiddenWordsListSerializer
   include FastJsonapi::ObjectSerializer
-  attributes :id, :name, :content, :project_id, :language_id
+  attributes :id, :name, :content, :project_id, :organization_id, :language_id
   belongs_to :project
 
   attribute :words_count do |object|

@@ -2,6 +2,7 @@ import {
     HomeOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
+    MonitorOutlined,
     ReloadOutlined,
     RobotOutlined,
     TeamOutlined,
@@ -16,7 +17,7 @@ import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { SidebarTrigger } from "../../ui/SidebarTrigger";
 import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
-import { ROLES_OWNER_UP } from "../../utilities/PermissionUtils";
+import { ROLES_OWNER_UP, ROLES_TRANSLATOR_UP } from "../../utilities/PermissionUtils";
 import { SidebarUtils } from "../../utilities/SidebarUtils";
 const { Sider } = Layout;
 
@@ -58,6 +59,15 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                 this.props.match.params.organizationId
             ),
             text: "Machine Translation",
+            texterifyCloudOnly: false
+        },
+        {
+            icon: MonitorOutlined,
+            path: Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
+                organizationId: this.props.match.params.organizationId
+            }),
+            text: "QA",
+            roles: ROLES_TRANSLATOR_UP,
             texterifyCloudOnly: false
         },
         {

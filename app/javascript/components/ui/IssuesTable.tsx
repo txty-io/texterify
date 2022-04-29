@@ -531,10 +531,7 @@ class IssuesTable extends React.Component<IProps, IState> {
                         showSizeChanger: true,
                         current: this.state.page,
                         pageSize: this.state.perPage,
-                        total:
-                            (this.state.validationViolationsResponse &&
-                                this.state.validationViolationsResponse.meta.total) ||
-                            0,
+                        total: this.state.validationViolationsResponse?.meta?.total || 0,
                         onChange: async (page: number, perPage: number) => {
                             const isPageSizeChange = perPage !== this.state.perPage;
 

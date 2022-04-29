@@ -10,6 +10,8 @@ export interface IValidation {
         description: string;
         match: string;
         content: string;
+        project_id: string;
+        organization_id: string;
         enabled: boolean;
     };
 }
@@ -20,13 +22,17 @@ export interface IGetValidationsResponse {
 }
 
 export interface IGetValidationsOptions {
+    linkedId: string;
+    linkedType: IValidationLinkedTo;
     page?: number;
     perPage?: number;
 }
 
+export type IValidationLinkedTo = "project" | "organization";
+
 const ValidationsAPI = {
-    getValidations: async (projectId: string, options?: IGetValidationsOptions): Promise<IGetValidationsResponse> => {
-        return API.getRequest(`projects/${projectId}/validations`, true, {
+    getValidations: async (options: IGetValidationsOptions): Promise<IGetValidationsResponse> => {
+        return API.getRequest(`${options.linkedType}s/${options.linkedId}/validations`, true, {
             page: options && options.page,
             per_page: options && options.perPage
         })
@@ -35,13 +41,14 @@ const ValidationsAPI = {
     },
 
     createValidation: async (options: {
-        projectId: string;
+        linkedId: string;
+        linkedType: IValidationLinkedTo;
         name: string;
         description: string;
         match: string;
         content: string;
     }) => {
-        return API.postRequest(`projects/${options.projectId}/validations`, true, {
+        return API.postRequest(`${options.linkedType}s/${options.linkedId}/validations`, true, {
             name: options.name,
             description: options.description,
             match: options.match,
@@ -52,7 +59,8 @@ const ValidationsAPI = {
     },
 
     updateValidation: async (options: {
-        projectId: string;
+        linkedId: string;
+        linkedType: IValidationLinkedTo;
         validationId: string;
         name?: string;
         description?: string;
@@ -60,7 +68,7 @@ const ValidationsAPI = {
         content?: string;
         enabled?: boolean;
     }) => {
-        return API.putRequest(`projects/${options.projectId}/validations/${options.validationId}`, true, {
+        return API.putRequest(`${options.linkedType}s/${options.linkedId}/validations/${options.validationId}`, true, {
             name: options.name,
             description: options.description,
             match: options.match,
@@ -71,29 +79,33 @@ const ValidationsAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    deleteValidation: async (projectId: string, validationId: string) => {
-        return API.deleteRequest(`projects/${projectId}/validations/${validationId}`, true)
+    deleteValidation: async (options: { linkedId: string; linkedType: IValidationLinkedTo; validationId: string }) => {
+        return API.deleteRequest(`${options.linkedType}s/${options.linkedId}/validations/${options.validationId}`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },
 
-    recheckValidations: async (options: { projectId: string; validationId?: string }) => {
-        return API.postRequest(`projects/${options.projectId}/validations_recheck`, true, {
+    checkValidations: async (options: { linkedId: string; linkedType: IValidationLinkedTo; validationId?: string }) => {
+        return API.postRequest(`${options.linkedType}s/${options.linkedId}/validations_check`, true, {
             validation_id: options.validationId
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },
 
-    getForbiddenWordsLists: (options: { projectId: string }) => {
-        return API.getRequest(`projects/${options.projectId}/forbidden_words_lists`, true)
+    getForbiddenWordsLists: (options: { linkedId: string; linkedType: IValidationLinkedTo }) => {
+        return API.getRequest(`${options.linkedType}s/${options.linkedId}/forbidden_words_lists`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },
 
-    getForbiddenWordsList: (options: { projectId: string; forbiddenWordListId: string }) => {
+    getForbiddenWordsList: (options: {
+        linkedId: string;
+        linkedType: IValidationLinkedTo;
+        forbiddenWordListId: string;
+    }) => {
         return API.getRequest(
-            `projects/${options.projectId}/forbidden_words_lists/${options.forbiddenWordListId}`,
+            `${options.linkedType}s/${options.linkedId}/forbidden_words_lists/${options.forbiddenWordListId}`,
             true
         )
             .then(APIUtils.handleErrors)

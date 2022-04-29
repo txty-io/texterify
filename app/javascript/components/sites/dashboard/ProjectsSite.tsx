@@ -155,12 +155,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                                             showSizeChanger
                                             pageSize={this.state.perPage}
                                             current={this.state.page}
-                                            total={
-                                                (this.state.projectsResponse &&
-                                                    this.state.projectsResponse.meta &&
-                                                    this.state.projectsResponse.meta.total) ||
-                                                0
-                                            }
+                                            total={this.state.projectsResponse?.meta?.total || 0}
                                             onChange={async (page: number, perPage: number) => {
                                                 const isPageSizeChange = perPage !== this.state.perPage;
 

@@ -21,6 +21,6 @@ class ForbiddenWordsListPolicy
   private
 
   def project_user_role
-    forbidden_word_list.project.role_of(user)
+    forbidden_word_list.project&.role_of(user) || forbidden_word_list.organization&.role_of(user)
   end
 end

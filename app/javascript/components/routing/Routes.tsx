@@ -146,6 +146,10 @@ const Routes = {
         ORGANIZATION_SETTINGS: "/dashboard/organizations/:organizationId/settings",
         ORGANIZATION_SUBSCRIPTION: "/dashboard/organizations/:organizationId/subscription",
         ORGANIZATION_MACHINE_TRANSLATION: "/dashboard/organizations/:organizationId/machine-translation",
+        ORGANIZATION_VALIDATIONS: "/dashboard/organizations/:organizationId/validations",
+        ORGANIZATION_VALIDATIONS_RESOLVER: (options: { organizationId: string }) => {
+            return Routes.DASHBOARD.ORGANIZATION_VALIDATIONS.replace(":organizationId", options.organizationId);
+        },
         INSTANCE: {
             ROOT: "/dashboard/instance",
             LICENSES: "/dashboard/instance/licenses",

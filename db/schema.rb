@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_12_000536) do
+ActiveRecord::Schema.define(version: 2022_04_28_232602) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -135,11 +135,13 @@ ActiveRecord::Schema.define(version: 2022_04_12_000536) do
   create_table "forbidden_words_lists", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "content"
-    t.uuid "project_id", null: false
+    t.uuid "project_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "language_id"
+    t.uuid "organization_id"
     t.index ["language_id"], name: "index_forbidden_words_lists_on_language_id"
+    t.index ["organization_id"], name: "index_forbidden_words_lists_on_organization_id"
     t.index ["project_id"], name: "index_forbidden_words_lists_on_project_id"
   end
 
@@ -321,13 +323,13 @@ ActiveRecord::Schema.define(version: 2022_04_12_000536) do
     t.boolean "machine_translation_enabled", default: true, null: false
     t.boolean "auto_translate_new_keys", default: false, null: false
     t.boolean "auto_translate_new_languages", default: false, null: false
-    t.integer "machine_translation_character_usage", default: 0, null: false
-    t.integer "character_count", default: 0
-    t.integer "word_count", default: 0
     t.boolean "validate_leading_whitespace", default: true, null: false
     t.boolean "validate_trailing_whitespace", default: true, null: false
     t.boolean "validate_double_whitespace", default: true, null: false
     t.boolean "validate_https", default: true, null: false
+    t.integer "machine_translation_character_usage", default: 0, null: false
+    t.integer "character_count", default: 0
+    t.integer "word_count", default: 0
     t.string "placeholder_start"
     t.string "placeholder_end"
     t.index ["organization_id"], name: "index_projects_on_organization_id"
@@ -569,6 +571,7 @@ ActiveRecord::Schema.define(version: 2022_04_12_000536) do
   add_foreign_key "export_configs", "projects", on_delete: :cascade
   add_foreign_key "forbidden_words", "forbidden_words_lists", on_delete: :cascade
   add_foreign_key "forbidden_words_lists", "languages", on_delete: :cascade
+  add_foreign_key "forbidden_words_lists", "organizations", on_delete: :cascade
   add_foreign_key "forbidden_words_lists", "projects", on_delete: :cascade
   add_foreign_key "keys", "projects", on_delete: :cascade
   add_foreign_key "keys_tags", "keys", on_delete: :cascade
@@ -613,7 +616,6 @@ ActiveRecord::Schema.define(version: 2022_04_12_000536) do
   add_foreign_key "validation_violations", "placeholders", on_delete: :cascade
   add_foreign_key "validation_violations", "projects", on_delete: :cascade
   add_foreign_key "validation_violations", "translations", on_delete: :cascade
-  add_foreign_key "validation_violations", "validations", on_delete: :cascade
   add_foreign_key "validations", "organizations", on_delete: :cascade
   add_foreign_key "validations", "projects", on_delete: :cascade
   add_foreign_key "versions", "projects", on_delete: :cascade

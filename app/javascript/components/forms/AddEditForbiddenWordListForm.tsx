@@ -3,7 +3,11 @@ import { FormInstance } from "antd/lib/form";
 import TextArea from "antd/lib/input/TextArea";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
-import { ForbiddenWordsListsAPI, IForbiddenWordsList } from "../api/v1/ForbiddenWordsListsAPI";
+import {
+    ForbiddenWordsListsAPI,
+    IForbiddenWordsList,
+    IForbiddenWordsListLinkedTo
+} from "../api/v1/ForbiddenWordsListsAPI";
 import { IGetLanguagesResponse, LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { DATA_IDS } from "../ui/DataIds";
 import { ErrorUtils } from "../ui/ErrorUtils";
@@ -12,7 +16,8 @@ import { TexterifyModal } from "../ui/TexterifyModal";
 
 interface IProps {
     forbiddenWordListToEdit?: IForbiddenWordsList;
-    projectId: string;
+    linkedId: string;
+    linkedType: IForbiddenWordsListLinkedTo;
     visible: boolean;
     onCancelRequest();
     onCreated?(): void;
@@ -43,12 +48,14 @@ class AddEditForbiddenWordsListForm extends React.Component<IProps, IState> {
     formRef = React.createRef<FormInstance>();
 
     async componentDidMount() {
-        try {
-            const languagesResponse = await LanguagesAPI.getLanguages(this.props.projectId, { showAll: true });
-            this.setState({ languagesResponse: languagesResponse });
-        } catch (error) {
-            console.error(error);
-            ErrorUtils.showError("Failed to load languages.");
+        if (this.props.linkedType === "project") {
+            try {
+                const languagesResponse = await LanguagesAPI.getLanguages(this.props.linkedId, { showAll: true });
+                this.setState({ languagesResponse: languagesResponse });
+            } catch (error) {
+                console.error(error);
+                ErrorUtils.showError("Failed to load languages.");
+            }
         }
 
         this.setState({ languagesLoading: false });
@@ -59,7 +66,8 @@ class AddEditForbiddenWordsListForm extends React.Component<IProps, IState> {
 
         if (this.props.forbiddenWordListToEdit) {
             response = await ForbiddenWordsListsAPI.updateForbiddenWordsList({
-                projectId: this.props.projectId,
+                linkedId: this.props.linkedId,
+                linkedType: this.props.linkedType,
                 forbiddenWordsListId: this.props.forbiddenWordListToEdit.id,
                 name: values.name,
                 content: values.content,
@@ -67,7 +75,8 @@ class AddEditForbiddenWordsListForm extends React.Component<IProps, IState> {
             });
         } else {
             response = await ForbiddenWordsListsAPI.createForbiddenWordsList({
-                projectId: this.props.projectId,
+                linkedId: this.props.linkedId,
+                linkedType: this.props.linkedType,
                 name: values.name,
                 content: values.content,
                 languageId: values.languageId
@@ -148,38 +157,42 @@ class AddEditForbiddenWordsListForm extends React.Component<IProps, IState> {
                         <Input placeholder="Name" />
                     </Form.Item>
 
-                    <h3>Language</h3>
-                    <Form.Item
-                        name="languageId"
-                        rules={[{ required: false, whitespace: true, message: "Please select a language." }]}
-                    >
-                        <Select
-                            showSearch
-                            placeholder="Select a language"
-                            optionFilterProp="children"
-                            filterOption
-                            allowClear
-                            style={{ width: "100%" }}
-                        >
-                            {this.state.languagesResponse?.data.map((language, index) => {
-                                const countryCode = APIUtils.getIncludedObject(
-                                    language.relationships.country_code.data,
-                                    this.state.languagesResponse.included
-                                );
+                    {this.props.linkedType === "project" && (
+                        <>
+                            <h3>Language</h3>
+                            <Form.Item
+                                name="languageId"
+                                rules={[{ required: false, whitespace: true, message: "Please select a language." }]}
+                            >
+                                <Select
+                                    showSearch
+                                    placeholder="Select a language"
+                                    optionFilterProp="children"
+                                    filterOption
+                                    allowClear
+                                    style={{ width: "100%" }}
+                                >
+                                    {this.state.languagesResponse?.data?.map((language, index) => {
+                                        const countryCode = APIUtils.getIncludedObject(
+                                            language.relationships.country_code.data,
+                                            this.state.languagesResponse.included
+                                        );
 
-                                return (
-                                    <Select.Option value={language.attributes.id} key={index}>
-                                        {countryCode && (
-                                            <span style={{ marginRight: 8 }}>
-                                                <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
-                                            </span>
-                                        )}
-                                        {language.attributes.name}
-                                    </Select.Option>
-                                );
-                            })}
-                        </Select>
-                    </Form.Item>
+                                        return (
+                                            <Select.Option value={language.attributes.id} key={index}>
+                                                {countryCode && (
+                                                    <span style={{ marginRight: 8 }}>
+                                                        <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
+                                                    </span>
+                                                )}
+                                                {language.attributes.name}
+                                            </Select.Option>
+                                        );
+                                    })}
+                                </Select>
+                            </Form.Item>
+                        </>
+                    )}
 
                     <h3>Words</h3>
                     <p>

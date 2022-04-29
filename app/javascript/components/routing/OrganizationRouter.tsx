@@ -7,6 +7,7 @@ import { OrganizationMembersSite } from "../sites/dashboard/OrganizationMembersS
 import { OrganizationSettingsSite } from "../sites/dashboard/OrganizationSettingsSite";
 import { OrganizationSite } from "../sites/dashboard/OrganizationSite";
 import { OrganizationSubscriptionSite } from "../sites/dashboard/OrganizationSubscriptionSite";
+import { OrganizationValidationsSite } from "../sites/dashboard/OrganizationValidationsSite";
 import { dashboardStore } from "../stores/DashboardStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { UserDeactivatedOrganizationModal } from "../ui/UserDeactivatedOrganizationModal";
@@ -60,6 +61,11 @@ class OrganizationRouter extends React.Component<IProps> {
                         exact
                         path={Routes.DASHBOARD.ORGANIZATION_MACHINE_TRANSLATION}
                         component={OrganizationMachineTranslationSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.ORGANIZATION_VALIDATIONS}
+                        component={OrganizationValidationsSite}
                     />
                     <PrivateRouteTexterifyCloud
                         exact

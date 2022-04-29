@@ -426,7 +426,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                         <SyncOutlined
                                             style={{
                                                 animation:
-                                                    dashboardStore.activeBackgroundJobsResponse?.meta.total > 0
+                                                    dashboardStore.activeBackgroundJobsResponse?.meta?.total > 0
                                                         ? "rotating 2s linear infinite"
                                                         : undefined,
                                                 cursor: "pointer"
@@ -441,7 +441,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                                     width: 16,
                                                     height: 16,
                                                     background:
-                                                        dashboardStore.activeBackgroundJobsResponse.meta.total > 0
+                                                        dashboardStore.activeBackgroundJobsResponse.meta?.total > 0
                                                             ? "var(--color-warn)"
                                                             : "#fff",
                                                     borderRadius: 40,
@@ -449,7 +449,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                                     alignItems: "center",
                                                     justifyContent: "center",
                                                     color:
-                                                        dashboardStore.activeBackgroundJobsResponse.meta.total > 0
+                                                        dashboardStore.activeBackgroundJobsResponse.meta?.total > 0
                                                             ? "#fff"
                                                             : "var(--dark-color)",
                                                     fontWeight: "bold",
@@ -457,7 +457,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                                     cursor: "pointer"
                                                 }}
                                             >
-                                                {dashboardStore.activeBackgroundJobsResponse.meta.total}
+                                                {dashboardStore.activeBackgroundJobsResponse.meta?.total}
                                             </div>
                                         )}
                                     </div>

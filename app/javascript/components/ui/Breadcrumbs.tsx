@@ -111,6 +111,13 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                     this.props.match.params.organizationId
                 )
             },
+            organizationValidations: {
+                parent: "organization",
+                name: "Validations",
+                path: Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
+                    organizationId: this.props.match.params.organizationId
+                })
+            },
             languages: {
                 parent: "project",
                 name: "Languages",

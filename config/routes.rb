@@ -36,6 +36,14 @@ Rails
           get :project_members, to: 'organization_users#project_users'
 
           resources :invites, only: [:create, :index, :destroy], controller: 'organization_invites'
+
+          # Validations
+          resources :validations, only: [:create, :index, :destroy, :update], controller: 'validations'
+
+          # Forbidden words lists
+          resources :forbidden_words_lists,
+                    only: [:create, :index, :update, :destroy],
+                    controller: 'forbidden_words_lists'
         end
 
         get 'instance', to: 'instance#show'
@@ -98,7 +106,7 @@ Rails
 
           # Validations
           resources :validations, only: [:create, :index, :destroy, :update]
-          post :validations_recheck, to: 'validations#recheck'
+          post :validations_check, to: 'validations#recheck'
           post :placeholders_check, to: 'placeholders#check'
 
           # Validation violations

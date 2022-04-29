@@ -203,7 +203,7 @@ export function LanguagesTable(props: { project: IProject; tableReloader?: numbe
                     showSizeChanger: true,
                     current: page,
                     pageSize: perPage,
-                    total: languagesResponse?.meta.total || 0,
+                    total: languagesResponse?.meta?.total || 0,
                     onChange: async (newPage, newPerPage) => {
                         const isPageSizeChange = perPage !== newPerPage;
 

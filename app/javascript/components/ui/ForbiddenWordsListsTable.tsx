@@ -1,15 +1,18 @@
 import { Button, Empty, message, Modal, Popconfirm, Table } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
+import { Link } from "react-router-dom";
 import { APIUtils } from "../api/v1/APIUtils";
 import {
     ForbiddenWordsListsAPI,
     IForbiddenWordsList,
+    IForbiddenWordsListLinkedTo,
     IGetForbiddenWordsListsOptions,
     IGetForbiddenWordsListsResponse
 } from "../api/v1/ForbiddenWordsListsAPI";
 import { IGetLanguagesResponse, LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { AddEditForbiddenWordsListForm } from "../forms/AddEditForbiddenWordListForm";
+import { Routes } from "../routing/Routes";
 import { dashboardStore } from "../stores/DashboardStore";
 import { PAGE_SIZE_OPTIONS } from "./Config";
 import { DATA_IDS } from "./DataIds";
@@ -19,7 +22,8 @@ import { LanguageNameWithFlag } from "./LanguageNameWithFlag";
 import { Styles } from "./Styles";
 
 interface IProps {
-    projectId: string;
+    linkedId?: string;
+    linkedType?: IForbiddenWordsListLinkedTo;
 }
 
 interface IState {
@@ -53,22 +57,25 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
     async componentDidMount() {
         await this.reloadTable();
 
-        try {
-            const languagesResponse = await LanguagesAPI.getLanguages(this.props.projectId, { showAll: true });
-            this.setState({ languagesResponse });
-        } catch (error) {
-            console.error(error);
-            ErrorUtils.showError("Failed to load languages.");
+        if (this.props.linkedType === "project") {
+            try {
+                const languagesResponse = await LanguagesAPI.getLanguages(this.props.linkedId, { showAll: true });
+                this.setState({ languagesResponse });
+            } catch (error) {
+                console.error(error);
+                ErrorUtils.showError("Failed to load languages.");
+            }
         }
     }
 
     async loadForbiddenWordsLists(options?: IGetForbiddenWordsListsOptions) {
-        if (dashboardStore.featureEnabled("FEATURE_VALIDATIONS")) {
+        if (dashboardStore.featureEnabled("FEATURE_VALIDATIONS", this.props.linkedType)) {
             this.setState({ forbiddenWordsListsLoading: true });
 
             try {
                 const forbiddenWordsListsResponse = await ForbiddenWordsListsAPI.getForbiddenWordsLists({
-                    projectId: options.projectId,
+                    linkedId: options.linkedId,
+                    linkedType: options.linkedType,
                     page: options?.page,
                     perPage: options?.perPage
                 });
@@ -83,30 +90,31 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
     }
 
     getRows = () => {
+        if (!this.state.forbiddenWordsListsResponse || !this.state.forbiddenWordsListsResponse.data) {
+            return [];
+        }
+
         if (
-            !this.state.forbiddenWordsListsResponse ||
-            !this.state.forbiddenWordsListsResponse.data ||
-            !this.state.languagesResponse ||
-            !this.state.languagesResponse.data
+            this.props.linkedType === "project" &&
+            (!this.state.languagesResponse || !this.state.languagesResponse.data)
         ) {
             return [];
         }
 
         return this.state.forbiddenWordsListsResponse.data.map((forbiddenWordsList) => {
-            const language = this.state.languagesResponse.data.find((languageToCheck) => {
-                return forbiddenWordsList.attributes.language_id === languageToCheck.id;
-            });
+            let checkedFor;
 
-            const countryCode = APIUtils.getIncludedObject(
-                language?.relationships.country_code.data,
-                this.state.languagesResponse.included
-            );
+            if (this.props.linkedType === "project") {
+                const language = this.state.languagesResponse.data.find((languageToCheck) => {
+                    return forbiddenWordsList.attributes.language_id === languageToCheck.id;
+                });
 
-            return {
-                key: forbiddenWordsList.attributes.id,
-                name: forbiddenWordsList.attributes.name,
-                wordsCount: forbiddenWordsList.attributes.words_count,
-                checkedFor: forbiddenWordsList.attributes.language_id ? (
+                const countryCode = APIUtils.getIncludedObject(
+                    language?.relationships.country_code.data,
+                    this.state.languagesResponse.included
+                );
+
+                checkedFor = forbiddenWordsList.attributes.language_id ? (
                     <LanguageNameWithFlag
                         languageName={language.attributes.name}
                         countryCode={countryCode?.attributes.code}
@@ -115,42 +123,69 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
                     <span style={{ fontStyle: "italic", color: Styles.COLOR_TEXT_DISABLED }}>
                         Checked for all languages
                     </span>
-                ),
+                );
+            } else {
+                checkedFor = (
+                    <span style={{ fontStyle: "italic", color: Styles.COLOR_TEXT_DISABLED }}>
+                        Checked for all languages
+                    </span>
+                );
+            }
+
+            return {
+                key: forbiddenWordsList.attributes.id,
+                name: forbiddenWordsList.attributes.name,
+                wordsCount: forbiddenWordsList.attributes.words_count,
+                checkedFor: checkedFor,
                 controls: (
                     <div style={{ display: "flex", justifyContent: "center" }}>
-                        <a
-                            onClick={() => {
-                                this.setState({
-                                    addForbiddenWordListDialogVisible: true,
-                                    forbiddenWordsListToEdit: forbiddenWordsList
-                                });
-                            }}
-                            style={{ marginRight: 16 }}
-                        >
-                            Edit
-                        </a>
-                        <Popconfirm
-                            title="Do you want to delete this forbidden words list?"
-                            onConfirm={async () => {
-                                this.setState({ forbiddenWordsListsLoading: true });
-                                try {
-                                    await ForbiddenWordsListsAPI.deleteForbiddenWordsList({
-                                        projectId: this.props.projectId,
-                                        forbiddenWordsListId: forbiddenWordsList.id
-                                    });
-                                    message.success("Forbidden words list deleted");
-                                } catch (error) {
-                                    console.error(error);
-                                    message.error("Failed to delete forbidden words list.");
-                                }
-                                await this.reloadTable();
-                            }}
-                            okText="Yes"
-                            cancelText="No"
-                            placement="top"
-                        >
-                            <DeleteLink style={{ marginRight: 24 }}>Delete</DeleteLink>
-                        </Popconfirm>
+                        {this.props.linkedType === "project" && forbiddenWordsList.attributes.organization_id ? (
+                            <Link
+                                to={Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
+                                    organizationId: forbiddenWordsList.attributes.organization_id
+                                })}
+                                style={{ fontStyle: "italic" }}
+                            >
+                                Organization validation
+                            </Link>
+                        ) : (
+                            <>
+                                <a
+                                    onClick={() => {
+                                        this.setState({
+                                            addForbiddenWordListDialogVisible: true,
+                                            forbiddenWordsListToEdit: forbiddenWordsList
+                                        });
+                                    }}
+                                    style={{ marginRight: 16 }}
+                                >
+                                    Edit
+                                </a>
+                                <Popconfirm
+                                    title="Do you want to delete this forbidden words list?"
+                                    onConfirm={async () => {
+                                        this.setState({ forbiddenWordsListsLoading: true });
+                                        try {
+                                            await ForbiddenWordsListsAPI.deleteForbiddenWordsList({
+                                                linkedId: this.props.linkedId,
+                                                linkedType: this.props.linkedType,
+                                                forbiddenWordsListId: forbiddenWordsList.id
+                                            });
+                                            message.success("Forbidden words list deleted");
+                                        } catch (error) {
+                                            console.error(error);
+                                            message.error("Failed to delete forbidden words list.");
+                                        }
+                                        await this.reloadTable();
+                                    }}
+                                    okText="Yes"
+                                    cancelText="No"
+                                    placement="top"
+                                >
+                                    <DeleteLink>Delete</DeleteLink>
+                                </Popconfirm>
+                            </>
+                        )}
                     </div>
                 )
             };
@@ -185,8 +220,13 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
     };
 
     reloadTable = async (options?: { page?: number; perPage?: number }) => {
-        const fetchOptions: IGetForbiddenWordsListsOptions = { projectId: this.props.projectId, ...options } || {
-            projectId: this.props.projectId
+        const fetchOptions: IGetForbiddenWordsListsOptions = {
+            linkedId: this.props.linkedId,
+            linkedType: this.props.linkedType,
+            ...options
+        } || {
+            linkedId: this.props.linkedId,
+            linkedType: this.props.linkedType
         };
         fetchOptions.page = (options && options.page) || this.state.page;
         fetchOptions.perPage = (options && options.perPage) || this.state.perPage;
@@ -210,7 +250,8 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
             onOk: async () => {
                 try {
                     const response = await ForbiddenWordsListsAPI.deleteForbiddenWordsList({
-                        projectId: this.props.projectId,
+                        linkedId: this.props.linkedId,
+                        linkedType: this.props.linkedType,
                         forbiddenWordsListId: forbiddenWordsListId
                     });
 
@@ -245,7 +286,7 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
                             this.setState({ addForbiddenWordListDialogVisible: true });
                         }}
                         data-id={DATA_IDS.FORBIDDEN_WORDS_LIST_BUTTON_NEW}
-                        disabled={!dashboardStore.featureEnabled("FEATURE_VALIDATIONS")}
+                        disabled={!dashboardStore.featureEnabled("FEATURE_VALIDATIONS", this.props.linkedType)}
                     >
                         Create new list
                     </Button>
@@ -255,7 +296,7 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
                         style={{ width: "100%" }}
                         bordered
                         loading={
-                            !dashboardStore.featureEnabled("FEATURE_VALIDATIONS") ||
+                            !dashboardStore.featureEnabled("FEATURE_VALIDATIONS", this.props.linkedType) ||
                             this.state.forbiddenWordsListsLoading
                         }
                         pagination={{
@@ -263,10 +304,7 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
                             showSizeChanger: true,
                             current: this.state.page,
                             pageSize: this.state.perPage,
-                            total:
-                                (this.state.forbiddenWordsListsResponse &&
-                                    this.state.forbiddenWordsListsResponse.meta.total) ||
-                                0,
+                            total: this.state.forbiddenWordsListsResponse?.meta?.total || 0,
                             onChange: async (page: number, perPage: number) => {
                                 const isPageSizeChange = perPage !== this.state.perPage;
 
@@ -291,7 +329,8 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
                 </div>
 
                 <AddEditForbiddenWordsListForm
-                    projectId={this.props.projectId}
+                    linkedId={this.props.linkedId}
+                    linkedType={this.props.linkedType}
                     forbiddenWordListToEdit={this.state.forbiddenWordsListToEdit}
                     visible={this.state.addForbiddenWordListDialogVisible}
                     onCancelRequest={() => {

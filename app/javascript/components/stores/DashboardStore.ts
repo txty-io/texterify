@@ -98,8 +98,12 @@ class DashboardStore {
         }
     };
 
-    featureEnabled(feature: IFeature) {
-        return this.currentProject?.attributes.enabled_features.includes(feature);
+    featureEnabled(feature: IFeature, type?: "project" | "organization") {
+        if (type === "organization") {
+            return this.currentOrganization?.attributes.enabled_features.includes(feature);
+        } else {
+            return this.currentProject?.attributes.enabled_features.includes(feature);
+        }
     }
 
     // Reloads the issues count of the currently selected project.

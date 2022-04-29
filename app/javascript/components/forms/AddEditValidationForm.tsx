@@ -3,11 +3,12 @@ import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import { ErrorUtils } from "../ui/ErrorUtils";
 import { TexterifyModal } from "../ui/TexterifyModal";
-import { IValidation, ValidationsAPI } from "../api/v1/ValidationsAPI";
+import { IValidation, IValidationLinkedTo, ValidationsAPI } from "../api/v1/ValidationsAPI";
 
 interface IProps {
     validationToEdit?: IValidation;
-    projectId: string;
+    linkedId: string;
+    linkedType: IValidationLinkedTo;
     visible: boolean;
     onCancelRequest();
     onCreated?(): void;
@@ -39,7 +40,8 @@ class AddEditValidationForm extends React.Component<IProps, IState> {
 
         if (this.props.validationToEdit) {
             response = await ValidationsAPI.updateValidation({
-                projectId: this.props.projectId,
+                linkedId: this.props.linkedId,
+                linkedType: this.props.linkedType,
                 validationId: this.props.validationToEdit.id,
                 name: values.name,
                 description: values.description,
@@ -48,7 +50,8 @@ class AddEditValidationForm extends React.Component<IProps, IState> {
             });
         } else {
             response = await ValidationsAPI.createValidation({
-                projectId: this.props.projectId,
+                linkedId: this.props.linkedId,
+                linkedType: this.props.linkedType,
                 name: values.name,
                 description: values.description,
                 match: this.state.match,
