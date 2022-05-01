@@ -95,7 +95,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     Routes.DASHBOARD.PROJECT_PLACEHOLDERS_RESOLVER({
                         projectId: this.props.match.params.projectId
                     }),
-                    Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_LISTS_RESOLVER({
+                    Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_RESOLVER({
                         projectId: this.props.match.params.projectId
                     })
                 ]

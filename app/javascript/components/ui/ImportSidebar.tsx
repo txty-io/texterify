@@ -6,7 +6,6 @@ import { SubSidebar } from "./SubSidebar";
 export function ImportSidebar(props: { projectId: string }) {
     return (
         <SubSidebar
-            projectId={props.projectId}
             menuItems={[
                 {
                     title: "Import",

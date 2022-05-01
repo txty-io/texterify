@@ -6,7 +6,6 @@ import { SubSidebar } from "./SubSidebar";
 export const MachineTranslationSidebar = observer((props: { projectId: string }) => {
     return (
         <SubSidebar
-            projectId={props.projectId}
             menuItems={[
                 {
                     title: "Machine translation",

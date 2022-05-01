@@ -237,14 +237,21 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                                             cancelText: "No",
                                             autoFocusButton: "cancel",
                                             onOk: async () => {
-                                                await ValidationsAPI.deleteValidation({
-                                                    linkedId: this.props.match.params.projectId,
-                                                    linkedType: "project",
-                                                    validationId: validation.id
-                                                });
+                                                this.setState({ validationsLoading: true });
+                                                try {
+                                                    await ValidationsAPI.deleteValidation({
+                                                        linkedId: this.props.match.params.projectId,
+                                                        linkedType: "project",
+                                                        validationId: validation.id
+                                                    });
+                                                    message.success("Validation deleted");
+                                                } catch (error) {
+                                                    console.error(error);
+                                                    message.error("Failed to delete validation.");
+                                                }
 
-                                                await this.loadValidations();
-                                                message.success("Validation deleted");
+                                                this.setState({ page: 1, validationsLoading: false });
+                                                await this.loadValidations({ page: 1 });
                                             }
                                         });
                                     }}
@@ -312,7 +319,7 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
                         <Breadcrumbs breadcrumbName="projectValidations" />
                         <LayoutWithSidebarContentWrapperInner>
                             <h1>Validations</h1>
-                            <p>Create rules to ensure the quality of your translations.</p>
+                            <p>Create validation rules to ensure the quality of your translations.</p>
 
                             {!dashboardStore.featureEnabled("FEATURE_VALIDATIONS") && (
                                 <FeatureNotAvailable

@@ -14,10 +14,10 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { DeleteLink } from "../../ui/DeleteLink";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
-import { ForbiddenWordsListsTable } from "../../ui/ForbiddenWordsListsTable";
 import { LayoutWithSidebar } from "../../ui/LayoutWithSidebar";
 import { LayoutWithSidebarContentWrapper } from "../../ui/LayoutWithSidebarContentWrapper";
 import { LayoutWithSidebarContentWrapperInner } from "../../ui/LayoutWithSidebarContentWrapperInner";
+import { OrganizationQASidebar } from "../../ui/OrganizationQASidebar";
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {
@@ -142,14 +142,21 @@ class OrganizationValidationsSite extends React.Component<IProps, IState> {
                                     cancelText: "No",
                                     autoFocusButton: "cancel",
                                     onOk: async () => {
-                                        await ValidationsAPI.deleteValidation({
-                                            linkedId: this.props.match.params.organizationId,
-                                            linkedType: "organization",
-                                            validationId: validation.id
-                                        });
+                                        this.setState({ validationsLoading: true });
+                                        try {
+                                            await ValidationsAPI.deleteValidation({
+                                                linkedId: this.props.match.params.organizationId,
+                                                linkedType: "organization",
+                                                validationId: validation.id
+                                            });
+                                            message.success("Validation deleted");
+                                        } catch (error) {
+                                            console.error(error);
+                                            message.error("Failed to delete validation.");
+                                        }
 
-                                        await this.loadValidations();
-                                        message.success("Validation deleted");
+                                        this.setState({ page: 1, validationsLoading: false });
+                                        await this.loadValidations({ page: 1 });
                                     }
                                 });
                             }}
@@ -209,11 +216,16 @@ class OrganizationValidationsSite extends React.Component<IProps, IState> {
         return (
             <>
                 <LayoutWithSidebar>
+                    <OrganizationQASidebar organizationId={this.props.match.params.organizationId} />
+
                     <LayoutWithSidebarContentWrapper>
                         <Breadcrumbs breadcrumbName="organizationValidations" />
                         <LayoutWithSidebarContentWrapperInner>
                             <h1>Validations</h1>
-                            <p>Create rules to ensure the quality of your translations.</p>
+                            <p>
+                                Create validation rules to ensure the quality of your translations. Validation rules
+                                that you add here are applied to all your projects.
+                            </p>
 
                             {!dashboardStore.featureEnabled("FEATURE_VALIDATIONS", "organization") && (
                                 <FeatureNotAvailable
@@ -224,101 +236,72 @@ class OrganizationValidationsSite extends React.Component<IProps, IState> {
                             )}
 
                             {dashboardStore.featureEnabled("FEATURE_VALIDATIONS", "organization") && (
-                                <>
-                                    <div style={{ display: "flex" }}>
-                                        <div
-                                            style={{
-                                                marginRight: 80,
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                width: "100%",
-                                                maxWidth: 720,
-                                                alignItems: "flex-start"
-                                            }}
-                                        >
-                                            <h3>Validation rules</h3>
-                                            <Button
-                                                type="default"
-                                                style={{ marginBottom: 16 }}
-                                                onClick={() => {
-                                                    this.setState({ addValidationDialogVisible: true });
-                                                }}
-                                                disabled={
-                                                    !dashboardStore.featureEnabled(
-                                                        "FEATURE_VALIDATIONS",
-                                                        "organization"
-                                                    )
-                                                }
-                                            >
-                                                Create validation rule
-                                            </Button>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        width: "100%",
+                                        alignItems: "flex-start"
+                                    }}
+                                >
+                                    <Button
+                                        type="default"
+                                        style={{ marginBottom: 16 }}
+                                        onClick={() => {
+                                            this.setState({ addValidationDialogVisible: true });
+                                        }}
+                                        disabled={!dashboardStore.featureEnabled("FEATURE_VALIDATIONS", "organization")}
+                                    >
+                                        Create validation rule
+                                    </Button>
 
-                                            <Table
-                                                dataSource={this.getRows()}
-                                                columns={this.getColumns()}
-                                                style={{ width: "100%" }}
-                                                bordered
-                                                loading={
-                                                    !dashboardStore.featureEnabled(
-                                                        "FEATURE_VALIDATIONS",
-                                                        "organization"
-                                                    ) || this.state.validationsLoading
-                                                }
-                                                pagination={{
-                                                    pageSizeOptions: PAGE_SIZE_OPTIONS,
-                                                    showSizeChanger: true,
-                                                    current: this.state.page,
-                                                    pageSize: this.state.perPage,
-                                                    total: this.state.validationsResponse?.meta?.total || 0,
-                                                    onChange: async (page: number, perPage: number) => {
-                                                        const isPageSizeChange = perPage !== this.state.perPage;
+                                    <Table
+                                        dataSource={this.getRows()}
+                                        columns={this.getColumns()}
+                                        style={{ width: "100%" }}
+                                        bordered
+                                        loading={
+                                            !dashboardStore.featureEnabled("FEATURE_VALIDATIONS", "organization") ||
+                                            this.state.validationsLoading
+                                        }
+                                        pagination={{
+                                            pageSizeOptions: PAGE_SIZE_OPTIONS,
+                                            showSizeChanger: true,
+                                            current: undefined,
+                                            pageSize: this.state.perPage,
+                                            total: this.state.validationsResponse?.meta?.total || 0,
+                                            onChange: async (page: number, perPage: number) => {
+                                                const isPageSizeChange = perPage !== this.state.perPage;
 
-                                                        if (isPageSizeChange) {
-                                                            this.setState({ page: 1, perPage: perPage });
-                                                            await this.reloadTable({
-                                                                page: 1,
-                                                                perPage: perPage,
-                                                                linkedId: this.props.match.params.organizationId,
-                                                                linkedType: "organization"
-                                                            });
-                                                        } else {
-                                                            this.setState({ page: page, perPage: perPage });
-                                                            await this.reloadTable({
-                                                                page: page,
-                                                                perPage: perPage,
-                                                                linkedId: this.props.match.params.organizationId,
-                                                                linkedType: "organization"
-                                                            });
-                                                        }
-                                                    }
-                                                }}
-                                                locale={{
-                                                    emptyText: (
-                                                        <Empty
-                                                            description="No validation rules found"
-                                                            image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                                        />
-                                                    )
-                                                }}
-                                            />
-                                        </div>
-                                        <div
-                                            style={{
-                                                marginRight: 80,
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                width: "100%",
-                                                maxWidth: 720,
-                                                alignItems: "flex-start"
-                                            }}
-                                        >
-                                            <ForbiddenWordsListsTable
-                                                linkedId={this.props.match.params.organizationId}
-                                                linkedType="organization"
-                                            />
-                                        </div>
-                                    </div>
-                                </>
+                                                if (isPageSizeChange) {
+                                                    this.setState({ page: 1, perPage: perPage });
+                                                    await this.reloadTable({
+                                                        page: 1,
+                                                        perPage: perPage,
+                                                        linkedId: this.props.match.params.organizationId,
+                                                        linkedType: "organization"
+                                                    });
+                                                } else {
+                                                    this.setState({ page: page, perPage: perPage });
+                                                    await this.reloadTable({
+                                                        page: page,
+                                                        perPage: perPage,
+                                                        linkedId: this.props.match.params.organizationId,
+                                                        linkedType: "organization"
+                                                    });
+                                                }
+                                            }
+                                        }}
+                                        locale={{
+                                            emptyText: (
+                                                <Empty
+                                                    description="No validation rules found"
+                                                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                                />
+                                            )
+                                        }}
+                                    />
+                                </div>
                             )}
                         </LayoutWithSidebarContentWrapperInner>
                     </LayoutWithSidebarContentWrapper>

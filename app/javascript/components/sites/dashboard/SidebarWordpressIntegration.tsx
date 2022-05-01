@@ -5,7 +5,6 @@ import { SubSidebar } from "../../ui/SubSidebar";
 export function SidebarWordpressIntegration(props: { projectId: string }) {
     return (
         <SubSidebar
-            projectId={props.projectId}
             menuItems={[
                 {
                     title: "WordPress",

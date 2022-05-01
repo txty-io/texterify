@@ -8,7 +8,6 @@ import { SubSidebar } from "./SubSidebar";
 export const IssuesSidebar = observer((props: { projectId: string }) => {
     return (
         <SubSidebar
-            projectId={props.projectId}
             menuItems={[
                 {
                     title: "Issues",

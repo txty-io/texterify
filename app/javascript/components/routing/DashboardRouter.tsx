@@ -149,6 +149,8 @@ class DashboardRouter extends React.Component<IProps, IState> {
         currentLicenseInfoLoaded: false
     };
 
+    channel;
+
     async componentDidMount() {
         this.setState({
             hasSidebar: this.hasSidebar()
@@ -166,7 +168,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
             : [];
 
         // Listen for job updates.
-        consumer.subscriptions.create(
+        this.channel = consumer.subscriptions.create(
             { channel: "JobsChannel" },
             {
                 received: (data: IJobsChannelEvent) => {
@@ -209,6 +211,12 @@ class DashboardRouter extends React.Component<IProps, IState> {
                 }
             }
         );
+    }
+
+    componentWillUnmount() {
+        if (this.channel) {
+            this.channel.unsubscribe();
+        }
     }
 
     async loadCurrentLicense() {

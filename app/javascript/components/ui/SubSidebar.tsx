@@ -33,7 +33,6 @@ const SidebarListItem = styled.li<{ active: boolean }>`
 `;
 
 export interface ISubSidebarProps {
-    projectId: string;
     menuItems: { title: string; items: { path: string; name: React.ReactNode; disabled?: true; id: string }[] }[];
 }
 
@@ -63,16 +62,13 @@ export function SubSidebar(props: ISubSidebarProps) {
                                 return (
                                     <SidebarListItem
                                         key={item.id}
-                                        active={item.path.replace(":projectId", props.projectId) === location.pathname}
+                                        active={item.path === location.pathname}
                                         style={{
                                             pointerEvents: item.disabled ? "none" : undefined,
                                             opacity: item.disabled ? 0.5 : undefined
                                         }}
                                     >
-                                        <Link
-                                            style={{ padding: "8px 24px" }}
-                                            to={item.path.replace(":projectId", props.projectId)}
-                                        >
+                                        <Link style={{ padding: "8px 24px" }} to={item.path}>
                                             {item.name}
                                         </Link>
                                     </SidebarListItem>

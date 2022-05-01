@@ -124,7 +124,7 @@ class AddEditValidationForm extends React.Component<IProps, IState> {
                             { required: true, whitespace: true, message: "Please enter the name of the validation." }
                         ]}
                     >
-                        <Input placeholder="Name" />
+                        <Input placeholder="Name" autoFocus />
                     </Form.Item>
 
                     <h3>Description</h3>

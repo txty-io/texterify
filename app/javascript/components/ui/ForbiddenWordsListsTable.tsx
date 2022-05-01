@@ -16,7 +16,6 @@ import { dashboardStore } from "../stores/DashboardStore";
 import { PAGE_SIZE_OPTIONS } from "./Config";
 import { DATA_IDS } from "./DataIds";
 import { DeleteLink } from "./DeleteLink";
-import { ErrorUtils } from "./ErrorUtils";
 import { LanguageNameWithFlag } from "./LanguageNameWithFlag";
 import { Styles } from "./Styles";
 
@@ -113,7 +112,7 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
                         {this.props.linkedType === "project" && forbiddenWordsList.attributes.organization_id ? (
                             <Tooltip title="Click to edit in organization">
                                 <Link
-                                    to={Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
+                                    to={Routes.DASHBOARD.ORGANIZATION_FORBIDDEN_WORDS_RESOLVER({
                                         organizationId: forbiddenWordsList.attributes.organization_id
                                     })}
                                     style={{ whiteSpace: "nowrap" }}
@@ -134,29 +133,39 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
                                 >
                                     Edit
                                 </a>
-                                <Popconfirm
-                                    title="Do you want to delete this forbidden words list?"
-                                    onConfirm={async () => {
-                                        this.setState({ forbiddenWordsListsLoading: true });
-                                        try {
-                                            await ForbiddenWordsListsAPI.deleteForbiddenWordsList({
-                                                linkedId: this.props.linkedId,
-                                                linkedType: this.props.linkedType,
-                                                forbiddenWordsListId: forbiddenWordsList.id
-                                            });
-                                            message.success("Forbidden words list deleted");
-                                        } catch (error) {
-                                            console.error(error);
-                                            message.error("Failed to delete forbidden words list.");
-                                        }
-                                        await this.reloadTable();
+                                <DeleteLink
+                                    onClick={() => {
+                                        Modal.confirm({
+                                            title: "Do you want to delete this forbidden words list?",
+                                            content: "This cannot be undone.",
+                                            okText: "Yes",
+                                            okButtonProps: {
+                                                danger: true
+                                            },
+                                            cancelText: "No",
+                                            autoFocusButton: "cancel",
+                                            onOk: async () => {
+                                                this.setState({ forbiddenWordsListsLoading: true });
+                                                try {
+                                                    await ForbiddenWordsListsAPI.deleteForbiddenWordsList({
+                                                        linkedId: this.props.linkedId,
+                                                        linkedType: this.props.linkedType,
+                                                        forbiddenWordsListId: forbiddenWordsList.id
+                                                    });
+                                                    message.success("Forbidden words list deleted");
+                                                } catch (error) {
+                                                    console.error(error);
+                                                    message.error("Failed to delete forbidden words list.");
+                                                }
+
+                                                this.setState({ page: 1, forbiddenWordsListsLoading: false });
+                                                await this.reloadTable({ page: 1 });
+                                            }
+                                        });
                                     }}
-                                    okText="Yes"
-                                    cancelText="No"
-                                    placement="top"
                                 >
-                                    <DeleteLink>Delete</DeleteLink>
-                                </Popconfirm>
+                                    Delete
+                                </DeleteLink>
                             </>
                         )}
                     </div>
@@ -206,52 +215,10 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
         await this.loadForbiddenWordsLists(fetchOptions);
     };
 
-    onDelete = async (forbiddenWordsListId: string) => {
-        this.setState({ isDeleting: true });
-
-        Modal.confirm({
-            title: "Do you really want to delete the selected forbidden words lists?",
-            content:
-                "The content of this list will be lost and translations are no longer checked against these words.",
-            okText: "Yes",
-            okButtonProps: {
-                danger: true
-            },
-            cancelText: "No",
-            autoFocusButton: "cancel",
-            visible: this.state.isDeleting,
-            onOk: async () => {
-                try {
-                    const response = await ForbiddenWordsListsAPI.deleteForbiddenWordsList({
-                        linkedId: this.props.linkedId,
-                        linkedType: this.props.linkedType,
-                        forbiddenWordsListId: forbiddenWordsListId
-                    });
-
-                    if (!response.success) {
-                        message.error("Failed to delete forbidden words list.");
-                        return;
-                    }
-                } catch (error) {
-                    message.error("Failed to delete forbidden words list.");
-                    console.error(error);
-                }
-
-                this.reloadTable();
-
-                this.setState({ isDeleting: false });
-            },
-            onCancel: () => {
-                this.setState({ isDeleting: false });
-            }
-        });
-    };
-
     render() {
         return (
             <>
                 <div style={{ display: "flex", flexDirection: "column", width: "100%", alignItems: "flex-start" }}>
-                    <h3>Forbidden words lists</h3>
                     <Button
                         type="default"
                         style={{ marginBottom: 16 }}
@@ -324,7 +291,8 @@ class ForbiddenWordsListsTable extends React.Component<IProps, IState> {
                             forbiddenWordsListToEdit: null
                         });
 
-                        await this.reloadTable();
+                        this.setState({ page: 1 });
+                        await this.reloadTable({ page: 1 });
                     }}
                 />
             </>

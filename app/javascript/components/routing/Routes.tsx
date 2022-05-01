@@ -79,9 +79,9 @@ const Routes = {
             return Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC.replace(":projectId", options.projectId);
         },
         PROJECT_VALIDATIONS: "/dashboard/projects/:projectId/validations",
-        PROJECT_FORBIDDEN_WORDS_LISTS: "/dashboard/projects/:projectId/forbidden-words-lists",
-        PROJECT_FORBIDDEN_WORDS_LISTS_RESOLVER: (options: { projectId: string }) => {
-            return Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_LISTS.replace(":projectId", options.projectId);
+        PROJECT_FORBIDDEN_WORDS: "/dashboard/projects/:projectId/forbidden-words",
+        PROJECT_FORBIDDEN_WORDS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS.replace(":projectId", options.projectId);
         },
         PROJECT_PLACEHOLDERS: "/dashboard/projects/:projectId/placeholders",
         PROJECT_PLACEHOLDERS_RESOLVER: (options: { projectId: string }) => {
@@ -153,6 +153,10 @@ const Routes = {
         ORGANIZATION_VALIDATIONS: "/dashboard/organizations/:organizationId/validations",
         ORGANIZATION_VALIDATIONS_RESOLVER: (options: { organizationId: string }) => {
             return Routes.DASHBOARD.ORGANIZATION_VALIDATIONS.replace(":organizationId", options.organizationId);
+        },
+        ORGANIZATION_FORBIDDEN_WORDS: "/dashboard/organizations/:organizationId/forbidden-words",
+        ORGANIZATION_FORBIDDEN_WORDS_RESOLVER: (options: { organizationId: string }) => {
+            return Routes.DASHBOARD.ORGANIZATION_FORBIDDEN_WORDS.replace(":organizationId", options.organizationId);
         },
         INSTANCE: {
             ROOT: "/dashboard/instance",

@@ -185,7 +185,7 @@ class AddEditForbiddenWordsListForm extends React.Component<IProps, IState> {
                                         }
                                     ]}
                                 >
-                                    <Input placeholder="Name" />
+                                    <Input placeholder="Name" autoFocus />
                                 </Form.Item>
                             </div>
 

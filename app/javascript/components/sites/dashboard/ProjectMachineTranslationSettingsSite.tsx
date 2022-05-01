@@ -85,7 +85,7 @@ export function ProjectMachineTranslationSettingsSite() {
                             }}
                         </Form.Item>
 
-                        <div style={{ marginLeft: 40, marginTop: 24 }}>
+                        <div style={{ marginTop: 24 }}>
                             <Form.Item noStyle shouldUpdate>
                                 {({ getFieldValue }) => {
                                     return (

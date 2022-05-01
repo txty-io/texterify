@@ -105,7 +105,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
             },
             organizationMachineTranslation: {
                 parent: "organization",
-                name: "Machine Translation",
+                name: "Machine translation",
                 path: Routes.DASHBOARD.ORGANIZATION_MACHINE_TRANSLATION.replace(
                     ":organizationId",
                     this.props.match.params.organizationId
@@ -115,6 +115,13 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                 parent: "organization",
                 name: "Validations",
                 path: Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
+                    organizationId: this.props.match.params.organizationId
+                })
+            },
+            organizationForbiddenWords: {
+                parent: "organization",
+                name: "Forbidden words",
+                path: Routes.DASHBOARD.ORGANIZATION_FORBIDDEN_WORDS_RESOLVER({
                     organizationId: this.props.match.params.organizationId
                 })
             },
@@ -140,7 +147,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
             },
             projectMachineTranslation: {
                 parent: "project",
-                name: "Machine Translation",
+                name: "Machine translation",
                 path: Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION.replace(
                     ":projectId",
                     this.props.match.params.projectId
@@ -190,7 +197,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
             projectForbiddenWords: {
                 parent: "projectValidations",
                 name: "Forbidden words",
-                path: Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_LISTS_RESOLVER({
+                path: Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_RESOLVER({
                     projectId: this.props.match.params.projectId
                 })
             },
@@ -206,7 +213,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
             },
             projectOTA: {
                 parent: "project",
-                name: "Over the Air Translations",
+                name: "Over the Air",
                 path: Routes.DASHBOARD.PROJECT_OTA.replace(":projectId", this.props.match.params.projectId)
             },
             projectIntegrations: {
@@ -234,7 +241,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
             },
             projectPostProcessing: {
                 parent: "project",
-                name: "Post Processing",
+                name: "Post processing",
                 path: Routes.DASHBOARD.PROJECT_POST_PROCESSING.replace(":projectId", this.props.match.params.projectId)
             },
             projectExport: {

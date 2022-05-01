@@ -24,6 +24,7 @@ const { Sider } = Layout;
 interface INavigationData {
     icon: any;
     path: string;
+    paths?: string[];
     text: string;
     roles?: string[];
     texterifyCloudOnly: boolean;
@@ -66,6 +67,14 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
             path: Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
                 organizationId: this.props.match.params.organizationId
             }),
+            paths: [
+                Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
+                    organizationId: this.props.match.params.organizationId
+                }),
+                Routes.DASHBOARD.ORGANIZATION_FORBIDDEN_WORDS_RESOLVER({
+                    organizationId: this.props.match.params.organizationId
+                })
+            ],
             text: "QA",
             roles: ROLES_TRANSLATOR_UP,
             texterifyCloudOnly: false
@@ -168,7 +177,9 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
 
     getSelectedItem = (): string[] => {
         return this.navigationData.map((data: INavigationData, index: number): string => {
-            if (data.path === this.props.location.pathname) {
+            if (data.paths?.includes(this.props.location.pathname)) {
+                return index.toString();
+            } else if (data.path === this.props.location.pathname) {
                 return index.toString();
             }
         });

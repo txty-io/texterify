@@ -192,7 +192,7 @@ class ProjectRouter extends React.Component<IProps, IState> {
                     />
                     <PrivateRoute
                         exact
-                        path={Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_LISTS}
+                        path={Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS}
                         component={ProjectForbiddenWordsListsSite}
                     />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_OTA} component={ProjectOTASite} />

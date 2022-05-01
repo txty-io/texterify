@@ -244,7 +244,9 @@ class IssuesTable extends React.Component<IProps, IState> {
                                     console.error(error);
                                     message.error("Failed to delete issue.");
                                 }
-                                await this.loadValidationViolations();
+
+                                this.setState({ page: 1 });
+                                await this.loadValidationViolations({ page: 1 });
                             }}
                             okText="Yes"
                             cancelText="No"

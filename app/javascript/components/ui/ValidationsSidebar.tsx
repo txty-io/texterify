@@ -6,7 +6,6 @@ import { SubSidebar } from "./SubSidebar";
 export const ValidationsSidebar = observer((props: { projectId: string }) => {
     return (
         <SubSidebar
-            projectId={props.projectId}
             menuItems={[
                 {
                     title: "QA",
@@ -22,7 +21,7 @@ export const ValidationsSidebar = observer((props: { projectId: string }) => {
                             id: "validations-sidebar-placeholders"
                         },
                         {
-                            path: Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_LISTS_RESOLVER({
+                            path: Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_RESOLVER({
                                 projectId: props.projectId
                             }),
                             name: "Forbidden words",

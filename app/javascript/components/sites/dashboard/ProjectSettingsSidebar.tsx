@@ -5,7 +5,6 @@ import { SubSidebar } from "../../ui/SubSidebar";
 export function ProjectSettingsSidebar(props: { projectId: string }) {
     return (
         <SubSidebar
-            projectId={props.projectId}
             menuItems={[
                 {
                     title: "Settings",
