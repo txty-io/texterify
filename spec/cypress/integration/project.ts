@@ -19,7 +19,7 @@ context("project", () => {
         cy.createProject("My test project");
         cy.location("pathname").should("contain", "/dashboard/projects/");
         cy.goToProjectSettings();
-        cy.get(".ant-collapse-item").first().click();
+        cy.get('[data-id="settings-sidebar-general"]').first().click();
         const newName = "new name";
         const newDescription = "new description";
         cy.get('input[id="name"]').clear().type(newName);
@@ -70,7 +70,7 @@ context("project", () => {
             .should("contain", testData.keys.firstKey.value);
 
         cy.goToProjectSettings();
-        cy.get(".ant-collapse-item").first().next().click();
+        cy.get('[data-id="settings-sidebar-advanced"]').click();
         cy.get('[data-id="project-advanced-settings-delete"]').click();
         cy.get(".ant-modal-confirm-btns > .ant-btn-dangerous").click();
         cy.contains("No projects found");

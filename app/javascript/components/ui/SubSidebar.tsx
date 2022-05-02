@@ -67,6 +67,7 @@ export function SubSidebar(props: ISubSidebarProps) {
                                             pointerEvents: item.disabled ? "none" : undefined,
                                             opacity: item.disabled ? 0.5 : undefined
                                         }}
+                                        data-id={item.id}
                                     >
                                         <Link style={{ padding: "8px 24px" }} to={item.path}>
                                             {item.name}

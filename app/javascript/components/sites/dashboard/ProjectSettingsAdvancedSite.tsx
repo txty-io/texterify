@@ -86,6 +86,7 @@ class ProjectSettingsAdvancedSite extends React.Component<IProps, IState> {
                                 onClick={this.onDeleteProjectClick}
                                 style={{ alignSelf: "flex-end", marginTop: 16 }}
                                 disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}
+                                data-id="project-advanced-settings-delete"
                             >
                                 Remove project
                             </Button>
@@ -109,6 +110,7 @@ class ProjectSettingsAdvancedSite extends React.Component<IProps, IState> {
                                 onClick={this.onTransferProjectClick}
                                 style={{ alignSelf: "flex-end", marginTop: 16 }}
                                 disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}
+                                data-id="project-advanced-settings-transfer"
                             >
                                 Transfer project
                             </Button>

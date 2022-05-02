@@ -22,7 +22,10 @@ context("import", () => {
         cy.get('[data-id="project-sidebar-import"]').click();
         cy.get('[data-id="file-importer-language-tag"]').click();
         cy.get('[data-id="file-importer-file-format-json"]').click();
-        cy.get('[data-id="file-importer-file-uploader"]').attachFile("test_file_texterify_timestamp.json");
+        cy.get('[data-id="file-importer-file-uploader"]').selectFile(
+            "cypress/fixtures/test_file_texterify_timestamp.json",
+            { force: true }
+        );
         cy.get('[data-id="file-importer-submit-button"]').click();
         cy.goToKeys();
         cy.contains("normal_key");
