@@ -4,19 +4,30 @@
                  "id" => "__REMOVED__",
                "type" => "forbidden_words_list",
          "attributes" => {
-                 "id" => "__REMOVED__",
-               "name" => "my name",
-            "content" => "my content",
-         "project_id" => "__REMOVED__",
-        "language_id" => nil,
-        "words_count" => 1
+                      "id" => "__REMOVED__",
+                    "name" => "my name",
+                 "content" => "my content",
+              "project_id" => "__REMOVED__",
+         "organization_id" => nil,
+        "language_code_id" => nil,
+         "country_code_id" => nil,
+             "words_count" => 1
       },
       "relationships" => {
-        "project" => {
+         "organization" => {
+          "data" => nil
+        },
+              "project" => {
           "data" => {
               "id" => "__REMOVED__",
             "type" => "project"
           }
+        },
+        "language_code" => {
+          "data" => nil
+        },
+         "country_code" => {
+          "data" => nil
         }
       }
     }
@@ -35,6 +46,8 @@
         "machine_translation_character_usage" => 0,
                                  "word_count" => 0,
                             "character_count" => 0,
+                          "placeholder_start" => nil,
+                            "placeholder_end" => nil,
                 "validate_leading_whitespace" => true,
                "validate_trailing_whitespace" => true,
                  "validate_double_whitespace" => true,

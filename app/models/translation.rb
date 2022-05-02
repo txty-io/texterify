@@ -209,12 +209,16 @@ class Translation < ApplicationRecord
 
   # Returns a list of all placeholder names present in the current translation content.
   def placeholder_names
-    # Escape the placeholder start and ending characters.
-    escaped_placeholder_start = Regexp.escape(self.key.project.placeholder_start)
-    escaped_placeholder_end = Regexp.escape(self.key.project.placeholder_end)
+    if self.key.project.placeholder_start && self.key.project.placeholder_end
+      # Escape the placeholder start and ending characters.
+      escaped_placeholder_start = Regexp.escape(self.key.project.placeholder_start)
+      escaped_placeholder_end = Regexp.escape(self.key.project.placeholder_end)
 
-    names = self.content ? self.content.scan(/#{escaped_placeholder_start}(.*?)#{escaped_placeholder_end}/) : []
-    names.map { |name| "#{self.key.project.placeholder_start}#{name[0]}#{self.key.project.placeholder_end}" }
+      names = self.content ? self.content.scan(/#{escaped_placeholder_start}(.*?)#{escaped_placeholder_end}/) : []
+      names.map { |name| "#{self.key.project.placeholder_start}#{name[0]}#{self.key.project.placeholder_end}" }
+    else
+      []
+    end
   end
 
   private

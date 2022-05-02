@@ -53,7 +53,7 @@ RSpec.describe Api::V1::ForbiddenWordsListsController, type: :request do
       expect(response.status).to eq(403)
     end
 
-    it 'creates a forbidden words list without language' do
+    it 'creates a forbidden words list' do
       post "/api/v1/projects/#{@project.id}/forbidden_words_lists",
            params: {
              name: 'my name',
@@ -68,47 +68,6 @@ RSpec.describe Api::V1::ForbiddenWordsListsController, type: :request do
       expect(ForbiddenWordsList.count).to eq(1)
       expect(ForbiddenWordsList.first.name).to eq('my name')
       expect(ForbiddenWordsList.first.content).to eq('my content')
-      expect(ForbiddenWordsList.first.language_id).to eq(nil)
-    end
-
-    it 'creates a forbidden words list with language' do
-      language = Language.new
-      language.name = 'my_lang'
-      language.project = @project
-      language.save!
-
-      post "/api/v1/projects/#{@project.id}/forbidden_words_lists",
-           params: {
-             name: 'my name',
-             content: 'my content',
-             language_id: language.id
-           },
-           headers: @auth_params
-      expect(response.status).to eq(200)
-      body = JSON.parse(response.body)
-
-      expect(body['error']).to eq(false)
-      expect(body['details']).to eq('FORBIDDEN_WORDS_LIST_CREATED')
-      expect(ForbiddenWordsList.count).to eq(1)
-      expect(ForbiddenWordsList.first.name).to eq('my name')
-      expect(ForbiddenWordsList.first.content).to eq('my content')
-      expect(ForbiddenWordsList.first.language_id).to eq(language.id)
-    end
-
-    it 'does not create a forbidden words list with invalid language' do
-      post "/api/v1/projects/#{@project.id}/forbidden_words_lists",
-           params: {
-             name: 'my name',
-             content: 'my content',
-             language_id: '0aa4bcf6-2cb2-4c72-bc09-d8452fb5be3e'
-           },
-           headers: @auth_params
-      expect(response.status).to eq(400)
-      body = JSON.parse(response.body)
-
-      expect(body['error']).to eq(true)
-      expect(body['details']).to eq('LANGUAGE_NOT_FOUND')
-      expect(ForbiddenWordsList.count).to eq(0)
     end
   end
 
@@ -119,11 +78,6 @@ RSpec.describe Api::V1::ForbiddenWordsListsController, type: :request do
       @fwl.name = 'my name'
       @fwl.content = 'my content'
       @fwl.save!
-
-      @language = Language.new
-      @language.name = 'my_lang'
-      @language.project = @project
-      @language.save!
     end
 
     it 'has status code 403 if not logged in', :skip_before do
@@ -131,12 +85,11 @@ RSpec.describe Api::V1::ForbiddenWordsListsController, type: :request do
       expect(response.status).to eq(403)
     end
 
-    it 'updates a forbidden words list and sets new language' do
+    it 'updates a forbidden words list' do
       put "/api/v1/projects/#{@project.id}/forbidden_words_lists/#{@fwl.id}",
           params: {
             name: 'new name',
-            content: 'new content',
-            language_id: @language.id
+            content: 'new content'
           },
           headers: @auth_params
       expect(response.status).to eq(200)
@@ -147,48 +100,6 @@ RSpec.describe Api::V1::ForbiddenWordsListsController, type: :request do
       expect(ForbiddenWordsList.count).to eq(1)
       expect(ForbiddenWordsList.first.name).to eq('new name')
       expect(ForbiddenWordsList.first.content).to eq('new content')
-      expect(ForbiddenWordsList.first.language_id).to eq(@language.id)
-    end
-
-    it 'does not update a forbidden words list with invalid language' do
-      put "/api/v1/projects/#{@project.id}/forbidden_words_lists/#{@fwl.id}",
-          params: {
-            name: 'new name',
-            content: 'new content',
-            language_id: '46b501f5-cf00-45f6-999b-2cd62932c739'
-          },
-          headers: @auth_params
-      expect(response.status).to eq(400)
-      body = JSON.parse(response.body)
-
-      expect(body['error']).to eq(true)
-      expect(body['details']).to eq('LANGUAGE_NOT_FOUND')
-      expect(ForbiddenWordsList.count).to eq(1)
-      expect(ForbiddenWordsList.first.name).to eq('my name')
-      expect(ForbiddenWordsList.first.content).to eq('my content')
-      expect(ForbiddenWordsList.first.language_id).to eq(nil)
-    end
-
-    it 'updates a forbidden words list and remove existing language' do
-      @fwl.language = @language
-      @fwl.save!
-
-      put "/api/v1/projects/#{@project.id}/forbidden_words_lists/#{@fwl.id}",
-          params: {
-            name: 'new name',
-            content: 'new content',
-            language_id: nil
-          },
-          headers: @auth_params
-      expect(response.status).to eq(200)
-      body = JSON.parse(response.body)
-
-      expect(body['error']).to eq(false)
-      expect(body['details']).to eq('FORBIDDEN_WORDS_LIST_UPDATED')
-      expect(ForbiddenWordsList.count).to eq(1)
-      expect(ForbiddenWordsList.first.name).to eq('new name')
-      expect(ForbiddenWordsList.first.content).to eq('new content')
-      expect(ForbiddenWordsList.first.language_id).to eq(nil)
     end
 
     it 'does not update a forbidden words list with missing name' do

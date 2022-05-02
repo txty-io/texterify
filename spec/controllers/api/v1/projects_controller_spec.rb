@@ -25,7 +25,9 @@ PROJECT_ATTRIBUTES = [
   'organization_id',
   'current_user_deactivated',
   'current_user_deactivated_reason',
-  'issues_count'
+  'issues_count',
+  'placeholder_end',
+  'placeholder_start'
 ].freeze
 
 RSpec.describe Api::V1::ProjectsController, type: :request do
