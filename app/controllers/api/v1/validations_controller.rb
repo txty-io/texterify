@@ -143,6 +143,8 @@ class Api::V1::ValidationsController < Api::V1::ApiController
   private
 
   def validation_params
-    params.require(:validation).permit(:name, :description, :match, :content, :enabled, :country_code_id, :language_code_id)
+    params
+      .require(:validation)
+      .permit(:name, :description, :match, :content, :enabled, :country_code_id, :language_code_id)
   end
 end

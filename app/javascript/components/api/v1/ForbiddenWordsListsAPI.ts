@@ -32,7 +32,7 @@ export interface IForbiddenWord {
 export interface IGetForbiddenWordsListsResponse {
     data: IForbiddenWordsList[];
     meta: { total: number };
-    included: any[]
+    included: any[];
 }
 
 export type IForbiddenWordsListLinkedTo = "project" | "organization";
