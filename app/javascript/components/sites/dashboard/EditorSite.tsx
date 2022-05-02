@@ -375,6 +375,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                 }}
                             >
                                 {!this.state.keysLoading &&
+                                    this.state.languagesResponse &&
                                     this.state.keysResponse?.data?.map((key, index) => {
                                         let keyContentPreview: JSX.Element;
 

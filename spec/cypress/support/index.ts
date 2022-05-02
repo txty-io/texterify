@@ -53,6 +53,7 @@ declare global {
             goToProjectHome(): void;
             goToLanguages(): void;
             goToValidations(): void;
+            goToForbiddenWords(): void;
             goToProjectSettings(): void;
             goToEditor(): void;
             selectKeyInEditor(name: string);

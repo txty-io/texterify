@@ -145,6 +145,11 @@ Cypress.Commands.add("goToValidations", () => {
     cy.get('[data-id="project-sidebar-validations"]').click();
 });
 
+Cypress.Commands.add("goToForbiddenWords", () => {
+    cy.get('[data-id="project-sidebar-validations"]').click();
+    cy.get('[data-id="validations-sidebar-forbidden-words-lists"]').click();
+});
+
 Cypress.Commands.add("goToKeys", () => {
     cy.get('[data-id="project-sidebar-keys"]').click();
 });

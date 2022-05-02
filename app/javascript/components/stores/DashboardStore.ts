@@ -113,7 +113,9 @@ class DashboardStore {
                 projectId: this.currentProject.id
             });
 
-            this.currentProject.attributes.issues_count = validationViolationsCountResponse.total;
+            if (this.currentProject) {
+                this.currentProject.attributes.issues_count = validationViolationsCountResponse.total;
+            }
         }
     }
 }

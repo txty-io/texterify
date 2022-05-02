@@ -8,7 +8,7 @@ context("forbidden-words", () => {
         cy.appScenario("all_entities");
         cy.login("user_owner@texterify.com", "password");
         cy.goToProject("7e9c194a-5cb7-4e6e-9536-942c5268eb2e");
-        cy.goToValidations();
+        cy.goToForbiddenWords();
         cy.featureNotAvailableInPlanShown("FEATURE_VALIDATIONS_NOT_AVAILABLE");
     });
 
@@ -17,7 +17,7 @@ context("forbidden-words", () => {
         cy.appScenario("all_entities");
         cy.login("user_owner@texterify.com", "password");
         cy.goToProject("0e1bda4b-cd24-4585-80bb-d3b80701107a");
-        cy.goToValidations();
+        cy.goToForbiddenWords();
         cy.clickDataId("forbidden-words-list-button-new");
         cy.get("#name").type("my-forbidden-list");
         cy.get("#content").type("bad\nverybad");

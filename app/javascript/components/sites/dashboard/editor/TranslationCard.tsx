@@ -6,7 +6,7 @@ import TextArea from "antd/lib/input/TextArea";
 import * as React from "react";
 import styled from "styled-components";
 import { APIUtils } from "../../../api/v1/APIUtils";
-import { IGetKeyResponse } from "../../../api/v1/KeysAPI";
+import { IGetKeyResponse, IPlaceholder } from "../../../api/v1/KeysAPI";
 import { IGetLanguagesResponse, ILanguage } from "../../../api/v1/LanguagesAPI";
 import {
     IGetMachineTranslationsSourceLanguages,
@@ -232,11 +232,11 @@ class TranslationCard extends React.Component<IProps, IState> {
 
         let converted = [this.state.content];
 
-        this.props.keyResponse.included
+        this.props.keyResponse?.included
             .filter((included) => {
                 return included.type === "placeholder";
             })
-            .forEach((included) => {
+            .forEach((included: IPlaceholder) => {
                 converted = converted.reduce((acc, element) => {
                     if (typeof element === "string") {
                         const splitted = element.split(included.attributes.name);
