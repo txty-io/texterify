@@ -72,7 +72,7 @@ class Translation < ApplicationRecord
 
         is_violation =
           self.content.present? && translation_fw_matches_language_code && translation_fw_matches_country_code &&
-            self.content.include?(forbidden_word.content)
+            self.content.downcase.split(' ').include?(forbidden_word.content.downcase)
 
         if is_violation
           if !active_violation
