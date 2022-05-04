@@ -22,7 +22,7 @@ class Api::V1::ValidationViolationsController < Api::V1::ApiController
     end
 
     options = {}
-    options[:meta] = { total: project.validation_violations.size }
+    options[:meta] = { total: validation_violations.size }
     options[:include] = [
       :project,
       :validation,
