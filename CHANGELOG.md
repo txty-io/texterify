@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 - Add new sidebars for easier navigation.
 - Add .arb import/export.
 - Add info to instance licenses when they are expired.
+- Add forbidden words.
+- Add placeholder checks.
+- Add validations.
+- Add issues system.
 - Improve design and adjust color.
 - Fix character and word count not beeing calculated correctly.
 - Fix missing check if auto-translate feature is available.

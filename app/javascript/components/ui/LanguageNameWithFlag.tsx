@@ -14,7 +14,12 @@ export function LanguageNameWithFlag(props: {
                 </span>
             )}
             {props.languageName}
-            {props.showNameWithCountryCode && <>-{props.countryCode}</>}
+            {props.showNameWithCountryCode && (
+                <>
+                    {props.languageName && "-"}
+                    {props.countryCode}
+                </>
+            )}
         </>
     );
 }
