@@ -43,30 +43,30 @@ export const InstanceLicensesSite = observer(() => {
                     <Statistic
                         className={disabled ? "disabled" : undefined}
                         title="Name"
-                        value={license.attributes.licensee.name}
+                        value={license.attributes.licensee?.name || "-"}
                         style={{ marginRight: 40 }}
                     />
                     <Statistic
                         className={disabled ? "disabled" : undefined}
                         title="E-Mail"
-                        value={license.attributes.licensee.email}
+                        value={license.attributes.licensee?.email || "-"}
                     />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24 }}>
                     <Statistic
                         className={disabled ? "disabled" : undefined}
                         title="Starts at"
-                        value={license.attributes.starts_at}
+                        value={license.attributes.starts_at || "-"}
                     />
                     <Statistic
                         className={disabled ? "disabled" : undefined}
                         title="Expires at"
-                        value={license.attributes.expires_at}
+                        value={license.attributes.expires_at || "-"}
                     />
                     <Statistic
                         className={disabled ? "disabled" : undefined}
                         title="Max active users"
-                        value={license.attributes.restrictions?.active_users_count}
+                        value={license.attributes.restrictions?.active_users_count || "-"}
                     />
                 </div>
                 {license.attributes.expired && (
