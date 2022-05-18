@@ -25,6 +25,7 @@ All notable changes to this project will be documented in this file.
 - Fix bug that caused some projects not to be deleteable and improve delete performance.
 - Fix bug that caused machine translation site to crash.
 - Fix bug where HTML editor content is empty when editing after importing translations.
+- Fix bug if imported licenses are invalid.
 
 ## v1.0.6
 
