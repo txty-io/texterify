@@ -61,6 +61,13 @@ module ImportHelper
       else
         raise 'NOTHING_IMPORTED'
       end
+    elsif file_format == 'xliff'
+      result = xliff?(file_content)
+      if result[:matches]
+        return result[:content]
+      else
+        raise 'NOTHING_IMPORTED'
+      end
     end
 
     raise 'INVALID_FILE_FORMAT'
@@ -121,6 +128,23 @@ module ImportHelper
 
   def properties?(content)
     parsed = JavaProperties.parse(content)
+    parsed.count > 0 ? { matches: true, content: parsed } : { matches: false }
+  rescue StandardError
+    { matches: false, invalid: true }
+  end
+
+  def xliff?(content)
+    parsed = {}
+
+    xml = Nokogiri.XML(content)
+
+    # If there is at least one target element the target content will be imported.
+    # Otherwise the source content will be used.
+    import_target = !xml.css('target').empty?
+
+    trans_units = xml.css('trans-unit')
+    trans_units.map { |trans_unit| parsed[trans_unit['id']] = trans_unit.css(import_target ? 'target' : 'source').text }
+
     parsed.count > 0 ? { matches: true, content: parsed } : { matches: false }
   rescue StandardError
     { matches: false, invalid: true }

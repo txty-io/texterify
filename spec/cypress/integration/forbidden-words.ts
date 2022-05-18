@@ -23,4 +23,17 @@ context("forbidden-words", () => {
         cy.get("#content").type("bad\nverybad");
         cy.clickDataId("forbidden-words-list-form-submit");
     });
+
+    it("creates a forbidden words list correctly with language and country code", () => {
+        cy.appScenario("set_cloud");
+        cy.appScenario("all_entities");
+        cy.login("user_owner@texterify.com", "password");
+        cy.goToProject("0e1bda4b-cd24-4585-80bb-d3b80701107a");
+        cy.goToForbiddenWords();
+        cy.clickDataId("forbidden-words-list-button-new");
+        cy.get("#name").type("my-forbidden-list");
+        cy.get("#content").type("bad\nverybad");
+        cy.get("#languageCodeId").type("german").type("{enter}");
+        cy.clickDataId("forbidden-words-list-form-submit");
+    });
 });

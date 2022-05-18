@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="Texterify API" source-language="" target-language="de-AT">
+    <body>
+      <trans-unit id="a">
+        <target>b</target>
+      </trans-unit>
+      <trans-unit id="_">
+        <target>!</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

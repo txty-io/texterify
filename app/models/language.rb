@@ -70,6 +70,27 @@ class Language < ApplicationRecord
     return false
   end
 
+  # IETF language tag - RFC 4646 standard
+  # Returns a language tag if language or country code is set.
+  # Otherwise returns nil.
+  def language_tag
+    tag = ''
+
+    if language_code
+      tag = language_code.code
+    end
+
+    if language_code && country_code
+      tag += '-'
+    end
+
+    if country_code
+      tag += country_code.code
+    end
+
+    tag.empty? ? nil : tag
+  end
+
   protected
 
   def strip_leading_and_trailing_whitespace

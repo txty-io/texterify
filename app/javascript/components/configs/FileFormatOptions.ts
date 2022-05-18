@@ -42,6 +42,10 @@ const FileFormatOptions: { value: string; text: string }[] = [
     {
         value: "arb",
         text: "Flutter .arb"
+    },
+    {
+        value: "xliff",
+        text: "XLIFF .xlf, .xliff"
     }
 ].sort((a, b) => {
     return a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 1;
