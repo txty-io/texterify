@@ -30,10 +30,10 @@ import { Loading } from "./Loading";
 import { LoadingOverlay } from "./LoadingOverlay";
 import { Styles } from "./Styles";
 
-const ACCEPTED_FILE_FORMATS = [".json", ".strings", ".toml", ".properties", ".po", ".arb"];
+const ACCEPTED_FILE_FORMATS = [".json", ".strings", ".toml", ".properties", ".po", ".arb", ".xliff", ".xlf"];
 
 const SUPPORTED_FORMATS: {
-    image: any;
+    image?: string;
     imageDarkMode?: any;
     name: string;
     formats: string[];
@@ -222,6 +222,29 @@ msgstr "Awesome app"
     "all_ok": "Everything is fine (but still no cake)."
     ...
 }`}</pre>
+        )
+    },
+    {
+        name: "XLIFF .xlf",
+        formats: [".xlf", ".xliff"],
+        id: "xliff",
+        documentationURL: "https://docs.oasis-open.org/xliff/xliff-core/xliff-core.html",
+        example: (
+            <pre style={{ whiteSpace: "break-spaces" }}>{`<xliff
+    ...
+    version="2.0"
+    srcLang="en-US"
+    trgLang="de-AT"
+>
+    <file id="f1">
+        <unit id="1">
+            <segment>
+                <source>Hello</source>
+                <target>Hallo</target>
+            </segment>
+        </unit>
+    </file>
+</xliff>`}</pre>
         )
     }
     // {

@@ -134,6 +134,20 @@ module ExportHelper
 
   def create_export(project, export_config, file, **args)
     post_processing_rules = project.post_processing_rules.where(export_config_id: [export_config.id, nil]).order_by_name
+    requires_source_translations = export_config.file_format == 'xliff'
+    default_language = project.languages.find_by(is_default: true)
+
+    if requires_source_translations && default_language
+      export_data_source =
+        create_language_export_data(
+          project,
+          export_config,
+          default_language,
+          post_processing_rules,
+          skip_timestamp: false,
+          emojify: args[:emojify]
+        )
+    end
 
     Zip::File.open(file.path, Zip::File::CREATE) do |zip|
       project
@@ -164,7 +178,7 @@ module ExportHelper
               file_path.delete_prefix!('/')
             end
 
-            zip.add(file_path, export_config.file(language, export_data))
+            zip.add(file_path, export_config.file(language, export_data, default_language, export_data_source))
             break
           rescue Zip::EntryExistsError
             duplicate_zip_entry_count += 1

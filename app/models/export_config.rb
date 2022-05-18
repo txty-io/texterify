@@ -66,9 +66,10 @@ class ExportConfig < ApplicationRecord
     language.country_code ? path.sub('{countryCode}', language.country_code.code) : path
   end
 
-  def file(language, export_data)
+  def file(language, export_data, language_source = nil, export_data_source = nil)
     # stringify in case export_data has symbols in it
     export_data.deep_stringify_keys!
+    export_data_source&.deep_stringify_keys!
 
     if file_format == 'json'
       json(language, export_data)
@@ -90,6 +91,8 @@ class ExportConfig < ApplicationRecord
       po(language, export_data)
     elsif file_format == 'arb'
       arb(language, export_data)
+    elsif file_format == 'xliff'
+      xliff(language, export_data, language_source, export_data_source)
     else
       json(language, export_data)
     end
@@ -205,6 +208,36 @@ class ExportConfig < ApplicationRecord
         end
       )
     output = template.result(data.get_binding)
+
+    language_file = Tempfile.new(language.id.to_s)
+    language_file.puts(output)
+    language_file.close
+
+    language_file
+  end
+
+  def xliff(language, export_data, language_source = nil, export_data_source = nil)
+    builder =
+      Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
+        xml.xliff version: '1.2', xmlns: 'urn:oasis:names:tc:xliff:document:1.2' do
+          xml.file original: 'Texterify API',
+                   "source-language": language_source&.language_tag,
+                   "target-language": language.language_tag do
+            xml.body do
+              export_data.each do |key, value|
+                xml.send 'trans-unit', id: key do
+                  if language_source && export_data_source
+                    xml.source { xml.text export_data_source[key] }
+                  end
+                  xml.target { xml.text value }
+                end
+              end
+            end
+          end
+        end
+      end
+
+    output = builder.to_xml
 
     language_file = Tempfile.new(language.id.to_s)
     language_file.puts(output)

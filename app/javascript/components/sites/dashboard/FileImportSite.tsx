@@ -15,7 +15,8 @@ export type ImportFileFormats =
     | "rails"
     | "properties"
     | "po"
-    | "arb";
+    | "arb"
+    | "xliff";
 
 export function FileImportSite() {
     const params = useParams<{ projectId: string }>();

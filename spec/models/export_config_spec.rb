@@ -3,8 +3,21 @@ require 'securerandom'
 
 RSpec.describe ExportConfig, type: :model do
   before(:each) do
+    language_code = LanguageCode.find_by(code: 'de')
+    country_code = CountryCode.find_by(code: 'AT')
+
     @language = Language.new
+    @language.language_code = language_code
+    @language.country_code = country_code
     @language.id = SecureRandom.uuid
+
+    language_code_source = LanguageCode.find_by(code: 'en')
+    country_code_source = CountryCode.find_by(code: 'US')
+
+    @language_source = Language.new
+    @language_source.language_code = language_code_source
+    @language_source.country_code = country_code_source
+    @language_source.id = SecureRandom.uuid
   end
 
   context 'when file format is android' do
@@ -128,6 +141,29 @@ RSpec.describe ExportConfig, type: :model do
       file = export_config.file(@language, { "a": 'b', "_": '!' })
       file.open
       expect(file.read).to eq("a=b\n_=!\n")
+    end
+  end
+
+  context 'when file format is xliff' do
+    export_config = ExportConfig.new
+    export_config.file_format = 'xliff'
+
+    it 'create xliff file content from parsed data' do
+      file = export_config.file(@language, { "a": 'b', "_": '!' }, @language_source, { "a": 'a', "_": '_' })
+      file.open
+      expect(file.read).to match_snapshot('create_xliff_file_content')
+    end
+
+    it 'create xliff file with empty target data' do
+      file = export_config.file(@language, {}, @language_source, { "a": 'a', "_": '_' })
+      file.open
+      expect(file.read).to match_snapshot('create_xliff_file_content_empty_target_data')
+    end
+
+    it 'create xliff file without source data' do
+      file = export_config.file(@language, { "a": 'b', "_": '!' }, nil, nil)
+      file.open
+      expect(file.read).to match_snapshot('create_xliff_file_content_without_source_data')
     end
   end
 
