@@ -238,6 +238,9 @@ class Translation < ApplicationRecord
       content_before = content_before_converted.nil? ? content_before : content_before_converted.to_s
       content_after = content_after_converted.nil? ? content_after : content_after_converted.to_s
 
+      content_before = content_before.nil? ? '' : content_before
+      content_after = content_after.nil? ? '' : content_after
+
       character_count_diff = content_after.length - content_before.length
       word_count_diff = content_after.split(' ').length - content_before.split(' ').length
 
