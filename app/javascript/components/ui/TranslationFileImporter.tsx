@@ -462,7 +462,7 @@ export const TranslationFileImporter = observer(
                                     marginTop: 8
                                 }}
                             >
-                                <span style={{ marginRight: 8 }}>Select an export config:</span>
+                                <span style={{ marginRight: 8 }}>Select an export target:</span>
                                 {getExportConfigSelect()}
                             </div>
                         )}
@@ -473,7 +473,7 @@ export const TranslationFileImporter = observer(
                                     setShowExportConfigSelect(true);
                                 }}
                             >
-                                Click here to import strings for an export config
+                                Click here to import strings for an export target
                             </a>
                         )}
 

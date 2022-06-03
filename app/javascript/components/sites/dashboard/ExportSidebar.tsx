@@ -17,7 +17,7 @@ export function ExportSidebar(props: { projectId: string }) {
                         },
                         {
                             path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(":projectId", props.projectId),
-                            name: "Configurations",
+                            name: "Targets",
                             id: "configurations"
                         },
                         {

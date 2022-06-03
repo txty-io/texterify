@@ -27,7 +27,7 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
             setExportConfigResponse(newExportConfigsResponse);
         } catch (error) {
             console.error(error);
-            message.error("Failed to load export configs.");
+            message.error("Failed to load export targets.");
         }
 
         setLanguagesLoading(false);
@@ -99,8 +99,8 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
     async function onDelete() {
         setIsDeleting(true);
         Modal.confirm({
-            title: "Do you really want to delete the selected export configs?",
-            content: "This cannot be undone and all translations for this export config will also be deleted.",
+            title: "Do you really want to delete the selected export targets?",
+            content: "This cannot be undone and all translations for this export target will also be deleted.",
             okText: "Yes",
             okButtonProps: {
                 danger: true
@@ -115,11 +115,11 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
                         exportConfigIds: selectedRowKeys as string[]
                     });
                     if (response.errors) {
-                        message.error("Failed to delete export config.");
+                        message.error("Failed to delete export target.");
                         return;
                     }
                 } catch (error) {
-                    message.error("Failed to delete export config.");
+                    message.error("Failed to delete export target.");
                     console.error(error);
                 }
 
@@ -184,7 +184,7 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
                     }
                 }}
                 locale={{
-                    emptyText: <Empty description="No export configs found" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    emptyText: <Empty description="No export targets found" image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 }}
             />
 

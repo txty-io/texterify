@@ -113,12 +113,12 @@ class AddReleaseForm extends React.Component<IProps, IState> {
                 onCancel={this.props.onCancelRequest}
             >
                 <Form ref={this.formRef} onFinish={this.handleSubmit} style={{ maxWidth: "100%" }} id="addReleaseForm">
-                    <h3>Export config</h3>
+                    <h3>Export target</h3>
                     {!this.hasExportConfigs() && (
                         <Alert
                             type="info"
                             showIcon
-                            message="No export configuration"
+                            message="No export target"
                             description={
                                 <p>
                                     <Link
@@ -127,7 +127,7 @@ class AddReleaseForm extends React.Component<IProps, IState> {
                                             this.props.projectId
                                         )}
                                     >
-                                        Create an export configuration
+                                        Create an export target
                                     </Link>{" "}
                                     to create releases.
                                 </p>
@@ -140,12 +140,12 @@ class AddReleaseForm extends React.Component<IProps, IState> {
                             rules={[
                                 {
                                     required: true,
-                                    message: "Please select an export configuration."
+                                    message: "Please select an export target."
                                 }
                             ]}
                         >
                             <Select
-                                placeholder="Select a configuration"
+                                placeholder="Select a target"
                                 style={{ width: "100%" }}
                                 onChange={(value: string) => {
                                     this.setState({ exportConfigId: value });

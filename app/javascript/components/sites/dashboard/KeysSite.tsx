@@ -206,7 +206,7 @@ class KeysSite extends React.Component<IProps, IState> {
                     title: (
                         <div style={{ whiteSpace: "nowrap" }}>
                             <span style={{ marginRight: 8 }}>Overwritten for</span>
-                            <Tooltip title="For which export configs at least one of the translations is overwritten.">
+                            <Tooltip title="For which export targets at least one of the translations is overwritten.">
                                 <QuestionCircleOutlined />
                             </Tooltip>
                         </div>
@@ -921,7 +921,7 @@ class KeysSite extends React.Component<IProps, IState> {
 
                                           const columns: any = [
                                               {
-                                                  title: "Export Configuration",
+                                                  title: "Export target",
                                                   dataIndex: "exportConfigName",
                                                   key: "exportConfigName"
                                               }

@@ -214,9 +214,9 @@ export function KeySearchSettings(props: {
                     })}
                 </Select>
 
-                <h4 style={{ marginTop: 16 }}>Filter by export configs</h4>
+                <h4 style={{ marginTop: 16 }}>Filter by export targets</h4>
                 <Select
-                    placeholder="Select export configs"
+                    placeholder="Select export targets"
                     style={{ width: "100%" }}
                     onChange={(values: string[]) => {
                         setSelectedExportConfigs(values);

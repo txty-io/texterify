@@ -14,7 +14,7 @@ const DEVELOPER_ACTIONS = [
     "Manage keys",
     "Manage languages",
     "Manage post processing rules",
-    "Manage export configurations",
+    "Manage export targets",
     "Manage export hierarchy",
     "Import/export keys and translations"
 ];
@@ -24,7 +24,7 @@ const MANAGER_ACTIONS = [
     "Manage keys",
     "Manage languages",
     "Manage post processing rules",
-    "Manage export configurations",
+    "Manage export targets",
     "Manage export hierarchy",
     "Import/export keys and translations",
     "Manage OTA releases",
@@ -37,7 +37,7 @@ const OWNER_ACTIONS = [
     "Manage keys",
     "Manage languages",
     "Manage post processing rules",
-    "Manage export configurations",
+    "Manage export targets",
     "Manage export hierarchy",
     "Import/export keys and translations",
     "Manage OTA releases",
