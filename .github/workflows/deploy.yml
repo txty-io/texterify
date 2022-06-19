@@ -1,4 +1,4 @@
-name: Build & Push
+name: Deploy
 
 on:
   push:
@@ -12,7 +12,7 @@ on:
 
 jobs:
   test:
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/reusable-test.yml
 
   build-and-push:
     runs-on: ubuntu-18.04
