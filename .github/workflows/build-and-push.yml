@@ -12,27 +12,8 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
-    env:
-      DB_TEST_HOST: db
-      DB_TEST_USERNAME: postgres
-      SECRET_KEY_BASE: 8dfc55709e6daaf5d7b2ce70e247374400f47db2e4b6867f67821290b440a0acbe931d5f4d9687f386e5aae3f0377da533450058e131b37dbc16b692c296c941
     steps:
-      - uses: actions/checkout@v2
-      - name: Run docker-compose
-        run: docker-compose up -d
-
-      - name: Create and seed test database
-        run: docker-compose exec -T app bundle exec rails db:create db:migrate db:seed RAILS_ENV=test
-
-      - name: Run linters
-        run: docker-compose exec -T app yarn lint
-
-      - name: Run tests
-        run: docker-compose exec -T app yarn test
-
-      - name: Check database consistency
-        run: docker-compose exec -T app yarn check:database-consistency:test
+      - uses: ./.github/workflows/test
 
   build-and-push:
     runs-on: ubuntu-18.04
