@@ -9,6 +9,7 @@ import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { MachineTranslationEnabledMessage } from "../../ui/MachineTranslationEnabledMessage";
+import { OrganizationMachineTranslationTotalUsage } from "../../ui/OrganizationMachineTranslationTotalUsage";
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {
@@ -56,15 +57,9 @@ class OrganizationMachineTranslationSite extends React.Component<IProps, IState>
                         <p>Get an overview of your machine translation usage.</p>
                         <div style={{ display: "flex" }}>
                             <div style={{ marginRight: 80, width: "40%" }}>
-                                <h3>Total usage</h3>
-                                <p>This is the total amount of characters machine translated over all your projects.</p>
-                                <div style={{ display: "flex", fontSize: 16 }}>
-                                    <span style={{ fontWeight: "bold", marginRight: 24 }}>Usage:</span>
-                                    {dashboardStore.currentOrganization?.attributes.machine_translation_character_usage}
-                                    /
-                                    {dashboardStore.currentOrganization?.attributes.machine_translation_character_limit}{" "}
-                                    characters
-                                </div>
+                                <OrganizationMachineTranslationTotalUsage
+                                    organization={dashboardStore.currentOrganization}
+                                />
                             </div>
                             <div style={{ width: "60%" }}>
                                 <h3>Usage by project</h3>

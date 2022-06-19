@@ -55,7 +55,7 @@ module Texterify
           project.save!
           organization.save!
 
-          deepl_client = Deepl::V2::Client.new(ENV['DEEPL_API_TOKEN'])
+          deepl_client = Deepl::V2::Client.new(organization)
 
           deepl_translation =
             deepl_client.translate(

@@ -144,6 +144,17 @@ const OrganizationsAPI = {
             .catch(APIUtils.handleErrors);
     },
 
+    updateMachineTranslationSettings: async (options: {
+        organizationId: string;
+        deeplAPIToken: string;
+    }): Promise<IUpdateOrganizationResponse> => {
+        return API.putRequest(`organizations/${options.organizationId}/machine_translation`, true, {
+            deepl_api_token: options.deeplAPIToken
+        })
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
     deleteOrganization: async (organizationId: string) => {
         return API.deleteRequest(`organizations/${organizationId}`, true)
             .then(APIUtils.handleErrors)

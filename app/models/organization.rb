@@ -59,6 +59,35 @@ class Organization < ApplicationRecord
     trial_ends_at.present? ? ((trial_ends_at - Time.now.utc) / 1.day.to_i).ceil : 0
   end
 
+  def machine_translation_character_usage
+    # If the organization uses a custom DeepL account use the usage from the account.
+    if self.uses_custom_deepl_account?
+      deepl_client = Deepl::V2::Client.new(self)
+      usage = deepl_client.usage
+      usage['character_count']
+    else
+      # Otherwise use the usage of the organization.
+      self[:machine_translation_character_usage]
+    end
+  end
+
+  def machine_translation_character_limit
+    # If the organization uses a custom DeepL account use the limit from the account.
+    if self.uses_custom_deepl_account?
+      deepl_client = Deepl::V2::Client.new(self)
+      usage = deepl_client.usage
+      usage['character_limit']
+    else
+      # Otherwise use the limit set for the organization.
+      self[:machine_translation_character_limit]
+    end
+  end
+
+  # Returns true if the organization has a custom DeepL account set.
+  def uses_custom_deepl_account?
+    self.deepl_api_token.present?
+  end
+
   # Cancels the current active trial by setting the end date to nil.
   def cancel_trial
     self.trial_ends_at = nil

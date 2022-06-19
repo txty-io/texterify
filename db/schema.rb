@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_29_163253) do
+ActiveRecord::Schema.define(version: 2022_06_18_232934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -253,6 +253,8 @@ ActiveRecord::Schema.define(version: 2022_04_29_163253) do
     t.datetime "trial_ends_at"
     t.integer "machine_translation_character_usage", default: 0, null: false
     t.integer "machine_translation_character_limit", default: 10000
+    t.string "deepl_api_token"
+    t.string "deepl_api_token_type"
     t.index ["name"], name: "index_organizations_on_name", unique: true
   end
 

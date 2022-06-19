@@ -5,7 +5,7 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
   def usage
     authorize :machine_translation, :usage?
 
-    deepl_client = Deepl::V2::Client.new(ENV['DEEPL_API_TOKEN'])
+    deepl_client = Deepl::V2::Client.new
     render json: deepl_client.usage
   end
 

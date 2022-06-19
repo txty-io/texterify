@@ -3,7 +3,6 @@ import { observable } from "mobx";
 import { create, persist } from "mobx-persist";
 import { APIUtils } from "../api/v1/APIUtils";
 import { BackgroundJobsAPI, IGetBackgroundJobsResponse } from "../api/v1/BackgroundJobsAPI";
-import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 import { IProject, ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { ValidationViolationsAPI } from "../api/v1/ValidationViolationsAPI";
 import { IFeature } from "../types/IFeature";
@@ -28,6 +27,9 @@ interface IOrganizationAttributes {
     all_features: { [k in IFeature]: IPlanIDS[] };
     machine_translation_character_usage: string;
     machine_translation_character_limit: string;
+    deepl_api_token: string;
+    deepl_api_token_type: "free" | "pro" | null;
+    uses_custom_deepl_account: boolean;
     current_user_deactivated?: boolean;
     current_user_deactivated_reason?: "manually_by_admin" | "user_limit_exceeded";
     max_users_reached: boolean;

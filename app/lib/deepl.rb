@@ -1,16 +1,52 @@
 require 'rest-client'
 
+class DeepLInvalidTokenTypeException < StandardError
+  attr_reader :details
+
+  def initialize(details)
+    @details = details
+    super()
+  end
+end
+
+DEEPL_FREE_API = 'https://api-free.deepl.com/v2/'.freeze
+DEEPL_PRO_API = 'https://api.deepl.com/v2/'.freeze
+
 module Deepl
   module V2
     class Client
-      API_ENDPOINT = ENV['DEEPL_API_ENDPOINT'] || 'https://api-free.deepl.com/v2/'
+      attr_accessor :api_endpoint, :api_token
 
-      attr_reader :auth_token
-
-      def initialize(auth_token = nil)
-        @auth_token = auth_token
+      def initialize(organization = nil)
+        if organization&.uses_custom_deepl_account?
+          @api_token = organization.deepl_api_token
+          if organization.deepl_api_token_type == 'free'
+            @api_endpoint = DEEPL_FREE_API
+          elsif organization.deepl_api_token_type == 'pro'
+            @api_endpoint = DEEPL_PRO_API
+          else
+            raise DeepLInvalidTokenTypeException.new(
+                    {
+                      organization_id: organization.id,
+                      organization_deepl_api_token_type: organization.deepl_api_token_type
+                    }
+                  )
+          end
+        else
+          @api_token = ENV['DEEPL_API_TOKEN']
+        end
       end
 
+      def set_api_credentials(api_token, api_endpoint)
+        @api_token = api_token
+        @api_endpoint = api_endpoint
+      end
+
+      # Response:
+      # {
+      #   "character_count": 180118,
+      #   "character_limit": 1250000
+      # }
       def usage
         request(:get, 'usage')
       end
@@ -68,11 +104,11 @@ module Deepl
         response =
           RestClient::Request.execute(
             method: http_method,
-            url: API_ENDPOINT + endpoint,
+            url: @api_endpoint + endpoint,
             payload: data,
             headers: {
               params: {
-                auth_key: @auth_token
+                auth_key: @api_token
               }
             },
             proxy: ENV['http_proxy_deepl']

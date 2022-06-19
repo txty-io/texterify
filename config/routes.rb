@@ -18,6 +18,7 @@ Rails
       scope :v1, module: :v1 do
         mount_devise_token_auth_for 'User', at: 'auth', controllers: { registrations: 'api/v1/registrations' }
 
+        # Machine translations
         get :machine_translations_usage, to: 'machine_translations#usage'
         get :machine_translations_target_languages, to: 'machine_translations#target_languages'
         get :machine_translations_source_languages, to: 'machine_translations#source_languages'
@@ -34,8 +35,10 @@ Rails
           delete :image, to: 'organizations#image_destroy'
           resources :members, only: [:create, :index, :destroy, :update], controller: 'organization_users'
           get :project_members, to: 'organization_users#project_users'
-
           resources :invites, only: [:create, :index, :destroy], controller: 'organization_invites'
+
+          # Organization machine translation
+          put :machine_translation, to: 'organization_machine_translation#update'
 
           # Validations
           resources :validations, only: [:create, :index, :destroy, :update], controller: 'validations'
