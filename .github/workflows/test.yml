@@ -1,0 +1,11 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - "**"
+      - "!master"
+
+jobs:
+  test:
+    uses: ./.github/workflows/reusable-test.yml
