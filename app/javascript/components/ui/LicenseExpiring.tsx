@@ -40,7 +40,8 @@ export function LicenseExpiring(props: { expiresAt: string }) {
                 padding: "12px 24px",
                 background: "#ca1111",
                 display: "flex",
-                alignItems: "center"
+                alignItems: "center",
+                color: "#fff"
             }}
         >
             The Texterify license will expire soon on{" "}

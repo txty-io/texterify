@@ -154,7 +154,7 @@ export function KeySearchSettings(props: {
         match
     ]);
 
-    const languagesForFilterSelectOptions = (props.languagesResponse || []).data.map((language) => {
+    const languagesForFilterSelectOptions = (props.languagesResponse?.data || []).map((language) => {
         const countryCode = APIUtils.getIncludedObject(
             language.relationships.country_code.data,
             props.languagesResponse.included
@@ -214,9 +214,9 @@ export function KeySearchSettings(props: {
                     })}
                 </Select>
 
-                <h4 style={{ marginTop: 16 }}>Filter by export configs</h4>
+                <h4 style={{ marginTop: 16 }}>Filter by export targets</h4>
                 <Select
-                    placeholder="Select export configs"
+                    placeholder="Select export targets"
                     style={{ width: "100%" }}
                     onChange={(values: string[]) => {
                         setSelectedExportConfigs(values);
@@ -224,7 +224,7 @@ export function KeySearchSettings(props: {
                     mode="multiple"
                     defaultValue={selectedExportConfigs}
                 >
-                    {(props.exportConfigsResponse || []).data.map((exportConfig) => {
+                    {(props.exportConfigsResponse?.data || []).map((exportConfig) => {
                         return (
                             <Select.Option value={exportConfig.id} key={exportConfig.id}>
                                 {exportConfig.attributes.name}

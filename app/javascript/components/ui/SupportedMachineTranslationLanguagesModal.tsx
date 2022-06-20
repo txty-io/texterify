@@ -38,7 +38,7 @@ export function SupportedMachineTranslationLanguagesModal(props: {
                 <div style={{ width: "50%" }}>
                     <h1>Source languages</h1>
                     <ul>
-                        {props.supportedSourceLanguages?.data.map((supportedSourceLanguage) => {
+                        {props.supportedSourceLanguages?.data?.map((supportedSourceLanguage) => {
                             return <li key={supportedSourceLanguage.id}>{supportedSourceLanguage.attributes.name}</li>;
                         })}
                     </ul>
@@ -47,7 +47,7 @@ export function SupportedMachineTranslationLanguagesModal(props: {
                 <div style={{ width: "50%" }}>
                     <h1>Target languages</h1>
                     <ul>
-                        {props.supportedTargetLanguages?.data.map((supportedTargetLanguage) => {
+                        {props.supportedTargetLanguages?.data?.map((supportedTargetLanguage) => {
                             return <li key={supportedTargetLanguage.id}>{supportedTargetLanguage.attributes.name}</li>;
                         })}
                     </ul>

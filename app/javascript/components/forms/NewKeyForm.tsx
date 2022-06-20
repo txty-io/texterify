@@ -46,10 +46,17 @@ class NewKeyForm extends React.Component<IProps> {
 
         if (!response || !response.data || response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
-                this.formRef.current.setFields([
+                this.formRef.current?.setFields([
                     {
                         name: "name",
                         errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
+                    }
+                ]);
+            } else if (ErrorUtils.hasError("name", ERRORS.KEY_NAME_RESERVED, response.errors)) {
+                this.formRef.current?.setFields([
+                    {
+                        name: "name",
+                        errors: [ErrorUtils.getErrorMessage("name", ERRORS.KEY_NAME_RESERVED)]
                     }
                 ]);
             } else {
@@ -86,11 +93,13 @@ class NewKeyForm extends React.Component<IProps> {
     };
 
     render() {
-        const defaultLanguage = LanguageUtils.getDefaultLanguage(this.props.languagesResponse);
+        const defaultLanguage = this.props.languagesResponse?.data
+            ? LanguageUtils.getDefaultLanguage(this.props.languagesResponse)
+            : null;
 
         const countryCode = APIUtils.getIncludedObject(
             defaultLanguage?.relationships.country_code.data,
-            this.props.languagesResponse.included
+            this.props.languagesResponse?.included || []
         );
 
         return (
@@ -107,7 +116,7 @@ class NewKeyForm extends React.Component<IProps> {
                             >
                                 Cancel <KeystrokeButtonWrapper keys={KEYSTROKE_DEFINITIONS.CLOSE_MODAL} />
                             </Button>
-                            <Button form="newKeyForm" type="primary" htmlType="submit">
+                            <Button form="newKeyForm" type="primary" htmlType="submit" data-id="key-form-submit-button">
                                 Create key <KeystrokeButtonWrapper keys={KEYSTROKE_DEFINITIONS.SUBMIT_MODAL_FORM} />
                             </Button>
                         </div>
@@ -224,7 +233,7 @@ class NewKeyForm extends React.Component<IProps> {
                 <KeystrokeHandler
                     keys={KEYSTROKE_DEFINITIONS.SUBMIT_MODAL_FORM}
                     onActivated={() => {
-                        this.formRef.current.submit();
+                        this.formRef.current?.submit();
                     }}
                 />
             </>

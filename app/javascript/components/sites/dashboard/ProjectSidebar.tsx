@@ -1,7 +1,6 @@
 import {
+    AlertOutlined,
     BlockOutlined,
-    ClusterOutlined,
-    DownloadOutlined,
     EditOutlined,
     ExportOutlined,
     GlobalOutlined,
@@ -11,13 +10,15 @@ import {
     LineChartOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
+    MonitorOutlined,
     OneToOneOutlined,
+    RightSquareOutlined,
     RobotOutlined,
     SettingOutlined,
     SwapOutlined,
     TeamOutlined
 } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Tag } from "antd";
 import { CollapseType } from "antd/lib/layout/Sider";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -27,12 +28,14 @@ import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { SidebarTrigger } from "../../ui/SidebarTrigger";
 import { ROLES_DEVELOPER_UP, ROLES_MANAGER_UP, ROLES_TRANSLATOR_UP } from "../../utilities/PermissionUtils";
+import { SidebarUtils } from "../../utilities/SidebarUtils";
 const { Sider } = Layout;
 
 interface INavigationData {
     icon: any;
     path?: string;
-    text?: string;
+    text?: React.ReactNode;
+    paths?: string[];
     roles?: string[];
     dataId: string;
     subItems?: INavigationData[];
@@ -72,8 +75,57 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             {
                 icon: EditOutlined,
                 path: Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId),
-                text: "Editor",
+                text: (
+                    <span>
+                        Editor
+                        <RightSquareOutlined style={{ marginLeft: 16 }} />
+                    </span>
+                ),
                 dataId: "project-sidebar-editor"
+            },
+            {
+                icon: MonitorOutlined,
+                path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
+                text: "QA",
+                roles: ROLES_TRANSLATOR_UP,
+                dataId: "project-sidebar-validations",
+                paths: [
+                    Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
+                    ,
+                    Routes.DASHBOARD.PROJECT_PLACEHOLDERS_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    }),
+                    Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    })
+                ]
+            },
+            {
+                icon: AlertOutlined,
+                path: Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(":projectId", this.props.match.params.projectId),
+                paths: [
+                    Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(":projectId", this.props.match.params.projectId),
+                    Routes.DASHBOARD.PROJECT_ISSUES_IGNORED.replace(":projectId", this.props.match.params.projectId)
+                ],
+                text: (
+                    <span>
+                        Issues
+                        {dashboardStore.currentProject && dashboardStore.featureEnabled("FEATURE_VALIDATIONS") && (
+                            <Tag
+                                color={
+                                    dashboardStore.currentProject.attributes.issues_count > 0
+                                        ? "var(--color-warn)"
+                                        : "var(--color-success)"
+                                }
+                                style={{ marginLeft: 16 }}
+                            >
+                                {dashboardStore.currentProject.attributes.issues_count}
+                            </Tag>
+                        )}
+                    </span>
+                ),
+                roles: ROLES_TRANSLATOR_UP,
+                dataId: "project-sidebar-issues"
             },
             {
                 icon: RobotOutlined,
@@ -82,11 +134,29 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     this.props.match.params.projectId
                 ),
                 text: "Machine Translation",
-                dataId: "project-sidebar-machine-translation"
+                dataId: "project-sidebar-machine-translation",
+                paths: [
+                    Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION.replace(
+                        ":projectId",
+                        this.props.match.params.projectId
+                    ),
+                    Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION_SETTINGS.replace(
+                        ":projectId",
+                        this.props.match.params.projectId
+                    ),
+                    Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION_USAGE.replace(
+                        ":projectId",
+                        this.props.match.params.projectId
+                    )
+                ]
             },
             {
                 icon: ImportOutlined,
                 path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
+                paths: [
+                    Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
+                    Routes.DASHBOARD.PROJECT_IMPORT_FILE.replace(":projectId", this.props.match.params.projectId)
+                ],
                 text: "Import",
                 roles: ROLES_DEVELOPER_UP,
                 dataId: "project-sidebar-import"
@@ -96,35 +166,44 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 text: "Export",
                 roles: ROLES_DEVELOPER_UP,
                 dataId: "project-sidebar-export",
-                subItems: [
-                    {
-                        icon: DownloadOutlined,
-                        path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
-                        text: "Download",
-                        roles: ROLES_DEVELOPER_UP,
-                        dataId: "project-sidebar-download"
-                    },
-                    {
-                        icon: SettingOutlined,
-                        path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
-                            ":projectId",
-                            this.props.match.params.projectId
-                        ),
-                        text: "Configurations",
-                        roles: ROLES_DEVELOPER_UP,
-                        dataId: "project-sidebar-configurations"
-                    },
-                    {
-                        icon: ClusterOutlined,
-                        path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(
-                            ":projectId",
-                            this.props.match.params.projectId
-                        ),
-                        text: "Hierarchy",
-                        roles: ROLES_DEVELOPER_UP,
-                        dataId: "project-sidebar-hierarchy"
-                    }
+                path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
+                paths: [
+                    Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
+                    Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
+                        ":projectId",
+                        this.props.match.params.projectId
+                    ),
+                    Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", this.props.match.params.projectId)
                 ]
+                // subItems: [
+                //     {
+                //         icon: DownloadOutlined,
+                //         path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
+                //         text: "Download",
+                //         roles: ROLES_DEVELOPER_UP,
+                //         dataId: "project-sidebar-download"
+                //     },
+                //     {
+                //         icon: SettingOutlined,
+                //         path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
+                //             ":projectId",
+                //             this.props.match.params.projectId
+                //         ),
+                //         text: "Configurations",
+                //         roles: ROLES_DEVELOPER_UP,
+                //         dataId: "project-sidebar-configurations"
+                //     },
+                //     {
+                //         icon: ClusterOutlined,
+                //         path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(
+                //             ":projectId",
+                //             this.props.match.params.projectId
+                //         ),
+                //         text: "Hierarchy",
+                //         roles: ROLES_DEVELOPER_UP,
+                //         dataId: "project-sidebar-hierarchy"
+                //     }
+                // ]
             },
             {
                 icon: LineChartOutlined,
@@ -132,11 +211,6 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 text: "Activity",
                 dataId: "project-sidebar-activity"
             },
-            // {
-            //     icon: MonitorOutlined,
-            //     path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
-            //     text: "Validations"
-            // },
             {
                 icon: SwapOutlined,
                 path: Routes.DASHBOARD.PROJECT_OTA.replace(":projectId", this.props.match.params.projectId),
@@ -153,24 +227,48 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             {
                 icon: TeamOutlined,
                 path: Routes.DASHBOARD.PROJECT_MEMBERS.replace(":projectId", this.props.match.params.projectId),
-                text: "Members",
-                dataId: "project-sidebar-members"
+                text: "Users",
+                dataId: "project-sidebar-users"
             },
             {
                 icon: BlockOutlined,
                 path: Routes.DASHBOARD.PROJECT_INTEGRATIONS.replace(":projectId", this.props.match.params.projectId),
                 text: "Integrations",
                 roles: ROLES_TRANSLATOR_UP,
-                dataId: "project-sidebar-integrations"
+                dataId: "project-sidebar-integrations",
+                paths: [
+                    Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    }),
+                    Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    })
+                ]
             },
             {
                 icon: SettingOutlined,
-                path: Routes.DASHBOARD.PROJECT_SETTINGS.replace(":projectId", this.props.match.params.projectId),
+                path: Routes.DASHBOARD.PROJECT_SETTINGS_RESOLVER({
+                    projectId: this.props.match.params.projectId
+                }),
                 text: "Settings",
                 roles: ROLES_MANAGER_UP,
-                dataId: "project-sidebar-settings"
+                dataId: "project-sidebar-settings",
+                paths: [
+                    Routes.DASHBOARD.PROJECT_SETTINGS_GENERAL_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    }),
+                    Routes.DASHBOARD.PROJECT_SETTINGS_ADVANCED_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    })
+                ]
             }
         ];
+    }
+
+    componentDidUpdate() {
+        if (dashboardStore.sidebarMinimized) {
+            SidebarUtils.handleSidebarCollpaseBug();
+        }
     }
 
     isMenuItemEnabled = (requiredRoles: string[]) => {
@@ -192,7 +290,8 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     height: 48,
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: dashboardStore.sidebarMinimized ? "center" : undefined
+                    justifyContent: dashboardStore.sidebarMinimized ? "center" : undefined,
+                    overflow: "hidden"
                 }}
             >
                 <Link
@@ -268,11 +367,11 @@ class ProjectSidebar extends React.Component<IProps, IState> {
 
     getSelectedItem = (): string[] => {
         return this.getNavigationData().map((data: INavigationData, index: number): string => {
-            if (data.path === this.props.location.pathname) {
+            if (data.paths?.includes(this.props.location.pathname)) {
                 return index.toString();
-            }
-
-            if (data.subItems) {
+            } else if (data.path === this.props.location.pathname) {
+                return index.toString();
+            } else if (data.subItems) {
                 let foundIndex;
 
                 data.subItems.forEach((item, submenuIndex) => {
@@ -291,29 +390,6 @@ class ProjectSidebar extends React.Component<IProps, IState> {
     onCollapse = (collapsed: boolean, type: CollapseType) => {
         if (type === "clickTrigger") {
             dashboardStore.sidebarMinimized = collapsed;
-        }
-
-        // Fix sidebar somehow not collapsing correctly.
-        if (collapsed) {
-            const sidebarMenu = document.getElementById("sidebar-menu");
-            setTimeout(() => {
-                if (sidebarMenu) {
-                    sidebarMenu.classList.remove("ant-menu-inline");
-                    sidebarMenu.classList.add("ant-menu-vertical");
-
-                    const menuItems = sidebarMenu.querySelectorAll(".ant-menu-item") as unknown as HTMLElement[];
-                    menuItems.forEach((menuItem) => {
-                        menuItem.style.removeProperty("padding-left");
-                    });
-
-                    const submenuItems = sidebarMenu.querySelectorAll(
-                        ".ant-menu-submenu .ant-menu-submenu-title"
-                    ) as unknown as HTMLElement[];
-                    submenuItems.forEach((submenuItem) => {
-                        submenuItem.style.removeProperty("padding-left");
-                    });
-                }
-            });
         }
     };
 

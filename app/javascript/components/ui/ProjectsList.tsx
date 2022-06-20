@@ -1,4 +1,4 @@
-import { Button, Empty, List } from "antd";
+import { Button, Empty, List, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
@@ -8,8 +8,10 @@ import { dashboardStore } from "../stores/DashboardStore";
 import { ListContent } from "./ListContent";
 import { ProjectAvatar } from "./ProjectAvatar";
 import styled from "styled-components";
+import { IProject } from "../api/v1/ProjectsAPI";
+import { AlertFilled, ExclamationCircleFilled } from "@ant-design/icons";
 
-const openProject = (project: any) => {
+const openProject = (project: IProject) => {
     dashboardStore.currentProject = project;
     history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", project.id));
 };
@@ -25,7 +27,7 @@ const ProjectInfoWrapper = styled.div`
 
 function ProjectsList(props: {
     loading: boolean;
-    projects: any[];
+    projects: IProject[];
     included?: any[];
     disableSort?: boolean;
     style?: React.CSSProperties;
@@ -81,6 +83,11 @@ function ProjectsList(props: {
                                 </ListContent>
                             }
                         />
+                        {project.attributes.current_user_deactivated && (
+                            <Tooltip title="Your account has been disabled for this project.">
+                                <ExclamationCircleFilled style={{ color: "var(--color-warn)", marginRight: 24 }} />
+                            </Tooltip>
+                        )}
                         <Button
                             onClick={() => {
                                 openProject(project);

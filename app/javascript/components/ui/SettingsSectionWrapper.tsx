@@ -4,7 +4,7 @@ const SettingsSectionWrapper = styled.div`
     display: flex;
     flex-direction: column;
     margin: 16px 0;
-    max-width: 560px;
+    max-width: 800px;
 `;
 
 export { SettingsSectionWrapper };

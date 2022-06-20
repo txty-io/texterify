@@ -6,33 +6,37 @@ import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
 import { ExportConfigsAPI } from "../api/v1/ExportConfigsAPI";
 import { IGetLanguageConfigsResponse, LanguageConfigsAPI } from "../api/v1/LanguageConfigsAPI";
-import { LanguagesAPI } from "../api/v1/LanguagesAPI";
+import { IGetLanguagesResponse, LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { FileFormatOptions } from "../configs/FileFormatOptions";
+import { ImportFileFormats } from "../sites/dashboard/FileImportSite";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import FlagIcon from "../ui/FlagIcons";
 import { AddEditExportConfigLanguageForm, ICreateUpdateLanguageConfig } from "./AddEditExportConfigLanguageForm";
 
 interface IFormValues {
     name: string;
-    fileFormat: string;
+    fileFormat: ImportFileFormats;
     filePath: string;
     defaultLanguageFilePath: string;
+    splitOn: string;
 }
 
 interface IProps {
     exportConfigToEdit?: any;
     projectId: string;
-    visible: boolean;
+    hideDefaultSubmitButton?: boolean;
+    clearFieldsAfterSubmit?: boolean;
     onCreated?(): void;
 }
 interface IState {
     exportConfigsResponse: any;
-    languagesResponse: any;
+    languagesResponse: IGetLanguagesResponse;
     languageConfigsResponse: IGetLanguageConfigsResponse;
     languageConfigsLoading: boolean;
     addEditExportConfigLanguageConfigOpen: boolean;
     exportConfigLanguageConfigToEdit: ICreateUpdateLanguageConfig;
     languageConfigsToCreate: ICreateUpdateLanguageConfig[];
+    selectedFileFormat: ImportFileFormats | null;
 }
 
 class AddEditExportConfigForm extends React.Component<IProps, IState> {
@@ -45,13 +49,14 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
         languageConfigsLoading: true,
         addEditExportConfigLanguageConfigOpen: false,
         exportConfigLanguageConfigToEdit: null,
-        languageConfigsToCreate: []
+        languageConfigsToCreate: [],
+        selectedFileFormat: null
     };
 
     async componentDidMount() {
         try {
             const exportConfigsResponse = await ExportConfigsAPI.getExportConfigs({ projectId: this.props.projectId });
-            const languagesResponse = await LanguagesAPI.getLanguages(this.props.projectId);
+            const languagesResponse = await LanguagesAPI.getLanguages(this.props.projectId, { showAll: true });
 
             let languageConfigsResponse = null;
             if (this.props.exportConfigToEdit) {
@@ -82,7 +87,8 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                 fileFormat: values.fileFormat,
                 exportConfigId: this.props.exportConfigToEdit.id,
                 filePath: values.filePath,
-                name: values.name
+                name: values.name,
+                splitOn: values.splitOn
             });
         } else {
             response = await ExportConfigsAPI.createExportConfig({
@@ -90,13 +96,14 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                 defaultLanguageFilePath: values.defaultLanguageFilePath,
                 fileFormat: values.fileFormat,
                 filePath: values.filePath,
-                name: values.name
+                name: values.name,
+                splitOn: values.splitOn
             });
         }
 
         if (response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
-                this.formRef.current.setFields([
+                this.formRef.current?.setFields([
                     {
                         name: "name",
                         errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
@@ -120,6 +127,10 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
 
         if (this.props.onCreated) {
             this.props.onCreated();
+        }
+
+        if (this.props.clearFieldsAfterSubmit) {
+            this.formRef.current?.resetFields();
         }
     };
 
@@ -268,7 +279,7 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                 <Form
                     ref={this.formRef}
                     onFinish={this.handleSubmit}
-                    style={{ maxWidth: "100%" }}
+                    style={{ maxWidth: "100%", display: "flex", flexDirection: "column" }}
                     id="addEditExportConfigForm"
                     initialValues={
                         this.props.exportConfigToEdit && {
@@ -278,12 +289,17 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                             defaultLanguageFilePath: this.props.exportConfigToEdit.attributes.default_language_file_path
                         }
                     }
+                    onValuesChange={(changedValues: IFormValues) => {
+                        if (changedValues.fileFormat) {
+                            this.setState({ selectedFileFormat: changedValues.fileFormat });
+                        }
+                    }}
                 >
                     <h3>Name *</h3>
                     <Form.Item
                         name="name"
                         rules={[
-                            { required: true, whitespace: true, message: "Please enter the name of the export config." }
+                            { required: true, whitespace: true, message: "Please enter the name of the export target." }
                         ]}
                     >
                         <Input placeholder="Name" autoFocus />
@@ -313,6 +329,21 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                         </Select>
                     </Form.Item>
 
+                    {(this.state.selectedFileFormat === "json" ||
+                        (this.state.selectedFileFormat === null &&
+                            this.props.exportConfigToEdit?.attributes.file_format)) && (
+                        <>
+                            <h3>Split keys on</h3>
+                            <p>
+                                Provide a string upon which the JSON keys are split and grouped together. This way you
+                                can created nested JSON.
+                            </p>
+                            <Form.Item name="splitOn">
+                                <Input placeholder="For example: ." />
+                            </Form.Item>
+                        </>
+                    )}
+
                     <h3>File path *</h3>
                     <p>The file path specifies where files are placed in the exported folder.</p>
 
@@ -340,17 +371,16 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                         <Input placeholder="Default language file path" />
                     </Form.Item>
 
-                    <h3>Language configs</h3>
+                    <h3>Override language codes</h3>
                     <p>Override the language codes used for exports in this configuration.</p>
                     <div style={{ display: "flex" }}>
                         <Button
-                            type="primary"
                             style={{ marginTop: 8, marginLeft: "auto" }}
                             onClick={() => {
                                 this.setState({ addEditExportConfigLanguageConfigOpen: true });
                             }}
                         >
-                            Add new config
+                            Add new language code override
                         </Button>
                     </div>
                     <Table
@@ -362,10 +392,18 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                         loading={this.state.languageConfigsLoading}
                         locale={{
                             emptyText: (
-                                <Empty description="No language configs found" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                                <Empty
+                                    description="No language code overrides found"
+                                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                />
                             )
                         }}
                     />
+                    {!this.props.hideDefaultSubmitButton && (
+                        <Button type="primary" htmlType="submit" style={{ marginLeft: "auto", marginTop: 24 }}>
+                            {this.props.exportConfigToEdit ? "Save changes" : "Add export target"}
+                        </Button>
+                    )}
                 </Form>
 
                 <AddEditExportConfigLanguageForm

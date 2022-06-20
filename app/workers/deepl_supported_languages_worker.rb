@@ -11,7 +11,7 @@ class DeeplSupportedLanguagesWorker
       deepl_client = Deepl::V2::Client.new(ENV['DEEPL_API_TOKEN'])
 
       source_languages = deepl_client.source_languages
-      source_languages.each do |source_language|
+      source_languages&.each do |source_language|
         language_code = nil
         country_code = nil
 
@@ -35,7 +35,7 @@ class DeeplSupportedLanguagesWorker
       end
 
       target_languages = deepl_client.target_languages
-      target_languages.each do |target_language|
+      target_languages&.each do |target_language|
         language_code = nil
         country_code = nil
 

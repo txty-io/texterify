@@ -3,7 +3,7 @@ class User < ApplicationRecord
 
   # Include default devise modules. Others available are:
   # :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :confirmable
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :confirmable, :trackable
 
   validates :username, uniqueness: true, presence: true
 
@@ -20,6 +20,8 @@ class User < ApplicationRecord
 
   has_many :recently_viewed_projects, dependent: :destroy
 
+  has_many :background_jobs, dependent: :nullify
+
   def projects
     Project.where(id: user_projects.pluck(:id) + organization_projects.pluck(:id))
   end
@@ -34,13 +36,47 @@ class User < ApplicationRecord
   end
 
   # Override Devise::Confirmable#after_confirmation
+  # https://www.rubydoc.info/github/plataformatec/devise/Devise/Models/Confirmable:after_confirmation
   def after_confirmation
     if Texterify.cloud?
       UserMailer.welcome(email, username).deliver_later
+    end
+
+    # Add user to organizations with open invites.
+    organization_invites = OrganizationInvite.where(email: email, open: true)
+    organization_invites.each do |invite|
+      organization_user = OrganizationUser.new
+      organization_user.user = self
+      organization_user.organization = invite.organization
+      organization_user.role = invite.role
+      organization_user.save!
+
+      invite.open = false
+      invite.save!
+    end
+
+    # Add user to projects with open invites.
+    project_invites = ProjectInvite.where(email: email, open: true)
+    project_invites.each do |invite|
+      project_user = ProjectUser.new
+      project_user.user = self
+      project_user.project = invite.project
+      project_user.role = invite.role
+      project_user.save!
+
+      invite.open = false
+      invite.save!
     end
   end
 
   def confirmed
     !confirmed_at.nil?
   end
+
+  # We use the Devise::Trackable module to track sign-in count and current/last sign-in timestamp.
+  # However, we don't want to track IP address, but Trackable tries to, so we have to manually
+  # override the accessor methods so they do nothing.
+  def current_sign_in_ip; end
+  def last_sign_in_ip=(_ip); end
+  def current_sign_in_ip=(_ip); end
 end

@@ -4,10 +4,10 @@ class MachineTranslationPolicy < Struct.new(:user, :machine_translaton)
   end
 
   def target_languages?
-    user.is_superadmin
+    true
   end
 
   def source_languages?
-    user.is_superadmin
+    true
   end
 end

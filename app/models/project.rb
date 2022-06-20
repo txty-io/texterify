@@ -15,6 +15,26 @@ class Project < ApplicationRecord
   has_many :versions, class_name: 'PaperTrail::Version', dependent: :delete_all
   has_many :users_project, through: :project_users, source: :user
   has_many :releases, through: :export_configs, dependent: :destroy
+  has_many :validation_violations, dependent: :destroy
+  has_many :invites, class_name: 'ProjectInvite', dependent: :destroy
+  has_many :background_jobs, dependent: :destroy
+
+  # Validations
+  has_many :validations, dependent: :destroy
+
+  # Forbidden words
+  has_many :forbidden_words_lists, dependent: :destroy
+
+  # Only returns the forbidden words of the project and not also the one
+  # from the organization.
+  has_many :forbidden_words, through: :forbidden_words_lists
+
+  # Tags
+  has_many :tags, dependent: :destroy
+
+  # WordPress Polylang integration
+  has_many :wordpress_contents, dependent: :destroy
+  has_one :wordpress_polylang_connection, dependent: :destroy
 
   has_one_attached :image
 
@@ -24,6 +44,23 @@ class Project < ApplicationRecord
 
   def users
     organization ? User.where(id: users_project.pluck(:id) + organization.users.pluck(:id)) : users_project
+  end
+
+  def validations
+    project_validations = super
+    project_validations << self.organization.validations
+    project_validations
+  end
+
+  def forbidden_words_lists
+    project_forbidden_words_lists = super
+    project_forbidden_words_lists << self.organization.forbidden_words_lists
+    project_forbidden_words_lists
+  end
+
+  # The total number of validation violations.
+  def issues_count
+    validation_violations.where(ignored: false).size
   end
 
   def role_of(user)
@@ -57,5 +94,26 @@ class Project < ApplicationRecord
         false
       end
     end
+  end
+
+  # Creates the tag if it does not exist.
+  # Returns the new or already existing tag.
+  def create_tag_if_not_exists(name, custom)
+    tag = tags.find_by(name: name, custom: custom)
+
+    if tag.blank?
+      tag = Tag.new
+      tag.name = name
+      tag.custom = custom
+      tag.project = self
+      tag.save!
+    end
+
+    tag
+  end
+
+  # Rechecks placeholders of all keys of the project.
+  def check_placeholders
+    project.keys.each(&:check_placeholders)
   end
 end

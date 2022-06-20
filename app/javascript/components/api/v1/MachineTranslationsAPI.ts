@@ -1,5 +1,5 @@
 import { API } from "./API";
-import { APIUtils } from "./APIUtils";
+import { APIUtils, IGenericAPIResponse } from "./APIUtils";
 
 export interface IGetMachineTranslationsUsage {
     character_count: number;
@@ -49,7 +49,7 @@ const MachineTranslationsAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    translateLanguage: async (options: { projectId: string; languageId: string }) => {
+    translateLanguage: async (options: { projectId: string; languageId: string }): Promise<IGenericAPIResponse> => {
         return API.postRequest(`projects/${options.projectId}/languages/${options.languageId}/machine_translate`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);

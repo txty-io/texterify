@@ -1,4 +1,9 @@
 import * as sanitizeHtml from "sanitize-html";
+import { IPlanIDS } from "../types/IPlan";
+import { BASIC_PLAN, BUSINESS_PLAN, TEAM_PLAN } from "./Licenses";
+
+export const DATE_FORMAT = "DD.MM.YYYY";
+export const DATE_TIME_FORMAT = "DD.MM.YYYY HH:mm";
 
 function escapeContent(htmlContent: string) {
     return sanitizeHtml(htmlContent, {
@@ -72,6 +77,43 @@ const Utils = {
             return "⌘";
         } else {
             return "Ctrl";
+        }
+    },
+
+    createQueryParamsFromObject: (options: {
+        currentParams: { [key: string]: string | string[] };
+        add?: { key: string; value: string }[];
+        remove?: string[];
+    }) => {
+        const queryParams = new URLSearchParams();
+        if (options.add) {
+            options.add.forEach((newKeyValue) => {
+                queryParams.append(newKeyValue.key, newKeyValue.value);
+            });
+        }
+
+        for (const [key, value] of Object.entries(options.currentParams)) {
+            if (!queryParams.has(key)) {
+                queryParams.append(key, value.toString());
+            }
+        }
+
+        if (options.remove) {
+            for (const key of options.remove) {
+                queryParams.delete(key);
+            }
+        }
+
+        return queryParams;
+    },
+
+    getPlanByPlanName(planName: IPlanIDS) {
+        if (planName === "basic") {
+            return BASIC_PLAN;
+        } else if (planName === "team") {
+            return TEAM_PLAN;
+        } else if (planName === "business") {
+            return BUSINESS_PLAN;
         }
     }
 };

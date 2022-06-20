@@ -44,7 +44,6 @@ class ProjectActivitySite extends React.Component<IProps, IState> {
                 <Breadcrumbs breadcrumbName="projectActivity" />
                 <Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}>
                     <h1>Activity</h1>
-                    <p>Get an overview on what happened recently in your project.</p>
                     {!dashboardStore.featureEnabled("FEATURE_PROJECT_ACTIVITY") && (
                         <FeatureNotAvailable feature="FEATURE_PROJECT_ACTIVITY" />
                     )}

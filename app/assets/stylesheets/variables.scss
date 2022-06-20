@@ -1,41 +1,142 @@
 :root {
   --full-color: #000;
-  --background-color: #fff;;
-  --popover-background-color: #fff;
-  --dark-color: #080b0d;
+  --background-color: #fff;
+  --dark-color: #0a111e;
   --border-color: #d9d9d9;
   --border-color-flashier: #777;
   --blue-color: #568aea;
   --highlight-color: #000;
+  --highlight-color-decent: #f0f0f0;
   --header-background-color: var(--dark-color);
   --primary-light-color: #e3eaff;
-  --primary-btn-color: #1c70f5;
-  --primary-btn-hover-color: #327ef6;
+  --background-highlight-color: #1c70f51a;
   --color-passive: #aaa;
   --color-passive-hover: #333;
-  --input-border-color: #d9d9d9;
-  --input-border-hover-color: #6993ff;
-  --input-border-focus-color: #568aea;
-  --input-border-disabled-color: #d9d9d9;
   --color-success: #52c41a;
+  --color-warn: #e84b00;
+  --color-golden: #d5bc00;
+
+  // drawer
+  --drawer-background-color: var(--background-color);
+  --drawer-header-background-color: var(--header-background-color);
+
+  // activity
+  --activity-highlight-key-update-background-color: #ecf1ff;
+  --activity-highlight-key-update-color: var(--blue-color);
+
+  // mark
+  --mark-background-color: #ffd1b6ad;
+
+  // alert
+  --alert-background-color: #f0f6ff;
+  --alert-border-color: #bad2ff;
+  --alert-icon-color: #0d141f;
+
+  // header
+  --header-background-color: #0a1323;
+  --header-menu-item-active-background: #1f2b4a;
+
+  // button
+  --primary-btn-color: #1c70f5;
+  --primary-btn-hover-color: #2286e4;
+
+  // input
+  --input-border-color: #d9d9d9;
+  --input-border-hover-color: #177ddc;
+  --input-border-focus-color: #177ddc;
+  --input-border-disabled-color: #d9d9d9;
+  --error-color: #cc3d3f;
+  --error-color-hover: #ff4d4f;
+
+  // popover
+  --popover-background-color: #fff;
+
+  // table
+  --table-background-color: var(--background-color);
+  --table-head-background-color: #fafafa;
+
+  // main sidebar
+  --main-sidebar-active-background-color: #ececec;
+  --main-sidebar-active-color: #333;
+  --main-sidebar-hover-color: #000;
+  --main-sidebar-color: #888;
+  --main-sidebar-border-color: #555;
+
+  // sub sidebar
+  --sidebar-header-color: #1c70f51a;
+  --sidebar-item-active-border-color: var(--dark-color);
+  --sidebar-item-active-color: rgb(44, 29, 56);
+  --sidebar-item-color: rgb(147, 135, 160);
+  --sidebar-item-color-hover: rgb(44, 29, 56);
+  --sidebar-background-color: #fbfbfc;
+  --sidebar-border-color: #e6e6e6;
 }
 
 .dark-theme {
   --full-color: #fff;
   --background-color: var(--dark-color);
-  --popover-background-color: #0e1215;
   --border-color: rgb(27, 31, 33);
   --border-color-flashier: #4e4e4e;
-  --blue-color: #61b6ff;
+  --blue-color: #67aaff;
   --blue-color-light: #61b6ffbf;
   --highlight-color: rgba(255, 255, 255, 0.85);
+  --highlight-color-decent: #ffffff0f;
   --primary-light-color: #111d3a;
-  --primary-btn-color: #177ddc;
-  --primary-btn-hover-color: #288eec;
+  --background-highlight-color: #177ddc1a;
   --color-passive: #555;
   --color-passive-hover: #999;
+  --color-warn: #e84b00;
+  --color-golden: #fff900;
+
+  // drawer
+  --drawer-background-color: var(--background-color);
+  --drawer-header-background-color: var(--header-background-color);
+
+  // activity
+  --activity-highlight-key-update-background-color: #ecf1ff1f;
+  --activity-highlight-key-update-color: #ecf1ff;
+
+  // mark
+  --mark-background-color: #ff60238c;
+
+  // alert
+  --alert-background-color: #101929;
+  --alert-border-color: #2b4063;
+  --alert-icon-color: #fff;
+
+  // header
+  // same as for light mode
+
+  // button
+  --primary-btn-color: #177ddc;
+  --primary-btn-hover-color: #2286e4;
+
+  // input
   --input-border-color: #434343;
-  --input-border-hover-color: var(--blue-color-light);
-  --input-border-focus-color: var(--blue-color);
+  --input-border-hover-color: #177ddc;
+  --input-border-focus-color: #177ddc;
   --input-border-disabled-color: #434343;
+
+  // popover
+  --popover-background-color: var(--background-color);
+
+  // table
+  --table-background-color: var(--background-color);
+  --table-head-background-color: #ffffff0d;
+
+  // main sidebar
+  --main-sidebar-active-background-color: #ffffff08;
+  --main-sidebar-active-color: #fff;
+  --main-sidebar-hover-color: #fff;
+  --main-sidebar-color: #ccc;
+  --main-sidebar-border-color: #fff;
+
+  // sub sidebar
+  --sidebar-header-color: #fff;
+  --sidebar-item-active-border-color: #fff;
+  --sidebar-item-active-color: #fff;
+  --sidebar-item-color: #ccc;
+  --sidebar-item-color-hover: #fff;
+  --sidebar-background-color: var(--background-color);
+  --sidebar-border-color: var(--border-color);
 }

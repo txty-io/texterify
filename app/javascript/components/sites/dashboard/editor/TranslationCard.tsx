@@ -6,6 +6,8 @@ import TextArea from "antd/lib/input/TextArea";
 import * as React from "react";
 import styled from "styled-components";
 import { APIUtils } from "../../../api/v1/APIUtils";
+import { IGetKeyResponse, IPlaceholder } from "../../../api/v1/KeysAPI";
+import { IGetLanguagesResponse, ILanguage } from "../../../api/v1/LanguagesAPI";
 import {
     IGetMachineTranslationsSourceLanguages,
     IGetMachineTranslationsTargetLanguages,
@@ -34,17 +36,17 @@ const EditorWrapper = styled.div`
 
 interface IProps {
     projectId: string;
-    languages?: any;
-    languagesResponse: any;
-    defaultSelected: any;
-    keyResponse?: any;
+    languages?: ILanguage[];
+    languagesResponse: IGetLanguagesResponse;
+    defaultSelected: string;
+    keyResponse?: IGetKeyResponse;
     isHTMLKey?: boolean;
     hideLanguageSelection?: boolean;
     hideSaveButton?: boolean;
     exportConfigId?: string;
     initialValue?: string;
     isDefaultLanguage?: boolean;
-    defaultLanguage?: any;
+    defaultLanguage?: ILanguage;
     defaultLanguageTranslationContent?: string;
     supportedSourceLanguages?: IGetMachineTranslationsSourceLanguages;
     supportedTargetLanguages?: IGetMachineTranslationsTargetLanguages;
@@ -90,17 +92,22 @@ class TranslationCard extends React.Component<IProps, IState> {
             languageId: this.state.selectedLanguageId,
             keyResponse: this.props.keyResponse
         })?.attributes.content;
+
         const isHTMLKey = this.props.keyResponse
             ? this.props.keyResponse.data.attributes.html_enabled
             : this.props.isHTMLKey;
 
         if (isHTMLKey) {
+            let successfullyParsed = false;
             let htmlData;
             try {
                 htmlData = JSON.parse(this.props.initialValue || translationForLanguage);
+                successfullyParsed = true;
             } catch (e) {
-                //
+                htmlData = this.props.initialValue || translationForLanguage;
             }
+
+            console.error(htmlData);
 
             this.editor = new EditorJS({
                 holder: `codex-editor-${this.state.selectedLanguageId}`,
@@ -118,7 +125,11 @@ class TranslationCard extends React.Component<IProps, IState> {
                     }
                     this.setState({ editorContentChanged: true });
                 },
-                data: isHTMLKey ? Utils.escapeEditorContent(htmlData) : undefined
+                data: successfullyParsed
+                    ? Utils.escapeEditorContent(htmlData)
+                    : {
+                          blocks: [{ data: { text: htmlData }, type: "paragraph" }]
+                      }
             });
             await this.editor.isReady;
         } else {
@@ -219,8 +230,38 @@ class TranslationCard extends React.Component<IProps, IState> {
             );
         }
 
+        let converted = [this.state.content];
+
+        this.props.keyResponse?.included
+            .filter((included) => {
+                return included.type === "placeholder";
+            })
+            .forEach((included: IPlaceholder) => {
+                converted = converted.reduce((acc, element) => {
+                    if (typeof element === "string") {
+                        const splitted = element.split(included.attributes.name);
+                        const joined = splitted.reduce((arr, curr, currIndex) => {
+                            if (currIndex > 0) {
+                                return arr.concat([
+                                    <mark key={`${included.attributes.name}-${currIndex}`}>
+                                        {included.attributes.name}
+                                    </mark>,
+                                    curr
+                                ]);
+                            } else {
+                                return arr.concat([curr]);
+                            }
+                        }, []);
+
+                        return acc.concat(joined);
+                    } else {
+                        return acc.concat([element]);
+                    }
+                }, []);
+            });
+
         return (
-            <div style={{ marginBottom: 24, width: "100%" }}>
+            <div style={{ marginBottom: 24, width: "100%" }} data-id="translation-card">
                 {(!this.props.hideLanguageSelection || !this.props.hideSaveButton) && (
                     <div style={{ marginBottom: 8, display: "flex" }}>
                         {!this.props.hideLanguageSelection && !this.props.isDefaultLanguage && (
@@ -290,22 +331,40 @@ class TranslationCard extends React.Component<IProps, IState> {
                         {!this.state.editorLoaded && this.getEditorLoadingOverlay()}
                     </div>
                 ) : (
-                    <TextArea
-                        autoSize={{ minRows: 8, maxRows: 12 }}
-                        placeholder="Language translation content"
-                        onChange={(event) => {
-                            const changed = event.target.value !== this.state.translationForLanguage;
+                    <div style={{ position: "relative" }}>
+                        <div
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                                position: "absolute",
+                                top: 0,
+                                padding: "5px 12px",
+                                lineHeight: "1.5715",
+                                whiteSpace: "pre-wrap",
+                                wordWrap: "break-word"
+                            }}
+                        >
+                            {converted}
+                        </div>
 
-                            this.setState({ textareaContentChanged: changed });
+                        <TextArea
+                            autoSize={{ minRows: 8, maxRows: 12 }}
+                            placeholder="Language translation content"
+                            onChange={(event) => {
+                                const changed = event.target.value !== this.state.translationForLanguage;
 
-                            if (this.props.onChange) {
-                                this.props.onChange(changed, event.target.value);
-                            }
+                                this.setState({ textareaContentChanged: changed });
 
-                            this.setState({ content: event.target.value });
-                        }}
-                        value={this.state.content}
-                    />
+                                if (this.props.onChange) {
+                                    this.props.onChange(changed, event.target.value);
+                                }
+
+                                this.setState({ content: event.target.value });
+                            }}
+                            value={this.state.content}
+                            style={{ backgroundColor: "transparent" }}
+                        />
+                    </div>
                 )}
 
                 <MachineTranslationSuggestion

@@ -1,11 +1,12 @@
 import { CrownOutlined, MoreOutlined, QuestionCircleOutlined, SettingOutlined } from "@ant-design/icons";
 import { Button, Drawer, Input, Layout, Modal, Pagination, PaginationProps, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
+import * as queryString from "query-string";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
-import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
-import { IGetKeysOptions, KeysAPI } from "../../api/v1/KeysAPI";
+import { ExportConfigsAPI, IExportConfig } from "../../api/v1/ExportConfigsAPI";
+import { IGetKeysOptions, IKey, KeysAPI } from "../../api/v1/KeysAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
 import { TranslationsAPI } from "../../api/v1/TranslationsAPI";
@@ -22,19 +23,17 @@ import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { ISearchSettings, KeySearchSettings, parseKeySearchSettingsFromURL } from "../../ui/KeySearchSettings";
 import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActiveFilters";
-import { Loading } from "../../ui/Loading";
+import { KeystrokeButtonWrapper } from "../../ui/KeystrokeButtonWrapper";
+import { KEYSTROKE_DEFINITIONS } from "../../ui/KeystrokeDefinitions";
+import { KeystrokeHandler } from "../../ui/KeystrokeHandler";
 import { TexterifyModal } from "../../ui/TexterifyModal";
 import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { TranslationCard } from "./editor/TranslationCard";
-import * as queryString from "query-string";
-import { KeystrokeButtonWrapper } from "../../ui/KeystrokeButtonWrapper";
-import { KeystrokeHandler } from "../../ui/KeystrokeHandler";
-import { KEYSTROKE_DEFINITIONS } from "../../ui/KeystrokeDefinitions";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
-    keys: any[];
+    keys: IKey[];
     languages: any[];
     selectedRowKeys: any[];
     isDeleting: boolean;
@@ -45,6 +44,9 @@ interface IState {
     page: number;
     search: string | undefined;
     keysLoading: boolean;
+    languagesLoading: boolean;
+    exportConfigsLoading: boolean;
+    projectColumnsLoading: boolean;
     projectColumns: any;
     editTranslationCellOpen: boolean;
     editTranslationKeyId: string;
@@ -113,7 +115,10 @@ class KeysSite extends React.Component<IProps, IState> {
             addDialogVisible: false,
             page: 1,
             search: currentQueryParams.q as string,
-            keysLoading: false,
+            keysLoading: true,
+            languagesLoading: true,
+            exportConfigsLoading: true,
+            projectColumnsLoading: true,
             projectColumns: null,
             editTranslationCellOpen: false,
             editTranslationKeyId: "",
@@ -131,7 +136,9 @@ class KeysSite extends React.Component<IProps, IState> {
         await this.reloadTable();
 
         try {
-            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
+            const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, {
+                showAll: true
+            });
             const exportConfigsResponse = await ExportConfigsAPI.getExportConfigs({
                 projectId: this.props.match.params.projectId
             });
@@ -141,8 +148,11 @@ class KeysSite extends React.Component<IProps, IState> {
             this.setState({
                 languages: responseLanguages.data,
                 languagesResponse: responseLanguages,
+                languagesLoading: false,
                 projectColumns: projectColumns,
-                exportConfigsResponse: exportConfigsResponse
+                projectColumnsLoading: false,
+                exportConfigsResponse: exportConfigsResponse,
+                exportConfigsLoading: false
             });
         } catch (error) {
             console.error(error);
@@ -173,7 +183,7 @@ class KeysSite extends React.Component<IProps, IState> {
     };
 
     getColumns = () => {
-        const filteredLanguages = this.state.languages.filter((language) => {
+        const filteredLanguages = (this.state.languages || []).filter((language) => {
             return _.find(this.state.projectColumns.included, (o) => {
                 return o.attributes.id === language.attributes.id;
             });
@@ -181,55 +191,57 @@ class KeysSite extends React.Component<IProps, IState> {
 
         const columns = [];
 
-        if (this.isTagsColumnVisible()) {
-            columns.push({
-                title: "Tags",
-                dataIndex: "tags",
-                key: "tags",
-                width: 80
-            });
-        }
+        if (this.state.projectColumns) {
+            if (this.isTagsColumnVisible()) {
+                columns.push({
+                    title: "Tags",
+                    dataIndex: "tags",
+                    key: "tags",
+                    width: 80
+                });
+            }
 
-        if (this.isOverwritesColumnVisible()) {
-            columns.push({
-                title: (
-                    <div style={{ whiteSpace: "nowrap" }}>
-                        <span style={{ marginRight: 8 }}>Overwritten for</span>
-                        <Tooltip title="For which export configs at least one of the translations is overwritten.">
-                            <QuestionCircleOutlined />
-                        </Tooltip>
-                    </div>
-                ),
-                dataIndex: "exportConfigOverwrites",
-                key: "exportConfigOverwrites",
-                width: 80
-            });
-        }
+            if (this.isOverwritesColumnVisible()) {
+                columns.push({
+                    title: (
+                        <div style={{ whiteSpace: "nowrap" }}>
+                            <span style={{ marginRight: 8 }}>Overwritten for</span>
+                            <Tooltip title="For which export targets at least one of the translations is overwritten.">
+                                <QuestionCircleOutlined />
+                            </Tooltip>
+                        </div>
+                    ),
+                    dataIndex: "exportConfigOverwrites",
+                    key: "exportConfigOverwrites",
+                    width: 80
+                });
+            }
 
-        if (this.isNameColumnVisible()) {
-            columns.push({
-                title: "Name",
-                dataIndex: "name",
-                key: "name",
-                editable: true,
-                // defaultSortOrder: "ascend",
-                // sorter: (a, b) => {
-                //     return sortStrings(a.name, b.name, true);
-                // },
-                width: filteredLanguages.length > 0 || this.isDescriptionColumnVisible() ? 400 : undefined
-            });
-        }
+            if (this.isNameColumnVisible()) {
+                columns.push({
+                    title: "Name",
+                    dataIndex: "name",
+                    key: "name",
+                    editable: true,
+                    // defaultSortOrder: "ascend",
+                    // sorter: (a, b) => {
+                    //     return sortStrings(a.name, b.name, true);
+                    // },
+                    width: filteredLanguages.length > 0 || this.isDescriptionColumnVisible() ? 400 : undefined
+                });
+            }
 
-        if (this.isDescriptionColumnVisible()) {
-            columns.push({
-                title: "Description",
-                dataIndex: "description",
-                key: "description",
-                editable: true
-                // sorter: (a, b) => {
-                //     return sortStrings(a.description, b.description, true);
-                // }
-            });
+            if (this.isDescriptionColumnVisible()) {
+                columns.push({
+                    title: "Description",
+                    dataIndex: "description",
+                    key: "description",
+                    editable: true
+                    // sorter: (a, b) => {
+                    //     return sortStrings(a.description, b.description, true);
+                    // }
+                });
+            }
         }
 
         const languageColumns = filteredLanguages.map((language) => {
@@ -279,7 +291,7 @@ class KeysSite extends React.Component<IProps, IState> {
             return [];
         }
 
-        return this.state.keys.map((key: any) => {
+        return this.state.keys.map((key) => {
             const translations = {};
 
             // Stores for which languages a translation exists.
@@ -301,14 +313,30 @@ class KeysSite extends React.Component<IProps, IState> {
             const overwrites = this.getKeyExportConfigOverwrites(key);
 
             return {
-                tags: key.attributes.html_enabled ? (
-                    <Tag color="magenta" style={{ margin: 0 }}>
-                        HTML
-                    </Tag>
-                ) : undefined,
-                exportConfigOverwrites: overwrites.map((overwrite, index) => {
+                tags: [
+                    ...key.relationships.tags.data.map((tag) => {
+                        const included = APIUtils.getIncludedObject(tag, this.state.keysResponse.included);
+
+                        return (
+                            <Tag key={tag.id} color="magenta" style={{ margin: 0, marginRight: 4, marginBottom: 4 }}>
+                                {included.attributes.name}
+                            </Tag>
+                        );
+                    }),
+                    key.attributes.html_enabled ? (
+                        <Tag key="html_enabled" color="magenta" style={{ margin: 0, marginRight: 4, marginBottom: 4 }}>
+                            HTML
+                        </Tag>
+                    ) : undefined,
+                    key.relationships.wordpress_contents.data.length > 0 ? (
+                        <Tag key="wordpress" color="magenta" style={{ margin: 0 }}>
+                            WordPress
+                        </Tag>
+                    ) : undefined
+                ],
+                exportConfigOverwrites: overwrites.map((overwrite) => {
                     return (
-                        <Tag color="cyan" key={index} style={{ margin: "0 4px 4px 0" }}>
+                        <Tag key={overwrite.id} color="cyan" style={{ margin: "0 4px 4px 0" }}>
                             {overwrite}
                         </Tag>
                     );
@@ -320,6 +348,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 htmlEnabled: key.attributes.html_enabled,
                 ...translations,
                 ...translationExistsFor,
+                nameEditable: key.attributes.name_editable,
                 more: (
                     <Popover
                         placement="topRight"
@@ -379,7 +408,7 @@ class KeysSite extends React.Component<IProps, IState> {
         }, []);
     };
 
-    changeHTMLEnabled = async (key: any) => {
+    changeHTMLEnabled = async (key: IKey) => {
         await KeysAPI.update(
             this.props.match.params.projectId,
             key.id,
@@ -431,6 +460,8 @@ class KeysSite extends React.Component<IProps, IState> {
             searchSettings: this.state.searchSettings
         };
         await this.fetchKeys(fetchOptions);
+
+        void dashboardStore.reloadCurrentProjectIssuesCount();
     };
 
     isTagsColumnVisible = () => {
@@ -593,12 +624,12 @@ class KeysSite extends React.Component<IProps, IState> {
         );
     };
 
-    getKeyExportConfigOverwrites = (key: any) => {
-        if (this.state.exportConfigsResponse.data.length === 0) {
+    getKeyExportConfigOverwrites = (key: IKey) => {
+        if (!this.state.exportConfigsResponse?.data) {
             return [];
         }
 
-        const exportConfigs = [];
+        const exportConfigs: IExportConfig[] = [];
         this.state.exportConfigsResponse.data.map((exportConfig) => {
             const currentKey = this.state.keys.find((k) => {
                 return key.id === k.id;
@@ -627,10 +658,6 @@ class KeysSite extends React.Component<IProps, IState> {
     };
 
     render() {
-        if (!this.state.projectColumns) {
-            return <Loading />;
-        }
-
         this.rowSelection.selectedRowKeys = this.state.selectedRowKeys;
 
         const paginationOptions: PaginationProps = {
@@ -638,16 +665,20 @@ class KeysSite extends React.Component<IProps, IState> {
             showSizeChanger: true,
             current: this.state.page,
             pageSize: dashboardStore.keysPerPage,
-            total: this.state.keysResponse?.meta.total || 0,
-            onChange: async (page: number, _perPage: number) => {
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                this.setState({ page: page }, this.reloadTable);
+            total: this.state.keysResponse?.meta?.total || 0,
+            onChange: async (page: number, perPage: number) => {
+                const isPageSizeChange = perPage !== dashboardStore.keysPerPage;
+
+                if (isPageSizeChange) {
+                    dashboardStore.keysPerPage = perPage;
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                    this.setState({ page: 1 }, this.reloadTable);
+                } else {
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                    this.setState({ page: page }, this.reloadTable);
+                }
+
                 window.scrollTo(0, 0);
-            },
-            onShowSizeChange: async (_current: number, size: number) => {
-                dashboardStore.keysPerPage = size;
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                this.setState({ page: 1 }, this.reloadTable);
             },
             hideOnSinglePage: false
         };
@@ -754,7 +785,7 @@ class KeysSite extends React.Component<IProps, IState> {
                         </div>
                         <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", alignItems: "flex-end" }}>
                             <span style={{ marginRight: 8, fontWeight: "bold" }}>Columns:</span>
-                            {this.renderColumnTags()}
+                            {this.state.projectColumns && this.renderColumnTags()}
 
                             <div style={{ marginLeft: "auto", marginTop: 4 }}>
                                 <Pagination {...paginationOptions} />
@@ -766,7 +797,13 @@ class KeysSite extends React.Component<IProps, IState> {
                             columns={this.getColumns()}
                             style={{ marginTop: 16, maxWidth: "100%" }}
                             bordered
-                            loading={this.state.keysLoading}
+                            loading={
+                                this.state.keysLoading ||
+                                this.state.languagesLoading ||
+                                this.state.exportConfigsLoading ||
+                                this.state.projectColumnsLoading ||
+                                dashboardStore.currentProject.attributes.current_user_deactivated
+                            }
                             projectId={this.props.match.params.projectId}
                             onCellEdit={async (options: { languageId: string; keyId: string }) => {
                                 const keyResponse = await KeysAPI.getKey(
@@ -801,8 +838,6 @@ class KeysSite extends React.Component<IProps, IState> {
 
                                     if (response.errors) {
                                         ErrorUtils.showErrors(response.errors);
-
-                                        return;
                                     }
                                 } else {
                                     const newItem = {
@@ -824,22 +859,25 @@ class KeysSite extends React.Component<IProps, IState> {
                                                     keyId: newItem.key,
                                                     content: content
                                                 });
-                                                newItem[`translation-exists-for-${languageKey}`] = response.data.id;
 
                                                 if (response.errors) {
                                                     ErrorUtils.showErrors(response.errors);
 
                                                     return;
                                                 }
+
+                                                if (response.data) {
+                                                    newItem[`translation-exists-for-${languageKey}`] = response.data.id;
+                                                }
                                             }
                                         }
                                     }
-                                }
 
-                                await this.reloadTable();
+                                    await this.reloadTable();
+                                }
                             }}
                             expandedRowRender={
-                                this.state.exportConfigsResponse.data.length === 0
+                                (this.state.exportConfigsResponse?.data || []).length === 0
                                     ? undefined
                                     : (record) => {
                                           const data = [];
@@ -883,7 +921,7 @@ class KeysSite extends React.Component<IProps, IState> {
 
                                           const columns: any = [
                                               {
-                                                  title: "Export Configuration",
+                                                  title: "Export target",
                                                   dataIndex: "exportConfigName",
                                                   key: "exportConfigName"
                                               }

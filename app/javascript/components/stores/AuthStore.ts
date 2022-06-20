@@ -3,6 +3,7 @@ import * as _ from "lodash";
 import { computed, observable } from "mobx";
 import { create, persist } from "mobx-persist";
 import { IUserProfile } from "../api/v1/AuthAPI";
+import { ICustomSubscription } from "../api/v1/OrganizationsAPI";
 import { UsersAPI } from "../api/v1/UsersAPI";
 
 class AuthStore {
@@ -12,6 +13,7 @@ class AuthStore {
     @persist @observable userImageUrl: string | null = null;
     @observable confirmed: boolean = null;
     @observable version: string = null;
+    @observable redeemableCustomSubscriptions: ICustomSubscription[] = [];
     @observable hydrationFinished = false;
 
     @computed get isAuthenticated(): boolean {

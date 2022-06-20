@@ -69,5 +69,41 @@ module Api::V1
         10
       end
     end
+
+    # Returns an error if the user is not activated.
+    def check_if_user_activated
+      if self.user_deactivated?
+        render json: { error: true, message: 'USER_IS_DEACTIVATED' }, status: :bad_request
+      end
+    end
+
+    # Checks if a user is deactivated for an organization or project.
+    # Depends on the params ":project_id" and ":organization_id".
+    def user_deactivated?
+      project_id = nil
+      if params[:project_id].present?
+        project_id = params[:project_id]
+      elsif controller_name == 'projects' && params[:id].present?
+        project_id = params[:id]
+      end
+
+      organization_id = nil
+      if params[:organization_id].present?
+        organization_id = params[:organization_id]
+      elsif controller_name == 'organizations' && params[:id].present?
+        organization_id = params[:id]
+      end
+
+      if project_id
+        project = current_user.projects.find(project_id)
+        project_user = project.project_users.find_by(user_id: current_user.id)
+        organization_user = project.organization&.organization_users&.find_by(user_id: current_user.id)
+      elsif organization_id
+        organization = current_user.organizations.find(organization_id)
+        organization_user = organization.organization_users.find_by(user_id: current_user.id)
+      end
+
+      (!project_user || project_user.deactivated) && (!organization_user || organization_user.deactivated)
+    end
   end
 end

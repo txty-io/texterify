@@ -31,13 +31,20 @@ else
   puts "User '#{user_3.email}' with password 'password' created."
 end
 
+organization_1_id = '22e6b4da-4beb-4cad-ae8f-27e6026dd1a2'
+
+organization = Organization.find_or_create_by!(id: organization_1_id, name: 'My Test Organization')
+organization.users << user_1
+organization.users << user_2
+organization.users << user_3
+
 project_1_id = '0e4a88fd-1d86-4ddd-bbaa-c5784ea5624f'
 project_2_id = 'd7876785-356a-4b95-8733-933545281fa2'
 project_3_id = '19ad8104-3a8c-4437-9838-f47022e76e4a'
 
-project_1 = Project.find_or_create_by!(id: project_1_id, name: "Test Project 1")
-project_2 = Project.find_or_create_by!(id: project_2_id, name: "Test Project 2")
-project_3 = Project.find_or_create_by!(id: project_3_id, name: "Test Project 3")
+project_1 = Project.find_or_create_by!(id: project_1_id, name: "Test Project 1", organization_id: organization.id)
+project_2 = Project.find_or_create_by!(id: project_2_id, name: "Test Project 2", organization_id: organization.id)
+project_3 = Project.find_or_create_by!(id: project_3_id, name: "Test Project 3", organization_id: organization.id)
 
 export_config_1_id = '3a8d8688-3e0b-4676-aa9a-72431b9045ce'
 export_config_2_id = '241e30f5-c65a-496a-843f-01721d21247c'

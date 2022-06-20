@@ -34,9 +34,10 @@ class Language < ApplicationRecord
   end
 
   # Translates all non export config translations of all non HTML keys for the language which are empty using machine translation.
+  # @throws OrganizationMachineTranslationUsageExceededException
   def translate_untranslated_using_machine_translation
-    if ENV['DEEPL_API_TOKEN'].present? && self.project.machine_translation_enabled &&
-         project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
+    if (ENV['DEEPL_API_TOKEN'].present? || Rails.env.test?) && self.project.machine_translation_enabled &&
+         project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_LANGUAGE)
       self
         .keys
         .where(html_enabled: false)
@@ -46,7 +47,7 @@ class Language < ApplicationRecord
           target_translation = key.translations.find_by(language_id: target_language.id, export_config_id: nil)
 
           if source_translation.present? && (target_translation.nil? || target_translation.content.empty?)
-            content = Texterify::MachineTranslation.translate(source_translation, target_language)
+            content = Texterify::MachineTranslation.translate(self.project, source_translation, target_language)
 
             unless content.nil?
               if target_translation.nil?
@@ -55,17 +56,44 @@ class Language < ApplicationRecord
                 translation.key = key
                 translation.save!
               else
-                current_translation.update(content: content)
+                target_translation.update(content: content)
               end
             end
           end
         end
+
+      return true
     end
+
+    return false
+  rescue StandardError
+    return false
+  end
+
+  # IETF language tag - RFC 4646 standard
+  # Returns a language tag if language or country code is set.
+  # Otherwise returns nil.
+  def language_tag
+    tag = ''
+
+    if language_code
+      tag = language_code.code
+    end
+
+    if language_code && country_code
+      tag += '-'
+    end
+
+    if country_code
+      tag += country_code.code
+    end
+
+    tag.empty? ? nil : tag
   end
 
   protected
 
   def strip_leading_and_trailing_whitespace
-    self.name = name.strip
+    self.name = name&.strip
   end
 end

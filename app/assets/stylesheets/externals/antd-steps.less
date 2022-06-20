@@ -1,0 +1,54 @@
+&,
+.dark-theme,
+.light-theme {
+  .ant-steps-item-container {
+    display: flex;
+  }
+
+  .ant-steps-item-container .ant-steps-item-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .ant-steps-item-icon .ant-steps-icon {
+    top: 0;
+  }
+
+  .ant-steps-item-icon {
+    margin: 0 12px 0 0;
+  }
+
+  .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-description,
+  .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
+    color: var(--full-color);
+  }
+
+  .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-description,
+  .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
+    color: var(--full-color);
+  }
+
+  .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
+    font-weight: bolder;
+  }
+
+  .ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-description,
+  .ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
+    color: var(--color-passive);
+  }
+
+  .ant-steps-item-finish .ant-steps-item-icon,
+  .ant-steps-item-wait .ant-steps-item-icon {
+    background-color: transparent;
+  }
+
+  .ant-steps-item-wait .ant-steps-item-icon {
+    border-color: var(--color-passive);
+
+    > .ant-steps-icon {
+      color: var(--color-passive);
+    }
+  }
+}

@@ -1,6 +1,6 @@
 require 'google/cloud/storage'
 
-if ENV['GOOGLE_CLOUD_PROJECT'] && ENV['GOOGLE_CLOUD_KEYFILE']
+if ENV['GOOGLE_CLOUD_PROJECT'].present? && ENV['GOOGLE_CLOUD_KEYFILE'].present?
   Google::Cloud::Storage.configure do |config|
     config.project_id = ENV['GOOGLE_CLOUD_PROJECT']
     config.credentials = JSON.parse(ENV['GOOGLE_CLOUD_KEYFILE'])
@@ -9,6 +9,7 @@ end
 
 class Api::V1::ReleasesController < Api::V1::ApiController
   skip_before_action :verify_signed_in, only: :release
+  before_action :check_if_user_activated, except: [:release]
 
   def index
     project = current_user.projects.find(params[:project_id])
@@ -93,7 +94,7 @@ class Api::V1::ReleasesController < Api::V1::ApiController
   end
 
   def create
-    project = Project.find(params[:project_id])
+    project = current_user.projects.find(params[:project_id])
 
     export_config = project.export_configs.find(params[:export_config_id])
 

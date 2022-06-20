@@ -1,8 +1,11 @@
 class Api::V1::LanguagesController < Api::V1::ApiController
+  before_action :check_if_user_activated
+
   def index
     skip_authorization
     project = current_user.projects.find(params[:project_id])
 
+    show_all = params[:show_all]
     page = parse_page(params[:page])
     per_page = parse_per_page(params[:per_page])
 
@@ -15,8 +18,21 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     options[:meta] = { total: languages.size }
     options[:include] = [:country_code, :language_code]
     render json:
-             LanguageSerializer.new(languages.order_by_name.offset(page * per_page).limit(per_page), options)
-               .serialized_json
+             LanguageSerializer.new(
+               show_all ? languages.order_by_name : languages.order_by_name.offset(page * per_page).limit(per_page),
+               options
+             ).serialized_json
+  end
+
+  def show
+    skip_authorization
+    project = current_user.projects.find(params[:project_id])
+
+    language = project.languages.find(params[:id])
+
+    options = {}
+    options[:include] = [:country_code, :language_code]
+    render json: LanguageSerializer.new(language).serialized_json
   end
 
   def create
@@ -80,9 +96,13 @@ class Api::V1::LanguagesController < Api::V1::ApiController
       end
 
       render json: { success: true, details: 'Language successfully created.' }, status: :ok
-
-      if project.auto_translate_new_languages
-        language.translate_untranslated_using_machine_translation
+      if project.auto_translate_new_languages && project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
+        # TODO: Handle machine translation errors. Fix it by moving this to a background job that will display errors if failed.
+        begin
+          language.translate_untranslated_using_machine_translation
+        rescue OrganizationMachineTranslationUsageExceededException
+          # ignored
+        end
       end
     else
       render json: { errors: language.errors.details }, status: :bad_request

@@ -66,10 +66,12 @@ class ExportConfig < ApplicationRecord
     language.country_code ? path.sub('{countryCode}', language.country_code.code) : path
   end
 
-  def file(language, export_data)
+  def file(language, export_data, language_source = nil, export_data_source = nil)
+    # stringify in case export_data has symbols in it
+    export_data.deep_stringify_keys!
+    export_data_source&.deep_stringify_keys!
+
     if file_format == 'json'
-      json(language, export_data)
-    elsif file_format == 'json-nested'
       json(language, export_data)
     elsif file_format == 'json-formatjs'
       json_formatjs(language, export_data)
@@ -81,8 +83,16 @@ class ExportConfig < ApplicationRecord
       ios(language, export_data)
     elsif file_format == 'rails'
       rails(language, export_data)
-    elsif file_format == 'go-i18n'
+    elsif file_format == 'toml'
       toml(language, export_data)
+    elsif file_format == 'properties'
+      properties(language, export_data)
+    elsif file_format == 'po'
+      po(language, export_data)
+    elsif file_format == 'arb'
+      arb(language, export_data)
+    elsif file_format == 'xliff'
+      xliff(language, export_data, language_source, export_data_source)
     else
       json(language, export_data)
     end
@@ -104,9 +114,35 @@ class ExportConfig < ApplicationRecord
 
   private
 
+  # Sets the value to the hash at the specified path.
+  def deep_set(hash, value, *keys)
+    hash.default_proc = proc { |h, k| h[k] = Hash.new(&h.default_proc) }
+
+    keys[0...-1].inject(hash) do |acc, h|
+      current_val = acc.public_send(:[], h)
+
+      if current_val.is_a?(String) || current_val.nil?
+        acc[h] = {}
+      else
+        current_val
+      end
+    end.public_send(:[]=, keys.last, value)
+  end
+
   def json(language, export_data)
     language_file = Tempfile.new(language.id.to_s)
-    language_file.puts(JSON.pretty_generate(export_data))
+    converted_data = export_data
+
+    # If the export config has a split_on specified split it.
+    unless self.split_on.nil?
+      converted_data = {}
+      export_data.each do |key, value|
+        splitted = key.split(self.split_on)
+        deep_set(converted_data, value, *splitted)
+      end
+    end
+
+    language_file.puts(JSON.pretty_generate(converted_data))
     language_file.close
 
     language_file
@@ -118,6 +154,25 @@ class ExportConfig < ApplicationRecord
     data = {}
     export_data.each do |key, value|
       data[key] = { defaultMessage: value, description: Key.find_by(name: key)&.description }
+    end
+
+    language_file.puts(JSON.pretty_generate(data))
+    language_file.close
+
+    language_file
+  end
+
+  def arb(language, export_data)
+    language_file = Tempfile.new(language.id.to_s)
+
+    data = {}
+    export_data.each do |key, value|
+      if value.is_a?(Hash)
+        data[key] = value[:value]
+        data["@#{key}"] = { description: Key.find_by(name: key)&.description }
+      else
+        data[key] = value
+      end
     end
 
     language_file.puts(JSON.pretty_generate(data))
@@ -161,6 +216,36 @@ class ExportConfig < ApplicationRecord
     language_file
   end
 
+  def xliff(language, export_data, language_source = nil, export_data_source = nil)
+    builder =
+      Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
+        xml.xliff version: '1.2', xmlns: 'urn:oasis:names:tc:xliff:document:1.2' do
+          xml.file original: 'Texterify API',
+                   "source-language": language_source&.language_tag,
+                   "target-language": language.language_tag do
+            xml.body do
+              export_data.each do |key, value|
+                xml.send 'trans-unit', id: key do
+                  if language_source && export_data_source
+                    xml.source { xml.text export_data_source[key] }
+                  end
+                  xml.target { xml.text value }
+                end
+              end
+            end
+          end
+        end
+      end
+
+    output = builder.to_xml
+
+    language_file = Tempfile.new(language.id.to_s)
+    language_file.puts(output)
+    language_file.close
+
+    language_file
+  end
+
   def ios(language, export_data)
     language_file = Tempfile.new(language.id.to_s)
     export_data.each do |key, value|
@@ -188,6 +273,26 @@ class ExportConfig < ApplicationRecord
     language_file = Tempfile.new(language.id.to_s)
     toml = TomlRB.dump(export_data)
     language_file.puts(toml)
+    language_file.close
+
+    language_file
+  end
+
+  def properties(language, export_data)
+    language_file = Tempfile.new(language.id.to_s)
+    properties = JavaProperties.generate(export_data)
+    language_file.puts(properties)
+    language_file.close
+
+    language_file
+  end
+
+  def po(language, export_data)
+    language_file = Tempfile.new(language.id.to_s)
+    po = PoParser.parse_file(language_file)
+    po_data = export_data.map { |k, v| { msgid: k, msgstr: v } }
+    po << po_data
+    language_file.puts(po)
     language_file.close
 
     language_file

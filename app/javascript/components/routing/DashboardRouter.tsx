@@ -1,7 +1,8 @@
-import { DeploymentUnitOutlined, HddOutlined, LineChartOutlined, ProjectOutlined } from "@ant-design/icons";
+import { DeploymentUnitOutlined, HddFilled, LineChartOutlined, ProjectOutlined, SyncOutlined } from "@ant-design/icons";
 import * as antd from "antd";
 import WhiteLogoWithText from "images/logo_white_text.svg";
 import { observer } from "mobx-react";
+import PubSub from "pubsub-js";
 import * as React from "react";
 import Hotkeys from "react-hot-keys";
 import { Link, Redirect, RouteComponentProps, Switch } from "react-router-dom";
@@ -16,11 +17,14 @@ import { OrganizationSidebar } from "../sites/dashboard/OrganizationSidebar";
 import { OrganizationsSite } from "../sites/dashboard/OrganizationsSite";
 import { ProjectSidebar } from "../sites/dashboard/ProjectSidebar";
 import { ProjectsSite } from "../sites/dashboard/ProjectsSite";
+import { SetupSite, STEPS } from "../sites/dashboard/SetupSite";
 import { UserAccessTokensSettingsSite } from "../sites/dashboard/UserAccessTokensSettingsSite";
 import { UserAccountSettingsSite } from "../sites/dashboard/UserAccountSettingsSite";
 import { UserLicensesSite } from "../sites/dashboard/UserLicensesSite";
 import { UserSettingsSidebar } from "../sites/dashboard/UserSettingsSidebar";
 import { authStore } from "../stores/AuthStore";
+import { dashboardStore } from "../stores/DashboardStore";
+import { BackgroundJobsPopupContent } from "../ui/BackgroundJobsPopupContent";
 import { ConfirmEmailHint } from "../ui/ConfirmEmailHint";
 import { DarkModeToggle } from "../ui/DarkModeToggle";
 import { getKeystrokePreview } from "../ui/KeystrokePreview";
@@ -29,6 +33,20 @@ import { LicenseFreeTrial } from "../ui/LicenseFreeVersion";
 import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
+import {
+    IJobsChannelEvent,
+    JOBS_CHANNEL_EVENT_JOB_COMPLETED,
+    JOBS_CHANNEL_EVENT_JOB_PROGRESS,
+    JOBS_CHANNEL_TYPE_CHECK_PLACEHOLDERS,
+    JOBS_CHANNEL_TYPE_RECHECK_ALL_VALIDATIONS
+} from "../utilities/JobsChannelEvents";
+import {
+    PUBSUB_CHECK_PLACEHOLDERS_FINISHED,
+    PUBSUB_CHECK_PLACEHOLDERS_PROGRESS,
+    PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED,
+    PUBSUB_RECHECK_ALL_VALIDATIONS_PROGRESS
+} from "../utilities/PubSubEvents";
+import { consumer } from "../WebsocketClient";
 import { InstanceRouter } from "./InstanceRouter";
 import { OrganizationRouter } from "./OrganizationRouter";
 import { PrivateRoute } from "./PrivateRoute";
@@ -44,14 +62,51 @@ export const MenuList = styled.li`
     display: flex;
 `;
 
-export const MenuLink = styled(Link)`
+interface IMenuLinkWrapperProps {
+    isActive: boolean;
+}
+
+export const MenuLinkWrapper = styled.div<IMenuLinkWrapperProps>`
     transition: none;
     margin-right: 8px;
     overflow: hidden;
     text-overflow: ellipsis;
+    border-radius: 4px;
+
+    background: ${(props: IMenuLinkWrapperProps) => {
+        return props.isActive ? "var(--header-menu-item-active-background)" : "none";
+    }};
 
     &:hover {
         text-decoration: none;
+    }
+
+    a {
+        text-decoration: none;
+        padding: 8px 20px;
+        display: inline-block;
+
+        color: ${(props: IMenuLinkWrapperProps) => {
+            return props.isActive ? "#fff" : "#ffffffbf";
+        }};
+
+        &:hover {
+            color: #fff;
+        }
+    }
+
+    @media (max-width: 1040px) {
+        flex-shrink: 0;
+    }
+`;
+
+const MenuLinkTextWrapper = styled.span`
+    display: none;
+    margin-left: 0;
+
+    @media (min-width: 1040px) {
+        display: inline;
+        margin-left: 8px;
     }
 `;
 
@@ -77,6 +132,7 @@ type IProps = RouteComponentProps<{ projectId?: string }>;
 interface IState {
     hasSidebar: boolean;
     accountMenuVisible: boolean;
+    backgroundJobsVisible: boolean;
     searchOverlayVisible: boolean;
     currentLicenseInfo: ICurrentLicenseInformation | null;
     currentLicenseInfoLoaded: boolean;
@@ -87,10 +143,13 @@ class DashboardRouter extends React.Component<IProps, IState> {
     state: IState = {
         hasSidebar: false,
         accountMenuVisible: false,
+        backgroundJobsVisible: false,
         searchOverlayVisible: false,
         currentLicenseInfo: null,
         currentLicenseInfoLoaded: false
     };
+
+    channel;
 
     async componentDidMount() {
         this.setState({
@@ -104,6 +163,60 @@ class DashboardRouter extends React.Component<IProps, IState> {
         const userInfoResponse = await UsersAPI.getCurrentUserInfo();
         authStore.confirmed = userInfoResponse.confirmed;
         authStore.version = userInfoResponse.version;
+        authStore.redeemableCustomSubscriptions = userInfoResponse.redeemable_custom_subscriptions
+            ? userInfoResponse.redeemable_custom_subscriptions.data
+            : [];
+
+        // Listen for job updates.
+        this.channel = consumer.subscriptions.create(
+            { channel: "JobsChannel" },
+            {
+                received: (data: IJobsChannelEvent) => {
+                    // Only care about the finished job if it is a job of the currently selected project.
+                    if (data.project_id === this.props.match.params.projectId) {
+                        dashboardStore.loadBackgroundJobs(data.project_id);
+
+                        // Send an event that a new job update has occurred.
+                        if (
+                            data.type === JOBS_CHANNEL_TYPE_RECHECK_ALL_VALIDATIONS &&
+                            data.event === JOBS_CHANNEL_EVENT_JOB_PROGRESS
+                        ) {
+                            PubSub.publish(PUBSUB_RECHECK_ALL_VALIDATIONS_PROGRESS, { projectId: data.project_id });
+                        }
+
+                        // Send an event that the recheck all validations job has finished.
+                        if (
+                            data.type === JOBS_CHANNEL_TYPE_RECHECK_ALL_VALIDATIONS &&
+                            data.event === JOBS_CHANNEL_EVENT_JOB_COMPLETED
+                        ) {
+                            PubSub.publish(PUBSUB_RECHECK_ALL_VALIDATIONS_FINISHED, { projectId: data.project_id });
+                        }
+
+                        // Send an event that a new job update has occurred.
+                        if (
+                            data.type === JOBS_CHANNEL_TYPE_CHECK_PLACEHOLDERS &&
+                            data.event === JOBS_CHANNEL_EVENT_JOB_PROGRESS
+                        ) {
+                            PubSub.publish(PUBSUB_CHECK_PLACEHOLDERS_PROGRESS, { projectId: data.project_id });
+                        }
+
+                        // Send an event that the check placeholders job has finished.
+                        if (
+                            data.type === JOBS_CHANNEL_TYPE_CHECK_PLACEHOLDERS &&
+                            data.event === JOBS_CHANNEL_EVENT_JOB_COMPLETED
+                        ) {
+                            PubSub.publish(PUBSUB_CHECK_PLACEHOLDERS_FINISHED, { projectId: data.project_id });
+                        }
+                    }
+                }
+            }
+        );
+    }
+
+    componentWillUnmount() {
+        if (this.channel) {
+            this.channel.unsubscribe();
+        }
     }
 
     async loadCurrentLicense() {
@@ -123,6 +236,13 @@ class DashboardRouter extends React.Component<IProps, IState> {
             this.setState({
                 hasSidebar: this.hasSidebar()
             });
+        }
+
+        if (
+            this.props.match.params.projectId &&
+            this.props.match.params.projectId !== dashboardStore.activeBackgroundJobsResponseProjectId
+        ) {
+            dashboardStore.loadBackgroundJobs(this.props.match.params.projectId);
         }
     }
 
@@ -188,62 +308,51 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 marginBottom: 0,
                                 marginRight: 24,
                                 display: "flex",
-                                alignItems: "center"
+                                alignItems: "center",
+                                marginLeft: 50
                             }}
                         >
                             <MenuList>
-                                <MenuLink
-                                    to={Routes.DASHBOARD.PROJECTS}
-                                    style={{
-                                        background:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS
-                                                ? "var(--primary-light-color)"
-                                                : undefined,
-                                        color:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS
-                                                ? "var(--blue-color)"
-                                                : undefined
-                                    }}
+                                <MenuLinkWrapper
+                                    isActive={this.props.history.location.pathname === Routes.DASHBOARD.PROJECTS}
                                     data-id="main-menu-projects"
                                 >
-                                    <ProjectOutlined style={{ marginRight: 8 }} /> Projects
-                                </MenuLink>
+                                    <Link
+                                        to={Routes.DASHBOARD.PROJECTS}
+                                        style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                    >
+                                        <ProjectOutlined />
+                                        <MenuLinkTextWrapper>Projects</MenuLinkTextWrapper>
+                                    </Link>
+                                </MenuLinkWrapper>
                             </MenuList>
                             <MenuList>
-                                <MenuLink
-                                    to={Routes.DASHBOARD.ORGANIZATIONS}
-                                    style={{
-                                        background:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS
-                                                ? "var(--primary-light-color)"
-                                                : undefined,
-                                        color:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS
-                                                ? "var(--blue-color)"
-                                                : undefined
-                                    }}
+                                <MenuLinkWrapper
+                                    isActive={this.props.history.location.pathname === Routes.DASHBOARD.ORGANIZATIONS}
                                     data-id="main-menu-organizations"
                                 >
-                                    <DeploymentUnitOutlined style={{ marginRight: 8 }} /> Organizations
-                                </MenuLink>
+                                    <Link
+                                        to={Routes.DASHBOARD.ORGANIZATIONS}
+                                        style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                    >
+                                        <DeploymentUnitOutlined />
+                                        <MenuLinkTextWrapper>Organizations</MenuLinkTextWrapper>
+                                    </Link>
+                                </MenuLinkWrapper>
                             </MenuList>
                             <MenuList>
-                                <MenuLink
-                                    to={Routes.DASHBOARD.ACTIVITY}
-                                    style={{
-                                        background:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY
-                                                ? "var(--primary-light-color)"
-                                                : undefined,
-                                        color:
-                                            this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY
-                                                ? "var(--blue-color)"
-                                                : undefined
-                                    }}
+                                <MenuLinkWrapper
+                                    isActive={this.props.history.location.pathname === Routes.DASHBOARD.ACTIVITY}
                                     data-id="main-menu-activity"
                                 >
-                                    <LineChartOutlined style={{ marginRight: 8 }} /> Activity
-                                </MenuLink>
+                                    <Link
+                                        to={Routes.DASHBOARD.ACTIVITY}
+                                        style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                    >
+                                        <LineChartOutlined />
+                                        <MenuLinkTextWrapper>Activity</MenuLinkTextWrapper>
+                                    </Link>
+                                </MenuLinkWrapper>
                             </MenuList>
                         </ul>
 
@@ -275,27 +384,93 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 }}
                             >
                                 <MenuList>
-                                    <MenuLink
-                                        to={Routes.DASHBOARD.INSTANCE.ROOT}
-                                        style={{
-                                            background: this.props.history.location.pathname.startsWith(
-                                                Routes.DASHBOARD.INSTANCE.ROOT
-                                            )
-                                                ? "var(--primary-light-color)"
-                                                : undefined,
-                                            color: this.props.history.location.pathname.startsWith(
-                                                Routes.DASHBOARD.INSTANCE.ROOT
-                                            )
-                                                ? "var(--blue-color)"
-                                                : undefined
-                                        }}
+                                    <MenuLinkWrapper
+                                        isActive={this.props.history.location.pathname.startsWith(
+                                            Routes.DASHBOARD.INSTANCE.ROOT
+                                        )}
                                         data-id="main-menu-instance-settings"
                                     >
-                                        <HddOutlined style={{ marginRight: 8 }} />
-                                        Admin
-                                    </MenuLink>
+                                        <Link
+                                            to={Routes.DASHBOARD.INSTANCE.ROOT}
+                                            style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                        >
+                                            <HddFilled />
+                                            <MenuLinkTextWrapper>Admin</MenuLinkTextWrapper>
+                                        </Link>
+                                    </MenuLinkWrapper>
                                 </MenuList>
                             </ul>
+                        )}
+
+                        {this.props.match.params.projectId && (
+                            <div
+                                onClick={() => {
+                                    this.setState({ backgroundJobsVisible: true });
+                                }}
+                                role="button"
+                                style={{ cursor: "pointer" }}
+                                data-id="background-jobs-menu"
+                            >
+                                <antd.Popover
+                                    title="Background jobs"
+                                    placement="bottom"
+                                    trigger="click"
+                                    visible={this.state.backgroundJobsVisible}
+                                    onVisibleChange={() => {
+                                        this.setState({ backgroundJobsVisible: false });
+                                    }}
+                                    overlayClassName="popover-no-padding"
+                                    content={<BackgroundJobsPopupContent />}
+                                >
+                                    <div
+                                        style={{
+                                            height: 40,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            position: "relative",
+                                            marginRight: 40
+                                        }}
+                                    >
+                                        <SyncOutlined
+                                            style={{
+                                                animation:
+                                                    dashboardStore.activeBackgroundJobsResponse?.meta?.total > 0
+                                                        ? "rotating 2s linear infinite"
+                                                        : undefined,
+                                                cursor: "pointer"
+                                            }}
+                                        />
+                                        {dashboardStore.activeBackgroundJobsResponse && (
+                                            <div
+                                                style={{
+                                                    position: "absolute",
+                                                    right: -8,
+                                                    bottom: 4,
+                                                    width: 16,
+                                                    height: 16,
+                                                    background:
+                                                        dashboardStore.activeBackgroundJobsResponse.meta?.total > 0
+                                                            ? "var(--color-warn)"
+                                                            : "#fff",
+                                                    borderRadius: 40,
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    color:
+                                                        dashboardStore.activeBackgroundJobsResponse.meta?.total > 0
+                                                            ? "#fff"
+                                                            : "var(--dark-color)",
+                                                    fontWeight: "bold",
+                                                    fontSize: 10,
+                                                    cursor: "pointer"
+                                                }}
+                                            >
+                                                {dashboardStore.activeBackgroundJobsResponse.meta?.total}
+                                            </div>
+                                        )}
+                                    </div>
+                                </antd.Popover>
+                            </div>
                         )}
 
                         {/* <MessageOutlined style={{ marginRight: 40 }} /> */}
@@ -308,6 +483,61 @@ class DashboardRouter extends React.Component<IProps, IState> {
                         {this.renderSidebar()}
 
                         <Switch>
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP}
+                                component={() => {
+                                    return <Redirect to={Routes.DASHBOARD.SETUP_ORGANIZATION_NEW} />;
+                                }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_ORGANIZATION_NEW}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.ORGANIZATION }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_ORGANIZATION}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.ORGANIZATION }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PLAN}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.PLAN }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PROJECT_NEW}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.PROJECT }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PROJECT}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.PROJECT }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PROJECT_LANGUAGES}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.LANGUAGES }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PROJECT_IMPORT}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.IMPORT }}
+                            />
+                            <PrivateRoute
+                                exact
+                                path={Routes.DASHBOARD.SETUP_PROJECT_SUCCESS}
+                                component={SetupSite}
+                                componentParams={{ step: STEPS.SUCCESS }}
+                            />
                             <PrivateRoute
                                 exact
                                 path={Routes.USER.SETTINGS.ACCOUNT}

@@ -1,6 +1,22 @@
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 
+export interface ITranslation {
+    id: string;
+    type: "translation";
+    attributes: {
+        id: string;
+        content: string;
+        key_id: string;
+        language_id: string;
+    };
+    relationships: {
+        export_config?: { data: any };
+        key?: { data: any };
+        language?: { data: any };
+    };
+}
+
 const TranslationsAPI = {
     createTranslation: async (options: {
         projectId: string;

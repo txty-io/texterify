@@ -40,3 +40,4 @@ webpacker-stats.json
 
 spec/cypress/videos
 spec/cypress/screenshots
+spec/cypress/downloads

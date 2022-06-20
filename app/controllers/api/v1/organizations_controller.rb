@@ -1,7 +1,9 @@
 class Api::V1::OrganizationsController < Api::V1::ApiController
+  before_action :check_if_user_activated, except: [:create, :index, :show, :image]
+
   def image
     skip_authorization
-    organization = Organization.find(params[:organization_id])
+    organization = current_user.organizations.find(params[:organization_id])
 
     if organization
       render json: { image: organization.image.attached? ? url_for(organization.image) : nil }
@@ -11,13 +13,13 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
   end
 
   def image_create
-    organization = Organization.find(params[:organization_id])
+    organization = current_user.organizations.find(params[:organization_id])
     authorize organization
     organization.image.attach(params[:image])
   end
 
   def image_destroy
-    organization = Organization.find(params[:organization_id])
+    organization = current_user.organizations.find(params[:organization_id])
     authorize organization
     organization.image.purge
   end
@@ -91,7 +93,12 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
 
     options = {}
     options[:params] = { current_user: current_user }
-    options[:include] = [:projects, :subscriptions]
+
+    # Only if the user is not deactivated return the list of projects und subscriptions.
+    unless self.user_deactivated?
+      options[:include] = [:projects, :subscriptions]
+    end
+
     render json: OrganizationSerializer.new(organization, options).serialized_json, status: :ok
   end
 
@@ -107,8 +114,37 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
     skip_authorization
     organization = current_user.organizations.find(params[:organization_id])
 
-    options = {}
-    render json: SubscriptionSerializer.new(organization.active_subscription, options).serialized_json, status: :ok
+    render json: SubscriptionSerializer.new(organization.active_subscription).serialized_json, status: :ok
+  end
+
+  def custom_subscription
+    skip_authorization
+    organization = current_user.organizations.find(params[:organization_id])
+
+    render json: CustomSubscriptionSerializer.new(organization.custom_subscription).serialized_json, status: :ok
+  end
+
+  def activate_custom_subscription
+    organization = current_user.organizations.find(params[:organization_id])
+    authorize organization
+
+    # Link custom subscription to organization.
+    custom_subscription =
+      CustomSubscription.find_by(organization_id: nil, redeemable_by_email: current_user.email, id: params[:id])
+    if custom_subscription.present?
+      custom_subscription.organization = organization
+      custom_subscription.save!
+
+      # Cancel any other active subscription.
+      organization.active_subscription&.interrupt
+
+      # Also cancel trial if active.
+      organization.cancel_trial
+
+      render json: { error: false, message: 'OK' }
+    else
+      render json: { error: true, message: 'NO_REDEEMABLE_SUBSCRIPTION_FOUND' }, status: :bad_request
+    end
   end
 
   def cancel_subscription

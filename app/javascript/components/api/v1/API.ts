@@ -48,14 +48,26 @@ async function request(options: {
         fullURL += `?${queryString.stringify(options.params, { arrayFormat: "bracket" })}`;
     }
 
-    let response: any;
+    let response: Response;
     try {
         response = await fetch(fullURL, {
             method: options.method,
             headers: requestHeaders,
             body: options.method === "GET" ? null : options.isFormData ? options.params : JSON.stringify(options.params)
         });
-        APIUtils.saveTokenFromResponseIfAvailable(response);
+
+        if (response.status === 403) {
+            const json = await response.json();
+
+            APIUtils.handleErrors(json);
+
+            return {
+                error: true,
+                message: "FORBIDDEN"
+            };
+        } else {
+            APIUtils.saveTokenFromResponseIfAvailable(response);
+        }
     } catch (error) {
         console.error("Error while fetching:", error);
     }

@@ -116,7 +116,7 @@ class SearchOverlay extends React.Component<IProps, IState> {
                                 autoFocus
                             />
                         </div>
-                        {(this.state.search || this.state.projectsResponse?.data.length > 0) && (
+                        {(this.state.search || this.state.projectsResponse?.data?.length > 0) && (
                             <div style={{ maxHeight: 400, overflowY: "auto" }}>
                                 <SearchOverlayResults
                                     loading={this.state.projectsLoading}

@@ -3,8 +3,10 @@
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
-  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
-  "https://github.com/#{repo_name}.git"
+    unless repo_name.include?('/')
+        repo_name = "#{repo_name}/#{repo_name}"
+    end
+    "https://github.com/#{repo_name}.git"
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -30,48 +32,49 @@ gem 'uglifier'
 # gem 'bcrypt', '~> 3.1.7'
 
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  # gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  # Adds support for Capybara system testing and selenium driver
-  # gem 'capybara'
-  # gem 'selenium-webdriver'
+    # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+    # gem 'byebug', platforms: %i[mri mingw x64_mingw]
+    # Adds support for Capybara system testing and selenium driver
+    # gem 'capybara'
+    # gem 'selenium-webdriver'
 
-  gem 'cypress-on-rails', '~> 1.0'
-  gem 'database_cleaner'
-  gem 'dotenv-rails'
+    gem 'cypress-on-rails', '~> 1.0'
+    gem 'database_cleaner'
+    gem 'dotenv-rails'
 
-  # Load automatically in dev for mailer previews which use factories.
-  gem 'factory_bot_rails'
+    # Load automatically in dev for mailer previews which use factories.
+    gem 'factory_bot_rails'
 
-  gem 'database_consistency', require: false
-  gem 'license_finder', require: false
-  gem 'rubocop', require: false
-  gem 'rubocop-rails', require: false
-  gem 'rubocop-rspec', require: false
+    gem 'database_consistency', require: false
+    gem 'license_finder', require: false
+    gem 'rubocop', require: false
+    gem 'rubocop-rails', require: false
+    gem 'rubocop-rspec', require: false
 end
 
 group :development do
-  # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
-  gem 'listen'
-  gem 'web-console'
+    # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
+    gem 'listen'
+    gem 'web-console'
 
-  gem 'pry-byebug'
-  gem 'pry-rails'
+    gem 'pry-byebug'
+    gem 'pry-rails'
 
-  # Spring speeds up development by keeping your application running in the background.
-  # Read more: https://github.com/rails/spring
-  gem 'spring'
-  gem 'spring-watcher-listen'
+    # Spring speeds up development by keeping your application running in the background.
+    # Read more: https://github.com/rails/spring
+    gem 'spring'
+    gem 'spring-watcher-listen'
 
-  gem 'bumbler', require: false
-  gem 'solargraph', require: false
+    gem 'bumbler', require: false
+    gem 'solargraph', require: false
 end
 
 group :test do
-  gem 'rspec', require: false
-  gem 'rspec-rails', require: false
-  gem 'rspec-sidekiq' # rspec-sidekiq requires sidekiq/testing by default
-  gem 'simplecov', require: false
+    gem 'rspec', require: false
+    gem 'rspec-rails', require: false
+    gem 'rspec-sidekiq' # rspec-sidekiq requires sidekiq/testing by default
+    gem 'rspec-snapshot'
+    gem 'simplecov', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -80,7 +83,7 @@ end
 gem 'devise', '4.7.3'
 gem 'devise_token_auth', '1.1.5'
 gem 'fast_jsonapi'
-gem 'paper_trail'
+gem 'paper_trail', '12.3.0'
 gem 'pundit'
 gem 'rails-settings-cached'
 gem 'react-rails'
@@ -106,5 +109,17 @@ gem 'rack-cors'
 gem 'sidekiq'
 gem 'sidekiq-scheduler'
 
-# For importing and exporting TOML.
+# For importing and exporting .toml files.
 gem 'toml-rb'
+
+# For importing and exporting .properties files.
+gem 'java-properties'
+
+# For importing and exporting .po files.
+gem 'PoParser'
+
+# For deserialization of serialized php objects.
+gem 'php-serialize'
+
+# For encoding and decoding HTML entities.
+gem 'htmlentities'

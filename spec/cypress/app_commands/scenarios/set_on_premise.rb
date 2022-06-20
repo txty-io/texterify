@@ -1,3 +1,3 @@
 ENV['PROPRIETARY_MODE'] = 'false'
-
-ENV['DEV_ENABLE_LICENSE_USERS_LIMIT_CHECK'] = 'true'
+Setting.sign_up_enabled = true
+Setting.domain_filter = ''

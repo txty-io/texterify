@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_29_194655) do
+ActiveRecord::Schema.define(version: 2022_04_29_163253) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -55,6 +55,18 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "background_jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "project_id", null: false
+    t.uuid "user_id", null: false
+    t.string "status", null: false
+    t.integer "progress", default: 0, null: false
+    t.string "job_type", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["project_id"], name: "index_background_jobs_on_project_id"
+    t.index ["user_id"], name: "index_background_jobs_on_user_id"
+  end
+
   create_table "country_codes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "code", null: false
@@ -62,6 +74,23 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_country_codes_on_code"
     t.index ["name", "code"], name: "index_country_codes_on_name_and_code", unique: true
+  end
+
+  create_table "custom_subscriptions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "plan", null: false
+    t.string "provider", null: false
+    t.string "provider_plan"
+    t.string "provider_license_key"
+    t.string "invoice_id"
+    t.string "redeemable_by_email", null: false
+    t.integer "max_users"
+    t.integer "machine_translation_character_limit"
+    t.datetime "ends_at"
+    t.uuid "organization_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["organization_id"], name: "custom_subscriptions_organization_id_unique", unique: true
+    t.index ["organization_id"], name: "index_custom_subscriptions_on_organization_id"
   end
 
   create_table "deepl_source_languages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -90,8 +119,32 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "file_format", null: false
+    t.string "split_on"
     t.index ["project_id", "name"], name: "index_export_configs_on_project_id_and_name", unique: true
     t.index ["project_id"], name: "index_export_configs_on_project_id"
+  end
+
+  create_table "forbidden_words", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "content"
+    t.uuid "forbidden_words_list_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["forbidden_words_list_id"], name: "index_forbidden_words_on_forbidden_words_list_id"
+  end
+
+  create_table "forbidden_words_lists", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "content"
+    t.uuid "project_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "organization_id"
+    t.uuid "country_code_id"
+    t.uuid "language_code_id"
+    t.index ["country_code_id"], name: "index_forbidden_words_lists_on_country_code_id"
+    t.index ["language_code_id"], name: "index_forbidden_words_lists_on_language_code_id"
+    t.index ["organization_id"], name: "index_forbidden_words_lists_on_organization_id"
+    t.index ["project_id"], name: "index_forbidden_words_lists_on_project_id"
   end
 
   create_table "keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -102,6 +155,16 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
     t.datetime "updated_at", null: false
     t.boolean "html_enabled", default: false, null: false
     t.index ["project_id"], name: "index_keys_on_project_id"
+  end
+
+  create_table "keys_tags", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "tag_id", null: false
+    t.uuid "key_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["key_id"], name: "index_keys_tags_on_key_id"
+    t.index ["tag_id", "key_id"], name: "index_keys_tags_on_tag_id_and_key_id", unique: true
+    t.index ["tag_id"], name: "index_keys_tags_on_tag_id"
   end
 
   create_table "language_codes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -115,8 +178,8 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
 
   create_table "language_configs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "language_code", null: false
-    t.uuid "language_id"
-    t.uuid "export_config_id"
+    t.uuid "language_id", null: false
+    t.uuid "export_config_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["export_config_id"], name: "index_language_configs_on_export_config_id"
@@ -133,6 +196,8 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
     t.uuid "parent_id"
     t.uuid "language_code_id"
     t.boolean "is_default", default: false, null: false
+    t.string "wordpress_language_id"
+    t.string "wordpress_language_code"
     t.index ["country_code_id"], name: "index_languages_on_country_code_id"
     t.index ["language_code_id"], name: "index_languages_on_language_code_id"
     t.index ["parent_id"], name: "index_languages_on_parent_id"
@@ -170,6 +235,17 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
     t.index ["target_language_code_id"], name: "index_machine_translation_memories_on_target_language_code_id"
   end
 
+  create_table "organization_invites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "email", null: false
+    t.string "role", default: "translator", null: false
+    t.uuid "organization_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.boolean "open", default: true, null: false
+    t.index ["email", "organization_id", "open"], name: "index_organization_invites_unique", unique: true
+    t.index ["organization_id"], name: "index_organization_invites_on_organization_id"
+  end
+
   create_table "organizations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -186,9 +262,21 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "role", default: "translator", null: false
+    t.boolean "deactivated", default: false, null: false
+    t.text "deactivated_reason"
     t.index ["organization_id"], name: "index_organizations_users_on_organization_id"
     t.index ["user_id", "organization_id"], name: "index_organizations_users_on_user_id_and_organization_id", unique: true
     t.index ["user_id"], name: "index_organizations_users_on_user_id"
+  end
+
+  create_table "placeholders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "description"
+    t.uuid "key_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["key_id"], name: "index_placeholders_on_key_id"
+    t.index ["name", "key_id"], name: "index_placeholders_on_name_and_key_id", unique: true
   end
 
   create_table "post_processing_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -217,6 +305,17 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
     t.index ["user_id"], name: "index_project_columns_on_user_id"
   end
 
+  create_table "project_invites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "email", null: false
+    t.string "role", default: "translator", null: false
+    t.boolean "open", default: true, null: false
+    t.uuid "project_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["email", "project_id", "open"], name: "index_project_invites_on_email_and_project_id_and_open", unique: true
+    t.index ["project_id"], name: "index_project_invites_on_project_id"
+  end
+
   create_table "projects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "description"
@@ -226,7 +325,15 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
     t.boolean "machine_translation_enabled", default: true, null: false
     t.boolean "auto_translate_new_keys", default: false, null: false
     t.boolean "auto_translate_new_languages", default: false, null: false
+    t.boolean "validate_leading_whitespace", default: true, null: false
+    t.boolean "validate_trailing_whitespace", default: true, null: false
+    t.boolean "validate_double_whitespace", default: true, null: false
+    t.boolean "validate_https", default: true, null: false
     t.integer "machine_translation_character_usage", default: 0, null: false
+    t.integer "character_count", default: 0
+    t.integer "word_count", default: 0
+    t.string "placeholder_start"
+    t.string "placeholder_end"
     t.index ["organization_id"], name: "index_projects_on_organization_id"
   end
 
@@ -236,6 +343,8 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "role", default: "translator", null: false
+    t.boolean "deactivated", default: false, null: false
+    t.text "deactivated_reason"
     t.index ["project_id"], name: "index_projects_users_on_project_id"
     t.index ["user_id", "project_id"], name: "index_projects_users_on_user_id_and_project_id", unique: true
     t.index ["user_id"], name: "index_projects_users_on_user_id"
@@ -316,6 +425,16 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
     t.index ["organization_id"], name: "index_subscriptions_on_organization_id"
   end
 
+  create_table "tags", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.boolean "custom", null: false
+    t.uuid "project_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name", "custom", "project_id"], name: "index_tags_on_name_and_custom_and_project_id", unique: true
+    t.index ["project_id"], name: "index_tags_on_project_id"
+  end
+
   create_table "translations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "content"
     t.uuid "key_id", null: false
@@ -359,11 +478,49 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_superadmin"
+    t.boolean "deactivated", default: false, null: false
+    t.text "deactivated_reason"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
+  end
+
+  create_table "validation_violations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "ignored", default: false, null: false
+    t.uuid "project_id", null: false
+    t.uuid "validation_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "name"
+    t.uuid "translation_id"
+    t.uuid "forbidden_word_id"
+    t.uuid "placeholder_id"
+    t.index ["forbidden_word_id"], name: "index_validation_violations_on_forbidden_word_id"
+    t.index ["name", "project_id", "translation_id", "validation_id"], name: "index_validation_violations_uniqueness", unique: true
+    t.index ["placeholder_id"], name: "index_validation_violations_on_placeholder_id"
+    t.index ["project_id"], name: "index_validation_violations_on_project_id"
+    t.index ["translation_id"], name: "index_validation_violations_on_translation_id"
+    t.index ["validation_id"], name: "index_validation_violations_on_validation_id"
+  end
+
+  create_table "validations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "name", null: false
+    t.text "description"
+    t.text "match", null: false
+    t.text "content", null: false
+    t.uuid "organization_id"
+    t.uuid "project_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.boolean "enabled", default: true, null: false
+    t.uuid "country_code_id"
+    t.uuid "language_code_id"
+    t.index ["country_code_id"], name: "index_validations_on_country_code_id"
+    t.index ["language_code_id"], name: "index_validations_on_language_code_id"
+    t.index ["organization_id"], name: "index_validations_on_organization_id"
+    t.index ["project_id"], name: "index_validations_on_project_id"
   end
 
   create_table "versions", force: :cascade do |t|
@@ -379,42 +536,99 @@ ActiveRecord::Schema.define(version: 2021_05_29_194655) do
     t.index ["project_id"], name: "index_versions_on_project_id"
   end
 
-  add_foreign_key "access_tokens", "users"
+  create_table "wordpress_contents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "wordpress_id", null: false
+    t.string "wordpress_slug"
+    t.datetime "wordpress_modified", null: false
+    t.string "wordpress_type", null: false
+    t.string "wordpress_status", null: false
+    t.string "wordpress_content"
+    t.string "wordpress_content_type", null: false
+    t.string "wordpress_language_id"
+    t.string "wordpress_language_language_code"
+    t.string "wordpress_language_country_code"
+    t.string "wordpress_title"
+    t.string "wordpress_language_name"
+    t.uuid "project_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "key_id"
+    t.index ["key_id"], name: "index_wordpress_contents_on_key_id"
+    t.index ["project_id"], name: "index_wordpress_contents_on_project_id"
+    t.index ["wordpress_id", "wordpress_content_type"], name: "index_wp_id_wp_content_type", unique: true
+  end
+
+  create_table "wordpress_polylang_connections", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "wordpress_url"
+    t.string "auth_user"
+    t.string "auth_password"
+    t.uuid "project_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["project_id"], name: "index_wordpress_polylang_connections_on_project_id"
+  end
+
+  add_foreign_key "access_tokens", "users", on_delete: :cascade
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "export_configs", "projects"
-  add_foreign_key "keys", "projects"
-  add_foreign_key "language_configs", "export_configs"
-  add_foreign_key "language_configs", "languages"
-  add_foreign_key "languages", "country_codes"
-  add_foreign_key "languages", "language_codes"
-  add_foreign_key "languages", "languages", column: "parent_id"
-  add_foreign_key "languages", "projects"
-  add_foreign_key "languages_project_columns", "languages"
-  add_foreign_key "languages_project_columns", "project_columns"
+  add_foreign_key "background_jobs", "projects", on_delete: :cascade
+  add_foreign_key "background_jobs", "users", on_delete: :nullify
+  add_foreign_key "custom_subscriptions", "organizations", on_delete: :nullify
+  add_foreign_key "export_configs", "projects", on_delete: :cascade
+  add_foreign_key "forbidden_words", "forbidden_words_lists", on_delete: :cascade
+  add_foreign_key "forbidden_words_lists", "country_codes", on_delete: :cascade
+  add_foreign_key "forbidden_words_lists", "language_codes", on_delete: :cascade
+  add_foreign_key "forbidden_words_lists", "organizations", on_delete: :cascade
+  add_foreign_key "forbidden_words_lists", "projects", on_delete: :cascade
+  add_foreign_key "keys", "projects", on_delete: :cascade
+  add_foreign_key "keys_tags", "keys", on_delete: :cascade
+  add_foreign_key "keys_tags", "tags", on_delete: :cascade
+  add_foreign_key "language_configs", "export_configs", on_delete: :cascade
+  add_foreign_key "language_configs", "languages", on_delete: :cascade
+  add_foreign_key "languages", "country_codes", on_delete: :nullify
+  add_foreign_key "languages", "language_codes", on_delete: :nullify
+  add_foreign_key "languages", "languages", column: "parent_id", on_delete: :nullify
+  add_foreign_key "languages", "projects", on_delete: :cascade
+  add_foreign_key "languages_project_columns", "languages", on_delete: :cascade
+  add_foreign_key "languages_project_columns", "project_columns", on_delete: :cascade
   add_foreign_key "machine_translation_memories", "country_codes", column: "source_country_code_id"
   add_foreign_key "machine_translation_memories", "country_codes", column: "target_country_code_id"
   add_foreign_key "machine_translation_memories", "language_codes", column: "source_language_code_id"
   add_foreign_key "machine_translation_memories", "language_codes", column: "target_language_code_id"
-  add_foreign_key "organizations_users", "organizations"
-  add_foreign_key "organizations_users", "users"
-  add_foreign_key "post_processing_rules", "export_configs"
-  add_foreign_key "post_processing_rules", "projects"
-  add_foreign_key "project_columns", "projects"
-  add_foreign_key "project_columns", "users"
-  add_foreign_key "projects", "organizations"
-  add_foreign_key "projects_users", "projects"
-  add_foreign_key "projects_users", "users"
+  add_foreign_key "organization_invites", "organizations", on_delete: :cascade
+  add_foreign_key "organizations_users", "organizations", on_delete: :cascade
+  add_foreign_key "organizations_users", "users", on_delete: :cascade
+  add_foreign_key "placeholders", "keys", on_delete: :cascade
+  add_foreign_key "post_processing_rules", "export_configs", on_delete: :cascade
+  add_foreign_key "post_processing_rules", "projects", on_delete: :cascade
+  add_foreign_key "project_columns", "projects", on_delete: :cascade
+  add_foreign_key "project_columns", "users", on_delete: :cascade
+  add_foreign_key "project_invites", "projects", on_delete: :cascade
+  add_foreign_key "projects", "organizations", on_delete: :cascade
+  add_foreign_key "projects_users", "projects", on_delete: :cascade
+  add_foreign_key "projects_users", "users", on_delete: :cascade
   add_foreign_key "recently_viewed_projects", "projects", on_delete: :cascade
   add_foreign_key "recently_viewed_projects", "users", on_delete: :cascade
-  add_foreign_key "release_files", "releases"
-  add_foreign_key "releases", "export_configs"
-  add_foreign_key "sent_emails", "organizations"
-  add_foreign_key "sent_emails", "users"
+  add_foreign_key "release_files", "releases", on_delete: :cascade
+  add_foreign_key "releases", "export_configs", on_delete: :cascade
+  add_foreign_key "sent_emails", "organizations", on_delete: :cascade
+  add_foreign_key "sent_emails", "users", on_delete: :cascade
   add_foreign_key "subscriptions", "organizations"
-  add_foreign_key "translations", "export_configs"
-  add_foreign_key "translations", "keys"
-  add_foreign_key "translations", "languages"
+  add_foreign_key "tags", "projects", on_delete: :cascade
+  add_foreign_key "translations", "export_configs", on_delete: :cascade
+  add_foreign_key "translations", "keys", on_delete: :cascade
+  add_foreign_key "translations", "languages", on_delete: :cascade
   add_foreign_key "user_licenses", "users"
-  add_foreign_key "versions", "projects"
+  add_foreign_key "validation_violations", "forbidden_words", on_delete: :cascade
+  add_foreign_key "validation_violations", "placeholders", on_delete: :cascade
+  add_foreign_key "validation_violations", "projects", on_delete: :cascade
+  add_foreign_key "validation_violations", "translations", on_delete: :cascade
+  add_foreign_key "validations", "country_codes", on_delete: :cascade
+  add_foreign_key "validations", "language_codes", on_delete: :cascade
+  add_foreign_key "validations", "organizations", on_delete: :cascade
+  add_foreign_key "validations", "projects", on_delete: :cascade
+  add_foreign_key "versions", "projects", on_delete: :cascade
+  add_foreign_key "wordpress_contents", "keys", on_delete: :nullify
+  add_foreign_key "wordpress_contents", "projects", on_delete: :cascade
+  add_foreign_key "wordpress_polylang_connections", "projects", on_delete: :cascade
 end

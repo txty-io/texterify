@@ -4,17 +4,27 @@ import * as React from "react";
 import AvatarEditor from "react-avatar-editor";
 import Dropzone from "react-dropzone";
 import * as uuid from "uuid";
-import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
+import { APIUtils } from "../api/v1/APIUtils";
+import {
+    ICreateOrganizationResponse,
+    IGetOrganizationResponse,
+    IUpdateOrganizationResponse,
+    OrganizationsAPI
+} from "../api/v1/OrganizationsAPI";
 import { AvatarEditorWrapper } from "../sites/dashboard/AvatarEditorWrapper";
 import { AvatarNoImage } from "../sites/dashboard/AvatarNoImage";
 import { AvatarWrapper } from "../sites/dashboard/AvatarWrapper";
-import { dashboardStore } from "../stores/DashboardStore";
+import { dashboardStore, IOrganization } from "../stores/DashboardStore";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 
 interface IProps {
     isEdit?: boolean;
-    onError(errors: any): void;
-    onCreated?(organizationId: string): void;
+    organizationToEdit?: IOrganization;
+    styles?: React.CSSProperties;
+    orientation?: "vertical" | "horizontal";
+    onError(): void;
+    onValidationsFailed?(): void;
+    onChanged?(organization: IOrganization, isNew: boolean): void;
 }
 interface IState {
     imageUrl: string;
@@ -37,7 +47,9 @@ class NewOrganizationForm extends React.Component<IProps, IState> {
     async componentDidMount() {
         if (this.props.isEdit) {
             const imageResponse = await OrganizationsAPI.getImage({
-                organizationId: dashboardStore.currentOrganization.id
+                organizationId: this.props.organizationToEdit
+                    ? this.props.organizationToEdit.id
+                    : dashboardStore.currentOrganization.id
             });
             if (imageResponse.image) {
                 this.setState({ imageUrl: imageResponse.image });
@@ -46,68 +58,60 @@ class NewOrganizationForm extends React.Component<IProps, IState> {
     }
 
     handleSubmit = async (values: any) => {
-        let response;
+        try {
+            let response: IUpdateOrganizationResponse | ICreateOrganizationResponse;
 
-        if (this.props.isEdit) {
-            response = await OrganizationsAPI.updateOrganization(
-                dashboardStore.currentOrganization.id,
-                values.name,
-                values.description
-            );
-        } else {
-            response = await OrganizationsAPI.createOrganization(values.name, values.description);
-        }
-
-        if (response.errors) {
-            if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
-                this.formRef.current?.setFields([
-                    {
-                        name: "name",
-                        errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
-                    }
-                ]);
+            if (this.props.isEdit) {
+                response = await OrganizationsAPI.updateOrganization(
+                    this.props.organizationToEdit
+                        ? this.props.organizationToEdit.id
+                        : dashboardStore.currentOrganization.id,
+                    values.name,
+                    values.description
+                );
             } else {
-                ErrorUtils.showErrors(response.errors);
+                response = await OrganizationsAPI.createOrganization(values.name, values.description);
             }
 
-            return;
-        }
+            if (response.errors) {
+                if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
+                    this.formRef.current?.setFields([
+                        {
+                            name: "name",
+                            errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
+                        }
+                    ]);
+                } else {
+                    ErrorUtils.showErrors(response.errors);
+                }
 
-        const imageBlob = await this.getImageBlob();
-        const formData = await this.createFormData(imageBlob);
-        if (this.state.imageUrl) {
-            await OrganizationsAPI.uploadImage({
-                organizationId: response.data.id,
-                formData: formData
-            });
-        } else {
-            await OrganizationsAPI.deleteImage({ organizationId: response.data.id });
-        }
+                if (this.props.onError) {
+                    this.props.onError();
+                }
 
-        dashboardStore.currentOrganization = response.data;
-        this.props.onCreated(response.data.id);
+                return;
+            }
+
+            const imageBlob = await this.getImageBlob();
+            const formData = await this.createFormData(imageBlob);
+            if (this.state.imageUrl) {
+                await OrganizationsAPI.uploadImage({
+                    organizationId: response.data.id,
+                    formData: formData
+                });
+            } else {
+                await OrganizationsAPI.deleteImage({ organizationId: response.data.id });
+            }
+
+            dashboardStore.currentOrganization = response.data;
+            this.props.onChanged(response.data, !this.props.isEdit);
+        } catch (error) {
+            console.error(error);
+            if (this.props.onError) {
+                this.props.onError();
+            }
+        }
     };
-
-    /**
-     * Converts a data URI to a blob.
-     * See https://github.com/graingert/datauritoblob/blob/master/dataURItoBlob.js.
-     */
-    dataURItoBlob(dataURI: any) {
-        // convert base64 to raw binary data held in a string
-        // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-        const byteString = atob(dataURI.split(",")[1]);
-        // separate out the mime component
-        const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-        // write the bytes of the string to an ArrayBuffer
-        const ab = new ArrayBuffer(byteString.length);
-        const dw = new DataView(ab);
-        for (let i = 0; i < byteString.length; i++) {
-            dw.setUint8(i, byteString.charCodeAt(i));
-        }
-        // write the ArrayBuffer to a blob, and you're done
-
-        return new Blob([ab], { type: mimeString });
-    }
 
     createFormData = async (blob: any) => {
         const data = new FormData();
@@ -130,7 +134,7 @@ class NewOrganizationForm extends React.Component<IProps, IState> {
             } else {
                 // Safari goes here.
                 const url = canvas.toDataURL();
-                blob = this.dataURItoBlob(url);
+                blob = APIUtils.dataURItoBlob(url);
             }
 
             return blob;
@@ -156,100 +160,129 @@ class NewOrganizationForm extends React.Component<IProps, IState> {
             <Form
                 id="newOrganizationForm"
                 onFinish={this.handleSubmit}
-                initialValues={{
-                    name: this.props.isEdit ? dashboardStore.currentOrganization.attributes.name : undefined
+                onFinishFailed={() => {
+                    if (this.props.onValidationsFailed) {
+                        this.props.onValidationsFailed();
+                    }
                 }}
-                style={{ maxWidth: "100%" }}
+                initialValues={{
+                    name: this.props.isEdit
+                        ? this.props.organizationToEdit
+                            ? this.props.organizationToEdit.attributes.name
+                            : dashboardStore.currentOrganization.attributes.name
+                        : undefined
+                }}
+                style={{
+                    maxWidth: "100%",
+                    display: "flex",
+                    flexDirection: this.props.orientation === "vertical" ? "column" : "row",
+                    ...this.props.styles
+                }}
                 ref={this.formRef}
             >
-                <h3>Organization image</h3>
-                <Form.Item>
-                    <div style={{ display: "flex", marginTop: 4 }}>
-                        <Dropzone onDrop={this.handleDrop} accept="image/*" ref={this.dropzone}>
-                            {({ getRootProps, getInputProps }) => {
-                                return (
-                                    <AvatarWrapper
-                                        {...getRootProps({
-                                            onClick: (event) => {
-                                                event.stopPropagation();
-                                                this.isMovingImage = false;
-                                            }
-                                        })}
+                <div style={{ flexGrow: 2, marginRight: this.props.orientation === "vertical" ? 0 : 40 }}>
+                    <h3>Name *</h3>
+                    <Form.Item
+                        name="name"
+                        rules={[
+                            { required: true, whitespace: true, message: "Please enter the name of the organization." }
+                        ]}
+                    >
+                        <Input placeholder="Name" autoFocus={!this.props.isEdit} />
+                    </Form.Item>
+                </div>
+
+                <div style={{ flexGrow: 1 }}>
+                    <h3>Image</h3>
+                    <Form.Item>
+                        <div style={{ display: "flex" }}>
+                            <Dropzone onDrop={this.handleDrop} accept="image/*" ref={this.dropzone}>
+                                {({ getRootProps, getInputProps }) => {
+                                    return (
+                                        <AvatarWrapper
+                                            {...getRootProps({
+                                                onClick: (event) => {
+                                                    event.stopPropagation();
+                                                    this.isMovingImage = false;
+                                                }
+                                            })}
+                                        >
+                                            {!this.state.imageUrl && <AvatarNoImage />}
+                                            <AvatarEditorWrapper>
+                                                <AvatarEditor
+                                                    ref={(ref) => {
+                                                        this.avatarEditor = ref;
+                                                    }}
+                                                    image={this.state.imageUrl}
+                                                    width={160}
+                                                    height={160}
+                                                    border={0}
+                                                    position={this.state.imagePosition}
+                                                    scale={this.state.imageScale / 100}
+                                                    onPositionChange={(position) => {
+                                                        if (!isNaN(position.x) && !isNaN(position.y)) {
+                                                            this.setState({ imagePosition: position });
+                                                        }
+                                                    }}
+                                                    onMouseMove={() => {
+                                                        this.isMovingImage = true;
+                                                    }}
+                                                    onMouseUp={(e) => {
+                                                        if (e) {
+                                                            e.preventDefault();
+                                                        }
+
+                                                        if (!this.isMovingImage && this.dropzone.current) {
+                                                            this.dropzone.current.open();
+                                                        }
+                                                    }}
+                                                />
+                                            </AvatarEditorWrapper>
+                                            <input {...getInputProps()} />
+                                        </AvatarWrapper>
+                                    );
+                                }}
+                            </Dropzone>
+                            <div
+                                style={{
+                                    marginLeft: 24,
+                                    flexGrow: 1,
+                                    display: "flex",
+                                    flexDirection: "column"
+                                }}
+                            >
+                                <div style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                                    <span style={{ fontWeight: "bold" }}>Resize</span>
+                                    <Slider
+                                        value={this.state.imageScale}
+                                        onChange={(value: number) => {
+                                            this.setState({ imageScale: value });
+                                        }}
+                                    />
+                                </div>
+                                <div style={{ display: "flex", flexDirection: "column" }}>
+                                    <Button
+                                        onClick={this.centerImage}
+                                        disabled={
+                                            this.state.imagePosition.x === 0.5 && this.state.imagePosition.y === 0.5
+                                        }
+                                        style={{ marginBottom: 16 }}
                                     >
-                                        {!this.state.imageUrl && <AvatarNoImage />}
-                                        <AvatarEditorWrapper>
-                                            <AvatarEditor
-                                                ref={(ref) => {
-                                                    this.avatarEditor = ref;
-                                                }}
-                                                image={this.state.imageUrl}
-                                                width={160}
-                                                height={160}
-                                                border={0}
-                                                position={this.state.imagePosition}
-                                                scale={this.state.imageScale / 100}
-                                                onPositionChange={(position) => {
-                                                    if (!isNaN(position.x) && !isNaN(position.y)) {
-                                                        this.setState({ imagePosition: position });
-                                                    }
-                                                }}
-                                                onMouseMove={() => {
-                                                    this.isMovingImage = true;
-                                                }}
-                                                onMouseUp={(e) => {
-                                                    if (e) {
-                                                        e.preventDefault();
-                                                    }
-
-                                                    if (!this.isMovingImage && this.dropzone.current) {
-                                                        this.dropzone.current.open();
-                                                    }
-                                                }}
-                                            />
-                                        </AvatarEditorWrapper>
-                                        <input {...getInputProps()} />
-                                    </AvatarWrapper>
-                                );
-                            }}
-                        </Dropzone>
-                        <div style={{ marginLeft: 24, flexGrow: 1, display: "flex", flexDirection: "column" }}>
-                            <div style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
-                                <span style={{ fontWeight: "bold" }}>Resize</span>
-                                <Slider
-                                    value={this.state.imageScale}
-                                    onChange={(value: number) => {
-                                        this.setState({ imageScale: value });
-                                    }}
-                                />
+                                        Center image
+                                    </Button>
+                                    <Button
+                                        onClick={this.deleteImage}
+                                        disabled={!this.state.imageUrl}
+                                        danger
+                                        style={{ marginBottom: 0 }}
+                                    >
+                                        Delete image
+                                    </Button>
+                                </div>
                             </div>
-                            <Button
-                                onClick={this.centerImage}
-                                disabled={this.state.imagePosition.x === 0.5 && this.state.imagePosition.y === 0.5}
-                                style={{ width: "100%", marginBottom: 16 }}
-                            >
-                                Center image
-                            </Button>
-                            <Button
-                                onClick={this.deleteImage}
-                                disabled={!this.state.imageUrl}
-                                danger
-                                style={{ marginBottom: 0, width: "100%" }}
-                            >
-                                Delete image
-                            </Button>
                         </div>
-                    </div>
-                </Form.Item>
-
-                <h3>Name *</h3>
-                <Form.Item
-                    name="name"
-                    rules={[
-                        { required: true, whitespace: true, message: "Please enter the name of the organization." }
-                    ]}
-                >
-                    <Input placeholder="Name" autoFocus={!this.props.isEdit} />
-                </Form.Item>
+                    </Form.Item>
+                </div>
             </Form>
         );
     }

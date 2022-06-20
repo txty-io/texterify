@@ -2,12 +2,13 @@
   "extends": [
     "prettier",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:cypress/recommended"
   ],
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "plugins": ["prettier"],
+  "plugins": ["prettier", "cypress", "mocha"],
   "ignorePatterns": ["react-app-env.d.ts"],
   "rules": {
     "@typescript-eslint/array-type": ["error", { "type": "array" }],
@@ -62,6 +63,8 @@
     "one-var": ["error", "never"],
     "radix": "error",
     "spaced-comment": ["error", "always", { "markers": ["/"] }],
-    "use-isnan": "error"
+    "use-isnan": "error",
+    "cypress/no-unnecessary-waiting": "off",
+    "mocha/no-exclusive-tests": "error"
   }
 }

@@ -32,9 +32,22 @@ export interface IGetExportConfigsResponse {
     };
 }
 
+export interface IGetExportConfigsOptions {
+    search?: string;
+    page?: number;
+    perPage?: number;
+}
+
 const ExportConfigsAPI = {
-    getExportConfigs: async (options: { projectId: string }): Promise<IGetExportConfigsResponse> => {
-        return API.getRequest(`projects/${options.projectId}/export_configs`, true)
+    getExportConfigs: async (options: {
+        projectId: string;
+        options?: IGetExportConfigsOptions;
+    }): Promise<IGetExportConfigsResponse> => {
+        return API.getRequest(`projects/${options.projectId}/export_configs`, true, {
+            search: options.options && options.options.search,
+            page: options.options && options.options.page,
+            per_page: options.options && options.options.perPage
+        })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },
@@ -44,6 +57,7 @@ const ExportConfigsAPI = {
         fileFormat: string;
         name: string;
         filePath: string;
+        splitOn: string;
         defaultLanguageFilePath: string;
     }) => {
         return API.postRequest(`projects/${options.projectId}/export_configs`, true, {
@@ -51,7 +65,8 @@ const ExportConfigsAPI = {
             language_id: options.projectId,
             file_format: options.fileFormat,
             file_path: options.filePath,
-            default_language_file_path: options.defaultLanguageFilePath
+            default_language_file_path: options.defaultLanguageFilePath,
+            split_on: options.splitOn
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
@@ -63,6 +78,7 @@ const ExportConfigsAPI = {
         fileFormat: string;
         name: string;
         filePath: string;
+        splitOn: string;
         defaultLanguageFilePath: string;
     }) => {
         return API.putRequest(`projects/${options.projectId}/export_configs/${options.exportConfigId}`, true, {
@@ -70,7 +86,8 @@ const ExportConfigsAPI = {
             language_id: options.projectId,
             file_format: options.fileFormat,
             file_path: options.filePath,
-            default_language_file_path: options.defaultLanguageFilePath
+            default_language_file_path: options.defaultLanguageFilePath,
+            split_on: options.splitOn
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
@@ -78,6 +95,14 @@ const ExportConfigsAPI = {
 
     deleteExportConfig: async (options: { projectId: string; exportConfigId: string }) => {
         return API.deleteRequest(`projects/${options.projectId}/export_configs/${options.exportConfigId}`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    deleteExportConfigs: async (options: { projectId: string; exportConfigIds: string[] }) => {
+        return API.deleteRequest(`projects/${options.projectId}/export_configs`, true, {
+            export_configs: options.exportConfigIds
+        })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     }

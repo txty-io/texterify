@@ -1,12 +1,12 @@
-const FileFormatOptions = [
+const FileFormatOptions: { value: string; text: string }[] = [
     {
         value: "json",
         text: "JSON Flat"
     },
-    // {
-    //     value: "json-nested",
-    //     text: "JSON Nested"
-    // },
+    {
+        value: "json-poeditor",
+        text: "JSON POEditor"
+    },
     {
         value: "json-formatjs",
         text: "JSON Format.js"
@@ -28,8 +28,24 @@ const FileFormatOptions = [
         text: "Ruby on Rails"
     },
     {
-        value: "go-i18n",
-        text: "TOML (go-i18n)"
+        value: "toml",
+        text: "TOML"
+    },
+    {
+        value: "properties",
+        text: "Java .properties"
+    },
+    {
+        value: "po",
+        text: "PO"
+    },
+    {
+        value: "arb",
+        text: "Flutter .arb"
+    },
+    {
+        value: "xliff",
+        text: "XLIFF .xlf, .xliff"
     }
 ].sort((a, b) => {
     return a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 1;

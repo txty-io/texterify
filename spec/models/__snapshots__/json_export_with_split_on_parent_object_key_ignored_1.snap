@@ -1,0 +1,9 @@
+{
+  "a": "a value",
+  "c": {
+    "a": {
+      "a": "overwrites c and c.a value"
+    },
+    "b": "c.b value"
+  }
+}

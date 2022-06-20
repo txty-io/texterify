@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
-import { IGetKeysOptions, KeysAPI } from "../../api/v1/KeysAPI";
+import { IGetKeyResponse, IGetKeysOptions, IPlaceholder, KeysAPI } from "../../api/v1/KeysAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import {
     IGetMachineTranslationsSourceLanguages,
@@ -17,20 +17,22 @@ import {
     MachineTranslationsAPI
 } from "../../api/v1/MachineTranslationsAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
-import { MenuLink, MenuList } from "../../routing/DashboardRouter";
+import { MenuLinkWrapper, MenuList } from "../../routing/DashboardRouter";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { DarkModeToggle } from "../../ui/DarkModeToggle";
+import { EditorSidebarInfo } from "../../ui/EditorSidebarInfo";
 import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { ISearchSettings, KeySearchSettings, parseKeySearchSettingsFromURL } from "../../ui/KeySearchSettings";
 import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActiveFilters";
 import { Styles } from "../../ui/Styles";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
-import { Utils } from "../../ui/Utils";
+import { DATE_TIME_FORMAT, Utils } from "../../ui/Utils";
 import { TranslationCard } from "./editor/TranslationCard";
+import * as moment from "moment";
 
 const Key = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
@@ -63,7 +65,7 @@ const Key = styled.div<{ isSelected: boolean }>`
 type IProps = RouteComponentProps<{ projectId: string; keyId?: string }>;
 interface IState {
     keysResponse: any;
-    keyResponse: any;
+    keyResponse: IGetKeyResponse;
     keysLoading: boolean;
     languagesResponse: any;
     exportConfigsResponse: any;
@@ -124,6 +126,7 @@ class EditorSite extends React.Component<IProps, IState> {
         const getProjectResponse = await ProjectsAPI.getProject(this.props.match.params.projectId);
         if (getProjectResponse.errors) {
             this.props.history.push(Routes.DASHBOARD.PROJECTS);
+            return;
         } else {
             dashboardStore.currentProject = getProjectResponse.data;
             dashboardStore.currentProjectIncluded = getProjectResponse.included;
@@ -131,7 +134,7 @@ class EditorSite extends React.Component<IProps, IState> {
 
         await this.fetchKeys();
 
-        const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId);
+        const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, { showAll: true });
         const exportConfigsResponse = await ExportConfigsAPI.getExportConfigs({
             projectId: this.props.match.params.projectId
         });
@@ -141,7 +144,7 @@ class EditorSite extends React.Component<IProps, IState> {
             exportConfigsResponse: exportConfigsResponse
         });
 
-        if (dashboardStore.currentProject.attributes.machine_translation_active) {
+        if (dashboardStore.currentProject?.attributes.machine_translation_active) {
             const supportedSourceLanguages = await MachineTranslationsAPI.getSourceLanguages();
             const supportedTargetLanguages = await MachineTranslationsAPI.getTargetLanguages();
 
@@ -191,7 +194,7 @@ class EditorSite extends React.Component<IProps, IState> {
     loadAndSetKey = async () => {
         const keyResponse = await KeysAPI.getKey(this.props.match.params.projectId, this.props.match.params.keyId);
 
-        if (keyResponse.data.id === this.props.match.params.keyId) {
+        if (keyResponse && keyResponse.data && keyResponse.data.id === this.props.match.params.keyId) {
             this.setState({
                 keyResponse: keyResponse
             });
@@ -215,7 +218,7 @@ class EditorSite extends React.Component<IProps, IState> {
         let defaultLanguage;
         let defaultLanguageTranslationContent;
         let languagesWithoutDefault = [];
-        if (this.state.languagesResponse) {
+        if (this.state.languagesResponse?.data) {
             defaultLanguage = this.state.languagesResponse.data.find((language) => {
                 return language.attributes.is_default;
             });
@@ -263,7 +266,7 @@ class EditorSite extends React.Component<IProps, IState> {
                     // main menu bar is always in dark mode.
                     className="dark-theme"
                 >
-                    <div style={{ flexGrow: 1 }}>
+                    <div style={{ flexGrow: 1, whiteSpace: "nowrap" }}>
                         <Button
                             type="primary"
                             style={{
@@ -295,25 +298,12 @@ class EditorSite extends React.Component<IProps, IState> {
                             }}
                         >
                             <MenuList>
-                                <MenuLink
-                                    to={Routes.DASHBOARD.INSTANCE.ROOT}
-                                    style={{
-                                        background: this.props.history.location.pathname.startsWith(
-                                            Routes.DASHBOARD.INSTANCE.ROOT
-                                        )
-                                            ? "var(--primary-light-color)"
-                                            : undefined,
-                                        color: this.props.history.location.pathname.startsWith(
-                                            Routes.DASHBOARD.INSTANCE.ROOT
-                                        )
-                                            ? "var(--blue-color)"
-                                            : undefined
-                                    }}
-                                    data-id="main-menu-instance-settings"
-                                >
-                                    <HddOutlined style={{ marginRight: 8 }} />
-                                    Admin
-                                </MenuLink>
+                                <MenuLinkWrapper data-id="main-menu-instance-settings">
+                                    <Link to={Routes.DASHBOARD.INSTANCE.ROOT}>
+                                        <HddOutlined style={{ marginRight: 8 }} />
+                                        Admin
+                                    </Link>
+                                </MenuLinkWrapper>
                             </MenuList>
                         </ul>
                     )}
@@ -330,7 +320,8 @@ class EditorSite extends React.Component<IProps, IState> {
                                 borderRight: "1px solid var(--border-color)",
                                 overflow: "auto",
                                 width: "25%",
-                                flexShrink: 0
+                                flexShrink: 0,
+                                minWidth: 240
                             }}
                         >
                             <div style={{ margin: 24, width: "auto" }}>
@@ -338,7 +329,6 @@ class EditorSite extends React.Component<IProps, IState> {
                                     languagesResponse={this.state.languagesResponse}
                                     exportConfigsResponse={this.state.exportConfigsResponse}
                                 />
-                                {/* <Search placeholder="Search keys and translations" onChange={this.onSearch} /> */}
                                 <Input.Group
                                     compact
                                     style={{
@@ -385,8 +375,8 @@ class EditorSite extends React.Component<IProps, IState> {
                                 }}
                             >
                                 {!this.state.keysLoading &&
-                                    this.state.keysResponse &&
-                                    this.state.keysResponse.data.map((key, index) => {
+                                    this.state.languagesResponse &&
+                                    this.state.keysResponse?.data?.map((key, index) => {
                                         let keyContentPreview: JSX.Element;
 
                                         if (defaultLanguage) {
@@ -417,9 +407,57 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     this.state.keysResponse.included
                                                 );
 
-                                                const content = key.attributes.html_enabled
+                                                let content = key.attributes.html_enabled
                                                     ? Utils.getHTMLContentPreview(translation.attributes.content)
                                                     : translation.attributes.content;
+
+                                                if (!key.attributes.html_enabled && this.state.keysResponse) {
+                                                    let converted = [content];
+
+                                                    this.state.keysResponse.included
+                                                        .filter((included) => {
+                                                            return included.type === "placeholder";
+                                                        })
+                                                        .forEach((included) => {
+                                                            converted = converted.reduce((acc, element) => {
+                                                                if (typeof element === "string") {
+                                                                    const splitted = element.split(
+                                                                        included.attributes.name
+                                                                    );
+                                                                    const joined = splitted.reduce(
+                                                                        (arr, curr, currIndex) => {
+                                                                            if (currIndex > 0) {
+                                                                                return arr.concat([
+                                                                                    <Tag
+                                                                                        color="volcano"
+                                                                                        style={{
+                                                                                            margin: 0,
+                                                                                            padding: "0 0px",
+                                                                                            border: 0,
+                                                                                            borderRadius: 1
+                                                                                        }}
+                                                                                        key={`${included.attributes.name}-${currIndex}`}
+                                                                                    >
+                                                                                        {included.attributes.name}
+                                                                                    </Tag>,
+                                                                                    curr
+                                                                                ]);
+                                                                            } else {
+                                                                                return arr.concat([curr]);
+                                                                            }
+                                                                        },
+                                                                        []
+                                                                    );
+
+                                                                    return acc.concat(joined);
+                                                                } else {
+                                                                    return acc.concat([element]);
+                                                                }
+                                                            }, []);
+                                                        });
+
+                                                    content = converted;
+                                                }
 
                                                 keyContentPreview = (
                                                     <>
@@ -441,7 +479,13 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 );
                                             } else {
                                                 keyContentPreview = (
-                                                    <div style={{ color: "var(--color-passive)" }}>
+                                                    <div
+                                                        style={{
+                                                            color: "var(--color-passive)",
+                                                            overflow: "hidden",
+                                                            textOverflow: "ellipsis"
+                                                        }}
+                                                    >
                                                         {countryCode && (
                                                             <span style={{ marginRight: 8 }}>
                                                                 <FlagIcon
@@ -456,7 +500,13 @@ class EditorSite extends React.Component<IProps, IState> {
                                         } else {
                                             if (this.state.languagesResponse) {
                                                 keyContentPreview = (
-                                                    <div style={{ color: "var(--color-passive)" }}>
+                                                    <div
+                                                        style={{
+                                                            color: "var(--color-passive)",
+                                                            overflow: "hidden",
+                                                            textOverflow: "ellipsis"
+                                                        }}
+                                                    >
                                                         Set a default language for preview.
                                                     </div>
                                                 );
@@ -518,8 +568,21 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     </div>
                                                     <div style={{ marginLeft: 8, flexShrink: 0 }}>
                                                         {key.attributes.html_enabled && (
-                                                            <Tag color="magenta" className="editor-key-html">
+                                                            <Tag
+                                                                color="magenta"
+                                                                className="editor-key-html"
+                                                                style={{ margin: 0, marginRight: 4 }}
+                                                            >
                                                                 HTML
+                                                            </Tag>
+                                                        )}
+                                                        {key.relationships.wordpress_contents.data.length > 0 && (
+                                                            <Tag
+                                                                color="magenta"
+                                                                className="editor-key-html"
+                                                                style={{ margin: 0 }}
+                                                            >
+                                                                WordPress
                                                             </Tag>
                                                         )}
                                                     </div>
@@ -530,7 +593,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                 {this.state.keysLoading && (
                                     <LoadingOutlined style={{ fontSize: 24, margin: "auto" }} spin />
                                 )}
-                                {!this.state.keysLoading && this.state.keysResponse.data.length === 0 && (
+                                {!this.state.keysLoading && this.state.keysResponse?.data?.length === 0 && (
                                     <div
                                         style={{
                                             margin: "auto",
@@ -543,16 +606,20 @@ class EditorSite extends React.Component<IProps, IState> {
                                 )}
                             </div>
                             <Pagination
+                                size="small"
                                 current={this.state.page}
-                                total={(this.state.keysResponse && this.state.keysResponse.meta.total) || 0}
-                                onChange={async (page: number, _perPage: number) => {
-                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                    this.setState({ page: page }, this.fetchKeys);
-                                }}
-                                onShowSizeChange={async (_current: number, size: number) => {
-                                    dashboardStore.keysPerPageEditor = size;
-                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                    this.setState({ page: 1 }, this.fetchKeys);
+                                total={this.state.keysResponse?.meta?.total || 0}
+                                onChange={async (page: number, perPage: number) => {
+                                    const isPageSizeChange = dashboardStore.keysPerPageEditor !== perPage;
+
+                                    if (isPageSizeChange) {
+                                        dashboardStore.keysPerPageEditor = perPage;
+                                        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                        this.setState({ page: 1 }, this.fetchKeys);
+                                    } else {
+                                        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                        this.setState({ page: page }, this.fetchKeys);
+                                    }
                                 }}
                                 style={{ alignSelf: "center", margin: 16 }}
                                 pageSize={dashboardStore.keysPerPageEditor}
@@ -571,33 +638,35 @@ class EditorSite extends React.Component<IProps, IState> {
                             {this.keyLoaded() && this.state.languagesResponse && (
                                 <div className="fade-in">
                                     <h2 style={{ fontSize: 16, wordBreak: "break-word" }}>
-                                        {this.state.keyResponse && this.state.keyResponse.data.attributes.name}
+                                        {this.state.keyResponse?.data && this.state.keyResponse.data.attributes.name}
                                     </h2>
                                     <p style={{ wordBreak: "break-word" }}>
-                                        {this.state.keyResponse && this.state.keyResponse.data.attributes.description}
+                                        {this.state.keyResponse?.data &&
+                                            this.state.keyResponse.data.attributes.description}
                                     </p>
 
-                                    {this.state.languagesResponse && this.state.languagesResponse.data.length === 0 && (
-                                        <Alert
-                                            type="info"
-                                            showIcon
-                                            message="No language"
-                                            description={
-                                                <p>
-                                                    <Link
-                                                        to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
-                                                            ":projectId",
-                                                            this.props.match.params.projectId
-                                                        )}
-                                                    >
-                                                        Create a language
-                                                    </Link>{" "}
-                                                    before you can translate your content.
-                                                </p>
-                                            }
-                                            style={{ marginBottom: 24 }}
-                                        />
-                                    )}
+                                    {this.state.languagesResponse?.data &&
+                                        this.state.languagesResponse.data.length === 0 && (
+                                            <Alert
+                                                type="info"
+                                                showIcon
+                                                message="No language"
+                                                description={
+                                                    <p>
+                                                        <Link
+                                                            to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
+                                                                ":projectId",
+                                                                this.props.match.params.projectId
+                                                            )}
+                                                        >
+                                                            Create a language
+                                                        </Link>{" "}
+                                                        before you can translate your content.
+                                                    </p>
+                                                }
+                                                style={{ marginBottom: 24 }}
+                                            />
+                                        )}
 
                                     {defaultLanguage ? (
                                         <TranslationCard
@@ -633,7 +702,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 </>
                                             }
                                             type="info"
-                                            style={{ marginBottom: 24 }}
+                                            style={{
+                                                marginBottom: 24
+                                            }}
                                         />
                                     )}
 
@@ -642,7 +713,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                             projectId={this.props.match.params.projectId}
                                             languagesResponse={this.state.languagesResponse}
                                             languages={languagesWithoutDefault}
-                                            defaultSelected={languagesWithoutDefault[0].id}
+                                            defaultSelected={
+                                                this.state.selectedLanguageIdTo || languagesWithoutDefault[0].id
+                                            }
                                             keyResponse={this.state.keyResponse}
                                             defaultLanguage={defaultLanguage}
                                             defaultLanguageTranslationContent={defaultLanguageTranslationContent}
@@ -652,6 +725,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 if (this.keyHistoryRef) {
                                                     this.keyHistoryRef.reload();
                                                 }
+                                            }}
+                                            onSelectedLanguageIdChange={(languageId) => {
+                                                this.setState({ selectedLanguageIdTo: languageId });
                                             }}
                                         />
                                     ) : (
@@ -678,7 +754,14 @@ class EditorSite extends React.Component<IProps, IState> {
                                 </div>
                             )}
                             {!this.keyLoaded() && !this.props.match.params.keyId && (
-                                <p style={{ color: Styles.COLOR_TEXT_DISABLED, fontStyle: "italic", margin: "auto" }}>
+                                <p
+                                    style={{
+                                        color: Styles.COLOR_TEXT_DISABLED,
+                                        fontStyle: "italic",
+                                        margin: "auto",
+                                        textAlign: "center"
+                                    }}
+                                >
                                     Select a key from the left to start editing.
                                 </p>
                             )}
@@ -695,7 +778,33 @@ class EditorSite extends React.Component<IProps, IState> {
                                     flexShrink: 0
                                 }}
                             >
-                                <Tabs defaultActiveKey="history" type="card" style={{ overflow: "auto" }}>
+                                <Tabs defaultActiveKey="info" type="card" style={{ overflow: "auto" }}>
+                                    <Tabs.TabPane tab="Info" key="info" style={{ padding: "0 16px", overflow: "auto" }}>
+                                        {/* <KeyComments /> */}
+                                        <h3>General</h3>
+                                        <EditorSidebarInfo
+                                            name="Created at"
+                                            value={moment(this.state.keyResponse.data.attributes.created_at).format(
+                                                DATE_TIME_FORMAT
+                                            )}
+                                        />
+
+                                        <h3 style={{ marginTop: 24 }}>Placeholders</h3>
+                                        <div style={{ marginBottom: 8 }}>
+                                            Placeholders used in the default language.
+                                        </div>
+                                        {this.state.keyResponse.included
+                                            .filter((included) => {
+                                                return included.type === "placeholder";
+                                            })
+                                            .map((included: IPlaceholder, index) => {
+                                                return (
+                                                    <Tag color="volcano" key={index}>
+                                                        {included.attributes.name}
+                                                    </Tag>
+                                                );
+                                            }) || "No placeholders found."}
+                                    </Tabs.TabPane>
                                     {/* <Tabs.TabPane tab="Comments" key="chat" style={{ padding: "0 16px", overflow: "auto" }} >
                                     <KeyComments />
                                     </Tabs.TabPane> */}
