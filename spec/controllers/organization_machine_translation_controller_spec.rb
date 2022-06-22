@@ -1,5 +1,4 @@
 require 'rails_helper'
 
-RSpec.describe OrganizationMachineTranslationController, type: :controller do
-
+RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :controller do
 end
