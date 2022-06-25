@@ -68,6 +68,13 @@ module ImportHelper
       else
         raise 'NOTHING_IMPORTED'
       end
+    elsif file_format == 'yaml'
+      result = yaml?(file_content)
+      if result[:matches]
+        return flatten_nested_keys(result[:content])
+      else
+        raise 'NOTHING_IMPORTED'
+      end
     end
 
     raise 'INVALID_FILE_FORMAT'
@@ -146,6 +153,16 @@ module ImportHelper
     trans_units.map { |trans_unit| parsed[trans_unit['id']] = trans_unit.css(import_target ? 'target' : 'source').text }
 
     parsed.count > 0 ? { matches: true, content: parsed } : { matches: false }
+  rescue StandardError
+    { matches: false, invalid: true }
+  end
+
+  def yaml?(content)
+    parsed = YAML.safe_load(content)
+
+    parsed.count > 0 ? { matches: true, content: parsed } : { matches: false }
+  rescue Psych::SyntaxError
+    { matches: false, invalid: true }
   rescue StandardError
     { matches: false, invalid: true }
   end

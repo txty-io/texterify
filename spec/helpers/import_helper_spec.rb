@@ -36,4 +36,26 @@ RSpec.describe ImportHelper, type: :helper do
       expect(content).to eq({ 'source' => '', 'target' => 'Target Content' })
     end
   end
+
+  describe 'parse YAML' do
+    it 'parses empty YAML file and raises nothing imported error' do
+      expect { helper.parse_file_content('', '', 'yaml') }.to raise_error('NOTHING_IMPORTED')
+    end
+
+    it 'parses YAML file' do
+      file = File.read('spec/fixtures/yaml/devise_example.yml')
+      content = helper.parse_file_content('', file, 'yaml')
+      expect(content).to eq(
+        {
+          'en.devise.confirmations.confirmed' => 'Your email address has been successfully confirmed.',
+          'en.devise.failure.already_authenticated' => 'You are already signed in.',
+          'en.devise.mailer.confirmation_instructions.subject' => 'Confirmation instructions',
+          'en.devise.mailer.reset_password_instructions.subject' => 'Reset password instructions',
+          'en.errors.messages.already_confirmed' => 'was already confirmed, please try signing in',
+          'en.errors.messages.confirmation_period_expired' =>
+            'needs to be confirmed within <period>, please request a new one'
+        }
+      )
+    end
+  end
 end

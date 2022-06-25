@@ -11,6 +11,7 @@ import GoLogo from "images/go_logo_blue.svg";
 import JavaLogo from "images/java_logo.svg";
 import JSONLogo from "images/json_logo.svg";
 import TOMLLogo from "images/toml_logo.svg";
+import RailsLogo from "images/rails_logo.svg";
 import { observer } from "mobx-react";
 import * as React from "react";
 import Dropzone from "react-dropzone";
@@ -29,8 +30,6 @@ import { HoverCard } from "./HoverCard";
 import { Loading } from "./Loading";
 import { LoadingOverlay } from "./LoadingOverlay";
 import { Styles } from "./Styles";
-
-const ACCEPTED_FILE_FORMATS = [".json", ".strings", ".toml", ".properties", ".po", ".arb", ".xliff", ".xlf"];
 
 const SUPPORTED_FORMATS: {
     image?: string;
@@ -246,15 +245,29 @@ msgstr "Awesome app"
     </file>
 </xliff>`}</pre>
         )
+    },
+    {
+        image: RailsLogo,
+        name: "Rails",
+        formats: [".yml", ".yaml"],
+        id: "yaml"
+    },
+    {
+        name: "YAML",
+        formats: [".yml", ".yaml"],
+        id: "yaml"
     }
-    // {
-    //     image: RailsLogo,
-    //     name: "Rails",
-    //     formats: [".yml", ".yaml"],
-    //     id: "rails",
-    //     disabled: true
-    // }
 ];
+
+const ACCEPTED_FILE_FORMATS = [];
+
+SUPPORTED_FORMATS.forEach((supportedFormat) => {
+    supportedFormat.formats.forEach((format) => {
+        if (!ACCEPTED_FILE_FORMATS.includes(format)) {
+            ACCEPTED_FILE_FORMATS.push(format);
+        }
+    });
+});
 
 export const TranslationFileImporter = observer(
     (props: { style?: React.CSSProperties; onCreateLanguageClick?(): void }) => {

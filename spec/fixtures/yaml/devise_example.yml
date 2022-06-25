@@ -1,0 +1,15 @@
+en:
+  devise:
+    confirmations:
+      confirmed: "Your email address has been successfully confirmed."
+    failure:
+      already_authenticated: "You are already signed in."
+    mailer:
+      confirmation_instructions:
+        subject: "Confirmation instructions"
+      reset_password_instructions:
+        subject: "Reset password instructions"
+  errors:
+    messages:
+      already_confirmed: "was already confirmed, please try signing in"
+      confirmation_period_expired: "needs to be confirmed within %{period}, please request a new one"
