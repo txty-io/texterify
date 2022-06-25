@@ -2471,10 +2471,10 @@ boolbase@^1.0.0, boolbase@~1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
-boring-avatars@^1.5.5:
-  version "1.5.5"
-  resolved "https://registry.yarnpkg.com/boring-avatars/-/boring-avatars-1.5.5.tgz#ea0b0f0f40299283586c31070ead7285956c0869"
-  integrity sha512-sIvumj2yscTQwcAdp/ANi4i97OKq5yPgXY6MfdHW4b6k6iljn9gFZa6TXgWyBnKXMPytx5e04mxrv7OCZKX9Wg==
+boring-avatars@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/boring-avatars/-/boring-avatars-1.7.0.tgz#70ac7146bbf37d8e69a35544b24f1d75558f868a"
+  integrity sha512-ZNHd8J7C/V0IjQMGQowLJ5rScEFU23WxePigH6rqKcT2Esf0qhYvYxw8s9i3srmlfCnCV00ddBjaoGey1eNOfA==
 
 brace-expansion@^1.1.7:
   version "1.1.11"

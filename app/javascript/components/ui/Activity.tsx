@@ -67,12 +67,8 @@ class Activity extends React.Component<IProps> {
         const userElement = (
             <div style={{ fontSize: 12, display: "flex", marginTop: 8 }}>
                 <div style={{ display: "flex", alignItems: "center", lineHeight: 0 }}>
-                    <div style={{ width: 16, marginRight: 8 }}>
-                        {user ? (
-                            <UserAvatar user={user.attributes} style={{ width: 16, height: 16, fontSize: 8 }} />
-                        ) : (
-                            <UserOutlined />
-                        )}
+                    <div style={{ marginRight: 8 }}>
+                        {user ? <UserAvatar user={user.attributes} /> : <UserOutlined />}
                     </div>
                     {user ? (
                         user.attributes.username
