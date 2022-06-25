@@ -89,7 +89,7 @@ class Organization < ApplicationRecord
 
   # Returns true if the organization has a custom DeepL account set.
   def uses_custom_deepl_account?
-    self.deepl_api_token.present?
+    self.deepl_api_token.present? && self.deepl_api_token_type.present?
   end
 
   # Cancels the current active trial by setting the end date to nil.
