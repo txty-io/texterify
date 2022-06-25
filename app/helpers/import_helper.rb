@@ -10,74 +10,27 @@ module ImportHelper
   REGEX_KEY_VALUE = /#{REGEX_CONTENT}\s*=\s*#{REGEX_CONTENT}*/.freeze
 
   def parse_file_content(_file_name, file_content, file_format)
-    if ['json', 'json-formatjs', 'json-poeditor'].include?(file_format)
-      result = json?(file_content)
-
-      if result[:matches]
-        # For normal JSON files without a special format
-        # flatten the keys to support also nested JSON.
-        if file_format == 'json'
-          return flatten_nested_keys(result[:content])
-        else
-          return result[:content]
-        end
-      elsif result[:invalid]
-        raise 'INVALID_JSON'
-      else
-        raise 'NOTHING_IMPORTED'
-      end
+    if file_format == 'json'
+      json?(file_content, true)
+    elsif ['json-formatjs', 'json-poeditor'].include?(file_format)
+      json?(file_content, false)
     elsif file_format == 'ios'
-      result = strings?(file_content)
-      if result[:matches]
-        return result[:content]
-      else
-        raise 'NOTHING_IMPORTED'
-      end
+      strings?(file_content)
     elsif file_format == 'toml'
-      result = toml?(file_content)
-      if result[:matches]
-        return result[:content]
-      else
-        raise 'NOTHING_IMPORTED'
-      end
+      toml?(file_content)
     elsif file_format == 'properties'
-      result = properties?(file_content)
-      if result[:matches]
-        return result[:content]
-      else
-        raise 'NOTHING_IMPORTED'
-      end
+      properties?(file_content)
     elsif file_format == 'po'
-      result = po?(file_content)
-      if result[:matches]
-        return result[:content]
-      else
-        raise 'NOTHING_IMPORTED'
-      end
+      po?(file_content)
     elsif file_format == 'arb'
-      result = arb?(file_content)
-      if result[:matches]
-        return result[:content]
-      else
-        raise 'NOTHING_IMPORTED'
-      end
+      arb?(file_content)
     elsif file_format == 'xliff'
-      result = xliff?(file_content)
-      if result[:matches]
-        return result[:content]
-      else
-        raise 'NOTHING_IMPORTED'
-      end
+      xliff?(file_content)
     elsif file_format == 'yaml'
-      result = yaml?(file_content)
-      if result[:matches]
-        return flatten_nested_keys(result[:content])
-      else
-        raise 'NOTHING_IMPORTED'
-      end
+      yaml?(file_content)
+    else
+      raise 'INVALID_FILE_FORMAT'
     end
-
-    raise 'INVALID_FILE_FORMAT'
   end
 
   # Flattens a nested hash.
@@ -99,11 +52,16 @@ module ImportHelper
     return flattened_content
   end
 
-  def json?(content)
+  def json?(content, flatten)
     parsed = JSON.parse(content)
-    parsed.count > 0 ? { matches: true, content: parsed } : { matches: false }
-  rescue JSON::ParserError
-    { matches: false, invalid: true }
+
+    if flatten
+      parsed = flatten_nested_keys(parsed)
+    end
+
+    { success: true, content: parsed }
+  rescue JSON::ParserError => e
+    { success: false, error_message: e.message }
   end
 
   def arb?(content)
@@ -128,16 +86,18 @@ module ImportHelper
         end
       end
     end
-    parsed.count > 0 ? { matches: true, content: json } : { matches: false }
-  rescue JSON::ParserError
-    { matches: false, invalid: true }
+
+    { success: true, content: json }
+  rescue JSON::ParserError => e
+    { success: false, error_message: e.message }
   end
 
   def properties?(content)
     parsed = JavaProperties.parse(content)
-    parsed.count > 0 ? { matches: true, content: parsed } : { matches: false }
-  rescue StandardError
-    { matches: false, invalid: true }
+
+    { success: true, content: parsed }
+  rescue StandardError => e
+    { success: false, error_message: e.message }
   end
 
   def xliff?(content)
@@ -152,19 +112,19 @@ module ImportHelper
     trans_units = xml.css('trans-unit')
     trans_units.map { |trans_unit| parsed[trans_unit['id']] = trans_unit.css(import_target ? 'target' : 'source').text }
 
-    parsed.count > 0 ? { matches: true, content: parsed } : { matches: false }
-  rescue StandardError
-    { matches: false, invalid: true }
+    { success: true, content: parsed }
+  rescue StandardError => e
+    { success: false, error_message: e.message }
   end
 
   def yaml?(content)
     parsed = YAML.safe_load(content)
 
-    parsed.count > 0 ? { matches: true, content: parsed } : { matches: false }
-  rescue Psych::SyntaxError
-    { matches: false, invalid: true }
-  rescue StandardError
-    { matches: false, invalid: true }
+    { success: true, content: flatten_nested_keys(parsed) }
+  rescue Psych::SyntaxError => e
+    { success: false, error_message: e.message }
+  rescue StandardError => e
+    { success: false, error_message: e.message }
   end
 
   def po?(content)
@@ -179,9 +139,9 @@ module ImportHelper
       end
     end
 
-    json.count > 0 ? { matches: true, content: json } : { matches: false }
-  rescue StandardError
-    { matches: false, invalid: true }
+    { success: true, content: json }
+  rescue StandardError => e
+    { success: false, error_message: e.message }
   end
 
   def strings?(content)
@@ -195,11 +155,9 @@ module ImportHelper
       end
     end
 
-    if json.count == 0
-      { matches: false }
-    end
-
-    { matches: true, content: json }
+    { success: true, content: json }
+  rescue StandardError => e
+    { success: false, error_message: e.message }
   end
 
   def toml?(content)
@@ -226,6 +184,8 @@ module ImportHelper
       end
     end
 
-    keys.count > 0 ? { matches: true, content: keys } : { matches: false }
+    { success: true, content: keys }
+  rescue StandardError => e
+    { success: false, error_message: e.message }
   end
 end

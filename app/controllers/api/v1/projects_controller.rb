@@ -152,14 +152,14 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
     file_format = params[:file_format]
 
-    begin
-      parsed_data = helpers.parse_file_content(file_name, file_content, file_format)
-    rescue RuntimeError => e
-      render json: { error: true, message: e.message }, status: :bad_request
+    parse_result = helpers.parse_file_content(file_name, file_content, file_format)
+
+    unless parse_result[:success]
+      render json: parse_result, status: :bad_request
       return
     end
 
-    parsed_data.each do |json_key, json_value|
+    parse_result[:content].each do |json_key, json_value|
       if file_format == 'json-poeditor'
         key_name = "#{json_key['context']}.#{json_key['term']}"
       else
