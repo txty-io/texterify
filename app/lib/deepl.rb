@@ -48,7 +48,15 @@ module Deepl
       #   "character_limit": 1250000
       # }
       def usage
-        request(:get, 'usage')
+        if Rails.env.test?
+          if @api_endpoint == DEEPL_FREE_API && @api_token == '<valid_free_token>'
+            { "character_count": 1337, "character_limit": 500_000 }
+          elsif @api_endpoint == DEEPL_PRO_API && @api_token == '<valid_pro_token>'
+            { "character_count": 180_118, "character_limit": 1_250_000 }
+          end
+        else
+          request(:get, 'usage')
+        end
       end
 
       # Response:
@@ -64,7 +72,11 @@ module Deepl
       #   ...
       # ]
       def target_languages
-        request(:get, 'languages', { type: 'target' })
+        if Rails.env.test?
+          [{ "language": 'BG', "name": 'Bulgarian' }, { "language": 'CS', "name": 'Czech' }]
+        else
+          request(:get, 'languages', { type: 'target' })
+        end
       end
 
       # Response:
@@ -80,7 +92,11 @@ module Deepl
       #   ...
       # ]
       def source_languages
-        request(:get, 'languages', { type: 'source' })
+        if Rails.env.test?
+          [{ "language": 'BG', "name": 'Bulgarian' }, { "language": 'CS', "name": 'Czech' }]
+        else
+          request(:get, 'languages', { type: 'source' })
+        end
       end
 
       def translate(text, source_lang, target_lang)

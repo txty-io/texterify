@@ -64,7 +64,9 @@ class Organization < ApplicationRecord
     if self.uses_custom_deepl_account?
       deepl_client = Deepl::V2::Client.new(self)
       usage = deepl_client.usage
-      usage['character_count']
+      if usage
+        usage['character_count']
+      end
     else
       # Otherwise use the usage of the organization.
       self[:machine_translation_character_usage]
@@ -76,7 +78,9 @@ class Organization < ApplicationRecord
     if self.uses_custom_deepl_account?
       deepl_client = Deepl::V2::Client.new(self)
       usage = deepl_client.usage
-      usage['character_limit']
+      if usage
+        usage['character_limit']
+      end
     else
       # Otherwise use the limit set for the organization.
       self[:machine_translation_character_limit]

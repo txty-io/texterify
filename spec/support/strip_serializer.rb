@@ -3,6 +3,7 @@ class StripSerializer
     clear(data, 'id')
     clear(data, 'organization_id')
     clear(data, 'project_id')
+    clear(data, 'trial_ends_at')
 
     data.ai(plain: true, indent: 2)
   end

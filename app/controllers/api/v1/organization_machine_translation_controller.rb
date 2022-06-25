@@ -22,22 +22,18 @@ class Api::V1::OrganizationMachineTranslationController < Api::V1::ApiController
       else
         organization.deepl_api_token_type = 'free'
       end
-
-      organization.save!
+    else
+      organization.deepl_api_token_type = nil
     end
 
-    if organization.update(organization_machine_translation_params)
+    organization.deepl_api_token = deepl_api_token
+
+    if organization.save!
       options = {}
       options[:params] = { current_user: current_user }
       render json: OrganizationSerializer.new(organization, options).serialized_json
     else
       render json: { errors: organization.errors.details }, status: :bad_request
     end
-  end
-
-  private
-
-  def organization_machine_translation_params
-    params.permit(:deepl_api_token)
   end
 end

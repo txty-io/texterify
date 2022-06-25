@@ -35,7 +35,9 @@
 		"esbenp.prettier-vscode",
 		"castwide.solargraph",
 		"rebornix.ruby",
-		"heaths.vscode-guid"
+		"heaths.vscode-guid",
+		"connorshea.vscode-ruby-test-adapter",
+		"hbenl.vscode-test-explorer"
 	],
 
 	// "postCreateCommand": "bundle exec rails db:create db:migrate db:seed"

@@ -1,21 +1,6 @@
 require 'rails_helper'
 require 'json'
 
-ORGANIZATION_ATTRIBUTES = [
-  'id',
-  'name',
-  'current_user_role',
-  'all_features',
-  'enabled_features',
-  'trial_active',
-  'trial_ends_at',
-  'machine_translation_character_limit',
-  'machine_translation_character_usage',
-  'current_user_deactivated',
-  'current_user_deactivated_reason',
-  'max_users_reached'
-].freeze
-
 RSpec.describe Api::V1::OrganizationsController, type: :request do
   before(:each) do |test|
     unless test.metadata[:skip_before]
@@ -59,8 +44,9 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(10)
       expect(body['data'][0].keys).to contain_exactly('attributes', 'id', 'relationships', 'type')
-      expect(body['data'][0]['attributes'].keys).to contain_exactly(*ORGANIZATION_ATTRIBUTES)
       expect(body['meta']['total']).to eq(number_of_organizations)
+
+      expect(body).to match_snapshot('organizations_index', { snapshot_serializer: StripSerializer })
     end
 
     it 'returns organizations with 2 per page', :skip_before do
@@ -152,8 +138,9 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
       expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
-      expect(body['data']['attributes'].keys).to contain_exactly(*ORGANIZATION_ATTRIBUTES)
       expect(body['data']['attributes']['name']).to eq(name)
+
+      expect(body).to match_snapshot('organizations_create_with_name', { snapshot_serializer: StripSerializer })
     end
 
     it 'creates a new organization with name and description' do
@@ -164,8 +151,12 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
       expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
-      expect(body['data']['attributes'].keys).to contain_exactly(*ORGANIZATION_ATTRIBUTES)
       expect(body['data']['attributes']['name']).to eq(name)
+
+      expect(body).to match_snapshot(
+        'organizations_create_with_name_and_description',
+        { snapshot_serializer: StripSerializer }
+      )
     end
 
     it 'fails to create a new organization without name' do
@@ -210,7 +201,6 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
         if expected_response_status == 200
           body = JSON.parse(response.body)
           expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
-          expect(body['data']['attributes'].keys).to contain_exactly(*ORGANIZATION_ATTRIBUTES)
           expect(body['data']['attributes']['name']).to eq(new_name)
         end
       end
