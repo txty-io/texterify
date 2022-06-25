@@ -327,7 +327,9 @@ export const TranslationFileImporter = observer(
                         <>
                             <b>Error message:</b>
                             <br />
-                            <code>{response.error_message}</code>
+                            <code style={{ wordBreak: "break-word", whiteSpace: "break-spaces" }}>
+                                {response.error_message}
+                            </code>
                         </>
                     )
                 });

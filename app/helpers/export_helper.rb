@@ -16,7 +16,7 @@ module ExportHelper
     end
 
     converted = ''
-    json_content['blocks'].map do |block|
+    json_content['blocks']&.map do |block|
       if block['type'] == 'list'
         if block['data']['style'] == 'ordered'
           converted += '<ol>'
