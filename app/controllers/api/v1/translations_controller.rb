@@ -62,8 +62,6 @@ class Api::V1::TranslationsController < Api::V1::ApiController
         render json: { errors: translation.errors.details }, status: :bad_request
       end
     end
-
-    translation.check_validations
   end
 
   private

@@ -16,6 +16,7 @@ export type ImportFileFormats =
     | "properties"
     | "po"
     | "arb"
+    | "yaml"
     | "xliff";
 
 export function FileImportSite() {

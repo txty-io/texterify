@@ -11,7 +11,7 @@ class Translation < ApplicationRecord
   belongs_to :export_config, optional: true
 
   after_destroy :update_project_word_char_count_on_destroy
-  after_save :update_project_word_char_count_on_update, :check_placeholders
+  after_save :update_project_word_char_count_on_update, :check_placeholders, :check_validations
 
   # Checks all enabled validations and creates violations if necessary.
   # If a validation is given only that validation is checked.
