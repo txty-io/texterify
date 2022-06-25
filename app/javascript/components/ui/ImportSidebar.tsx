@@ -11,7 +11,7 @@ export function ImportSidebar(props: { projectId: string }) {
                     title: "Import",
                     items: [
                         {
-                            path: Routes.DASHBOARD.PROJECT_IMPORT_FILE,
+                            path: Routes.DASHBOARD.PROJECT_IMPORT_FILE.replace(":projectId", props.projectId),
                             name: "File",
                             id: "file"
                         }
