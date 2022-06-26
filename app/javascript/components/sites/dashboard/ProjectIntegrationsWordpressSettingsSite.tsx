@@ -1,4 +1,4 @@
-import { CheckCircleFilled, LoadingOutlined, WarningFilled } from "@ant-design/icons";
+import { LoadingOutlined } from "@ant-design/icons";
 import { Button, Form, Input, List, message, Skeleton } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -12,6 +12,8 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { LayoutWithSubSidebar } from "../../ui/LayoutWithSubSidebar";
 import { LayoutWithSubSidebarInner } from "../../ui/LayoutWithSubSidebarInner";
 import { LayoutWithSubSidebarInnerContent } from "../../ui/LayoutWithSubSidebarInnerContent";
+import { OkIndicator } from "../../ui/OkIndicator";
+import { WarningIndicator } from "../../ui/WarningIndicator";
 import { SidebarWordpressIntegration } from "./SidebarWordpressIntegration";
 
 interface IFormValues {
@@ -266,21 +268,9 @@ export const ProjectIntegrationsWordpressSettingsSite = observer(() => {
                                                     display: "inline-block"
                                                 }}
                                             >
-                                                {item.valid && !item.loading && (
-                                                    <CheckCircleFilled
-                                                        style={{
-                                                            color: "#25b546"
-                                                        }}
-                                                    />
-                                                )}
+                                                {item.valid && !item.loading && <OkIndicator />}
 
-                                                {!item.valid && !item.loading && (
-                                                    <WarningFilled
-                                                        style={{
-                                                            color: "var(--color-warn)"
-                                                        }}
-                                                    />
-                                                )}
+                                                {!item.valid && !item.loading && <WarningIndicator />}
 
                                                 {item.loading && <LoadingOutlined />}
                                             </div>

@@ -41,17 +41,10 @@ export function MachineTranslationSuggestion(props: {
     }
 
     function languageSupportsMachineTranslation(languageId: string) {
-        const language = props.languagesResponse.data.find((l) => {
-            return l.id === languageId;
-        });
-
-        const languageLanguageCode = APIUtils.getIncludedObject(
-            language.relationships.language_code.data,
-            props.languagesResponse.included
-        );
-
-        return props.supportedTargetLanguages?.data?.some((supportedTargetLanguage) => {
-            return supportedTargetLanguage.attributes.language_code === languageLanguageCode.attributes.code;
+        return MachineTranslationUtils.supportsMachineTranslationAsTargetLanguage({
+            languageId: languageId,
+            languagesResponse: props.languagesResponse,
+            supportedTargetLanguages: props.supportedTargetLanguages
         });
     }
 
@@ -135,13 +128,19 @@ export function MachineTranslationSuggestion(props: {
 
                         {dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_SUGGESTIONS") &&
                             !dashboardStore.currentProject.attributes.machine_translation_active && (
-                                <Alert showIcon type="warning" message="Machine translation is not enabled." />
+                                <Alert
+                                    showIcon
+                                    type="warning"
+                                    message="Machine translation is not enabled."
+                                    style={{ marginTop: 16 }}
+                                />
                             )}
 
                         {dashboardStore.currentProject.attributes.machine_translation_active &&
                             props.supportedSourceLanguages &&
                             props.supportedTargetLanguages &&
-                            !machineTranslationsSupported(props.selectedLanguageId) && (
+                            !machineTranslationsSupported(props.selectedLanguageId) &&
+                            dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_SUGGESTIONS") && (
                                 <Alert
                                     showIcon
                                     type="info"
@@ -160,15 +159,24 @@ export function MachineTranslationSuggestion(props: {
                                             )}
                                         </>
                                     }
+                                    style={{ marginTop: 16 }}
                                 />
                             )}
 
                         {!dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_SUGGESTIONS") && (
-                            <FeatureNotAvailable feature="FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" />
+                            <FeatureNotAvailable
+                                feature="FEATURE_MACHINE_TRANSLATION_SUGGESTIONS"
+                                style={{ marginTop: 16 }}
+                            />
                         )}
 
                         {machineTranslationLimitExceeded && (
-                            <Alert showIcon type="error" message="You have exceeded your machine translation limit." />
+                            <Alert
+                                showIcon
+                                type="error"
+                                message="You have exceeded your machine translation limit."
+                                style={{ marginTop: 16 }}
+                            />
                         )}
 
                         {dashboardStore.currentProject.attributes.machine_translation_active &&
@@ -265,7 +273,7 @@ export function MachineTranslationSuggestion(props: {
                         </>
                     }
                     type="info"
-                    style={{ maxWidth: 400, marginTop: 8 }}
+                    style={{ maxWidth: 400, marginTop: 16 }}
                 />
             </div>
         );

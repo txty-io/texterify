@@ -4,6 +4,7 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
 import { NewOrganizationForm } from "../../forms/NewOrganizationForm";
+import { OrganizationMachineTranslationSettingsForm } from "../../forms/OrganizationMachineTranslationSettingsForm";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
@@ -71,6 +72,21 @@ class OrganizationSettingsSite extends React.Component<IProps, IState> {
                                 >
                                     Save
                                 </Button>
+                            </SettingsSectionWrapper>
+                        </Collapse.Panel>
+                        <Collapse.Panel
+                            header="Machine translation settings"
+                            key="machine-translation"
+                            collapsible={
+                                !PermissionUtils.isOwner(dashboardStore.getCurrentOrganizationRole())
+                                    ? "disabled"
+                                    : undefined
+                            }
+                        >
+                            <SettingsSectionWrapper>
+                                <OrganizationMachineTranslationSettingsForm
+                                    organization={dashboardStore.currentOrganization}
+                                />
                             </SettingsSectionWrapper>
                         </Collapse.Panel>
                         <Collapse.Panel

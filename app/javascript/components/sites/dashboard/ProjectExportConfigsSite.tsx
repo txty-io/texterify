@@ -78,7 +78,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
             isDeleting: true
         });
         Modal.confirm({
-            title: "Do you really want to delete this export configuration?",
+            title: "Do you really want to delete this export target?",
             content: "This cannot be undone.",
             okText: "Yes",
             okButtonProps: {
@@ -114,7 +114,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                 <LayoutWithSubSidebarInner smallWidth>
                     <Breadcrumbs breadcrumbName="projectExportConfigurations" />
                     <LayoutWithSubSidebarInnerContent>
-                        <h1>Configurations</h1>
+                        <h1>Targets</h1>
                         <p>Specify in which formats you can export your translations.</p>
                         <div style={{ marginBottom: 8 }}>
                             <Button
@@ -171,7 +171,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                     </LayoutWithSubSidebarInnerContent>
 
                     <TexterifyModal
-                        title={this.state.exportConfigToEdit ? "Edit export config" : "Add a new export config"}
+                        title={this.state.exportConfigToEdit ? "Edit export target" : "Add a new export target"}
                         visible={this.state.addEditExportConfigOpen}
                         footer={
                             <div style={{ margin: "6px 0" }}>
@@ -183,7 +183,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                                     Cancel
                                 </Button>
                                 <Button form="addEditExportConfigForm" type="primary" htmlType="submit">
-                                    {this.state.exportConfigToEdit ? "Save changes" : "Create export config"}
+                                    {this.state.exportConfigToEdit ? "Save changes" : "Create export target"}
                                 </Button>
                             </div>
                         }

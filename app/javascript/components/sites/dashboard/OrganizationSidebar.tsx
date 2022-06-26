@@ -2,6 +2,7 @@ import {
     HomeOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
+    MonitorOutlined,
     ReloadOutlined,
     RobotOutlined,
     TeamOutlined,
@@ -16,13 +17,14 @@ import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { SidebarTrigger } from "../../ui/SidebarTrigger";
 import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
-import { ROLES_OWNER_UP } from "../../utilities/PermissionUtils";
+import { ROLES_OWNER_UP, ROLES_TRANSLATOR_UP } from "../../utilities/PermissionUtils";
 import { SidebarUtils } from "../../utilities/SidebarUtils";
 const { Sider } = Layout;
 
 interface INavigationData {
     icon: any;
     path: string;
+    paths?: string[];
     text: string;
     roles?: string[];
     texterifyCloudOnly: boolean;
@@ -58,6 +60,23 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                 this.props.match.params.organizationId
             ),
             text: "Machine Translation",
+            texterifyCloudOnly: false
+        },
+        {
+            icon: MonitorOutlined,
+            path: Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
+                organizationId: this.props.match.params.organizationId
+            }),
+            paths: [
+                Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
+                    organizationId: this.props.match.params.organizationId
+                }),
+                Routes.DASHBOARD.ORGANIZATION_FORBIDDEN_WORDS_RESOLVER({
+                    organizationId: this.props.match.params.organizationId
+                })
+            ],
+            text: "QA",
+            roles: ROLES_TRANSLATOR_UP,
             texterifyCloudOnly: false
         },
         {
@@ -104,7 +123,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
     renderMenuItems = (): JSX.Element[] => {
         return [
             <Menu.Item
-                key={"title"}
+                key="title"
                 title={dashboardStore.currentOrganization && dashboardStore.currentOrganization.attributes.name}
                 style={{
                     height: 48,
@@ -119,7 +138,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                         ":organizationId",
                         dashboardStore.currentOrganization && dashboardStore.currentOrganization.id
                     )}
-                    style={{ overflow: "hidden", textOverflow: "ellipsis" }}
+                    style={{ overflow: "hidden", textOverflow: "ellipsis", color: "var(--highlight-color)" }}
                 >
                     <span style={{ fontWeight: "bold" }}>
                         {!dashboardStore.sidebarMinimized &&
@@ -158,7 +177,9 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
 
     getSelectedItem = (): string[] => {
         return this.navigationData.map((data: INavigationData, index: number): string => {
-            if (data.path === this.props.location.pathname) {
+            if (data.paths?.includes(this.props.location.pathname)) {
+                return index.toString();
+            } else if (data.path === this.props.location.pathname) {
                 return index.toString();
             }
         });

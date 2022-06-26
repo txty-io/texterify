@@ -1,5 +1,8 @@
 import * as sanitizeHtml from "sanitize-html";
+import { IPlanIDS } from "../types/IPlan";
+import { BASIC_PLAN, BUSINESS_PLAN, TEAM_PLAN } from "./Licenses";
 
+export const DATE_FORMAT = "DD.MM.YYYY";
 export const DATE_TIME_FORMAT = "DD.MM.YYYY HH:mm";
 
 function escapeContent(htmlContent: string) {
@@ -102,6 +105,16 @@ const Utils = {
         }
 
         return queryParams;
+    },
+
+    getPlanByPlanName(planName: IPlanIDS) {
+        if (planName === "basic") {
+            return BASIC_PLAN;
+        } else if (planName === "team") {
+            return TEAM_PLAN;
+        } else if (planName === "business") {
+            return BUSINESS_PLAN;
+        }
     }
 };
 

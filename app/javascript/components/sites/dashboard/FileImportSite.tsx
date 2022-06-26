@@ -7,15 +7,17 @@ import { TranslationFileImporter } from "../../ui/TranslationFileImporter";
 
 export type ImportFileFormats =
     | "json"
-    | "json-nested"
     | "json-formatjs"
+    | "json-poeditor"
     | "ios"
     | "android"
     | "toml"
     | "rails"
     | "properties"
     | "po"
-    | "arb";
+    | "arb"
+    | "yaml"
+    | "xliff";
 
 export function FileImportSite() {
     const params = useParams<{ projectId: string }>();

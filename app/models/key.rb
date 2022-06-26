@@ -22,8 +22,11 @@ class Key < ApplicationRecord
   has_many :key_tags, dependent: :delete_all
   has_many :tags, through: :key_tags
 
+  has_many :placeholders, dependent: :destroy
+
   validates :name, presence: true
   validate :no_duplicate_keys_for_project
+  validate :no_reserved_key_names
 
   before_validation :strip_leading_and_trailing_whitespace
   before_validation :check_html_allowed
@@ -46,14 +49,32 @@ class Key < ApplicationRecord
     end
   end
 
-  def default_language
-    project.languages.find_by(is_default: true)
+  # Checks if a key starts with the prefix "texterify_" which is reserved for special Texterify keys
+  # like the "texterify_timestamp".
+  def no_reserved_key_names
+    if self.name&.start_with?('texterify_')
+      errors.add(:name, :key_name_reserved)
+    end
   end
 
+  # Returns the default language if available.
+  # Otherwise returns nil.
+  def default_language
+    self.project.languages.find_by(is_default: true)
+  end
+
+  # Returns the translation of the key for the default language.
+  # Otherwise returns nil.
   def default_language_translation
-    if default_language
-      translations.find_by(language_id: default_language.id)
+    if self.default_language
+      self.translations.find_by(language_id: self.default_language.id)
     end
+  end
+
+  # Returns all translations of the key except of the one for the default language.
+  # If no default language is set returns all translations.
+  def non_default_language_translations
+    default_language ? translations.where.not(language_id: default_language.id) : translations
   end
 
   # Creates the tag in the project if it does not exist and
@@ -73,6 +94,65 @@ class Key < ApplicationRecord
     tag
   end
 
+  # Rechecks all placeholders of the key and creates validation violations if
+  # a placeholder in the source translation is missing in the other translations.
+  def check_placeholders
+    if self.default_language_translation.nil?
+      return
+    end
+
+    # Check for all placeholders in the current default language translation.
+    existing_placeholders = []
+    self
+      .default_language_translation
+      .placeholder_names
+      .each do |placeholder_name|
+        placeholder = self.placeholders.find_by(name: placeholder_name)
+        unless placeholder
+          placeholder = Placeholder.new
+          placeholder.name = placeholder_name
+          placeholder.key = self
+          placeholder.save!
+        end
+
+        existing_placeholders << placeholder
+      end
+
+    # Remove placeholders that are no longer available in the source translation.
+    self.placeholders.where.not(id: existing_placeholders.map(&:id)).each(&:destroy)
+
+    # Check if placeholders are used in other non-source translations.
+    self.non_default_language_translations.each do |translation|
+      translation_placeholders = translation.placeholder_names
+      missing_placeholders = existing_placeholders.map(&:name) - translation_placeholders
+
+      # Create validation errors for all missing placeholders.
+      missing_placeholders.each do |missing_placeholder|
+        ValidationViolation.find_or_create_by!(
+          project_id: project.id,
+          translation_id: translation.id,
+          placeholder_id: self.placeholders.find_by(name: missing_placeholder).id
+        )
+      end
+
+      # Remove placeholder issues that are now fixed.
+      translation_placeholders.each do |translation_placeholder|
+        placeholder = self.placeholders.find_by(name: translation_placeholder)
+
+        if placeholder
+          issue =
+            ValidationViolation.find_by(
+              project_id: project.id,
+              translation_id: translation.id,
+              placeholder_id: placeholder.id
+            )
+
+          issue&.destroy!
+        end
+      end
+    end
+  end
+
   protected
 
   def check_html_allowed
@@ -81,6 +161,7 @@ class Key < ApplicationRecord
     end
   end
 
+  # Removes the leading and trailing whitespace of the key name.
   def strip_leading_and_trailing_whitespace
     self.name = name.strip
   end

@@ -14,16 +14,24 @@ import { ProjectExportHierarchySite } from "../sites/dashboard/ProjectExportHier
 import { ProjectIntegrationsSite } from "../sites/dashboard/ProjectIntegrationsSite";
 import { ProjectIntegrationsWordpressSettingsSite } from "../sites/dashboard/ProjectIntegrationsWordpressSettingsSite";
 import { ProjectIntegrationsWordpressSyncSite } from "../sites/dashboard/ProjectIntegrationsWordpressSyncSite";
+import { ProjectIssuesActiveSite } from "../sites/dashboard/ProjectIssuesActiveSite";
+import { ProjectIssuesIgnoredSite } from "../sites/dashboard/ProjectIssuesIgnoredSite";
+import { ProjectMachineTranslationSettingsSite } from "../sites/dashboard/ProjectMachineTranslationSettingsSite";
 import { ProjectMachineTranslationSite } from "../sites/dashboard/ProjectMachineTranslationSite";
+import { ProjectMachineTranslationUsageSite } from "../sites/dashboard/ProjectMachineTranslationUsageSite";
 import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
 import { ProjectPostProcessingSite } from "../sites/dashboard/ProjectPostProcessingSite";
-import { ProjectSettingsSite } from "../sites/dashboard/ProjectSettingsSite";
+import { ProjectSettingsAdvancedSite } from "../sites/dashboard/ProjectSettingsAdvancedSite";
+import { ProjectSettingsGeneralSite } from "../sites/dashboard/ProjectSettingsGeneralSite";
+import { ProjectPlaceholdersSite } from "../sites/dashboard/ProjectPlaceholdersSite";
 import { ProjectSite } from "../sites/dashboard/ProjectSite";
 import { ProjectValidationsSite } from "../sites/dashboard/ProjectValidationsSite";
 import { dashboardStore } from "../stores/DashboardStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
+import { UserDeactivatedProjectModal } from "../ui/UserDeactivatedProjectModal";
 import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
+import { ProjectForbiddenWordsListsSite } from "../sites/dashboard/ProjectForbiddenWordsListsSite";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -72,6 +80,16 @@ class ProjectRouter extends React.Component<IProps, IState> {
             <>
                 <Switch>
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT} component={ProjectSite} />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE}
+                        component={ProjectIssuesActiveSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_ISSUES_IGNORED}
+                        component={ProjectIssuesIgnoredSite}
+                    />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_KEYS} component={KeysSite} />
                     <PrivateRoute
                         exact
@@ -89,13 +107,50 @@ class ProjectRouter extends React.Component<IProps, IState> {
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_IMPORT_FILE} component={FileImportSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_EXPORT} component={ProjectExportDownloadSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_MEMBERS} component={MembersSite} />
-                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_SETTINGS} component={ProjectSettingsSite} />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_SETTINGS}
+                        component={() => {
+                            return (
+                                <Redirect
+                                    to={Routes.DASHBOARD.PROJECT_SETTINGS_GENERAL_RESOLVER({
+                                        projectId: this.props.match.params.projectId
+                                    })}
+                                />
+                            );
+                        }}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_SETTINGS_GENERAL}
+                        component={ProjectSettingsGeneralSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_PLACEHOLDERS}
+                        component={ProjectPlaceholdersSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_SETTINGS_ADVANCED}
+                        component={ProjectSettingsAdvancedSite}
+                    />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_LANGUAGES} component={LanguagesSite} />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_ACTIVITY} component={ProjectActivitySite} />
                     <PrivateRoute
                         exact
                         path={Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION}
                         component={ProjectMachineTranslationSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION_SETTINGS}
+                        component={ProjectMachineTranslationSettingsSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION_USAGE}
+                        component={ProjectMachineTranslationUsageSite}
                     />
                     <PrivateRoute
                         exact
@@ -135,6 +190,11 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         path={Routes.DASHBOARD.PROJECT_VALIDATIONS}
                         component={ProjectValidationsSite}
                     />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS}
+                        component={ProjectForbiddenWordsListsSite}
+                    />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_OTA} component={ProjectOTASite} />
                     <PrivateRoute
                         exact
@@ -147,6 +207,8 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         component={ProjectExportHierarchySite}
                     />
                 </Switch>
+
+                {dashboardStore.currentProject?.attributes.current_user_deactivated && <UserDeactivatedProjectModal />}
             </>
         );
     }

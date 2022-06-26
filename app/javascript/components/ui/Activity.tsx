@@ -1,5 +1,5 @@
 import { UserOutlined } from "@ant-design/icons";
-import { Empty, Tag, Timeline } from "antd";
+import { Empty, Skeleton, Tag, Timeline } from "antd";
 import * as moment from "moment";
 import * as React from "react";
 import { Link } from "react-router-dom";
@@ -11,6 +11,7 @@ import FlagIcon from "./FlagIcons";
 import { Styles } from "./Styles";
 import { UserAvatar } from "./UserAvatar";
 import { generalStore } from "../stores/GeneralStore";
+import { dashboardStore } from "../stores/DashboardStore";
 
 const ActivityItemWrapper = styled.div`
     word-break: break-word;
@@ -66,12 +67,8 @@ class Activity extends React.Component<IProps> {
         const userElement = (
             <div style={{ fontSize: 12, display: "flex", marginTop: 8 }}>
                 <div style={{ display: "flex", alignItems: "center", lineHeight: 0 }}>
-                    <div style={{ width: 16, marginRight: 8 }}>
-                        {user ? (
-                            <UserAvatar user={user.attributes} style={{ width: 16, height: 16, fontSize: 8 }} />
-                        ) : (
-                            <UserOutlined />
-                        )}
+                    <div style={{ marginRight: 8 }}>
+                        {user ? <UserAvatar user={user.attributes} /> : <UserOutlined />}
                     </div>
                     {user ? (
                         user.attributes.username
@@ -275,31 +272,56 @@ class Activity extends React.Component<IProps> {
         }
     };
 
-    getStylesForEvent = (itemType: string, event: "create" | "update" | "destroy") => {
-        if (event === "create" && itemType !== "Translation") {
-            return {
-                iconColor: "#333",
-                color: Styles.COLOR_GREEN,
-                background: Styles.COLOR_GREEN_LIGHT
-            };
-        } else if (event === "update" || itemType === "Translation") {
-            return {
-                iconColor: "#333",
-                color: generalStore.theme === "light" ? Styles.COLOR_SECONDARY : "#fff",
-                background: generalStore.theme === "light" ? Styles.COLOR_SECONDARY_LIGHT : "#303030"
-            };
-        } else if (event === "destroy") {
-            return {
-                iconColor: "#333",
-                color: Styles.COLOR_RED,
-                background: Styles.COLOR_RED_LIGHT
-            };
+    getStylesForEvent = (itemType: "Key" | "Translation", event: "create" | "update" | "destroy") => {
+        if (itemType === "Key") {
+            if (event === "create") {
+                return {
+                    iconColor: "#333",
+                    color: Styles.COLOR_GREEN,
+                    background: Styles.COLOR_GREEN_LIGHT
+                };
+            } else if (event === "update") {
+                return {
+                    iconColor: "#333",
+                    color: "var(--activity-highlight-key-update-color)",
+                    background: "var(--activity-highlight-key-update-background-color)"
+                };
+            } else if (event === "destroy") {
+                return {
+                    iconColor: "#333",
+                    color: Styles.COLOR_RED,
+                    background: Styles.COLOR_RED_LIGHT
+                };
+            }
+        } else if (itemType === "Translation") {
+            if (event === "create") {
+                return {
+                    iconColor: "#333",
+                    color: generalStore.theme === "light" ? Styles.COLOR_SECONDARY : "#fff",
+                    background: generalStore.theme === "light" ? Styles.COLOR_SECONDARY_LIGHT : "#303030"
+                };
+            } else if (event === "update") {
+                return {
+                    iconColor: "#333",
+                    color: generalStore.theme === "light" ? Styles.COLOR_SECONDARY : "#fff",
+                    background: generalStore.theme === "light" ? Styles.COLOR_SECONDARY_LIGHT : "#303030"
+                };
+            } else if (event === "destroy") {
+                return {
+                    iconColor: "#333",
+                    color: Styles.COLOR_RED,
+                    background: Styles.COLOR_RED_LIGHT
+                };
+            }
         }
     };
 
     render() {
-        if (!this.props.activitiesResponse || !this.props.activitiesResponse.data) {
-            return null;
+        if (
+            !this.props.activitiesResponse?.data ||
+            dashboardStore.currentProject?.attributes.current_user_deactivated
+        ) {
+            return <Skeleton active />;
         }
 
         if (this.props.activitiesResponse.data.length === 0) {

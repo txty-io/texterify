@@ -1,5 +1,17 @@
 require 'rails_helper'
 
+USER_ATTRIBUTES = [
+  'id',
+  'username',
+  'email',
+  'is_superadmin',
+  'role',
+  'role_source',
+  'deactivated',
+  'deactivated_reason',
+  'user_deactivated_for_project'
+].freeze
+
 RSpec.describe Api::V1::ProjectUsersController, type: :request do
   before(:each) do |test|
     unless test.metadata[:skip_before]
@@ -33,7 +45,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(1)
       expect(body['data'][0].keys).to contain_exactly('attributes', 'id', 'type')
-      expect(body['data'][0]['attributes'].keys).to contain_exactly('id', 'username', 'email', 'is_superadmin', 'role', 'role_source')
+      expect(body['data'][0]['attributes'].keys).to contain_exactly(*USER_ATTRIBUTES)
     end
 
     it 'has status code 200 if logged in and returns users within project organization' do
@@ -48,12 +60,20 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(2)
-      expect(body['data'].find { |item| item['attributes']['role_source'] == 'project' && item['attributes']['role'] == 'manager' }).not_to be_nil
-      expect(body['data'].find { |item| item['attributes']['role_source'] == 'organization' && item['attributes']['role'] == 'developer' }).not_to be_nil
+      expect(
+        body['data'].find do |item|
+          item['attributes']['role_source'] == 'project' && item['attributes']['role'] == 'manager'
+        end
+      ).not_to be_nil
+      expect(
+        body['data'].find do |item|
+          item['attributes']['role_source'] == 'organization' && item['attributes']['role'] == 'developer'
+        end
+      ).not_to be_nil
       expect(body['data'][0].keys).to contain_exactly('attributes', 'id', 'type')
-      expect(body['data'][0]['attributes'].keys).to contain_exactly('id', 'username', 'email', 'is_superadmin', 'role', 'role_source')
+      expect(body['data'][0]['attributes'].keys).to contain_exactly(*USER_ATTRIBUTES)
       expect(body['data'][1].keys).to contain_exactly('attributes', 'id', 'type')
-      expect(body['data'][1]['attributes'].keys).to contain_exactly('id', 'username', 'email', 'is_superadmin', 'role', 'role_source')
+      expect(body['data'][1]['attributes'].keys).to contain_exactly(*USER_ATTRIBUTES)
     end
 
     it 'has status code 200 if logged in and returns user project role over user organization role' do
@@ -74,104 +94,124 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
 
   describe 'PUT update' do
     permissions_update = {
-      'translator': { # current_user_role
-        'translator': { # role_of_user_to_update
+      # current_user_role
+      'translator': {
+        # role_of_user_to_update
+        'translator': {
           'translator': 403,
           'developer': 403,
           'manager': 403,
           'owner': 403
         },
-        'developer': { # role_of_user_to_update
+        # role_of_user_to_update
+        'developer': {
           'translator': 403,
           'developer': 403,
           'manager': 403,
           'owner': 403
         },
-        'manager': { # role_of_user_to_update
+        # role_of_user_to_update
+        'manager': {
           'translator': 403,
           'developer': 403,
           'manager': 403,
           'owner': 403
         },
-        'owner': { # role_of_user_to_update
-          'translator': 403,
-          'developer': 403,
-          'manager': 403,
-          'owner': 403
-        }
-      },
-      'developer': { # current_user_role
-        'translator': { # role_of_user_to_update
-          'translator': 403,
-          'developer': 403,
-          'manager': 403,
-          'owner': 403
-        },
-        'developer': { # role_of_user_to_update
-          'translator': 403,
-          'developer': 403,
-          'manager': 403,
-          'owner': 403
-        },
-        'manager': { # role_of_user_to_update
-          'translator': 403,
-          'developer': 403,
-          'manager': 403,
-          'owner': 403
-        },
-        'owner': { # role_of_user_to_update
+        # role_of_user_to_update
+        'owner': {
           'translator': 403,
           'developer': 403,
           'manager': 403,
           'owner': 403
         }
       },
-      'manager': { # current_user_role
-        'translator': { # role_of_user_to_update
-          'translator': 200,
-          'developer': 200,
-          'manager': 403,
-          'owner': 403
-        },
-        'developer': { # role_of_user_to_update
-          'translator': 200,
-          'developer': 200,
-          'manager': 403,
-          'owner': 403
-        },
-        'manager': { # role_of_user_to_update
+      # current_user_role
+      'developer': {
+        # role_of_user_to_update
+        'translator': {
           'translator': 403,
           'developer': 403,
           'manager': 403,
           'owner': 403
         },
-        'owner': { # role_of_user_to_update
+        # role_of_user_to_update
+        'developer': {
+          'translator': 403,
+          'developer': 403,
+          'manager': 403,
+          'owner': 403
+        },
+        # role_of_user_to_update
+        'manager': {
+          'translator': 403,
+          'developer': 403,
+          'manager': 403,
+          'owner': 403
+        },
+        # role_of_user_to_update
+        'owner': {
           'translator': 403,
           'developer': 403,
           'manager': 403,
           'owner': 403
         }
       },
-      'owner': { # current_user_role
-        'translator': { # role_of_user_to_update
+      # current_user_role
+      'manager': {
+        # role_of_user_to_update
+        'translator': {
+          'translator': 200,
+          'developer': 200,
+          'manager': 403,
+          'owner': 403
+        },
+        # role_of_user_to_update
+        'developer': {
+          'translator': 200,
+          'developer': 200,
+          'manager': 403,
+          'owner': 403
+        },
+        # role_of_user_to_update
+        'manager': {
+          'translator': 403,
+          'developer': 403,
+          'manager': 403,
+          'owner': 403
+        },
+        # role_of_user_to_update
+        'owner': {
+          'translator': 403,
+          'developer': 403,
+          'manager': 403,
+          'owner': 403
+        }
+      },
+      # current_user_role
+      'owner': {
+        # role_of_user_to_update
+        'translator': {
           'translator': 200,
           'developer': 200,
           'manager': 200,
           'owner': 200
         },
-        'developer': { # role_of_user_to_update
+        # role_of_user_to_update
+        'developer': {
           'translator': 200,
           'developer': 200,
           'manager': 200,
           'owner': 200
         },
-        'manager': { # role_of_user_to_update
+        # role_of_user_to_update
+        'manager': {
           'translator': 200,
           'developer': 200,
           'manager': 200,
           'owner': 200
         },
-        'owner': { # role_of_user_to_update
+        # role_of_user_to_update
+        'owner': {
           'translator': 200,
           'developer': 200,
           'manager': 200,
@@ -182,14 +222,16 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
 
     it 'responds with json by default' do
       user_developer = FactoryBot.create(:user)
-      project_user_developer = FactoryBot.create(:project_user, project_id: @project.id, user_id: user_developer.id, role: 'developer')
+      project_user_developer =
+        FactoryBot.create(:project_user, project_id: @project.id, user_id: user_developer.id, role: 'developer')
       put "/api/v1/projects/#{@project.id}/members/#{project_user_developer.user_id}"
       expect(response.content_type).to eq 'application/json; charset=utf-8'
     end
 
     it 'responds with json even by set format' do
       user_developer = FactoryBot.create(:user)
-      project_user_developer = FactoryBot.create(:project_user, project_id: @project.id, user_id: user_developer.id, role: 'developer')
+      project_user_developer =
+        FactoryBot.create(:project_user, project_id: @project.id, user_id: user_developer.id, role: 'developer')
       put "/api/v1/projects/#{@project.id}/members/#{project_user_developer.user_id}", params: { format: :html }
       expect(response.content_type).to eq 'application/json; charset=utf-8'
     end
@@ -197,7 +239,8 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
     it 'has status code 403 if not logged in', :skip_before do
       project = FactoryBot.create(:project, :with_organization)
       user_developer = FactoryBot.create(:user)
-      project_user_developer = FactoryBot.create(:project_user, project_id: project.id, user_id: user_developer.id, role: 'developer')
+      project_user_developer =
+        FactoryBot.create(:project_user, project_id: project.id, user_id: user_developer.id, role: 'developer')
       put "/api/v1/projects/#{project.id}/members/#{project_user_developer.user_id}"
       expect(response.status).to eq(403)
     end
@@ -205,7 +248,8 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
     it 'has status code 400 if no role is given' do
       project = FactoryBot.create(:project, :with_organization)
       user_developer = FactoryBot.create(:user)
-      project_user_developer = FactoryBot.create(:project_user, project_id: project.id, user_id: user_developer.id, role: 'developer')
+      project_user_developer =
+        FactoryBot.create(:project_user, project_id: project.id, user_id: user_developer.id, role: 'developer')
       put "/api/v1/projects/#{@project.id}/members/#{project_user_developer.user_id}", headers: @auth_params
       expect(response.status).to eq(400)
       body = JSON.parse(response.body)
@@ -227,7 +271,11 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
             project_user.role = role_of_user_to_update
             project_user.save!
 
-            put "/api/v1/projects/#{@project.id}/members/#{project_user.user_id}", params: { role: new_role }, headers: auth_params
+            put "/api/v1/projects/#{@project.id}/members/#{project_user.user_id}",
+                params: {
+                  role: new_role
+                },
+                headers: auth_params
 
             expect(response.status).to eq(expected_response_status)
             if expected_response_status == 200

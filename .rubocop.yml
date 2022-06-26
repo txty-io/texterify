@@ -104,6 +104,9 @@ Style/RescueStandardError:
 Style/WhileUntilModifier:
   Enabled: false
 
+Style/SymbolProc:
+  Enabled: false
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: "indented"
 
@@ -163,4 +166,7 @@ RSpec/ExampleLength:
   Enabled: false
 
 RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/EmptyExampleGroup:
   Enabled: false

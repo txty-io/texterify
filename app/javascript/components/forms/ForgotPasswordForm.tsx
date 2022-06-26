@@ -3,7 +3,6 @@ import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { Routes } from "../routing/Routes";
-import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { SiteWrapperLink } from "../ui/SiteWrapperLink";
 
@@ -23,7 +22,7 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
     render() {
         return (
             <>
-                <p style={{ marginBottom: 16 }}>
+                <p style={{ marginBottom: 16, color: "#fff" }}>
                     Enter your email address and we will send you an email to reset your password.
                 </p>
 

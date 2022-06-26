@@ -9,6 +9,7 @@ export interface ILicense {
         data: string;
         expires_at: string;
         plan: "team" | "business";
+        expired: boolean;
         licensee: { name: string; email: string };
         restrictions?: { active_users_count: number };
         starts_at: string;

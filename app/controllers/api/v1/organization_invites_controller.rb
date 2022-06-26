@@ -1,5 +1,6 @@
 class Api::V1::OrganizationInvitesController < Api::V1::ApiController
   before_action :ensure_feature_enabled, only: [:create]
+  before_action :check_if_user_activated
 
   def create
     organization = current_user.organizations.find(params[:organization_id])

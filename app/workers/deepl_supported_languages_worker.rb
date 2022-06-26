@@ -8,7 +8,7 @@ class DeeplSupportedLanguagesWorker
 
   def perform(*_args)
     if ENV['DEEPL_API_TOKEN']
-      deepl_client = Deepl::V2::Client.new(ENV['DEEPL_API_TOKEN'])
+      deepl_client = Deepl::V2::Client.new
 
       source_languages = deepl_client.source_languages
       source_languages&.each do |source_language|

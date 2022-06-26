@@ -1,6 +1,7 @@
 import { GithubOutlined } from "@ant-design/icons";
 import WhiteLogoWithText from "images/logo_white_text.svg";
 import * as React from "react";
+import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
 
 interface IProps {
     style?: React.CSSProperties;
@@ -22,90 +23,79 @@ class SiteWrapper extends React.Component<IProps> {
                 }}
                 className="dark-theme"
             >
-                <div style={{ display: "flex", width: "100%", maxWidth: 960, marginTop: 240 }}>
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            width: "50%"
-                        }}
-                    >
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                padding: "24px 80px 0 24px"
-                            }}
-                        >
-                            <img src={WhiteLogoWithText} style={{ maxWidth: "100%", marginBottom: 24 }} />
-                            <p style={{ color: "rgba(255, 255, 255, 0.85)", fontWeight: "bold", marginTop: 8 }}>
-                                The web-based localization system
-                            </p>
-                            <p style={{ color: "rgba(255, 255, 255, 0.85)" }}>
-                                Texterify is a localization management system that helps you to translate your software
-                                efficiently and quickly.
-                            </p>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexDirection: "column",
+                        width: "100%",
+                        maxWidth: 480,
+                        flexGrow: 1
+                    }}
+                >
+                    <img
+                        src={WhiteLogoWithText}
+                        style={{ width: "100%", maxWidth: 280, marginBottom: 64, marginTop: 24 }}
+                    />
 
-                            <p style={{ color: "rgba(255, 255, 255, 0.85)" }}>
-                                You can learn more on{" "}
-                                <a href="https://texterify.com" target="_blank">
-                                    texterify.com
-                                </a>
-                                .
-                            </p>
-
-                            <p style={{ color: "rgba(255, 255, 255, 0.85)" }}>
-                                Make sure to also check out Texterify on{" "}
-                                <a
-                                    href="https://github.com/texterify/texterify"
-                                    target="_blank"
-                                    style={{ whiteSpace: "nowrap" }}
-                                >
-                                    <GithubOutlined style={{ margin: "0 4px" }} /> GitHub
-                                </a>
-                                .
-                            </p>
-                        </div>
-                    </div>
                     <div
                         style={{
                             display: "flex",
                             flexDirection: "column",
-                            padding: "24px",
-                            flexGrow: 1,
-                            width: "50%",
-                            border: "1px solid var(--border-color)",
-                            borderRadius: 8
+                            padding: "0 24px 24px",
+                            borderRadius: 8,
+                            margin: "0 auto",
+                            width: "100%"
                         }}
                     >
                         {this.props.children}
+
+                        <p style={{ color: "rgba(255, 255, 255, 0.85)", marginTop: 40 }}>
+                            Make sure to check out Texterify on{" "}
+                            <a
+                                href="https://github.com/texterify/texterify"
+                                target="_blank"
+                                style={{ whiteSpace: "nowrap" }}
+                            >
+                                <GithubOutlined style={{ marginRight: 4 }} />
+                                GitHub
+                            </a>{" "}
+                            and{" "}
+                            <a href="https://texterify.com" target="_blank" style={{ whiteSpace: "nowrap" }}>
+                                texterify.com
+                            </a>
+                            .
+                        </p>
                     </div>
                 </div>
 
-                {true && (
-                    <div style={{ marginTop: "auto", padding: 24 }}>
-                        Copyright © Texterify. All rights reserved.
-                        <a
-                            href="https://texterify.com/privacy-policy"
-                            rel="noopener noreferrer"
-                            style={{ marginLeft: 24, marginRight: 16 }}
-                            target="_blank"
-                        >
-                            Privacy policy
-                        </a>
-                        <a
-                            href="https://texterify.com/terms-of-service"
-                            rel="noopener noreferrer"
-                            style={{ marginRight: 16 }}
-                            target="_blank"
-                        >
-                            Terms of service
-                        </a>
-                        <a href="https://texterify.com/cookie-settings" rel="noopener noreferrer" target="_blank">
-                            Cookie settings
-                        </a>
-                    </div>
-                )}
+                <div style={{ marginTop: "auto", padding: 24, color: "#fff" }}>
+                    Copyright © Texterify. All rights reserved.
+                    {IS_TEXTERIFY_CLOUD && (
+                        <>
+                            <a
+                                href="https://texterify.com/privacy-policy"
+                                rel="noopener noreferrer"
+                                style={{ marginLeft: 24, marginRight: 16 }}
+                                target="_blank"
+                            >
+                                Privacy policy
+                            </a>
+                            <a
+                                href="https://texterify.com/terms-of-service"
+                                rel="noopener noreferrer"
+                                style={{ marginRight: 16 }}
+                                target="_blank"
+                            >
+                                Terms of service
+                            </a>
+                            <a href="https://texterify.com/cookie-settings" rel="noopener noreferrer" target="_blank">
+                                Cookie settings
+                            </a>
+                        </>
+                    )}
+                </div>
             </div>
         );
     }

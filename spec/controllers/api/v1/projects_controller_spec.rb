@@ -15,13 +15,27 @@ PROJECT_ATTRIBUTES = [
   'machine_translation_active',
   'machine_translation_character_usage',
   'character_count',
-  'word_count'
+  'word_count',
+  'validate_leading_whitespace',
+  'validate_trailing_whitespace',
+  'validate_double_whitespace',
+  'validate_https',
+  'current_user_in_project',
+  'current_user_in_project_organization',
+  'organization_id',
+  'current_user_deactivated',
+  'current_user_deactivated_reason',
+  'issues_count',
+  'placeholder_end',
+  'placeholder_start'
 ].freeze
 
 RSpec.describe Api::V1::ProjectsController, type: :request do
   before(:each) do |test|
     unless test.metadata[:skip_before]
       @user = FactoryBot.create(:user)
+      @organization = FactoryBot.create(:organization)
+      @user.organizations << @organization
       @auth_params = sign_in(@user)
     end
   end
@@ -149,7 +163,13 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
 
     it 'creates a new project with name' do
       name = 'Test Name'
-      post '/api/v1/projects', params: { name: name }, headers: @auth_params, as: :json
+      post '/api/v1/projects',
+           params: {
+             name: name,
+             organization_id: @organization.id
+           },
+           headers: @auth_params,
+           as: :json
 
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
@@ -162,7 +182,14 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
     it 'creates a new project with name and description' do
       name = 'Test Name'
       description = 'Test Description'
-      post '/api/v1/projects', params: { name: name, description: description }, headers: @auth_params, as: :json
+      post '/api/v1/projects',
+           params: {
+             name: name,
+             description: description,
+             organization_id: @organization.id
+           },
+           headers: @auth_params,
+           as: :json
 
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
@@ -170,11 +197,11 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       expect(body['data']['attributes'].keys).to contain_exactly(*PROJECT_ATTRIBUTES)
       expect(body['data']['attributes']['name']).to eq(name)
       expect(body['data']['attributes']['description']).to eq(description)
-      expect(body['data']['relationships']['project_columns']['data'].length).to eq(1)
+      expect(body['data']['relationships']['project_columns']['data'].length).to eq(0)
     end
 
     it 'fails to create a new project without name' do
-      post '/api/v1/projects', params: {}, headers: @auth_params, as: :json
+      post '/api/v1/projects', params: { organization_id: @organization.id }, headers: @auth_params, as: :json
 
       expect(response.status).to eq(400)
       body = JSON.parse(response.body)

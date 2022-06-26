@@ -73,6 +73,7 @@ group :test do
     gem 'rspec', require: false
     gem 'rspec-rails', require: false
     gem 'rspec-sidekiq' # rspec-sidekiq requires sidekiq/testing by default
+    gem 'rspec-snapshot'
     gem 'simplecov', require: false
 end
 
@@ -82,7 +83,7 @@ end
 gem 'devise', '4.7.3'
 gem 'devise_token_auth', '1.1.5'
 gem 'fast_jsonapi'
-gem 'paper_trail'
+gem 'paper_trail', '12.3.0'
 gem 'pundit'
 gem 'rails-settings-cached'
 gem 'react-rails'

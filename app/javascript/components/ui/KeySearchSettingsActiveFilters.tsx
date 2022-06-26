@@ -61,8 +61,8 @@ export function KeySearchSettingsActiveFilters(props: {
                 )}
                 {currentQueryParams.l && (
                     <Tag color="green" style={TagStyle}>
-                        {props.languagesResponse.data
-                            .filter((language) => {
+                        {props.languagesResponse?.data
+                            ?.filter((language) => {
                                 return currentQueryParams.l.includes(language.id);
                             })
                             .map((language, index) => {
@@ -89,8 +89,8 @@ export function KeySearchSettingsActiveFilters(props: {
                 )}
                 {currentQueryParams.ec && (
                     <Tag color="cyan" style={TagStyle}>
-                        {props.exportConfigsResponse.data
-                            .filter((exportConfig) => {
+                        {props.exportConfigsResponse?.data
+                            ?.filter((exportConfig) => {
                                 return currentQueryParams.ec.includes(exportConfig.id);
                             })
                             .map((exportConfig) => {

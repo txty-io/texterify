@@ -1,6 +1,52 @@
 import { ISearchSettings } from "../../ui/KeySearchSettings";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
+import { ILanguage } from "./LanguagesAPI";
+import { ITranslation } from "./TranslationsAPI";
+
+export interface IKey {
+    id: string;
+    type: "key";
+    attributes: {
+        id: string;
+        project_id: string;
+        name: string;
+        description: string | null;
+        html_enabled: boolean;
+        pluralization_enabled: boolean;
+        name_editable: boolean;
+        created_at: string;
+        updated_at: string;
+    };
+    relationships: {
+        translations: {
+            data: { id: string; type: "translation" }[];
+        };
+        tags: { data: { id: string; type: "tag" }[] };
+        wordpress_contents: { data: { id: string; type: "wordpress_content" }[] };
+    };
+}
+
+export interface IGetKeysResponse {
+    data: IKey[];
+    included: (ITranslation | ILanguage)[];
+    meta: { total: number };
+}
+
+export interface IPlaceholder {
+    id: string;
+    type: "placeholder";
+    attributes: {
+        id: string;
+        name: string;
+    };
+}
+
+export interface IGetKeyResponse {
+    data: IKey;
+    included: (ITranslation | ILanguage | IPlaceholder)[];
+    meta: { total: number };
+}
 
 export interface IGetKeysOptions {
     search?: string;
@@ -10,13 +56,13 @@ export interface IGetKeysOptions {
 }
 
 const KeysAPI = {
-    getKey: async (projectId: string, keyId: string): Promise<any> => {
+    getKey: async (projectId: string, keyId: string): Promise<IGetKeyResponse> => {
         return API.getRequest(`projects/${projectId}/keys/${keyId}`, true, {})
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },
 
-    getKeys: async (projectId: string, options: IGetKeysOptions): Promise<any> => {
+    getKeys: async (projectId: string, options: IGetKeysOptions): Promise<IGetKeysResponse> => {
         return API.getRequest(`projects/${projectId}/keys`, true, {
             search: (options && options.search) || undefined,
             page: options && options.page,

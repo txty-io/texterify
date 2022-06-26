@@ -1,10 +1,11 @@
 class Api::V1::MachineTranslationsController < Api::V1::ApiController
   before_action :verify_deepl_configured
+  before_action :check_if_user_activated, except: [:usage, :source_languages, :target_languages]
 
   def usage
     authorize :machine_translation, :usage?
 
-    deepl_client = Deepl::V2::Client.new(ENV['DEEPL_API_TOKEN'])
+    deepl_client = Deepl::V2::Client.new
     render json: deepl_client.usage
   end
 
@@ -39,56 +40,12 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
       return
     end
 
-    machine_translation_memory =
-      MachineTranslationMemory.find_by(
-        from: translation.content,
-        source_language_code_id: translation.language.language_code_id,
-        target_language_code_id: target_language.language_code_id
-      )
+    suggestion = Texterify::MachineTranslation.translate(project, translation, target_language)
 
-    if machine_translation_memory.present?
-      render json: { translation: machine_translation_memory.to }
-    else
-      character_count = translation.content.length
-      organization = project.organization
-
-      if organization.exceeds_machine_translation_usage?(character_count)
-        render json: {
-                 error: true,
-                 message: 'MACHINE_TRANSLATIONS_USAGE_EXCEEDED',
-                 data: {
-                   machine_translation_character_usage: organization.machine_translation_character_usage,
-                   machine_translation_character_limit: organization.machine_translation_character_limit,
-                   translation_character_count: character_count
-                 }
-               },
-               status: :bad_request
-        return
-      end
-
-      project.increment(:machine_translation_character_usage, character_count)
-      organization.increment(:machine_translation_character_usage, character_count)
-
-      project.save!
-      organization.save!
-
-      deepl_client = Deepl::V2::Client.new(ENV['DEEPL_API_TOKEN'])
-      deepl_translation =
-        deepl_client.translate(
-          translation.content,
-          translation.language.language_code.code,
-          target_language.language_code.code
-        )
-
-      MachineTranslationMemory.create(
-        from: translation.content,
-        to: deepl_translation,
-        source_language_code_id: translation.language.language_code_id,
-        target_language_code_id: target_language.language_code_id
-      )
-
-      render json: { translation: deepl_translation }
-    end
+    render json: { translation: suggestion }
+  rescue OrganizationMachineTranslationUsageExceededException => e
+    render json: { error: true, message: 'MACHINE_TRANSLATIONS_USAGE_EXCEEDED', data: e.details }, status: :bad_request
+    return
   end
 
   def machine_translate_language
@@ -111,6 +68,8 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
     else
       render json: { error: true, message: 'FAILED_TO_MACHINE_TRANSLATE' }
     end
+  rescue OrganizationMachineTranslationUsageExceededException => e
+    render json: { error: true, message: 'MACHINE_TRANSLATIONS_USAGE_EXCEEDED', data: e.details }, status: :bad_request
   end
 
   private

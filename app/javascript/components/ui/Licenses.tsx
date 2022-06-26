@@ -40,7 +40,8 @@ export const TEAM_PLAN: IPlan = {
         "Key history",
         "Export hierarchy",
         "Post processing",
-        "Project activity"
+        "Project activity",
+        "QA Features"
         // "Tag management"
     ]
 };
@@ -61,6 +62,7 @@ export const BUSINESS_PLAN: IPlan = {
         "Export hierarchy",
         "Post processing",
         "Project activity",
+        "QA Features",
         // "Tag management",
         "OTA",
         "HTML editor"

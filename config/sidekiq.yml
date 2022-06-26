@@ -1,4 +1,5 @@
 # To start sidekiq run "bundle exec sidekiq".
+# Use https://crontab.guru/ for cron schedule expressions.
 
 :dynamic: true
 :schedule:
@@ -7,3 +8,6 @@
 
   DeeplSupportedLanguagesWorker:
     cron: '0 4 * * *' # "At 04:00."
+
+  ResetMachineTranslationCharactersUsageWorker:
+    cron: '0 4 1 * *' # "At 04:00 on day-of-month 1."

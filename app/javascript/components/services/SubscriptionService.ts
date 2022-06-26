@@ -11,6 +11,11 @@ class SubscriptionService {
 
         return this.subscriptionStorage[organizationId];
     }
+
+    async getCustomSubscription(organizationId: string) {
+        const customSubscription = await OrganizationsAPI.getOrganizationCustomSubscription(organizationId);
+        return customSubscription.data;
+    }
 }
 
 const subscriptionService = new SubscriptionService();

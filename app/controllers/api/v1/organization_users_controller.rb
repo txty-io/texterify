@@ -1,23 +1,28 @@
 class Api::V1::OrganizationUsersController < Api::V1::ApiController
   before_action :ensure_feature_enabled, only: [:create, :update]
 
+  # Allow :destroy because users should still be able to leave on organization
+  # even though there account has been deactivated.
+  before_action :check_if_user_activated, except: [:destroy]
+
   def index
     skip_authorization
     organization = current_user.organizations.find(params[:organization_id])
 
     organization_users =
       if params[:search]
-        organization.users.where(
-          'users.username ilike :search or users.email ilike :search',
-          search: "%#{params[:search]}%"
-        )
+        organization
+          .organization_users
+          .joins(:user)
+          .where('users.username ilike :search or users.email ilike :search', search: "%#{params[:search]}%")
       else
-        organization.users
+        organization.organization_users
       end
 
     options = {}
     options[:params] = { organization: organization }
-    render json: UserSerializer.new(organization_users, options).serialized_json
+    options[:include] = [:organization, :user]
+    render json: OrganizationUserSerializer.new(organization_users, options).serialized_json
   end
 
   def project_users
@@ -43,15 +48,24 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     organization = current_user.organizations.find(params[:organization_id])
     user = User.find_by(email: params[:email])
 
+    # Check if the user exists.
     unless user
       skip_authorization
       render json: { error: true, message: 'USER_NOT_FOUND' }, status: :not_found
       return
     end
 
+    # Check if the role exists.
+    role = params[:role]
+    if role && ROLE_PRIORITY_MAP[role.to_sym].nil?
+      render json: { error: true, message: 'ROLE_NOT_FOUND' }, status: :bad_request
+      return
+    end
+
     organization_user = OrganizationUser.new
     organization_user.organization = organization
     organization_user.user = user
+    organization_user.role = role || ROLE_TRANSLATOR
     authorize organization_user
 
     if organization.users.exclude?(user)
@@ -74,10 +88,7 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     end
 
     if current_user.id == params[:id] && organization.users.count == 1
-      render json: {
-               errors: [{ details: "You can't remove yourself from the organization if you are the only member" }]
-             },
-             status: :bad_request
+      render json: { error: true, message: 'LAST_USER_CANT_LEAVE' }, status: :bad_request
       return
     end
 

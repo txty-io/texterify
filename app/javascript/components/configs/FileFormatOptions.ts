@@ -1,12 +1,12 @@
-const FileFormatOptions = [
+const FileFormatOptions: { value: string; text: string }[] = [
     {
         value: "json",
         text: "JSON Flat"
     },
-    // {
-    //     value: "json-nested",
-    //     text: "JSON Nested"
-    // },
+    {
+        value: "json-poeditor",
+        text: "JSON POEditor"
+    },
     {
         value: "json-formatjs",
         text: "JSON Format.js"
@@ -42,6 +42,10 @@ const FileFormatOptions = [
     {
         value: "arb",
         text: "Flutter .arb"
+    },
+    {
+        value: "xliff",
+        text: "XLIFF .xlf, .xliff"
     }
 ].sort((a, b) => {
     return a.text.toLowerCase() < b.text.toLowerCase() ? -1 : 1;

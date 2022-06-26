@@ -6,23 +6,35 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { MembersAPI } from "../../api/v1/MembersAPI";
+import { IGetUsersResponse, IUserRoleSource } from "../../api/v1/OrganizationMembersAPI";
 import { IGetProjectInvitesResponse, ProjectInvitesAPI } from "../../api/v1/ProjectInvitesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { InviteUserFormModal } from "../../forms/InviteUserFormModal";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
+import { IUserRole } from "../../types/IUserRole";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { ErrorUtils } from "../../ui/ErrorUtils";
-import { Loading } from "../../ui/Loading";
 import { ProjectInvitesTable } from "../../ui/ProjectInvitesTable";
 import { RolesLegend } from "../../ui/RolesLegend";
 import { UserAvatar } from "../../ui/UserAvatar";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 
+interface IUserRow {
+    id: string;
+    key: string;
+    username: string;
+    email: string;
+    role: IUserRole;
+    roleSource: IUserRoleSource;
+    deactivated_for_project: boolean;
+    deactivated_for_instance: boolean;
+}
+
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
-    getMembersResponse: any;
+    getUsersResponse: IGetUsersResponse;
     getProjectInvitesResponse: IGetProjectInvitesResponse;
     deleteDialogVisible: boolean;
     loading: boolean;
@@ -36,7 +48,7 @@ class MembersSite extends React.Component<IProps, IState> {
     formRef = React.createRef<FormInstance>();
 
     state: IState = {
-        getMembersResponse: null,
+        getUsersResponse: null,
         getProjectInvitesResponse: null,
         deleteDialogVisible: false,
         loading: true,
@@ -83,7 +95,7 @@ class MembersSite extends React.Component<IProps, IState> {
             });
 
             this.setState({
-                getMembersResponse: responseGetMembers,
+                getUsersResponse: responseGetMembers,
                 getProjectInvitesResponse: responseGetProjectInvites
             });
         } catch (e) {
@@ -94,16 +106,20 @@ class MembersSite extends React.Component<IProps, IState> {
     };
 
     getRows = () => {
-        return this.state.getMembersResponse.data.map((member: any) => {
-            return {
-                id: member.id,
-                key: member.id,
-                username: member.attributes.username,
-                email: member.attributes.email,
-                role: member.attributes.role,
-                roleSource: member.attributes.role_source
-            };
-        }, []);
+        return (
+            this.state.getUsersResponse?.data?.map((user) => {
+                return {
+                    id: user.id,
+                    key: user.id,
+                    username: user.attributes.username,
+                    email: user.attributes.email,
+                    role: user.attributes.role,
+                    roleSource: user.attributes.role_source,
+                    deactivated_for_project: user.attributes.user_deactivated_for_project,
+                    deactivated_for_instance: user.attributes.deactivated
+                };
+            }, []) || []
+        );
     };
 
     getOrganizationRows = () => {
@@ -148,9 +164,9 @@ class MembersSite extends React.Component<IProps, IState> {
                             this.props.history.push(Routes.DASHBOARD.PROJECTS);
                         }
                     } else {
-                        const getMembersResponse = await MembersAPI.getMembers(this.props.match.params.projectId);
+                        const getUsersResponse = await MembersAPI.getMembers(this.props.match.params.projectId);
                         this.setState({
-                            getMembersResponse: getMembersResponse,
+                            getUsersResponse: getUsersResponse,
                             deleteDialogVisible: false
                         });
                     }
@@ -187,8 +203,34 @@ class MembersSite extends React.Component<IProps, IState> {
             {
                 title: "Username",
                 key: "username",
-                render: (_text, record) => {
-                    return <span style={{ color: "var(--full-color)", fontWeight: "bold" }}>{record.username}</span>;
+                render: (_text, record: IUserRow) => {
+                    return (
+                        <>
+                            <span style={{ color: "var(--full-color)", fontWeight: "bold" }}>{record.username}</span>
+                            {record.deactivated_for_project && (
+                                <Tooltip title="User has been deactivated for this organization. Go to your organization users site to activate this user.">
+                                    <Tag
+                                        className="texterify-table-row-disabled-skip"
+                                        style={{ marginLeft: 24 }}
+                                        color="red"
+                                    >
+                                        Deactivated
+                                    </Tag>
+                                </Tooltip>
+                            )}
+                            {record.deactivated_for_instance && (
+                                <Tooltip title="User account has been deactivated.">
+                                    <Tag
+                                        className="texterify-table-row-disabled-skip"
+                                        style={{ marginLeft: 24 }}
+                                        color="red"
+                                    >
+                                        Deactivated account
+                                    </Tag>
+                                </Tooltip>
+                            )}
+                        </>
+                    );
                 }
             },
             {
@@ -220,7 +262,7 @@ class MembersSite extends React.Component<IProps, IState> {
                             filterOption
                             style={{ marginRight: 24, width: 240 }}
                             value={record.role}
-                            onChange={async (value: string) => {
+                            onChange={async (value: IUserRole) => {
                                 try {
                                     const response = await MembersAPI.updateMember(
                                         this.props.match.params.projectId,
@@ -312,7 +354,7 @@ class MembersSite extends React.Component<IProps, IState> {
                                                 record.role
                                             ) &&
                                             record.email !== authStore.currentUser.email) ||
-                                        this.state.getMembersResponse?.data.length === 1
+                                        this.state.getUsersResponse?.data.length === 1
                                     }
                                 >
                                     {record.id === authStore.currentUser.id ? "Leave" : "Remove"}
@@ -330,10 +372,6 @@ class MembersSite extends React.Component<IProps, IState> {
     };
 
     render() {
-        if (!this.state.getMembersResponse || !this.state.getMembersResponse.data) {
-            return <Loading />;
-        }
-
         return (
             <>
                 <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%", maxWidth: 1200 }}>
@@ -369,9 +407,17 @@ class MembersSite extends React.Component<IProps, IState> {
                             <Table
                                 dataSource={this.getProjectRows()}
                                 columns={this.getColumns()}
-                                loading={this.state.loading}
+                                loading={
+                                    this.state.loading ||
+                                    dashboardStore.currentProject.attributes.current_user_deactivated
+                                }
                                 pagination={false}
                                 bordered
+                                rowClassName={(row: IUserRow) => {
+                                    return row.deactivated_for_instance || row.deactivated_for_project
+                                        ? "texterify-table-row-disabled"
+                                        : null;
+                                }}
                             />
                         </div>
 
@@ -380,9 +426,17 @@ class MembersSite extends React.Component<IProps, IState> {
                             <Table
                                 dataSource={this.getOrganizationRows()}
                                 columns={this.getColumns()}
-                                loading={this.state.loading}
+                                loading={
+                                    this.state.loading ||
+                                    dashboardStore.currentProject.attributes.current_user_deactivated
+                                }
                                 pagination={false}
                                 bordered
+                                // rowClassName={(row: IUserRow) => {
+                                //     return row.deactivated_for_instance || row.deactivated_for_organization
+                                //         ? "texterify-table-row-disabled"
+                                //         : null;
+                                // }}
                             />
                         </div>
 
@@ -394,7 +448,10 @@ class MembersSite extends React.Component<IProps, IState> {
                                 </Tooltip>
                             </h3>
                             <ProjectInvitesTable
-                                loading={this.state.loading}
+                                loading={
+                                    this.state.loading ||
+                                    dashboardStore.currentProject.attributes.current_user_deactivated
+                                }
                                 projectInvites={this.state.getProjectInvitesResponse?.data || []}
                                 onDelete={async () => {
                                     await this.reload();

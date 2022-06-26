@@ -4,13 +4,9 @@ RSpec.configure do |config|
     load(Rails.root.join('db', 'seeds.rb').to_s)
   end
 
-  config.before(:each) do
-    DatabaseCleaner.strategy = :transaction
-  end
+  config.before(:each) { DatabaseCleaner.strategy = :transaction }
 
-  config.before(:each, js: true) do
-    DatabaseCleaner.strategy = :truncation
-  end
+  config.before(:each, js: true) { DatabaseCleaner.strategy = :truncation }
 
   config.before(:each) do
     DatabaseCleaner.start
@@ -19,5 +15,9 @@ RSpec.configure do |config|
 
   config.after(:each) do
     DatabaseCleaner.clean
+
+    # Reload factory to reset sequences between tests so tests are deterministic when
+    # using snapshots in combination with sequences (e.g. "Organization 1").
+    FactoryBot.reload
   end
 end

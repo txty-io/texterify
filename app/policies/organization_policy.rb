@@ -34,6 +34,10 @@ class OrganizationPolicy
     ROLES_OWNER_UP.include? organization_user_role
   end
 
+  def activate_custom_subscription?
+    ROLES_OWNER_UP.include? organization_user_role
+  end
+
   private
 
   def organization_user_role

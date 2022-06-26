@@ -15,7 +15,8 @@ const Routes = {
     OTHER: {
         TERMS_OF_SERVICE: "https://texterify.com/terms-of-service",
         PRIVACY_POLICY: "https://texterify.com/privacy-policy",
-        WORDPRESS_INTEGRATION_GUIDE: "https://docs.texterify.com/integrations/wordpress"
+        WORDPRESS_INTEGRATION_GUIDE: "https://docs.texterify.com/integrations/wordpress",
+        PLACEHOLDERS: "https://docs.texterify.com/placeholders"
     },
     PRODUCT: {
         FEATURES: "/features",
@@ -41,9 +42,24 @@ const Routes = {
         PROJECT_EXPORT: "/dashboard/projects/:projectId/export",
         PROJECT_MEMBERS: "/dashboard/projects/:projectId/members",
         PROJECT_MACHINE_TRANSLATION: "/dashboard/projects/:projectId/machine-translation",
+        PROJECT_MACHINE_TRANSLATION_SETTINGS: "/dashboard/projects/:projectId/machine-translation/settings",
+        PROJECT_MACHINE_TRANSLATION_USAGE: "/dashboard/projects/:projectId/machine-translation/usage",
         PROJECT_EXPORT_CONFIGURATIONS: "/dashboard/projects/:projectId/export/configurations",
         PROJECT_EXPORT_HIERARCHY: "/dashboard/projects/:projectId/export/hierarchy",
+        PROJECT_ISSUES_ACTIVE: "/dashboard/projects/:projectId/active-issues",
+        PROJECT_ISSUES_IGNORED: "/dashboard/projects/:projectId/ignored-issues",
         PROJECT_SETTINGS: "/dashboard/projects/:projectId/settings",
+        PROJECT_SETTINGS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_SETTINGS.replace(":projectId", options.projectId);
+        },
+        PROJECT_SETTINGS_GENERAL: "/dashboard/projects/:projectId/settings/general",
+        PROJECT_SETTINGS_GENERAL_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_SETTINGS_GENERAL.replace(":projectId", options.projectId);
+        },
+        PROJECT_SETTINGS_ADVANCED: "/dashboard/projects/:projectId/settings/advanced",
+        PROJECT_SETTINGS_ADVANCED_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_SETTINGS_ADVANCED.replace(":projectId", options.projectId);
+        },
         PROJECT_KEYS: "/dashboard/projects/:projectId/keys",
         PROJECT_ACTIVITY: "/dashboard/projects/:projectId/activity",
         PROJECT_INTEGRATIONS: "/dashboard/projects/:projectId/integrations",
@@ -63,6 +79,14 @@ const Routes = {
             return Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC.replace(":projectId", options.projectId);
         },
         PROJECT_VALIDATIONS: "/dashboard/projects/:projectId/validations",
+        PROJECT_FORBIDDEN_WORDS: "/dashboard/projects/:projectId/forbidden-words",
+        PROJECT_FORBIDDEN_WORDS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS.replace(":projectId", options.projectId);
+        },
+        PROJECT_PLACEHOLDERS: "/dashboard/projects/:projectId/placeholders",
+        PROJECT_PLACEHOLDERS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_PLACEHOLDERS.replace(":projectId", options.projectId);
+        },
         PROJECT_OTA: "/dashboard/projects/:projectId/over-the-air",
         PROJECT_POST_PROCESSING: "/dashboard/projects/:projectId/post-processing",
         PROJECT_EDITOR: "/dashboard/projects/:projectId/editor",
@@ -126,6 +150,14 @@ const Routes = {
         ORGANIZATION_SETTINGS: "/dashboard/organizations/:organizationId/settings",
         ORGANIZATION_SUBSCRIPTION: "/dashboard/organizations/:organizationId/subscription",
         ORGANIZATION_MACHINE_TRANSLATION: "/dashboard/organizations/:organizationId/machine-translation",
+        ORGANIZATION_VALIDATIONS: "/dashboard/organizations/:organizationId/validations",
+        ORGANIZATION_VALIDATIONS_RESOLVER: (options: { organizationId: string }) => {
+            return Routes.DASHBOARD.ORGANIZATION_VALIDATIONS.replace(":organizationId", options.organizationId);
+        },
+        ORGANIZATION_FORBIDDEN_WORDS: "/dashboard/organizations/:organizationId/forbidden-words",
+        ORGANIZATION_FORBIDDEN_WORDS_RESOLVER: (options: { organizationId: string }) => {
+            return Routes.DASHBOARD.ORGANIZATION_FORBIDDEN_WORDS.replace(":organizationId", options.organizationId);
+        },
         INSTANCE: {
             ROOT: "/dashboard/instance",
             LICENSES: "/dashboard/instance/licenses",

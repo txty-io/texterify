@@ -1,4 +1,5 @@
 import {
+    AlertOutlined,
     BlockOutlined,
     EditOutlined,
     ExportOutlined,
@@ -9,13 +10,15 @@ import {
     LineChartOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
+    MonitorOutlined,
     OneToOneOutlined,
+    RightSquareOutlined,
     RobotOutlined,
     SettingOutlined,
     SwapOutlined,
     TeamOutlined
 } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Tag } from "antd";
 import { CollapseType } from "antd/lib/layout/Sider";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -31,8 +34,8 @@ const { Sider } = Layout;
 interface INavigationData {
     icon: any;
     path?: string;
+    text?: React.ReactNode;
     paths?: string[];
-    text?: string;
     roles?: string[];
     dataId: string;
     subItems?: INavigationData[];
@@ -72,8 +75,57 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             {
                 icon: EditOutlined,
                 path: Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId),
-                text: "Editor",
+                text: (
+                    <span>
+                        Editor
+                        <RightSquareOutlined style={{ marginLeft: 16 }} />
+                    </span>
+                ),
                 dataId: "project-sidebar-editor"
+            },
+            {
+                icon: MonitorOutlined,
+                path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
+                text: "QA",
+                roles: ROLES_TRANSLATOR_UP,
+                dataId: "project-sidebar-validations",
+                paths: [
+                    Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
+                    ,
+                    Routes.DASHBOARD.PROJECT_PLACEHOLDERS_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    }),
+                    Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    })
+                ]
+            },
+            {
+                icon: AlertOutlined,
+                path: Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(":projectId", this.props.match.params.projectId),
+                paths: [
+                    Routes.DASHBOARD.PROJECT_ISSUES_ACTIVE.replace(":projectId", this.props.match.params.projectId),
+                    Routes.DASHBOARD.PROJECT_ISSUES_IGNORED.replace(":projectId", this.props.match.params.projectId)
+                ],
+                text: (
+                    <span>
+                        Issues
+                        {dashboardStore.currentProject && dashboardStore.featureEnabled("FEATURE_VALIDATIONS") && (
+                            <Tag
+                                color={
+                                    dashboardStore.currentProject.attributes.issues_count > 0
+                                        ? "var(--color-warn)"
+                                        : "var(--color-success)"
+                                }
+                                style={{ marginLeft: 16 }}
+                            >
+                                {dashboardStore.currentProject.attributes.issues_count}
+                            </Tag>
+                        )}
+                    </span>
+                ),
+                roles: ROLES_TRANSLATOR_UP,
+                dataId: "project-sidebar-issues"
             },
             {
                 icon: RobotOutlined,
@@ -82,7 +134,21 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     this.props.match.params.projectId
                 ),
                 text: "Machine Translation",
-                dataId: "project-sidebar-machine-translation"
+                dataId: "project-sidebar-machine-translation",
+                paths: [
+                    Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION.replace(
+                        ":projectId",
+                        this.props.match.params.projectId
+                    ),
+                    Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION_SETTINGS.replace(
+                        ":projectId",
+                        this.props.match.params.projectId
+                    ),
+                    Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION_USAGE.replace(
+                        ":projectId",
+                        this.props.match.params.projectId
+                    )
+                ]
             },
             {
                 icon: ImportOutlined,
@@ -145,11 +211,6 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 text: "Activity",
                 dataId: "project-sidebar-activity"
             },
-            // {
-            //     icon: MonitorOutlined,
-            //     path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
-            //     text: "Validations"
-            // },
             {
                 icon: SwapOutlined,
                 path: Routes.DASHBOARD.PROJECT_OTA.replace(":projectId", this.props.match.params.projectId),
@@ -186,10 +247,20 @@ class ProjectSidebar extends React.Component<IProps, IState> {
             },
             {
                 icon: SettingOutlined,
-                path: Routes.DASHBOARD.PROJECT_SETTINGS.replace(":projectId", this.props.match.params.projectId),
+                path: Routes.DASHBOARD.PROJECT_SETTINGS_RESOLVER({
+                    projectId: this.props.match.params.projectId
+                }),
                 text: "Settings",
                 roles: ROLES_MANAGER_UP,
-                dataId: "project-sidebar-settings"
+                dataId: "project-sidebar-settings",
+                paths: [
+                    Routes.DASHBOARD.PROJECT_SETTINGS_GENERAL_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    }),
+                    Routes.DASHBOARD.PROJECT_SETTINGS_ADVANCED_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    })
+                ]
             }
         ];
     }
@@ -219,7 +290,8 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     height: 48,
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: dashboardStore.sidebarMinimized ? "center" : undefined
+                    justifyContent: dashboardStore.sidebarMinimized ? "center" : undefined,
+                    overflow: "hidden"
                 }}
             >
                 <Link

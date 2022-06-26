@@ -1,4 +1,6 @@
 class Api::V1::ExportConfigsController < Api::V1::ApiController
+  before_action :check_if_user_activated
+
   def index
     project = current_user.projects.find(params[:project_id])
 
@@ -67,6 +69,6 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
   private
 
   def export_config_params
-    params.require(:export_config).permit(:name, :file_format, :file_path, :default_language_file_path)
+    params.require(:export_config).permit(:name, :file_format, :file_path, :default_language_file_path, :split_on)
   end
 end

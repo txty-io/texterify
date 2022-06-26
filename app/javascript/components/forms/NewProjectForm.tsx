@@ -18,6 +18,7 @@ interface IProps {
     organizationId?: string;
     orientation?: "vertical" | "horizontal";
     onChanged?(project: IProject, isNew: boolean): void;
+    onUpdating?(): void;
     onError?(): void;
     onValidationsFailed?(): void;
 }
@@ -60,6 +61,10 @@ class NewProjectForm extends React.Component<IProps, IState> {
             let response: ICreateProjectResponse | IUpdateProjectResponse;
 
             if (this.props.isEdit) {
+                if (this.props.onUpdating) {
+                    this.props.onUpdating();
+                }
+
                 response = await ProjectsAPI.updateProject({
                     projectId: this.props.projectToEdit
                         ? this.props.projectToEdit.id

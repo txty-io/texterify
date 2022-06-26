@@ -1,4 +1,6 @@
 class Api::V1::KeysController < Api::V1::ApiController
+  before_action :check_if_user_activated
+
   def info_for_paper_trail
     { project_id: params[:project_id] }
   end
@@ -9,7 +11,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     key = project.keys.find(params[:id])
 
     options = {}
-    options[:include] = [:translations, :'translations.language']
+    options[:include] = [:translations, :'translations.language', :tags, :placeholders]
     render json: KeySerializer.new(key, options).serialized_json
   end
 
@@ -114,7 +116,7 @@ class Api::V1::KeysController < Api::V1::ApiController
 
     options = {}
     options[:meta] = { total: keys.size }
-    options[:include] = [:translations, :'translations.language', :tags]
+    options[:include] = [:translations, :'translations.language', :tags, :placeholders]
     render json: KeySerializer.new(keys.offset(page * per_page).limit(per_page), options).serialized_json
   end
 
@@ -128,7 +130,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     if key.save
       render json: KeySerializer.new(key).serialized_json
     else
-      render json: { errors: key.errors.details }, status: :bad_request
+      render json: { error: true, errors: key.errors.details }, status: :bad_request
     end
   end
 

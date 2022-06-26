@@ -22,6 +22,8 @@
 - A big selection of integrations
 - Cloud and on-premise options
 
+For future features see our [public roadmap](https://github.com/texterify/texterify/projects/1).
+
 Find out more at [texterify.com](https://texterify.com) or [sign up](https://app.texterify.com/signup) here.
 
 <p align="center">
@@ -109,6 +111,8 @@ yarn start:watcher
 
 Having done that you can open [http://localhost:3000](http://localhost:3000) and see your local development instance of Texterify.
 
+Make sure to also check out our development docs page at [https://docs.texterify.com/development](https://docs.texterify.com/development).
+
 <h2 id="troubleshooting">👀 Troubleshooting</h2>
 
 ### Why is the watcher command failing randomly with exit code 137?
@@ -125,6 +129,14 @@ error Command failed with exit code 137.
 ### After starting the server I get Webpacker::Manifest::MissingEntryError?
 
 This usually happens when you start the development server for the first time and webpack has not yet compiled the required frontend assets and therefore some files can not be found. Run `yarn start` in a terminal and `yarn start:watcher` in another one and wait for the `yarn start:watcher` command to finish initial compilation (the terminal outputs `Compiled successfully`). Then reload the site. This can take some minutes initially.
+
+### I get the error "common.rb:156:in `parse': 783: unexpected token at '' (JSON::ParserError)" when starting the server during development?
+
+Try to run the following command:
+
+```sh
+rails webpacker:compile
+```
 
 <h2 id="security">🔒 Security</h2>
 

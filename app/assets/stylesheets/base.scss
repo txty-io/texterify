@@ -20,6 +20,10 @@ ul, ol {
   padding: 0;
 }
 
+p {
+  margin-bottom: 24px !important;
+}
+
 li {
   list-style: none;
 }
@@ -49,6 +53,12 @@ footer {
   }
 }
 
+mark {
+  color: transparent;
+  background-color: var(--mark-background-color) !important;
+  padding: 0px !important;
+}
+
 .fade-in {
   animation: fade-in .3s;
 }
@@ -60,6 +70,15 @@ footer {
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+@keyframes rotating {
+  from {
+      transform: rotate(0deg);
+  }
+  to {
+      transform: rotate(360deg);
+  }
 }
 
 .no-transition {

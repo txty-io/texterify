@@ -1,5 +1,6 @@
 class Api::V1::ProjectUsersController < Api::V1::ApiController
   before_action :ensure_feature_enabled, only: [:create, :update]
+  before_action :check_if_user_activated, except: [:destroy]
 
   def index
     skip_authorization
@@ -21,9 +22,17 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     user = User.find_by(email: params[:email])
 
+    # Check if the user exists.
     unless user
       skip_authorization
       render json: { error: true, message: 'USER_NOT_FOUND' }, status: :not_found
+      return
+    end
+
+    # Check if the role exists.
+    role = params[:role]
+    if role && ROLE_PRIORITY_MAP[role.to_sym].nil?
+      render json: { error: true, message: 'ROLE_NOT_FOUND' }, status: :bad_request
       return
     end
 
@@ -36,6 +45,11 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
     user_organization_role = project.organization ? project.organization.role_of(user) : nil
     if user_organization_role
       project_user.role = user_organization_role
+    end
+
+    # Set given project role if higher than organization role.
+    if ROLE_PRIORITY_MAP[role.to_sym] > ROLE_PRIORITY_MAP[project_user.role.to_sym]
+      project_user.role = role
     end
 
     authorize project_user

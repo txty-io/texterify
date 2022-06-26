@@ -1,5 +1,5 @@
 import { FileTextOutlined } from "@ant-design/icons";
-import { Card, Layout, message, Statistic } from "antd";
+import { Alert, Card, Layout, message, Statistic } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import Dropzone from "react-dropzone";
@@ -43,32 +43,40 @@ export const InstanceLicensesSite = observer(() => {
                     <Statistic
                         className={disabled ? "disabled" : undefined}
                         title="Name"
-                        value={license.attributes.licensee.name}
+                        value={license.attributes.licensee?.name || "-"}
                         style={{ marginRight: 40 }}
                     />
                     <Statistic
                         className={disabled ? "disabled" : undefined}
                         title="E-Mail"
-                        value={license.attributes.licensee.email}
+                        value={license.attributes.licensee?.email || "-"}
                     />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24 }}>
                     <Statistic
                         className={disabled ? "disabled" : undefined}
                         title="Starts at"
-                        value={license.attributes.starts_at}
+                        value={license.attributes.starts_at || "-"}
                     />
                     <Statistic
                         className={disabled ? "disabled" : undefined}
                         title="Expires at"
-                        value={license.attributes.expires_at}
+                        value={license.attributes.expires_at || "-"}
                     />
                     <Statistic
                         className={disabled ? "disabled" : undefined}
                         title="Max active users"
-                        value={license.attributes.restrictions?.active_users_count}
+                        value={license.attributes.restrictions?.active_users_count || "-"}
                     />
                 </div>
+                {license.attributes.expired && (
+                    <Alert
+                        showIcon
+                        message="This license has expired."
+                        type="error"
+                        style={{ marginTop: 24, maxWidth: "100%" }}
+                    />
+                )}
             </div>
         );
     }
@@ -164,7 +172,7 @@ export const InstanceLicensesSite = observer(() => {
 
                 {licenses?.length > 1 && (
                     <>
-                        <h3 style={{ marginTop: 40 }}>Inactive licenses</h3>
+                        <h3 style={{ marginTop: 40 }}>Old licenses</h3>
 
                         {licenses?.slice(1).map((license) => {
                             return (
