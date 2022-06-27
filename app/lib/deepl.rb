@@ -34,6 +34,7 @@ module Deepl
           end
         else
           @api_token = ENV['DEEPL_API_TOKEN']
+          @api_endpoint = DEEPL_PRO_API
         end
       end
 
