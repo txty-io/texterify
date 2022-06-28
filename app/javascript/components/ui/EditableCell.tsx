@@ -1,10 +1,9 @@
-import { PermissionUtils } from "../utilities/PermissionUtils";
-import { dashboardStore } from "../stores/DashboardStore";
-import * as React from "react";
+import { Form, Input } from "antd";
 import FormItem from "antd/lib/form/FormItem";
-import { Input, Form, Tooltip } from "antd";
+import * as React from "react";
 import { IKeysTableRecord } from "../sites/dashboard/KeysSite";
-import { TranslationUtils } from "../utilities/TranslationUtils";
+import { dashboardStore } from "../stores/DashboardStore";
+import { PermissionUtils } from "../utilities/PermissionUtils";
 import { EditableCellInputPreview } from "./EditableCellInputPreview";
 
 interface IEditableRowProps {
@@ -32,6 +31,12 @@ interface IEditableCellProps {
     dataIndex: string;
     languageId: string;
     record: IKeysTableRecord;
+
+    // antd injected properties
+    className?: string;
+    colSpan?: number;
+    rowSpan?: number;
+
     handleSave: (record: IKeysTableRecord) => void;
     onCellEdit(options: { languageId: string; keyId: string }): any;
 }
@@ -42,7 +47,11 @@ export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellP
     const form = React.useContext(EditableContext);
 
     if (!props.record) {
-        return <td>{props.children}</td>;
+        return (
+            <td className={props.className} colSpan={props.colSpan} rowSpan={props.rowSpan}>
+                {props.children}
+            </td>
+        );
     }
 
     const isAllowedToChangeColumn =
@@ -90,7 +99,7 @@ export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellP
     };
 
     return (
-        <td>
+        <td className={props.className} colSpan={props.colSpan} rowSpan={props.rowSpan}>
             {props.editable ? (
                 editing ? (
                     <FormItem style={{ margin: 0, minWidth: 320, maxWidth: "100%" }} name={props.dataIndex}>
