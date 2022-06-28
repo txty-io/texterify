@@ -5,7 +5,7 @@ import * as queryString from "query-string";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
-import { ExportConfigsAPI, IExportConfig } from "../../api/v1/ExportConfigsAPI";
+import { ExportConfigsAPI, IExportConfig, IGetExportConfigsResponse } from "../../api/v1/ExportConfigsAPI";
 import { IGetKeysOptions, IGetKeysResponse, IKey, KeysAPI } from "../../api/v1/KeysAPI";
 import { ILanguage, LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
@@ -27,7 +27,6 @@ import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActive
 import { KeystrokeButtonWrapper } from "../../ui/KeystrokeButtonWrapper";
 import { KEYSTROKE_DEFINITIONS } from "../../ui/KeystrokeDefinitions";
 import { KeystrokeHandler } from "../../ui/KeystrokeHandler";
-import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
@@ -38,7 +37,7 @@ interface IState {
     isDeleting: boolean;
     languagesResponse: any;
     keysResponse: IGetKeysResponse;
-    exportConfigsResponse: any;
+    exportConfigsResponse: IGetExportConfigsResponse;
     addDialogVisible: boolean;
     page: number;
     search: string | undefined;
@@ -60,22 +59,26 @@ interface IState {
     htmlEnabledUpdating: boolean;
 }
 
-export interface IKeysTableRecord {
-    tags: JSX.Element[];
-    exportConfigOverwrites: JSX.Element[];
+export interface IKeysTableExpandedRecord {
     keysResponse: IGetKeysResponse;
     key: IKey;
     keyId: string;
-    name: string;
-    description: string;
-    nameEditable: boolean;
-    more: JSX.Element;
     translations: { [key: string]: ITranslation };
     languages: ILanguage[];
+    exportConfigId: string | null;
 }
 
+export type IKeysTableRecord = IKeysTableExpandedRecord & {
+    name?: string;
+    description?: string;
+    nameEditable?: boolean;
+    tags?: JSX.Element[];
+    exportConfigOverwrites?: JSX.Element[];
+    more?: JSX.Element;
+};
+
 class KeysSite extends React.Component<IProps, IState> {
-    debouncedSearchReloader: any = _.debounce(
+    debouncedSearchReloader = _.debounce(
         (value) => {
             const currentQueryParams = queryString.parse(history.location.search);
             const searchObject: { q?: string } = currentQueryParams;
@@ -312,16 +315,17 @@ class KeysSite extends React.Component<IProps, IState> {
         return this.state.keys.map((key) => {
             const translations = {};
 
-            // Stores for which languages a translation exists.
-            const translationExistsFor = {};
             key.relationships.translations.data.map((translationReference) => {
-                const translation = APIUtils.getIncludedObject(translationReference, this.state.keysResponse.included);
+                const translation: ITranslation = APIUtils.getIncludedObject(
+                    translationReference,
+                    this.state.keysResponse.included
+                );
 
-                if (!translation.relationships.export_config.data) {
-                    const languageId = translation.relationships.language.data.id;
-                    translations[languageId] = translation;
-                    translationExistsFor[`translation-exists-for-${languageId}`] = translation.id;
-                }
+                const exportConfigId = translation.relationships.export_config.data?.id || null;
+                const languageId = translation.relationships.language.data.id;
+
+                translations[languageId] = translations[languageId] || {};
+                translations[languageId][exportConfigId] = translation;
             });
 
             const overwrites = this.getKeyExportConfigOverwrites(key);
@@ -360,13 +364,13 @@ class KeysSite extends React.Component<IProps, IState> {
                         </Tag>
                     );
                 }),
+                exportConfigId: null,
                 key: key,
                 keysResponse: this.state.keysResponse,
                 keyId: key.attributes.id,
                 name: key.attributes.name,
                 description: key.attributes.description,
                 translations: translations,
-                ...translationExistsFor,
                 nameEditable: key.attributes.name_editable,
                 languages: this.state.languages,
                 more: (
@@ -928,10 +932,6 @@ class KeysSite extends React.Component<IProps, IState> {
 
                                                     return;
                                                 }
-
-                                                if (response.data) {
-                                                    newItem[`translation-exists-for-${languageKey}`] = response.data.id;
-                                                }
                                             }
                                         }
                                     }
@@ -943,47 +943,40 @@ class KeysSite extends React.Component<IProps, IState> {
                                 (this.state.exportConfigsResponse?.data || []).length === 0
                                     ? undefined
                                     : (record: IKeysTableRecord) => {
-                                          const data = [];
+                                          const data: IKeysTableExpandedRecord[] = [];
 
-                                          this.state.exportConfigsResponse.data.map((exportConfig) => {
+                                          this.state.exportConfigsResponse.data.forEach((exportConfig) => {
                                               const translations = {};
                                               const currentKey = this.state.keys.find((key) => {
                                                   return record.key.id === key.id;
                                               });
-                                              currentKey.relationships.translations.data.map((translationReference) => {
-                                                  const translation = APIUtils.getIncludedObject(
-                                                      translationReference,
-                                                      this.state.keysResponse.included
-                                                  );
-                                                  if (
-                                                      translation.relationships.export_config &&
-                                                      translation.relationships.export_config.data &&
-                                                      translation.relationships.export_config.data.id ===
-                                                          exportConfig.id
-                                                  ) {
+                                              currentKey.relationships.translations.data.forEach(
+                                                  (translationReference) => {
+                                                      const translation: ITranslation = APIUtils.getIncludedObject(
+                                                          translationReference,
+                                                          this.state.keysResponse.included
+                                                      );
+
+                                                      const exportConfigId =
+                                                          translation.relationships.export_config.data?.id || null;
                                                       const languageId = translation.relationships.language.data.id;
-                                                      let translationContent = translation.attributes.content;
-                                                      if (currentKey.attributes.html_enabled) {
-                                                          translationContent =
-                                                              Utils.getHTMLContentPreview(translationContent);
-                                                      }
-                                                      translations[`language-${languageId}`] = translationContent;
+
+                                                      translations[languageId] = translations[languageId] || {};
+                                                      translations[languageId][exportConfigId] = translation;
                                                   }
-                                              });
+                                              );
 
                                               data.push({
                                                   keyId: record.key.id,
-                                                  htmlEnabled: currentKey.attributes.html_enabled,
-                                                  exportConfigName: exportConfig.attributes.name,
+                                                  key: record.key,
                                                   exportConfigId: exportConfig.id,
                                                   translations: translations,
-                                                  key: record.key,
                                                   keysResponse: this.state.keysResponse,
                                                   languages: this.state.languages
                                               });
                                           });
 
-                                          const columns: any = [
+                                          const columns = [
                                               {
                                                   title: "Export target",
                                                   dataIndex: "exportConfigName",
@@ -1044,6 +1037,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                                           this.props.match.params.projectId,
                                                           options.keyId
                                                       );
+
                                                       this.setState({
                                                           editTranslationCellOpen: true,
                                                           editTranslationKeyId: options.keyId,
@@ -1146,7 +1140,8 @@ class KeysSite extends React.Component<IProps, IState> {
                         onSuccess: async () => {
                             this.setState({
                                 editTranslationCellOpen: false,
-                                editTranslationContentChanged: false
+                                editTranslationContentChanged: false,
+                                editTranslationExportConfigId: null
                             });
                             await this.reloadTable();
                         }
@@ -1154,7 +1149,8 @@ class KeysSite extends React.Component<IProps, IState> {
                     onCancelRequest={() => {
                         this.setState({
                             editTranslationCellOpen: false,
-                            editTranslationContentChanged: false
+                            editTranslationContentChanged: false,
+                            editTranslationExportConfigId: null
                         });
                     }}
                 />

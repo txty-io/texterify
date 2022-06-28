@@ -16,12 +16,24 @@ export function EditableCellInputPreview(props: {
     isCellEditable: boolean;
     dataIndex: string;
     languageId: string;
+    exportConfigId: string;
     onClick(): void;
 }) {
     const language = props.record.languages.find((l) => {
         return l.id === props.languageId;
     });
-    const translation: ITranslation | undefined = props.record.translations[props.languageId];
+
+    if (!language) {
+        return null;
+    }
+
+    const languageTranslations = props.record.translations[language.id];
+
+    if (!languageTranslations) {
+        return null;
+    }
+
+    const translation: ITranslation | undefined = languageTranslations[props.exportConfigId || null];
 
     const isNameColumnAndNotEditable = props.dataIndex === "name" && !props.record.nameEditable;
 

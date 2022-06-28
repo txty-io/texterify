@@ -32,7 +32,7 @@ export function EditTranslationFormModal(props: IProps) {
             }
             onCancel={props.onCancelRequest}
         >
-            <EditTranslationForm {...props.formProps} hideDefaultSubmitButton formId={formId} />
+            <EditTranslationForm {...props.formProps} formId={formId} />
         </TexterifyModal>
     );
 }

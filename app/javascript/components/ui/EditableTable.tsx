@@ -25,7 +25,7 @@ interface IEditableTableProps {
     onKeyUpdated(key: IKey): void;
 }
 interface IEditableTableState {
-    dataSource: any[];
+    dataSource: IKeysTableRecord[];
 }
 
 class EditableTable extends React.Component<IEditableTableProps, IEditableTableState> {
@@ -83,6 +83,7 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
             }
 
             return {
+                ...col,
                 onCell: (record: IKeysTableRecord) => {
                     return {
                         record: record,

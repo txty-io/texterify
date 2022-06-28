@@ -27,11 +27,11 @@ const TranslationsAPI = {
         projectId: string;
         languageId: string;
         keyId: string;
-        zero: string;
-        one: string;
-        two: string;
-        few: string;
-        many: string;
+        zero?: string;
+        one?: string;
+        two?: string;
+        few?: string;
+        many?: string;
         content: string; // other
         exportConfigId?: string;
         triggerAutoTranslate?: boolean;

@@ -1,7 +1,7 @@
 import { Form, FormInstance, message } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import * as React from "react";
-import { IGetKeyResponse, KeysAPI } from "../api/v1/KeysAPI";
+import { IGetKeyResponse } from "../api/v1/KeysAPI";
 import { IGetLanguagesResponse } from "../api/v1/LanguagesAPI";
 import { ITranslation, TranslationsAPI } from "../api/v1/TranslationsAPI";
 import { ErrorUtils } from "../ui/ErrorUtils";
@@ -15,7 +15,6 @@ export interface IEditTranslationFormProps {
     selectedLanguageId: string;
     selectedExportConfigId: string;
     formId?: string;
-    hideDefaultSubmitButton?: boolean;
     clearFieldsAfterSubmit?: boolean;
     onSuccess(): void;
 }
@@ -30,11 +29,12 @@ interface IFormValues {
 }
 
 export function EditTranslationForm(props: IEditTranslationFormProps) {
-    const [translation, setTranslation] = React.useState<ITranslation>(null);
+    const [translation, setTranslation] = React.useState<ITranslation | null>(null);
     const [translationLoading, setTranslationLoading] = React.useState<boolean>(true);
 
     const formRef = React.createRef<FormInstance>();
 
+    // Set the correct translation if language or export target changes.
     React.useEffect(() => {
         setTranslationLoading(true);
 
@@ -52,30 +52,40 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
         }
 
         setTranslationLoading(false);
-    }, [props.selectedLanguageId]);
+    }, [
+        props.projectId,
+        props.keyResponse,
+        props.selectedLanguageId,
+        props.selectedExportConfigId,
+        props.languagesResponse
+    ]);
 
+    // If the selected translation changes set the form fields accordingly.
     React.useEffect(() => {
         formRef.current?.setFieldsValue({
             zero: {
-                value: translation.attributes.zero
+                value: translation?.attributes.zero
             },
             one: {
-                value: translation.attributes.one
+                value: translation?.attributes.one
             },
             two: {
-                value: translation.attributes.two
+                value: translation?.attributes.two
             },
             few: {
-                value: translation.attributes.few
+                value: translation?.attributes.few
             },
             many: {
-                value: translation.attributes.many
+                value: translation?.attributes.many
             },
             other: {
-                value: translation.attributes.content
+                value: translation?.attributes.content
             }
         });
-    }, [translation, formRef]);
+    }, [
+        translation,
+        formRef
+    ]);
 
     const selectedLanguage = props.languagesResponse.data.find((language) => {
         return language.id === props.selectedLanguageId;
@@ -136,7 +146,8 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                             two: values.two,
                             few: values.few,
                             many: values.many,
-                            content: values.other
+                            content: values.other,
+                            exportConfigId: props.selectedExportConfigId
                         });
 
                         if (response.error) {

@@ -1,7 +1,7 @@
 import { Form, Input } from "antd";
 import FormItem from "antd/lib/form/FormItem";
 import * as React from "react";
-import { IKeysTableRecord } from "../sites/dashboard/KeysSite";
+import { IKeysTableExpandedRecord, IKeysTableRecord } from "../sites/dashboard/KeysSite";
 import { dashboardStore } from "../stores/DashboardStore";
 import { PermissionUtils } from "../utilities/PermissionUtils";
 import { EditableCellInputPreview } from "./EditableCellInputPreview";
@@ -38,7 +38,7 @@ interface IEditableCellProps {
     rowSpan?: number;
 
     handleSave: (record: IKeysTableRecord) => void;
-    onCellEdit(options: { languageId: string; keyId: string }): any;
+    onCellEdit(options: { languageId: string; keyId: string; exportConfigId: string }): void;
 }
 
 export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellProps) => {
@@ -75,7 +75,8 @@ export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellP
         ) {
             props.onCellEdit({
                 languageId: props.languageId,
-                keyId: props.record.keyId
+                keyId: props.record.keyId,
+                exportConfigId: props.record.exportConfigId
             });
         } else {
             setEditing(!editing);
@@ -118,6 +119,7 @@ export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellP
                         isCellEditable={isCellEditable}
                         dataIndex={props.dataIndex}
                         onClick={toggleEdit}
+                        exportConfigId={props.record.exportConfigId}
                     />
                 )
             ) : (
