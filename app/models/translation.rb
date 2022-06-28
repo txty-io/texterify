@@ -72,7 +72,7 @@ class Translation < ApplicationRecord
 
         is_violation =
           self.content.present? && translation_fw_matches_language_code && translation_fw_matches_country_code &&
-            self.content.downcase.split(' ').include?(forbidden_word.content.downcase)
+            self.content.downcase.split.include?(forbidden_word.content.downcase)
 
         if is_violation
           if !active_violation
@@ -175,8 +175,9 @@ class Translation < ApplicationRecord
   def auto_translate_untranslated
     project = key.project
 
-    if ENV['DEEPL_API_TOKEN'].present? && project.machine_translation_enabled && project.auto_translate_new_keys &&
-         !key.html_enabled && project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
+    if ENV.fetch('DEEPL_API_TOKEN', nil).present? && project.machine_translation_enabled &&
+         project.auto_translate_new_keys && !key.html_enabled &&
+         project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
       key
         .project
         .languages
@@ -238,11 +239,16 @@ class Translation < ApplicationRecord
       content_before = content_before_converted.nil? ? content_before : content_before_converted.to_s
       content_after = content_after_converted.nil? ? content_after : content_after_converted.to_s
 
-      content_before = content_before.nil? ? '' : content_before
-      content_after = content_after.nil? ? '' : content_after
+      if content_before.nil?
+        content_before = ''
+      end
+
+      if content_after.nil?
+        content_after = ''
+      end
 
       character_count_diff = content_after.length - content_before.length
-      word_count_diff = content_after.split(' ').length - content_before.split(' ').length
+      word_count_diff = content_after.split.length - content_before.split.length
 
       project = key.project
       project.character_count += character_count_diff
@@ -261,7 +267,7 @@ class Translation < ApplicationRecord
       unless translation_content.nil?
         project = key.project
         project.character_count -= translation_content.length
-        project.word_count -= translation_content.split(' ').length
+        project.word_count -= translation_content.split.length
         project.save!
       end
     end

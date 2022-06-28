@@ -121,9 +121,7 @@ module ImportHelper
     parsed = YAML.safe_load(content)
 
     { success: true, content: flatten_nested_keys(parsed) }
-  rescue Psych::SyntaxError => e
-    { success: false, error_message: e.message }
-  rescue StandardError => e
+  rescue Psych::SyntaxError, StandardError => e
     { success: false, error_message: e.message }
   end
 

@@ -66,7 +66,7 @@ class ProjectSerializer
   end
 
   attribute :machine_translation_active do |object|
-    ENV['DEEPL_API_TOKEN'].present? && object.machine_translation_enabled
+    ENV.fetch('DEEPL_API_TOKEN', nil).present? && object.machine_translation_enabled
   end
 
   attribute :current_user_deactivated, if: proc { |_, params| params[:current_user] } do |object, params|

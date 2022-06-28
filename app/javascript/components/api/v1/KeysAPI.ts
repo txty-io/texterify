@@ -1,3 +1,4 @@
+import { IErrorsResponse } from "../../ui/ErrorUtils";
 import { ISearchSettings } from "../../ui/KeySearchSettings";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
@@ -48,6 +49,12 @@ export interface IGetKeyResponse {
     meta: { total: number };
 }
 
+export interface ICreateKeyResponse {
+    data: IKey;
+    included: (ITranslation | ILanguage | IPlaceholder)[];
+    errors: IErrorsResponse;
+}
+
 export interface IGetKeysOptions {
     search?: string;
     page?: number;
@@ -82,11 +89,18 @@ const KeysAPI = {
             .catch(APIUtils.handleErrors);
     },
 
-    createKey: async (projectId: string, name: string, description: string, htmlEnabled: boolean): Promise<any> => {
-        return API.postRequest(`projects/${projectId}/keys`, true, {
-            name: name,
-            description: description,
-            html_enabled: htmlEnabled
+    createKey: async (options: {
+        projectId: string;
+        name: string;
+        description: string;
+        htmlEnabled: boolean;
+        pluralizationEnabled: boolean;
+    }): Promise<ICreateKeyResponse> => {
+        return API.postRequest(`projects/${options.projectId}/keys`, true, {
+            name: options.name,
+            description: options.description,
+            html_enabled: options.htmlEnabled,
+            pluralization_enabled: options.pluralizationEnabled
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);

@@ -1,9 +1,9 @@
 require 'google/cloud/storage'
 
-if ENV['GOOGLE_CLOUD_PROJECT'].present? && ENV['GOOGLE_CLOUD_KEYFILE'].present?
+if ENV.fetch('GOOGLE_CLOUD_PROJECT', nil).present? && ENV.fetch('GOOGLE_CLOUD_KEYFILE', nil).present?
   Google::Cloud::Storage.configure do |config|
-    config.project_id = ENV['GOOGLE_CLOUD_PROJECT']
-    config.credentials = JSON.parse(ENV['GOOGLE_CLOUD_KEYFILE'])
+    config.project_id = ENV.fetch('GOOGLE_CLOUD_PROJECT')
+    config.credentials = JSON.parse(ENV.fetch('GOOGLE_CLOUD_KEYFILE'))
   end
 end
 

@@ -75,7 +75,7 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
   private
 
   def verify_deepl_configured
-    if ENV['DEEPL_API_TOKEN'].blank?
+    if ENV.fetch('DEEPL_API_TOKEN', nil).nil?
       render json: { error: true, message: 'NOT_CONFIGURED' }, status: :bad_request
     end
   end

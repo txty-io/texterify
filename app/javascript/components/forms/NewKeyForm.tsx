@@ -38,12 +38,13 @@ class NewKeyForm extends React.Component<IProps> {
     formRef = React.createRef<FormInstance>();
 
     handleSubmit = async (values: IFormValues) => {
-        const response = await KeysAPI.createKey(
-            this.props.projectId,
-            values.name,
-            values.description,
-            values.htmlEnabled
-        );
+        const response = await KeysAPI.createKey({
+            projectId: this.props.projectId,
+            name: values.name,
+            description: values.description,
+            htmlEnabled: values.htmlEnabled,
+            pluralizationEnabled: values.pluralizationEnabled
+        });
 
         if (!response || !response.data || response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
@@ -209,7 +210,7 @@ class NewKeyForm extends React.Component<IProps> {
                                                         <TranslationCard
                                                             projectId={this.props.projectId}
                                                             languagesResponse={this.props.languagesResponse}
-                                                            defaultSelected={defaultLanguage}
+                                                            defaultSelected={defaultLanguage.id}
                                                             isHTMLKey
                                                             hideLanguageSelection
                                                             hideSaveButton

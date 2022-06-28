@@ -6,10 +6,11 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { ExportConfigsAPI, IExportConfig } from "../../api/v1/ExportConfigsAPI";
-import { IGetKeysOptions, IKey, KeysAPI } from "../../api/v1/KeysAPI";
-import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
+import { IGetKeysOptions, IGetKeysResponse, IKey, KeysAPI } from "../../api/v1/KeysAPI";
+import { ILanguage, LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
-import { TranslationsAPI } from "../../api/v1/TranslationsAPI";
+import { ITranslation, TranslationsAPI } from "../../api/v1/TranslationsAPI";
+import { EditTranslationFormModal } from "../../forms/EditTranslationFormModal";
 import { NewKeyForm } from "../../forms/NewKeyForm";
 import { history } from "../../routing/history";
 import { dashboardStore } from "../../stores/DashboardStore";
@@ -26,19 +27,17 @@ import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActive
 import { KeystrokeButtonWrapper } from "../../ui/KeystrokeButtonWrapper";
 import { KEYSTROKE_DEFINITIONS } from "../../ui/KeystrokeDefinitions";
 import { KeystrokeHandler } from "../../ui/KeystrokeHandler";
-import { TexterifyModal } from "../../ui/TexterifyModal";
 import { Utils } from "../../ui/Utils";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
-import { TranslationCard } from "./editor/TranslationCard";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
     keys: IKey[];
-    languages: any[];
+    languages: ILanguage[];
     selectedRowKeys: any[];
     isDeleting: boolean;
     languagesResponse: any;
-    keysResponse: any;
+    keysResponse: IGetKeysResponse;
     exportConfigsResponse: any;
     addDialogVisible: boolean;
     page: number;
@@ -59,6 +58,20 @@ interface IState {
     searchSettings: ISearchSettings;
     pluralizationEnabledUpdating: boolean;
     htmlEnabledUpdating: boolean;
+}
+
+export interface IKeysTableRecord {
+    tags: JSX.Element[];
+    exportConfigOverwrites: JSX.Element[];
+    keysResponse: IGetKeysResponse;
+    key: IKey;
+    keyId: string;
+    name: string;
+    description: string;
+    nameEditable: boolean;
+    more: JSX.Element;
+    translations: { [key: string]: ITranslation };
+    languages: ILanguage[];
 }
 
 class KeysSite extends React.Component<IProps, IState> {
@@ -274,6 +287,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 ),
                 dataIndex: `language-${language.id}`,
                 key: `language-${language.id}`,
+                languageId: language.id,
                 editable: true
             };
         }, []);
@@ -290,7 +304,7 @@ class KeysSite extends React.Component<IProps, IState> {
         ];
     };
 
-    getRows = (): any[] => {
+    getRows = (): IKeysTableRecord[] => {
         if (!this.state.keys) {
             return [];
         }
@@ -305,11 +319,7 @@ class KeysSite extends React.Component<IProps, IState> {
 
                 if (!translation.relationships.export_config.data) {
                     const languageId = translation.relationships.language.data.id;
-                    let translationContent = translation.attributes.content;
-                    if (key.attributes.html_enabled) {
-                        translationContent = Utils.getHTMLContentPreview(translationContent);
-                    }
-                    translations[`language-${languageId}`] = translationContent;
+                    translations[languageId] = translation;
                     translationExistsFor[`translation-exists-for-${languageId}`] = translation.id;
                 }
             });
@@ -333,8 +343,8 @@ class KeysSite extends React.Component<IProps, IState> {
                         </Tag>
                     ) : undefined,
                     key.attributes.pluralization_enabled ? (
-                        <Tag color="geekblue" style={{ margin: 0, marginRight: 4, marginBottom: 4 }}>
-                            Pluralization
+                        <Tag key="plural" color="geekblue" style={{ margin: 0, marginRight: 4, marginBottom: 4 }}>
+                            Plural
                         </Tag>
                     ) : undefined,
                     key.relationships.wordpress_contents.data.length > 0 ? (
@@ -350,14 +360,15 @@ class KeysSite extends React.Component<IProps, IState> {
                         </Tag>
                     );
                 }),
-                key: key.attributes.id,
+                key: key,
+                keysResponse: this.state.keysResponse,
                 keyId: key.attributes.id,
                 name: key.attributes.name,
                 description: key.attributes.description,
-                htmlEnabled: key.attributes.html_enabled,
-                ...translations,
+                translations: translations,
                 ...translationExistsFor,
                 nameEditable: key.attributes.name_editable,
+                languages: this.state.languages,
                 more: (
                     <Popover
                         placement="topRight"
@@ -431,7 +442,7 @@ class KeysSite extends React.Component<IProps, IState> {
         }, []);
     };
 
-    changeHTMLEnabled = async (key: any) => {
+    changeHTMLEnabled = async (key: IKey) => {
         this.setState({ htmlEnabledUpdating: true });
 
         try {
@@ -450,7 +461,7 @@ class KeysSite extends React.Component<IProps, IState> {
         this.setState({ htmlEnabledUpdating: false });
     };
 
-    changePluralizationEnabled = async (key: any) => {
+    changePluralizationEnabled = async (key: IKey) => {
         this.setState({ pluralizationEnabledUpdating: true });
 
         try {
@@ -875,15 +886,15 @@ class KeysSite extends React.Component<IProps, IState> {
                             onKeyUpdated={async () => {
                                 await this.reloadTable();
                             }}
-                            onSave={async (oldRow, newRow) => {
+                            onSave={async (oldRow: IKeysTableRecord, newRow: IKeysTableRecord) => {
                                 if (oldRow.name !== newRow.name || oldRow.description !== newRow.description) {
                                     const response = await KeysAPI.update({
                                         projectId: this.props.match.params.projectId,
-                                        keyId: newRow.key,
+                                        keyId: newRow.key.id,
                                         name: newRow.name,
                                         description: newRow.description,
-                                        htmlEnabled: newRow.html_enabled,
-                                        pluralizationEnabled: newRow.html_enabled
+                                        htmlEnabled: newRow.key.attributes.html_enabled,
+                                        pluralizationEnabled: newRow.key.attributes.pluralization_enabled
                                     });
 
                                     await this.reloadTable();
@@ -908,7 +919,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                                 const response = await TranslationsAPI.createTranslation({
                                                     projectId: this.props.match.params.projectId,
                                                     languageId: languageKey,
-                                                    keyId: newItem.key,
+                                                    keyId: newItem.key.id,
                                                     content: content
                                                 });
 
@@ -931,13 +942,13 @@ class KeysSite extends React.Component<IProps, IState> {
                             expandedRowRender={
                                 (this.state.exportConfigsResponse?.data || []).length === 0
                                     ? undefined
-                                    : (record) => {
+                                    : (record: IKeysTableRecord) => {
                                           const data = [];
 
                                           this.state.exportConfigsResponse.data.map((exportConfig) => {
                                               const translations = {};
                                               const currentKey = this.state.keys.find((key) => {
-                                                  return record.key === key.id;
+                                                  return record.key.id === key.id;
                                               });
                                               currentKey.relationships.translations.data.map((translationReference) => {
                                                   const translation = APIUtils.getIncludedObject(
@@ -961,13 +972,14 @@ class KeysSite extends React.Component<IProps, IState> {
                                               });
 
                                               data.push({
-                                                  key: `${record.key}-${exportConfig.id}`,
-                                                  keyId: record.key,
+                                                  keyId: record.key.id,
                                                   htmlEnabled: currentKey.attributes.html_enabled,
                                                   exportConfigName: exportConfig.attributes.name,
                                                   exportConfigId: exportConfig.id,
-                                                  ...translations
-                                                  //   more: <MoreOutlined style={{ width: 40 }} />
+                                                  translations: translations,
+                                                  key: record.key,
+                                                  keysResponse: this.state.keysResponse,
+                                                  languages: this.state.languages
                                               });
                                           });
 
@@ -1123,60 +1135,29 @@ class KeysSite extends React.Component<IProps, IState> {
                     )}
                 </Drawer>
 
-                <TexterifyModal
-                    title="Edit content"
+                <EditTranslationFormModal
                     visible={this.state.editTranslationCellOpen}
-                    onCancel={() => {
-                        this.setState({ editTranslationCellOpen: false });
+                    formProps={{
+                        projectId: this.props.match.params.projectId,
+                        languagesResponse: this.state.languagesResponse,
+                        keyResponse: this.state.editTranslationKeyReponse,
+                        selectedLanguageId: this.state.editTranslationLanguageId,
+                        selectedExportConfigId: this.state.editTranslationExportConfigId,
+                        onSuccess: async () => {
+                            this.setState({
+                                editTranslationCellOpen: false,
+                                editTranslationContentChanged: false
+                            });
+                            await this.reloadTable();
+                        }
                     }}
-                    afterClose={() => {
-                        this.setState({ editTranslationExportConfigId: "" });
+                    onCancelRequest={() => {
+                        this.setState({
+                            editTranslationCellOpen: false,
+                            editTranslationContentChanged: false
+                        });
                     }}
-                    footer={
-                        <div style={{ margin: "6px 0" }}>
-                            <Button
-                                onClick={() => {
-                                    this.setState({
-                                        editTranslationCellOpen: false,
-                                        editTranslationContentChanged: false
-                                    });
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                disabled={!this.state.editTranslationContentChanged}
-                                type="primary"
-                                onClick={async () => {
-                                    await this.translationCardRef.saveChanges();
-                                    this.setState({
-                                        editTranslationCellOpen: false,
-                                        editTranslationContentChanged: false
-                                    });
-                                    await this.reloadTable();
-                                }}
-                            >
-                                Save changes
-                            </Button>
-                        </div>
-                    }
-                >
-                    <TranslationCard
-                        projectId={this.props.match.params.projectId}
-                        keyResponse={this.state.editTranslationKeyReponse}
-                        languagesResponse={this.state.languagesResponse}
-                        defaultSelected={this.state.editTranslationLanguageId}
-                        exportConfigId={this.state.editTranslationExportConfigId}
-                        hideLanguageSelection
-                        hideSaveButton
-                        ref={(ref) => {
-                            return (this.translationCardRef = ref);
-                        }}
-                        onChange={(changed: boolean) => {
-                            this.setState({ editTranslationContentChanged: changed });
-                        }}
-                    />
-                </TexterifyModal>
+                />
             </>
         );
     }

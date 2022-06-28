@@ -93,8 +93,6 @@ class ExportConfig < ApplicationRecord
       arb(language, export_data)
     elsif file_format == 'xliff'
       xliff(language, export_data, language_source, export_data_source)
-    else
-      json(language, export_data)
     end
   end
 

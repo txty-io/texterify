@@ -33,7 +33,7 @@ module Deepl
                   )
           end
         else
-          @api_token = ENV['DEEPL_API_TOKEN']
+          @api_token = ENV.fetch('DEEPL_API_TOKEN')
         end
       end
 
@@ -127,7 +127,7 @@ module Deepl
                 auth_key: @api_token
               }
             },
-            proxy: ENV['http_proxy_deepl']
+            proxy: ENV.fetch('http_proxy_deepl', nil)
           )
         JSON.parse(response)
       rescue => e

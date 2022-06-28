@@ -67,6 +67,6 @@ class Api::V1::TranslationsController < Api::V1::ApiController
   private
 
   def translation_params
-    params.require(:translation).permit(:content)
+    params.require(:translation).permit(:zero, :one, :two, :few, :many, :content)
   end
 end

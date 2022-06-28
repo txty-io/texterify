@@ -3,6 +3,9 @@ import { dashboardStore } from "../stores/DashboardStore";
 import * as React from "react";
 import FormItem from "antd/lib/form/FormItem";
 import { Input, Form, Tooltip } from "antd";
+import { IKeysTableRecord } from "../sites/dashboard/KeysSite";
+import { TranslationUtils } from "../utilities/TranslationUtils";
+import { EditableCellInputPreview } from "./EditableCellInputPreview";
 
 interface IEditableRowProps {
     index: number;
@@ -27,47 +30,47 @@ interface IEditableCellProps {
     editable: boolean;
     children: React.ReactNode;
     dataIndex: string;
-    record: any;
-    handleSave: (record: any) => void;
-    onCellEdit(options: { languageId: string; keyId: string; exportConfigId?: string }): any;
+    languageId: string;
+    record: IKeysTableRecord;
+    handleSave: (record: IKeysTableRecord) => void;
+    onCellEdit(options: { languageId: string; keyId: string }): any;
 }
 
-export const EditableCell: React.FC<IEditableCellProps> = ({
-    title,
-    editable,
-    children,
-    dataIndex,
-    record,
-    handleSave,
-    onCellEdit,
-    ...restProps
-}) => {
+export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellProps) => {
     const [editing, setEditing] = React.useState(false);
     const inputRef = React.useRef<any>();
     const form = React.useContext(EditableContext);
 
+    if (!props.record) {
+        return <td>{props.children}</td>;
+    }
+
     const isAllowedToChangeColumn =
-        dataIndex !== "name" || PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole());
-    const canNameBeChangedIfName = (dataIndex === "name" && record.nameEditable) || dataIndex !== "name";
-    const isCellEditable = isAllowedToChangeColumn && canNameBeChangedIfName;
+        props.dataIndex !== "name" || PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole());
+
+    const isNameColumnAndNotEditable = props.dataIndex === "name" && !props.record.nameEditable;
+
+    const isCellEditable = isAllowedToChangeColumn && !isNameColumnAndNotEditable;
 
     React.useEffect(() => {
         if (editing && inputRef && inputRef.current) {
-            // eslint-disable-next-line no-unused-expressions
             inputRef.current.focus();
         }
     }, [editing]);
 
     const toggleEdit = () => {
-        if (record.htmlEnabled && dataIndex !== "name" && dataIndex !== "description") {
-            onCellEdit({
-                languageId: dataIndex.substr("language-".length),
-                keyId: record.keyId,
-                exportConfigId: record.exportConfigId
+        if (
+            (props.record.key.attributes.html_enabled || props.record.key.attributes.pluralization_enabled) &&
+            props.dataIndex !== "name" &&
+            props.dataIndex !== "description"
+        ) {
+            props.onCellEdit({
+                languageId: props.languageId,
+                keyId: props.record.keyId
             });
         } else {
             setEditing(!editing);
-            form.setFieldsValue({ [dataIndex]: record[dataIndex] });
+            form.setFieldsValue({ [props.dataIndex]: props.record[props.dataIndex] });
         }
     };
 
@@ -78,8 +81,8 @@ export const EditableCell: React.FC<IEditableCellProps> = ({
             toggleEdit();
 
             // Only save changes if content changed.
-            if (values[dataIndex] !== children[1]) {
-                handleSave({ ...record, ...values });
+            if (values[props.dataIndex] !== props.children[1]) {
+                props.handleSave({ ...props.record, ...values });
             }
         } catch (errInfo) {
             console.log("Save failed:", errInfo);
@@ -87,10 +90,10 @@ export const EditableCell: React.FC<IEditableCellProps> = ({
     };
 
     return (
-        <td {...restProps}>
-            {editable ? (
+        <td>
+            {props.editable ? (
                 editing ? (
-                    <FormItem style={{ margin: 0, minWidth: 320, maxWidth: "100%" }} name={dataIndex}>
+                    <FormItem style={{ margin: 0, minWidth: 320, maxWidth: "100%" }} name={props.dataIndex}>
                         <Input.TextArea
                             ref={inputRef}
                             onPressEnter={save}
@@ -100,41 +103,16 @@ export const EditableCell: React.FC<IEditableCellProps> = ({
                         />
                     </FormItem>
                 ) : (
-                    <Tooltip
-                        title={
-                            canNameBeChangedIfName
-                                ? undefined
-                                : "The name of keys synced with WordPress can't be changed."
-                        }
-                    >
-                        <div
-                            className={isCellEditable ? "editable-cell-value-wrap" : undefined}
-                            style={{
-                                minWidth: 320,
-                                maxWidth: "100%",
-                                overflow: "auto",
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                wordBreak: "break-word"
-                            }}
-                            data-id="editable-cell-content"
-                            onClick={isCellEditable ? toggleEdit : undefined}
-                            role="button"
-                            dangerouslySetInnerHTML={
-                                record.htmlEnabled
-                                    ? {
-                                          __html: children[1]
-                                      }
-                                    : undefined
-                            }
-                        >
-                            {record.htmlEnabled ? undefined : children[1]}
-                        </div>
-                    </Tooltip>
+                    <EditableCellInputPreview
+                        languageId={props.languageId}
+                        record={props.record}
+                        isCellEditable={isCellEditable}
+                        dataIndex={props.dataIndex}
+                        onClick={toggleEdit}
+                    />
                 )
             ) : (
-                children
+                props.children
             )}
         </td>
     );

@@ -12,7 +12,7 @@ class OrganizationUser < ApplicationRecord
 
   def update_subscription_users
     if Texterify.cloud? && organization&.active_subscription
-      RestClient.put("#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/users?organization_id=#{organization.id}", {})
+      RestClient.put("#{ENV.fetch('PAYMENT_SERVICE_HOST')}/subscriptions/users?organization_id=#{organization.id}", {})
     end
   end
 end

@@ -4,6 +4,7 @@ import * as React from "react";
 import { EditableRow, EditableCell } from "./EditableCell";
 import { TablePaginationConfig } from "antd/lib/table";
 import { IKey } from "../api/v1/KeysAPI";
+import { IKeysTableRecord } from "../sites/dashboard/KeysSite";
 
 interface IEditableTableProps {
     dataSource: any;
@@ -82,13 +83,10 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
             }
 
             return {
-                ...col,
-                onCell: (record) => {
+                onCell: (record: IKeysTableRecord) => {
                     return {
-                        record,
-                        editable: col.editable,
-                        dataIndex: col.dataIndex,
-                        title: col.title,
+                        record: record,
+                        ...col,
                         handleSave: this.handleSave,
                         onCellEdit: this.props.onCellEdit
                     };

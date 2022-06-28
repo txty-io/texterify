@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :validation_violation do
+  factory :language_plural do
     #
   end
 end

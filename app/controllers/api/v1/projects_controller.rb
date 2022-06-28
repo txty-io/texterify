@@ -323,7 +323,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
       current_user
         .projects
         .joins('INNER JOIN recently_viewed_projects rvp ON rvp.project_id = projects.id')
-        .where('rvp.user_id = ?', current_user.id)
+        .where(rvp: { user_id: current_user.id })
         .order(last_accessed: :desc)
 
     per_page = 10

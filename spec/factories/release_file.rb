@@ -1,6 +1,8 @@
 FactoryBot.define do
   factory :release_file do
-    release_id {}
+    release_id do
+      #
+    end
 
     sequence :preview_url do |n|
       "http://localhost/preview-url-#{language_code}-#{country_code}-#{n}"
