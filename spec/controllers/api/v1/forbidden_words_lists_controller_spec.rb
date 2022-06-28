@@ -63,7 +63,7 @@ RSpec.describe Api::V1::ForbiddenWordsListsController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
 
-      expect(body['error']).to eq(false)
+      expect(body['error']).to be(false)
       expect(body['details']).to eq('FORBIDDEN_WORDS_LIST_CREATED')
       expect(ForbiddenWordsList.count).to eq(1)
       expect(ForbiddenWordsList.first.name).to eq('my name')
@@ -95,7 +95,7 @@ RSpec.describe Api::V1::ForbiddenWordsListsController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
 
-      expect(body['error']).to eq(false)
+      expect(body['error']).to be(false)
       expect(body['details']).to eq('FORBIDDEN_WORDS_LIST_UPDATED')
       expect(ForbiddenWordsList.count).to eq(1)
       expect(ForbiddenWordsList.first.name).to eq('new name')
@@ -111,7 +111,7 @@ RSpec.describe Api::V1::ForbiddenWordsListsController, type: :request do
       expect(response.status).to eq(400)
       body = JSON.parse(response.body)
 
-      expect(body['error']).to eq(true)
+      expect(body['error']).to be(true)
     end
   end
 
@@ -134,7 +134,7 @@ RSpec.describe Api::V1::ForbiddenWordsListsController, type: :request do
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
 
-      expect(body['error']).to eq(false)
+      expect(body['error']).to be(false)
       expect(body['details']).to eq('FORBIDDEN_WORDS_LIST_DELETED')
       expect(ForbiddenWordsList.count).to eq(0)
     end

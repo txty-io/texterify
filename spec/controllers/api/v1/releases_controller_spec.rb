@@ -98,7 +98,11 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
     end
 
     it 'has status code 302 if release file for locale was found' do
-      FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
+      FactoryBot.create(
+        :release,
+        export_config_id: @export_config.id,
+        locales: [{ language_code: 'de', country_code: 'AT' }]
+      )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-AT"
       expect(response.status).to eq(302)
     end
@@ -111,53 +115,106 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
     end
 
     it 'has status code 302 if release file for locale was found #2' do
-      release = FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
+      release =
+        FactoryBot.create(
+          :release,
+          export_config_id: @export_config.id,
+          locales: [{ language_code: 'de', country_code: 'AT' }]
+        )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de"
       expect(response.status).to eq(302)
       expect(response).to redirect_to(release.release_files[0].url)
     end
 
     it 'has status code 302 if release file for locale was found #3' do
-      release = FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
+      release =
+        FactoryBot.create(
+          :release,
+          export_config_id: @export_config.id,
+          locales: [{ language_code: 'de', country_code: 'AT' }]
+        )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-DE"
       expect(response.status).to eq(302)
       expect(response).to redirect_to(release.release_files[0].url)
     end
 
     it 'has status code 302 if release file for locale was found #4' do
-      FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }, { language_code: 'de', country_code: 'DE' }])
+      FactoryBot.create(
+        :release,
+        export_config_id: @export_config.id,
+        locales: [{ language_code: 'de', country_code: 'AT' }, { language_code: 'de', country_code: 'DE' }]
+      )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-DE"
       expect(response.status).to eq(302)
       expect(response).to redirect_to(%r{http://localhost/url-de-DE-.})
     end
 
     it 'has status code 304 if timestamp is in the future' do
-      FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
+      FactoryBot.create(
+        :release,
+        export_config_id: @export_config.id,
+        locales: [{ language_code: 'de', country_code: 'AT' }]
+      )
       time = Time.now.utc
       timestamp = time.iso8601
-      timestamp_10_minutes_in_future = (time + 10 * 60).iso8601
-      FactoryBot.create(:release, export_config_id: @export_config.id, timestamp: timestamp, locales: [{ language_code: 'de', country_code: 'AT' }])
+      timestamp_10_minutes_in_future = (time + (10 * 60)).iso8601
+      FactoryBot.create(
+        :release,
+        export_config_id: @export_config.id,
+        timestamp: timestamp,
+        locales: [{ language_code: 'de', country_code: 'AT' }]
+      )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-AT&timestamp=#{timestamp_10_minutes_in_future}"
       expect(response.status).to eq(304)
     end
 
     it 'has status code 304 if timestamp is equal to latest release timestamp' do
-      FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
-      release = FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }], timestamp: (Time.now.utc + 10 * 60).iso8601)
+      FactoryBot.create(
+        :release,
+        export_config_id: @export_config.id,
+        locales: [{ language_code: 'de', country_code: 'AT' }]
+      )
+      release =
+        FactoryBot.create(
+          :release,
+          export_config_id: @export_config.id,
+          locales: [{ language_code: 'de', country_code: 'AT' }],
+          timestamp: (Time.now.utc + (10 * 60)).iso8601
+        )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-AT&timestamp=#{release.timestamp}"
       expect(response.status).to eq(304)
     end
 
     it 'has status code 302 if timestamp is equal to old release timestamp' do
-      old_release = FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
-      FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }], timestamp: (Time.now.utc + 10 * 60).iso8601)
+      old_release =
+        FactoryBot.create(
+          :release,
+          export_config_id: @export_config.id,
+          locales: [{ language_code: 'de', country_code: 'AT' }]
+        )
+      FactoryBot.create(
+        :release,
+        export_config_id: @export_config.id,
+        locales: [{ language_code: 'de', country_code: 'AT' }],
+        timestamp: (Time.now.utc + (10 * 60)).iso8601
+      )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-AT&timestamp=#{old_release.timestamp}"
       expect(response.status).to eq(302)
     end
 
     it 'has status code 304 if timestamp is equal to old release timestamp but locale is not available anymore in new release' do
-      old_release = FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
-      FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'en' }], timestamp: (Time.now.utc + 10 * 60).iso8601)
+      old_release =
+        FactoryBot.create(
+          :release,
+          export_config_id: @export_config.id,
+          locales: [{ language_code: 'de', country_code: 'AT' }]
+        )
+      FactoryBot.create(
+        :release,
+        export_config_id: @export_config.id,
+        locales: [{ language_code: 'en' }],
+        timestamp: (Time.now.utc + (10 * 60)).iso8601
+      )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-AT&timestamp=#{old_release.timestamp}"
       expect(response.status).to eq(304)
     end
@@ -196,12 +253,16 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
       post "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/releases", headers: @auth_params
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
-      expect(body['success']).to eq(true)
+      expect(body['success']).to be(true)
       expect(Release.all.size).to eq(1)
     end
 
     it 'has status code 200 and creates a second release with increased version' do
-      FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
+      FactoryBot.create(
+        :release,
+        export_config_id: @export_config.id,
+        locales: [{ language_code: 'de', country_code: 'AT' }]
+      )
       expect(Release.all.size).to eq(1)
       version = Release.first.version
       language = Language.new
@@ -212,7 +273,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
       post "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/releases", headers: @auth_params
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
-      expect(body['success']).to eq(true)
+      expect(body['success']).to be(true)
       expect(Release.all.size).to eq(2)
       expect(Release.order(created_at: :desc).first.version).to eq(version + 1)
     end

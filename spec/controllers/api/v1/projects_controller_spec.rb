@@ -176,7 +176,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
       expect(body['data']['attributes'].keys).to contain_exactly(*PROJECT_ATTRIBUTES)
       expect(body['data']['attributes']['name']).to eq(name)
-      expect(body['data']['attributes']['description']).to eq(nil)
+      expect(body['data']['attributes']['description']).to be_nil
     end
 
     it 'creates a new project with name and description' do
@@ -244,7 +244,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
           expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
           expect(body['data']['attributes'].keys).to contain_exactly(*PROJECT_ATTRIBUTES)
           expect(body['data']['attributes']['name']).to eq(new_name)
-          expect(body['data']['attributes']['description']).to eq(nil)
+          expect(body['data']['attributes']['description']).to be_nil
         end
       end
     end

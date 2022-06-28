@@ -35,14 +35,14 @@ RSpec.describe Api::V1::UsersController, type: :request do
       get '/api/v1/users/info', headers: @auth_params
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
-      expect(body['confirmed']).to eq(false)
+      expect(body['confirmed']).to be(false)
     end
 
     it 'returns current user info with confirmed true for confirmed user' do
       get '/api/v1/users/info', headers: @auth_params_confirmed
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
-      expect(body['confirmed']).to eq(true)
+      expect(body['confirmed']).to be(true)
     end
   end
 end

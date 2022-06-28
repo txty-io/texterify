@@ -124,12 +124,12 @@ RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :request
           headers: @auth_params
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
-      expect(body['error']).to eq(true)
+      expect(body['error']).to be(true)
       expect(body['details']).to eq('INVALID_DEEPL_API_TOKEN')
 
       organization = Organization.find(@organization.id)
-      expect(organization.deepl_api_token).to eq(nil)
-      expect(organization.deepl_api_token_type).to eq(nil)
+      expect(organization.deepl_api_token).to be_nil
+      expect(organization.deepl_api_token_type).to be_nil
     end
 
     it 'clears settings when no token is provided' do
@@ -144,8 +144,8 @@ RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :request
       expect(response.status).to eq(200)
 
       organization = Organization.find(@organization.id)
-      expect(organization.deepl_api_token).to eq(nil)
-      expect(organization.deepl_api_token_type).to eq(nil)
+      expect(organization.deepl_api_token).to be_nil
+      expect(organization.deepl_api_token_type).to be_nil
     end
   end
 end

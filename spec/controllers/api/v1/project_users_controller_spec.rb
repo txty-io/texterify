@@ -280,7 +280,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
             expect(response.status).to eq(expected_response_status)
             if expected_response_status == 200
               body = JSON.parse(response.body)
-              expect(body['success']).to eq(true)
+              expect(body['success']).to be(true)
             end
           end
         end
@@ -293,7 +293,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
       put "/api/v1/projects/#{@project.id}/members/#{new_user.id}", params: { role: 'developer' }, headers: @auth_params
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
-      expect(body['success']).to eq(true)
+      expect(body['success']).to be(true)
       expect(ProjectUser.all.size).to eq(project_users_count + 1)
     end
 

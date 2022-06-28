@@ -57,7 +57,7 @@ RSpec.describe Api::V1::LanguagesController, type: :request do
       post "/api/v1/projects/#{@project.id}/languages", params: { name: name }, headers: @auth_params, as: :json
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
-      expect(body['success']).to eq(true)
+      expect(body['success']).to be(true)
       expect(body['details']).to eq('Language successfully created.')
     end
 
@@ -112,7 +112,7 @@ RSpec.describe Api::V1::LanguagesController, type: :request do
 
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
-      expect(body['success']).to eq(true)
+      expect(body['success']).to be(true)
       expect(body['details']).to eq('Language successfully created.')
       expect(project.translations.size).to eq(8)
       expect(project.languages.size).to eq(2)
