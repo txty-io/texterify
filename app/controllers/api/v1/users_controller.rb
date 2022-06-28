@@ -6,7 +6,7 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     render json: {
              confirmed: current_user.confirmed,
-             version: ENV.fetch('COMMIT'),
+             version: ENV.fetch('COMMIT', nil),
              redeemable_custom_subscriptions:
                CustomSubscriptionSerializer.new(
                  CustomSubscription.where(organization_id: nil, redeemable_by_email: current_user.email)
