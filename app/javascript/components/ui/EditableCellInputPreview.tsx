@@ -1,5 +1,6 @@
 import { Tooltip } from "antd";
 import * as React from "react";
+import { ITranslation } from "../api/v1/TranslationsAPI";
 import { IKeysTableRecord } from "../sites/dashboard/KeysSite";
 
 function PluralHeader(props: { children: React.ReactNode; isFirst: boolean }) {
@@ -20,7 +21,7 @@ export function EditableCellInputPreview(props: {
     const language = props.record.languages.find((l) => {
         return l.id === props.languageId;
     });
-    const translation = props.record.translations[props.languageId];
+    const translation: ITranslation | undefined = props.record.translations[props.languageId];
 
     const isNameColumnAndNotEditable = props.dataIndex === "name" && !props.record.nameEditable;
 
@@ -80,36 +81,36 @@ export function EditableCellInputPreview(props: {
                     {language.attributes.supports_plural_zero && (
                         <>
                             <PluralHeader isFirst={firstItem === "zero"}>Zero</PluralHeader>
-                            <EditableInput content={translation.attributes.zero} />
+                            <EditableInput content={translation?.attributes.zero} />
                         </>
                     )}
                     {language.attributes.supports_plural_one && (
                         <>
                             <PluralHeader isFirst={firstItem === "one"}>One</PluralHeader>
-                            <EditableInput content={translation.attributes.one} />
+                            <EditableInput content={translation?.attributes.one} />
                         </>
                     )}
                     {language.attributes.supports_plural_two && (
                         <>
                             <PluralHeader isFirst={firstItem === "two"}> Two</PluralHeader>
-                            <EditableInput content={translation.attributes.two} />
+                            <EditableInput content={translation?.attributes.two} />
                         </>
                     )}
                     {language.attributes.supports_plural_few && (
                         <>
                             <PluralHeader isFirst={firstItem === "few"}>Few</PluralHeader>
-                            <EditableInput content={translation.attributes.few} />
+                            <EditableInput content={translation?.attributes.few} />
                         </>
                     )}
                     {language.attributes.supports_plural_many && (
                         <>
                             <PluralHeader isFirst={firstItem === "many"}>Many</PluralHeader>
-                            <EditableInput content={translation.attributes.many} />
+                            <EditableInput content={translation?.attributes.many} />
                         </>
                     )}
                     <>
                         <PluralHeader isFirst={firstItem === "other"}>Other</PluralHeader>
-                        <EditableInput content={translation.attributes.content} />
+                        <EditableInput content={translation?.attributes.content} />
                     </>
                 </>
             );
@@ -122,5 +123,5 @@ export function EditableCellInputPreview(props: {
         return <Tooltip title="The name of keys synced with WordPress can't be changed.">{content}</Tooltip>;
     }
 
-    return content;
+    return <div style={{ minWidth: 320, maxWidth: "100%" }}>{content}</div>;
 }
