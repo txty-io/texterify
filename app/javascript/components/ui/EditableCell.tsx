@@ -1,7 +1,7 @@
 import { Form, Input } from "antd";
 import FormItem from "antd/lib/form/FormItem";
 import * as React from "react";
-import { IKeysTableExpandedRecord, IKeysTableRecord } from "../sites/dashboard/KeysSite";
+import { IKeysTableRecord } from "../sites/dashboard/KeysSite";
 import { dashboardStore } from "../stores/DashboardStore";
 import { PermissionUtils } from "../utilities/PermissionUtils";
 import { EditableCellInputPreview } from "./EditableCellInputPreview";
@@ -24,6 +24,10 @@ export const EditableRow: React.FC<IEditableRowProps> = ({ index, ...props }) =>
     );
 };
 
+export interface IEditableCellFormValues {
+    [key: string]: string;
+}
+
 interface IEditableCellProps {
     title: React.ReactNode;
     editable: boolean;
@@ -37,7 +41,7 @@ interface IEditableCellProps {
     colSpan?: number;
     rowSpan?: number;
 
-    handleSave: (record: IKeysTableRecord) => void;
+    handleSave: (data: { record: IKeysTableRecord; values: IEditableCellFormValues }) => void;
     onCellEdit(options: { languageId: string; keyId: string; exportConfigId: string }): void;
 }
 
@@ -69,7 +73,8 @@ export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellP
 
     const toggleEdit = () => {
         if (
-            (props.record.key.attributes.html_enabled || props.record.key.attributes.pluralization_enabled) &&
+            (props.record.keyObject.attributes.html_enabled ||
+                props.record.keyObject.attributes.pluralization_enabled) &&
             props.dataIndex !== "name" &&
             props.dataIndex !== "description"
         ) {
@@ -80,7 +85,17 @@ export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellP
             });
         } else {
             setEditing(!editing);
-            form.setFieldsValue({ [props.dataIndex]: props.record[props.dataIndex] });
+
+            if (props.languageId) {
+                const languageTranslations = props.record.translations[props.languageId] || {};
+                form.setFieldsValue({
+                    [props.dataIndex]: languageTranslations[props.record.exportConfigId]?.attributes.content
+                });
+            } else {
+                form.setFieldsValue({
+                    [props.dataIndex]: props.record[props.dataIndex]
+                });
+            }
         }
     };
 
@@ -92,7 +107,7 @@ export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellP
 
             // Only save changes if content changed.
             if (values[props.dataIndex] !== props.children[1]) {
-                props.handleSave({ ...props.record, ...values });
+                props.handleSave({ record: props.record, values: values });
             }
         } catch (errInfo) {
             console.log("Save failed:", errInfo);

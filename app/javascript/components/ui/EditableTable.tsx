@@ -1,7 +1,7 @@
 import { Empty, Table } from "antd";
 import { SizeType } from "antd/lib/config-provider/SizeContext";
 import * as React from "react";
-import { EditableRow, EditableCell } from "./EditableCell";
+import { EditableRow, EditableCell, IEditableCellFormValues } from "./EditableCell";
 import { TablePaginationConfig } from "antd/lib/table";
 import { IKey } from "../api/v1/KeysAPI";
 import { IKeysTableRecord } from "../sites/dashboard/KeysSite";
@@ -13,13 +13,13 @@ interface IEditableTableProps {
     bordered?: boolean;
     loading?: boolean;
     size?: SizeType;
-    projectId: any;
+    projectId: string;
     pagination?: false | TablePaginationConfig;
     rowSelection?: any;
     expandedRowRender?: any;
     className?: string;
     showHeader?: boolean;
-    onSave(oldRow: any, newRow: any): Promise<void>;
+    onSave(data: { record: IKeysTableRecord; values: IEditableCellFormValues }): Promise<void>;
     onCellEdit(options: { languageId: string; keyId: string; exportConfigId?: string }): void;
     onTranslationUpdated(translation: any): void;
     onKeyUpdated(key: IKey): void;
@@ -47,26 +47,26 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
         const dataSource = [...this.state.dataSource];
         this.setState({
             dataSource: dataSource.filter((item) => {
-                return item.key !== key;
+                return item.keyObject !== key;
             })
         });
     };
 
-    handleSave = async (row: any) => {
-        const newData = [...this.state.dataSource];
-        const index = newData.findIndex((data) => {
-            return row.key === data.key;
-        });
-        const oldRow = newData[index];
-        const newItem = {
-            ...oldRow,
-            ...row
-        };
+    handleSave = async (data: { record: IKeysTableRecord; values: IEditableCellFormValues }) => {
+        // const newData = [...this.state.dataSource];
+        // const index = newData.findIndex((item) => {
+        //     return item.keyObject.id === data.record.keyObject.id;
+        // });
+        // const oldRow = newData[index];
+        // const newItem = {
+        //     ...oldRow,
+        //     ...row
+        // };
 
-        await this.props.onSave(oldRow, row);
+        await this.props.onSave(data);
 
-        newData.splice(index, 1, newItem);
-        this.setState({ dataSource: newData });
+        // newData.splice(index, 1, newItem);
+        // this.setState({ dataSource: newData });
     };
 
     render() {

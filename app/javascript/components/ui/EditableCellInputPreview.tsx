@@ -19,22 +19,6 @@ export function EditableCellInputPreview(props: {
     exportConfigId: string;
     onClick(): void;
 }) {
-    const language = props.record.languages.find((l) => {
-        return l.id === props.languageId;
-    });
-
-    if (!language) {
-        return null;
-    }
-
-    const languageTranslations = props.record.translations[language.id];
-
-    if (!languageTranslations) {
-        return null;
-    }
-
-    const translation: ITranslation | undefined = languageTranslations[props.exportConfigId || null];
-
     const isNameColumnAndNotEditable = props.dataIndex === "name" && !props.record.nameEditable;
 
     function EditableInput(editableInputProps: { content: any }) {
@@ -54,14 +38,14 @@ export function EditableCellInputPreview(props: {
                 onClick={props.isCellEditable ? props.onClick : undefined}
                 role="button"
                 dangerouslySetInnerHTML={
-                    props.record.key.attributes.html_enabled
+                    props.record.keyObject.attributes.html_enabled
                         ? {
                               __html: editableInputProps.content
                           }
                         : undefined
                 }
             >
-                {props.record.key.attributes.html_enabled ? undefined : editableInputProps.content}
+                {props.record.keyObject.attributes.html_enabled ? undefined : editableInputProps.content}
             </div>
         );
     }
@@ -72,7 +56,20 @@ export function EditableCellInputPreview(props: {
     } else if (props.dataIndex === "description") {
         content = EditableInput({ content: props.record.description });
     } else {
-        if (props.record.key.attributes.pluralization_enabled) {
+        const language = props.record.languages.find((l) => {
+            return l.id === props.languageId;
+        });
+
+        if (!language) {
+            console.error("Failed to find langugage with ID:", props.languageId);
+            return null;
+        }
+
+        const languageTranslations = props.record.translations[language.id] || {};
+
+        const translation: ITranslation | undefined = languageTranslations[props.exportConfigId || null];
+
+        if (props.record.keyObject.attributes.pluralization_enabled) {
             let firstItem: "zero" | "one" | "two" | "few" | "many" | "other";
             if (language.attributes.supports_plural_zero) {
                 firstItem = "zero";

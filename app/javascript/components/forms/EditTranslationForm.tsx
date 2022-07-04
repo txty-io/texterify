@@ -82,10 +82,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                 value: translation?.attributes.content
             }
         });
-    }, [
-        translation,
-        formRef
-    ]);
+    }, [translation, formRef]);
 
     const selectedLanguage = props.languagesResponse.data.find((language) => {
         return language.id === props.selectedLanguageId;

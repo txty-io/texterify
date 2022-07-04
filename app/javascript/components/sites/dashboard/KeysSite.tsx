@@ -17,6 +17,7 @@ import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { ColumnTag } from "../../ui/ColumnTag";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
+import { IEditableCellFormValues } from "../../ui/EditableCell";
 import { EditableTable } from "../../ui/EditableTable";
 import { ErrorUtils } from "../../ui/ErrorUtils";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
@@ -61,11 +62,13 @@ interface IState {
 
 export interface IKeysTableExpandedRecord {
     keysResponse: IGetKeysResponse;
-    key: IKey;
+    keyObject: IKey;
     keyId: string;
+    key: string; // react key and not a translation key
     translations: { [key: string]: ITranslation };
     languages: ILanguage[];
     exportConfigId: string | null;
+    exportConfigName: string | null;
 }
 
 export type IKeysTableRecord = IKeysTableExpandedRecord & {
@@ -202,6 +205,60 @@ class KeysSite extends React.Component<IProps, IState> {
         this.debouncedSearchReloader(event.target.value);
     };
 
+    handleRowSave = async (data: { record: IKeysTableRecord; values: IEditableCellFormValues }) => {
+        const hasNameChanged =
+            data.values.name !== undefined && data.values.name !== data.record.keyObject.attributes.name;
+        const hasDescriptionChanged =
+            data.values.description !== undefined &&
+            data.values.description !== data.record.keyObject.attributes.description;
+
+        if (hasNameChanged || hasDescriptionChanged) {
+            const response = await KeysAPI.update({
+                projectId: this.props.match.params.projectId,
+                keyId: data.record.keyObject.id,
+                name: hasNameChanged ? data.values.name : data.record.keyObject.attributes.name,
+                description: hasDescriptionChanged
+                    ? data.values.description
+                    : data.record.keyObject.attributes.description,
+                htmlEnabled: data.record.keyObject.attributes.html_enabled,
+                pluralizationEnabled: data.record.keyObject.attributes.pluralization_enabled
+            });
+
+            if (response.errors) {
+                ErrorUtils.showErrors(response.errors);
+            }
+
+            await this.reloadTable();
+        } else {
+            const keys = Object.keys(data.values);
+
+            for (const key of keys) {
+                if (key.startsWith("language-")) {
+                    const languageId = key.slice("language-".length);
+                    const content = data.values[`language-${languageId}`];
+
+                    if (content !== undefined) {
+                        const response = await TranslationsAPI.createTranslation({
+                            projectId: this.props.match.params.projectId,
+                            languageId: languageId,
+                            keyId: data.record.keyObject.id,
+                            content: content,
+                            exportConfigId: data.record.exportConfigId
+                        });
+
+                        if (response.errors) {
+                            ErrorUtils.showErrors(response.errors);
+
+                            return;
+                        }
+                    }
+                }
+            }
+
+            await this.reloadTable();
+        }
+    };
+
     getColumns = () => {
         const filteredLanguages = (this.state.languages || []).filter((language) => {
             return _.find(this.state.projectColumns.included, (o) => {
@@ -330,44 +387,74 @@ class KeysSite extends React.Component<IProps, IState> {
 
             const overwrites = this.getKeyExportConfigOverwrites(key);
 
+            const tags = [];
+
+            if (key.attributes.html_enabled) {
+                tags.push(
+                    <Tag
+                        key={`${key.attributes.id}-html_enabled`}
+                        color="magenta"
+                        style={{ margin: 0, marginRight: 4, marginBottom: 4 }}
+                    >
+                        HTML
+                    </Tag>
+                );
+            }
+
+            if (key.attributes.pluralization_enabled) {
+                tags.push(
+                    <Tag
+                        key={`${key.attributes.id}-plural`}
+                        color="geekblue"
+                        style={{ margin: 0, marginRight: 4, marginBottom: 4 }}
+                    >
+                        Plural
+                    </Tag>
+                );
+            }
+
+            if (key.relationships.wordpress_contents.data.length > 0) {
+                tags.push(
+                    <Tag key={`${key.attributes.id}-wordpress`} color="magenta" style={{ margin: 0 }}>
+                        WordPress
+                    </Tag>
+                );
+            }
+
             return {
                 tags: [
                     ...key.relationships.tags.data.map((tag) => {
                         const included = APIUtils.getIncludedObject(tag, this.state.keysResponse.included);
 
                         return (
-                            <Tag key={tag.id} color="magenta" style={{ margin: 0, marginRight: 4, marginBottom: 4 }}>
+                            <Tag
+                                key={`${key.attributes.id}-${tag.id}`}
+                                color="magenta"
+                                style={{ margin: 0, marginRight: 4, marginBottom: 4 }}
+                            >
                                 {included.attributes.name}
                             </Tag>
                         );
                     }),
-                    key.attributes.html_enabled ? (
-                        <Tag key="html_enabled" color="magenta" style={{ margin: 0, marginRight: 4, marginBottom: 4 }}>
-                            HTML
-                        </Tag>
-                    ) : undefined,
-                    key.attributes.pluralization_enabled ? (
-                        <Tag key="plural" color="geekblue" style={{ margin: 0, marginRight: 4, marginBottom: 4 }}>
-                            Plural
-                        </Tag>
-                    ) : undefined,
-                    key.relationships.wordpress_contents.data.length > 0 ? (
-                        <Tag key="wordpress" color="magenta" style={{ margin: 0 }}>
-                            WordPress
-                        </Tag>
-                    ) : undefined
+                    ...tags
                 ],
                 exportConfigOverwrites: overwrites.map((overwrite) => {
                     return (
-                        <Tag key={overwrite.id} color="cyan" style={{ margin: "0 4px 4px 0" }}>
+                        <Tag
+                            key={`${key.attributes.id}-${overwrite.id}`}
+                            color="cyan"
+                            style={{ margin: "0 4px 4px 0" }}
+                        >
                             {overwrite}
                         </Tag>
                     );
                 }),
                 exportConfigId: null,
-                key: key,
+                exportConfigName: null,
+                keyObject: key,
                 keysResponse: this.state.keysResponse,
                 keyId: key.attributes.id,
+                key: key.attributes.id,
                 name: key.attributes.name,
                 description: key.attributes.description,
                 translations: translations,
@@ -631,7 +718,7 @@ class KeysSite extends React.Component<IProps, IState> {
                     Description
                 </ColumnTag>
                 {this.state.languages &&
-                    this.state.languages.map((language, index) => {
+                    this.state.languages.map((language) => {
                         const countryCode = APIUtils.getIncludedObject(
                             language.relationships.country_code.data,
                             this.state.languagesResponse.included
@@ -639,7 +726,7 @@ class KeysSite extends React.Component<IProps, IState> {
 
                         return (
                             <ColumnTag
-                                key={index}
+                                key={language.id}
                                 defaultChecked={
                                     !!_.find(
                                         this.state.projectColumns.data &&
@@ -890,65 +977,17 @@ class KeysSite extends React.Component<IProps, IState> {
                             onKeyUpdated={async () => {
                                 await this.reloadTable();
                             }}
-                            onSave={async (oldRow: IKeysTableRecord, newRow: IKeysTableRecord) => {
-                                if (oldRow.name !== newRow.name || oldRow.description !== newRow.description) {
-                                    const response = await KeysAPI.update({
-                                        projectId: this.props.match.params.projectId,
-                                        keyId: newRow.key.id,
-                                        name: newRow.name,
-                                        description: newRow.description,
-                                        htmlEnabled: newRow.key.attributes.html_enabled,
-                                        pluralizationEnabled: newRow.key.attributes.pluralization_enabled
-                                    });
-
-                                    await this.reloadTable();
-
-                                    if (response.errors) {
-                                        ErrorUtils.showErrors(response.errors);
-                                    }
-                                } else {
-                                    const newItem = {
-                                        ...oldRow,
-                                        ...newRow
-                                    };
-                                    const keys = Object.keys(newItem);
-                                    let languageKey;
-                                    for (const key of keys) {
-                                        if (key.startsWith("language-")) {
-                                            languageKey = key.slice("language-".length);
-
-                                            const content = newItem[`language-${languageKey}`];
-
-                                            if (content !== undefined) {
-                                                const response = await TranslationsAPI.createTranslation({
-                                                    projectId: this.props.match.params.projectId,
-                                                    languageId: languageKey,
-                                                    keyId: newItem.key.id,
-                                                    content: content
-                                                });
-
-                                                if (response.errors) {
-                                                    ErrorUtils.showErrors(response.errors);
-
-                                                    return;
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    await this.reloadTable();
-                                }
-                            }}
+                            onSave={this.handleRowSave}
                             expandedRowRender={
                                 (this.state.exportConfigsResponse?.data || []).length === 0
                                     ? undefined
                                     : (record: IKeysTableRecord) => {
-                                          const data: IKeysTableExpandedRecord[] = [];
+                                          const dataSource: IKeysTableExpandedRecord[] = [];
 
                                           this.state.exportConfigsResponse.data.forEach((exportConfig) => {
                                               const translations = {};
                                               const currentKey = this.state.keys.find((key) => {
-                                                  return record.key.id === key.id;
+                                                  return record.keyObject.id === key.id;
                                               });
                                               currentKey.relationships.translations.data.forEach(
                                                   (translationReference) => {
@@ -966,10 +1005,12 @@ class KeysSite extends React.Component<IProps, IState> {
                                                   }
                                               );
 
-                                              data.push({
-                                                  keyId: record.key.id,
-                                                  key: record.key,
+                                              dataSource.push({
+                                                  key: `${record.keyObject.id}-${exportConfig.id}`,
+                                                  keyId: record.keyObject.id,
+                                                  keyObject: record.keyObject,
                                                   exportConfigId: exportConfig.id,
+                                                  exportConfigName: exportConfig.attributes.name,
                                                   translations: translations,
                                                   keysResponse: this.state.keysResponse,
                                                   languages: this.state.languages
@@ -1021,7 +1062,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                           return (
                                               <EditableTable
                                                   columns={columns}
-                                                  dataSource={data}
+                                                  dataSource={dataSource}
                                                   pagination={false}
                                                   bordered
                                                   showHeader={false}
@@ -1046,41 +1087,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                                           editTranslationExportConfigId: options.exportConfigId
                                                       });
                                                   }}
-                                                  onSave={async (oldRow, newRow) => {
-                                                      const newItem = {
-                                                          ...oldRow,
-                                                          ...newRow
-                                                      };
-                                                      const keys = Object.keys(newItem);
-                                                      let languageKey;
-
-                                                      for (const key of keys) {
-                                                          if (key.startsWith("language-")) {
-                                                              languageKey = key.slice("language-".length);
-
-                                                              const content = newItem[`language-${languageKey}`];
-
-                                                              if (content !== undefined) {
-                                                                  const response =
-                                                                      await TranslationsAPI.createTranslation({
-                                                                          projectId: this.props.match.params.projectId,
-                                                                          languageId: languageKey,
-                                                                          keyId: newItem.keyId,
-                                                                          content: content,
-                                                                          exportConfigId: oldRow.exportConfigId
-                                                                      });
-
-                                                                  if (response.errors) {
-                                                                      ErrorUtils.showErrors(response.errors);
-
-                                                                      return;
-                                                                  }
-                                                              }
-                                                          }
-                                                      }
-
-                                                      await this.reloadTable();
-                                                  }}
+                                                  onSave={this.handleRowSave}
                                               />
                                           );
                                       }
