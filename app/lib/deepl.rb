@@ -33,7 +33,7 @@ module Deepl
                   )
           end
         else
-          @api_token = ENV.fetch('DEEPL_API_TOKEN')
+          @api_token = ENV.fetch('DEEPL_API_TOKEN', nil)
         end
       end
 
