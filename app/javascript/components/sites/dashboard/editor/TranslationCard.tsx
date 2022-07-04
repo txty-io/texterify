@@ -14,6 +14,7 @@ import {
     IGetMachineTranslationSuggestion
 } from "../../../api/v1/MachineTranslationsAPI";
 import { TranslationsAPI } from "../../../api/v1/TranslationsAPI";
+import { EditTranslationForm } from "../../../forms/EditTranslationForm";
 import FlagIcon from "../../../ui/FlagIcons";
 import { MachineTranslationSuggestion } from "../../../ui/MachineTranslationSuggestion";
 import { Styles } from "../../../ui/Styles";
@@ -219,7 +220,7 @@ class TranslationCard extends React.Component<IProps, IState> {
             );
 
             defaultLanguageDisplay = (
-                <div style={{ display: "flex", alignItems: "center", marginLeft: 12 }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
                     {countryCode && (
                         <span style={{ marginRight: 8 }}>
                             <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
@@ -308,9 +309,11 @@ class TranslationCard extends React.Component<IProps, IState> {
                         {!this.props.hideSaveButton && (
                             <Button
                                 type="primary"
+                                htmlType="submit"
                                 disabled={!this.contentChanged()}
                                 style={{ marginLeft: "auto" }}
-                                onClick={this.saveChanges}
+                                // onClick={this.saveChanges}
+                                form={`edit-translation-form-${this.state.selectedLanguageId}`}
                             >
                                 Save changes
                             </Button>
@@ -332,7 +335,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                     </div>
                 ) : (
                     <div style={{ position: "relative" }}>
-                        <div
+                        {/* <div
                             style={{
                                 width: "100%",
                                 height: "100%",
@@ -345,9 +348,23 @@ class TranslationCard extends React.Component<IProps, IState> {
                             }}
                         >
                             {converted}
-                        </div>
+                        </div> */}
 
-                        <TextArea
+                        <EditTranslationForm
+                            keyResponse={this.props.keyResponse}
+                            languagesResponse={this.props.languagesResponse}
+                            projectId={this.props.projectId}
+                            selectedLanguageId={this.state.selectedLanguageId}
+                            selectedExportConfigId={null}
+                            onChange={() => {
+                                this.setState({ textareaContentChanged: true });
+                            }}
+                            onSuccess={() => {
+                                this.setState({ textareaContentChanged: false });
+                            }}
+                            formId={`edit-translation-form-${this.state.selectedLanguageId}`}
+                        />
+                        {/* <TextArea
                             autoSize={{ minRows: 8, maxRows: 12 }}
                             placeholder="Language translation content"
                             onChange={(event) => {
@@ -363,7 +380,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                             }}
                             value={this.state.content}
                             style={{ backgroundColor: "transparent" }}
-                        />
+                        /> */}
                     </div>
                 )}
 

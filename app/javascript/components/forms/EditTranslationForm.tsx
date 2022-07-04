@@ -8,15 +8,21 @@ import { ErrorUtils } from "../ui/ErrorUtils";
 import { Loading } from "../ui/Loading";
 import { TranslationUtils } from "../utilities/TranslationUtils";
 
+function PluralFormHeading(props: { name: string }) {
+    return <div style={{ fontWeight: "bold" }}>{props.name}</div>;
+}
+
 export interface IEditTranslationFormProps {
     projectId: string;
     languagesResponse: IGetLanguagesResponse;
     keyResponse: IGetKeyResponse;
     selectedLanguageId: string;
-    selectedExportConfigId: string;
+    selectedExportConfigId: string | null;
     formId?: string;
     clearFieldsAfterSubmit?: boolean;
-    onSuccess(): void;
+    style?: React.CSSProperties;
+    onChange?(): void;
+    onSuccess?(): void;
 }
 
 interface IFormValues {
@@ -165,7 +171,12 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                         ErrorUtils.showError("Failed to update translation");
                     }
                 }}
-                style={{ maxWidth: "100%", minWidth: 0 }}
+                onChange={() => {
+                    if (props.onChange) {
+                        props.onChange();
+                    }
+                }}
+                style={{ maxWidth: "100%", minWidth: 0, ...props.style }}
                 id={props.formId}
                 initialValues={
                     translation && {
@@ -181,7 +192,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                 {props.keyResponse.data.attributes.pluralization_enabled &&
                     selectedLanguage.attributes.supports_plural_zero && (
                         <>
-                            <h3>Zero</h3>
+                            <PluralFormHeading name="Zero" />
                             <Form.Item name="zero" rules={[{ required: false }]}>
                                 <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "zero"} />
                             </Form.Item>
@@ -191,7 +202,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                 {props.keyResponse.data.attributes.pluralization_enabled &&
                     selectedLanguage.attributes.supports_plural_one && (
                         <>
-                            <h3>One</h3>
+                            <PluralFormHeading name="One" />
                             <Form.Item name="one" rules={[{ required: false }]}>
                                 <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "one"} />
                             </Form.Item>
@@ -201,7 +212,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                 {props.keyResponse.data.attributes.pluralization_enabled &&
                     selectedLanguage.attributes.supports_plural_two && (
                         <>
-                            <h3>Two</h3>
+                            <PluralFormHeading name="Two" />
                             <Form.Item name="two" rules={[{ required: false }]}>
                                 <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "two"} />
                             </Form.Item>
@@ -211,7 +222,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                 {props.keyResponse.data.attributes.pluralization_enabled &&
                     selectedLanguage.attributes.supports_plural_few && (
                         <>
-                            <h3>Few</h3>
+                            <PluralFormHeading name="Few" />
                             <Form.Item name="few" rules={[{ required: false }]}>
                                 <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "few"} />
                             </Form.Item>
@@ -221,14 +232,16 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                 {props.keyResponse.data.attributes.pluralization_enabled &&
                     selectedLanguage.attributes.supports_plural_many && (
                         <>
-                            <h3>Many</h3>
+                            <PluralFormHeading name="Many" />
                             <Form.Item name="many" rules={[{ required: false }]}>
                                 <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "many"} />
                             </Form.Item>
                         </>
                     )}
 
-                {props.keyResponse.data.attributes.pluralization_enabled && supportsPluralForm && <h3>Other</h3>}
+                {props.keyResponse.data.attributes.pluralization_enabled && supportsPluralForm && (
+                    <PluralFormHeading name="Other" />
+                )}
                 <Form.Item name="other" rules={[{ required: false }]}>
                     <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "other"} />
                 </Form.Item>

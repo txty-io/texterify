@@ -709,27 +709,29 @@ class EditorSite extends React.Component<IProps, IState> {
                                     )}
 
                                     {languagesWithoutDefault.length > 0 ? (
-                                        <TranslationCard
-                                            projectId={this.props.match.params.projectId}
-                                            languagesResponse={this.state.languagesResponse}
-                                            languages={languagesWithoutDefault}
-                                            defaultSelected={
-                                                this.state.selectedLanguageIdTo || languagesWithoutDefault[0].id
-                                            }
-                                            keyResponse={this.state.keyResponse}
-                                            defaultLanguage={defaultLanguage}
-                                            defaultLanguageTranslationContent={defaultLanguageTranslationContent}
-                                            supportedSourceLanguages={this.state.supportedSourceLanguages}
-                                            supportedTargetLanguages={this.state.supportedTargetLanguages}
-                                            onSave={() => {
-                                                if (this.keyHistoryRef) {
-                                                    this.keyHistoryRef.reload();
+                                        <div style={{ marginTop: 40 }}>
+                                            <TranslationCard
+                                                projectId={this.props.match.params.projectId}
+                                                languagesResponse={this.state.languagesResponse}
+                                                languages={languagesWithoutDefault}
+                                                defaultSelected={
+                                                    this.state.selectedLanguageIdTo || languagesWithoutDefault[0].id
                                                 }
-                                            }}
-                                            onSelectedLanguageIdChange={(languageId) => {
-                                                this.setState({ selectedLanguageIdTo: languageId });
-                                            }}
-                                        />
+                                                keyResponse={this.state.keyResponse}
+                                                defaultLanguage={defaultLanguage}
+                                                defaultLanguageTranslationContent={defaultLanguageTranslationContent}
+                                                supportedSourceLanguages={this.state.supportedSourceLanguages}
+                                                supportedTargetLanguages={this.state.supportedTargetLanguages}
+                                                onSave={() => {
+                                                    if (this.keyHistoryRef) {
+                                                        this.keyHistoryRef.reload();
+                                                    }
+                                                }}
+                                                onSelectedLanguageIdChange={(languageId) => {
+                                                    this.setState({ selectedLanguageIdTo: languageId });
+                                                }}
+                                            />
+                                        </div>
                                     ) : (
                                         <Alert
                                             showIcon
