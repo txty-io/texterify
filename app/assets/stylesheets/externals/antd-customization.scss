@@ -65,14 +65,6 @@
     text-overflow: ellipsis;
   }
 
-  .ant-breadcrumb a {
-    color: var(--blue-color);
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
   .ant-layout {
     // Fix content overflowing horizontally.
     overflow-x: hidden;
