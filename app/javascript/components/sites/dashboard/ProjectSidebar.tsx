@@ -133,7 +133,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     ":projectId",
                     this.props.match.params.projectId
                 ),
-                text: "Machine Translation",
+                text: "MT",
                 dataId: "project-sidebar-machine-translation",
                 paths: [
                     Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION.replace(
@@ -411,7 +411,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     collapsed={dashboardStore.sidebarMinimized}
                     onCollapse={this.onCollapse}
                     trigger={this.renderSidebarTrigger()}
-                    style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 24px" }}
+                    style={{ boxShadow: "rgba(0, 0, 0, 0.02) 0px 0px 24px" }}
                 >
                     <Menu
                         id="sidebar-menu"

@@ -31,7 +31,6 @@
     "antd": "^4.12.3",
     "babel-plugin-module-resolver": "^4.0.0",
     "babel-preset-react": "^6.24.1",
-    "boring-avatars": "^1.7.0",
     "core-js": "3",
     "dotenv": "^8.2.0",
     "eslint": "^7.20.0",

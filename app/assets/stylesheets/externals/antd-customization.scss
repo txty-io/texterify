@@ -142,8 +142,14 @@
     list-style: decimal;
   }
 
-  .ant-progress-status-success .ant-progress-bg {
-    background-color: var(--color-success);
+  .ant-progress {
+    &.ant-progress-status-success .ant-progress-inner > .ant-progress-bg {
+      background-color: var(--progressbar-success-background-color);
+    }
+
+    .anticon-check-circle {
+      color: var(--progressbar-success-background-color);
+    }
   }
 
   .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab {

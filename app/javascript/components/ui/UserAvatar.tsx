@@ -3,26 +3,26 @@ import * as React from "react";
 import { UsersAPI } from "../api/v1/UsersAPI";
 import { authStore } from "../stores/AuthStore";
 import { Styles } from "./Styles";
-import Avatar from "boring-avatars";
+import styled from "styled-components";
 
-// const UserAvatarWrapper = styled.div`
-//     height: 40px;
-//     width: 40px;
-//     background: ${Styles.COLOR_PRIMARY_LIGHT};
-//     color: #000;
+const UserAvatarWrapper = styled.div`
+    height: 32px;
+    width: 32px;
+    background: #a6319663;
+    color: #000;
 
-//     .dark-theme & {
-//         color: #fff;
-//     }
+    .dark-theme & {
+        color: #fff;
+    }
 
-//     border-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
-//     line-height: 0;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     text-transform: uppercase;
-//     font-size: 14px;
-// `;
+    border-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
+    line-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    font-size: 12px;
+`;
 
 interface IProps {
     user: any;
@@ -72,43 +72,13 @@ class UserAvatar extends React.Component<IProps, IState> {
                     />
                 )}
                 {!hasImage && (
-                    <div style={{ position: "relative", borderRadius: 4, overflow: "hidden" }}>
-                        <Avatar
-                            size={32}
-                            name={this.props.user && this.props.user.username}
-                            colors={["#FF08F5", "#A05AED", "#2944BE", "#E32572", "#405059"]}
-                            variant="marble"
-                            square
-                        />
-                        <div
-                            style={{
-                                position: "absolute",
-                                left: 0,
-                                top: 0,
-                                width: "100%",
-                                height: "100%",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                textTransform: "uppercase",
-                                lineHeight: 0,
-                                fontSize: 12,
-                                fontWeight: "bold",
-                                color: "#fff"
-                            }}
-                        >
-                            {this.props.user && this.props.user.username && this.props.user.username.substr(0, 2)}
-                        </div>
-                    </div>
-
-                    // <UserAvatarWrapper
-                    //     style={{
-                    //         ...this.props.style
-                    //     }}
-                    // >
-
-                    //     {this.props.user && this.props.user.username && this.props.user.username.substr(0, 2)}
-                    // </UserAvatarWrapper>
+                    <UserAvatarWrapper
+                        style={{
+                            ...this.props.style
+                        }}
+                    >
+                        {this.props.user && this.props.user.username && this.props.user.username.substr(0, 2)}
+                    </UserAvatarWrapper>
                 )}
             </div>
         );

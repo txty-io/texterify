@@ -299,7 +299,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                         className="dark-theme"
                     >
                         <Link to={Routes.DASHBOARD.ROOT}>
-                            <img src={WhiteLogoWithText} style={{ maxHeight: 28, marginRight: 24 }} />
+                            <img src={WhiteLogoWithText} style={{ maxHeight: 26, marginRight: 24 }} />
                         </Link>
                         <ul
                             className="dashboard-main-menu"

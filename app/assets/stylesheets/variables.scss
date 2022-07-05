@@ -56,10 +56,10 @@
   --table-head-background-color: #fafafa;
 
   // main sidebar
-  --main-sidebar-active-background-color: #ececec;
-  --main-sidebar-active-color: #333;
+  --main-sidebar-active-background-color: transparent;
+  --main-sidebar-active-color: #000;
   --main-sidebar-hover-color: #000;
-  --main-sidebar-color: #888;
+  --main-sidebar-color: #c7c7c7;
   --main-sidebar-border-color: #555;
 
   // sub sidebar
@@ -70,6 +70,9 @@
   --sidebar-item-color-hover: rgb(44, 29, 56);
   --sidebar-background-color: #fbfbfc;
   --sidebar-border-color: #e6e6e6;
+
+  // progress bar
+  --progressbar-success-background-color: #3ffe75;
 }
 
 .dark-theme {
@@ -125,10 +128,10 @@
   --table-head-background-color: #ffffff0d;
 
   // main sidebar
-  --main-sidebar-active-background-color: #ffffff08;
+  --main-sidebar-active-background-color: transparent;
   --main-sidebar-active-color: #fff;
   --main-sidebar-hover-color: #fff;
-  --main-sidebar-color: #ccc;
+  --main-sidebar-color: #8b8b8b;
   --main-sidebar-border-color: #fff;
 
   // sub sidebar
