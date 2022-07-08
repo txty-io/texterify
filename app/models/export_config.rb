@@ -81,8 +81,10 @@ class ExportConfig < ApplicationRecord
       android(language, export_data)
     elsif file_format == 'ios'
       ios(language, export_data)
+    elsif file_format == 'yaml'
+      yaml(language, export_data)
     elsif file_format == 'rails'
-      rails(language, export_data)
+      yaml(language, export_data, group_by_language_and_country_code: true)
     elsif file_format == 'toml'
       toml(language, export_data)
     elsif file_format == 'properties'
@@ -258,10 +260,16 @@ class ExportConfig < ApplicationRecord
     language_file
   end
 
-  def rails(language, export_data)
+  def yaml(language, export_data, group_by_language_and_country_code: false)
     language_file = Tempfile.new(language.id.to_s)
     data = {}
-    data[language[:name]] = export_data
+
+    if group_by_language_and_country_code
+      data[language.language_tag] = export_data
+    else
+      data = export_data
+    end
+
     yaml = YAML.dump(data)
     language_file.puts(yaml)
     language_file.close

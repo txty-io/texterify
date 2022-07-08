@@ -26,6 +26,8 @@ module ImportHelper
       arb?(file_content)
     elsif file_format == 'xliff'
       xliff?(file_content)
+    elsif file_format == 'rails'
+      yaml?(file_content, remove_root_keys: true)
     elsif file_format == 'yaml'
       yaml?(file_content)
     else
@@ -117,8 +119,14 @@ module ImportHelper
     { success: false, error_message: e.message }
   end
 
-  def yaml?(content)
+  def yaml?(content, remove_root_keys: false)
     parsed = YAML.safe_load(content)
+
+    if remove_root_keys
+      modified = {}
+      parsed.keys.each { |key| modified.merge!(parsed[key]) }
+      parsed = modified
+    end
 
     { success: true, content: flatten_nested_keys(parsed) }
   rescue Psych::SyntaxError => e
