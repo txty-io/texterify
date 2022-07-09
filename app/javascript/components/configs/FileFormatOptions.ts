@@ -28,6 +28,10 @@ const FileFormatOptions: { value: string; text: string }[] = [
         text: "Ruby on Rails"
     },
     {
+        value: "yaml",
+        text: "YAML"
+    },
+    {
         value: "toml",
         text: "TOML"
     },

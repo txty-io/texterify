@@ -250,7 +250,7 @@ msgstr "Awesome app"
         image: RailsLogo,
         name: "Rails",
         formats: [".yml", ".yaml"],
-        id: "yaml"
+        id: "rails"
     },
     {
         name: "YAML",
