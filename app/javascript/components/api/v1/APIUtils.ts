@@ -36,8 +36,8 @@ const APIUtils = {
     /**
      * Handles errors like an invalid access token.
      */
-    handleErrors: (response: any) => {
-        if (response.errors) {
+    handleErrors: (response: any, throwError?: boolean) => {
+        if (response?.errors) {
             console.error("API Errors:", response.errors);
 
             // Check if the used access token is still valid.
@@ -61,11 +61,11 @@ const APIUtils = {
             }
         }
 
-        // if (response.error || response.errors) {
-        //     throw response;
-        // }
-
-        return response;
+        if (throwError) {
+            throw response;
+        } else {
+            return response;
+        }
     },
 
     getIncludedObject(object: { id: string; type: string }, included: any) {

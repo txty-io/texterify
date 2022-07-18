@@ -78,6 +78,8 @@ interface IState {
     supportedTargetLanguages: IGetMachineTranslationsTargetLanguages;
 }
 
+let abortController;
+
 @observer
 class EditorSite extends React.Component<IProps, IState> {
     keyHistoryRef: any;
@@ -145,13 +147,17 @@ class EditorSite extends React.Component<IProps, IState> {
         });
 
         if (dashboardStore.currentProject?.attributes.machine_translation_active) {
-            const supportedSourceLanguages = await MachineTranslationsAPI.getSourceLanguages();
-            const supportedTargetLanguages = await MachineTranslationsAPI.getTargetLanguages();
+            try {
+                const supportedSourceLanguages = await MachineTranslationsAPI.getSourceLanguages();
+                const supportedTargetLanguages = await MachineTranslationsAPI.getTargetLanguages();
 
-            this.setState({
-                supportedSourceLanguages: supportedSourceLanguages,
-                supportedTargetLanguages: supportedTargetLanguages
-            });
+                this.setState({
+                    supportedSourceLanguages: supportedSourceLanguages,
+                    supportedTargetLanguages: supportedTargetLanguages
+                });
+            } catch (error) {
+                console.error("Failed to load supported source and target languages:", error);
+            }
         }
     }
 
@@ -160,6 +166,14 @@ class EditorSite extends React.Component<IProps, IState> {
     }
 
     fetchKeys = async (options?: IGetKeysOptions) => {
+        if (abortController) {
+            console.error("abort");
+            abortController.abort();
+        }
+
+        abortController = new AbortController();
+        const signal = abortController.signal;
+
         options = options || {};
         options.search = options.search || this.state.search;
         options.page = options.page || this.state.page;
@@ -168,14 +182,19 @@ class EditorSite extends React.Component<IProps, IState> {
 
         this.setState({ keysLoading: true });
         try {
-            const responseKeys = await KeysAPI.getKeys(this.props.match.params.projectId, options);
+            const responseKeys = await KeysAPI.getKeys(this.props.match.params.projectId, options, {
+                signal: signal
+            });
             this.setState({
                 keysResponse: responseKeys
             });
+            this.setState({ keysLoading: false });
         } catch (err) {
-            console.error(err);
+            console.error("Failed to fetch keys:", err);
+            if (err.name !== "AbortError") {
+                this.setState({ keysLoading: false });
+            }
         }
-        this.setState({ keysLoading: false });
     };
 
     onSearch = (event: any) => {

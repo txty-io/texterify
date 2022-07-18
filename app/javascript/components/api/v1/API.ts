@@ -3,6 +3,10 @@ import { authStore } from "../../stores/AuthStore";
 import { APIUtils } from "../v1/APIUtils";
 import { IAuthData } from "./AuthAPI";
 
+export interface IFetchOptions {
+    signal?: AbortSignal;
+}
+
 const API_BASE_URL = "api";
 const API_VERSION = "v1";
 
@@ -18,6 +22,7 @@ async function request(options: {
     params?: any;
     isFileDownload?: boolean;
     isFormData?: boolean;
+    fetchOptions?: IFetchOptions;
 }): Promise<any> {
     const requestHeaders: any = {
         ...DEFAULT_HEADERS,
@@ -53,7 +58,9 @@ async function request(options: {
         response = await fetch(fullURL, {
             method: options.method,
             headers: requestHeaders,
-            body: options.method === "GET" ? null : options.isFormData ? options.params : JSON.stringify(options.params)
+            body:
+                options.method === "GET" ? null : options.isFormData ? options.params : JSON.stringify(options.params),
+            signal: options.fetchOptions?.signal
         });
 
         if (response.status === 403) {
@@ -70,6 +77,7 @@ async function request(options: {
         }
     } catch (error) {
         console.error("Error while fetching:", error);
+        throw error;
     }
 
     return response && !options.isFileDownload ? response.json() : response;
@@ -81,15 +89,17 @@ const API = {
         authenticated: boolean,
         queryParams?: any,
         headers?: HeadersInit,
-        isFileDownload?: boolean
-    ): any => {
+        isFileDownload?: boolean,
+        fetchOptions?: IFetchOptions
+    ): Promise<any> => {
         return request({
             url: url,
             authenticated: authenticated,
             method: "GET",
             headers: headers,
             params: queryParams,
-            isFileDownload: isFileDownload
+            isFileDownload: isFileDownload,
+            fetchOptions: fetchOptions
         });
     },
 
