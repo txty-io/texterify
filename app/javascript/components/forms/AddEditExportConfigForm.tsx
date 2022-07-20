@@ -4,7 +4,7 @@ import { FormInstance } from "antd/lib/form";
 import Paragraph from "antd/lib/typography/Paragraph";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
-import { ExportConfigsAPI } from "../api/v1/ExportConfigsAPI";
+import { ExportConfigsAPI, IExportConfig } from "../api/v1/ExportConfigsAPI";
 import { IGetLanguageConfigsResponse, LanguageConfigsAPI } from "../api/v1/LanguageConfigsAPI";
 import { IGetLanguagesResponse, LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { FileFormatOptions } from "../configs/FileFormatOptions";
@@ -22,7 +22,7 @@ interface IFormValues {
 }
 
 interface IProps {
-    exportConfigToEdit?: any;
+    exportConfigToEdit?: IExportConfig;
     projectId: string;
     hideDefaultSubmitButton?: boolean;
     clearFieldsAfterSubmit?: boolean;
@@ -284,6 +284,7 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                     initialValues={
                         this.props.exportConfigToEdit && {
                             name: this.props.exportConfigToEdit.attributes.name,
+                            splitOn: this.props.exportConfigToEdit.attributes.split_on,
                             fileFormat: this.props.exportConfigToEdit.attributes.file_format,
                             filePath: this.props.exportConfigToEdit.attributes.file_path,
                             defaultLanguageFilePath: this.props.exportConfigToEdit.attributes.default_language_file_path

@@ -212,6 +212,13 @@ class ProjectExportConfig extends React.Component<IProps, IState> {
                             {this.getFileFormatName(this.props.exportConfig.attributes.file_format)}
                         </div>
 
+                        {this.props.exportConfig.attributes.file_format === "json" && (
+                            <div style={{ marginTop: 16 }}>
+                                <h4 style={{ fontWeight: "bold" }}>Split keys on:</h4>
+                                {this.props.exportConfig.attributes.split_on}
+                            </div>
+                        )}
+
                         <div style={{ marginTop: 16 }}>
                             <h4 style={{ fontWeight: "bold" }}>File path:</h4>
                             {this.prettifyFilePath(this.props.exportConfig.attributes.file_path)}

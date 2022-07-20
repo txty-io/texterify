@@ -195,6 +195,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                         <AddEditExportConfigForm
                             projectId={this.props.match.params.projectId}
                             exportConfigToEdit={this.state.exportConfigToEdit}
+                            hideDefaultSubmitButton
                             onCreated={async () => {
                                 this.setState({
                                     addEditExportConfigOpen: false,

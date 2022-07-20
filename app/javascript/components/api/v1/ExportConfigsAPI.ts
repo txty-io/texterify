@@ -20,6 +20,7 @@ export interface IExportConfig {
         file_format: string;
         file_path: string;
         default_language_file_path: string;
+        split_on: string;
     };
     relationships: IExportConfigRelationships;
 }
