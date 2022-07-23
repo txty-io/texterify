@@ -2,7 +2,18 @@ require 'rails_helper'
 require 'securerandom'
 
 RSpec.describe ExportConfig, type: :model do
-  include ExportHelper
+  def export_data_value(text, pluralization_enabled: false)
+    {
+      other: text,
+      zero: 'zero text',
+      one: 'one text',
+      two: 'two text',
+      few: 'few text',
+      many: 'many text',
+      pluralization_enabled: pluralization_enabled,
+      description: 'description text'
+    }
+  end
 
   before(:each) do
     language_code = LanguageCode.find_by(code: 'de')
@@ -27,14 +38,38 @@ RSpec.describe ExportConfig, type: :model do
     export_config = ExportConfig.new
     export_config.file_format = 'android'
 
+    it 'create android file content from parsed data' do
+      file =
+        export_config.file(
+          @language,
+          { "a": export_data_value('b'), "c": export_data_value('d'), "e": export_data_value('f') }
+        )
+      file.open
+      expect(file.read).to match_snapshot('create_android_file_content')
+    end
+
+    it 'create pluralization android file content from parsed data' do
+      file =
+        export_config.file(
+          @language,
+          {
+            "a": export_data_value('b', pluralization_enabled: true),
+            "c": export_data_value('d'),
+            "e": export_data_value('f', pluralization_enabled: true)
+          }
+        )
+      file.open
+      expect(file.read).to match_snapshot('create_android_file_content_plural')
+    end
+
     it 'escapes a single quote for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string("'") })
+      file = export_config.file(@language, { "x": export_data_value("'") })
       file.open
       expect(file.read).to eq("<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\'</string>\n</resources>\n")
     end
 
     it 'escapes two single quotes for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string("''") })
+      file = export_config.file(@language, { "x": export_data_value("''") })
       file.open
       expect(file.read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\'\\'</string>\n</resources>\n"
@@ -42,13 +77,13 @@ RSpec.describe ExportConfig, type: :model do
     end
 
     it 'does not escape already escaped single quote for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string("\'") })
+      file = export_config.file(@language, { "x": export_data_value("\'") })
       file.open
       expect(file.read).to eq("<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\'</string>\n</resources>\n")
     end
 
     it 'escapes a double quote for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string('"') })
+      file = export_config.file(@language, { "x": export_data_value('"') })
       file.open
       expect(file.read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\\"</string>\n</resources>\n"
@@ -56,7 +91,7 @@ RSpec.describe ExportConfig, type: :model do
     end
 
     it 'escapes two double quotes for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string('""') })
+      file = export_config.file(@language, { "x": export_data_value('""') })
       file.open
       expect(file.read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\\"\\\"</string>\n</resources>\n"
@@ -64,7 +99,7 @@ RSpec.describe ExportConfig, type: :model do
     end
 
     it 'does not escape already escaped double quote for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string('\"') })
+      file = export_config.file(@language, { "x": export_data_value('\"') })
       file.open
       expect(file.read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\\"</string>\n</resources>\n"
@@ -72,13 +107,13 @@ RSpec.describe ExportConfig, type: :model do
     end
 
     it 'escapes a ? for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string('?') })
+      file = export_config.file(@language, { "x": export_data_value('?') })
       file.open
       expect(file.read).to eq("<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\?</string>\n</resources>\n")
     end
 
     it 'escapes two ? for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string('??') })
+      file = export_config.file(@language, { "x": export_data_value('??') })
       file.open
       expect(file.read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\?\\?</string>\n</resources>\n"
@@ -86,19 +121,19 @@ RSpec.describe ExportConfig, type: :model do
     end
 
     it 'does not escape already escaped ? for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string('\?') })
+      file = export_config.file(@language, { "x": export_data_value('\?') })
       file.open
       expect(file.read).to eq("<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\?</string>\n</resources>\n")
     end
 
     it 'escapes a @ for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string('@') })
+      file = export_config.file(@language, { "x": export_data_value('@') })
       file.open
       expect(file.read).to eq("<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\@</string>\n</resources>\n")
     end
 
     it 'escapes two @ for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string('@@') })
+      file = export_config.file(@language, { "x": export_data_value('@@') })
       file.open
       expect(file.read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\@\\@</string>\n</resources>\n"
@@ -106,13 +141,13 @@ RSpec.describe ExportConfig, type: :model do
     end
 
     it 'does not escape already escaped @ for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string('\@') })
+      file = export_config.file(@language, { "x": export_data_value('\@') })
       file.open
       expect(file.read).to eq("<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\@</string>\n</resources>\n")
     end
 
     it 'escapes a & for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string('&') })
+      file = export_config.file(@language, { "x": export_data_value('&') })
       file.open
       expect(file.read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">&amp;</string>\n</resources>\n"
@@ -120,7 +155,7 @@ RSpec.describe ExportConfig, type: :model do
     end
 
     it 'escapes two && for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string('&&') })
+      file = export_config.file(@language, { "x": export_data_value('&&') })
       file.open
       expect(file.read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">&amp;&amp;</string>\n</resources>\n"
@@ -128,7 +163,7 @@ RSpec.describe ExportConfig, type: :model do
     end
 
     it 'does not escape already escaped & for android' do
-      file = export_config.file(@language, { "x": language_export_data_line_from_simple_string('&&amp;') })
+      file = export_config.file(@language, { "x": export_data_value('&&amp;') })
       file.open
       expect(file.read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">&amp;&amp;</string>\n</resources>\n"
@@ -142,14 +177,7 @@ RSpec.describe ExportConfig, type: :model do
     export_config.file_format = 'properties'
 
     it 'create properties file content from parsed data' do
-      file =
-        export_config.file(
-          @language,
-          {
-            "a": language_export_data_line_from_simple_string('b'),
-            "_": language_export_data_line_from_simple_string('!')
-          }
-        )
+      file = export_config.file(@language, { "a": export_data_value('b'), "_": export_data_value('!') })
       file.open
       expect(file.read).to eq("a=b\n_=!\n")
     end
@@ -164,15 +192,9 @@ RSpec.describe ExportConfig, type: :model do
       file =
         export_config.file(
           @language,
-          {
-            'a' => language_export_data_line_from_simple_string('b'),
-            '_' => language_export_data_line_from_simple_string('!')
-          },
+          { 'a' => export_data_value('b'), '_' => export_data_value('!') },
           @language_source,
-          {
-            'a' => language_export_data_line_from_simple_string('a'),
-            '_' => language_export_data_line_from_simple_string('_')
-          }
+          { 'a' => export_data_value('a'), '_' => export_data_value('_') }
         )
       file.open
       expect(file.read).to match_snapshot('create_xliff_file_content')
@@ -184,26 +206,14 @@ RSpec.describe ExportConfig, type: :model do
           @language,
           {},
           @language_source,
-          {
-            'a' => language_export_data_line_from_simple_string('a'),
-            '_' => language_export_data_line_from_simple_string('_')
-          }
+          { 'a' => export_data_value('a'), '_' => export_data_value('_') }
         )
       file.open
       expect(file.read).to match_snapshot('create_xliff_file_content_empty_target_data')
     end
 
     it 'create xliff file without source data' do
-      file =
-        export_config.file(
-          @language,
-          {
-            'a' => language_export_data_line_from_simple_string('b'),
-            '_' => language_export_data_line_from_simple_string('!')
-          },
-          nil,
-          nil
-        )
+      file = export_config.file(@language, { 'a' => export_data_value('b'), '_' => export_data_value('!') }, nil, nil)
       file.open
       expect(file.read).to match_snapshot('create_xliff_file_content_without_source_data')
     end
@@ -215,14 +225,7 @@ RSpec.describe ExportConfig, type: :model do
     export_config.file_format = 'arb'
 
     it 'create arb file content from parsed data' do
-      file =
-        export_config.file(
-          @language,
-          {
-            'a' => language_export_data_line_from_simple_string('b'),
-            '_' => language_export_data_line_from_simple_string('!')
-          }
-        )
+      file = export_config.file(@language, { 'a' => export_data_value('b'), '_' => export_data_value('!') })
       file.open
       expect(file.read).to match_snapshot('create_arb_file_content')
     end
@@ -237,11 +240,7 @@ RSpec.describe ExportConfig, type: :model do
       file =
         export_config.file(
           @language,
-          {
-            'a' => language_export_data_line_from_simple_string('b'),
-            'c' => language_export_data_line_from_simple_string('d'),
-            'c.a' => language_export_data_line_from_simple_string('e')
-          }
+          { 'a' => export_data_value('b'), 'c' => export_data_value('d'), 'c.a' => export_data_value('e') }
         )
       file.open
       expect(file.read).to match_snapshot('json_export_simple')
@@ -252,11 +251,7 @@ RSpec.describe ExportConfig, type: :model do
       file =
         export_config.file(
           @language,
-          {
-            'a' => language_export_data_line_from_simple_string('b'),
-            'c.a' => language_export_data_line_from_simple_string('d'),
-            'c.b' => language_export_data_line_from_simple_string('e')
-          }
+          { 'a' => export_data_value('b'), 'c.a' => export_data_value('d'), 'c.b' => export_data_value('e') }
         )
       file.open
       expect(file.read).to match_snapshot('json_export_with_split_on')
@@ -268,11 +263,11 @@ RSpec.describe ExportConfig, type: :model do
         export_config.file(
           @language,
           {
-            'a' => language_export_data_line_from_simple_string('a value'),
-            'c' => language_export_data_line_from_simple_string('this is not in the export'),
-            'c.a' => language_export_data_line_from_simple_string('also not in export'),
-            'c.a.a' => language_export_data_line_from_simple_string('overwrites c and c.a value'),
-            'c.b' => language_export_data_line_from_simple_string('c.b value')
+            'a' => export_data_value('a value'),
+            'c' => export_data_value('this is not in the export'),
+            'c.a' => export_data_value('also not in export'),
+            'c.a.a' => export_data_value('overwrites c and c.a value'),
+            'c.b' => export_data_value('c.b value')
           }
         )
       file.open
@@ -282,9 +277,9 @@ RSpec.describe ExportConfig, type: :model do
         export_config.file(
           @language,
           {
-            'a' => language_export_data_line_from_simple_string('not in export'),
-            'a.a.a' => language_export_data_line_from_simple_string('also not in export'),
-            'a.a' => language_export_data_line_from_simple_string('overwrites a and a.a.a value')
+            'a' => export_data_value('not in export'),
+            'a.a.a' => export_data_value('also not in export'),
+            'a.a' => export_data_value('overwrites a and a.a.a value')
           }
         )
       file.open

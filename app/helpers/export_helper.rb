@@ -100,16 +100,16 @@ module ExportHelper
   end
 
   # Create a simple export data line from a simple string.
-  def language_export_data_line_from_simple_string(text)
+  def language_export_data_line_from_simple_string(text, pluralization_enabled: false)
     {
       other: text,
-      zero: 'zero text',
-      one: 'one text',
-      two: 'two text',
-      few: 'few text',
-      many: 'many text',
-      pluralization_enabled: false,
-      description: 'description text'
+      zero: '',
+      one: '',
+      two: '',
+      few: '',
+      many: '',
+      pluralization_enabled: pluralization_enabled,
+      description: ''
     }
   end
 
