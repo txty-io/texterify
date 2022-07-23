@@ -41,95 +41,76 @@ module ExportHelper
     nil
   end
 
+  # Creates an export data object in the format:
+  # {
+  #   my.key.name: {
+  #     other: '',
+  #     zero: '',
+  #     one: '',
+  #     two: '',
+  #     few: '',
+  #     many: '',
+  #     pluralization_enabled: false,
+  #     description: ''
+  #   }
+  # }
   def create_language_export_data(project, export_config, language, post_processing_rules, **args)
     export_data = {}
+
+    # Load the translations for the given language and export config.
     project
       .keys
       .order_by_name
       .each do |key|
-        key_translation_export_config =
-          key
-            .translations
-            .where(language_id: language.id, export_config_id: export_config.id)
-            .order(created_at: :desc)
-            .first
-        if key_translation_export_config&.content.present?
-          key_translation = key_translation_export_config
-        else
-          key_translation =
-            key.translations.where(language_id: language.id, export_config_id: nil).order(created_at: :desc).first
+        key_translation = key.translation_for(language.id, export_config.id)
+        translation_export_data = nil
+
+        if key_translation
+          translation_export_data = key_translation.to_export_data(key, post_processing_rules, args[:emojify])
         end
 
-        content = ''
-        if key_translation.nil?
-          content = ''
-        elsif key.html_enabled
-          content = convert_html_translation(key_translation.content) || ''
-        else
-          content = key_translation.content
-        end
-
-        post_processing_rules.each do |post_processing_rule|
-          content = content.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
-        end
-
-        if args[:emojify]
-          content.gsub!(/[^\s]/, '❤️')
-        end
-
-        export_data[key.name] = content
+        export_data[key.name] = translation_export_data
       end
 
-    # Use translations of parent languages if translation is missing.
+    # Use translations of parent languages if translation for given language is missing.
     parent_language = language.parent
     while parent_language.present?
       parent_language.keys.each do |key|
-        if export_data[key.name].blank?
-          key_translation_export_config =
-            key
-              .translations
-              .where(language_id: parent_language.id, export_config_id: export_config.id)
-              .order(created_at: :desc)
-              .first
-          if key_translation_export_config&.content.present?
-            key_translation = key_translation_export_config
-          else
-            key_translation =
-              key
-                .translations
-                .where(language_id: parent_language.id, export_config_id: nil)
-                .order(created_at: :desc)
-                .first
+        if export_data[key.name].nil?
+          key_translation = key.translation_for(parent_language.id, export_config.id)
+
+          translation_export_data = nil
+
+          if key_translation
+            translation_export_data = key_translation.to_export_data(key, post_processing_rules, args[:emojify])
           end
 
-          content = ''
-          if key_translation.nil?
-            content = ''
-          elsif key.html_enabled
-            content = convert_html_translation(key_translation.content) || ''
-          else
-            content = key_translation.content
-          end
-
-          post_processing_rules.each do |post_processing_rule|
-            content = content.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
-          end
-
-          if args[:emojify]
-            content.gsub!(/[^\s]/, '❤️')
-          end
-
-          export_data[key.name] = content
+          export_data[key.name] = translation_export_data
         end
       end
+
       parent_language = parent_language.parent
     end
 
     if !args[:skip_timestamp]
-      export_data['texterify_timestamp'] = Time.now.utc.iso8601
+      export_data['texterify_timestamp'] = language_export_data_line_from_simple_string(Time.now.utc.iso8601)
     end
 
     export_data
+  end
+
+  # Create a simple export data line from a simple string.
+  def language_export_data_line_from_simple_string(text)
+    {
+      other: text,
+      zero: 'zero text',
+      one: 'one text',
+      two: 'two text',
+      few: 'few text',
+      many: 'many text',
+      pluralization_enabled: false,
+      description: 'description text'
+    }
   end
 
   def create_export(project, export_config, file, **args)

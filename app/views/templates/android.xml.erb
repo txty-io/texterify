@@ -1,4 +1,13 @@
 <?xml version="1.0"?>
-<resources><% @data.each do |key, value| %>
-  <string name="<%= key %>"><%= value %></string><% end %>
-</resources>
+<resources><% @data.each do |key, value| %><% if value[:pluralization_enabled] %>
+  <plurals name="<%= key %>">
+      <item quantity="other"><%= value[:other] %></item>
+      <item quantity="zero"><%= value[:zero] %></item>
+      <item quantity="one"><%= value[:one] %></item>
+      <item quantity="two"><%= value[:two] %></item>
+      <item quantity="few"><%= value[:few] %></item>
+      <item quantity="many"><%= value[:many] %></item>
+  </plurals>
+  <% else %>
+  <string name="<%= key %>"><%= value[:other] %></string><% end %>
+<% end %></resources>

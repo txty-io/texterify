@@ -16,7 +16,7 @@ if country_codes_to_insert.size > 0
   )
 end
 
-puts "Created country coded: #{country_codes_to_insert.size}"
+puts "Created country codes: #{country_codes_to_insert.size}"
 
 # Add ISO 639-1 codes from file "seed_data/country_codes.json".
 # See https://github.com/haliaeetus/iso-639/blob/master/data/iso_639-1.json.

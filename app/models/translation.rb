@@ -222,6 +222,60 @@ class Translation < ApplicationRecord
     end
   end
 
+  def to_export_data(key, post_processing_rules, emojify: false)
+    other = ''
+    zero = ''
+    one = ''
+    two = ''
+    few = ''
+    many = ''
+
+    if key.html_enabled
+      other = convert_html_translation(key_translation.content) || ''
+      zero = convert_html_translation(key_translation.zero) || ''
+      one = convert_html_translation(key_translation.one) || ''
+      two = convert_html_translation(key_translation.two) || ''
+      few = convert_html_translation(key_translation.few) || ''
+      many = convert_html_translation(key_translation.many) || ''
+    else
+      other = key_translation.content
+      zero = key_translation.zero
+      one = key_translation.one
+      two = key_translation.two
+      few = key_translation.few
+      many = key_translation.many
+    end
+
+    post_processing_rules.each do |post_processing_rule|
+      other = other.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
+      zero = zero.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
+      one = one.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
+      two = two.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
+      few = few.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
+      many = many.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
+    end
+
+    if emojify
+      other.gsub!(/[^\s]/, '❤️')
+      zero.gsub!(/[^\s]/, '❤️')
+      one.gsub!(/[^\s]/, '❤️')
+      two.gsub!(/[^\s]/, '❤️')
+      few.gsub!(/[^\s]/, '❤️')
+      many.gsub!(/[^\s]/, '❤️')
+    end
+
+    {
+      other: other,
+      zero: zero,
+      one: one,
+      two: two,
+      few: few,
+      many: many,
+      pluralization_enabled: key.pluralization_enabled,
+      description: key.description
+    }
+  end
+
   private
 
   # Updates the project character and word count after a translation is updated.
