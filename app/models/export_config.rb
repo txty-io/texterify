@@ -188,17 +188,6 @@ class ExportConfig < ApplicationRecord
     language_file
   end
 
-  def typescript(language, export_data)
-    language_file = Tempfile.new(language.id.to_s)
-    language_file.print("const #{language.name.downcase} = ")
-    language_file.puts("#{JSON.pretty_generate(export_data)};")
-    language_file.puts
-    language_file.puts("export { #{language.name.downcase} };")
-    language_file.close
-
-    language_file
-  end
-
   def android_sanitize_string(text)
     text
       .gsub(/(?<!\\)'/, "\\\\'")
@@ -260,6 +249,33 @@ class ExportConfig < ApplicationRecord
 
     language_file = Tempfile.new(language.id.to_s)
     language_file.puts(output)
+    language_file.close
+
+    language_file
+  end
+
+  def typescript(language, export_data)
+    plural_data = {}
+    export_data.each do |key, value|
+      if value[:pluralization_enabled]
+        plural_data[key] = {
+          other: value[:other],
+          zero: value[:zero],
+          one: value[:one],
+          two: value[:two],
+          few: value[:few],
+          many: value[:many]
+        }
+      else
+        plural_data[key] = value[:other]
+      end
+    end
+
+    language_file = Tempfile.new(language.id.to_s)
+    language_file.print("const #{language.name.downcase} = ")
+    language_file.puts("#{JSON.pretty_generate(plural_data)};")
+    language_file.puts
+    language_file.puts("export { #{language.name.downcase} };")
     language_file.close
 
     language_file

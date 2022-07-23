@@ -1,0 +1,19 @@
+{
+  "a": {
+    "other": "b",
+    "zero": "zero text",
+    "one": "one text",
+    "two": "two text",
+    "few": "few text",
+    "many": "many text"
+  },
+  "c": "d",
+  "c.a": {
+    "other": "e",
+    "zero": "zero text",
+    "one": "one text",
+    "two": "two text",
+    "few": "few text",
+    "many": "many text"
+  }
+}
