@@ -1,4 +1,4 @@
-import { ArrowLeftOutlined, HddOutlined, LoadingOutlined, SettingOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, FilterOutlined, HddOutlined, LoadingOutlined, SettingOutlined } from "@ant-design/icons";
 import { Alert, Button, Input, Layout, Pagination, Popover, Skeleton, Tabs, Tag } from "antd";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
@@ -338,7 +338,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                     }}
                                 >
                                     <Popover
-                                        title="Search settings"
+                                        title="Search filters"
                                         placement="bottomLeft"
                                         trigger="click"
                                         content={
@@ -353,7 +353,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                         }
                                     >
                                         <Button>
-                                            <SettingOutlined />
+                                            <FilterOutlined />
                                         </Button>
                                     </Popover>
                                     <Input.Search
@@ -762,7 +762,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                     style={{
                                         color: Styles.COLOR_TEXT_DISABLED,
                                         fontStyle: "italic",
-                                        margin: "auto",
+                                        marginTop: 160,
                                         textAlign: "center"
                                     }}
                                 >
