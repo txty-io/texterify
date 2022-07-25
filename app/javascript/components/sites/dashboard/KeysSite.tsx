@@ -282,7 +282,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 columns.push({
                     title: (
                         <div style={{ whiteSpace: "nowrap" }}>
-                            <span style={{ marginRight: 8 }}>Overwritten for</span>
+                            <span style={{ marginRight: 8 }}>Overwrites</span>
                             <Tooltip title="For which export targets at least one of the translations is overwritten.">
                                 <QuestionCircleOutlined />
                             </Tooltip>
@@ -406,7 +406,14 @@ class KeysSite extends React.Component<IProps, IState> {
                     <Tag
                         key={`${key.attributes.id}-plural`}
                         color="geekblue"
-                        style={{ margin: 0, marginRight: 4, marginBottom: 4 }}
+                        style={{
+                            margin: 0,
+                            marginRight: 4,
+                            marginBottom: 4,
+                            background: "var(--plural-tag-color)",
+                            color: "#fff",
+                            borderColor: "var(--plural-tag-color)"
+                        }}
                     >
                         Plural
                     </Tag>
@@ -937,7 +944,6 @@ class KeysSite extends React.Component<IProps, IState> {
                             </div>
                         </div>
                         <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", alignItems: "flex-end" }}>
-                            <span style={{ marginRight: 8, fontWeight: "bold" }}>Columns:</span>
                             {this.state.projectColumns && this.renderColumnTags()}
 
                             <div style={{ marginLeft: "auto", marginTop: 4 }}>

@@ -61,6 +61,17 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 dataId: "project-sidebar-home"
             },
             {
+                icon: EditOutlined,
+                path: Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId),
+                text: (
+                    <span>
+                        Editor
+                        <RightSquareOutlined style={{ marginLeft: 16 }} />
+                    </span>
+                ),
+                dataId: "project-sidebar-editor"
+            },
+            {
                 icon: KeyOutlined,
                 path: Routes.DASHBOARD.PROJECT_KEYS.replace(":projectId", this.props.match.params.projectId),
                 text: "Keys",
@@ -71,17 +82,6 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 path: Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId),
                 text: "Languages",
                 dataId: "project-sidebar-languages"
-            },
-            {
-                icon: EditOutlined,
-                path: Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId),
-                text: (
-                    <span>
-                        Editor
-                        <RightSquareOutlined style={{ marginLeft: 16 }} />
-                    </span>
-                ),
-                dataId: "project-sidebar-editor"
             },
             {
                 icon: MonitorOutlined,

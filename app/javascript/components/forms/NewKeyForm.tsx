@@ -169,16 +169,15 @@ class NewKeyForm extends React.Component<IProps> {
                                             <Tooltip title="If checked a editor will be used for translation that helps you to create HTML content. You can always change this later.">
                                                 <QuestionCircleOutlined />
                                             </Tooltip>
+                                            {!dashboardStore.featureEnabled("FEATURE_HTML_EDITOR") && (
+                                                <FeatureNotAvailable
+                                                    feature="FEATURE_HTML_EDITOR"
+                                                    style={{ marginLeft: 16 }}
+                                                />
+                                            )}
                                         </div>
 
-                                        {!dashboardStore.featureEnabled("FEATURE_HTML_EDITOR") && (
-                                            <FeatureNotAvailable
-                                                feature="FEATURE_HTML_EDITOR"
-                                                style={{ marginBottom: 16 }}
-                                            />
-                                        )}
-
-                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                        <div style={{ display: "flex", alignItems: "center", marginTop: 16 }}>
                                             <Form.Item
                                                 name="pluralizationEnabled"
                                                 rules={[{ required: false }]}

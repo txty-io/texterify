@@ -1,35 +1,40 @@
 &,
 .dark-theme,
 .light-theme {
-    .ant-btn:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
-    .ant-btn:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled) {
-        color: var(--primary-btn-hover-color);
-        border-color: var(--primary-btn-hover-color);
-    }
+  .ant-btn-primary:not([disabled]) {
+    background: var(--primary-btn-color);
+    border-color: var(--primary-btn-color);
+  }
 
-    .ant-btn.ant-btn-primary:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
-    .ant-btn.ant-btn-primary:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
-    .ant-tag-checkable-checked:hover {
-        color: #fff;
-        background: var(--primary-btn-hover-color);
-        border-color: var(--primary-btn-hover-color);
-    }
+  .ant-btn:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
+  .ant-btn:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled) {
+    color: var(--primary-btn-hover-color);
+    border-color: var(--primary-btn-hover-color);
+  }
 
-    .ant-tag-checkable-checked {
-        color: #fff;
-        background: var(--primary-btn-color);
-        border-color: var(--primary-btn-color);
-    }
+  .ant-btn.ant-btn-primary:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
+  .ant-btn.ant-btn-primary:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
+  .ant-tag-checkable-checked:hover {
+    color: #fff;
+    background: var(--primary-btn-hover-color);
+    border-color: var(--primary-btn-hover-color);
+  }
 
-    .ant-btn.ant-btn-primary.ant-btn-background-ghost {
-        color: var(--primary-btn-color);
-        border-color: var(--primary-btn-color);
-    }
+  .ant-tag-checkable-checked {
+    color: #fff;
+    background: var(--primary-btn-color);
+    border-color: var(--primary-btn-color);
+  }
 
-    .ant-btn.ant-btn-primary.ant-btn-background-ghost:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
-    .ant-btn.ant-btn-primary.ant-btn-background-ghost:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled) {
-        color: var(--primary-btn-hover-color);
-        background: var(--primary-btn-hover-color);
-        border-color: var(--primary-btn-hover-color);
-    }
+  .ant-btn.ant-btn-primary.ant-btn-background-ghost {
+    color: var(--primary-btn-color);
+    border-color: var(--primary-btn-color);
+  }
+
+  .ant-btn.ant-btn-primary.ant-btn-background-ghost:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
+  .ant-btn.ant-btn-primary.ant-btn-background-ghost:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled) {
+    color: var(--primary-btn-hover-color);
+    background: var(--primary-btn-hover-color);
+    border-color: var(--primary-btn-hover-color);
+  }
 }
