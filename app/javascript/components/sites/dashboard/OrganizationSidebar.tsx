@@ -59,7 +59,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                 ":organizationId",
                 this.props.match.params.organizationId
             ),
-            text: "Machine Translation",
+            text: "MT",
             texterifyCloudOnly: false
         },
         {

@@ -46,18 +46,18 @@ const Key = styled.div<{ isSelected: boolean }>`
     }};
 
     color: ${(props) => {
-        return props.isSelected ? "var(--blue-color)" : "#333";
+        return props.isSelected ? "var(--color-primary)" : "#333";
     }};
 
     &:hover {
-        color: var(--blue-color);
+        color: var(--color-primary);
     }
 
     .dark-theme & {
         color: #fff;
 
         &:hover {
-            color: var(--blue-color);
+            color: var(--color-primary);
         }
     }
 `;
@@ -536,7 +536,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 }}
                                                 isSelected={this.isSelectedKey(key.id)}
                                                 style={{
-                                                    color: this.isSelectedKey(key.id) ? "var(--blue-color)" : undefined,
+                                                    color: this.isSelectedKey(key.id)
+                                                        ? "var(--color-primary)"
+                                                        : undefined,
                                                     flexShrink: 0
                                                 }}
                                                 className="editor-key"

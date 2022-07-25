@@ -4,11 +4,13 @@
   --dark-color: #06101f;
   --border-color: #d9d9d9;
   --border-color-flashier: #777;
-  --blue-color: #004ff2;
   --highlight-color: #000;
   --highlight-color-decent: #f0f0f0;
   --primary-light-color: #e3eaff;
   --background-highlight-color: #1c70f51a;
+
+  --color-primary: #004ff2;
+  --color-primary-light: #0956f6;
   --color-passive: #aaa;
   --color-passive-hover: #333;
   --color-success: #52c41a;
@@ -21,7 +23,7 @@
 
   // activity
   --activity-highlight-key-update-background-color: #ecf1ff;
-  --activity-highlight-key-update-color: var(--blue-color);
+  --activity-highlight-key-update-color: var(--color-primary);
 
   // mark
   --mark-background-color: #ffd1b6ad;
@@ -33,16 +35,17 @@
 
   // header
   --header-background-color: var(--dark-color);
-  --header-menu-item-active-background: #1f2b4a;
+  --header-menu-item-active-background: var(--color-primary);
 
   // button
-  --primary-btn-color: #004ff2;
-  --primary-btn-hover-color: #0956f6;
+  --primary-btn-color: var(--color-primary);
+  --primary-btn-hover-color: var(--color-primary-light);
+  --default-btn-hover-color: var(--color-primary-light);
 
   // input
   --input-border-color: #d9d9d9;
-  --input-border-hover-color: #004ff2;
-  --input-border-focus-color: #0956f6;
+  --input-border-hover-color: var(--color-primary);
+  --input-border-focus-color: var(--color-primary-light);
   --input-border-disabled-color: #d9d9d9;
   --error-color: #cc3d3f;
   --error-color-hover: #ff4d4f;
@@ -87,12 +90,13 @@
   --background-color: var(--dark-color);
   --border-color: rgb(27, 31, 33);
   --border-color-flashier: #4e4e4e;
-  --blue-color: #004ff2;
-  --blue-color-light: #0956f6;
   --highlight-color: rgba(255, 255, 255, 0.85);
   --highlight-color-decent: #ffffff0f;
   --primary-light-color: #111d3a;
   --background-highlight-color: #177ddc1a;
+
+  --color-primary: #004ff2;
+  --color-primary-light: #0956f6;
   --color-passive: #555;
   --color-passive-hover: #999;
   --color-warn: #e84b00;
@@ -118,13 +122,14 @@
   // same as for light mode
 
   // button
-  // --primary-btn-color: #2567f0;
-  // --primary-btn-hover-color: #0956f6;
+  --primary-btn-color: var(--color-primary);
+  --primary-btn-hover-color: var(--color-primary-light);
+  --default-btn-hover-color: #1363ff;
 
   // input
   --input-border-color: #434343;
-  --input-border-hover-color: #004ff2;
-  --input-border-focus-color: #0956f6;
+  --input-border-hover-color: #1363ff;
+  --input-border-focus-color: #1363ff;
   --input-border-disabled-color: #434343;
 
   // popover
@@ -157,8 +162,8 @@
   --breadcrumbs-color: rgba(255, 255, 255, 0.45);
 
   // links
-  --a-link: #417bff;
-  --a-link-hover: #5086ff;
+  --a-link: #236bff;
+  --a-link-hover: #4986ff;
 
   // other stuff
 }

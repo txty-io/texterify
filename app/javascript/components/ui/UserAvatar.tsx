@@ -9,7 +9,7 @@ const UserAvatarWrapper = styled.div`
     height: 32px;
     width: 32px;
     background: var(--avatar-color);
-    color: #000;
+    color: #fff;
 
     .dark-theme & {
         color: #fff;

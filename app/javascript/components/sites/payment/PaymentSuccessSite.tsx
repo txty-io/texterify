@@ -50,7 +50,7 @@ const PaymentSuccessSite = observer(() => {
                 <>
                     <p style={{ fontWeight: "bold" }}>
                         We will send you your license key by email to{" "}
-                        <span style={{ color: "var(--blue-color)" }}>{email}</span>.
+                        <span style={{ color: "var(--color-primary)" }}>{email}</span>.
                     </p>
                     <p style={{ fontSize: 12, maxWidth: 480, textAlign: "center", color: "#aaa" }}>
                         If you are having any problems receiving or activating your license you can contact us by

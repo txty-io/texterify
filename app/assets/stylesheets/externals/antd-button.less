@@ -20,6 +20,23 @@
     border-color: var(--primary-btn-hover-color);
   }
 
+  .ant-btn.ant-btn-default:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
+  .ant-btn.ant-btn-default:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled) {
+    color: var(--default-btn-hover-color);
+    border-color: var(--prdefaultimary-btn-hover-color);
+  }
+
+  .ant-radio-checked .ant-radio-inner,
+  .ant-radio-checked:hover .ant-radio-inner,
+  .ant-radio-checked:focus .ant-radio-inner,
+  .ant-radio-input:focus + .ant-radio-inner {
+    border-color: var(--default-btn-hover-color);
+  }
+
+  .ant-radio-inner::after {
+    background: var(--default-btn-hover-color);
+  }
+
   .ant-tag-checkable-checked {
     color: #fff;
     background: var(--primary-btn-color);
