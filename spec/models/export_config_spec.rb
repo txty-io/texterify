@@ -375,4 +375,20 @@ RSpec.describe ExportConfig, type: :model do
       expect(file.read).to match_snapshot('json_export_with_split_on_parent_object_key_ignored_2')
     end
   end
+
+  # Format.js JSON
+  context 'when file format is formatjs' do
+    export_config = ExportConfig.new
+    export_config.file_format = 'json-formatjs'
+
+    it 'create formatjs file content from parsed data' do
+      file =
+        export_config.file(
+          @language,
+          { 'a' => export_data_value('b'), 'c' => export_data_value('d'), 'c.a' => export_data_value('e') }
+        )
+      file.open
+      expect(file.read).to match_snapshot('formatjs_json_export_simple')
+    end
+  end
 end

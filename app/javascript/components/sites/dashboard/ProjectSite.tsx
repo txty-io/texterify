@@ -1,5 +1,5 @@
-import { ArrowRightOutlined, CrownOutlined, PicRightOutlined } from "@ant-design/icons";
-import { Button, Empty, Layout, message, Pagination, Progress, Skeleton, Statistic, Tag, Tooltip } from "antd";
+import { CrownOutlined } from "@ant-design/icons";
+import { Empty, Layout, message, Pagination, Progress, Skeleton, Statistic, Tooltip } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as moment from "moment";
@@ -10,7 +10,6 @@ import { APIUtils } from "../../api/v1/APIUtils";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { IGetValidationViolationsCountResponse, ValidationViolationsAPI } from "../../api/v1/ValidationViolationsAPI";
-import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Activity } from "../../ui/Activity";
