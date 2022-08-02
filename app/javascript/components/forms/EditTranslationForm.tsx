@@ -4,6 +4,7 @@ import * as React from "react";
 import { IGetKeyResponse } from "../api/v1/KeysAPI";
 import { IGetLanguagesResponse } from "../api/v1/LanguagesAPI";
 import { ITranslation, TranslationsAPI } from "../api/v1/TranslationsAPI";
+import { HTMLEditor } from "../sites/dashboard/editor/HTMLEditor";
 import { ErrorUtils } from "../ui/ErrorUtils";
 import { Loading } from "../ui/Loading";
 import { TranslationUtils } from "../utilities/TranslationUtils";
@@ -53,7 +54,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
 
             setTranslation(translationForLanguage);
         } catch (error) {
-            console.error();
+            console.error(error);
             ErrorUtils.showError("Failed to load translation");
         }
 
@@ -120,132 +121,135 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
         return <Loading />;
     }
 
+    const pluralizationEnabled = props.keyResponse.data.attributes.pluralization_enabled;
+    const htmlEnabled = props.keyResponse.data.attributes.html_enabled;
+
     return (
-        <>
-            {/* <TranslationCard
-                projectId={props.projectId}
-                keyResponse={this.state.editTranslationKeyReponse}
-                languagesResponse={this.state.languagesResponse}
-                defaultSelected={this.state.editTranslationLanguageId}
-                exportConfigId={this.state.editTranslationExportConfigId}
-                hideLanguageSelection
-                hideSaveButton
-                ref={(ref) => {
-                    return (this.translationCardRef = ref);
-                }}
-                onChange={(changed: boolean) => {
-                    this.setState({ editTranslationContentChanged: changed });
-                }}
-            /> */}
-            <Form
-                onFinish={async (values: IFormValues) => {
-                    try {
-                        const response = await TranslationsAPI.createTranslation({
-                            projectId: props.projectId,
-                            languageId: selectedLanguage.id,
-                            keyId: props.keyResponse.data.id,
-                            zero: values.zero,
-                            one: values.one,
-                            two: values.two,
-                            few: values.few,
-                            many: values.many,
-                            content: values.other,
-                            exportConfigId: props.selectedExportConfigId
-                        });
+        <Form
+            onFinish={async (values: IFormValues) => {
+                try {
+                    const response = await TranslationsAPI.createTranslation({
+                        projectId: props.projectId,
+                        languageId: selectedLanguage.id,
+                        keyId: props.keyResponse.data.id,
+                        zero: values.zero,
+                        one: values.one,
+                        two: values.two,
+                        few: values.few,
+                        many: values.many,
+                        content: values.other,
+                        exportConfigId: props.selectedExportConfigId
+                    });
 
-                        if (response.error) {
-                            ErrorUtils.showError(`Error: ${response.error}`);
-                        } else {
-                            message.success("Succesfully updated translation.");
+                    if (response.error) {
+                        ErrorUtils.showError(`Error: ${response.error}`);
+                    } else {
+                        message.success("Succesfully updated translation.");
 
-                            if (props.onSuccess) {
-                                props.onSuccess();
-                            }
-
-                            if (props.clearFieldsAfterSubmit) {
-                                formRef.current?.resetFields();
-                            }
+                        if (props.onSuccess) {
+                            props.onSuccess();
                         }
-                    } catch (error) {
-                        console.error(error);
-                        ErrorUtils.showError("Failed to update translation");
+
+                        if (props.clearFieldsAfterSubmit) {
+                            formRef.current?.resetFields();
+                        }
                     }
-                }}
-                onChange={() => {
-                    if (props.onChange) {
-                        props.onChange();
-                    }
-                }}
-                style={{ maxWidth: "100%", minWidth: 0, ...props.style }}
-                id={props.formId}
-                initialValues={
-                    translation && {
-                        zero: translation.attributes.zero,
-                        one: translation.attributes.one,
-                        two: translation.attributes.two,
-                        few: translation.attributes.few,
-                        many: translation.attributes.many,
-                        other: translation.attributes.content
-                    }
+                } catch (error) {
+                    console.error(error);
+                    ErrorUtils.showError("Failed to update translation");
                 }
-            >
-                {props.keyResponse.data.attributes.pluralization_enabled &&
-                    selectedLanguage.attributes.supports_plural_zero && (
-                        <>
-                            <PluralFormHeading name="Zero" />
-                            <Form.Item name="zero" rules={[{ required: false }]}>
-                                <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "zero"} />
-                            </Form.Item>
-                        </>
-                    )}
+            }}
+            onValuesChange={(_changedValues) => {
+                if (props.onChange) {
+                    props.onChange();
+                }
+            }}
+            style={{ maxWidth: "100%", minWidth: 0, ...props.style }}
+            id={props.formId}
+            initialValues={
+                translation && {
+                    zero: translation.attributes.zero,
+                    one: translation.attributes.one,
+                    two: translation.attributes.two,
+                    few: translation.attributes.few,
+                    many: translation.attributes.many,
+                    other: translation.attributes.content
+                }
+            }
+        >
+            {pluralizationEnabled && selectedLanguage.attributes.supports_plural_zero && (
+                <>
+                    <PluralFormHeading name="Zero" />
+                    <Form.Item name="zero" rules={[{ required: false }]}>
+                        {htmlEnabled ? (
+                            <HTMLEditor />
+                        ) : (
+                            <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "zero"} />
+                        )}
+                    </Form.Item>
+                </>
+            )}
 
-                {props.keyResponse.data.attributes.pluralization_enabled &&
-                    selectedLanguage.attributes.supports_plural_one && (
-                        <>
-                            <PluralFormHeading name="One" />
-                            <Form.Item name="one" rules={[{ required: false }]}>
-                                <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "one"} />
-                            </Form.Item>
-                        </>
-                    )}
+            {pluralizationEnabled && selectedLanguage.attributes.supports_plural_one && (
+                <>
+                    <PluralFormHeading name="One" />
+                    <Form.Item name="one" rules={[{ required: false }]}>
+                        {htmlEnabled ? (
+                            <HTMLEditor />
+                        ) : (
+                            <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "one"} />
+                        )}
+                    </Form.Item>
+                </>
+            )}
 
-                {props.keyResponse.data.attributes.pluralization_enabled &&
-                    selectedLanguage.attributes.supports_plural_two && (
-                        <>
-                            <PluralFormHeading name="Two" />
-                            <Form.Item name="two" rules={[{ required: false }]}>
-                                <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "two"} />
-                            </Form.Item>
-                        </>
-                    )}
+            {pluralizationEnabled && selectedLanguage.attributes.supports_plural_two && (
+                <>
+                    <PluralFormHeading name="Two" />
+                    <Form.Item name="two" rules={[{ required: false }]}>
+                        {htmlEnabled ? (
+                            <HTMLEditor />
+                        ) : (
+                            <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "two"} />
+                        )}
+                    </Form.Item>
+                </>
+            )}
 
-                {props.keyResponse.data.attributes.pluralization_enabled &&
-                    selectedLanguage.attributes.supports_plural_few && (
-                        <>
-                            <PluralFormHeading name="Few" />
-                            <Form.Item name="few" rules={[{ required: false }]}>
-                                <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "few"} />
-                            </Form.Item>
-                        </>
-                    )}
+            {pluralizationEnabled && selectedLanguage.attributes.supports_plural_few && (
+                <>
+                    <PluralFormHeading name="Few" />
+                    <Form.Item name="few" rules={[{ required: false }]}>
+                        {htmlEnabled ? (
+                            <HTMLEditor />
+                        ) : (
+                            <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "few"} />
+                        )}
+                    </Form.Item>
+                </>
+            )}
 
-                {props.keyResponse.data.attributes.pluralization_enabled &&
-                    selectedLanguage.attributes.supports_plural_many && (
-                        <>
-                            <PluralFormHeading name="Many" />
-                            <Form.Item name="many" rules={[{ required: false }]}>
-                                <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "many"} />
-                            </Form.Item>
-                        </>
-                    )}
+            {pluralizationEnabled && selectedLanguage.attributes.supports_plural_many && (
+                <>
+                    <PluralFormHeading name="Many" />
+                    <Form.Item name="many" rules={[{ required: false }]}>
+                        {htmlEnabled ? (
+                            <HTMLEditor />
+                        ) : (
+                            <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "many"} />
+                        )}
+                    </Form.Item>
+                </>
+            )}
 
-                {props.keyResponse.data.attributes.pluralization_enabled && supportsPluralForm && (
-                    <PluralFormHeading name="Other" />
-                )}
-                <Form.Item name="other" rules={[{ required: false }]}>
+            {pluralizationEnabled && supportsPluralForm && <PluralFormHeading name="Other" />}
+            <Form.Item name="other" rules={[{ required: false }]}>
+                {htmlEnabled ? (
+                    <HTMLEditor />
+                ) : (
                     <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "other"} />
-                </Form.Item>
-            </Form>
-        </>
+                )}
+            </Form.Item>
+        </Form>
     );
 }

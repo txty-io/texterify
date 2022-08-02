@@ -99,7 +99,7 @@ class Translation < ApplicationRecord
           name: 'validate_leading_whitespace'
         )
 
-      if self.content.starts_with?(' ')
+      if self.content&.starts_with?(' ')
         if !violation
           ValidationViolation.create!(
             project_id: project.id,
@@ -123,7 +123,7 @@ class Translation < ApplicationRecord
           name: 'validate_trailing_whitespace'
         )
 
-      if self.content.ends_with?(' ')
+      if self.content&.ends_with?(' ')
         if !violation
           ValidationViolation.create!(
             project_id: project.id,
@@ -143,7 +143,7 @@ class Translation < ApplicationRecord
       violation =
         ValidationViolation.find_by(project_id: project.id, translation_id: self.id, name: 'validate_double_whitespace')
 
-      if self.content.include?('  ')
+      if self.content&.include?('  ')
         if !violation
           ValidationViolation.create!(
             project_id: project.id,
@@ -162,7 +162,7 @@ class Translation < ApplicationRecord
     if project.validate_https
       violation = ValidationViolation.find_by(project_id: project.id, translation_id: self.id, name: 'validate_https')
 
-      if self.content.include?('http://')
+      if self.content&.include?('http://')
         if !violation
           ValidationViolation.create!(project_id: project.id, translation_id: self.id, name: 'validate_https')
         end
