@@ -51,4 +51,14 @@
     .toolbar .toolbar-item.active:hover:not([disabled]) {
         background-color: var(--toolbar-action-active-background-color);
     }
+
+    .ant-input {
+        ul, ol, p {
+            margin-bottom: 16px !important;
+
+            &:last-child {
+                margin-bottom: 0 !important;
+            }
+        }
+    }
 }

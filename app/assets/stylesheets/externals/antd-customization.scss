@@ -51,9 +51,12 @@
       }
     }
 
-    // Hide the margin of the last <p> in HTML key translations.
-    p:last-child {
-      margin-bottom: 0;
+    ul, ol, p {
+      margin-bottom: 16px !important;
+
+      &:last-child {
+        margin-bottom: 0 !important;
+      }
     }
   }
 
