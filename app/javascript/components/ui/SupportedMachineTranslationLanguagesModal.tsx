@@ -6,12 +6,26 @@ import {
 } from "../api/v1/MachineTranslationsAPI";
 import { TexterifyModal } from "./TexterifyModal";
 
+function NoLanguagesLoaded() {
+    return <i>No languages loaded.</i>;
+}
+
 export function SupportedMachineTranslationLanguagesModal(props: {
     visible: boolean;
     supportedSourceLanguages: IGetMachineTranslationsSourceLanguages;
     supportedTargetLanguages: IGetMachineTranslationsTargetLanguages;
     onCancelRequest();
 }) {
+    const supportedSourceElements =
+        props.supportedSourceLanguages?.data?.map((supportedSourceLanguage) => {
+            return <li key={supportedSourceLanguage.id}>{supportedSourceLanguage.attributes.name}</li>;
+        }) || [];
+
+    const supportedTargetElements =
+        props.supportedTargetLanguages?.data?.map((supportedTargetLanguage) => {
+            return <li key={supportedTargetLanguage.id}>{supportedTargetLanguage.attributes.name}</li>;
+        }) || [];
+
     return (
         <TexterifyModal
             title="Supported languages for machine translation"
@@ -37,20 +51,12 @@ export function SupportedMachineTranslationLanguagesModal(props: {
             <div style={{ display: "flex" }}>
                 <div style={{ width: "50%" }}>
                     <h1>Source languages</h1>
-                    <ul>
-                        {props.supportedSourceLanguages?.data?.map((supportedSourceLanguage) => {
-                            return <li key={supportedSourceLanguage.id}>{supportedSourceLanguage.attributes.name}</li>;
-                        })}
-                    </ul>
+                    <ul>{supportedSourceElements.length > 0 ? supportedSourceElements : <NoLanguagesLoaded />}</ul>
                 </div>
 
                 <div style={{ width: "50%" }}>
                     <h1>Target languages</h1>
-                    <ul>
-                        {props.supportedTargetLanguages?.data?.map((supportedTargetLanguage) => {
-                            return <li key={supportedTargetLanguage.id}>{supportedTargetLanguage.attributes.name}</li>;
-                        })}
-                    </ul>
+                    <ul>{supportedTargetElements.length > 0 ? supportedTargetElements : <NoLanguagesLoaded />}</ul>
                 </div>
             </div>
         </TexterifyModal>

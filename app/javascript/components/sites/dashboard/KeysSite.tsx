@@ -480,16 +480,16 @@ class KeysSite extends React.Component<IProps, IState> {
                         overlayClassName="popover-no-padding"
                         content={
                             <>
-                                {!dashboardStore.featureEnabled("FEATURE_HTML_EDITOR") && (
-                                    <div style={{ padding: "8px 16px" }}>
-                                        <FeatureNotAvailable
-                                            feature="FEATURE_HTML_EDITOR"
-                                            style={{ marginBottom: 0 }}
-                                        />
-                                    </div>
-                                )}
                                 <div style={{ padding: "8px 16px", display: "flex", alignItems: "center" }}>
                                     <div style={{ flexGrow: 1 }}>HTML</div>
+                                    {!dashboardStore.featureEnabled("FEATURE_HTML_EDITOR") && (
+                                        <div style={{ paddingLeft: 16 }}>
+                                            <FeatureNotAvailable
+                                                feature="FEATURE_HTML_EDITOR"
+                                                style={{ marginBottom: 0 }}
+                                            />
+                                        </div>
+                                    )}
                                     <Switch
                                         style={{ marginLeft: 16 }}
                                         checked={key.attributes.html_enabled}

@@ -79,12 +79,26 @@
   // breadcrumbs
   --breadcrumbs-color: rgba(0, 0, 0, 0.45);
 
+  // links
+
+  // select
+  --select-single-color: rgba(0, 0, 0, 0.85);
+  --select-active-background-color: rgba(0, 0, 0, 0.1);
+  --select-selected-background-color: rgba(0, 0, 0, 0.1);
+  --select-selected-color: #000;
+
   // other stuff
   --column-tag-color: #9626ae;
   --avatar-color: #9626ae;
 
   // editor
   --toolbar-action-active-background-color: #0000001a;
+
+  // pagination
+  --pagination-color: rgba(0, 0, 0, 0.85);
+
+  // tooltip
+  --tooltip-background-color: var(--dark-color);
 }
 
 .dark-theme {
@@ -167,8 +181,20 @@
   --a-link: var(--color-primary);
   --a-link-hover: var(--color-primary-light);
 
+  // select
+  --select-single-color: rgba(255, 255, 255, 0.85);
+  --select-active-background-color: rgba(255, 255, 255, 0.1);
+  --select-selected-background-color: rgba(255, 255, 255, 0.1);
+  --select-selected-color: #fff;
+
   // other stuff
 
   // editor
   --toolbar-action-active-background-color: #ffffff1a;
+
+  // pagination
+  --pagination-color: rgba(255, 255, 255, 0.85);
+
+  // tooltip
+  --tooltip-background-color: var(--dark-color);
 }

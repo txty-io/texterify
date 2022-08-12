@@ -19,12 +19,9 @@ interface INavigationData {
 }
 
 type IProps = RouteComponentProps<{}>;
-interface IState {
-    selectedItem: number;
-}
 
 @observer
-class InstanceSidebar extends React.Component<IProps, IState> {
+class InstanceSidebar extends React.Component<IProps> {
     navigationData: INavigationData[] = [
         {
             icon: HomeOutlined,
@@ -49,39 +46,35 @@ class InstanceSidebar extends React.Component<IProps, IState> {
         }
     ];
 
-    state: IState = {
-        selectedItem: 0
+    getFilteredNavigationData = () => {
+        return this.navigationData.filter((data) => {
+            if (data.texterifyInstanceOnly) {
+                if (IS_TEXTERIFY_CLOUD) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        });
     };
 
     renderMenuItems = () => {
-        return (
-            this.navigationData
-                // .filter((data) => {
-                //     if (data.texterifyInstanceOnly) {
-                //         if (IS_TEXTERIFY_CLOUD) {
-                //             return false;
-                //         } else {
-                //             return true;
-                //         }
-                //     } else {
-                //         return true;
-                //     }
-                // })
-                .map((data: INavigationData, index: number) => {
-                    return (
-                        <Menu.Item data-id={data.dataId} key={index} title={data.text}>
-                            <Link to={data.path}>
-                                <data.icon />
-                                <span>{data.text}</span>
-                            </Link>
-                        </Menu.Item>
-                    );
-                })
-        );
+        return this.getFilteredNavigationData().map((data: INavigationData, index: number) => {
+            return (
+                <Menu.Item data-id={data.dataId} key={index} title={data.text}>
+                    <Link to={data.path}>
+                        <data.icon />
+                        <span>{data.text}</span>
+                    </Link>
+                </Menu.Item>
+            );
+        });
     };
 
-    getSelectedItem = () => {
-        return this.navigationData.map((data: INavigationData, index: number): string => {
+    getSelectedItems = () => {
+        return this.getFilteredNavigationData().map((data: INavigationData, index: number): string => {
             if (data.path === this.props.location.pathname) {
                 return index.toString();
             }
@@ -140,7 +133,7 @@ class InstanceSidebar extends React.Component<IProps, IState> {
                     <Menu
                         id="sidebar-menu"
                         mode="inline"
-                        selectedKeys={this.getSelectedItem()}
+                        selectedKeys={this.getSelectedItems()}
                         style={{ height: "100%" }}
                     >
                         {this.renderMenuItems()}

@@ -42,16 +42,9 @@ interface INavigationData {
 }
 
 type IProps = RouteComponentProps<{ projectId: string }>;
-interface IState {
-    selectedItem: number;
-}
 
 @observer
-class ProjectSidebar extends React.Component<IProps, IState> {
-    state: IState = {
-        selectedItem: 0
-    };
-
+class ProjectSidebar extends React.Component<IProps> {
     getNavigationData(): INavigationData[] {
         return [
             {
@@ -365,7 +358,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
         ];
     };
 
-    getSelectedItem = (): string[] => {
+    getSelectedItems = () => {
         return this.getNavigationData().map((data: INavigationData, index: number): string => {
             if (data.paths?.includes(this.props.location.pathname)) {
                 return index.toString();
@@ -416,7 +409,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     <Menu
                         id="sidebar-menu"
                         mode="inline"
-                        selectedKeys={this.getSelectedItem()}
+                        selectedKeys={this.getSelectedItems()}
                         style={{ height: "100%" }}
                     >
                         {this.renderMenuItems()}

@@ -31,12 +31,9 @@ interface INavigationData {
 }
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
-interface IState {
-    selectedItem: number;
-}
 
 @observer
-class OrganizationSidebar extends React.Component<IProps, IState> {
+class OrganizationSidebar extends React.Component<IProps> {
     navigationData: INavigationData[] = [
         {
             icon: HomeOutlined,
@@ -100,8 +97,18 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
         }
     ];
 
-    state: IState = {
-        selectedItem: 0
+    getFilteredNavigationData = () => {
+        return this.navigationData.filter((data) => {
+            if (data.texterifyCloudOnly) {
+                if (IS_TEXTERIFY_CLOUD) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        });
     };
 
     componentDidUpdate() {
@@ -150,33 +157,21 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                     </span>
                 </Link>
             </Menu.Item>,
-            ...this.navigationData
-                .filter((data) => {
-                    if (data.texterifyCloudOnly) {
-                        if (IS_TEXTERIFY_CLOUD) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    } else {
-                        return true;
-                    }
-                })
-                .map((data: INavigationData, index: number) => {
-                    return (
-                        <Menu.Item key={index} title={data.text} disabled={!this.isMenuItemEnabled(data.roles)}>
-                            <Link to={data.path}>
-                                <data.icon />
-                                <span>{data.text}</span>
-                            </Link>
-                        </Menu.Item>
-                    );
-                })
+            ...this.getFilteredNavigationData().map((data: INavigationData, index: number) => {
+                return (
+                    <Menu.Item key={index} title={data.text} disabled={!this.isMenuItemEnabled(data.roles)}>
+                        <Link to={data.path}>
+                            <data.icon />
+                            <span>{data.text}</span>
+                        </Link>
+                    </Menu.Item>
+                );
+            })
         ];
     };
 
-    getSelectedItem = (): string[] => {
-        return this.navigationData.map((data: INavigationData, index: number): string => {
+    getSelectedItems = () => {
+        return this.getFilteredNavigationData().map((data: INavigationData, index: number): string => {
             if (data.paths?.includes(this.props.location.pathname)) {
                 return index.toString();
             } else if (data.path === this.props.location.pathname) {
@@ -214,7 +209,7 @@ class OrganizationSidebar extends React.Component<IProps, IState> {
                     <Menu
                         id="sidebar-menu"
                         mode="inline"
-                        selectedKeys={this.getSelectedItem()}
+                        selectedKeys={this.getSelectedItems()}
                         style={{ height: "100%" }}
                     >
                         {this.renderMenuItems()}

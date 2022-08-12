@@ -12,12 +12,11 @@ import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
 import { Styles } from "./Styles";
 import { UserAvatar } from "./UserAvatar";
 
-const AccountProfileContentWrapper: any = styled.div`
+const AccountProfileContentWrapper = styled.div`
     a {
         display: block;
-        color: #888;
+        color: var(--select-single-color);
         padding: 4px 16px;
-        background: #fcfcfc;
 
         .dark-theme & {
             background: none;
@@ -26,13 +25,8 @@ const AccountProfileContentWrapper: any = styled.div`
 
     a:hover {
         text-decoration: none;
-        background: #fcfcfc;
-        color: #333;
-
-        .dark-theme & {
-            background: #2a2a2a;
-            color: #fff;
-        }
+        color: var(--select-selected-color);
+        background: var(--select-selected-background-color);
     }
 `;
 

@@ -33,16 +33,6 @@
     background-color: rgba(255, 255, 255, 0.05);
   }
 
-  // Change select item background color.
-  .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
-    background-color: #2a2a2a;
-  }
-
-  .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
-    color: rgba(151, 151, 151, 0.65);
-    background-color: #2a2a2a;
-  }
-
   // Set content area background.
   .ant-layout {
     background: var(--background-color);
@@ -139,13 +129,6 @@
     }
   }
 
-  // Fix disabled select color.
-  .ant-select-disabled.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
-    background: none;
-    color: #434343;
-    border-color: var(--input-border-disabled-color);
-  }
-
   // Fix tree hover and selected elements.
   .ant-tree .ant-tree-node-content-wrapper:hover,
   .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected {
@@ -202,31 +185,6 @@
   .ant-timeline-item-head-blue {
     color: var(--color-primary);
     border-color: var(--color-primary);
-  }
-
-  // Fix select
-  .ant-select:not(.ant-select-disabled) .ant-select-selector {
-    color: rgba(255, 255, 255, 0.65);
-    border-color: var(--input-border-color);
-  }
-
-  .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
-    border-color: var(--input-border-hover-color);
-  }
-
-  .ant-select:not(.ant-select-customize-input) .ant-select-selector {
-    background-color: transparent;
-  }
-
-  .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
-    border-color: var(--input-border-hover-color);
-    color: var(--input-border-hover-color);
-  }
-
-  .ant-select-focused.ant-select-single:not(.ant-select-customize-input):not(.ant-select-disabled)
-    .ant-select-selector {
-    border-color: var(--input-border-focus-color);
-    color: var(--input-border-focus-color);
   }
 
   // Fix erros
