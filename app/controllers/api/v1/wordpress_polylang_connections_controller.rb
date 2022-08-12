@@ -77,12 +77,7 @@ class Api::V1::WordpressPolylangConnectionsController < Api::V1::ApiController
           if wordpress_content_for_translation.present?
             begin
               payload = {}
-              if key.html_enabled
-                payload[wordpress_content_for_translation.wordpress_content_type] =
-                  ApplicationController.helpers.convert_html_translation(translation.content) || ''
-              else
-                payload[wordpress_content_for_translation.wordpress_content_type] = translation.content
-              end
+              payload[wordpress_content_for_translation.wordpress_content_type] = translation.content
 
               response =
                 RestClient::Request.new(

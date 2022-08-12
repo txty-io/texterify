@@ -2,10 +2,20 @@ import { Tooltip } from "antd";
 import * as React from "react";
 import { ITranslation } from "../api/v1/TranslationsAPI";
 import { IKeysTableRecord } from "../sites/dashboard/KeysSite";
+import { escapeHTML } from "./Utils";
 
 function PluralHeader(props: { children: React.ReactNode; isFirst: boolean }) {
     return (
-        <div style={{ marginTop: props.isFirst ? 0 : 16, fontSize: 12, fontWeight: "bold", marginBottom: 4 }}>
+        <div
+            style={{
+                marginTop: props.isFirst ? 0 : 16,
+                fontSize: 12,
+                fontWeight: "bold",
+                marginBottom: 4,
+                marginLeft: 11,
+                color: "var(--color-passive)"
+            }}
+        >
             {props.children}
         </div>
     );
@@ -40,7 +50,7 @@ export function EditableCellInputPreview(props: {
                 dangerouslySetInnerHTML={
                     props.record.keyObject.attributes.html_enabled
                         ? {
-                              __html: editableInputProps.content
+                              __html: escapeHTML(editableInputProps.content)
                           }
                         : undefined
                 }
@@ -50,7 +60,7 @@ export function EditableCellInputPreview(props: {
         );
     }
 
-    let content: any;
+    let content: JSX.Element;
     if (props.dataIndex === "name") {
         content = EditableInput({ content: props.record.name });
     } else if (props.dataIndex === "description") {

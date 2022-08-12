@@ -1,15 +1,15 @@
 &,
 .dark-theme,
 .light-theme {
-  .ant-btn-primary:not([disabled]) {
-    background: var(--primary-btn-color);
-    border-color: var(--primary-btn-color);
-  }
-
   .ant-btn:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),
   .ant-btn:focus:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled) {
     color: var(--primary-btn-hover-color);
     border-color: var(--primary-btn-hover-color);
+  }
+
+  .ant-btn.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled) {
+    background: var(--primary-btn-color);
+    border-color: var(--primary-btn-color);
   }
 
   .ant-btn.ant-btn-primary:hover:not(.ant-btn-dangerous):not(.ant-btn-danger):not(:disabled),

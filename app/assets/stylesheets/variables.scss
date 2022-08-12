@@ -81,11 +81,10 @@
 
   // other stuff
   --column-tag-color: #9626ae;
-  --plural-tag-color: #0035ff;
   --avatar-color: #9626ae;
 
   // editor
-  --toolbar-action-active-background-color: var(--primary-light-color);
+  --toolbar-action-active-background-color: #0000001a;
 }
 
 .dark-theme {
@@ -98,8 +97,8 @@
   --primary-light-color: #111d3a;
   --background-highlight-color: #177ddc1a;
 
-  --color-primary: #004ff2;
-  --color-primary-light: #0956f6;
+  --color-primary: #3368ff;
+  --color-primary-light: #255ffd;
   --color-passive: #555;
   --color-passive-hover: #999;
   --color-warn: #e84b00;
@@ -127,12 +126,12 @@
   // button
   --primary-btn-color: var(--color-primary);
   --primary-btn-hover-color: var(--color-primary-light);
-  --default-btn-hover-color: #1363ff;
+  --default-btn-hover-color: var(--color-primary-light);
 
   // input
   --input-border-color: #434343;
-  --input-border-hover-color: #1363ff;
-  --input-border-focus-color: #1363ff;
+  --input-border-hover-color: var(--color-primary);
+  --input-border-focus-color: var(--color-primary);
   --input-border-disabled-color: #434343;
 
   // popover
@@ -165,8 +164,11 @@
   --breadcrumbs-color: rgba(255, 255, 255, 0.45);
 
   // links
-  --a-link: #236bff;
-  --a-link-hover: #4986ff;
+  --a-link: var(--color-primary);
+  --a-link-hover: var(--color-primary-light);
 
   // other stuff
+
+  // editor
+  --toolbar-action-active-background-color: #ffffff1a;
 }

@@ -35,11 +35,6 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
 
     authorize translation
 
-    if translation.key.html_enabled
-      render json: { error: true, message: 'MACHINE_TRANSLATIONS_FOR_HTML_KEYS_NOT_SUPPROTED' }, status: :bad_request
-      return
-    end
-
     suggestion = Texterify::MachineTranslation.translate(project, translation, target_language)
 
     render json: { translation: suggestion }

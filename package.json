@@ -8,8 +8,6 @@
     "@babel/plugin-proposal-decorators": "^7.8.3",
     "@babel/preset-react": "^7.9.4",
     "@babel/preset-typescript": "^7.9.0",
-    "@editorjs/editorjs": "^2.15.0",
-    "@editorjs/list": "^1.4.0",
     "@rails/actioncable": "^7.0.1",
     "@rails/webpacker": "^5.1.1",
     "@sentry/react": "^6.2.0",

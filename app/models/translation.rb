@@ -223,28 +223,12 @@ class Translation < ApplicationRecord
   end
 
   def to_export_data(key, post_processing_rules, emojify: false)
-    other = ''
-    zero = ''
-    one = ''
-    two = ''
-    few = ''
-    many = ''
-
-    if key.html_enabled
-      other = convert_html_translation(key_translation.content) || ''
-      zero = convert_html_translation(key_translation.zero) || ''
-      one = convert_html_translation(key_translation.one) || ''
-      two = convert_html_translation(key_translation.two) || ''
-      few = convert_html_translation(key_translation.few) || ''
-      many = convert_html_translation(key_translation.many) || ''
-    else
-      other = key_translation.content
-      zero = key_translation.zero
-      one = key_translation.one
-      two = key_translation.two
-      few = key_translation.few
-      many = key_translation.many
-    end
+    other = key_translation.content
+    zero = key_translation.zero
+    one = key_translation.one
+    two = key_translation.two
+    few = key_translation.few
+    many = key_translation.many
 
     post_processing_rules.each do |post_processing_rule|
       other = other.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
@@ -283,23 +267,7 @@ class Translation < ApplicationRecord
   def update_project_word_char_count_on_update
     if self.export_config_id.nil? && self.saved_changes['content'].present?
       content_before = self.saved_changes['content'][0] || '' # if it is a new key content[0] is nil
-      content_after = self.saved_changes['content'][1]
-
-      # Try to convert it to the translated HTML content.
-      # If the function returns an empty string then use the content without conversion.
-      content_before_converted = ApplicationController.helpers.convert_html_translation(content_before)
-      content_after_converted = ApplicationController.helpers.convert_html_translation(content_after)
-
-      content_before = content_before_converted.nil? ? content_before : content_before_converted.to_s
-      content_after = content_after_converted.nil? ? content_after : content_after_converted.to_s
-
-      if content_before.nil?
-        content_before = ''
-      end
-
-      if content_after.nil?
-        content_after = ''
-      end
+      content_after = self.saved_changes['content'][1] || ''
 
       character_count_diff = content_after.length - content_before.length
       word_count_diff = content_after.split.length - content_before.split.length
@@ -315,8 +283,7 @@ class Translation < ApplicationRecord
   # Translations for export configs are ignored.
   def update_project_word_char_count_on_destroy
     if self.export_config_id.nil?
-      translation_content_converted = ApplicationController.helpers.convert_html_translation(self.content)
-      translation_content = translation_content_converted.nil? ? self.content : translation_content_converted.to_s
+      translation_content = self.content
 
       unless translation_content.nil?
         project = key.project

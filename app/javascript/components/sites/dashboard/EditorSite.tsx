@@ -30,7 +30,7 @@ import { ISearchSettings, KeySearchSettings, parseKeySearchSettingsFromURL } fro
 import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActiveFilters";
 import { Styles } from "../../ui/Styles";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
-import { DATE_TIME_FORMAT, Utils } from "../../ui/Utils";
+import { DATE_TIME_FORMAT, escapeHTML, Utils } from "../../ui/Utils";
 import { TranslationCard } from "./editor/TranslationCard";
 import * as moment from "moment";
 
@@ -407,11 +407,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     this.state.keysResponse.included
                                                 );
 
-                                                let content = key.attributes.html_enabled
-                                                    ? Utils.getHTMLContentPreview(translation.attributes.content)
-                                                    : translation.attributes.content;
+                                                let content = escapeHTML(translation.attributes.content);
 
-                                                if (!key.attributes.html_enabled && this.state.keysResponse) {
+                                                if (this.state.keysResponse) {
                                                     let converted = [content];
 
                                                     this.state.keysResponse.included

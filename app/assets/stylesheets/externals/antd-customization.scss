@@ -104,6 +104,10 @@
     line-height: 0;
   }
 
+  .ant-spin-blur {
+    opacity: .25;
+  }
+
   // Hide the loading indicator container because otherwise it still takes some
   // space after the loading indicator has been shown.
   .ant-btn-loading-icon {
@@ -115,26 +119,6 @@
       margin-right: 8px;
       display: inline;
     }
-  }
-
-  .ce-block__content {
-    max-width: 100%;
-  }
-
-  .ce-toolbar__content {
-    max-width: 100%;
-  }
-
-  .cdx-list__item {
-    list-style: inherit;
-  }
-
-  .cdx-list--unordered {
-    list-style: disc;
-  }
-
-  .cdx-list--ordered {
-    list-style: decimal;
   }
 
   .ant-progress {

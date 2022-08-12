@@ -123,7 +123,6 @@ class KeysSite extends React.Component<IProps, IState> {
         }
     };
 
-    translationCardRef: any;
     searchInput = React.createRef<Input>();
 
     constructor(props) {
@@ -415,10 +414,7 @@ class KeysSite extends React.Component<IProps, IState> {
                         style={{
                             margin: 0,
                             marginRight: 4,
-                            marginBottom: 4,
-                            background: "var(--plural-tag-color)",
-                            color: "#fff",
-                            borderColor: "var(--plural-tag-color)"
+                            marginBottom: 4
                         }}
                     >
                         Plural
