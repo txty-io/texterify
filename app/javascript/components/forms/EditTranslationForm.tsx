@@ -117,7 +117,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
         autoFocusItem = "other";
     }
 
-    if (translationLoading) {
+    if (translationLoading || !props.keyResponse) {
         return <Loading />;
     }
 
