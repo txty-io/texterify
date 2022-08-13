@@ -32,8 +32,9 @@ context("add-keys", () => {
             .should("contain", testData.keys.firstKey.keyName)
             .and("contain", testData.keys.firstKey.keyDescription);
 
-        cy.contains(testData.keys.firstKey.keyName).parent().next().next().children().click();
+        cy.contains(testData.keys.firstKey.keyName).parent().parent().next().next().children().click();
         cy.contains(testData.keys.firstKey.keyName)
+            .parent()
             .parent()
             .next()
             .next()
@@ -41,6 +42,7 @@ context("add-keys", () => {
             .type(testData.keys.firstKey.value);
         cy.clickOutside();
         cy.contains(testData.keys.firstKey.keyName)
+            .parent()
             .parent()
             .next()
             .next()
@@ -53,8 +55,9 @@ context("add-keys", () => {
             .should("contain", testData.keys.secondKey.keyName)
             .and("contain", testData.keys.secondKey.keyDescription);
 
-        cy.contains(testData.keys.secondKey.keyName).parent().next().next().children().click();
+        cy.contains(testData.keys.secondKey.keyName).parent().parent().next().next().children().click();
         cy.contains(testData.keys.secondKey.keyName)
+            .parent()
             .parent()
             .next()
             .next()
@@ -62,6 +65,7 @@ context("add-keys", () => {
             .type(testData.keys.secondKey.value);
         cy.clickOutside();
         cy.contains(testData.keys.secondKey.keyName)
+            .parent()
             .parent()
             .next()
             .next()
