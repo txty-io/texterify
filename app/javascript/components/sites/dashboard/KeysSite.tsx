@@ -35,6 +35,7 @@ import { KeystrokeButtonWrapper } from "../../ui/KeystrokeButtonWrapper";
 import { KEYSTROKE_DEFINITIONS } from "../../ui/KeystrokeDefinitions";
 import { KeystrokeHandler } from "../../ui/KeystrokeHandler";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
+import { TranslationUtils } from "../../utilities/TranslationUtils";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -797,9 +798,16 @@ class KeysSite extends React.Component<IProps, IState> {
                 return key.id === k.id;
             });
             currentKey.relationships.translations.data.map((translationReference) => {
-                const translation = APIUtils.getIncludedObject(translationReference, this.state.keysResponse.included);
+                const translation: ITranslation = APIUtils.getIncludedObject(
+                    translationReference,
+                    this.state.keysResponse.included
+                );
+                const language = APIUtils.getIncludedObject(
+                    translation.relationships.language.data,
+                    this.state.keysResponse.included
+                );
                 if (
-                    translation.attributes.content &&
+                    TranslationUtils.hasContent(translation, language, currentKey.attributes.pluralization_enabled) &&
                     translation.relationships.export_config &&
                     translation.relationships.export_config.data &&
                     translation.relationships.export_config.data.id === exportConfig.id
