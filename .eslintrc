@@ -9,7 +9,7 @@
     "project": "./tsconfig.json"
   },
   "plugins": ["prettier", "cypress", "mocha"],
-  "ignorePatterns": ["react-app-env.d.ts"],
+  "ignorePatterns": ["react-app-env.d.ts", "squire.js", "squire-raw.js"],
   "rules": {
     "@typescript-eslint/array-type": ["error", { "type": "array" }],
     "@typescript-eslint/consistent-type-definitions": "error",
