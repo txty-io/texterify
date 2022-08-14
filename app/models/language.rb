@@ -16,11 +16,11 @@ class Language < ApplicationRecord
 
   validate :no_duplicate_languages_for_project
   validates :name, presence: true, format: { with: /\A[A-Za-z_][A-Za-z0-9_]*\z/ }
-  validates :supports_plural_zero, presence: true
-  validates :supports_plural_one, presence: true
-  validates :supports_plural_two, presence: true
-  validates :supports_plural_few, presence: true
-  validates :supports_plural_many, presence: true
+  validates :supports_plural_zero, inclusion: [true, false]
+  validates :supports_plural_one, inclusion: [true, false]
+  validates :supports_plural_two, inclusion: [true, false]
+  validates :supports_plural_few, inclusion: [true, false]
+  validates :supports_plural_many, inclusion: [true, false]
 
   before_validation :strip_leading_and_trailing_whitespace
 
