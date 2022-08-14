@@ -1,14 +1,5 @@
-import {
-    KeyOutlined,
-    QuestionCircleFilled,
-    QuestionCircleOutlined,
-    QuestionOutlined,
-    StarFilled,
-    StarOutlined
-} from "@ant-design/icons";
 import { Alert, Button, Tooltip } from "antd";
 import * as React from "react";
-import styled from "styled-components";
 import { APIUtils } from "../api/v1/APIUtils";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
