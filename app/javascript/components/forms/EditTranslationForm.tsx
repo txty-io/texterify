@@ -16,17 +16,19 @@ function PluralFormHeading(props: { name: string }) {
 export interface IEditTranslationFormProps {
     projectId: string;
     languagesResponse: IGetLanguagesResponse;
-    keyResponse: IGetKeyResponse;
+    keyResponse?: IGetKeyResponse;
     selectedLanguageId: string;
     selectedExportConfigId: string | null;
+    forceHTML?: boolean;
+    forcePluralization?: boolean;
     formId?: string;
     clearFieldsAfterSubmit?: boolean;
     style?: React.CSSProperties;
-    onChange?(): void;
+    onChange?(values: IEditTranslationFormFormValues): void;
     onSuccess?(): void;
 }
 
-interface IFormValues {
+export interface IEditTranslationFormFormValues {
     other: string;
     zero?: string;
     one?: string;
@@ -43,19 +45,21 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
 
     // Set the correct translation if language or export target changes.
     React.useEffect(() => {
-        setTranslationLoading(true);
+        if (props.selectedLanguageId && props.keyResponse) {
+            setTranslationLoading(true);
 
-        try {
-            const translationForLanguage = TranslationUtils.getTranslationForLanguage({
-                languageId: props.selectedLanguageId,
-                keyResponse: props.keyResponse,
-                exportConfigId: props.selectedExportConfigId
-            });
+            try {
+                const translationForLanguage = TranslationUtils.getTranslationForLanguage({
+                    languageId: props.selectedLanguageId,
+                    keyResponse: props.keyResponse,
+                    exportConfigId: props.selectedExportConfigId
+                });
 
-            setTranslation(translationForLanguage);
-        } catch (error) {
-            console.error(error);
-            ErrorUtils.showError("Failed to load translation");
+                setTranslation(translationForLanguage);
+            } catch (error) {
+                console.error(error);
+                ErrorUtils.showError("Failed to load translation");
+            }
         }
 
         setTranslationLoading(false);
@@ -117,16 +121,16 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
         autoFocusItem = "other";
     }
 
-    if (translationLoading || !props.keyResponse) {
+    if (translationLoading) {
         return <Loading />;
     }
 
-    const pluralizationEnabled = props.keyResponse.data.attributes.pluralization_enabled;
-    const htmlEnabled = props.keyResponse.data.attributes.html_enabled;
+    const pluralizationEnabled = props.keyResponse?.data.attributes.pluralization_enabled || props.forcePluralization;
+    const htmlEnabled = props.keyResponse?.data.attributes.html_enabled || props.forceHTML;
 
     return (
         <Form
-            onFinish={async (values: IFormValues) => {
+            onFinish={async (values: IEditTranslationFormFormValues) => {
                 try {
                     const response = await TranslationsAPI.createTranslation({
                         projectId: props.projectId,
@@ -159,9 +163,9 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                     ErrorUtils.showError("Failed to update translation");
                 }
             }}
-            onValuesChange={(_changedValues) => {
+            onValuesChange={(_changedValues, values) => {
                 if (props.onChange) {
-                    props.onChange();
+                    props.onChange(values);
                 }
             }}
             style={{ maxWidth: "100%", minWidth: 0, ...props.style }}

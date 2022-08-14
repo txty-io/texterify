@@ -35,7 +35,9 @@ class InstanceSidebar extends React.Component<IProps> {
             path: Routes.DASHBOARD.INSTANCE.LICENSES,
             text: "Licenses",
             dataId: "instance-sidebar-licenses",
-            texterifyInstanceOnly: true
+            texterifyInstanceOnly: false
+            // For now also shown in the cloud version because the tests are otherwise not working.
+            // texterifyInstanceOnly: true
         },
         {
             icon: ToolOutlined,
