@@ -98,7 +98,7 @@ Cypress.Commands.add("addKey", (data: { name: string; description?: string; cont
 
         if (data.content) {
             cy.wait(1000); // wait until the editor has loaded
-            cy.get(".defaultLanguageHTMLContent").find(".codex-editor").type(data.content);
+            cy.get(".ant-modal-body").find("textarea").type(data.content);
             cy.wait(500); // wait until editor has saved content
         }
     } else if (data.content) {

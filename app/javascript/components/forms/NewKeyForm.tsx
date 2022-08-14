@@ -13,10 +13,8 @@ import { KeystrokeButtonWrapper } from "../ui/KeystrokeButtonWrapper";
 import { KEYSTROKE_DEFINITIONS } from "../ui/KeystrokeDefinitions";
 import { KeystrokeHandler } from "../ui/KeystrokeHandler";
 import { TexterifyModal } from "../ui/TexterifyModal";
-import { Utils } from "../ui/Utils";
 import { LanguageUtils } from "../utilities/LanguageUtils";
 import { PermissionUtils } from "../utilities/PermissionUtils";
-import { TranslationUtils } from "../utilities/TranslationUtils";
 import { EditTranslationForm, IEditTranslationFormFormValues } from "./EditTranslationForm";
 
 interface IProps {
@@ -79,12 +77,13 @@ class NewKeyForm extends React.Component<IProps, IState> {
         }
 
         if (
-            this.state.defaultLangageTranslations.zero ||
-            this.state.defaultLangageTranslations.one ||
-            this.state.defaultLangageTranslations.two ||
-            this.state.defaultLangageTranslations.few ||
-            this.state.defaultLangageTranslations.many ||
-            this.state.defaultLangageTranslations.other
+            this.state.defaultLangageTranslations &&
+            (this.state.defaultLangageTranslations.zero ||
+                this.state.defaultLangageTranslations.one ||
+                this.state.defaultLangageTranslations.two ||
+                this.state.defaultLangageTranslations.few ||
+                this.state.defaultLangageTranslations.many ||
+                this.state.defaultLangageTranslations.other)
         ) {
             await TranslationsAPI.createTranslation({
                 projectId: this.props.projectId,
