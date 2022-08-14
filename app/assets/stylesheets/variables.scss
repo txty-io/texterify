@@ -62,14 +62,14 @@
   --main-sidebar-active-color: #000;
   --main-sidebar-hover-color: #000;
   --main-sidebar-color: rgba(0, 0, 0, 0.45);
-  --main-sidebar-border-color: #555;
+  --main-sidebar-indicator-color: #000;
 
   // sub sidebar
   --sidebar-header-color: #1c70f51a;
-  --sidebar-item-active-border-color: var(--dark-color);
-  --sidebar-item-active-color: rgb(44, 29, 56);
-  --sidebar-item-color: rgb(147, 135, 160);
-  --sidebar-item-color-hover: rgb(44, 29, 56);
+  --sidebar-indicator-color: var(--dark-color);
+  --sidebar-item-active-color: #000;
+  --sidebar-item-color: rgba(0, 0, 0, 0.45);
+  --sidebar-item-color-hover: #000;
   --sidebar-background-color: #fbfbfc;
   --sidebar-border-color: #e6e6e6;
 
@@ -160,13 +160,13 @@
   --main-sidebar-active-color: #fff;
   --main-sidebar-hover-color: #fff;
   --main-sidebar-color: #8b8b8b;
-  --main-sidebar-border-color: #fff;
+  --main-sidebar-indicator-color: #fff;
 
   // sub sidebar
   --sidebar-header-color: #fff;
-  --sidebar-item-active-border-color: #fff;
+  --sidebar-indicator-color: #fff;
   --sidebar-item-active-color: #fff;
-  --sidebar-item-color: #ccc;
+  --sidebar-item-color: #8b8b8b;
   --sidebar-item-color-hover: #fff;
   --sidebar-background-color: var(--background-color);
   --sidebar-border-color: var(--border-color);

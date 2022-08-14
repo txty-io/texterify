@@ -136,7 +136,7 @@ class InstanceSidebar extends React.Component<IProps> {
                         id="sidebar-menu"
                         mode="inline"
                         selectedKeys={this.getSelectedItems()}
-                        style={{ height: "100%" }}
+                        style={{ height: "100%", paddingTop: 8 }}
                     >
                         {this.renderMenuItems()}
                     </Menu>
