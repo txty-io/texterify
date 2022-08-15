@@ -31,6 +31,8 @@
   // alert
   --alert-background-color: #f0f6ff;
   --alert-border-color: #bad2ff;
+  --alert-warning-background-color: #ffb75b17;
+  --alert-warning-border-color: #ffb75b;
   --alert-icon-color: #0d141f;
 
   // header
@@ -130,8 +132,10 @@
   --mark-background-color: #ff60238c;
 
   // alert
-  --alert-background-color: #101929;
-  --alert-border-color: #2b4063;
+  --alert-background-color: #3368ff14;
+  --alert-border-color: var(--color-primary);
+  --alert-warning-background-color: #ffb75b17;
+  --alert-warning-border-color: #ffb75b;
   --alert-icon-color: #fff;
 
   // header
