@@ -58,9 +58,7 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
                             paddingTop: 8
                         }}
                     >
-                        <SiteWrapperLink to={Routes.AUTH.LOGIN} style={{ fontWeight: 600 }}>
-                            Back to login
-                        </SiteWrapperLink>
+                        <SiteWrapperLink to={Routes.AUTH.LOGIN}>Back to login</SiteWrapperLink>
                         {!this.state.success && (
                             <Button type="primary" htmlType="submit" style={{ marginBottom: 0 }}>
                                 Reset password

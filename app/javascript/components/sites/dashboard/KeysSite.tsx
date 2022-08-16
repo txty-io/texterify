@@ -1,10 +1,4 @@
-import {
-    CrownOutlined,
-    FilterOutlined,
-    MoreOutlined,
-    QuestionCircleOutlined,
-    SettingOutlined
-} from "@ant-design/icons";
+import { CrownOutlined, FilterOutlined, MoreOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Drawer, Input, Layout, Modal, Pagination, PaginationProps, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as queryString from "query-string";

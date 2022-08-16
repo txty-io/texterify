@@ -168,9 +168,7 @@ class SignupForm extends React.Component<IProps, IState> {
                             paddingTop: 8
                         }}
                     >
-                        <SiteWrapperLink to={Routes.AUTH.LOGIN} style={{ fontWeight: 600 }}>
-                            Already have an account?
-                        </SiteWrapperLink>
+                        <SiteWrapperLink to={Routes.AUTH.LOGIN}>Already have an account?</SiteWrapperLink>
                         <Button data-id="sign-up-submit" type="primary" htmlType="submit" style={{ marginBottom: 0 }}>
                             Sign up
                         </Button>

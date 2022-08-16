@@ -1,5 +1,4 @@
 import { Divider, Empty, message, Popconfirm, Select } from "antd";
-import { observer } from "mobx-react";
 import * as moment from "moment";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
@@ -10,7 +9,7 @@ import { FeatureNotAvailable } from "./FeatureNotAvailable";
 import FlagIcon from "./FlagIcons";
 import { Loading } from "./Loading";
 import { Styles } from "./Styles";
-import { escapeHTML, Utils } from "./Utils";
+import { escapeHTML } from "./Utils";
 
 interface IProps {
     projectId: string;
