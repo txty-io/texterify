@@ -37,7 +37,7 @@
 
   // header
   --header-background-color: var(--dark-color);
-  --header-menu-item-active-background: var(--color-primary);
+  --header-menu-item-active-background: #111d39;
 
   // button
   --primary-btn-color: var(--color-primary);
@@ -91,7 +91,7 @@
 
   // other stuff
   --column-tag-color: #9626ae;
-  --avatar-color: #9626ae;
+  --avatar-color: #111d39;
 
   // editor
   --toolbar-action-active-background-color: #0000001a;
@@ -182,8 +182,8 @@
   --breadcrumbs-color: rgba(255, 255, 255, 0.45);
 
   // links
-  --a-link: var(--color-primary);
-  --a-link-hover: var(--color-primary-light);
+  --a-link: #517cf6;
+  --a-link-hover: #4170f5;
 
   // select
   --select-single-color: rgba(255, 255, 255, 0.85);
