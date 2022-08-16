@@ -167,7 +167,6 @@ class EditorSite extends React.Component<IProps, IState> {
 
     fetchKeys = async (options?: IGetKeysOptions) => {
         if (abortController) {
-            console.error("abort");
             abortController.abort();
         }
 
@@ -288,6 +287,7 @@ class EditorSite extends React.Component<IProps, IState> {
                     <div style={{ flexGrow: 1, whiteSpace: "nowrap" }}>
                         <Button
                             type="primary"
+                            ghost
                             style={{
                                 marginRight: 24
                             }}
