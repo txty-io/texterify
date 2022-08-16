@@ -18,7 +18,7 @@ export interface IUser {
         id: string;
         username: string;
         email: string;
-        boolean: true;
+        is_superadmin: true;
         deactivated: boolean;
         deactivated_reason: string;
         role: IUserRole;

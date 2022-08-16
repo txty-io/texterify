@@ -188,6 +188,7 @@ class UserAccessTokensSettingsSite extends React.Component<{}, IState> {
                                 columns={this.getColumns()}
                                 loading={!this.state.getTokensResponse}
                                 pagination={false}
+                                bordered
                             />
                         </div>
                     </div>

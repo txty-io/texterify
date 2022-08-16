@@ -1,4 +1,11 @@
-import { FileTextOutlined, HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined, ToolOutlined } from "@ant-design/icons";
+import {
+    FileTextOutlined,
+    HomeOutlined,
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
+    ToolOutlined,
+    UserOutlined
+} from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { CollapseType } from "antd/lib/layout/Sider";
 import { observer } from "mobx-react";
@@ -38,6 +45,13 @@ class InstanceSidebar extends React.Component<IProps> {
             texterifyInstanceOnly: false
             // For now also shown in the cloud version because the tests are otherwise not working.
             // texterifyInstanceOnly: true
+        },
+        {
+            icon: UserOutlined,
+            path: Routes.DASHBOARD.INSTANCE.USERS,
+            text: "Users",
+            dataId: "instance-sidebar-users",
+            texterifyInstanceOnly: false
         },
         {
             icon: ToolOutlined,

@@ -1,6 +1,7 @@
 import * as sanitizeHtml from "sanitize-html";
 import { IPlanIDS } from "../types/IPlan";
 import { BASIC_PLAN, BUSINESS_PLAN, TEAM_PLAN } from "./Licenses";
+import * as moment from "moment";
 
 export const DATE_FORMAT = "DD.MM.YYYY";
 export const DATE_TIME_FORMAT = "DD.MM.YYYY HH:mm";
@@ -63,6 +64,10 @@ const Utils = {
         } else if (planName === "business") {
             return BUSINESS_PLAN;
         }
+    },
+
+    formatDateTime(dateTime: string) {
+        return moment.utc(dateTime, "YYYY-MM-DD HH:mm:ss").local().format("YYYY-MM-DD HH:mm");
     }
 };
 

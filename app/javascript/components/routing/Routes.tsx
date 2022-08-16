@@ -161,6 +161,7 @@ const Routes = {
         INSTANCE: {
             ROOT: "/dashboard/instance",
             LICENSES: "/dashboard/instance/licenses",
+            USERS: "/dashboard/instance/users",
             SETTINGS: "/dashboard/instance/settings"
         }
     },
