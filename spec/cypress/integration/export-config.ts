@@ -25,8 +25,9 @@ context("export-config", () => {
             description: testData.keys.firstKey.keyDescription
         });
 
-        cy.contains(testData.keys.firstKey.keyName).parent().next().next().children().click();
+        cy.contains(testData.keys.firstKey.keyName).parent().parent().next().next().children().click();
         cy.contains(testData.keys.firstKey.keyName)
+            .parent()
             .parent()
             .next()
             .next()
@@ -34,6 +35,7 @@ context("export-config", () => {
             .type(testData.keys.firstKey.value);
         cy.clickOutside();
         cy.contains(testData.keys.firstKey.keyName)
+            .parent()
             .parent()
             .next()
             .next()

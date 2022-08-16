@@ -20,13 +20,13 @@ export function ProjectIntegrationsWordpressSyncSite() {
                     <Breadcrumbs breadcrumbName="projectIntegrationsWordpressSync" />
                     <LayoutWithSubSidebarInnerContent>
                         <h1>Sync content with WordPress</h1>
-                        <a
+                        {/* <a
                             href={Routes.OTHER.WORDPRESS_INTEGRATION_GUIDE}
                             target="_blank"
                             style={{ alignSelf: "flex-start" }}
                         >
                             Learn more
-                        </a>
+                        </a> */}
                         <WordpressContentsTable projectId={params.projectId} style={{ marginTop: 8 }} />
                     </LayoutWithSubSidebarInnerContent>
                 </LayoutWithSubSidebarInner>

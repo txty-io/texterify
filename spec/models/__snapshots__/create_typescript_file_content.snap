@@ -1,0 +1,6 @@
+const language_name = {
+  "a": "b",
+  "c": "d"
+};
+
+export { language_name };

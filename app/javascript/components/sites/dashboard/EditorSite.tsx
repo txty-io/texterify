@@ -1,4 +1,4 @@
-import { ArrowLeftOutlined, HddOutlined, LoadingOutlined, SettingOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, FilterOutlined, HddOutlined, LoadingOutlined, SettingOutlined } from "@ant-design/icons";
 import { Alert, Button, Input, Layout, Pagination, Popover, Skeleton, Tabs, Tag } from "antd";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
@@ -30,7 +30,7 @@ import { ISearchSettings, KeySearchSettings, parseKeySearchSettingsFromURL } fro
 import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActiveFilters";
 import { Styles } from "../../ui/Styles";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
-import { DATE_TIME_FORMAT, Utils } from "../../ui/Utils";
+import { DATE_TIME_FORMAT, escapeHTML, Utils } from "../../ui/Utils";
 import { TranslationCard } from "./editor/TranslationCard";
 import * as moment from "moment";
 
@@ -46,18 +46,18 @@ const Key = styled.div<{ isSelected: boolean }>`
     }};
 
     color: ${(props) => {
-        return props.isSelected ? "var(--blue-color)" : "#333";
+        return props.isSelected ? "var(--color-primary)" : "#333";
     }};
 
     &:hover {
-        color: var(--blue-color);
+        color: var(--color-primary);
     }
 
     .dark-theme & {
         color: #fff;
 
         &:hover {
-            color: var(--blue-color);
+            color: var(--color-primary);
         }
     }
 `;
@@ -357,7 +357,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                     }}
                                 >
                                     <Popover
-                                        title="Search settings"
+                                        title="Search filters"
                                         placement="bottomLeft"
                                         trigger="click"
                                         content={
@@ -372,7 +372,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                         }
                                     >
                                         <Button>
-                                            <SettingOutlined />
+                                            <FilterOutlined />
                                         </Button>
                                     </Popover>
                                     <Input.Search
@@ -426,11 +426,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     this.state.keysResponse.included
                                                 );
 
-                                                let content = key.attributes.html_enabled
-                                                    ? Utils.getHTMLContentPreview(translation.attributes.content)
-                                                    : translation.attributes.content;
+                                                let content = escapeHTML(translation.attributes.content);
 
-                                                if (!key.attributes.html_enabled && this.state.keysResponse) {
+                                                if (this.state.keysResponse) {
                                                     let converted = [content];
 
                                                     this.state.keysResponse.included
@@ -555,7 +553,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 }}
                                                 isSelected={this.isSelectedKey(key.id)}
                                                 style={{
-                                                    color: this.isSelectedKey(key.id) ? "var(--blue-color)" : undefined,
+                                                    color: this.isSelectedKey(key.id)
+                                                        ? "var(--color-primary)"
+                                                        : undefined,
                                                     flexShrink: 0
                                                 }}
                                                 className="editor-key"
@@ -728,27 +728,29 @@ class EditorSite extends React.Component<IProps, IState> {
                                     )}
 
                                     {languagesWithoutDefault.length > 0 ? (
-                                        <TranslationCard
-                                            projectId={this.props.match.params.projectId}
-                                            languagesResponse={this.state.languagesResponse}
-                                            languages={languagesWithoutDefault}
-                                            defaultSelected={
-                                                this.state.selectedLanguageIdTo || languagesWithoutDefault[0].id
-                                            }
-                                            keyResponse={this.state.keyResponse}
-                                            defaultLanguage={defaultLanguage}
-                                            defaultLanguageTranslationContent={defaultLanguageTranslationContent}
-                                            supportedSourceLanguages={this.state.supportedSourceLanguages}
-                                            supportedTargetLanguages={this.state.supportedTargetLanguages}
-                                            onSave={() => {
-                                                if (this.keyHistoryRef) {
-                                                    this.keyHistoryRef.reload();
+                                        <div style={{ marginTop: 40 }}>
+                                            <TranslationCard
+                                                projectId={this.props.match.params.projectId}
+                                                languagesResponse={this.state.languagesResponse}
+                                                languages={languagesWithoutDefault}
+                                                defaultSelected={
+                                                    this.state.selectedLanguageIdTo || languagesWithoutDefault[0].id
                                                 }
-                                            }}
-                                            onSelectedLanguageIdChange={(languageId) => {
-                                                this.setState({ selectedLanguageIdTo: languageId });
-                                            }}
-                                        />
+                                                keyResponse={this.state.keyResponse}
+                                                defaultLanguage={defaultLanguage}
+                                                defaultLanguageTranslationContent={defaultLanguageTranslationContent}
+                                                supportedSourceLanguages={this.state.supportedSourceLanguages}
+                                                supportedTargetLanguages={this.state.supportedTargetLanguages}
+                                                onSave={() => {
+                                                    if (this.keyHistoryRef) {
+                                                        this.keyHistoryRef.reload();
+                                                    }
+                                                }}
+                                                onSelectedLanguageIdChange={(languageId) => {
+                                                    this.setState({ selectedLanguageIdTo: languageId });
+                                                }}
+                                            />
+                                        </div>
                                     ) : (
                                         <Alert
                                             showIcon
@@ -777,7 +779,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                     style={{
                                         color: Styles.COLOR_TEXT_DISABLED,
                                         fontStyle: "italic",
-                                        margin: "auto",
+                                        marginTop: 160,
                                         textAlign: "center"
                                     }}
                                 >

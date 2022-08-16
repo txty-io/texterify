@@ -1,5 +1,7 @@
 import { APIUtils } from "../api/v1/APIUtils";
 import { IGetKeyResponse } from "../api/v1/KeysAPI";
+import { ILanguage } from "../api/v1/LanguagesAPI";
+import { ITranslation } from "../api/v1/TranslationsAPI";
 
 const TranslationUtils = {
     // Checks if the given language supports machine translation as source.
@@ -32,6 +34,36 @@ const TranslationUtils = {
         }
 
         return translationForLanguage;
+    },
+
+    hasContent(translation: ITranslation, language: ILanguage, pluralizationEnabled: boolean) {
+        if (translation.attributes.content) {
+            return true;
+        }
+
+        if (pluralizationEnabled) {
+            if (language.attributes.supports_plural_zero && translation.attributes.zero) {
+                return true;
+            }
+
+            if (language.attributes.supports_plural_one && translation.attributes.one) {
+                return true;
+            }
+
+            if (language.attributes.supports_plural_two && translation.attributes.two) {
+                return true;
+            }
+
+            if (language.attributes.supports_plural_few && translation.attributes.few) {
+                return true;
+            }
+
+            if (language.attributes.supports_plural_many && translation.attributes.many) {
+                return true;
+            }
+        }
+
+        return false;
     }
 };
 

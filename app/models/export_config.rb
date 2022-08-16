@@ -67,10 +67,6 @@ class ExportConfig < ApplicationRecord
   end
 
   def file(language, export_data, language_source = nil, export_data_source = nil)
-    # stringify in case export_data has symbols in it
-    export_data.deep_stringify_keys!
-    export_data_source&.deep_stringify_keys!
-
     if file_format == 'json'
       json(language, export_data)
     elsif file_format == 'json-formatjs'
@@ -95,8 +91,6 @@ class ExportConfig < ApplicationRecord
       arb(language, export_data)
     elsif file_format == 'xliff'
       xliff(language, export_data, language_source, export_data_source)
-    else
-      json(language, export_data)
     end
   end
 
@@ -133,18 +127,35 @@ class ExportConfig < ApplicationRecord
 
   def json(language, export_data)
     language_file = Tempfile.new(language.id.to_s)
-    converted_data = export_data
 
-    # If the export config has a split_on specified split it.
-    unless self.split_on.nil?
-      converted_data = {}
-      export_data.each do |key, value|
-        splitted = key.split(self.split_on)
-        deep_set(converted_data, value, *splitted)
+    plural_data = {}
+    export_data.each do |key, value|
+      if value[:pluralization_enabled]
+        plural_data[key] = {
+          other: value[:other],
+          zero: value[:zero],
+          one: value[:one],
+          two: value[:two],
+          few: value[:few],
+          many: value[:many]
+        }
+      else
+        plural_data[key] = value[:other]
       end
     end
 
-    language_file.puts(JSON.pretty_generate(converted_data))
+    final_data = plural_data
+
+    # If the export config has a split_on specified split it.
+    unless self.split_on.nil?
+      final_data = {}
+      plural_data.each do |key, value|
+        splitted = key.split(self.split_on)
+        deep_set(final_data, value, *splitted)
+      end
+    end
+
+    language_file.puts(JSON.pretty_generate(final_data))
     language_file.close
 
     language_file
@@ -154,9 +165,7 @@ class ExportConfig < ApplicationRecord
     language_file = Tempfile.new(language.id.to_s)
 
     data = {}
-    export_data.each do |key, value|
-      data[key] = { defaultMessage: value, description: Key.find_by(name: key)&.description }
-    end
+    export_data.each { |key, value| data[key] = { defaultMessage: value[:other], description: value[:description] } }
 
     language_file.puts(JSON.pretty_generate(data))
     language_file.close
@@ -169,12 +178,8 @@ class ExportConfig < ApplicationRecord
 
     data = {}
     export_data.each do |key, value|
-      if value.is_a?(Hash)
-        data[key] = value[:value]
-        data["@#{key}"] = { description: Key.find_by(name: key)&.description }
-      else
-        data[key] = value
-      end
+      data[key] = value[:other]
+      data["@#{key}"] = { description: value[:description] }
     end
 
     language_file.puts(JSON.pretty_generate(data))
@@ -183,32 +188,33 @@ class ExportConfig < ApplicationRecord
     language_file
   end
 
-  def typescript(language, export_data)
-    language_file = Tempfile.new(language.id.to_s)
-    language_file.print("const #{language.name.downcase} = ")
-    language_file.puts("#{JSON.pretty_generate(export_data)};")
-    language_file.puts
-    language_file.puts("export { #{language.name.downcase} };")
-    language_file.close
-
-    language_file
+  def android_sanitize_string(text)
+    text
+      .gsub(/(?<!\\)'/, "\\\\'")
+      .gsub(/(?<!\\)"/, '\\\\"')
+      .gsub(/(?<!\\)@/, '\\\\@')
+      .gsub(/(?<!\\)\?/, '\\\\?')
+      .gsub(/&(?!amp;)/, '&amp;')
   end
 
+  # Creates an export for the Android platform.
+  # Plurals: https://developer.android.com/guide/topics/resources/string-resource#Plurals
   def android(language, export_data)
     template = ERB.new(File.read('app/views/templates/android.xml.erb'))
-    data =
-      AndroidTemplateData.new(
-        export_data.transform_values do |v|
-          # https://developer.android.com/guide/topics/resources/string-resource#escaping_quotes
-          # & and < must be escaped manually if necessary.
-          v
-            .gsub(/(?<!\\)'/, "\\\\'")
-            .gsub(/(?<!\\)"/, '\\\\"')
-            .gsub(/(?<!\\)@/, '\\\\@')
-            .gsub(/(?<!\\)\?/, '\\\\?')
-            .gsub(/&(?!amp;)/, '&amp;')
-        end
-      )
+    sanitized_data =
+      export_data.transform_values do |v|
+        # https://developer.android.com/guide/topics/resources/string-resource#escaping_quotes
+        # & and < must be escaped manually if necessary.
+        v[:other] = android_sanitize_string(v[:other])
+        v[:zero] = android_sanitize_string(v[:zero])
+        v[:one] = android_sanitize_string(v[:one])
+        v[:two] = android_sanitize_string(v[:two])
+        v[:few] = android_sanitize_string(v[:few])
+        v[:many] = android_sanitize_string(v[:many])
+        v
+      end
+
+    data = AndroidTemplateData.new(sanitized_data)
     output = template.result(data.get_binding)
 
     language_file = Tempfile.new(language.id.to_s)
@@ -229,9 +235,9 @@ class ExportConfig < ApplicationRecord
               export_data.each do |key, value|
                 xml.send 'trans-unit', id: key do
                   if language_source && export_data_source
-                    xml.source { xml.text export_data_source[key] }
+                    xml.source { xml.text export_data_source[key][:other] }
                   end
-                  xml.target { xml.text value }
+                  xml.target { xml.text value[:other] }
                 end
               end
             end
@@ -248,11 +254,38 @@ class ExportConfig < ApplicationRecord
     language_file
   end
 
+  def typescript(language, export_data)
+    plural_data = {}
+    export_data.each do |key, value|
+      if value[:pluralization_enabled]
+        plural_data[key] = {
+          other: value[:other],
+          zero: value[:zero],
+          one: value[:one],
+          two: value[:two],
+          few: value[:few],
+          many: value[:many]
+        }
+      else
+        plural_data[key] = value[:other]
+      end
+    end
+
+    language_file = Tempfile.new(language.id.to_s)
+    language_file.print("const #{language.name.downcase} = ")
+    language_file.puts("#{JSON.pretty_generate(plural_data)};")
+    language_file.puts
+    language_file.puts("export { #{language.name.downcase} };")
+    language_file.close
+
+    language_file
+  end
+
   def ios(language, export_data)
     language_file = Tempfile.new(language.id.to_s)
     export_data.each do |key, value|
       # Replace " with \" but don't escape \" again.
-      escaped_value = value.gsub(/(?<!\\)"/, '\\"')
+      escaped_value = value[:other].gsub(/(?<!\\)"/, '\\"')
       language_file.puts("\"#{key}\" = \"#{escaped_value}\";")
     end
     language_file.close
@@ -261,13 +294,16 @@ class ExportConfig < ApplicationRecord
   end
 
   def yaml(language, export_data, group_by_language_and_country_code: false)
+    converted_data = {}
+    export_data.each { |key, value| converted_data[key] = value[:other] }
+
     language_file = Tempfile.new(language.id.to_s)
     data = {}
 
     if group_by_language_and_country_code
-      data[language.language_tag] = export_data
+      data[language.language_tag] = converted_data
     else
-      data = export_data
+      data = converted_data
     end
 
     yaml = YAML.dump(data)
@@ -278,8 +314,11 @@ class ExportConfig < ApplicationRecord
   end
 
   def toml(language, export_data)
+    converted_data = {}
+    export_data.each { |key, value| converted_data[key] = value[:other] }
+
     language_file = Tempfile.new(language.id.to_s)
-    toml = TomlRB.dump(export_data)
+    toml = TomlRB.dump(converted_data)
     language_file.puts(toml)
     language_file.close
 
@@ -287,8 +326,11 @@ class ExportConfig < ApplicationRecord
   end
 
   def properties(language, export_data)
+    converted_data = {}
+    export_data.each { |key, value| converted_data[key] = value[:other] }
+
     language_file = Tempfile.new(language.id.to_s)
-    properties = JavaProperties.generate(export_data)
+    properties = JavaProperties.generate(converted_data)
     language_file.puts(properties)
     language_file.close
 
@@ -298,7 +340,7 @@ class ExportConfig < ApplicationRecord
   def po(language, export_data)
     language_file = Tempfile.new(language.id.to_s)
     po = PoParser.parse_file(language_file)
-    po_data = export_data.map { |k, v| { msgid: k, msgstr: v } }
+    po_data = export_data.map { |k, v| { msgid: k, msgstr: v[:other] } }
     po << po_data
     language_file.puts(po)
     language_file.close

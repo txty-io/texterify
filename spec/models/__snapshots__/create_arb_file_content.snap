@@ -1,0 +1,10 @@
+{
+  "a": "b",
+  "@a": {
+    "description": "description text"
+  },
+  "_": "!",
+  "@_": {
+    "description": "description text"
+  }
+}

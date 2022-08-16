@@ -296,11 +296,9 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
 
         resolvedBreadcrumbs.map((breadcrumb: any, index: number) => {
             items.push(
-                <Breadcrumb.Item key={index} style={{ whiteSpace: "nowrap" }}>
+                <Breadcrumb.Item key={index}>
                     {breadcrumb.path && index !== resolvedBreadcrumbs.length - 1 ? (
-                        <Link to={breadcrumb.path} style={{ display: "flex", alignItems: "center" }}>
-                            {breadcrumb.name}
-                        </Link>
+                        <Link to={breadcrumb.path}>{breadcrumb.name}</Link>
                     ) : (
                         breadcrumb.name
                     )}
@@ -309,7 +307,10 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
         });
 
         return (
-            <Breadcrumb style={{ margin: "32px 16px 0", display: "flex", alignItems: "center", flexShrink: 0 }}>
+            <Breadcrumb
+                style={{ margin: "32px 16px 0", display: "flex", alignItems: "center", flexShrink: 0 }}
+                separator=">"
+            >
                 {items}
             </Breadcrumb>
         );

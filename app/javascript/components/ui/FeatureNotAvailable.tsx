@@ -1,7 +1,5 @@
-import { KeyOutlined } from "@ant-design/icons";
 import { Alert, Button, Tooltip } from "antd";
 import * as React from "react";
-import styled from "styled-components";
 import { APIUtils } from "../api/v1/APIUtils";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
@@ -64,7 +62,12 @@ export function FeatureNotAvailable(props: { feature: IFeature; dataId?: string;
             data-id={props.dataId}
             type="primary"
             style={{
-                cursor: buttonEnabled ? "pointer" : "default"
+                cursor: buttonEnabled ? "pointer" : "default",
+                color: "#fff",
+                fontSize: 12,
+                height: "auto",
+                lineHeight: "20px",
+                padding: "4px 12px"
             }}
             disabled={!buttonEnabled}
             onClick={() => {
@@ -82,8 +85,7 @@ export function FeatureNotAvailable(props: { feature: IFeature; dataId?: string;
                 }
             }}
         >
-            Upgrade to unlock
-            <KeyOutlined style={{ marginLeft: 12 }} />
+            Upgrade plan
         </Button>
     );
 

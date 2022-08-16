@@ -3,6 +3,7 @@ import { Alert, Button, message, Skeleton } from "antd";
 import DeeplLogo from "images/deepl_logo.svg";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
+import { IGetKeyResponse } from "../api/v1/KeysAPI";
 import { IGetLanguagesResponse, ILanguage } from "../api/v1/LanguagesAPI";
 import {
     IGetMachineTranslationsSourceLanguages,
@@ -19,12 +20,11 @@ export function MachineTranslationSuggestion(props: {
     languagesResponse: IGetLanguagesResponse;
     defaultLanguage: ILanguage;
     defaultLanguageTranslationContent: string;
-    keyReponse: any;
+    keyReponse: IGetKeyResponse;
     selectedLanguageId: string;
     translationForTargetLanguage: string;
     supportedSourceLanguages: IGetMachineTranslationsSourceLanguages;
     supportedTargetLanguages: IGetMachineTranslationsTargetLanguages;
-    isHTMLKey: boolean;
     projectId: string;
     onUseTranslation(data: { suggestion: IGetMachineTranslationSuggestion }): void;
 }) {
@@ -70,7 +70,10 @@ export function MachineTranslationSuggestion(props: {
             setMachineTranslationLimitExceeded(false);
 
             if (dashboardStore.currentProject.attributes.machine_translation_active) {
-                if (props.isHTMLKey || !machineTranslationsSupported(props.selectedLanguageId)) {
+                if (
+                    props.keyReponse.data.attributes.html_enabled ||
+                    !machineTranslationsSupported(props.selectedLanguageId)
+                ) {
                     // Machine translations for HTML keys are not supported.
                     return;
                 }
@@ -104,14 +107,13 @@ export function MachineTranslationSuggestion(props: {
         props.defaultLanguage,
         props.defaultLanguageTranslationContent,
         props.selectedLanguageId,
-        props.defaultLanguageTranslationContent,
-        props.isHTMLKey
+        props.defaultLanguageTranslationContent
     ]);
 
     if (dashboardStore.getProjectOrganization()) {
         return (
             <>
-                {props.defaultLanguage && !props.isHTMLKey && (
+                {props.defaultLanguage && (
                     <div style={{ padding: 8, marginTop: 8 }}>
                         <h4 style={{ fontSize: 12 }}>
                             <RobotOutlined style={{ marginRight: 4 }} /> Machine Translation Suggestion
@@ -132,7 +134,7 @@ export function MachineTranslationSuggestion(props: {
                                     showIcon
                                     type="warning"
                                     message="Machine translation is not enabled."
-                                    style={{ marginTop: 16 }}
+                                    style={{ marginTop: 16, maxWidth: "100%" }}
                                 />
                             )}
 
@@ -159,14 +161,14 @@ export function MachineTranslationSuggestion(props: {
                                             )}
                                         </>
                                     }
-                                    style={{ marginTop: 16 }}
+                                    style={{ marginTop: 16, maxWidth: "100%" }}
                                 />
                             )}
 
                         {!dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_SUGGESTIONS") && (
                             <FeatureNotAvailable
                                 feature="FEATURE_MACHINE_TRANSLATION_SUGGESTIONS"
-                                style={{ marginTop: 16 }}
+                                style={{ marginTop: 16, maxWidth: "100%" }}
                             />
                         )}
 
@@ -175,7 +177,7 @@ export function MachineTranslationSuggestion(props: {
                                 showIcon
                                 type="error"
                                 message="You have exceeded your machine translation limit."
-                                style={{ marginTop: 16 }}
+                                style={{ marginTop: 16, maxWidth: "100%" }}
                             />
                         )}
 
@@ -273,7 +275,7 @@ export function MachineTranslationSuggestion(props: {
                         </>
                     }
                     type="info"
-                    style={{ maxWidth: 400, marginTop: 16 }}
+                    style={{ marginTop: 16, maxWidth: "100%" }}
                 />
             </div>
         );

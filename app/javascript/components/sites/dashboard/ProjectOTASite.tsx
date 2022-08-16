@@ -249,7 +249,9 @@ class ProjectOTASite extends React.Component<IProps, IState> {
                             store.
                         </p>
 
-                        {!dashboardStore.featureEnabled("FEATURE_OTA") && <FeatureNotAvailable feature="FEATURE_OTA" />}
+                        {!dashboardStore.featureEnabled("FEATURE_OTA") && (
+                            <FeatureNotAvailable style={{ marginBottom: 24 }} feature="FEATURE_OTA" />
+                        )}
 
                         <div style={{ display: "flex", flexShrink: 0 }}>
                             <div style={{ flexGrow: 1 }}>

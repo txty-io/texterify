@@ -153,6 +153,27 @@ class Key < ApplicationRecord
     end
   end
 
+  # Returns the translation of the key for the given language and export config.
+  def translation_for(language_id, export_config_id)
+    key_translation_export_config =
+      key
+        .translations
+        .where(language_id: language_id, export_config_id: export_config_id)
+        .order(created_at: :desc)
+        .first
+
+    # If there is a export config translation use it.
+    if key_translation_export_config&.content.present?
+      key_translation = key_translation_export_config
+    else
+      # Otherwise use the default translation of the language.
+      key_translation =
+        key.translations.where(language_id: language.id, export_config_id: nil).order(created_at: :desc).first
+    end
+
+    key_translation
+  end
+
   protected
 
   def check_html_allowed

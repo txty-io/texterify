@@ -40,7 +40,7 @@ class Subscription < ApplicationRecord
       self.canceled = true
       save!
 
-      RestClient.put("#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/status?organization_id=#{organization.id}", {})
+      RestClient.put("#{ENV.fetch('PAYMENT_SERVICE_HOST')}/subscriptions/status?organization_id=#{organization.id}", {})
     end
   end
 
@@ -49,7 +49,7 @@ class Subscription < ApplicationRecord
       self.canceled = false
       save!
 
-      RestClient.put("#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/status?organization_id=#{organization.id}", {})
+      RestClient.put("#{ENV.fetch('PAYMENT_SERVICE_HOST')}/subscriptions/status?organization_id=#{organization.id}", {})
     end
   end
 
@@ -61,7 +61,7 @@ class Subscription < ApplicationRecord
         save!
 
         RestClient.put(
-          "#{ENV['PAYMENT_SERVICE_HOST']}/subscriptions/plan?organization_id=#{organization.id}&plan=#{plan}",
+          "#{ENV.fetch('PAYMENT_SERVICE_HOST')}/subscriptions/plan?organization_id=#{organization.id}&plan=#{plan}",
           {}
         )
       else

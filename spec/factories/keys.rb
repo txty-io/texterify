@@ -4,7 +4,6 @@ FactoryBot.define do
       "key_#{n}"
     end
 
-
     project_id { project_id }
   end
 end

@@ -26,7 +26,16 @@ class ColumnTag extends React.Component<IColumnTagProps, IColumnTagState> {
     render() {
         return (
             <div style={{ marginTop: 4 }}>
-                <Tag.CheckableTag {...this.props} checked={this.state.checked} onChange={this.handleChange} />
+                <Tag.CheckableTag
+                    {...this.props}
+                    checked={this.state.checked}
+                    onChange={this.handleChange}
+                    style={{
+                        background: this.state.checked ? "var(--column-tag-color)" : "transparent",
+                        borderColor: "var(--column-tag-color)",
+                        color: this.state.checked ? "#fff" : "var(--column-tag-color)"
+                    }}
+                />
             </div>
         );
     }

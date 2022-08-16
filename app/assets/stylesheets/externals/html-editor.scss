@@ -1,0 +1,64 @@
+.html-editor {
+    li {
+        list-style-position: inside;
+    }
+
+    ul li {
+        list-style-type: disc;
+    }
+
+    ol li {
+        list-style-type: decimal;
+    }
+
+    .toolbar {
+        display: flex;
+        margin-bottom: 0;
+        padding: 4px;
+    }
+
+    .toolbar button.toolbar-item {
+        border: 0;
+        display: flex;
+        background: none;
+        border-radius: 4px;
+        padding: 8px;
+        cursor: pointer;
+        vertical-align: middle;
+        align-items: center;
+    }
+
+    .toolbar button.toolbar-item:disabled {
+        cursor: not-allowed;
+    }
+
+    .toolbar button.toolbar-item.spaced {
+        margin-right: 2px;
+    }
+
+    .toolbar button.toolbar-item.active {
+        background-color: var(--toolbar-action-active-background-color);
+    }
+
+    .toolbar button.toolbar-item.active i {
+        opacity: 1;
+    }
+
+    .toolbar .toolbar-item:hover:not([disabled]) {
+        background-color: var(--toolbar-action-active-background-color);
+    }
+
+    .toolbar .toolbar-item.active:hover:not([disabled]) {
+        background-color: var(--toolbar-action-active-background-color);
+    }
+
+    .ant-input {
+        ul, ol, p {
+            margin-bottom: 16px !important;
+
+            &:last-child {
+                margin-bottom: 0 !important;
+            }
+        }
+    }
+}

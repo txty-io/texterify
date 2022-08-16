@@ -32,7 +32,7 @@ class User < ApplicationRecord
 
   # Determines if an email confirmation is required after registration.
   def confirmation_required?
-    ENV['EMAIL_CONFIRMATION_REQUIRED'] == 'true'
+    ENV.fetch('EMAIL_CONFIRMATION_REQUIRED', 'false') == 'true'
   end
 
   # Override Devise::Confirmable#after_confirmation

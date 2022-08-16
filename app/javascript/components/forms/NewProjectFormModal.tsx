@@ -14,7 +14,7 @@ import { Routes } from "../routing/Routes";
 const TypeSelection = styled.div<{ active: boolean }>`
     border: 1px solid
         ${(props) => {
-            return props.active ? "var(--blue-color)" : "var(--border-color)";
+            return props.active ? "var(--color-primary)" : "var(--border-color)";
         }};
     padding: 40px 24px;
     border-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
@@ -27,13 +27,13 @@ const TypeSelection = styled.div<{ active: boolean }>`
     font-weight: bold;
     cursor: pointer;
     color: ${(props) => {
-        return props.active ? "var(--blue-color)" : "unset";
+        return props.active ? "var(--color-primary)" : "unset";
     }};
 
     &:hover {
         border: 1px solid
             ${(props) => {
-                return props.active ? "var(--blue-color)" : "var(--border-color-flashier)";
+                return props.active ? "var(--color-primary)" : "var(--border-color-flashier)";
             }};
     }
 

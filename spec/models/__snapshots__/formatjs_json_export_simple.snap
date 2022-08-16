@@ -1,0 +1,14 @@
+{
+  "a": {
+    "defaultMessage": "b",
+    "description": "description text"
+  },
+  "c": {
+    "defaultMessage": "d",
+    "description": "description text"
+  },
+  "c.a": {
+    "defaultMessage": "e",
+    "description": "description text"
+  }
+}

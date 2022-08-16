@@ -234,7 +234,7 @@ class ProjectPostProcessingSite extends React.Component<IProps, IState> {
                             are applied ordered by name as shown in the table below.
                         </p>
                         {!dashboardStore.featureEnabled("FEATURE_POST_PROCESSING") && (
-                            <FeatureNotAvailable feature="FEATURE_POST_PROCESSING" />
+                            <FeatureNotAvailable style={{ marginBottom: 24 }} feature="FEATURE_POST_PROCESSING" />
                         )}
                         <div style={{ display: "flex" }}>
                             <div style={{ flexGrow: 1 }}>

@@ -16,6 +16,11 @@ class Language < ApplicationRecord
 
   validate :no_duplicate_languages_for_project
   validates :name, presence: true, format: { with: /\A[A-Za-z_][A-Za-z0-9_]*\z/ }
+  validates :supports_plural_zero, inclusion: [true, false]
+  validates :supports_plural_one, inclusion: [true, false]
+  validates :supports_plural_two, inclusion: [true, false]
+  validates :supports_plural_few, inclusion: [true, false]
+  validates :supports_plural_many, inclusion: [true, false]
 
   before_validation :strip_leading_and_trailing_whitespace
 
@@ -36,7 +41,7 @@ class Language < ApplicationRecord
   # Translates all non export config translations of all non HTML keys for the language which are empty using machine translation.
   # @throws OrganizationMachineTranslationUsageExceededException
   def translate_untranslated_using_machine_translation
-    if (ENV['DEEPL_API_TOKEN'].present? || Rails.env.test?) && self.project.machine_translation_enabled &&
+    if (ENV.fetch('DEEPL_API_TOKEN', nil).present? || Rails.env.test?) && self.project.machine_translation_enabled &&
          project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_LANGUAGE)
       self
         .keys
@@ -89,6 +94,19 @@ class Language < ApplicationRecord
     end
 
     tag.empty? ? nil : tag
+  end
+
+  def set_language_plural_support_from_language_code
+    if self.language_code
+      language_plural = LanguagePlural.find_by(code: self.language_code.code)
+      if language_plural
+        self.supports_plural_zero = language_plural.supports_plural_zero
+        self.supports_plural_one = language_plural.supports_plural_one
+        self.supports_plural_two = language_plural.supports_plural_two
+        self.supports_plural_few = language_plural.supports_plural_few
+        self.supports_plural_many = language_plural.supports_plural_many
+      end
+    end
   end
 
   protected

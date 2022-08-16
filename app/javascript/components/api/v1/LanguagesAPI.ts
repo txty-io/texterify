@@ -4,7 +4,11 @@ import { APIUtils } from "./APIUtils";
 export interface ILanguageCode {
     id: string;
     type: "language_code";
-    attributes: { id: string; name: string; code: string };
+    attributes: {
+        id: string;
+        name: string;
+        code: string;
+    };
 }
 
 export interface ILanguage {
@@ -14,6 +18,11 @@ export interface ILanguage {
         id: string;
         name: string;
         is_default: boolean;
+        supports_plural_zero: string;
+        supports_plural_one: string;
+        supports_plural_two: string;
+        supports_plural_few: string;
+        supports_plural_many: string;
         progress: number;
     };
     relationships: {

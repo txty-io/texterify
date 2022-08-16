@@ -5,7 +5,7 @@ describe 'Whether authentication is working correctly', type: :request do
     it 'gives you an authentication code if you successfully login' do
       user = FactoryBot.create(:user)
       sign_in(user)
-      expect(response.has_header?('access-token')).to eq(true)
+      expect(response.has_header?('access-token')).to be(true)
     end
 
     it 'gives you a status 200 on signing in' do

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<resources>
+  <plurals name="a">
+      <item quantity="other">b</item>
+      <item quantity="zero">zero text</item>
+      <item quantity="one">one text</item>
+      <item quantity="two">two text</item>
+      <item quantity="few">few text</item>
+      <item quantity="many">many text</item>
+  </plurals>
+  <string name="c">d</string>
+  <plurals name="e">
+      <item quantity="other">f</item>
+      <item quantity="zero">zero text</item>
+      <item quantity="one">one text</item>
+      <item quantity="two">two text</item>
+      <item quantity="few">few text</item>
+      <item quantity="many">many text</item>
+  </plurals>
+</resources>

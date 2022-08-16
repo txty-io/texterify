@@ -1,15 +1,16 @@
 :root {
   --full-color: #000;
   --background-color: #fff;
-  --dark-color: #0a111e;
+  --dark-color: #06101f;
   --border-color: #d9d9d9;
   --border-color-flashier: #777;
-  --blue-color: #568aea;
   --highlight-color: #000;
   --highlight-color-decent: #f0f0f0;
-  --header-background-color: var(--dark-color);
   --primary-light-color: #e3eaff;
   --background-highlight-color: #1c70f51a;
+
+  --color-primary: #004ff2;
+  --color-primary-light: #0956f6;
   --color-passive: #aaa;
   --color-passive-hover: #333;
   --color-success: #52c41a;
@@ -22,7 +23,7 @@
 
   // activity
   --activity-highlight-key-update-background-color: #ecf1ff;
-  --activity-highlight-key-update-color: var(--blue-color);
+  --activity-highlight-key-update-color: var(--color-primary);
 
   // mark
   --mark-background-color: #ffd1b6ad;
@@ -30,20 +31,23 @@
   // alert
   --alert-background-color: #f0f6ff;
   --alert-border-color: #bad2ff;
+  --alert-warning-background-color: #ffb75b17;
+  --alert-warning-border-color: #ffb75b;
   --alert-icon-color: #0d141f;
 
   // header
-  --header-background-color: #0a1323;
-  --header-menu-item-active-background: #1f2b4a;
+  --header-background-color: var(--dark-color);
+  --header-menu-item-active-background: var(--color-primary);
 
   // button
-  --primary-btn-color: #1c70f5;
-  --primary-btn-hover-color: #2286e4;
+  --primary-btn-color: var(--color-primary);
+  --primary-btn-hover-color: var(--color-primary-light);
+  --default-btn-hover-color: var(--color-primary-light);
 
   // input
   --input-border-color: #d9d9d9;
-  --input-border-hover-color: #177ddc;
-  --input-border-focus-color: #177ddc;
+  --input-border-hover-color: var(--color-primary);
+  --input-border-focus-color: var(--color-primary-light);
   --input-border-disabled-color: #d9d9d9;
   --error-color: #cc3d3f;
   --error-color-hover: #ff4d4f;
@@ -56,20 +60,47 @@
   --table-head-background-color: #fafafa;
 
   // main sidebar
-  --main-sidebar-active-background-color: #ececec;
-  --main-sidebar-active-color: #333;
+  --main-sidebar-active-background-color: transparent;
+  --main-sidebar-active-color: #000;
   --main-sidebar-hover-color: #000;
-  --main-sidebar-color: #888;
-  --main-sidebar-border-color: #555;
+  --main-sidebar-color: rgba(0, 0, 0, 0.45);
+  --main-sidebar-indicator-color: #000;
 
   // sub sidebar
   --sidebar-header-color: #1c70f51a;
-  --sidebar-item-active-border-color: var(--dark-color);
-  --sidebar-item-active-color: rgb(44, 29, 56);
-  --sidebar-item-color: rgb(147, 135, 160);
-  --sidebar-item-color-hover: rgb(44, 29, 56);
+  --sidebar-indicator-color: var(--dark-color);
+  --sidebar-item-active-color: #000;
+  --sidebar-item-color: rgba(0, 0, 0, 0.45);
+  --sidebar-item-color-hover: #000;
   --sidebar-background-color: #fbfbfc;
   --sidebar-border-color: #e6e6e6;
+
+  // progress bar
+  --progressbar-success-background-color: var(--color-success);
+
+  // breadcrumbs
+  --breadcrumbs-color: rgba(0, 0, 0, 0.45);
+
+  // links
+
+  // select
+  --select-single-color: rgba(0, 0, 0, 0.85);
+  --select-active-background-color: rgba(0, 0, 0, 0.1);
+  --select-selected-background-color: rgba(0, 0, 0, 0.1);
+  --select-selected-color: #000;
+
+  // other stuff
+  --column-tag-color: #9626ae;
+  --avatar-color: #9626ae;
+
+  // editor
+  --toolbar-action-active-background-color: #0000001a;
+
+  // pagination
+  --pagination-color: rgba(0, 0, 0, 0.85);
+
+  // tooltip
+  --tooltip-background-color: var(--dark-color);
 }
 
 .dark-theme {
@@ -77,12 +108,13 @@
   --background-color: var(--dark-color);
   --border-color: rgb(27, 31, 33);
   --border-color-flashier: #4e4e4e;
-  --blue-color: #67aaff;
-  --blue-color-light: #61b6ffbf;
   --highlight-color: rgba(255, 255, 255, 0.85);
   --highlight-color-decent: #ffffff0f;
   --primary-light-color: #111d3a;
   --background-highlight-color: #177ddc1a;
+
+  --color-primary: #3368ff;
+  --color-primary-light: #255ffd;
   --color-passive: #555;
   --color-passive-hover: #999;
   --color-warn: #e84b00;
@@ -100,21 +132,24 @@
   --mark-background-color: #ff60238c;
 
   // alert
-  --alert-background-color: #101929;
-  --alert-border-color: #2b4063;
+  --alert-background-color: #3368ff14;
+  --alert-border-color: var(--color-primary);
+  --alert-warning-background-color: #ffb75b17;
+  --alert-warning-border-color: #ffb75b;
   --alert-icon-color: #fff;
 
   // header
   // same as for light mode
 
   // button
-  --primary-btn-color: #177ddc;
-  --primary-btn-hover-color: #2286e4;
+  --primary-btn-color: var(--color-primary);
+  --primary-btn-hover-color: var(--color-primary-light);
+  --default-btn-hover-color: var(--color-primary-light);
 
   // input
   --input-border-color: #434343;
-  --input-border-hover-color: #177ddc;
-  --input-border-focus-color: #177ddc;
+  --input-border-hover-color: var(--color-primary);
+  --input-border-focus-color: var(--color-primary);
   --input-border-disabled-color: #434343;
 
   // popover
@@ -125,18 +160,45 @@
   --table-head-background-color: #ffffff0d;
 
   // main sidebar
-  --main-sidebar-active-background-color: #ffffff08;
+  --main-sidebar-active-background-color: transparent;
   --main-sidebar-active-color: #fff;
   --main-sidebar-hover-color: #fff;
-  --main-sidebar-color: #ccc;
-  --main-sidebar-border-color: #fff;
+  --main-sidebar-color: #8b8b8b;
+  --main-sidebar-indicator-color: #fff;
 
   // sub sidebar
   --sidebar-header-color: #fff;
-  --sidebar-item-active-border-color: #fff;
+  --sidebar-indicator-color: #fff;
   --sidebar-item-active-color: #fff;
-  --sidebar-item-color: #ccc;
+  --sidebar-item-color: #8b8b8b;
   --sidebar-item-color-hover: #fff;
   --sidebar-background-color: var(--background-color);
   --sidebar-border-color: var(--border-color);
+
+  // progress bar
+  --progressbar-success-background-color: #3ffe75;
+
+  // breadcrumbs
+  --breadcrumbs-color: rgba(255, 255, 255, 0.45);
+
+  // links
+  --a-link: var(--color-primary);
+  --a-link-hover: var(--color-primary-light);
+
+  // select
+  --select-single-color: rgba(255, 255, 255, 0.85);
+  --select-active-background-color: rgba(255, 255, 255, 0.1);
+  --select-selected-background-color: rgba(255, 255, 255, 0.1);
+  --select-selected-color: #fff;
+
+  // other stuff
+
+  // editor
+  --toolbar-action-active-background-color: #ffffff1a;
+
+  // pagination
+  --pagination-color: rgba(255, 255, 255, 0.85);
+
+  // tooltip
+  --tooltip-background-color: var(--dark-color);
 }

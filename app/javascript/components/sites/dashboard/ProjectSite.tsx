@@ -1,5 +1,5 @@
-import { CrownOutlined, PicRightOutlined } from "@ant-design/icons";
-import { Button, Empty, Layout, message, Pagination, Progress, Skeleton, Statistic, Tag, Tooltip } from "antd";
+import { CrownOutlined } from "@ant-design/icons";
+import { Empty, Layout, message, Pagination, Progress, Skeleton, Statistic, Tooltip } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as moment from "moment";
@@ -10,7 +10,6 @@ import { APIUtils } from "../../api/v1/APIUtils";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { IGetValidationViolationsCountResponse, ValidationViolationsAPI } from "../../api/v1/ValidationViolationsAPI";
-import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Activity } from "../../ui/Activity";
@@ -249,24 +248,16 @@ class ProjectSite extends React.Component<IProps, IState> {
                             <ProjectAvatar project={dashboardStore.currentProject} style={{ marginRight: 16 }} />
                             {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
                         </h1>
-                        <Button
-                            type="primary"
-                            onClick={() => {
-                                history.push(
-                                    Routes.DASHBOARD.PROJECT_EDITOR.replace(
-                                        ":projectId",
-                                        this.props.match.params.projectId
-                                    )
-                                );
-                            }}
-                            style={{ marginLeft: 80 }}
-                        >
-                            <PicRightOutlined /> Open editor
-                        </Button>
-                        <div style={{ marginLeft: 80, display: "flex", flexDirection: "column", fontSize: 13 }}>
+                        <div style={{ marginLeft: 120, display: "flex", fontSize: 13 }}>
                             <span style={{ fontWeight: "bold", color: "var(--highlight-color)" }}>Project ID:</span>
                             <Paragraph
-                                style={{ marginBottom: 0, marginTop: 4 }}
+                                style={{
+                                    marginTop: 0,
+                                    marginBottom: 0,
+                                    marginLeft: 8,
+                                    display: "flex",
+                                    alignItems: "center"
+                                }}
                                 code
                                 copyable={{ text: this.props.match.params.projectId }}
                             >

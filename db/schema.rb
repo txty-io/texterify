@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_18_232934) do
+ActiveRecord::Schema.define(version: 2022_08_10_222341) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -154,6 +154,7 @@ ActiveRecord::Schema.define(version: 2022_06_18_232934) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "html_enabled", default: false, null: false
+    t.boolean "pluralization_enabled", default: false, null: false
     t.index ["project_id"], name: "index_keys_on_project_id"
   end
 
@@ -187,6 +188,17 @@ ActiveRecord::Schema.define(version: 2022_06_18_232934) do
     t.index ["language_id"], name: "index_language_configs_on_language_id"
   end
 
+  create_table "language_plurals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "code", null: false
+    t.boolean "supports_plural_zero", null: false
+    t.boolean "supports_plural_one", null: false
+    t.boolean "supports_plural_two", null: false
+    t.boolean "supports_plural_few", null: false
+    t.boolean "supports_plural_many", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "languages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.uuid "project_id", null: false
@@ -198,6 +210,11 @@ ActiveRecord::Schema.define(version: 2022_06_18_232934) do
     t.boolean "is_default", default: false, null: false
     t.string "wordpress_language_id"
     t.string "wordpress_language_code"
+    t.boolean "supports_plural_zero", default: true, null: false
+    t.boolean "supports_plural_one", default: true, null: false
+    t.boolean "supports_plural_two", default: true, null: false
+    t.boolean "supports_plural_few", default: true, null: false
+    t.boolean "supports_plural_many", default: true, null: false
     t.index ["country_code_id"], name: "index_languages_on_country_code_id"
     t.index ["language_code_id"], name: "index_languages_on_language_code_id"
     t.index ["parent_id"], name: "index_languages_on_parent_id"
@@ -444,6 +461,11 @@ ActiveRecord::Schema.define(version: 2022_06_18_232934) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "export_config_id"
+    t.text "zero"
+    t.text "one"
+    t.text "two"
+    t.text "few"
+    t.text "many"
     t.index ["export_config_id"], name: "index_translations_on_export_config_id"
     t.index ["key_id"], name: "index_translations_on_key_id"
     t.index ["language_id"], name: "index_translations_on_language_id"

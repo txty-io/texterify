@@ -79,6 +79,8 @@ class Api::V1::LanguagesController < Api::V1::ApiController
       language.parent = project.languages.find(params[:parent])
     end
 
+    language.set_language_plural_support_from_language_code
+
     if language.save
       # Show language column for all users of the project.
       project.users.each do |user|

@@ -42,16 +42,9 @@ interface INavigationData {
 }
 
 type IProps = RouteComponentProps<{ projectId: string }>;
-interface IState {
-    selectedItem: number;
-}
 
 @observer
-class ProjectSidebar extends React.Component<IProps, IState> {
-    state: IState = {
-        selectedItem: 0
-    };
-
+class ProjectSidebar extends React.Component<IProps> {
     getNavigationData(): INavigationData[] {
         return [
             {
@@ -59,6 +52,17 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 path: Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId),
                 text: "Home",
                 dataId: "project-sidebar-home"
+            },
+            {
+                icon: EditOutlined,
+                path: Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId),
+                text: (
+                    <span>
+                        Editor
+                        <RightSquareOutlined style={{ marginLeft: 16 }} />
+                    </span>
+                ),
+                dataId: "project-sidebar-editor"
             },
             {
                 icon: KeyOutlined,
@@ -71,17 +75,6 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                 path: Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId),
                 text: "Languages",
                 dataId: "project-sidebar-languages"
-            },
-            {
-                icon: EditOutlined,
-                path: Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId),
-                text: (
-                    <span>
-                        Editor
-                        <RightSquareOutlined style={{ marginLeft: 16 }} />
-                    </span>
-                ),
-                dataId: "project-sidebar-editor"
             },
             {
                 icon: MonitorOutlined,
@@ -133,7 +126,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     ":projectId",
                     this.props.match.params.projectId
                 ),
-                text: "Machine Translation",
+                text: "MT",
                 dataId: "project-sidebar-machine-translation",
                 paths: [
                     Routes.DASHBOARD.PROJECT_MACHINE_TRANSLATION.replace(
@@ -365,7 +358,7 @@ class ProjectSidebar extends React.Component<IProps, IState> {
         ];
     };
 
-    getSelectedItem = (): string[] => {
+    getSelectedItems = () => {
         return this.getNavigationData().map((data: INavigationData, index: number): string => {
             if (data.paths?.includes(this.props.location.pathname)) {
                 return index.toString();
@@ -411,12 +404,12 @@ class ProjectSidebar extends React.Component<IProps, IState> {
                     collapsed={dashboardStore.sidebarMinimized}
                     onCollapse={this.onCollapse}
                     trigger={this.renderSidebarTrigger()}
-                    style={{ boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 24px" }}
+                    style={{ boxShadow: "rgba(0, 0, 0, 0.02) 0px 0px 24px" }}
                 >
                     <Menu
                         id="sidebar-menu"
                         mode="inline"
-                        selectedKeys={this.getSelectedItem()}
+                        selectedKeys={this.getSelectedItems()}
                         style={{ height: "100%" }}
                     >
                         {this.renderMenuItems()}

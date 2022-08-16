@@ -10,7 +10,7 @@ import { FeatureNotAvailable } from "./FeatureNotAvailable";
 import FlagIcon from "./FlagIcons";
 import { Loading } from "./Loading";
 import { Styles } from "./Styles";
-import { Utils } from "./Utils";
+import { escapeHTML, Utils } from "./Utils";
 
 interface IProps {
     projectId: string;
@@ -138,7 +138,7 @@ class KeyHistory extends React.Component<IProps, IState> {
                                 {key.attributes.html_enabled ? (
                                     <span
                                         dangerouslySetInnerHTML={{
-                                            __html: Utils.getHTMLContentPreview(newContent)
+                                            __html: escapeHTML(newContent)
                                         }}
                                     />
                                 ) : (

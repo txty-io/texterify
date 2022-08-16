@@ -34,7 +34,7 @@ module ReleasesHelper
         # Store the file in the cloud
         unless Rails.env.test?
           storage = Google::Cloud::Storage.new
-          bucket = storage.bucket(ENV['GOOGLE_CLOUD_OTA_BUCKET_NAME'], skip_lookup: true)
+          bucket = storage.bucket(ENV.fetch('GOOGLE_CLOUD_OTA_BUCKET_NAME'), skip_lookup: true)
           file = bucket.create_file(file.path, bucket_path)
         end
 

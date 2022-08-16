@@ -7,7 +7,7 @@ class DeeplSupportedLanguagesWorker
   include Sidekiq::Worker
 
   def perform(*_args)
-    if ENV['DEEPL_API_TOKEN']
+    if ENV.fetch('DEEPL_API_TOKEN', nil)
       deepl_client = Deepl::V2::Client.new
 
       source_languages = deepl_client.source_languages
