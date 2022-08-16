@@ -124,8 +124,8 @@ export const InstanceSite = observer(() => {
                                     <>
                                         <div>
                                             <RobotOutlined style={{ marginRight: 16 }} />
-                                            {machineTransationsUsage.character_count || "-"}/
-                                            {machineTransationsUsage.character_limit || "-"}
+                                            {machineTransationsUsage?.character_count || "-"}/
+                                            {machineTransationsUsage?.character_limit || "-"}
                                         </div>
                                         <div style={{ marginTop: 4 }}>
                                             <a
