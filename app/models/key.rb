@@ -168,7 +168,7 @@ class Key < ApplicationRecord
     else
       # Otherwise use the default translation of the language.
       key_translation =
-        self.translations.where(language_id: language.id, export_config_id: nil).order(created_at: :desc).first
+        self.translations.where(language_id: language_id, export_config_id: nil).order(created_at: :desc).first
     end
 
     key_translation
