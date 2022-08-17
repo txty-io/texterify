@@ -48,13 +48,17 @@ class Project < ApplicationRecord
 
   def validations
     project_validations = super
-    project_validations << self.organization.validations
+    if self.organization
+      project_validations << self.organization.validations
+    end
     project_validations
   end
 
   def forbidden_words_lists
     project_forbidden_words_lists = super
-    project_forbidden_words_lists << self.organization.forbidden_words_lists
+    if self.organization
+      project_forbidden_words_lists << self.organization.forbidden_words_lists
+    end
     project_forbidden_words_lists
   end
 
