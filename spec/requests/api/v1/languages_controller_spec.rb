@@ -79,6 +79,8 @@ RSpec.describe Api::V1::LanguagesController, type: :request do
     end
 
     it 'creates a new language and auto-translates existing translations' do
+      ENV['DEEPL_API_TOKEN'] = '<valid_pro_token>'
+
       user = FactoryBot.create(:user)
       auth_params = sign_in(user)
       project =

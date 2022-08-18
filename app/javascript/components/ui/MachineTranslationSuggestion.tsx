@@ -92,7 +92,7 @@ export function MachineTranslationSuggestion(props: {
                     } catch (error) {
                         console.error(error);
 
-                        if (error.message === "MACHINE_TRANSLATIONS_USAGE_EXCEEDED") {
+                        if (error.message === "MACHINE_TRANSLATION_USAGE_EXCEEDED") {
                             setMachineTranslationLimitExceeded(true);
                         } else {
                             message.error("Failed to load machine translation.");

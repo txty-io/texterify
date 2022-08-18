@@ -1,12 +1,15 @@
 require 'rest-client'
 
-class DeepLInvalidTokenTypeException < StandardError
+class DeeplInvalidTokenTypeException < StandardError
   attr_reader :details
 
   def initialize(details)
     @details = details
     super()
   end
+end
+
+class DeeplInvalidTokenException < StandardError
 end
 
 DEEPL_FREE_API = 'https://api-free.deepl.com/v2/'.freeze
@@ -25,7 +28,7 @@ module Deepl
           elsif organization.deepl_api_token_type == 'pro'
             @api_endpoint = DEEPL_PRO_API
           else
-            raise DeepLInvalidTokenTypeException.new(
+            raise DeeplInvalidTokenTypeException.new(
                     {
                       organization_id: organization.id,
                       organization_deepl_api_token_type: organization.deepl_api_token_type
@@ -35,6 +38,18 @@ module Deepl
         else
           @api_token = ENV.fetch('DEEPL_API_TOKEN', nil)
           @api_endpoint = DEEPL_PRO_API
+
+          # Determine if the free or pro API is used.
+          response = self.usage
+          if response.nil?
+            # It is not the pro API, now try the free API.
+            @api_endpoint = DEEPL_FREE_API
+
+            response = self.usage
+            if response.nil?
+              raise DeeplInvalidTokenException
+            end
+          end
         end
       end
 
