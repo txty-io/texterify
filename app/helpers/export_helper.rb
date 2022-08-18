@@ -29,7 +29,10 @@ module ExportHelper
         translation_export_data = nil
 
         if key_translation
-          translation_export_data = key_translation.to_export_data(key, post_processing_rules, args[:emojify])
+          translation_export_data = key_translation.to_export_data(key, post_processing_rules, emojify: args[:emojify])
+        else
+          translation_export_data =
+            language_export_data_line_from_simple_string('', pluralization_enabled: key.pluralization_enabled)
         end
 
         export_data[key.name] = translation_export_data
@@ -41,11 +44,14 @@ module ExportHelper
       parent_language.keys.each do |key|
         if export_data[key.name].nil?
           key_translation = key.translation_for(parent_language.id, export_config.id)
-
           translation_export_data = nil
 
           if key_translation
-            translation_export_data = key_translation.to_export_data(key, post_processing_rules, args[:emojify])
+            translation_export_data =
+              key_translation.to_export_data(key, post_processing_rules, emojify: args[:emojify])
+          else
+            translation_export_data =
+              language_export_data_line_from_simple_string('', pluralization_enabled: key.pluralization_enabled)
           end
 
           export_data[key.name] = translation_export_data
