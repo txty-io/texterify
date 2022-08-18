@@ -45,11 +45,24 @@ class ExportConfig < ApplicationRecord
     self[:file_format] = file_format.strip
   end
 
-  def filled_file_path(language)
-    path = file_path
+  def filled_file_path(language, path_for: nil)
+    path_to_use = self.file_path
+    path_to_use_default_langage = self.default_language_file_path
 
-    if language.is_default && default_language_file_path.present?
-      path = default_language_file_path
+    if path_for == 'stringsdict'
+      if self.file_path_stringsdict
+        path_to_use = self.file_path_stringsdict
+      end
+
+      if self.default_language_file_path_stringsdict
+        path_to_use_default_langage = self.default_language_file_path_stringsdict
+      end
+    end
+
+    path = path_to_use
+
+    if language.is_default && path_to_use_default_langage.present?
+      path = path_to_use_default_langage
     end
 
     language_config_code = language_configs.find_by(language_id: language.id)
@@ -66,7 +79,7 @@ class ExportConfig < ApplicationRecord
     language.country_code ? path.sub('{countryCode}', language.country_code.code) : path
   end
 
-  def file(language, export_data, language_source = nil, export_data_source = nil)
+  def files(language, export_data, language_source = nil, export_data_source = nil)
     if file_format == 'json'
       json(language, export_data)
     elsif file_format == 'json-formatjs'
@@ -158,7 +171,7 @@ class ExportConfig < ApplicationRecord
     language_file.puts(JSON.pretty_generate(final_data))
     language_file.close
 
-    language_file
+    [{ path: self.filled_file_path(language), file: language_file }]
   end
 
   def json_formatjs(language, export_data)
@@ -170,7 +183,7 @@ class ExportConfig < ApplicationRecord
     language_file.puts(JSON.pretty_generate(data))
     language_file.close
 
-    language_file
+    [{ path: self.filled_file_path(language), file: language_file }]
   end
 
   def arb(language, export_data)
@@ -185,7 +198,7 @@ class ExportConfig < ApplicationRecord
     language_file.puts(JSON.pretty_generate(data))
     language_file.close
 
-    language_file
+    [{ path: self.filled_file_path(language), file: language_file }]
   end
 
   def android_sanitize_string(text)
@@ -221,7 +234,7 @@ class ExportConfig < ApplicationRecord
     language_file.puts(output)
     language_file.close
 
-    language_file
+    [{ path: self.filled_file_path(language), file: language_file }]
   end
 
   def xliff(language, export_data, language_source = nil, export_data_source = nil)
@@ -251,7 +264,7 @@ class ExportConfig < ApplicationRecord
     language_file.puts(output)
     language_file.close
 
-    language_file
+    [{ path: self.filled_file_path(language), file: language_file }]
   end
 
   def typescript(language, export_data)
@@ -278,19 +291,43 @@ class ExportConfig < ApplicationRecord
     language_file.puts("export { #{language.name.downcase} };")
     language_file.close
 
-    language_file
+    [{ path: self.filled_file_path(language), file: language_file }]
   end
 
   def ios(language, export_data)
-    language_file = Tempfile.new(language.id.to_s)
-    export_data.each do |key, value|
-      # Replace " with \" but don't escape \" again.
-      escaped_value = value[:other].gsub(/(?<!\\)"/, '\\"')
-      language_file.puts("\"#{key}\" = \"#{escaped_value}\";")
-    end
-    language_file.close
+    files = []
 
-    language_file
+    plural_data = {}
+    strings_file = Tempfile.new(language.id.to_s)
+    export_data.each do |key, value|
+      # Plural keys are handled differently in iOS via a .stringsdict file.
+      if value[:pluralization_enabled]
+        plural_data[key] = value
+      else
+        # Non-plural keys are exported as .strings file
+        # Replace " with \" but don't escape \" again.
+        escaped_value = value[:other].gsub(/(?<!\\)"/, '\\"')
+        strings_file.puts("\"#{key}\" = \"#{escaped_value}\";")
+      end
+    end
+    strings_file.close
+    strings_file_path = self.filled_file_path(language)
+
+    files << { path: strings_file_path, file: strings_file }
+
+    # Handle plural keys if there are any available and create a .stringsdict file.
+    if !plural_data.empty?
+      stringsdict_file = Tempfile.new(language.id.to_s)
+      plural_data.each do |key, value|
+        # TODO: create stringsdict content
+      end
+      stringsdict_file.close
+      stringsdict_file_path = self.filled_file_path(language, path_for: 'stringsdict')
+
+      files << { path: stringsdict_file_path, file: stringsdict_file }
+    end
+
+    files
   end
 
   def yaml(language, export_data, group_by_language_and_country_code: false)
@@ -310,7 +347,7 @@ class ExportConfig < ApplicationRecord
     language_file.puts(yaml)
     language_file.close
 
-    language_file
+    [{ path: self.filled_file_path(language), file: language_file }]
   end
 
   def toml(language, export_data)
@@ -322,7 +359,7 @@ class ExportConfig < ApplicationRecord
     language_file.puts(toml)
     language_file.close
 
-    language_file
+    [{ path: self.filled_file_path(language), file: language_file }]
   end
 
   def properties(language, export_data)
@@ -334,7 +371,7 @@ class ExportConfig < ApplicationRecord
     language_file.puts(properties)
     language_file.close
 
-    language_file
+    [{ path: self.filled_file_path(language), file: language_file }]
   end
 
   def po(language, export_data)
@@ -345,6 +382,6 @@ class ExportConfig < ApplicationRecord
     language_file.puts(po)
     language_file.close
 
-    language_file
+    [{ path: self.filled_file_path(language), file: language_file }]
   end
 end

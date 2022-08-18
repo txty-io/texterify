@@ -115,23 +115,27 @@ module ExportHelper
               emojify: args[:emojify]
             )
 
-          duplicate_zip_entry_count = 0
-          loop do
-            file_path = export_config.filled_file_path(language)
+          export_file_objects = export_config.files(language, export_data, default_language, export_data_source)
 
-            if duplicate_zip_entry_count > 0
-              file_path += duplicate_zip_entry_count.to_s
+          export_file_objects.each do |export_file_object|
+            duplicate_zip_entry_count = 0
+            loop do
+              file_path = export_file_object[:path]
+
+              if duplicate_zip_entry_count > 0
+                file_path += duplicate_zip_entry_count.to_s
+              end
+
+              # Remove leading '/' because Zip::EntryNameError is otherwise thrown.
+              while file_path.start_with?('/')
+                file_path.delete_prefix!('/')
+              end
+
+              zip.add(file_path, export_file_object[:file])
+              break
+            rescue Zip::EntryExistsError
+              duplicate_zip_entry_count += 1
             end
-
-            # Remove leading '/' because Zip::EntryNameError is otherwise thrown.
-            while file_path.start_with?('/')
-              file_path.delete_prefix!('/')
-            end
-
-            zip.add(file_path, export_config.file(language, export_data, default_language, export_data_source))
-            break
-          rescue Zip::EntryExistsError
-            duplicate_zip_entry_count += 1
           end
         end
     end

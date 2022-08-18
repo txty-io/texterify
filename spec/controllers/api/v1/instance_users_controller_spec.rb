@@ -36,7 +36,7 @@ RSpec.describe Api::V1::InstanceUsersController, type: :request do
       get '/api/v1/instance/users', headers: @auth_params_superadmin
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
-      puts body
+
       expect(body['meta']['total']).to eq(2)
       expect(body['data'][0]['attributes']['username']).to eq('Test User 2')
     end
@@ -45,7 +45,7 @@ RSpec.describe Api::V1::InstanceUsersController, type: :request do
       get '/api/v1/instance/users?search=2', headers: @auth_params_superadmin
       expect(response.status).to eq(200)
       body = JSON.parse(response.body)
-      puts body
+
       expect(body['meta']['total']).to eq(1)
       expect(body['data'][0]['attributes']['username']).to eq('Test User 2')
     end

@@ -69,6 +69,16 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
   private
 
   def export_config_params
-    params.require(:export_config).permit(:name, :file_format, :file_path, :default_language_file_path, :split_on)
+    params
+      .require(:export_config)
+      .permit(
+        :name,
+        :file_format,
+        :file_path,
+        :file_path_stringsdict,
+        :default_language_file_path,
+        :default_language_file_path_stringsdict,
+        :split_on
+      )
   end
 end
