@@ -223,12 +223,12 @@ class Translation < ApplicationRecord
   end
 
   def to_export_data(key, post_processing_rules, emojify: false)
-    other = self.content
-    zero = self.zero
-    one = self.one
-    two = self.two
-    few = self.few
-    many = self.many
+    other = self.content || ''
+    zero = self.zero || ''
+    one = self.one || ''
+    two = self.two || ''
+    few = self.few || ''
+    many = self.many || ''
 
     post_processing_rules.each do |post_processing_rule|
       other = other.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
