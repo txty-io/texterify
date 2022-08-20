@@ -19,19 +19,127 @@ RSpec.describe ExportConfig, type: :model do
     language_code = LanguageCode.find_by(code: 'de')
     country_code = CountryCode.find_by(code: 'AT')
 
+    @project = FactoryBot.create(:project, :with_organization)
+    @project.save!
+
     @language = Language.new
     @language.language_code = language_code
     @language.country_code = country_code
-    @language.id = SecureRandom.uuid
-    @language.name = 'Language_name'
+    @language.name = 'language_name'
+    @language.project_id = @project.id
+    @language.save!
 
     language_code_source = LanguageCode.find_by(code: 'en')
     country_code_source = CountryCode.find_by(code: 'US')
 
     @language_source = Language.new
+    @language_source.project_id = @project.id
     @language_source.language_code = language_code_source
     @language_source.country_code = country_code_source
-    @language_source.id = SecureRandom.uuid
+    @language_source.name = 'language_source_name'
+    @language_source.save!
+  end
+
+  context 'when exporting' do
+    it 'returns the latest release' do
+      export_config = ExportConfig.new
+      export_config.name = 'export config name'
+      export_config.file_format = 'json'
+      export_config.file_path = 'my_file_path'
+      export_config.project_id = @project.id
+      export_config.save!
+
+      expect(export_config.latest_release).to be_nil
+
+      release1 = Release.new
+      release1.export_config = export_config
+      release1.version = 1
+      release1.timestamp = Time.now.utc
+      release1.save!
+
+      expect(export_config.latest_release.id).to eq(release1.id)
+
+      release2 = Release.new
+      release2.export_config = export_config
+      release2.version = 3
+      release2.timestamp = Time.now.utc
+      release2.save!
+
+      expect(export_config.latest_release.id).to eq(release2.id)
+
+      release3 = Release.new
+      release3.export_config = export_config
+      release3.version = 2
+      release3.timestamp = Time.now.utc
+      release3.save!
+
+      expect(export_config.latest_release.id).to eq(release2.id)
+    end
+
+    it 'fails to create two export configs with the same name for a project' do
+      export_config1 = ExportConfig.new
+      export_config1.name = 'export config name'
+      export_config1.file_format = 'json'
+      export_config1.file_path = 'my_file_path'
+      export_config1.project_id = @project.id
+      export_config1.save!
+
+      export_config2 = ExportConfig.new
+      export_config2.name = 'export config name'
+      export_config2.file_format = 'json'
+      export_config2.file_path = 'my_file_path'
+      export_config2.project_id = @project.id
+
+      export_config2.save
+      expect(export_config2.errors.added?(:name, :taken)).to be(true)
+    end
+
+    it 'exports without language and country code' do
+      export_config = ExportConfig.new
+      export_config.name = 'export config name'
+      export_config.file_format = 'json'
+      export_config.file_path = 'my_file_path'
+      export_config.project_id = @project.id
+      export_config.save!
+
+      @language.language_code = nil
+      @language.country_code = nil
+
+      files = export_config.files(@language, { "a": export_data_value('b') })
+      expect(files[0][:path]).to eq('my_file_path')
+    end
+
+    it 'replaces correctly {languageCode} and {countryCode}' do
+      export_config = ExportConfig.new
+      export_config.name = 'export config name'
+      export_config.file_format = 'json'
+      export_config.file_path = 'my_file_path'
+      export_config.file_path = '{languageCode}-{countryCode}'
+      export_config.project_id = @project.id
+      export_config.save!
+
+      files = export_config.files(@language, { "a": export_data_value('b') })
+      expect(files[0][:path]).to eq('de-AT')
+    end
+
+    it 'replaces correctly {languageCode} and {countryCode} with language config' do
+      export_config = ExportConfig.new
+      export_config.name = 'export config name'
+      export_config.file_format = 'json'
+      export_config.file_path = 'my_file_path'
+      export_config.file_path = '{languageCode}-{countryCode}'
+      export_config.project_id = @project.id
+      export_config.save!
+
+      language_config = LanguageConfig.new
+      language_config.language_code = 'en'
+      language_config.language_id = @language.id
+      language_config.export_config_id = export_config.id
+      language_config.save!
+
+      files = export_config.files(@language, { "a": export_data_value('b') })
+      expect(files[0][:path]).to eq('en-AT')
+    end
   end
 
   # Android
@@ -287,8 +395,50 @@ RSpec.describe ExportConfig, type: :model do
         )
       files[0][:file].open
       files[1][:file].open
+      expect(files[0][:path]).to eq('my_file_path')
+      expect(files[1][:path]).to eq('my_file_path')
       expect(files[0][:file].read).to match_snapshot('create_ios_file_content_plural_strings')
       expect(files[1][:file].read).to match_snapshot('create_ios_file_content_plural_stringsdict')
+    end
+
+    it 'create ios file content with plurals from parsed data with custom paths' do
+      export_config.file_path_stringsdict = 'my_file_path_stringsdict'
+      export_config.default_language_file_path_stringsdict = 'my_file_path_stringsdict_default'
+      files =
+        export_config.files(
+          @language,
+          {
+            'non_plural_key_on' => export_data_value('other content 1'),
+            'non_plural_key_two' => export_data_value('other content 2'),
+            'plural_key_one' => export_data_value('other content 3', pluralization_enabled: true),
+            'plural_key_two' => export_data_value('other content 4', pluralization_enabled: true)
+          }
+        )
+      files[0][:file].open
+      files[1][:file].open
+      expect(files[0][:path]).to eq('my_file_path')
+      expect(files[1][:path]).to eq('my_file_path_stringsdict')
+    end
+
+    it 'create ios file content with plurals from parsed data with custom paths for defautl language' do
+      export_config.default_language_file_path_stringsdict = 'my_file_path_stringsdict_default'
+
+      @language.is_default = true
+
+      files =
+        export_config.files(
+          @language,
+          {
+            'non_plural_key_on' => export_data_value('other content 1'),
+            'non_plural_key_two' => export_data_value('other content 2'),
+            'plural_key_one' => export_data_value('other content 3', pluralization_enabled: true),
+            'plural_key_two' => export_data_value('other content 4', pluralization_enabled: true)
+          }
+        )
+      files[0][:file].open
+      files[1][:file].open
+      expect(files[0][:path]).to eq('my_file_path')
+      expect(files[1][:path]).to eq('my_file_path_stringsdict_default')
     end
   end
 
@@ -302,6 +452,19 @@ RSpec.describe ExportConfig, type: :model do
       files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
       files[0][:file].open
       expect(files[0][:file].read).to match_snapshot('create_yaml_file_content')
+    end
+  end
+
+  # Rails
+  context 'when file format is rails' do
+    export_config = ExportConfig.new
+    export_config.file_format = 'rails'
+    export_config.file_path = 'my_file_path'
+
+    it 'create rails file content from parsed data' do
+      files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_rails_file_content')
     end
   end
 
