@@ -273,6 +273,23 @@ RSpec.describe ExportConfig, type: :model do
       files[0][:file].open
       expect(files[0][:file].read).to match_snapshot('create_ios_file_content')
     end
+
+    it 'create ios file content with plurals from parsed data' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'non_plural_key_on' => export_data_value('other content 1'),
+            'non_plural_key_two' => export_data_value('other content 2'),
+            'plural_key_one' => export_data_value('other content 3', pluralization_enabled: true),
+            'plural_key_two' => export_data_value('other content 4', pluralization_enabled: true)
+          }
+        )
+      files[0][:file].open
+      files[1][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_ios_file_content_plural_strings')
+      expect(files[1][:file].read).to match_snapshot('create_ios_file_content_plural_stringsdict')
+    end
   end
 
   # YAML

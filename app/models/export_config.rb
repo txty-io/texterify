@@ -318,9 +318,46 @@ class ExportConfig < ApplicationRecord
     # Handle plural keys if there are any available and create a .stringsdict file.
     if !plural_data.empty?
       stringsdict_file = Tempfile.new(language.id.to_s)
-      plural_data.each do |key, value|
-        # TODO: create stringsdict content
-      end
+      builder =
+        Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
+          xml.doc.create_internal_subset(
+            'plist',
+            '-//Apple//DTD PLIST 1.0//EN',
+            'http://www.apple.com/DTDs/PropertyList-1.0.dtd'
+          )
+          xml.plist version: '1.0' do
+            xml.dict do
+              plural_data.each do |key, value|
+                xml.key { xml.text key }
+                xml.dict do
+                  xml.key { xml.text 'NSStringLocalizedFormatKey' }
+                  xml.string { xml.text '%#@VARIABLE@' }
+                  xml.key { xml.text 'VARIABLE' }
+                  xml.dict do
+                    xml.key { xml.text 'NSStringFormatSpecTypeKey' }
+                    xml.string { xml.text 'NSStringPluralRuleType' }
+                    xml.key { xml.text 'NSStringFormatValueTypeKey' }
+                    xml.string { xml.text 'd' }
+                    xml.key { xml.text 'zero' }
+                    xml.string { xml.text value[:zero] }
+                    xml.key { xml.text 'one' }
+                    xml.string { xml.text value[:one] }
+                    xml.key { xml.text 'two' }
+                    xml.string { xml.text value[:two] }
+                    xml.key { xml.text 'few' }
+                    xml.string { xml.text value[:few] }
+                    xml.key { xml.text 'many' }
+                    xml.string { xml.text value[:many] }
+                    xml.key { xml.text 'other' }
+                    xml.string { xml.text value[:other] }
+                  end
+                end
+              end
+            end
+          end
+        end
+
+      stringsdict_file.puts(builder.to_xml)
       stringsdict_file.close
       stringsdict_file_path = self.filled_file_path(language, path_for: 'stringsdict')
 
