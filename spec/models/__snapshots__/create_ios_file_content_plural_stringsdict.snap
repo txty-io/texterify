@@ -11,7 +11,7 @@
         <key>NSStringFormatSpecTypeKey</key>
         <string>NSStringPluralRuleType</string>
         <key>NSStringFormatValueTypeKey</key>
-        <string>u</string>
+        <string>d</string>
         <key>zero</key>
         <string>zero text</string>
         <key>one</key>
