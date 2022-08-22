@@ -178,7 +178,18 @@ class ExportConfig < ApplicationRecord
     language_file = Tempfile.new(language.id.to_s)
 
     data = {}
-    export_data.each { |key, value| data[key] = { defaultMessage: value[:other], description: value[:description] } }
+    export_data.each do |key, value|
+      if value[:pluralization_enabled]
+        data["#{key}.zero"] = { defaultMessage: value[:zero], description: value[:description] }
+        data["#{key}.one"] = { defaultMessage: value[:one], description: value[:description] }
+        data["#{key}.two"] = { defaultMessage: value[:two], description: value[:description] }
+        data["#{key}.few"] = { defaultMessage: value[:few], description: value[:description] }
+        data["#{key}.many"] = { defaultMessage: value[:many], description: value[:description] }
+        data["#{key}.other"] = { defaultMessage: value[:other], description: value[:description] }
+      else
+        data[key] = { defaultMessage: value[:other], description: value[:description] }
+      end
+    end
 
     language_file.puts(JSON.pretty_generate(data))
     language_file.close
@@ -369,7 +380,20 @@ class ExportConfig < ApplicationRecord
 
   def yaml(language, export_data, group_by_language_and_country_code: false)
     converted_data = {}
-    export_data.each { |key, value| converted_data[key] = value[:other] }
+    export_data.each do |key, value|
+      if value[:pluralization_enabled]
+        converted_data[key] = {
+          zero: value[:zero],
+          one: value[:one],
+          two: value[:two],
+          few: value[:few],
+          many: value[:many],
+          other: value[:other]
+        }
+      else
+        converted_data[key] = value[:other]
+      end
+    end
 
     language_file = Tempfile.new(language.id.to_s)
     data = {}
@@ -380,7 +404,7 @@ class ExportConfig < ApplicationRecord
       data = converted_data
     end
 
-    yaml = YAML.dump(data)
+    yaml = YAML.dump(data.deep_stringify_keys)
     language_file.puts(yaml)
     language_file.close
 
@@ -389,7 +413,18 @@ class ExportConfig < ApplicationRecord
 
   def toml(language, export_data)
     converted_data = {}
-    export_data.each { |key, value| converted_data[key] = value[:other] }
+    export_data.each do |key, value|
+      if value[:pluralization_enabled]
+        converted_data["#{key}.zero"] = value[:zero]
+        converted_data["#{key}.one"] = value[:one]
+        converted_data["#{key}.two"] = value[:two]
+        converted_data["#{key}.few"] = value[:few]
+        converted_data["#{key}.many"] = value[:many]
+        converted_data["#{key}.other"] = value[:other]
+      else
+        converted_data[key] = value[:other]
+      end
+    end
 
     language_file = Tempfile.new(language.id.to_s)
     toml = TomlRB.dump(converted_data)
@@ -401,7 +436,18 @@ class ExportConfig < ApplicationRecord
 
   def properties(language, export_data)
     converted_data = {}
-    export_data.each { |key, value| converted_data[key] = value[:other] }
+    export_data.each do |key, value|
+      if value[:pluralization_enabled]
+        converted_data["#{key}.zero"] = value[:zero]
+        converted_data["#{key}.one"] = value[:one]
+        converted_data["#{key}.two"] = value[:two]
+        converted_data["#{key}.few"] = value[:few]
+        converted_data["#{key}.many"] = value[:many]
+        converted_data["#{key}.other"] = value[:other]
+      else
+        converted_data[key] = value[:other]
+      end
+    end
 
     language_file = Tempfile.new(language.id.to_s)
     properties = JavaProperties.generate(converted_data)

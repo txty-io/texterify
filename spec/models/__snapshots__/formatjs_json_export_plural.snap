@@ -1,0 +1,54 @@
+{
+  "a.zero": {
+    "defaultMessage": "zero text",
+    "description": "description text"
+  },
+  "a.one": {
+    "defaultMessage": "one text",
+    "description": "description text"
+  },
+  "a.two": {
+    "defaultMessage": "two text",
+    "description": "description text"
+  },
+  "a.few": {
+    "defaultMessage": "few text",
+    "description": "description text"
+  },
+  "a.many": {
+    "defaultMessage": "many text",
+    "description": "description text"
+  },
+  "a.other": {
+    "defaultMessage": "b",
+    "description": "description text"
+  },
+  "c.zero": {
+    "defaultMessage": "zero text",
+    "description": "description text"
+  },
+  "c.one": {
+    "defaultMessage": "one text",
+    "description": "description text"
+  },
+  "c.two": {
+    "defaultMessage": "two text",
+    "description": "description text"
+  },
+  "c.few": {
+    "defaultMessage": "few text",
+    "description": "description text"
+  },
+  "c.many": {
+    "defaultMessage": "many text",
+    "description": "description text"
+  },
+  "c.other": {
+    "defaultMessage": "d",
+    "description": "description text"
+  },
+  "c.a": {
+    "defaultMessage": "e",
+    "description": "description text"
+  }
+}

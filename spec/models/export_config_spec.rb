@@ -453,6 +453,20 @@ RSpec.describe ExportConfig, type: :model do
       files[0][:file].open
       expect(files[0][:file].read).to match_snapshot('create_yaml_file_content')
     end
+
+    it 'create yaml file content from plural data' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'a' => export_data_value('b', pluralization_enabled: true),
+            'c' => export_data_value('d', pluralization_enabled: true),
+            'c.a' => export_data_value('e')
+          }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_yaml_file_content_plural')
+    end
   end
 
   # Rails
@@ -479,6 +493,20 @@ RSpec.describe ExportConfig, type: :model do
       files[0][:file].open
       expect(files[0][:file].read).to match_snapshot('create_toml_file_content')
     end
+
+    it 'create toml file content from plural data' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'a' => export_data_value('b', pluralization_enabled: true),
+            'c' => export_data_value('d', pluralization_enabled: true),
+            'c.a' => export_data_value('e')
+          }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_toml_file_content_plural')
+    end
   end
 
   # Properties
@@ -491,6 +519,20 @@ RSpec.describe ExportConfig, type: :model do
       files = export_config.files(@language, { "a": export_data_value('b'), "_": export_data_value('!') })
       files[0][:file].open
       expect(files[0][:file].read).to eq("a=b\n_=!\n")
+    end
+
+    it 'create properties file content from plural data' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'a' => export_data_value('b', pluralization_enabled: true),
+            'c' => export_data_value('d', pluralization_enabled: true),
+            'c.a' => export_data_value('e')
+          }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_properties_file_content_plural')
     end
   end
 
@@ -592,6 +634,20 @@ RSpec.describe ExportConfig, type: :model do
         )
       files[0][:file].open
       expect(files[0][:file].read).to match_snapshot('formatjs_json_export_simple')
+    end
+
+    it 'create formatjs file content from plural data' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'a' => export_data_value('b', pluralization_enabled: true),
+            'c' => export_data_value('d', pluralization_enabled: true),
+            'c.a' => export_data_value('e')
+          }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('formatjs_json_export_plural')
     end
   end
 end
