@@ -298,9 +298,9 @@ class KeysSite extends React.Component<IProps, IState> {
             const translationExistsFor = {};
             key.relationships.translations.data.map((translationReference) => {
                 const translation = APIUtils.getIncludedObject(translationReference, this.state.keysResponse.included);
+                const languageId = translation.relationships.language.data.id;
 
-                if (!translation.relationships.export_config.data) {
-                    const languageId = translation.relationships.language.data.id;
+                if (!translations[`language-${languageId}`] && !translation.relationships.export_config.data) {
                     let translationContent = translation.attributes.content;
                     if (key.attributes.html_enabled) {
                         translationContent = Utils.getHTMLContentPreview(translationContent);
@@ -892,13 +892,14 @@ class KeysSite extends React.Component<IProps, IState> {
                                                       translationReference,
                                                       this.state.keysResponse.included
                                                   );
+                                                  const languageId = translation.relationships.language.data.id;
                                                   if (
+                                                      !translations[`language-${languageId}`] &&
                                                       translation.relationships.export_config &&
                                                       translation.relationships.export_config.data &&
                                                       translation.relationships.export_config.data.id ===
                                                           exportConfig.id
                                                   ) {
-                                                      const languageId = translation.relationships.language.data.id;
                                                       let translationContent = translation.attributes.content;
                                                       if (currentKey.attributes.html_enabled) {
                                                           translationContent =

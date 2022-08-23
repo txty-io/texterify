@@ -9,6 +9,7 @@ export interface ITranslation {
         content: string;
         key_id: string;
         language_id: string;
+        created_at: string;
     };
     relationships: {
         export_config?: { data: any };
