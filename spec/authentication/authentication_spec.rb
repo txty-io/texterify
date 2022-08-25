@@ -11,13 +11,13 @@ describe 'Whether authentication is working correctly', type: :request do
     it 'gives you a status 200 on signing in' do
       user = FactoryBot.create(:user)
       sign_in(user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it 'gives you a status 401 on invalid signing in' do
       user = FactoryBot.create(:user)
       sign_in_invalid(user)
-      expect(response.status).to eq(401)
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 

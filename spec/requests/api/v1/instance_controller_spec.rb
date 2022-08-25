@@ -36,17 +36,17 @@ RSpec.describe Api::V1::InstanceController, type: :request do
   describe 'GET show' do
     it 'has status code 403 if not logged in', :skip_before do
       get '/api/v1/instance'
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 403 if not logged in as superadmin' do
       get '/api/v1/instance', headers: @auth_params
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'returns instance information' do
       get '/api/v1/instance', headers: @auth_params_superadmin
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['users_count']).to eq(2)
       expect(body['projects_count']).to eq(3)

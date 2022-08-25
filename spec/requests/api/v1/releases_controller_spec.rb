@@ -28,12 +28,12 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
 
     it 'has status code 403 if not logged in', :skip_before do
       get "/api/v1/projects/#{@project.id}/releases"
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 200 and returns empty array' do
       get "/api/v1/projects/#{@project.id}/releases", headers: @auth_params
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data']).to eq([])
       expect(body['meta']['total']).to eq(0)
@@ -44,7 +44,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
       FactoryBot.create(:release, export_config_id: @export_config.id)
       FactoryBot.create(:release, export_config_id: @export_config.id)
       get "/api/v1/projects/#{@project.id}/releases", headers: @auth_params, params: { per_page: 2 }
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(2)
       expect(body['data'][0].keys).to contain_exactly('attributes', 'id', 'relationships', 'type')
@@ -78,7 +78,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
 
     it 'has status code 400 if no releases are available' do
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release"
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
       expect(body['errors']).to eq([{ 'code' => 'NO_RELEASES_FOUND' }])
     end
@@ -86,7 +86,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
     it 'has status code 400 if releases are available but no locale was given' do
       FactoryBot.create(:release, export_config_id: @export_config.id)
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release"
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
       expect(body['errors']).to eq([{ 'code' => 'NO_LOCALE_GIVEN' }])
     end
@@ -94,7 +94,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
     it 'has status code 304 if no release file for locale was found' do
       FactoryBot.create(:release, export_config_id: @export_config.id)
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-AT"
-      expect(response.status).to eq(304)
+      expect(response).to have_http_status(:not_modified)
     end
 
     it 'has status code 302 if release file for locale was found' do
@@ -104,13 +104,13 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
         locales: [{ language_code: 'de', country_code: 'AT' }]
       )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-AT"
-      expect(response.status).to eq(302)
+      expect(response).to have_http_status(:found)
     end
 
     it 'has status code 302 if release file for locale was found #1' do
       release = FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de' }])
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de"
-      expect(response.status).to eq(302)
+      expect(response).to have_http_status(:found)
       expect(response).to redirect_to(release.release_files[0].url)
     end
 
@@ -122,7 +122,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
           locales: [{ language_code: 'de', country_code: 'AT' }]
         )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de"
-      expect(response.status).to eq(302)
+      expect(response).to have_http_status(:found)
       expect(response).to redirect_to(release.release_files[0].url)
     end
 
@@ -134,7 +134,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
           locales: [{ language_code: 'de', country_code: 'AT' }]
         )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-DE"
-      expect(response.status).to eq(302)
+      expect(response).to have_http_status(:found)
       expect(response).to redirect_to(release.release_files[0].url)
     end
 
@@ -145,7 +145,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
         locales: [{ language_code: 'de', country_code: 'AT' }, { language_code: 'de', country_code: 'DE' }]
       )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-DE"
-      expect(response.status).to eq(302)
+      expect(response).to have_http_status(:found)
       expect(response).to redirect_to(%r{http://localhost/url-de-DE-.})
     end
 
@@ -165,7 +165,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
         locales: [{ language_code: 'de', country_code: 'AT' }]
       )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-AT&timestamp=#{timestamp_10_minutes_in_future}"
-      expect(response.status).to eq(304)
+      expect(response).to have_http_status(:not_modified)
     end
 
     it 'has status code 304 if timestamp is equal to latest release timestamp' do
@@ -182,7 +182,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
           timestamp: (Time.now.utc + (10 * 60)).iso8601
         )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-AT&timestamp=#{release.timestamp}"
-      expect(response.status).to eq(304)
+      expect(response).to have_http_status(:not_modified)
     end
 
     it 'has status code 302 if timestamp is equal to old release timestamp' do
@@ -199,7 +199,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
         timestamp: (Time.now.utc + (10 * 60)).iso8601
       )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-AT&timestamp=#{old_release.timestamp}"
-      expect(response.status).to eq(302)
+      expect(response).to have_http_status(:found)
     end
 
     it 'has status code 304 if timestamp is equal to old release timestamp but locale is not available anymore in new release' do
@@ -216,7 +216,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
         timestamp: (Time.now.utc + (10 * 60)).iso8601
       )
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-AT&timestamp=#{old_release.timestamp}"
-      expect(response.status).to eq(304)
+      expect(response).to have_http_status(:not_modified)
     end
   end
 
@@ -233,12 +233,12 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
 
     it 'has status code 403 if not logged in', :skip_before do
       post "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/releases"
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 400 and returns error when no language with language code is available' do
       post "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/releases", headers: @auth_params
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
       expect(body['errors']).to eq([{ 'code' => 'NO_LANGUAGES_WITH_LANGUAGE_CODE' }])
     end
@@ -251,7 +251,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
       language.language_code = LanguageCode.first
       language.save!
       post "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/releases", headers: @auth_params
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['success']).to be(true)
       expect(Release.all.size).to eq(1)
@@ -271,7 +271,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
       language.language_code = LanguageCode.first
       language.save!
       post "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/releases", headers: @auth_params
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['success']).to be(true)
       expect(Release.all.size).to eq(2)

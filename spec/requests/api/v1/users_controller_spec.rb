@@ -28,19 +28,19 @@ RSpec.describe Api::V1::UsersController, type: :request do
   describe 'GET index' do
     it 'has status code 403 if not logged in', :skip_before do
       get '/api/v1/users/info'
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'returns current user info with confirmed false for unconfirmed user' do
       get '/api/v1/users/info', headers: @auth_params
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['confirmed']).to be(false)
     end
 
     it 'returns current user info with confirmed true for confirmed user' do
       get '/api/v1/users/info', headers: @auth_params_confirmed
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['confirmed']).to be(true)
     end

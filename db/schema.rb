@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_10_222341) do
+ActiveRecord::Schema.define(version: 2022_08_18_145123) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -120,6 +120,8 @@ ActiveRecord::Schema.define(version: 2022_08_10_222341) do
     t.datetime "updated_at", null: false
     t.string "file_format", null: false
     t.string "split_on"
+    t.string "file_path_stringsdict"
+    t.string "default_language_file_path_stringsdict"
     t.index ["project_id", "name"], name: "index_export_configs_on_project_id_and_name", unique: true
     t.index ["project_id"], name: "index_export_configs_on_project_id"
   end

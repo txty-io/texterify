@@ -28,12 +28,12 @@ RSpec.describe Api::V1::LanguagesController, type: :request do
   describe 'GET index' do
     it 'has status code 403 if not logged in', :skip_before do
       get "/api/v1/projects/#{@project.id}/languages"
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 200 if logged in' do
       get "/api/v1/projects/#{@project.id}/languages", headers: @auth_params
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data']).to eq([])
       expect(body['included']).to eq([])
@@ -55,7 +55,7 @@ RSpec.describe Api::V1::LanguagesController, type: :request do
     it 'creates a new language' do
       name = 'German'
       post "/api/v1/projects/#{@project.id}/languages", params: { name: name }, headers: @auth_params, as: :json
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['success']).to be(true)
       expect(body['details']).to eq('Language successfully created.')
@@ -112,7 +112,7 @@ RSpec.describe Api::V1::LanguagesController, type: :request do
            headers: auth_params,
            as: :json
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['success']).to be(true)
       expect(body['details']).to eq('Language successfully created.')

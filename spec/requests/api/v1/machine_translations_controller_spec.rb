@@ -42,19 +42,19 @@ RSpec.describe Api::V1::MachineTranslationsController, type: :request do
   describe 'GET usage' do
     it 'has status code 403 if not logged in', :skip_before do
       get '/api/v1/machine_translations_usage'
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 403 if not super admin' do
       get '/api/v1/machine_translations_usage', headers: @auth_params
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 400 if token not set' do
       ENV['DEEPL_API_TOKEN'] = nil
 
       get '/api/v1/machine_translations_usage', headers: @auth_params
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
       expect(body['error']).to be(true)
       expect(body['message']).to eq('MACHINE_TRANSLATION_TOKEN_NOT_CONFIGURED')
@@ -64,7 +64,7 @@ RSpec.describe Api::V1::MachineTranslationsController, type: :request do
       ENV['DEEPL_API_TOKEN'] = '<valid_free_token>'
 
       get '/api/v1/machine_translations_usage', headers: @auth_params_superadmin
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['character_count']).to be_a_kind_of(Integer)
       expect(body['character_limit']).to be_a_kind_of(Integer)
@@ -74,7 +74,7 @@ RSpec.describe Api::V1::MachineTranslationsController, type: :request do
       ENV['DEEPL_API_TOKEN'] = '<valid_pro_token>'
 
       get '/api/v1/machine_translations_usage', headers: @auth_params_superadmin
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['character_count']).to be_a_kind_of(Integer)
       expect(body['character_limit']).to be_a_kind_of(Integer)
@@ -84,7 +84,7 @@ RSpec.describe Api::V1::MachineTranslationsController, type: :request do
       ENV['DEEPL_API_TOKEN'] = 'invalid token'
 
       get '/api/v1/machine_translations_usage', headers: @auth_params_superadmin
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
       expect(body['error']).to be(true)
       expect(body['message']).to eq('MACHINE_TRANSLATION_INVALID_TOKEN')
@@ -94,14 +94,14 @@ RSpec.describe Api::V1::MachineTranslationsController, type: :request do
   describe 'GET target_languages' do
     it 'has status code 403 if not logged in', :skip_before do
       get '/api/v1/machine_translations_target_languages'
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 400 if token not set' do
       ENV['DEEPL_API_TOKEN'] = nil
 
       get '/api/v1/machine_translations_target_languages', headers: @auth_params
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
       expect(body['error']).to be(true)
       expect(body['message']).to eq('MACHINE_TRANSLATION_TOKEN_NOT_CONFIGURED')
@@ -109,7 +109,7 @@ RSpec.describe Api::V1::MachineTranslationsController, type: :request do
 
     it 'has status code 200' do
       get '/api/v1/machine_translations_target_languages', headers: @auth_params
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data'][0]['attributes']['name']).to eq(@target_language.name)
     end
@@ -118,14 +118,14 @@ RSpec.describe Api::V1::MachineTranslationsController, type: :request do
   describe 'GET source_languages' do
     it 'has status code 403 if not logged in', :skip_before do
       get '/api/v1/machine_translations_source_languages'
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 400 if token not set' do
       ENV['DEEPL_API_TOKEN'] = nil
 
       get '/api/v1/machine_translations_source_languages', headers: @auth_params
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
       expect(body['error']).to be(true)
       expect(body['message']).to eq('MACHINE_TRANSLATION_TOKEN_NOT_CONFIGURED')
@@ -133,7 +133,7 @@ RSpec.describe Api::V1::MachineTranslationsController, type: :request do
 
     it 'has status code 200' do
       get '/api/v1/machine_translations_source_languages', headers: @auth_params
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data'][0]['attributes']['name']).to eq(@source_language.name)
     end

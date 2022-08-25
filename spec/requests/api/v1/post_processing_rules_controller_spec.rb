@@ -26,13 +26,13 @@ RSpec.describe Api::V1::PostProcessingRulesController, type: :request do
 
     it 'has status code 403 if not logged in', :skip_before do
       get "/api/v1/projects/#{@project.id}/post_processing_rules"
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 200 if logged in and returns empty array' do
       get "/api/v1/projects/#{@project.id}/post_processing_rules", headers: @auth_params
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data']).to eq([])
       expect(body['meta']['total']).to eq(0)

@@ -53,13 +53,13 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
 
     it 'has status code 403 if not logged in', :skip_before do
       get '/api/v1/projects'
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 200 if logged in and returns empty array' do
       get '/api/v1/projects', headers: @auth_params
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data']).to eq([])
       expect(body['meta']['total']).to eq(0)
@@ -71,7 +71,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(10)
       expect(body['data'][0].keys).to contain_exactly('attributes', 'id', 'relationships', 'type')
@@ -86,7 +86,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { per_page: per_page }
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(per_page)
       expect(body['meta']['total']).to eq(number_of_projects)
@@ -99,7 +99,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { per_page: per_page }
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(10)
       expect(body['meta']['total']).to eq(number_of_projects)
@@ -112,7 +112,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { per_page: per_page, page: 1 }
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       user_projects_ordered = user.projects.order('lower(name) ASC')
       expect(body['data'].length).to eq(per_page)
@@ -128,7 +128,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { per_page: per_page, page: 2 }
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       user_projects_ordered = user.projects.order('lower(name) ASC')
       expect(body['data'].length).to eq(per_page)
@@ -143,7 +143,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { search: "'no project has this name--" }
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(0)
       expect(body['meta']['total']).to eq(0)
@@ -171,7 +171,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
            headers: @auth_params,
            as: :json
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
       expect(body['data']['attributes'].keys).to contain_exactly(*PROJECT_ATTRIBUTES)
@@ -191,7 +191,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
            headers: @auth_params,
            as: :json
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data'].keys).to contain_exactly('id', 'type', 'relationships', 'attributes')
       expect(body['data']['attributes'].keys).to contain_exactly(*PROJECT_ATTRIBUTES)
@@ -203,7 +203,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
     it 'fails to create a new project without name' do
       post '/api/v1/projects', params: { organization_id: @organization.id }, headers: @auth_params, as: :json
 
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
       expect(body.keys).to contain_exactly('errors')
       expect(body['errors']['name'].length).to eq(1)

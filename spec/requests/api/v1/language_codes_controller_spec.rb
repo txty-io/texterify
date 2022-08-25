@@ -21,12 +21,12 @@ RSpec.describe Api::V1::LanguageCodesController, type: :request do
   describe 'GET index' do
     it 'has status code 403 if not logged in', :skip_before do
       get '/api/v1/language_codes'
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 200 if logged in' do
       get '/api/v1/language_codes', headers: @auth_params
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(184)
     end

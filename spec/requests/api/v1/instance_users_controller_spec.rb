@@ -24,17 +24,17 @@ RSpec.describe Api::V1::InstanceUsersController, type: :request do
   describe 'GET index' do
     it 'has status code 403 if not logged in', :skip_before do
       get '/api/v1/instance/users'
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 403 if not logged in as superadmin' do
       get '/api/v1/instance/users', headers: @auth_params
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'returns instance users' do
       get '/api/v1/instance/users', headers: @auth_params_superadmin
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
 
       expect(body['meta']['total']).to eq(2)
@@ -43,7 +43,7 @@ RSpec.describe Api::V1::InstanceUsersController, type: :request do
 
     it 'returns correct instance users with search' do
       get '/api/v1/instance/users?search=2', headers: @auth_params_superadmin
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
 
       expect(body['meta']['total']).to eq(1)

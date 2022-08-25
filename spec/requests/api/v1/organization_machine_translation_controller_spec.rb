@@ -31,7 +31,7 @@ RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :request
           deepl_api_token: '<invalid token>'
         },
         headers: @auth_params
-    expect(response.status).to eq(403)
+    expect(response).to have_http_status(:forbidden)
   end
 
   def test_allows_to_update_settings_with_permissions(role)
@@ -43,7 +43,7 @@ RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :request
           deepl_api_token: '<invalid token>'
         },
         headers: @auth_params
-    expect(response.status).to eq(200)
+    expect(response).to have_http_status(:ok)
   end
 
   describe 'PUT update' do
@@ -62,7 +62,7 @@ RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :request
           params: {
             deepl_api_token: '<invalid token>'
           }
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'fails to update settings without being part of organization' do
@@ -71,7 +71,7 @@ RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :request
             deepl_api_token: '<invalid token>'
           },
           headers: @auth_params_not_in_organization
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(:not_found)
     end
 
     it 'fails to update settings as translator' do
@@ -96,7 +96,7 @@ RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :request
             deepl_api_token: '<valid_free_token>'
           },
           headers: @auth_params
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data']['id']).to eq(@organization.id)
       expect(body['data']['attributes']['deepl_api_token']).to eq('<v**************n>')
@@ -109,7 +109,7 @@ RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :request
             deepl_api_token: '<valid_pro_token>'
           },
           headers: @auth_params
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data']['id']).to eq(@organization.id)
       expect(body['data']['attributes']['deepl_api_token']).to eq('<v*************n>')
@@ -122,7 +122,7 @@ RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :request
             deepl_api_token: '<invalid_token>'
           },
           headers: @auth_params
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['error']).to be(true)
       expect(body['details']).to eq('INVALID_DEEPL_API_TOKEN')
@@ -141,7 +141,7 @@ RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :request
       expect(@organization.deepl_api_token_type).to eq('pro')
 
       put "/api/v1/organizations/#{@organization.id}/machine_translation", headers: @auth_params
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
 
       organization = Organization.find(@organization.id)
       expect(organization.deepl_api_token).to be_nil

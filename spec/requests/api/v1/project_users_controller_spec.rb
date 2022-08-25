@@ -36,12 +36,12 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
     it 'has status code 403 if not logged in', :skip_before do
       project = FactoryBot.create(:project, :with_organization)
       get "/api/v1/projects/#{project.id}/members"
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 200 if logged in and returns users' do
       get "/api/v1/projects/#{@project.id}/members", headers: @auth_params
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(1)
       expect(body['data'][0].keys).to contain_exactly('attributes', 'id', 'type')
@@ -57,7 +57,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
       FactoryBot.create(:project_user, project_id: project.id, user_id: user2.id, role: 'manager')
 
       get "/api/v1/projects/#{project.id}/members", headers: sign_in(user1)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(2)
       expect(
@@ -84,7 +84,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
       FactoryBot.create(:project_user, project_id: project.id, user_id: user.id, role: 'manager')
 
       get "/api/v1/projects/#{project.id}/members", headers: sign_in(user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data'].length).to eq(1)
       expect(body['data'][0]['attributes']['role_source']).to eq('project')
@@ -242,7 +242,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
       project_user_developer =
         FactoryBot.create(:project_user, project_id: project.id, user_id: user_developer.id, role: 'developer')
       put "/api/v1/projects/#{project.id}/members/#{project_user_developer.user_id}"
-      expect(response.status).to eq(403)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 400 if no role is given' do
@@ -251,7 +251,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
       project_user_developer =
         FactoryBot.create(:project_user, project_id: project.id, user_id: user_developer.id, role: 'developer')
       put "/api/v1/projects/#{@project.id}/members/#{project_user_developer.user_id}", headers: @auth_params
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
       expect(body['errors']).to eq([{ 'code' => 'NO_ROLE_GIVEN' }])
     end
@@ -291,7 +291,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
       new_user = FactoryBot.create(:user)
       project_users_count = ProjectUser.all.size
       put "/api/v1/projects/#{@project.id}/members/#{new_user.id}", params: { role: 'developer' }, headers: @auth_params
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['success']).to be(true)
       expect(ProjectUser.all.size).to eq(project_users_count + 1)
@@ -299,7 +299,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
 
     it 'has status code 400 if last owner role is changed to lower role' do
       put "/api/v1/projects/#{@project.id}/members/#{@user.id}", params: { role: 'developer' }, headers: @auth_params
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
       expect(body['errors']).to eq([{ 'code' => 'AT_LEAST_ONE_OWNER_PER_PROJECT_REQUIRED' }])
     end
@@ -312,7 +312,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
       FactoryBot.create(:organization_user, organization_id: organization.id, user_id: user.id, role: 'owner')
 
       put "/api/v1/projects/#{@project.id}/members/#{user.id}", params: { role: 'developer' }, headers: @auth_params
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
       expect(body['errors']).to eq([{ 'code' => 'USER_PROJECT_ROLE_LOWER_THAN_USER_ORGANIZATION_ROLE' }])
     end
