@@ -1,5 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe WordpressPolylangConnection, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it 'creates a wordpress polylang connection' do
+    project = create(:project, :with_organization)
+
+    w = WordpressPolylangConnection.new
+    w.project_id = project.id
+    w.save!
+  end
 end

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe KeyTag, type: :model do
   it 'creates a key tag' do
-    project = FactoryBot.create(:project, :with_organization)
+    project = create(:project, :with_organization)
     project.save!
 
     key = Key.new

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::UserLicensesController, type: :request do
   before(:each) do
-    @user = FactoryBot.create(:user)
+    @user = create(:user)
     @auth_params = sign_in(@user)
   end
 
@@ -25,10 +25,10 @@ RSpec.describe Api::V1::UserLicensesController, type: :request do
     end
 
     it 'returns the licenses of the user' do
-      FactoryBot.create(:user_license, user: @user)
-      FactoryBot.create(:user_license, user: @user)
-      FactoryBot.create(:user_license, user: @user)
-      FactoryBot.create(:user_license, user: FactoryBot.create(:user))
+      create(:user_license, user: @user)
+      create(:user_license, user: @user)
+      create(:user_license, user: @user)
+      create(:user_license, user: create(:user))
 
       get '/api/v1/user_licenses', headers: @auth_params
       expect(response).to have_http_status(:ok)

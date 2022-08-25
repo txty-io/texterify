@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :request do
   before(:each) do |test|
     unless test.metadata[:skip_before]
-      @user = FactoryBot.create(:user)
+      @user = create(:user)
       @auth_params = sign_in(@user)
 
-      @user_not_in_organization = FactoryBot.create(:user)
+      @user_not_in_organization = create(:user)
       @auth_params_not_in_organization = sign_in(@user_not_in_organization)
 
       @organization = Organization.new

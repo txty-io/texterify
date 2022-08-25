@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::ForbiddenWordsListsController, type: :request do
   before(:each) do
-    @user = FactoryBot.create(:user)
+    @user = create(:user)
     @auth_params = sign_in(@user)
-    @project = FactoryBot.create(:project, :with_organization)
+    @project = create(:project, :with_organization)
 
     project_user = ProjectUser.new
     project_user.project = @project

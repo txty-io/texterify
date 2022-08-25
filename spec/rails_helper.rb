@@ -61,8 +61,11 @@ RSpec.configure do |config|
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
+
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  config.include FactoryBot::Syntax::Methods
 end
 
 RSpec::Sidekiq.configure { |config| config.warn_when_jobs_not_processed_by_sidekiq = false }

@@ -33,8 +33,8 @@ PROJECT_ATTRIBUTES = [
 RSpec.describe Api::V1::ProjectsController, type: :request do
   before(:each) do |test|
     unless test.metadata[:skip_before]
-      @user = FactoryBot.create(:user)
-      @organization = FactoryBot.create(:organization)
+      @user = create(:user)
+      @organization = create(:organization)
       @user.organizations << @organization
       @auth_params = sign_in(@user)
     end
@@ -67,7 +67,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
 
     it 'returns projects', :skip_before do
       number_of_projects = 11
-      user = FactoryBot.create(:user_with_projects, projects_count: number_of_projects)
+      user = create(:user_with_projects, projects_count: number_of_projects)
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params
 
@@ -82,7 +82,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
     it 'returns projects with 2 per page', :skip_before do
       number_of_projects = 4
       per_page = 2
-      user = FactoryBot.create(:user_with_projects, projects_count: number_of_projects)
+      user = create(:user_with_projects, projects_count: number_of_projects)
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { per_page: per_page }
 
@@ -95,7 +95,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
     it 'returns 10 projects if per_page is set to 0', :skip_before do
       number_of_projects = 11
       per_page = 0
-      user = FactoryBot.create(:user_with_projects, projects_count: number_of_projects)
+      user = create(:user_with_projects, projects_count: number_of_projects)
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { per_page: per_page }
 
@@ -108,7 +108,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
     it 'returns the first 2 projects if page is set to 1 and per_page to 2', :skip_before do
       number_of_projects = 4
       per_page = 2
-      user = FactoryBot.create(:user_with_projects, projects_count: number_of_projects)
+      user = create(:user_with_projects, projects_count: number_of_projects)
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { per_page: per_page, page: 1 }
 
@@ -124,7 +124,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
     it 'returns the 3rd and 4th project if page is set to 2 and per_page to 2', :skip_before do
       number_of_projects = 4
       per_page = 2
-      user = FactoryBot.create(:user_with_projects, projects_count: number_of_projects)
+      user = create(:user_with_projects, projects_count: number_of_projects)
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { per_page: per_page, page: 2 }
 
@@ -139,7 +139,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
 
     it 'is possible to provide a search criteria', :skip_before do
       number_of_projects = 1
-      user = FactoryBot.create(:user_with_projects, projects_count: number_of_projects)
+      user = create(:user_with_projects, projects_count: number_of_projects)
       auth_params = sign_in(user)
       get '/api/v1/projects', headers: auth_params, params: { search: "'no project has this name--" }
 

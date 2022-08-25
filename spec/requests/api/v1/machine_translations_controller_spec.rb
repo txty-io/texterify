@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe Api::V1::MachineTranslationsController, type: :request do
   before(:each) do |test|
     unless test.metadata[:skip_before]
-      @user = FactoryBot.create(:user)
+      @user = create(:user)
       @auth_params = sign_in(@user)
 
-      @user_superadmin = FactoryBot.create(:user)
+      @user_superadmin = create(:user)
       @user_superadmin.is_superadmin = true
       @user_superadmin.save!
       @auth_params_superadmin = sign_in(@user_superadmin)

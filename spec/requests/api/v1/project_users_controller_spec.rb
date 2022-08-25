@@ -15,10 +15,10 @@ USER_ATTRIBUTES = [
 RSpec.describe Api::V1::ProjectUsersController, type: :request do
   before(:each) do |test|
     unless test.metadata[:skip_before]
-      @user = FactoryBot.create(:user)
+      @user = create(:user)
       @auth_params = sign_in(@user)
-      @project = FactoryBot.create(:project, :with_organization)
-      FactoryBot.create(:project_user, project_id: @project.id, user_id: @user.id, role: 'owner')
+      @project = create(:project, :with_organization)
+      create(:project_user, project_id: @project.id, user_id: @user.id, role: 'owner')
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
     end
 
     it 'has status code 403 if not logged in', :skip_before do
-      project = FactoryBot.create(:project, :with_organization)
+      project = create(:project, :with_organization)
       get "/api/v1/projects/#{project.id}/members"
       expect(response).to have_http_status(:forbidden)
     end
@@ -49,12 +49,12 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
     end
 
     it 'has status code 200 if logged in and returns users within project organization' do
-      organization = FactoryBot.create(:organization)
-      project = FactoryBot.create(:project, organization_id: organization.id)
-      user1 = FactoryBot.create(:user)
-      user2 = FactoryBot.create(:user)
-      FactoryBot.create(:organization_user, organization_id: organization.id, user_id: user1.id, role: 'developer')
-      FactoryBot.create(:project_user, project_id: project.id, user_id: user2.id, role: 'manager')
+      organization = create(:organization)
+      project = create(:project, organization_id: organization.id)
+      user1 = create(:user)
+      user2 = create(:user)
+      create(:organization_user, organization_id: organization.id, user_id: user1.id, role: 'developer')
+      create(:project_user, project_id: project.id, user_id: user2.id, role: 'manager')
 
       get "/api/v1/projects/#{project.id}/members", headers: sign_in(user1)
       expect(response).to have_http_status(:ok)
@@ -77,11 +77,11 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
     end
 
     it 'has status code 200 if logged in and returns user project role over user organization role' do
-      organization = FactoryBot.create(:organization)
-      project = FactoryBot.create(:project, organization_id: organization.id)
-      user = FactoryBot.create(:user)
-      FactoryBot.create(:organization_user, organization_id: organization.id, user_id: user.id, role: 'developer')
-      FactoryBot.create(:project_user, project_id: project.id, user_id: user.id, role: 'manager')
+      organization = create(:organization)
+      project = create(:project, organization_id: organization.id)
+      user = create(:user)
+      create(:organization_user, organization_id: organization.id, user_id: user.id, role: 'developer')
+      create(:project_user, project_id: project.id, user_id: user.id, role: 'manager')
 
       get "/api/v1/projects/#{project.id}/members", headers: sign_in(user)
       expect(response).to have_http_status(:ok)
@@ -221,35 +221,35 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
     }
 
     it 'responds with json by default' do
-      user_developer = FactoryBot.create(:user)
+      user_developer = create(:user)
       project_user_developer =
-        FactoryBot.create(:project_user, project_id: @project.id, user_id: user_developer.id, role: 'developer')
+        create(:project_user, project_id: @project.id, user_id: user_developer.id, role: 'developer')
       put "/api/v1/projects/#{@project.id}/members/#{project_user_developer.user_id}"
       expect(response.content_type).to eq 'application/json; charset=utf-8'
     end
 
     it 'responds with json even by set format' do
-      user_developer = FactoryBot.create(:user)
+      user_developer = create(:user)
       project_user_developer =
-        FactoryBot.create(:project_user, project_id: @project.id, user_id: user_developer.id, role: 'developer')
+        create(:project_user, project_id: @project.id, user_id: user_developer.id, role: 'developer')
       put "/api/v1/projects/#{@project.id}/members/#{project_user_developer.user_id}", params: { format: :html }
       expect(response.content_type).to eq 'application/json; charset=utf-8'
     end
 
     it 'has status code 403 if not logged in', :skip_before do
-      project = FactoryBot.create(:project, :with_organization)
-      user_developer = FactoryBot.create(:user)
+      project = create(:project, :with_organization)
+      user_developer = create(:user)
       project_user_developer =
-        FactoryBot.create(:project_user, project_id: project.id, user_id: user_developer.id, role: 'developer')
+        create(:project_user, project_id: project.id, user_id: user_developer.id, role: 'developer')
       put "/api/v1/projects/#{project.id}/members/#{project_user_developer.user_id}"
       expect(response).to have_http_status(:forbidden)
     end
 
     it 'has status code 400 if no role is given' do
-      project = FactoryBot.create(:project, :with_organization)
-      user_developer = FactoryBot.create(:user)
+      project = create(:project, :with_organization)
+      user_developer = create(:user)
       project_user_developer =
-        FactoryBot.create(:project_user, project_id: project.id, user_id: user_developer.id, role: 'developer')
+        create(:project_user, project_id: project.id, user_id: user_developer.id, role: 'developer')
       put "/api/v1/projects/#{@project.id}/members/#{project_user_developer.user_id}", headers: @auth_params
       expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
@@ -260,11 +260,11 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
       expected_response_statuses.each do |role_of_user_to_update, new_roles_statuses|
         new_roles_statuses.each do |new_role, expected_response_status|
           it "#{expected_response_status == 200 ? 'succeeds' : 'fails'} to update the user project role as #{current_user_role} of a #{role_of_user_to_update} user to #{new_role}" do
-            user = FactoryBot.create(:user)
+            user = create(:user)
             auth_params = sign_in(user)
-            FactoryBot.create(:project_user, project_id: @project.id, user_id: user.id, role: current_user_role)
+            create(:project_user, project_id: @project.id, user_id: user.id, role: current_user_role)
 
-            other_user = FactoryBot.create(:user)
+            other_user = create(:user)
             project_user = ProjectUser.new
             project_user.user_id = other_user.id
             project_user.project_id = @project.id
@@ -288,7 +288,7 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
     end
 
     it 'has status code 200 if user has no project permission so far and creates new project user' do
-      new_user = FactoryBot.create(:user)
+      new_user = create(:user)
       project_users_count = ProjectUser.all.size
       put "/api/v1/projects/#{@project.id}/members/#{new_user.id}", params: { role: 'developer' }, headers: @auth_params
       expect(response).to have_http_status(:ok)
@@ -305,11 +305,11 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
     end
 
     it 'has status code 400 if user project role is lower than user organization role' do
-      organization = FactoryBot.create(:organization)
+      organization = create(:organization)
       @project.organization_id = organization.id
       @project.save!
-      user = FactoryBot.create(:user)
-      FactoryBot.create(:organization_user, organization_id: organization.id, user_id: user.id, role: 'owner')
+      user = create(:user)
+      create(:organization_user, organization_id: organization.id, user_id: user.id, role: 'owner')
 
       put "/api/v1/projects/#{@project.id}/members/#{user.id}", params: { role: 'developer' }, headers: @auth_params
       expect(response).to have_http_status(:bad_request)

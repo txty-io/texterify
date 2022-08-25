@@ -16,13 +16,13 @@ RSpec.describe ResetMachineTranslationCharactersUsageWorker, type: :worker do
   end
 
   it 'enqueues a ResetMachineTranslationCharactersUsageWorker' do
-    user = FactoryBot.create(:user_with_organizations, organizations_count: 1)
+    user = create(:user_with_organizations, organizations_count: 1)
 
     organization = user.organizations.first
     organization.machine_translation_character_usage = 1337
     organization.save!
 
-    project = FactoryBot.create(:project, :with_organization)
+    project = create(:project, :with_organization)
     project.machine_translation_character_usage = 1337
     project.save!
 

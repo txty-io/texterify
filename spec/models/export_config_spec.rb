@@ -19,7 +19,7 @@ RSpec.describe ExportConfig, type: :model do
     language_code = LanguageCode.find_by(code: 'de')
     country_code = CountryCode.find_by(code: 'AT')
 
-    @project = FactoryBot.create(:project, :with_organization)
+    @project = create(:project, :with_organization)
     @project.save!
 
     @language = Language.new

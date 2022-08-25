@@ -4,7 +4,7 @@ require 'json'
 RSpec.describe Api::V1::OrganizationsController, type: :request do
   before(:each) do |test|
     unless test.metadata[:skip_before]
-      @user = FactoryBot.create(:user)
+      @user = create(:user)
       @auth_params = sign_in(@user)
     end
   end
@@ -36,7 +36,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
 
     it 'returns organizations', :skip_before do
       number_of_organizations = 11
-      user = FactoryBot.create(:user_with_organizations, organizations_count: number_of_organizations)
+      user = create(:user_with_organizations, organizations_count: number_of_organizations)
       auth_params = sign_in(user)
       get '/api/v1/organizations', headers: auth_params
 
@@ -52,7 +52,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
     it 'returns organizations with 2 per page', :skip_before do
       number_of_organizations = 4
       per_page = 2
-      user = FactoryBot.create(:user_with_organizations, organizations_count: number_of_organizations)
+      user = create(:user_with_organizations, organizations_count: number_of_organizations)
       auth_params = sign_in(user)
       get '/api/v1/organizations', headers: auth_params, params: { per_page: per_page }
 
@@ -65,7 +65,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
     it 'returns 10 organizations if per_page is set to 0', :skip_before do
       number_of_organizations = 11
       per_page = 0
-      user = FactoryBot.create(:user_with_organizations, organizations_count: number_of_organizations)
+      user = create(:user_with_organizations, organizations_count: number_of_organizations)
       auth_params = sign_in(user)
       get '/api/v1/organizations', headers: auth_params, params: { per_page: per_page }
 
@@ -78,7 +78,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
     it 'returns the first 2 organizations if page is set to 1 and per_page to 2', :skip_before do
       number_of_organizations = 4
       per_page = 2
-      user = FactoryBot.create(:user_with_organizations, organizations_count: number_of_organizations)
+      user = create(:user_with_organizations, organizations_count: number_of_organizations)
       auth_params = sign_in(user)
       get '/api/v1/organizations', headers: auth_params, params: { per_page: per_page, page: 1 }
 
@@ -94,7 +94,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
     it 'returns the 3rd and 4th organization if page is set to 2 and per_page to 2', :skip_before do
       number_of_organizations = 4
       per_page = 2
-      user = FactoryBot.create(:user_with_organizations, organizations_count: number_of_organizations)
+      user = create(:user_with_organizations, organizations_count: number_of_organizations)
       auth_params = sign_in(user)
       get '/api/v1/organizations', headers: auth_params, params: { per_page: per_page, page: 2 }
 
@@ -109,7 +109,7 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
 
     it 'is possible to provide a search criteria', :skip_before do
       number_of_organizations = 1
-      user = FactoryBot.create(:user_with_organizations, organizations_count: number_of_organizations)
+      user = create(:user_with_organizations, organizations_count: number_of_organizations)
       auth_params = sign_in(user)
       get '/api/v1/organizations', headers: auth_params, params: { search: "'no organization has this name--" }
 

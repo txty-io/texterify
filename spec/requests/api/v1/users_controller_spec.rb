@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe Api::V1::UsersController, type: :request do
   before(:each) do |test|
     unless test.metadata[:skip_before]
-      @user = FactoryBot.create(:user)
+      @user = create(:user)
       @auth_params = sign_in(@user)
 
-      @user_confirmed = FactoryBot.create(:user)
+      @user_confirmed = create(:user)
       @user_confirmed.confirmed_at = Time.now.utc
       @user_confirmed.save!
       @auth_params_confirmed = sign_in(@user_confirmed)

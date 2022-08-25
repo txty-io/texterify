@@ -3,15 +3,15 @@ require 'rails_helper'
 RSpec.describe Api::V1::LicensesController, type: :request do
   before(:each) do |test|
     unless test.metadata[:skip_before]
-      @user = FactoryBot.create(:user)
+      @user = create(:user)
       @auth_params = sign_in(@user)
 
-      @user_superadmin = FactoryBot.create(:user)
+      @user_superadmin = create(:user)
       @user_superadmin.is_superadmin = true
       @user_superadmin.save!
       @auth_params_superadmin = sign_in(@user_superadmin)
 
-      @license = FactoryBot.create(:license)
+      @license = create(:license)
     end
   end
 
@@ -39,8 +39,8 @@ RSpec.describe Api::V1::LicensesController, type: :request do
     end
 
     it 'returns all licenses' do
-      FactoryBot.create(:license)
-      FactoryBot.create(:license)
+      create(:license)
+      create(:license)
 
       get '/api/v1/licenses', headers: @auth_params_superadmin
       expect(response).to have_http_status(:ok)
@@ -74,7 +74,7 @@ RSpec.describe Api::V1::LicensesController, type: :request do
 
   describe 'DELETE destroy' do
     it 'has status code 403 if not logged in', :skip_before do
-      license = FactoryBot.create(:license)
+      license = create(:license)
       delete "/api/v1/licenses/#{license.id}"
       expect(response).to have_http_status(:forbidden)
     end

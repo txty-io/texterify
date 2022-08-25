@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::LanguageCodesController, type: :request do
   before(:each) do
-    @user = FactoryBot.create(:user)
+    @user = create(:user)
     @auth_params = sign_in(@user)
   end
 

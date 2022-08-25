@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::LanguagesController, type: :request do
   before(:each) do
-    @user = FactoryBot.create(:user)
+    @user = create(:user)
     @auth_params = sign_in(@user)
-    @project = FactoryBot.create(:project, :with_organization, :with_business_plan)
+    @project = create(:project, :with_organization, :with_business_plan)
 
     project_user = ProjectUser.new
     project_user.project = @project
@@ -81,15 +81,9 @@ RSpec.describe Api::V1::LanguagesController, type: :request do
     it 'creates a new language and auto-translates existing translations' do
       ENV['DEEPL_API_TOKEN'] = '<valid_pro_token>'
 
-      user = FactoryBot.create(:user)
+      user = create(:user)
       auth_params = sign_in(user)
-      project =
-        FactoryBot.create(
-          :project,
-          :with_organization,
-          :with_business_plan,
-          :with_default_language_keys_and_translations
-        )
+      project = create(:project, :with_organization, :with_business_plan, :with_default_language_keys_and_translations)
       project.auto_translate_new_languages = true
       project.save!
 

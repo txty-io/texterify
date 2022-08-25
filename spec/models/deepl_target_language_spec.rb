@@ -1,5 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe DeeplTargetLanguage, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it 'creates a deepl target language' do
+    d = DeeplTargetLanguage.new
+    d.name = 'my name'
+    d.language_code = 'my language code'
+    d.save!
+  end
 end

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe LanguageConfig, type: :model do
   it 'creates a language config' do
-    project = FactoryBot.create(:project, :with_organization)
+    project = create(:project, :with_organization)
     project.save!
 
     language = Language.new

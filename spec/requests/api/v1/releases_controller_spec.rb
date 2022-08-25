@@ -2,10 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::ReleasesController, type: :request do
   before(:each) do
-    @user = FactoryBot.create(:user)
+    @user = create(:user)
     @auth_params = sign_in(@user)
-    @project = FactoryBot.create(:project, :with_organization)
-    @export_config = FactoryBot.create(:export_config, project_id: @project.id)
+    @project = create(:project, :with_organization)
+    @export_config = create(:export_config, project_id: @project.id)
     @export_config.save!
 
     project_user = ProjectUser.new
@@ -40,9 +40,9 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
     end
 
     it 'has status code 200 and returns releases paginated' do
-      FactoryBot.create(:release, export_config_id: @export_config.id)
-      FactoryBot.create(:release, export_config_id: @export_config.id)
-      FactoryBot.create(:release, export_config_id: @export_config.id)
+      create(:release, export_config_id: @export_config.id)
+      create(:release, export_config_id: @export_config.id)
+      create(:release, export_config_id: @export_config.id)
       get "/api/v1/projects/#{@project.id}/releases", headers: @auth_params, params: { per_page: 2 }
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
@@ -84,7 +84,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
     end
 
     it 'has status code 400 if releases are available but no locale was given' do
-      FactoryBot.create(:release, export_config_id: @export_config.id)
+      create(:release, export_config_id: @export_config.id)
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release"
       expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
@@ -92,23 +92,19 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
     end
 
     it 'has status code 304 if no release file for locale was found' do
-      FactoryBot.create(:release, export_config_id: @export_config.id)
+      create(:release, export_config_id: @export_config.id)
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-AT"
       expect(response).to have_http_status(:not_modified)
     end
 
     it 'has status code 302 if release file for locale was found' do
-      FactoryBot.create(
-        :release,
-        export_config_id: @export_config.id,
-        locales: [{ language_code: 'de', country_code: 'AT' }]
-      )
+      create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-AT"
       expect(response).to have_http_status(:found)
     end
 
     it 'has status code 302 if release file for locale was found #1' do
-      release = FactoryBot.create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de' }])
+      release = create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de' }])
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de"
       expect(response).to have_http_status(:found)
       expect(response).to redirect_to(release.release_files[0].url)
@@ -116,11 +112,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
 
     it 'has status code 302 if release file for locale was found #2' do
       release =
-        FactoryBot.create(
-          :release,
-          export_config_id: @export_config.id,
-          locales: [{ language_code: 'de', country_code: 'AT' }]
-        )
+        create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de"
       expect(response).to have_http_status(:found)
       expect(response).to redirect_to(release.release_files[0].url)
@@ -128,18 +120,14 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
 
     it 'has status code 302 if release file for locale was found #3' do
       release =
-        FactoryBot.create(
-          :release,
-          export_config_id: @export_config.id,
-          locales: [{ language_code: 'de', country_code: 'AT' }]
-        )
+        create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
       get "/api/v1/projects/#{@project.id}/export_configs/#{@export_config.id}/release?locale=de-DE"
       expect(response).to have_http_status(:found)
       expect(response).to redirect_to(release.release_files[0].url)
     end
 
     it 'has status code 302 if release file for locale was found #4' do
-      FactoryBot.create(
+      create(
         :release,
         export_config_id: @export_config.id,
         locales: [{ language_code: 'de', country_code: 'AT' }, { language_code: 'de', country_code: 'DE' }]
@@ -150,15 +138,11 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
     end
 
     it 'has status code 304 if timestamp is in the future' do
-      FactoryBot.create(
-        :release,
-        export_config_id: @export_config.id,
-        locales: [{ language_code: 'de', country_code: 'AT' }]
-      )
+      create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
       time = Time.now.utc
       timestamp = time.iso8601
       timestamp_10_minutes_in_future = (time + (10 * 60)).iso8601
-      FactoryBot.create(
+      create(
         :release,
         export_config_id: @export_config.id,
         timestamp: timestamp,
@@ -169,13 +153,9 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
     end
 
     it 'has status code 304 if timestamp is equal to latest release timestamp' do
-      FactoryBot.create(
-        :release,
-        export_config_id: @export_config.id,
-        locales: [{ language_code: 'de', country_code: 'AT' }]
-      )
+      create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
       release =
-        FactoryBot.create(
+        create(
           :release,
           export_config_id: @export_config.id,
           locales: [{ language_code: 'de', country_code: 'AT' }],
@@ -187,12 +167,8 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
 
     it 'has status code 302 if timestamp is equal to old release timestamp' do
       old_release =
-        FactoryBot.create(
-          :release,
-          export_config_id: @export_config.id,
-          locales: [{ language_code: 'de', country_code: 'AT' }]
-        )
-      FactoryBot.create(
+        create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
+      create(
         :release,
         export_config_id: @export_config.id,
         locales: [{ language_code: 'de', country_code: 'AT' }],
@@ -204,12 +180,8 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
 
     it 'has status code 304 if timestamp is equal to old release timestamp but locale is not available anymore in new release' do
       old_release =
-        FactoryBot.create(
-          :release,
-          export_config_id: @export_config.id,
-          locales: [{ language_code: 'de', country_code: 'AT' }]
-        )
-      FactoryBot.create(
+        create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
+      create(
         :release,
         export_config_id: @export_config.id,
         locales: [{ language_code: 'en' }],
@@ -258,11 +230,7 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
     end
 
     it 'has status code 200 and creates a second release with increased version' do
-      FactoryBot.create(
-        :release,
-        export_config_id: @export_config.id,
-        locales: [{ language_code: 'de', country_code: 'AT' }]
-      )
+      create(:release, export_config_id: @export_config.id, locales: [{ language_code: 'de', country_code: 'AT' }])
       expect(Release.all.size).to eq(1)
       version = Release.first.version
       language = Language.new
