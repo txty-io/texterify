@@ -372,7 +372,7 @@ class KeysSite extends React.Component<IProps, IState> {
         return this.state.keys.map((key) => {
             const translations = {};
 
-            key.relationships.translations.data.map((translationReference) => {
+            key.relationships.translations.data.forEach((translationReference) => {
                 const translation: ITranslation = APIUtils.getIncludedObject(
                     translationReference,
                     this.state.keysResponse.included
@@ -382,7 +382,10 @@ class KeysSite extends React.Component<IProps, IState> {
                 const languageId = translation.relationships.language.data.id;
 
                 translations[languageId] = translations[languageId] || {};
-                translations[languageId][exportConfigId] = translation;
+
+                if (!translations[languageId][exportConfigId]) {
+                    translations[languageId][exportConfigId] = translation;
+                }
             });
 
             const overwrites = this.getKeyExportConfigOverwrites(key);
@@ -791,7 +794,7 @@ class KeysSite extends React.Component<IProps, IState> {
             const currentKey = this.state.keys.find((k) => {
                 return key.id === k.id;
             });
-            currentKey.relationships.translations.data.map((translationReference) => {
+            currentKey.relationships.translations.data.forEach((translationReference) => {
                 const translation: ITranslation = APIUtils.getIncludedObject(
                     translationReference,
                     this.state.keysResponse.included
@@ -1011,7 +1014,10 @@ class KeysSite extends React.Component<IProps, IState> {
                                                       const languageId = translation.relationships.language.data.id;
 
                                                       translations[languageId] = translations[languageId] || {};
-                                                      translations[languageId][exportConfigId] = translation;
+
+                                                      if (!translations[languageId][exportConfigId]) {
+                                                          translations[languageId][exportConfigId] = translation;
+                                                      }
                                                   }
                                               );
 

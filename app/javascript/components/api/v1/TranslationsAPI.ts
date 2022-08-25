@@ -14,6 +14,7 @@ export interface ITranslation {
         few: string;
         many: string;
         content: string; // other
+        created_at: string;
     };
     relationships: {
         export_config?: { data: any };
