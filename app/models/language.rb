@@ -38,8 +38,7 @@ class Language < ApplicationRecord
     end
   end
 
-  # Translates all non export config translations of all non HTML keys for the language which are empty using machine translation.
-  # @throws OrganizationMachineTranslationUsageExceededException
+  # Translates all non export config translations for the language which are empty using machine translation.
   def translate_untranslated_using_machine_translation
     if (ENV.fetch('DEEPL_API_TOKEN', nil).present? || Rails.env.test?) && self.project.machine_translation_enabled &&
          project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_LANGUAGE)

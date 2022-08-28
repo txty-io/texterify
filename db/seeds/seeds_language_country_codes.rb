@@ -38,4 +38,4 @@ end
 
 puts "Created language codes: #{language_codes_to_insert.size}"
 
-puts "\nFinished seeding language and country codes\n\n"
+puts "\nFinished seeding language and country codes.\n\n"

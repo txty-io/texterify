@@ -72,4 +72,4 @@ puts "Created language plurals: #{created_language_plurals}"
 puts "Updated languages: #{updated_languages}"
 puts "Language plurals without matching language code: #{language_plurals_without_matching_language_code}"
 
-puts "\nFinished seeding CLDR plurals\n\n"
+puts "\nFinished seeding CLDR plurals.\n\n"
