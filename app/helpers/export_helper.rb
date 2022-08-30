@@ -42,7 +42,7 @@ module ExportHelper
     parent_language = language.parent
     while parent_language.present?
       parent_language.keys.each do |key|
-        if export_data[key.name].nil?
+        if export_data[key.name].nil? || export_data[key.name][:other].empty?
           key_translation = key.translation_for(parent_language.id, export_config.id)
           translation_export_data = nil
 

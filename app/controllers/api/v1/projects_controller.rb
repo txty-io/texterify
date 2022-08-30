@@ -118,14 +118,14 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     export_config = project.export_configs.find(params[:id])
 
     if project.languages.empty?
-      render json: { error: true, messages: ["can't export anything without languages"] }, status: :bad_request
+      render json: { error: true, message: 'NO_LANGUAGES_FOUND_TO_EXPORT' }, status: :bad_request
       return
     end
 
     file = Tempfile.new(project.id)
 
     begin
-      helpers.create_export(project, export_config, file, { emojify: params[:emojify] })
+      helpers.create_export(project, export_config, file, emojify: params[:emojify])
 
       send_file(file, type: 'application/zip')
     ensure

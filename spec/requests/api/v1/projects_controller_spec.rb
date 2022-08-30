@@ -285,4 +285,49 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       end
     end
   end
+
+  describe 'GET export' do
+    it 'returns an error if project has no languages' do
+      project = create(:project, :with_organization)
+      create(:project_user, project_id: project.id, user_id: @user.id, role: 'owner')
+      export_config = create(:export_config, project_id: project.id)
+
+      get "/api/v1/projects/#{project.id}/exports/#{export_config.id}", headers: @auth_params, as: :json
+
+      expect(response).to have_http_status(:bad_request)
+      body = JSON.parse(response.body)
+      expect(body['error']).to be(true)
+      expect(body['message']).to eq('NO_LANGUAGES_FOUND_TO_EXPORT')
+    end
+
+    it 'returns an export zip' do
+      project = create(:project, :with_organization)
+      create(:project_user, project_id: project.id, user_id: @user.id, role: 'owner')
+      create(:language, project_id: project.id)
+      export_config = create(:export_config, project_id: project.id)
+
+      get "/api/v1/projects/#{project.id}/exports/#{export_config.id}", headers: @auth_params, as: :json
+
+      expect(response).to have_http_status(:ok)
+      file = Tempfile.new(project.id)
+      file.binmode
+      file.write(response.body)
+      file.close
+
+      files_count = 0
+
+      Zip::File.open(file) do |zip_file|
+        zip_file.each do |entry|
+          files_count += 1
+          content = entry.get_input_stream.read
+          expect(JSON.parse(content)).to match_snapshot(
+            'projects_controller_export_ok',
+            { snapshot_serializer: StripSerializer }
+          )
+        end
+      end
+
+      expect(files_count).to eq(1)
+    end
+  end
 end
