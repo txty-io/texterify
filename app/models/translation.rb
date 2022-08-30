@@ -256,7 +256,7 @@ class Translation < ApplicationRecord
       few: few,
       many: many,
       pluralization_enabled: key.pluralization_enabled,
-      description: key.description
+      description: key.description || ''
     }
   end
 
