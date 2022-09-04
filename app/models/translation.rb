@@ -1,6 +1,5 @@
 require_relative '../lib/texterify'
 
-# TODO: Add special handling for HTML translation validations.
 class Translation < ApplicationRecord
   has_paper_trail
 
