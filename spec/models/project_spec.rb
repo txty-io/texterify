@@ -19,7 +19,7 @@ RSpec.describe Project, type: :model do
     expect(project.character_count).to eq(0)
     expect(project.word_count).to eq(0)
 
-    create(:translation, key_id: key.id, language_id: language.id, content: 'hello world')
+    translation1 = create(:translation, key_id: key.id, language_id: language.id, content: 'hello world')
 
     project.recalculate_words_and_characters_count!
     project.reload
@@ -27,7 +27,8 @@ RSpec.describe Project, type: :model do
     expect(project.character_count).to eq('hello world'.size)
     expect(project.word_count).to eq(2)
 
-    create(:translation, key_id: key.id, language_id: language.id, content: 'a  b  c')
+    translation1.content = 'a  b  c'
+    translation1.save!
 
     project.recalculate_words_and_characters_count!
     project.reload

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_18_145123) do
+ActiveRecord::Schema.define(version: 2022_09_04_172456) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -469,6 +469,8 @@ ActiveRecord::Schema.define(version: 2022_08_18_145123) do
     t.text "few"
     t.text "many"
     t.index ["export_config_id"], name: "index_translations_on_export_config_id"
+    t.index ["key_id", "language_id", "export_config_id"], name: "translations_index_unique_1", unique: true, where: "(export_config_id IS NOT NULL)"
+    t.index ["key_id", "language_id"], name: "translations_index_unique_2", unique: true, where: "(export_config_id IS NULL)"
     t.index ["key_id"], name: "index_translations_on_key_id"
     t.index ["language_id"], name: "index_translations_on_language_id"
   end
