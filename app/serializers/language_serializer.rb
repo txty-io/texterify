@@ -20,7 +20,7 @@ class LanguageSerializer
     if total_keys.zero?
       100
     else
-      translated_keys = language.translations.where.not(content: [nil, '']).count
+      translated_keys = language.translations.where.not(content: [nil, '']).where(export_config_id: nil).count
       (translated_keys.to_f / total_keys) * 100
     end
   end
