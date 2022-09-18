@@ -132,6 +132,9 @@ Rails
                     only: [:create, :index, :update, :destroy],
                     controller: 'forbidden_words_lists'
 
+          # Tags
+          resources :tags, only: [:create, :index, :update, :destroy]
+
           # WordPress Polylang integration
           get 'wordpress_polylang_connection', to: 'wordpress_polylang_connections#show'
           put 'wordpress_polylang_connection', to: 'wordpress_polylang_connections#update'
