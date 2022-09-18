@@ -33,7 +33,7 @@ function PlaceholderSettingsForm(props: {
             });
 
             if (response.error) {
-                message.error("An error occurred while udpating project settings.");
+                message.error("An error occurred while updating project settings.");
             } else {
                 message.success("Project settings successfully updated.");
             }
