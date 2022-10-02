@@ -15,7 +15,6 @@ import { EditTranslationFormModal } from "../../forms/EditTranslationFormModal";
 import { NewKeyForm } from "../../forms/NewKeyForm";
 import { history } from "../../routing/history";
 import { dashboardStore } from "../../stores/DashboardStore";
-import { AddTagTag } from "../../ui/AddTagTag";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { ColumnTag } from "../../ui/ColumnTag";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
@@ -30,6 +29,7 @@ import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActive
 import { KeystrokeButtonWrapper } from "../../ui/KeystrokeButtonWrapper";
 import { KEYSTROKE_DEFINITIONS } from "../../ui/KeystrokeDefinitions";
 import { KeystrokeHandler } from "../../ui/KeystrokeHandler";
+import { KeyTags } from "../../ui/KeyTags";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { TranslationUtils } from "../../utilities/TranslationUtils";
 
@@ -394,67 +394,14 @@ class KeysSite extends React.Component<IProps, IState> {
 
             const overwrites = this.getKeyExportConfigOverwrites(key);
 
-            const tags = [];
-
-            if (key.attributes.html_enabled) {
-                tags.push(
-                    <Tag
-                        key={`${key.attributes.id}-html_enabled`}
-                        color="magenta"
-                        style={{ margin: 0, marginRight: 4, marginBottom: 4 }}
-                    >
-                        HTML
-                    </Tag>
-                );
-            }
-
-            if (key.attributes.pluralization_enabled) {
-                tags.push(
-                    <Tag
-                        key={`${key.attributes.id}-plural`}
-                        color="geekblue"
-                        style={{
-                            margin: 0,
-                            marginRight: 4,
-                            marginBottom: 4
-                        }}
-                    >
-                        Plural
-                    </Tag>
-                );
-            }
-
-            if (key.relationships.wordpress_contents.data.length > 0) {
-                tags.push(
-                    <Tag key={`${key.attributes.id}-wordpress`} color="magenta" style={{ margin: 0 }}>
-                        WordPress
-                    </Tag>
-                );
-            }
-
             return {
                 tags: (
-                    <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-                        {key.relationships.tags.data.map((tag) => {
-                            const included = APIUtils.getIncludedObject(tag, this.state.keysResponse.included);
-
-                            return (
-                                <Tag
-                                    key={`${key.attributes.id}-${tag.id}`}
-                                    color="magenta"
-                                    style={{ margin: 0, marginRight: 4, marginBottom: 4 }}
-                                >
-                                    {included.attributes.name}
-                                </Tag>
-                            );
-                        })}
-                        {tags}
-                        <AddTagTag
-                            onClick={() => {
-                                this.setState({ addTagToKeyModalKey: key });
-                            }}
-                        />
-                    </div>
+                    <KeyTags
+                        translationKey={key}
+                        included={this.state.keysResponse.included}
+                        onTagAdded={this.reloadTable}
+                        onTagRemoved={this.reloadTable}
+                    />
                 ),
                 exportConfigOverwrites: overwrites.map((overwrite) => {
                     return (
@@ -1186,15 +1133,6 @@ class KeysSite extends React.Component<IProps, IState> {
                             editTranslationContentChanged: false,
                             editTranslationExportConfigId: null
                         });
-                    }}
-                />
-
-                <AddTagToKeyModal
-                    translationKey={this.state.addTagToKeyModalKey}
-                    visible={!!this.state.addTagToKeyModalKey}
-                    onCancelRequest={async () => {
-                        this.setState({ addTagToKeyModalKey: null });
-                        await this.reloadTable();
                     }}
                 />
             </>

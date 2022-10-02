@@ -9,9 +9,12 @@ interface IProps {
     visible: boolean;
     translationKey: IKey;
     onCancelRequest(): void;
+    onSaved(): void;
 }
 
 export function AddTagToKeyModal(props: IProps) {
+    const [saving, setSaving] = React.useState<boolean>(false);
+
     const formId = `addTagToKeyForm-${uuid.v4()}`;
     return (
         <TexterifyModal
@@ -26,7 +29,13 @@ export function AddTagToKeyModal(props: IProps) {
                     >
                         Cancel
                     </Button>
-                    <Button form={formId} type="primary" htmlType="submit" data-id="add-tag-to-form-submit-button">
+                    <Button
+                        loading={saving}
+                        form={formId}
+                        type="primary"
+                        htmlType="submit"
+                        data-id="add-tag-to-key-form-submit-button"
+                    >
                         Add tag
                     </Button>
                 </div>
@@ -37,8 +46,12 @@ export function AddTagToKeyModal(props: IProps) {
                 translationKey={props.translationKey}
                 formId={formId}
                 noButton
+                onSaving={() => {
+                    setSaving(true);
+                }}
                 onSaved={() => {
-                    props.onCancelRequest();
+                    setSaving(false);
+                    props.onSaved();
                 }}
             />
         </TexterifyModal>

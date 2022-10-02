@@ -12,7 +12,7 @@ const TagWrapper = styled.div`
     }
 `;
 
-export function AddTagTag(props: { onClick(): void }) {
+export function AddTagButton(props: { onClick(): void }) {
     return (
         <TagWrapper>
             <Tag onClick={props.onClick}>

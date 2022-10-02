@@ -3,6 +3,7 @@ import { ISearchSettings } from "../../ui/KeySearchSettings";
 import { API, IFetchOptions } from "./API";
 import { APIUtils } from "./APIUtils";
 import { ILanguage } from "./LanguagesAPI";
+import { ITag } from "./TagsAPI";
 import { ITranslation } from "./TranslationsAPI";
 
 export interface IKey {
@@ -28,9 +29,11 @@ export interface IKey {
     };
 }
 
+export type IKeyIncluded = (ITranslation | ILanguage | ITag | IPlaceholder)[];
+
 export interface IGetKeysResponse {
     data: IKey[];
-    included: (ITranslation | ILanguage)[];
+    included: IKeyIncluded;
     meta: { total: number };
 }
 
@@ -45,7 +48,7 @@ export interface IPlaceholder {
 
 export interface IGetKeyResponse {
     data: IKey;
-    included: (ITranslation | ILanguage | IPlaceholder)[];
+    included: IKeyIncluded;
     meta: { total: number };
 }
 

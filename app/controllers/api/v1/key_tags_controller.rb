@@ -15,7 +15,9 @@ class Api::V1::KeyTagsController < Api::V1::ApiController
     elsif key_tag.errors[:tag_id].first == 'has already been taken'
       render json: { error: true, message: 'TAG_HAS_ALREADY_BEEN_ADDED' }, status: :conflict
     else
+      # :nocov:
       render json: { error: true, message: 'UNKNOWN_ERROR', details: key_tag.errors.details }, status: :bad_request
+      # :nocov:
     end
   end
 
@@ -31,7 +33,9 @@ class Api::V1::KeyTagsController < Api::V1::ApiController
     if key_tag.destroy
       render json: { error: false, message: 'TAG_REMOVED_FROM_KEY' }, status: :ok
     else
+      # :nocov:
       render json: { error: true, message: 'UNKNOWN_ERROR', details: key_tag.errors.details }, status: :bad_request
+      # :nocov:
     end
   end
 end

@@ -33,6 +33,7 @@ import { UserProfileHeader } from "../../ui/UserProfileHeader";
 import { DATE_TIME_FORMAT, escapeHTML, Utils } from "../../ui/Utils";
 import { TranslationCard } from "./editor/TranslationCard";
 import * as moment from "moment";
+import { KeyTags } from "../../ui/KeyTags";
 
 const Key = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
@@ -808,6 +809,14 @@ class EditorSite extends React.Component<IProps, IState> {
                                             value={moment(this.state.keyResponse.data.attributes.created_at).format(
                                                 DATE_TIME_FORMAT
                                             )}
+                                        />
+
+                                        <h3 style={{ marginTop: 24 }}>Tags</h3>
+                                        <KeyTags
+                                            translationKey={this.state.keyResponse.data}
+                                            included={this.state.keyResponse.included}
+                                            onTagAdded={this.loadAndSetKey}
+                                            onTagRemoved={this.loadAndSetKey}
                                         />
 
                                         <h3 style={{ marginTop: 24 }}>Placeholders</h3>

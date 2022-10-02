@@ -1,7 +1,10 @@
-import { Button, Form, message, Select } from "antd";
+import { Button, Empty, Form, message, Select } from "antd";
 import * as React from "react";
+import { Link } from "react-router-dom";
 import { IKey, KeysAPI } from "../api/v1/KeysAPI";
 import { ITag, TagsAPI } from "../api/v1/TagsAPI";
+import { Routes } from "../routing/Routes";
+import { Loading } from "../ui/Loading";
 
 interface IFormValues {
     tagId: string;
@@ -18,6 +21,7 @@ export interface IAddTagToKeyFormProps {
 
 export function AddTagToKeyForm(props: IAddTagToKeyFormProps) {
     const [loading, setLoading] = React.useState<boolean>(false);
+    const [saving, setSaving] = React.useState<boolean>(false);
     const [tags, setTags] = React.useState<ITag[]>([]);
 
     async function loadTags() {
@@ -39,7 +43,7 @@ export function AddTagToKeyForm(props: IAddTagToKeyFormProps) {
     }, []);
 
     async function handleSubmit(values: IFormValues) {
-        setLoading(true);
+        setSaving(true);
 
         if (props.onSaving) {
             props.onSaving();
@@ -65,13 +69,47 @@ export function AddTagToKeyForm(props: IAddTagToKeyFormProps) {
             props.onSaved();
         }
 
-        setLoading(false);
+        setSaving(false);
+    }
+
+    function getAddableTags() {
+        return tags.filter((tag) => {
+            return !props.translationKey.relationships.tags.data.find((keyTag) => {
+                return keyTag.id === tag.id;
+            });
+        });
+    }
+
+    if (loading) {
+        return <Loading />;
+    }
+
+    if (getAddableTags().length === 0) {
+        return (
+            <Empty
+                description={
+                    <>
+                        <Link
+                            to={Routes.DASHBOARD.PROJECT_TAGS.replace(
+                                ":projectId",
+                                props.translationKey.attributes.project_id
+                            )}
+                        >
+                            Add some tags
+                        </Link>{" "}
+                        to assign them to your keys.
+                    </>
+                }
+                style={{ margin: "40px 0" }}
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+            />
+        );
     }
 
     return (
         <>
             <Form name="addTagToKeyForm" onFinish={handleSubmit} style={props.style} id={props.formId}>
-                <h3>Select the tag to add</h3>
+                <h3>Select a tag to add</h3>
                 <Form.Item
                     name="tagId"
                     rules={[{ required: true, whitespace: true, message: "Please select a tag to add." }]}
@@ -82,8 +120,10 @@ export function AddTagToKeyForm(props: IAddTagToKeyFormProps) {
                         optionFilterProp="children"
                         filterOption
                         style={{ width: "100%" }}
+                        autoFocus
+                        disabled={saving}
                     >
-                        {tags.map((tag) => {
+                        {getAddableTags().map((tag) => {
                             return (
                                 <Select.Option value={tag.attributes.id} key={tag.id}>
                                     {tag.attributes.name}
@@ -94,8 +134,14 @@ export function AddTagToKeyForm(props: IAddTagToKeyFormProps) {
                 </Form.Item>
 
                 {!props.noButton && (
-                    <Button type="primary" htmlType="submit" data-id="add-tag-to-form-submit-button">
-                        Add key
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        data-id="add-tag-to-key-form-submit-button"
+                        loading={saving}
+                        disabled={loading || getAddableTags().length === 0}
+                    >
+                        Add tag
                     </Button>
                 )}
             </Form>
