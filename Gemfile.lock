@@ -307,7 +307,7 @@ GEM
       railties (>= 3.2)
       tilt
     redis (4.6.0)
-    regexp_parser (2.5.0)
+    regexp_parser (2.6.0)
     representable (3.0.4)
       declarative (< 0.1.0)
       declarative-option (< 0.2.0)
@@ -353,7 +353,7 @@ GEM
       awesome_print (> 1.0.0)
       rspec (> 3.0.0)
     rspec-support (3.11.0)
-    rubocop (1.35.1)
+    rubocop (1.36.0)
       json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.1.2.1)
@@ -418,7 +418,7 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
-    solargraph (0.46.0)
+    solargraph (0.47.1)
       backport (~> 1.2)
       benchmark
       bundler (>= 1.17.2)
@@ -459,7 +459,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.7)
-    unicode-display_width (2.2.0)
+    unicode-display_width (2.3.0)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (4.2.0)
