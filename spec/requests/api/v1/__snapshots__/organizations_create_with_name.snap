@@ -55,6 +55,10 @@
           [0] "team",
           [1] "business"
         ],
+                                      "FEATURE_TAGS" => [
+          [0] "team",
+          [1] "business"
+        ],
            "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
           [0] "team",
           [1] "business"

@@ -64,12 +64,13 @@
           [ 6] "FEATURE_POST_PROCESSING",
           [ 7] "FEATURE_PROJECT_ACTIVITY",
           [ 8] "FEATURE_TAG_MANAGEMENT",
-          [ 9] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
-          [10] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
-          [11] "FEATURE_OTA",
-          [12] "FEATURE_HTML_EDITOR",
-          [13] "FEATURE_TEMPLATES",
-          [14] "FEATURE_PROJECT_GROUPS"
+          [ 9] "FEATURE_TAGS",
+          [10] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [11] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
+          [12] "FEATURE_OTA",
+          [13] "FEATURE_HTML_EDITOR",
+          [14] "FEATURE_TEMPLATES",
+          [15] "FEATURE_PROJECT_GROUPS"
         ],
                                "all_features" => {
                           "FEATURE_UNLIMITED_PROJECTS" => [
@@ -108,6 +109,10 @@
             [1] "business"
           ],
                               "FEATURE_TAG_MANAGEMENT" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                        "FEATURE_TAGS" => [
             [0] "team",
             [1] "business"
           ],
