@@ -70,6 +70,7 @@ Rails
           resources :keys, only: [:create, :show, :index, :destroy, :update] do
             get :activity
             resources :placeholders, only: [:create, :index, :destroy]
+            resources :tags, only: [:create, :destroy], controller: 'key_tags'
           end
           delete 'keys', to: 'keys#destroy_multiple'
 
