@@ -10,12 +10,16 @@ class Api::V1::TagsController < Api::V1::ApiController
     page = parse_page(params[:page])
     per_page = parse_per_page(params[:per_page])
 
+    tags = project.tags
+    if params[:search]
+      tags = project.tags.where('name ilike :search', search: "%#{params[:search]}%")
+    end
+
     options = {}
     options[:meta] = { total: project.tags.size }
     options[:include] = []
     render json:
-             TagSerializer.new(project.tags.order('name ASC').offset(page * per_page).limit(per_page), options)
-               .serialized_json
+             TagSerializer.new(tags.order('name ASC').offset(page * per_page).limit(per_page), options).serialized_json
   end
 
   def create
