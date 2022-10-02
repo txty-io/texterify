@@ -159,6 +159,24 @@ const KeysAPI = {
             .catch((response) => {
                 APIUtils.handleErrors(response, true);
             });
+    },
+
+    addTag: async (options: { projectId: string; keyId: string; tagId: string }) => {
+        return API.postRequest(`projects/${options.projectId}/keys/${options.keyId}/tags`, true, {
+            tag_id: options.tagId
+        })
+            .then(APIUtils.handleErrors)
+            .catch((response) => {
+                APIUtils.handleErrors(response, true);
+            });
+    },
+
+    removeTag: async (options: { projectId: string; keyId: string; tagId: string }) => {
+        return API.deleteRequest(`projects/${options.projectId}/keys/${options.keyId}/tags/${options.tagId}`, true)
+            .then(APIUtils.handleErrors)
+            .catch((response) => {
+                APIUtils.handleErrors(response, true);
+            });
     }
 };
 

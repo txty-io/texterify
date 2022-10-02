@@ -211,6 +211,11 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                 name: "Validations",
                 path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId)
             },
+            projectTags: {
+                parent: "project",
+                name: "Tags",
+                path: Routes.DASHBOARD.PROJECT_TAGS.replace(":projectId", this.props.match.params.projectId)
+            },
             projectOTA: {
                 parent: "project",
                 name: "Over the Air",

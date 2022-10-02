@@ -10,10 +10,12 @@ import { IGetKeysOptions, IGetKeysResponse, IKey, KeysAPI } from "../../api/v1/K
 import { ILanguage, LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
 import { ITranslation, TranslationsAPI } from "../../api/v1/TranslationsAPI";
+import { AddTagToKeyModal } from "../../forms/AddTagToKeyModal";
 import { EditTranslationFormModal } from "../../forms/EditTranslationFormModal";
 import { NewKeyForm } from "../../forms/NewKeyForm";
 import { history } from "../../routing/history";
 import { dashboardStore } from "../../stores/DashboardStore";
+import { AddTagTag } from "../../ui/AddTagTag";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { ColumnTag } from "../../ui/ColumnTag";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
@@ -59,6 +61,7 @@ interface IState {
     searchSettings: ISearchSettings;
     pluralizationEnabledUpdating: boolean;
     htmlEnabledUpdating: boolean;
+    addTagToKeyModalKey: IKey;
 }
 
 export interface IKeysTableExpandedRecord {
@@ -76,7 +79,7 @@ export type IKeysTableRecord = IKeysTableExpandedRecord & {
     name?: string;
     description?: string;
     nameEditable?: boolean;
-    tags?: JSX.Element[];
+    tags?: JSX.Element;
     exportConfigOverwrites?: JSX.Element[];
     more?: JSX.Element;
 };
@@ -151,7 +154,8 @@ class KeysSite extends React.Component<IProps, IState> {
             keyMenuVisible: null,
             searchSettings: parseKeySearchSettingsFromURL(),
             pluralizationEnabledUpdating: false,
-            htmlEnabledUpdating: false
+            htmlEnabledUpdating: false,
+            addTagToKeyModalKey: null
         };
     }
 
@@ -274,7 +278,7 @@ class KeysSite extends React.Component<IProps, IState> {
                     title: "Tags",
                     dataIndex: "tags",
                     key: "tags",
-                    width: 80
+                    width: 200
                 });
             }
 
@@ -429,22 +433,29 @@ class KeysSite extends React.Component<IProps, IState> {
             }
 
             return {
-                tags: [
-                    ...key.relationships.tags.data.map((tag) => {
-                        const included = APIUtils.getIncludedObject(tag, this.state.keysResponse.included);
+                tags: (
+                    <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                        {key.relationships.tags.data.map((tag) => {
+                            const included = APIUtils.getIncludedObject(tag, this.state.keysResponse.included);
 
-                        return (
-                            <Tag
-                                key={`${key.attributes.id}-${tag.id}`}
-                                color="magenta"
-                                style={{ margin: 0, marginRight: 4, marginBottom: 4 }}
-                            >
-                                {included.attributes.name}
-                            </Tag>
-                        );
-                    }),
-                    ...tags
-                ],
+                            return (
+                                <Tag
+                                    key={`${key.attributes.id}-${tag.id}`}
+                                    color="magenta"
+                                    style={{ margin: 0, marginRight: 4, marginBottom: 4 }}
+                                >
+                                    {included.attributes.name}
+                                </Tag>
+                            );
+                        })}
+                        {tags}
+                        <AddTagTag
+                            onClick={() => {
+                                this.setState({ addTagToKeyModalKey: key });
+                            }}
+                        />
+                    </div>
+                ),
                 exportConfigOverwrites: overwrites.map((overwrite) => {
                     return (
                         <Tag
@@ -1175,6 +1186,15 @@ class KeysSite extends React.Component<IProps, IState> {
                             editTranslationContentChanged: false,
                             editTranslationExportConfigId: null
                         });
+                    }}
+                />
+
+                <AddTagToKeyModal
+                    translationKey={this.state.addTagToKeyModalKey}
+                    visible={!!this.state.addTagToKeyModalKey}
+                    onCancelRequest={async () => {
+                        this.setState({ addTagToKeyModalKey: null });
+                        await this.reloadTable();
                     }}
                 />
             </>

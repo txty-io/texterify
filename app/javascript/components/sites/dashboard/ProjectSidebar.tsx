@@ -16,6 +16,7 @@ import {
     RobotOutlined,
     SettingOutlined,
     SwapOutlined,
+    TagsOutlined,
     TeamOutlined
 } from "@ant-design/icons";
 import { Layout, Menu, Tag } from "antd";
@@ -84,7 +85,6 @@ class ProjectSidebar extends React.Component<IProps> {
                 dataId: "project-sidebar-validations",
                 paths: [
                     Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
-                    ,
                     Routes.DASHBOARD.PROJECT_PLACEHOLDERS_RESOLVER({
                         projectId: this.props.match.params.projectId
                     }),
@@ -92,6 +92,14 @@ class ProjectSidebar extends React.Component<IProps> {
                         projectId: this.props.match.params.projectId
                     })
                 ]
+            },
+            {
+                icon: TagsOutlined,
+                path: Routes.DASHBOARD.PROJECT_TAGS.replace(":projectId", this.props.match.params.projectId),
+                text: "Tags",
+                roles: ROLES_DEVELOPER_UP,
+                dataId: "project-sidebar-tags",
+                paths: [Routes.DASHBOARD.PROJECT_TAGS.replace(":projectId", this.props.match.params.projectId)]
             },
             {
                 icon: AlertOutlined,
