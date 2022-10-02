@@ -2,7 +2,6 @@ import { CheckOutlined, RobotOutlined } from "@ant-design/icons";
 import { Alert, Button, message, Skeleton } from "antd";
 import DeeplLogo from "images/deepl_logo.svg";
 import * as React from "react";
-import { APIUtils } from "../api/v1/APIUtils";
 import { IGetKeyResponse } from "../api/v1/KeysAPI";
 import { IGetLanguagesResponse, ILanguage } from "../api/v1/LanguagesAPI";
 import {
@@ -203,7 +202,7 @@ export function MachineTranslationSuggestion(props: {
                                                         });
                                                     }}
                                                 >
-                                                    Use translation
+                                                    Copy to field
                                                 </Button>
                                             </>
                                         ) : (

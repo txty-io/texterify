@@ -21,11 +21,12 @@ export interface IEditTranslationFormProps {
     selectedExportConfigId: string | null;
     forceHTML?: boolean;
     forcePluralization?: boolean;
+    forceContentOther?: string;
     formId?: string;
     clearFieldsAfterSubmit?: boolean;
     style?: React.CSSProperties;
     onChange?(values: IEditTranslationFormFormValues): void;
-    onSuccess?(): void;
+    onSuccess?(values: IEditTranslationFormFormValues): void;
 }
 
 export interface IEditTranslationFormFormValues {
@@ -41,7 +42,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
     const [translation, setTranslation] = React.useState<ITranslation | null>(null);
     const [translationLoading, setTranslationLoading] = React.useState<boolean>(true);
 
-    const formRef = React.createRef<FormInstance>();
+    const [form] = Form.useForm();
 
     // Set the correct translation if language or export target changes.
     React.useEffect(() => {
@@ -71,29 +72,33 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
         props.languagesResponse
     ]);
 
+    React.useEffect(() => {
+        if (props.forceContentOther) {
+            form.setFieldsValue({
+                other: props.forceContentOther
+            });
+
+            // Call onChange here because onValuesChange is not triggered if
+            // setting the form values explicitly.
+            if (props.onChange) {
+                props.onChange({
+                    other: props.forceContentOther
+                });
+            }
+        }
+    }, [props.forceContentOther]);
+
     // If the selected translation changes set the form fields accordingly.
     React.useEffect(() => {
-        formRef.current?.setFieldsValue({
-            zero: {
-                value: translation?.attributes.zero
-            },
-            one: {
-                value: translation?.attributes.one
-            },
-            two: {
-                value: translation?.attributes.two
-            },
-            few: {
-                value: translation?.attributes.few
-            },
-            many: {
-                value: translation?.attributes.many
-            },
-            other: {
-                value: translation?.attributes.content
-            }
+        form.setFieldsValue({
+            zero: translation?.attributes.zero,
+            one: translation?.attributes.one,
+            two: translation?.attributes.two,
+            few: translation?.attributes.few,
+            many: translation?.attributes.many,
+            other: translation?.attributes.content
         });
-    }, [translation, formRef]);
+    }, [translation]);
 
     const selectedLanguage = props.languagesResponse.data.find((language) => {
         return language.id === props.selectedLanguageId;
@@ -151,11 +156,11 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                         message.success("Succesfully updated translation.");
 
                         if (props.onSuccess) {
-                            props.onSuccess();
+                            props.onSuccess(values);
                         }
 
                         if (props.clearFieldsAfterSubmit) {
-                            formRef.current?.resetFields();
+                            form.resetFields();
                         }
                     }
                 } catch (error) {
@@ -180,6 +185,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                     other: translation.attributes.content
                 }
             }
+            form={form}
         >
             {pluralizationEnabled && selectedLanguage.attributes.supports_plural_zero && (
                 <>

@@ -37,9 +37,7 @@ interface IState {
     contentChanged: boolean;
     translationForLanguage: string;
     content: string;
-    translationSuggestion: IGetMachineTranslationSuggestion;
-    translationSuggestionLoading: boolean;
-    initialMachineTranslationLoaded: boolean;
+    forceContentOther: string;
 }
 
 class TranslationCard extends React.Component<IProps, IState> {
@@ -48,9 +46,7 @@ class TranslationCard extends React.Component<IProps, IState> {
         contentChanged: false,
         translationForLanguage: null,
         content: null,
-        translationSuggestion: null,
-        translationSuggestionLoading: false,
-        initialMachineTranslationLoaded: false
+        forceContentOther: null
     };
 
     async componentDidMount() {
@@ -65,7 +61,9 @@ class TranslationCard extends React.Component<IProps, IState> {
 
         this.setState({
             translationForLanguage: translationForLanguage,
-            content: translationForLanguage
+            content: translationForLanguage,
+            contentChanged: false,
+            forceContentOther: null
         });
     };
 
@@ -189,10 +187,14 @@ class TranslationCard extends React.Component<IProps, IState> {
                     onChange={() => {
                         this.setState({ contentChanged: true });
                     }}
-                    onSuccess={() => {
-                        this.setState({ contentChanged: false });
+                    onSuccess={(values) => {
+                        this.setState({ contentChanged: false, content: values.other, forceContentOther: null });
+                        if (this.props.onSave) {
+                            this.props.onSave();
+                        }
                     }}
                     formId={`edit-translation-form-${this.state.selectedLanguageId}`}
+                    forceContentOther={this.state.forceContentOther}
                 />
 
                 <MachineTranslationSuggestion
@@ -202,7 +204,7 @@ class TranslationCard extends React.Component<IProps, IState> {
                     supportedTargetLanguages={this.props.supportedTargetLanguages}
                     onUseTranslation={(data) => {
                         this.setState({
-                            content: data.suggestion.translation
+                            forceContentOther: data.suggestion.translation
                         });
                     }}
                     selectedLanguageId={this.state.selectedLanguageId}
