@@ -82,16 +82,17 @@ export function TagsTable(props: { project: IProject; tableReloader?: number; st
                 key: tag.attributes.id,
                 name: tag.attributes.name,
                 controls: (
-                    <>
-                        <a
+                    <div style={{ display: "flex" }}>
+                        <Button
                             onClick={() => {
                                 setTagToEdit(tag);
                                 setTagDialogVisible(true);
                             }}
                         >
                             Edit
-                        </a>
-                        <DeleteLink
+                        </Button>
+                        <Button
+                            danger
                             onClick={() => {
                                 Modal.confirm({
                                     title: "Do you really want to delete this tag?",
@@ -124,8 +125,8 @@ export function TagsTable(props: { project: IProject; tableReloader?: number; st
                             style={{ marginLeft: 16 }}
                         >
                             Delete
-                        </DeleteLink>
-                    </>
+                        </Button>
+                    </div>
                 )
             };
         }, []);

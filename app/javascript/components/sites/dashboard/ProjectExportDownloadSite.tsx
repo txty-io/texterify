@@ -85,7 +85,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
             <LayoutWithSubSidebar>
                 <ExportSidebar projectId={this.props.match.params.projectId} />
 
-                <LayoutWithSubSidebarInner smallWidth>
+                <LayoutWithSubSidebarInner>
                     <Breadcrumbs breadcrumbName="projectExportDownload" />
                     <LayoutWithSubSidebarInnerContent>
                         <h1>Download</h1>

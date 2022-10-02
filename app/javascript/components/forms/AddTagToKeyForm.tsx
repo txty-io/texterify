@@ -95,7 +95,7 @@ export function AddTagToKeyForm(props: IAddTagToKeyFormProps) {
                                 props.translationKey.attributes.project_id
                             )}
                         >
-                            Add some tags
+                            Add more tags
                         </Link>{" "}
                         to assign them to your keys.
                     </>

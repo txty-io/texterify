@@ -159,7 +159,7 @@ class ProjectSite extends React.Component<IProps, IState> {
                                         this.props.match.params.projectId
                                     )}
                                 >
-                                    Add some languages
+                                    Add more languages
                                 </Link>{" "}
                                 to show your progress here
                             </>

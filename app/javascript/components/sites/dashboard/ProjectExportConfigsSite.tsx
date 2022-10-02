@@ -111,7 +111,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
             <LayoutWithSubSidebar>
                 <ExportSidebar projectId={this.props.match.params.projectId} />
 
-                <LayoutWithSubSidebarInner smallWidth>
+                <LayoutWithSubSidebarInner>
                     <Breadcrumbs breadcrumbName="projectExportConfigurations" />
                     <LayoutWithSubSidebarInnerContent>
                         <h1>Targets</h1>

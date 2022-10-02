@@ -26,7 +26,7 @@ export function ProjectMachineTranslationSettingsSite() {
 
             <LayoutWithSidebarContentWrapper>
                 <Breadcrumbs breadcrumbName="projectMachineTranslationSettings" />
-                <LayoutWithSidebarContentWrapperInner>
+                <LayoutWithSidebarContentWrapperInner size="small">
                     <h1>Settings</h1>
 
                     {!dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE") && (

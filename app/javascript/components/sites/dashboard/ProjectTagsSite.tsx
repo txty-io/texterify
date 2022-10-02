@@ -14,7 +14,7 @@ export function ProjectTagsSite() {
             <LayoutWithSidebar>
                 <LayoutWithSidebarContentWrapper>
                     <Breadcrumbs breadcrumbName="projectTags" />
-                    <LayoutWithSidebarContentWrapperInner size="small">
+                    <LayoutWithSidebarContentWrapperInner size="medium">
                         <h1>Tags</h1>
 
                         {!dashboardStore.currentProject && <Skeleton active />}

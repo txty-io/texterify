@@ -1,9 +1,9 @@
 import { Layout } from "antd";
 import * as React from "react";
 
-type ISize = "small" | "medium" | "big";
+export type ISizeContentWrapper = "small" | "medium" | "big";
 
-function getSize(size?: ISize) {
+export function getSizeContentWrapper(size?: ISizeContentWrapper) {
     if (size === "small") {
         return 640;
     } else if (size === "medium") {
@@ -13,9 +13,11 @@ function getSize(size?: ISize) {
     }
 }
 
-export function LayoutWithSidebarContentWrapperInner(props: { children: React.ReactNode; size?: ISize }) {
+export function LayoutWithSidebarContentWrapperInner(props: { children: React.ReactNode; size?: ISizeContentWrapper }) {
     return (
-        <Layout.Content style={{ minHeight: 360, margin: "24px 16px 0px", maxWidth: getSize(props.size) }}>
+        <Layout.Content
+            style={{ minHeight: 360, margin: "24px 16px 0px", maxWidth: getSizeContentWrapper(props.size) }}
+        >
             {props.children}
         </Layout.Content>
     );

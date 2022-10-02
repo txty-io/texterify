@@ -275,7 +275,7 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
 
                 <LayoutWithSubSidebarInner>
                     <Breadcrumbs breadcrumbName="projectMachineTranslation" />
-                    <LayoutWithSubSidebarInnerContent>
+                    <LayoutWithSubSidebarInnerContent size="small">
                         <h1>Machine Translation</h1>
                         <p>
                             Machine translation allows you to automatically translate your project into different
