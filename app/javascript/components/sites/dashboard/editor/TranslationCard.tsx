@@ -5,8 +5,7 @@ import { IGetKeyResponse, IPlaceholder } from "../../../api/v1/KeysAPI";
 import { IGetLanguagesResponse, ILanguage } from "../../../api/v1/LanguagesAPI";
 import {
     IGetMachineTranslationsSourceLanguages,
-    IGetMachineTranslationsTargetLanguages,
-    IGetMachineTranslationSuggestion
+    IGetMachineTranslationsTargetLanguages
 } from "../../../api/v1/MachineTranslationsAPI";
 import { EditTranslationForm } from "../../../forms/EditTranslationForm";
 import FlagIcon from "../../../ui/FlagIcons";

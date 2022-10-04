@@ -61,7 +61,7 @@ export function TagsTable(props: { project: IProject; tableReloader?: number; st
 
     const debouncedSearch = React.useCallback(
         _.debounce((value: string) => {
-            reload({ search: value });
+            reload({ search: value, page: 1 });
         }, 500),
         []
     );

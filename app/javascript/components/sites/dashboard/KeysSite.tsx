@@ -724,11 +724,11 @@ class KeysSite extends React.Component<IProps, IState> {
                             >
                                 {language.attributes.is_default && (
                                     <Tooltip title="Default language">
-                                        <CrownOutlined style={{ color: "#d6ad13", fontSize: 16, marginRight: 1 }} />
+                                        <CrownOutlined style={{ color: "#d6ad13", fontSize: 16, marginRight: 6 }} />
                                     </Tooltip>
                                 )}
                                 {countryCode ? (
-                                    <span style={{ marginRight: 8 }}>
+                                    <span style={{ marginRight: 6 }}>
                                         <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
                                     </span>
                                 ) : (
@@ -842,17 +842,6 @@ class KeysSite extends React.Component<IProps, IState> {
                                 >
                                     Create key <KeystrokeButtonWrapper keys={KEYSTROKE_DEFINITIONS.KEYS_SITE_NEW_KEY} />
                                 </Button>
-                                <Button
-                                    danger
-                                    onClick={this.onDeleteKeys}
-                                    disabled={
-                                        this.state.selectedRowKeys.length === 0 ||
-                                        !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())
-                                    }
-                                    loading={this.state.isDeleting}
-                                >
-                                    Delete selected
-                                </Button>
                             </div>
                             <div
                                 style={{
@@ -914,6 +903,28 @@ class KeysSite extends React.Component<IProps, IState> {
                             <div style={{ marginLeft: "auto", marginTop: 4 }}>
                                 <Pagination {...paginationOptions} />
                             </div>
+                        </div>
+                        <div style={{ marginTop: 16 }}>
+                            {/* <Button
+                                style={{ marginRight: 8 }}
+                                disabled={
+                                    this.state.selectedRowKeys.length === 0 ||
+                                    !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())
+                                }
+                            >
+                                Apply tags
+                            </Button> */}
+                            <Button
+                                danger
+                                onClick={this.onDeleteKeys}
+                                disabled={
+                                    this.state.selectedRowKeys.length === 0 ||
+                                    !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())
+                                }
+                                loading={this.state.isDeleting}
+                            >
+                                Delete
+                            </Button>
                         </div>
                         <EditableTable
                             rowSelection={this.rowSelection}

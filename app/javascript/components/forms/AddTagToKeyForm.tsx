@@ -22,13 +22,17 @@ export interface IAddTagToKeyFormProps {
 export function AddTagToKeyForm(props: IAddTagToKeyFormProps) {
     const [loading, setLoading] = React.useState<boolean>(false);
     const [saving, setSaving] = React.useState<boolean>(false);
-    const [tags, setTags] = React.useState<ITag[]>([]);
+    const [search, setSearch] = React.useState<string>("");
+    const [tags, setTags] = React.useState<ITag[] | null>(null);
 
     async function loadTags() {
         setLoading(true);
 
         try {
-            const tagsResponse = await TagsAPI.getTags({ projectId: props.translationKey.attributes.project_id });
+            const tagsResponse = await TagsAPI.getTags({
+                projectId: props.translationKey.attributes.project_id,
+                search: search
+            });
             setTags(tagsResponse.data);
         } catch (error) {
             console.error(error);
@@ -41,6 +45,10 @@ export function AddTagToKeyForm(props: IAddTagToKeyFormProps) {
     React.useEffect(() => {
         loadTags();
     }, []);
+
+    React.useEffect(() => {
+        loadTags();
+    }, [search]);
 
     async function handleSubmit(values: IFormValues) {
         setSaving(true);
@@ -80,11 +88,11 @@ export function AddTagToKeyForm(props: IAddTagToKeyFormProps) {
         });
     }
 
-    if (loading) {
+    if (!tags) {
         return <Loading />;
     }
 
-    if (getAddableTags().length === 0) {
+    if (getAddableTags().length === 0 && !search) {
         return (
             <Empty
                 description={
@@ -122,6 +130,10 @@ export function AddTagToKeyForm(props: IAddTagToKeyFormProps) {
                         style={{ width: "100%" }}
                         autoFocus
                         disabled={saving}
+                        onSearch={(value) => {
+                            setSearch(value);
+                        }}
+                        loading={loading}
                     >
                         {getAddableTags().map((tag) => {
                             return (
