@@ -12,6 +12,7 @@ class Api::V1::KeysController < Api::V1::ApiController
 
     options = {}
     options[:include] = [:translations, :'translations.language', :tags, :placeholders]
+    options[:params] = { current_user: current_user }
     render json: KeySerializer.new(key, options).serialized_json
   end
 
@@ -117,6 +118,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     options = {}
     options[:meta] = { total: keys.size }
     options[:include] = [:translations, :'translations.language', :tags, :placeholders]
+    options[:params] = { current_user: current_user }
     render json: KeySerializer.new(keys.offset(page * per_page).limit(per_page), options).serialized_json
   end
 
@@ -128,6 +130,9 @@ class Api::V1::KeysController < Api::V1::ApiController
     authorize key
 
     if key.save
+      options = {}
+      options[:include] = [:translations, :'translations.language', :tags, :placeholders]
+      options[:params] = { current_user: current_user }
       render json: KeySerializer.new(key).serialized_json
     else
       render json: { error: true, errors: key.errors.details }, status: :bad_request

@@ -1,3 +1,4 @@
+import { LockOutlined } from "@ant-design/icons";
 import { Tooltip } from "antd";
 import * as React from "react";
 import { ITranslation } from "../api/v1/TranslationsAPI";
@@ -42,7 +43,10 @@ export function EditableCellInputPreview(props: {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                    wordBreak: "break-word"
+                    wordBreak: "break-word",
+                    color: !props.record.keyObject.attributes.editable_for_current_user
+                        ? "var(--color-passive)"
+                        : undefined
                 }}
                 data-id="editable-cell-content"
                 onClick={props.isCellEditable ? props.onClick : undefined}
@@ -62,7 +66,26 @@ export function EditableCellInputPreview(props: {
 
     let content: JSX.Element;
     if (props.dataIndex === "name") {
-        content = EditableInput({ content: props.record.name });
+        if (props.record.keyObject.attributes.editable_for_current_user) {
+            content = EditableInput({ content: props.record.name });
+        } else {
+            content = (
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        color: "var(--color-passive)"
+                    }}
+                >
+                    {props.record.keyObject.attributes.name}
+                    {!props.record.keyObject.attributes.editable_for_current_user && (
+                        <Tooltip title="You are not allowed to edit this key. This key is either a system key or editing has been disabled via one of the assigned tags.">
+                            <LockOutlined style={{ marginLeft: 8 }} />
+                        </Tooltip>
+                    )}
+                </div>
+            );
+        }
     } else if (props.dataIndex === "description") {
         content = EditableInput({ content: props.record.description });
     } else {

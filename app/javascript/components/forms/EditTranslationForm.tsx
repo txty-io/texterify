@@ -132,6 +132,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
 
     const pluralizationEnabled = props.keyResponse?.data.attributes.pluralization_enabled || props.forcePluralization;
     const htmlEnabled = props.keyResponse?.data.attributes.html_enabled || props.forceHTML;
+    const editable = props.keyResponse.data.attributes.editable_for_current_user;
 
     return (
         <Form
@@ -192,9 +193,13 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                     <PluralFormHeading name="Zero" />
                     <Form.Item name="zero" rules={[{ required: false }]}>
                         {htmlEnabled ? (
-                            <HTMLEditor />
+                            <HTMLEditor disabled={!editable} />
                         ) : (
-                            <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "zero"} />
+                            <TextArea
+                                placeholder="Your translation"
+                                autoFocus={autoFocusItem === "zero"}
+                                disabled={!editable}
+                            />
                         )}
                     </Form.Item>
                 </>
@@ -205,9 +210,13 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                     <PluralFormHeading name="One" />
                     <Form.Item name="one" rules={[{ required: false }]}>
                         {htmlEnabled ? (
-                            <HTMLEditor />
+                            <HTMLEditor disabled={!editable} />
                         ) : (
-                            <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "one"} />
+                            <TextArea
+                                placeholder="Your translation"
+                                autoFocus={autoFocusItem === "one"}
+                                disabled={!editable}
+                            />
                         )}
                     </Form.Item>
                 </>
@@ -218,9 +227,13 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                     <PluralFormHeading name="Two" />
                     <Form.Item name="two" rules={[{ required: false }]}>
                         {htmlEnabled ? (
-                            <HTMLEditor />
+                            <HTMLEditor disabled={!editable} />
                         ) : (
-                            <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "two"} />
+                            <TextArea
+                                placeholder="Your translation"
+                                autoFocus={autoFocusItem === "two"}
+                                disabled={!editable}
+                            />
                         )}
                     </Form.Item>
                 </>
@@ -231,9 +244,13 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                     <PluralFormHeading name="Few" />
                     <Form.Item name="few" rules={[{ required: false }]}>
                         {htmlEnabled ? (
-                            <HTMLEditor />
+                            <HTMLEditor disabled={!editable} />
                         ) : (
-                            <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "few"} />
+                            <TextArea
+                                placeholder="Your translation"
+                                autoFocus={autoFocusItem === "few"}
+                                disabled={!editable}
+                            />
                         )}
                     </Form.Item>
                 </>
@@ -244,9 +261,13 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                     <PluralFormHeading name="Many" />
                     <Form.Item name="many" rules={[{ required: false }]}>
                         {htmlEnabled ? (
-                            <HTMLEditor />
+                            <HTMLEditor disabled={!editable} />
                         ) : (
-                            <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "many"} />
+                            <TextArea
+                                placeholder="Your translation"
+                                autoFocus={autoFocusItem === "many"}
+                                disabled={!editable}
+                            />
                         )}
                     </Form.Item>
                 </>
@@ -255,9 +276,13 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
             {pluralizationEnabled && supportsPluralForm && <PluralFormHeading name="Other" />}
             <Form.Item name="other" rules={[{ required: false }]}>
                 {htmlEnabled ? (
-                    <HTMLEditor />
+                    <HTMLEditor disabled={!editable} />
                 ) : (
-                    <TextArea placeholder="Your translation" autoFocus={autoFocusItem === "other"} />
+                    <TextArea
+                        placeholder="Your translation"
+                        autoFocus={autoFocusItem === "other"}
+                        disabled={!editable}
+                    />
                 )}
             </Form.Item>
         </Form>

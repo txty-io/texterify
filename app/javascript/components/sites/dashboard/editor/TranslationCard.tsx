@@ -1,4 +1,4 @@
-import { Button, Select } from "antd";
+import { Alert, Button, Select } from "antd";
 import * as React from "react";
 import { APIUtils } from "../../../api/v1/APIUtils";
 import { IGetKeyResponse, IPlaceholder } from "../../../api/v1/KeysAPI";
@@ -118,6 +118,8 @@ class TranslationCard extends React.Component<IProps, IState> {
                 }, []);
             });
 
+        const editable = this.props.keyResponse?.data.attributes.editable_for_current_user;
+
         return (
             <div style={{ marginBottom: 24, width: "100%" }} data-id="translation-card">
                 {(!this.props.hideLanguageSelection || !this.props.hideSaveButton) && (
@@ -196,22 +198,24 @@ class TranslationCard extends React.Component<IProps, IState> {
                     forceContentOther={this.state.forceContentOther}
                 />
 
-                <MachineTranslationSuggestion
-                    defaultLanguage={this.props.defaultLanguage}
-                    defaultLanguageTranslationContent={this.props.defaultLanguageTranslationContent}
-                    supportedSourceLanguages={this.props.supportedSourceLanguages}
-                    supportedTargetLanguages={this.props.supportedTargetLanguages}
-                    onUseTranslation={(data) => {
-                        this.setState({
-                            forceContentOther: data.suggestion.translation
-                        });
-                    }}
-                    selectedLanguageId={this.state.selectedLanguageId}
-                    translationForTargetLanguage={this.state.content}
-                    languagesResponse={this.props.languagesResponse}
-                    projectId={this.props.projectId}
-                    keyReponse={this.props.keyResponse}
-                />
+                {editable && (
+                    <MachineTranslationSuggestion
+                        defaultLanguage={this.props.defaultLanguage}
+                        defaultLanguageTranslationContent={this.props.defaultLanguageTranslationContent}
+                        supportedSourceLanguages={this.props.supportedSourceLanguages}
+                        supportedTargetLanguages={this.props.supportedTargetLanguages}
+                        onUseTranslation={(data) => {
+                            this.setState({
+                                forceContentOther: data.suggestion.translation
+                            });
+                        }}
+                        selectedLanguageId={this.state.selectedLanguageId}
+                        translationForTargetLanguage={this.state.content}
+                        languagesResponse={this.props.languagesResponse}
+                        projectId={this.props.projectId}
+                        keyReponse={this.props.keyResponse}
+                    />
+                )}
             </div>
         );
     }

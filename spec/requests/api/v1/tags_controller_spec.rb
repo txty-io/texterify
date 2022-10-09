@@ -114,10 +114,18 @@ RSpec.describe Api::V1::TagsController, type: :request do
 
       name = 'New Test Name'
       expect(tag.name).not_to eq(name)
-      put "/api/v1/projects/#{@project.id}/tags/#{tag.id}", params: { name: name }, headers: @auth_params, as: :json
+      expect(tag.disable_translation_for_translators).to be(false)
+      put "/api/v1/projects/#{@project.id}/tags/#{tag.id}",
+          params: {
+            name: name,
+            disable_translation_for_translators: true
+          },
+          headers: @auth_params,
+          as: :json
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data']['attributes']['name']).to eq(name)
+      expect(body['data']['attributes']['disable_translation_for_translators']).to be(true)
       expect(body).to match_snapshot('tags_controller_update', { snapshot_serializer: StripSerializer })
     end
   end

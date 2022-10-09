@@ -41,7 +41,7 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
         return {
             dataSource: props.dataSource
         };
-    } 
+    }
 
     handleDelete = (key: IKey) => {
         const dataSource = [...this.state.dataSource];

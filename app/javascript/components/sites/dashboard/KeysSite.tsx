@@ -1,4 +1,4 @@
-import { CrownOutlined, FilterOutlined, MoreOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { CrownOutlined, FilterOutlined, LockOutlined, MoreOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Drawer, Input, Layout, Modal, Pagination, PaginationProps, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as queryString from "query-string";
@@ -10,7 +10,6 @@ import { IGetKeysOptions, IGetKeysResponse, IKey, KeysAPI } from "../../api/v1/K
 import { ILanguage, LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
 import { ITranslation, TranslationsAPI } from "../../api/v1/TranslationsAPI";
-import { AddTagToKeyModal } from "../../forms/AddTagToKeyModal";
 import { EditTranslationFormModal } from "../../forms/EditTranslationFormModal";
 import { NewKeyForm } from "../../forms/NewKeyForm";
 import { history } from "../../routing/history";
@@ -1042,7 +1041,8 @@ class KeysSite extends React.Component<IProps, IState> {
 
                                           // Remove one 1px width from the last column.
                                           // Otherwise the borders do not align.
-                                          columns[columns.length - 1].width = columns[columns.length - 1].width - 1;
+                                          (columns[columns.length - 1] as any).width =
+                                              (columns[columns.length - 1] as any).width - 1;
 
                                           return (
                                               <EditableTable

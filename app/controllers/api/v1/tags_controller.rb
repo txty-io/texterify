@@ -78,6 +78,6 @@ class Api::V1::TagsController < Api::V1::ApiController
   private
 
   def tag_params
-    params.require(:tag).permit(:name)
+    params.require(:tag).permit(:name, :disable_translation_for_translators)
   end
 end

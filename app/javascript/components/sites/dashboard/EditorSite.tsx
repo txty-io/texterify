@@ -255,7 +255,7 @@ class EditorSite extends React.Component<IProps, IState> {
                             translationReference,
                             this.state.keyResponse.included
                         );
-
+                        <Alert message="You are not allowed to edit this key. This key is either a system key or editing has been disabled via one of the assigned tags." />;
                         if (
                             translation &&
                             translation.relationships.export_config.data === null &&
@@ -586,26 +586,6 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     >
                                                         {keyContentPreview}
                                                     </div>
-                                                    <div style={{ marginLeft: 8, flexShrink: 0 }}>
-                                                        {key.attributes.html_enabled && (
-                                                            <Tag
-                                                                color="magenta"
-                                                                className="editor-key-html"
-                                                                style={{ margin: 0, marginRight: 4 }}
-                                                            >
-                                                                HTML
-                                                            </Tag>
-                                                        )}
-                                                        {key.relationships.wordpress_contents.data.length > 0 && (
-                                                            <Tag
-                                                                color="magenta"
-                                                                className="editor-key-html"
-                                                                style={{ margin: 0 }}
-                                                            >
-                                                                WordPress
-                                                            </Tag>
-                                                        )}
-                                                    </div>
                                                 </div>
                                             </Key>
                                         );
@@ -684,9 +664,19 @@ class EditorSite extends React.Component<IProps, IState> {
                                                         before you can translate your content.
                                                     </p>
                                                 }
-                                                style={{ marginBottom: 24 }}
+                                                style={{ marginBottom: 24, maxWidth: "100%" }}
                                             />
                                         )}
+
+                                    {!this.state.keyResponse?.data.attributes.editable_for_current_user && (
+                                        <Alert
+                                            type="info"
+                                            showIcon
+                                            message="Key not editable"
+                                            description="You are not allowed to edit this key. This key is either a system key or editing has been disabled via one of the assigned tags."
+                                            style={{ marginBottom: 24, maxWidth: "100%" }}
+                                        />
+                                    )}
 
                                     {defaultLanguage ? (
                                         <TranslationCard

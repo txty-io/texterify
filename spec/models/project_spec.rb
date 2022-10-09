@@ -19,7 +19,7 @@ RSpec.describe Project, type: :model do
     expect(project.character_count).to eq(0)
     expect(project.word_count).to eq(0)
 
-    create(:translation, key_id: key.id, language_id: language.id, content: 'hello world')
+    translation = create(:translation, key_id: key.id, language_id: language.id, content: 'hello world')
 
     project.recalculate_words_and_characters_count!
     project.reload
@@ -27,30 +27,27 @@ RSpec.describe Project, type: :model do
     expect(project.character_count).to eq('hello world'.size)
     expect(project.word_count).to eq(2)
 
-    create(:translation, key_id: key.id, language_id: language.id, content: 'a  b  c')
+    translation.content = 'a  b  c'
+    translation.save!
 
     project.recalculate_words_and_characters_count!
     project.reload
 
-    expect(project.character_count).to eq('hello world'.size + 'a  b  c'.size)
-    expect(project.word_count).to eq(5)
+    expect(project.character_count).to eq('a  b  c'.size)
+    expect(project.word_count).to eq(3)
 
-    create(
-      :translation,
-      key_id: key.id,
-      language_id: language.id,
-      content: '1',
-      zero: '1',
-      one: '1',
-      two: '1',
-      few: '1',
-      many: '1'
-    )
+    translation.content = '1'
+    translation.zero = '1'
+    translation.one = '1'
+    translation.two = '1'
+    translation.few = '1'
+    translation.many = '1'
+    translation.save!
 
     project.recalculate_words_and_characters_count!
     project.reload
 
-    expect(project.character_count).to eq('hello world'.size + 'a  b  c'.size + 6)
-    expect(project.word_count).to eq(11)
+    expect(project.character_count).to eq(6)
+    expect(project.word_count).to eq(6)
   end
 end

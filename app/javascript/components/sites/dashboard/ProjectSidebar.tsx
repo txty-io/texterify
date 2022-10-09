@@ -116,7 +116,7 @@ class ProjectSidebar extends React.Component<IProps> {
                                 color={
                                     dashboardStore.currentProject.attributes.issues_count > 0
                                         ? "var(--color-warn)"
-                                        : "var(--color-success)"
+                                        : "var(--avatar-color)"
                                 }
                                 style={{ marginLeft: 16 }}
                             >

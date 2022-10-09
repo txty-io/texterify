@@ -1,8 +1,9 @@
+import { Input } from "antd";
 import * as React from "react";
 import { EditorToolbar } from "./EditorToolbar";
 import * as Squire from "./squire";
 
-export function HTMLEditor(props: { value?: string; onChange?(value: string, x: any): void }) {
+export function HTMLEditor(props: { value?: string; disabled?: boolean; onChange?(value: string, x: any): void }) {
     const [editor, setEditor] = React.useState(null);
     const [editorHTMLPreview, setEditorHTMLPreview] = React.useState(null);
     const [showHTMLActive, setShowHTMLActive] = React.useState<boolean>(false);
@@ -35,19 +36,24 @@ export function HTMLEditor(props: { value?: string; onChange?(value: string, x: 
         if (editor && props.value) {
             if (props.value !== editor.getHTML()) {
                 editor.setHTML(props.value);
+                const content = editor.getHTML();
+                setEditorHTMLPreview(content);
             }
         }
     }, [props.value]);
 
     return (
         <div className="html-editor">
-            <EditorToolbar
-                editor={editor}
-                showHTMLChanged={(active) => {
-                    setShowHTMLActive(active);
-                }}
-            />
-            <div ref={editorElementRef} className="ant-input" />
+            {!props.disabled && (
+                <EditorToolbar
+                    editor={editor}
+                    showHTMLChanged={(active) => {
+                        setShowHTMLActive(active);
+                    }}
+                />
+            )}
+            {!props.disabled && <div ref={editorElementRef} className="ant-input" />}
+            {props.disabled && <Input value={props.value} disabled />}
             {showHTMLActive && (
                 <div style={{ marginTop: 8 }}>
                     <div style={{ fontWeight: "bold" }}>HTML preview</div>

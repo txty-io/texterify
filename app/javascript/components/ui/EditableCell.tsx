@@ -62,8 +62,9 @@ export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellP
         props.dataIndex !== "name" || PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole());
 
     const isNameColumnAndNotEditable = props.dataIndex === "name" && !props.record.nameEditable;
+    const isEditableForCurrentUser = props.record.keyObject.attributes.editable_for_current_user;
 
-    const isCellEditable = isAllowedToChangeColumn && !isNameColumnAndNotEditable;
+    const isCellEditable = isAllowedToChangeColumn && !isNameColumnAndNotEditable && isEditableForCurrentUser;
 
     React.useEffect(() => {
         if (editing && inputRef && inputRef.current) {

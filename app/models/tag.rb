@@ -7,4 +7,5 @@ class Tag < ApplicationRecord
 
   validates :name, presence: true
   validates :custom, inclusion: { in: [true, false] }
+  validates :disable_translation_for_translators, inclusion: { in: [true, false] }
 end

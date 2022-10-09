@@ -17,6 +17,7 @@ export interface IKey {
         html_enabled: boolean;
         pluralization_enabled: boolean;
         name_editable: boolean;
+        editable_for_current_user: boolean;
         created_at: string;
         updated_at: string;
     };
