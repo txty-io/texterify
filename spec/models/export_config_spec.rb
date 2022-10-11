@@ -2,211 +2,652 @@ require 'rails_helper'
 require 'securerandom'
 
 RSpec.describe ExportConfig, type: :model do
+  def export_data_value(text, pluralization_enabled: false)
+    {
+      other: text,
+      zero: 'zero text',
+      one: 'one text',
+      two: 'two text',
+      few: 'few text',
+      many: 'many text',
+      pluralization_enabled: pluralization_enabled,
+      description: 'description text'
+    }
+  end
+
   before(:each) do
     language_code = LanguageCode.find_by(code: 'de')
     country_code = CountryCode.find_by(code: 'AT')
 
+    @project = create(:project, :with_organization)
+    @project.save!
+
     @language = Language.new
     @language.language_code = language_code
     @language.country_code = country_code
-    @language.id = SecureRandom.uuid
+    @language.name = 'language_name'
+    @language.project_id = @project.id
+    @language.save!
 
     language_code_source = LanguageCode.find_by(code: 'en')
     country_code_source = CountryCode.find_by(code: 'US')
 
     @language_source = Language.new
+    @language_source.project_id = @project.id
     @language_source.language_code = language_code_source
     @language_source.country_code = country_code_source
-    @language_source.id = SecureRandom.uuid
+    @language_source.name = 'language_source_name'
+    @language_source.save!
   end
 
+  context 'when exporting' do
+    it 'returns the latest release' do
+      export_config = ExportConfig.new
+      export_config.name = 'export config name'
+      export_config.file_format = 'json'
+      export_config.file_path = 'my_file_path'
+      export_config.project_id = @project.id
+      export_config.save!
+
+      expect(export_config.latest_release).to be_nil
+
+      release1 = Release.new
+      release1.export_config = export_config
+      release1.version = 1
+      release1.timestamp = Time.now.utc
+      release1.save!
+
+      expect(export_config.latest_release.id).to eq(release1.id)
+
+      release2 = Release.new
+      release2.export_config = export_config
+      release2.version = 3
+      release2.timestamp = Time.now.utc
+      release2.save!
+
+      expect(export_config.latest_release.id).to eq(release2.id)
+
+      release3 = Release.new
+      release3.export_config = export_config
+      release3.version = 2
+      release3.timestamp = Time.now.utc
+      release3.save!
+
+      expect(export_config.latest_release.id).to eq(release2.id)
+    end
+
+    it 'fails to create two export configs with the same name for a project' do
+      export_config1 = ExportConfig.new
+      export_config1.name = 'export config name'
+      export_config1.file_format = 'json'
+      export_config1.file_path = 'my_file_path'
+      export_config1.project_id = @project.id
+      export_config1.save!
+
+      export_config2 = ExportConfig.new
+      export_config2.name = 'export config name'
+      export_config2.file_format = 'json'
+      export_config2.file_path = 'my_file_path'
+      export_config2.project_id = @project.id
+
+      export_config2.save
+      expect(export_config2.errors.added?(:name, :taken)).to be(true)
+    end
+
+    it 'exports without language and country code' do
+      export_config = ExportConfig.new
+      export_config.name = 'export config name'
+      export_config.file_format = 'json'
+      export_config.file_path = 'my_file_path'
+      export_config.project_id = @project.id
+      export_config.save!
+
+      @language.language_code = nil
+      @language.country_code = nil
+
+      files = export_config.files(@language, { "a": export_data_value('b') })
+      expect(files[0][:path]).to eq('my_file_path')
+    end
+
+    it 'replaces correctly {languageCode} and {countryCode}' do
+      export_config = ExportConfig.new
+      export_config.name = 'export config name'
+      export_config.file_format = 'json'
+      export_config.file_path = 'my_file_path'
+      export_config.file_path = '{languageCode}-{countryCode}'
+      export_config.project_id = @project.id
+      export_config.save!
+
+      files = export_config.files(@language, { "a": export_data_value('b') })
+      expect(files[0][:path]).to eq('de-AT')
+    end
+
+    it 'replaces correctly {languageCode} and {countryCode} with language config' do
+      export_config = ExportConfig.new
+      export_config.name = 'export config name'
+      export_config.file_format = 'json'
+      export_config.file_path = 'my_file_path'
+      export_config.file_path = '{languageCode}-{countryCode}'
+      export_config.project_id = @project.id
+      export_config.save!
+
+      language_config = LanguageConfig.new
+      language_config.language_code = 'en'
+      language_config.language_id = @language.id
+      language_config.export_config_id = export_config.id
+      language_config.save!
+
+      files = export_config.files(@language, { "a": export_data_value('b') })
+      expect(files[0][:path]).to eq('en-AT')
+    end
+  end
+
+  # Android
   context 'when file format is android' do
     export_config = ExportConfig.new
     export_config.file_format = 'android'
+    export_config.file_path = 'my_file_path'
+
+    it 'create android file content from parsed data' do
+      files =
+        export_config.files(
+          @language,
+          { "a": export_data_value('b'), "c": export_data_value('d'), "e": export_data_value('f') }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_android_file_content')
+    end
+
+    it 'create pluralization android file content from parsed data' do
+      files =
+        export_config.files(
+          @language,
+          {
+            "a": export_data_value('b', pluralization_enabled: true),
+            "c": export_data_value('d'),
+            "e": export_data_value('f', pluralization_enabled: true)
+          }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_android_file_content_plural')
+    end
 
     it 'escapes a single quote for android' do
-      file = export_config.file(@language, { "x": "'" })
-      file.open
-      expect(file.read).to eq("<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\'</string>\n</resources>\n")
+      files = export_config.files(@language, { "x": export_data_value("'") })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
+        "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\'</string>\n</resources>\n"
+      )
     end
 
     it 'escapes two single quotes for android' do
-      file = export_config.file(@language, { "x": "''" })
-      file.open
-      expect(file.read).to eq(
+      files = export_config.files(@language, { "x": export_data_value("''") })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\'\\'</string>\n</resources>\n"
       )
     end
 
     it 'does not escape already escaped single quote for android' do
-      file = export_config.file(@language, { "x": "\'" })
-      file.open
-      expect(file.read).to eq("<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\'</string>\n</resources>\n")
+      files = export_config.files(@language, { "x": export_data_value("\'") })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
+        "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\'</string>\n</resources>\n"
+      )
     end
 
     it 'escapes a double quote for android' do
-      file = export_config.file(@language, { "x": '"' })
-      file.open
-      expect(file.read).to eq(
+      files = export_config.files(@language, { "x": export_data_value('"') })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\\"</string>\n</resources>\n"
       )
     end
 
     it 'escapes two double quotes for android' do
-      file = export_config.file(@language, { "x": '""' })
-      file.open
-      expect(file.read).to eq(
+      files = export_config.files(@language, { "x": export_data_value('""') })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\\"\\\"</string>\n</resources>\n"
       )
     end
 
     it 'does not escape already escaped double quote for android' do
-      file = export_config.file(@language, { "x": '\"' })
-      file.open
-      expect(file.read).to eq(
+      files = export_config.files(@language, { "x": export_data_value('\"') })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\\"</string>\n</resources>\n"
       )
     end
 
     it 'escapes a ? for android' do
-      file = export_config.file(@language, { "x": '?' })
-      file.open
-      expect(file.read).to eq("<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\?</string>\n</resources>\n")
+      files = export_config.files(@language, { "x": export_data_value('?') })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
+        "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\?</string>\n</resources>\n"
+      )
     end
 
     it 'escapes two ? for android' do
-      file = export_config.file(@language, { "x": '??' })
-      file.open
-      expect(file.read).to eq(
+      files = export_config.files(@language, { "x": export_data_value('??') })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\?\\?</string>\n</resources>\n"
       )
     end
 
     it 'does not escape already escaped ? for android' do
-      file = export_config.file(@language, { "x": '\?' })
-      file.open
-      expect(file.read).to eq("<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\?</string>\n</resources>\n")
+      files = export_config.files(@language, { "x": export_data_value('\?') })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
+        "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\?</string>\n</resources>\n"
+      )
     end
 
     it 'escapes a @ for android' do
-      file = export_config.file(@language, { "x": '@' })
-      file.open
-      expect(file.read).to eq("<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\@</string>\n</resources>\n")
+      files = export_config.files(@language, { "x": export_data_value('@') })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
+        "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\@</string>\n</resources>\n"
+      )
     end
 
     it 'escapes two @ for android' do
-      file = export_config.file(@language, { "x": '@@' })
-      file.open
-      expect(file.read).to eq(
+      files = export_config.files(@language, { "x": export_data_value('@@') })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\@\\@</string>\n</resources>\n"
       )
     end
 
     it 'does not escape already escaped @ for android' do
-      file = export_config.file(@language, { "x": '\@' })
-      file.open
-      expect(file.read).to eq("<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\@</string>\n</resources>\n")
+      files = export_config.files(@language, { "x": export_data_value('\@') })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
+        "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\@</string>\n</resources>\n"
+      )
     end
 
     it 'escapes a & for android' do
-      file = export_config.file(@language, { "x": '&' })
-      file.open
-      expect(file.read).to eq(
+      files = export_config.files(@language, { "x": export_data_value('&') })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">&amp;</string>\n</resources>\n"
       )
     end
 
     it 'escapes two && for android' do
-      file = export_config.file(@language, { "x": '&&' })
-      file.open
-      expect(file.read).to eq(
+      files = export_config.files(@language, { "x": export_data_value('&&') })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">&amp;&amp;</string>\n</resources>\n"
       )
     end
 
     it 'does not escape already escaped & for android' do
-      file = export_config.file(@language, { "x": '&&amp;' })
-      file.open
-      expect(file.read).to eq(
+      files = export_config.files(@language, { "x": export_data_value('&&amp;') })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">&amp;&amp;</string>\n</resources>\n"
       )
     end
   end
 
-  context 'when file format is properties' do
-    export_config = ExportConfig.new
-    export_config.file_format = 'properties'
-
-    it 'create properties file content from parsed data' do
-      file = export_config.file(@language, { "a": 'b', "_": '!' })
-      file.open
-      expect(file.read).to eq("a=b\n_=!\n")
-    end
-  end
-
+  # XLIFF
   context 'when file format is xliff' do
     export_config = ExportConfig.new
     export_config.file_format = 'xliff'
+    export_config.file_path = 'my_file_path'
 
     it 'create xliff file content from parsed data' do
-      file = export_config.file(@language, { "a": 'b', "_": '!' }, @language_source, { "a": 'a', "_": '_' })
-      file.open
-      expect(file.read).to match_snapshot('create_xliff_file_content')
+      files =
+        export_config.files(
+          @language,
+          { 'a' => export_data_value('b'), '_' => export_data_value('!') },
+          @language_source,
+          { 'a' => export_data_value('a'), '_' => export_data_value('_') }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_xliff_file_content')
     end
 
     it 'create xliff file with empty target data' do
-      file = export_config.file(@language, {}, @language_source, { "a": 'a', "_": '_' })
-      file.open
-      expect(file.read).to match_snapshot('create_xliff_file_content_empty_target_data')
+      files =
+        export_config.files(
+          @language,
+          {},
+          @language_source,
+          { 'a' => export_data_value('a'), '_' => export_data_value('_') }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_xliff_file_content_empty_target_data')
     end
 
     it 'create xliff file without source data' do
-      file = export_config.file(@language, { "a": 'b', "_": '!' }, nil, nil)
-      file.open
-      expect(file.read).to match_snapshot('create_xliff_file_content_without_source_data')
+      files = export_config.files(@language, { 'a' => export_data_value('b'), '_' => export_data_value('!') }, nil, nil)
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_xliff_file_content_without_source_data')
     end
   end
 
+  # ARB
+  context 'when file format is arb' do
+    export_config = ExportConfig.new
+    export_config.file_format = 'arb'
+    export_config.file_path = 'my_file_path'
+
+    it 'create arb file content from parsed data' do
+      files = export_config.files(@language, { 'a' => export_data_value('b'), '_' => export_data_value('!') })
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_arb_file_content')
+    end
+  end
+
+  # TypeScript
+  context 'when file format is typescript' do
+    export_config = ExportConfig.new
+    export_config.file_format = 'typescript'
+    export_config.file_path = 'my_file_path'
+
+    it 'create typescript file content from parsed data' do
+      files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_typescript_file_content')
+    end
+
+    it 'create typescript file content from parsed data plural' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'a' => export_data_value('b', pluralization_enabled: true),
+            'c' => export_data_value('d'),
+            'e' => export_data_value('f', pluralization_enabled: true)
+          }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_typescript_file_content_plural')
+    end
+  end
+
+  # iOS
+  context 'when file format is ios' do
+    export_config = ExportConfig.new
+    export_config.file_format = 'ios'
+    export_config.file_path = 'my_file_path'
+
+    it 'create ios file content from parsed data' do
+      files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_ios_file_content')
+    end
+
+    it 'create ios file content with plurals from parsed data' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'non_plural_key_on' => export_data_value('other content 1'),
+            'non_plural_key_two' => export_data_value('other content 2'),
+            'plural_key_one' => export_data_value('other content 3', pluralization_enabled: true),
+            'plural_key_two' => export_data_value('other content 4', pluralization_enabled: true)
+          }
+        )
+      files[0][:file].open
+      files[1][:file].open
+      expect(files[0][:path]).to eq('my_file_path')
+      expect(files[1][:path]).to eq('my_file_path')
+      expect(files[0][:file].read).to match_snapshot('create_ios_file_content_plural_strings')
+      expect(files[1][:file].read).to match_snapshot('create_ios_file_content_plural_stringsdict')
+    end
+
+    it 'create ios file content with plurals from parsed data with custom paths' do
+      export_config.file_path_stringsdict = 'my_file_path_stringsdict'
+      export_config.default_language_file_path_stringsdict = 'my_file_path_stringsdict_default'
+      files =
+        export_config.files(
+          @language,
+          {
+            'non_plural_key_on' => export_data_value('other content 1'),
+            'non_plural_key_two' => export_data_value('other content 2'),
+            'plural_key_one' => export_data_value('other content 3', pluralization_enabled: true),
+            'plural_key_two' => export_data_value('other content 4', pluralization_enabled: true)
+          }
+        )
+      files[0][:file].open
+      files[1][:file].open
+      expect(files[0][:path]).to eq('my_file_path')
+      expect(files[1][:path]).to eq('my_file_path_stringsdict')
+    end
+
+    it 'create ios file content with plurals from parsed data with custom paths for defautl language' do
+      export_config.default_language_file_path_stringsdict = 'my_file_path_stringsdict_default'
+
+      @language.is_default = true
+
+      files =
+        export_config.files(
+          @language,
+          {
+            'non_plural_key_on' => export_data_value('other content 1'),
+            'non_plural_key_two' => export_data_value('other content 2'),
+            'plural_key_one' => export_data_value('other content 3', pluralization_enabled: true),
+            'plural_key_two' => export_data_value('other content 4', pluralization_enabled: true)
+          }
+        )
+      files[0][:file].open
+      files[1][:file].open
+      expect(files[0][:path]).to eq('my_file_path')
+      expect(files[1][:path]).to eq('my_file_path_stringsdict_default')
+    end
+  end
+
+  # YAML
+  context 'when file format is yaml' do
+    export_config = ExportConfig.new
+    export_config.file_format = 'yaml'
+    export_config.file_path = 'my_file_path'
+
+    it 'create yaml file content from parsed data' do
+      files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_yaml_file_content')
+    end
+
+    it 'create yaml file content from plural data' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'a' => export_data_value('b', pluralization_enabled: true),
+            'c' => export_data_value('d', pluralization_enabled: true),
+            'c.a' => export_data_value('e')
+          }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_yaml_file_content_plural')
+    end
+  end
+
+  # Rails
+  context 'when file format is rails' do
+    export_config = ExportConfig.new
+    export_config.file_format = 'rails'
+    export_config.file_path = 'my_file_path'
+
+    it 'create rails file content from parsed data' do
+      files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_rails_file_content')
+    end
+  end
+
+  # TOML
+  context 'when file format is toml' do
+    export_config = ExportConfig.new
+    export_config.file_format = 'toml'
+    export_config.file_path = 'my_file_path'
+
+    it 'create toml file content from parsed data' do
+      files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_toml_file_content')
+    end
+
+    it 'create toml file content from plural data' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'a' => export_data_value('b', pluralization_enabled: true),
+            'c' => export_data_value('d', pluralization_enabled: true),
+            'c.a' => export_data_value('e')
+          }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_toml_file_content_plural')
+    end
+  end
+
+  # Properties
+  context 'when file format is properties' do
+    export_config = ExportConfig.new
+    export_config.file_format = 'properties'
+    export_config.file_path = 'my_file_path'
+
+    it 'create properties file content from parsed data' do
+      files = export_config.files(@language, { "a": export_data_value('b'), "_": export_data_value('!') })
+      files[0][:file].open
+      expect(files[0][:file].read).to eq("a=b\n_=!\n")
+    end
+
+    it 'create properties file content from plural data' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'a' => export_data_value('b', pluralization_enabled: true),
+            'c' => export_data_value('d', pluralization_enabled: true),
+            'c.a' => export_data_value('e')
+          }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_properties_file_content_plural')
+    end
+  end
+
+  # PO
+  context 'when file format is po' do
+    export_config = ExportConfig.new
+    export_config.file_format = 'po'
+    export_config.file_path = 'my_file_path'
+
+    it 'create po file content from parsed data' do
+      files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_po_file_content')
+    end
+  end
+
+  # JSON
   context 'when file format is JSON' do
     export_config = ExportConfig.new
     export_config.file_format = 'json'
+    export_config.file_path = 'my_file_path'
 
     it 'create JSON file content from parsed data' do
-      file = export_config.file(@language, { "a": 'b', "c": 'd', "c.a": 'e' })
-      file.open
-      expect(file.read).to match_snapshot('json_export_simple')
+      files =
+        export_config.files(
+          @language,
+          { 'a' => export_data_value('b'), 'c' => export_data_value('d'), 'c.a' => export_data_value('e') }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('json_export_simple')
+    end
+
+    it 'create JSON file content from parsed data plural' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'a' => export_data_value('b', pluralization_enabled: true),
+            'c' => export_data_value('d'),
+            'c.a' => export_data_value('e', pluralization_enabled: true)
+          }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('json_export_plural')
     end
 
     it 'create JSON file content from parsed data with split on .' do
       export_config.split_on = '.'
-      file = export_config.file(@language, { "a": 'b', "c.a": 'd', "c.b": 'e' })
-      file.open
-      expect(file.read).to match_snapshot('json_export_with_split_on')
+      files =
+        export_config.files(
+          @language,
+          { 'a' => export_data_value('b'), 'c.a' => export_data_value('d'), 'c.b' => export_data_value('e') }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('json_export_with_split_on')
     end
 
     it 'create JSON file content from parsed data with split on . with parent object key' do
       export_config.split_on = '.'
-      file =
-        export_config.file(
+      files =
+        export_config.files(
           @language,
           {
-            "a": 'a value',
-            "c": 'this is not in the export',
-            "c.a": 'also not in export',
-            "c.a.a": 'overwrites c and c.a value',
-            "c.b": 'c.b value'
+            'a' => export_data_value('a value'),
+            'c' => export_data_value('this is not in the export'),
+            'c.a' => export_data_value('also not in export'),
+            'c.a.a' => export_data_value('overwrites c and c.a value'),
+            'c.b' => export_data_value('c.b value')
           }
         )
-      file.open
-      expect(file.read).to match_snapshot('json_export_with_split_on_parent_object_key_ignored_1')
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('json_export_with_split_on_parent_object_key_ignored_1')
 
-      file =
-        export_config.file(
+      files =
+        export_config.files(
           @language,
-          { "a": 'not in export', "a.a.a": 'also not in export', "a.a": 'overwrites a and a.a.a value' }
+          {
+            'a' => export_data_value('not in export'),
+            'a.a.a' => export_data_value('also not in export'),
+            'a.a' => export_data_value('overwrites a and a.a.a value')
+          }
         )
-      file.open
-      expect(file.read).to match_snapshot('json_export_with_split_on_parent_object_key_ignored_2')
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('json_export_with_split_on_parent_object_key_ignored_2')
+    end
+  end
+
+  # Format.js JSON
+  context 'when file format is formatjs' do
+    export_config = ExportConfig.new
+    export_config.file_format = 'json-formatjs'
+    export_config.file_path = 'my_file_path'
+
+    it 'create formatjs file content from parsed data' do
+      files =
+        export_config.files(
+          @language,
+          { 'a' => export_data_value('b'), 'c' => export_data_value('d'), 'c.a' => export_data_value('e') }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('formatjs_json_export_simple')
+    end
+
+    it 'create formatjs file content from plural data' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'a' => export_data_value('b', pluralization_enabled: true),
+            'c' => export_data_value('d', pluralization_enabled: true),
+            'c.a' => export_data_value('e')
+          }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('formatjs_json_export_plural')
     end
   end
 end

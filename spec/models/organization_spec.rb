@@ -6,7 +6,7 @@ RSpec.describe Organization, type: :model do
     organization.name = 'Test'
     organization.save!
 
-    expect(organization.trial_ends_at).to eq(nil)
+    expect(organization.trial_ends_at).to be_nil
     expect(organization.trial_days_left).to eq(0)
   end
 

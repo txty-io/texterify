@@ -1,0 +1,21 @@
+const language_name = {
+  "a": {
+    "other": "b",
+    "zero": "zero text",
+    "one": "one text",
+    "two": "two text",
+    "few": "few text",
+    "many": "many text"
+  },
+  "c": "d",
+  "e": {
+    "other": "f",
+    "zero": "zero text",
+    "one": "one text",
+    "two": "two text",
+    "few": "few text",
+    "many": "many text"
+  }
+};
+
+export { language_name };

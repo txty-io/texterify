@@ -1,4 +1,4 @@
-import { ArrowLeftOutlined, HddOutlined, LoadingOutlined, SettingOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, FilterOutlined, HddOutlined, LoadingOutlined, SettingOutlined } from "@ant-design/icons";
 import { Alert, Button, Input, Layout, Pagination, Popover, Skeleton, Tabs, Tag } from "antd";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
@@ -30,9 +30,10 @@ import { ISearchSettings, KeySearchSettings, parseKeySearchSettingsFromURL } fro
 import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActiveFilters";
 import { Styles } from "../../ui/Styles";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
-import { DATE_TIME_FORMAT, Utils } from "../../ui/Utils";
+import { DATE_TIME_FORMAT, escapeHTML, Utils } from "../../ui/Utils";
 import { TranslationCard } from "./editor/TranslationCard";
 import * as moment from "moment";
+import { KeyTags } from "../../ui/KeyTags";
 
 const Key = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
@@ -46,18 +47,18 @@ const Key = styled.div<{ isSelected: boolean }>`
     }};
 
     color: ${(props) => {
-        return props.isSelected ? "var(--blue-color)" : "#333";
+        return props.isSelected ? "var(--color-primary)" : "#333";
     }};
 
     &:hover {
-        color: var(--blue-color);
+        color: var(--color-primary);
     }
 
     .dark-theme & {
         color: #fff;
 
         &:hover {
-            color: var(--blue-color);
+            color: var(--color-primary);
         }
     }
 `;
@@ -167,7 +168,6 @@ class EditorSite extends React.Component<IProps, IState> {
 
     fetchKeys = async (options?: IGetKeysOptions) => {
         if (abortController) {
-            console.error("abort");
             abortController.abort();
         }
 
@@ -255,7 +255,7 @@ class EditorSite extends React.Component<IProps, IState> {
                             translationReference,
                             this.state.keyResponse.included
                         );
-
+                        <Alert message="You are not allowed to edit this key. This key is either a system key or editing has been disabled via one of the assigned tags." />;
                         if (
                             translation &&
                             translation.relationships.export_config.data === null &&
@@ -288,6 +288,7 @@ class EditorSite extends React.Component<IProps, IState> {
                     <div style={{ flexGrow: 1, whiteSpace: "nowrap" }}>
                         <Button
                             type="primary"
+                            ghost
                             style={{
                                 marginRight: 24
                             }}
@@ -357,7 +358,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                     }}
                                 >
                                     <Popover
-                                        title="Search settings"
+                                        title="Search filters"
                                         placement="bottomLeft"
                                         trigger="click"
                                         content={
@@ -372,7 +373,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                         }
                                     >
                                         <Button>
-                                            <SettingOutlined />
+                                            <FilterOutlined />
                                         </Button>
                                     </Popover>
                                     <Input.Search
@@ -426,11 +427,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     this.state.keysResponse.included
                                                 );
 
-                                                let content = key.attributes.html_enabled
-                                                    ? Utils.getHTMLContentPreview(translation.attributes.content)
-                                                    : translation.attributes.content;
+                                                let content = escapeHTML(translation.attributes.content);
 
-                                                if (!key.attributes.html_enabled && this.state.keysResponse) {
+                                                if (this.state.keysResponse) {
                                                     let converted = [content];
 
                                                     this.state.keysResponse.included
@@ -555,7 +554,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 }}
                                                 isSelected={this.isSelectedKey(key.id)}
                                                 style={{
-                                                    color: this.isSelectedKey(key.id) ? "var(--blue-color)" : undefined,
+                                                    color: this.isSelectedKey(key.id)
+                                                        ? "var(--color-primary)"
+                                                        : undefined,
                                                     flexShrink: 0
                                                 }}
                                                 className="editor-key"
@@ -584,26 +585,6 @@ class EditorSite extends React.Component<IProps, IState> {
                                                         className="editor-key-content"
                                                     >
                                                         {keyContentPreview}
-                                                    </div>
-                                                    <div style={{ marginLeft: 8, flexShrink: 0 }}>
-                                                        {key.attributes.html_enabled && (
-                                                            <Tag
-                                                                color="magenta"
-                                                                className="editor-key-html"
-                                                                style={{ margin: 0, marginRight: 4 }}
-                                                            >
-                                                                HTML
-                                                            </Tag>
-                                                        )}
-                                                        {key.relationships.wordpress_contents.data.length > 0 && (
-                                                            <Tag
-                                                                color="magenta"
-                                                                className="editor-key-html"
-                                                                style={{ margin: 0 }}
-                                                            >
-                                                                WordPress
-                                                            </Tag>
-                                                        )}
                                                     </div>
                                                 </div>
                                             </Key>
@@ -683,9 +664,19 @@ class EditorSite extends React.Component<IProps, IState> {
                                                         before you can translate your content.
                                                     </p>
                                                 }
-                                                style={{ marginBottom: 24 }}
+                                                style={{ marginBottom: 24, maxWidth: "100%" }}
                                             />
                                         )}
+
+                                    {!this.state.keyResponse?.data.attributes.editable_for_current_user && (
+                                        <Alert
+                                            type="info"
+                                            showIcon
+                                            message="Key not editable"
+                                            description="You are not allowed to edit this key. This key is either a system key or editing has been disabled via one of the assigned tags."
+                                            style={{ marginBottom: 24, maxWidth: "100%" }}
+                                        />
+                                    )}
 
                                     {defaultLanguage ? (
                                         <TranslationCard
@@ -728,27 +719,29 @@ class EditorSite extends React.Component<IProps, IState> {
                                     )}
 
                                     {languagesWithoutDefault.length > 0 ? (
-                                        <TranslationCard
-                                            projectId={this.props.match.params.projectId}
-                                            languagesResponse={this.state.languagesResponse}
-                                            languages={languagesWithoutDefault}
-                                            defaultSelected={
-                                                this.state.selectedLanguageIdTo || languagesWithoutDefault[0].id
-                                            }
-                                            keyResponse={this.state.keyResponse}
-                                            defaultLanguage={defaultLanguage}
-                                            defaultLanguageTranslationContent={defaultLanguageTranslationContent}
-                                            supportedSourceLanguages={this.state.supportedSourceLanguages}
-                                            supportedTargetLanguages={this.state.supportedTargetLanguages}
-                                            onSave={() => {
-                                                if (this.keyHistoryRef) {
-                                                    this.keyHistoryRef.reload();
+                                        <div style={{ marginTop: 40 }}>
+                                            <TranslationCard
+                                                projectId={this.props.match.params.projectId}
+                                                languagesResponse={this.state.languagesResponse}
+                                                languages={languagesWithoutDefault}
+                                                defaultSelected={
+                                                    this.state.selectedLanguageIdTo || languagesWithoutDefault[0].id
                                                 }
-                                            }}
-                                            onSelectedLanguageIdChange={(languageId) => {
-                                                this.setState({ selectedLanguageIdTo: languageId });
-                                            }}
-                                        />
+                                                keyResponse={this.state.keyResponse}
+                                                defaultLanguage={defaultLanguage}
+                                                defaultLanguageTranslationContent={defaultLanguageTranslationContent}
+                                                supportedSourceLanguages={this.state.supportedSourceLanguages}
+                                                supportedTargetLanguages={this.state.supportedTargetLanguages}
+                                                onSave={() => {
+                                                    if (this.keyHistoryRef) {
+                                                        this.keyHistoryRef.reload();
+                                                    }
+                                                }}
+                                                onSelectedLanguageIdChange={(languageId) => {
+                                                    this.setState({ selectedLanguageIdTo: languageId });
+                                                }}
+                                            />
+                                        </div>
                                     ) : (
                                         <Alert
                                             showIcon
@@ -777,7 +770,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                     style={{
                                         color: Styles.COLOR_TEXT_DISABLED,
                                         fontStyle: "italic",
-                                        margin: "auto",
+                                        marginTop: 160,
                                         textAlign: "center"
                                     }}
                                 >
@@ -806,6 +799,14 @@ class EditorSite extends React.Component<IProps, IState> {
                                             value={moment(this.state.keyResponse.data.attributes.created_at).format(
                                                 DATE_TIME_FORMAT
                                             )}
+                                        />
+
+                                        <h3 style={{ marginTop: 24 }}>Tags</h3>
+                                        <KeyTags
+                                            translationKey={this.state.keyResponse.data}
+                                            included={this.state.keyResponse.included}
+                                            onTagAdded={this.loadAndSetKey}
+                                            onTagRemoved={this.loadAndSetKey}
                                         />
 
                                         <h3 style={{ marginTop: 24 }}>Placeholders</h3>

@@ -32,6 +32,7 @@ import { UserDeactivatedProjectModal } from "../ui/UserDeactivatedProjectModal";
 import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
 import { ProjectForbiddenWordsListsSite } from "../sites/dashboard/ProjectForbiddenWordsListsSite";
+import { ProjectTagsSite } from "../sites/dashboard/ProjectTagsSite";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -206,6 +207,7 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         path={Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY}
                         component={ProjectExportHierarchySite}
                     />
+                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_TAGS} component={ProjectTagsSite} />
                 </Switch>
 
                 {dashboardStore.currentProject?.attributes.current_user_deactivated && <UserDeactivatedProjectModal />}

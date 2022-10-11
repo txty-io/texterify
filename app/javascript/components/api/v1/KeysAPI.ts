@@ -1,7 +1,9 @@
+import { IErrorsResponse } from "../../ui/ErrorUtils";
 import { ISearchSettings } from "../../ui/KeySearchSettings";
 import { API, IFetchOptions } from "./API";
 import { APIUtils } from "./APIUtils";
 import { ILanguage } from "./LanguagesAPI";
+import { ITag } from "./TagsAPI";
 import { ITranslation } from "./TranslationsAPI";
 
 export interface IKey {
@@ -13,7 +15,9 @@ export interface IKey {
         name: string;
         description: string | null;
         html_enabled: boolean;
+        pluralization_enabled: boolean;
         name_editable: boolean;
+        editable_for_current_user: boolean;
         created_at: string;
         updated_at: string;
     };
@@ -26,9 +30,11 @@ export interface IKey {
     };
 }
 
+export type IKeyIncluded = (ITranslation | ILanguage | ITag | IPlaceholder)[];
+
 export interface IGetKeysResponse {
     data: IKey[];
-    included: (ITranslation | ILanguage)[];
+    included: IKeyIncluded;
     meta: { total: number };
 }
 
@@ -43,8 +49,14 @@ export interface IPlaceholder {
 
 export interface IGetKeyResponse {
     data: IKey;
-    included: (ITranslation | ILanguage | IPlaceholder)[];
+    included: IKeyIncluded;
     meta: { total: number };
+}
+
+export interface ICreateKeyResponse {
+    data: IKey;
+    included: (ITranslation | ILanguage | IPlaceholder)[];
+    errors: IErrorsResponse;
 }
 
 export interface IGetKeysOptions {
@@ -96,11 +108,18 @@ const KeysAPI = {
             });
     },
 
-    createKey: async (projectId: string, name: string, description: string, htmlEnabled: boolean): Promise<any> => {
-        return API.postRequest(`projects/${projectId}/keys`, true, {
-            name: name,
-            description: description,
-            html_enabled: htmlEnabled
+    createKey: async (options: {
+        projectId: string;
+        name: string;
+        description: string;
+        htmlEnabled: boolean;
+        pluralizationEnabled: boolean;
+    }): Promise<ICreateKeyResponse> => {
+        return API.postRequest(`projects/${options.projectId}/keys`, true, {
+            name: options.name,
+            description: options.description,
+            html_enabled: options.htmlEnabled,
+            pluralization_enabled: options.pluralizationEnabled
         })
             .then(APIUtils.handleErrors)
             .catch((response) => {
@@ -108,11 +127,19 @@ const KeysAPI = {
             });
     },
 
-    update: async (projectId: string, keyId: string, name: string, description: string, htmlEnabled: boolean) => {
-        return API.putRequest(`projects/${projectId}/keys/${keyId}`, true, {
-            name: name,
-            description: description,
-            html_enabled: htmlEnabled
+    update: async (options: {
+        projectId: string;
+        keyId: string;
+        name: string;
+        description: string;
+        htmlEnabled: boolean;
+        pluralizationEnabled: boolean;
+    }) => {
+        return API.putRequest(`projects/${options.projectId}/keys/${options.keyId}`, true, {
+            name: options.name,
+            description: options.description,
+            html_enabled: options.htmlEnabled,
+            pluralization_enabled: options.pluralizationEnabled
         })
             .then(APIUtils.handleErrors)
             .catch((response) => {
@@ -132,6 +159,24 @@ const KeysAPI = {
 
     getActivity: async (options: { projectId: string; keyId: string }) => {
         return API.getRequest(`projects/${options.projectId}/keys/${options.keyId}/activity`, true, {})
+            .then(APIUtils.handleErrors)
+            .catch((response) => {
+                APIUtils.handleErrors(response, true);
+            });
+    },
+
+    addTag: async (options: { projectId: string; keyId: string; tagId: string }) => {
+        return API.postRequest(`projects/${options.projectId}/keys/${options.keyId}/tags`, true, {
+            tag_id: options.tagId
+        })
+            .then(APIUtils.handleErrors)
+            .catch((response) => {
+                APIUtils.handleErrors(response, true);
+            });
+    },
+
+    removeTag: async (options: { projectId: string; keyId: string; tagId: string }) => {
+        return API.deleteRequest(`projects/${options.projectId}/keys/${options.keyId}/tags/${options.tagId}`, true)
             .then(APIUtils.handleErrors)
             .catch((response) => {
                 APIUtils.handleErrors(response, true);

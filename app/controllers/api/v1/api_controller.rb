@@ -39,9 +39,14 @@ module Api::V1
     end
 
     def render_not_found_error(model_name)
-      error = { error: :not_found }
-
-      render json: { errors: { "#{model_name.downcase}": [error] } }, status: :not_found
+      render json: {
+               error: true,
+               message: 'NOT_FOUND',
+               details: {
+                 "#{model_name.underscore}": :not_found
+               }
+             },
+             status: :not_found
     end
 
     def parse_page(params_page)

@@ -1,0 +1,16 @@
+---
+a:
+  zero: zero text
+  one: one text
+  two: two text
+  few: few text
+  many: many text
+  other: b
+c:
+  zero: zero text
+  one: one text
+  two: two text
+  few: few text
+  many: many text
+  other: d
+c.a: e

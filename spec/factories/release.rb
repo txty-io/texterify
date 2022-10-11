@@ -1,8 +1,6 @@
 FactoryBot.define do
   factory :release do
-    transient do
-      locales { [] }
-    end
+    transient { locales { [] } }
 
     sequence :version do |n|
       n
@@ -13,7 +11,7 @@ FactoryBot.define do
 
     after(:create) do |release, evaluator|
       evaluator.locales.each do |locale|
-        FactoryBot.create(
+        create(
           :release_file,
           language_code: locale[:language_code],
           country_code: locale[:country_code],

@@ -16,7 +16,7 @@ class Key < ApplicationRecord
 
   belongs_to :project
   has_many :wordpress_contents, dependent: :destroy
-  has_many :translations, -> { order(created_at: :desc) }, dependent: :destroy, inverse_of: :key
+  has_many :translations, dependent: :destroy, inverse_of: :key
 
   # A key has many tags attached.
   has_many :key_tags, dependent: :delete_all
@@ -151,6 +151,27 @@ class Key < ApplicationRecord
         end
       end
     end
+  end
+
+  # Returns the translation of the key for the given language and export config.
+  def translation_for(language_id, export_config_id)
+    key_translation_export_config =
+      self
+        .translations
+        .where(language_id: language_id, export_config_id: export_config_id)
+        .order(created_at: :desc)
+        .first
+
+    # If there is a export config translation use it.
+    if key_translation_export_config&.content.present?
+      key_translation = key_translation_export_config
+    else
+      # Otherwise use the default translation of the language.
+      key_translation =
+        self.translations.where(language_id: language_id, export_config_id: nil).order(created_at: :desc).first
+    end
+
+    key_translation
   end
 
   protected

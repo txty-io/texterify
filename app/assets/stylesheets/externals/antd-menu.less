@@ -5,7 +5,7 @@
   .ant-menu-vertical-left .ant-menu-item:after,
   .ant-menu-vertical-right .ant-menu-item:after,
   .ant-menu-inline .ant-menu-item:after {
-    border-right-color: var(--main-sidebar-border-color);
+    border-right-color: var(--main-sidebar-indicator-color);
   }
 
   .ant-menu-submenu > .ant-menu {
@@ -23,6 +23,7 @@
   .ant-menu-item-selected > a,
   .ant-menu-item-selected > a:hover {
     color: var(--main-sidebar-active-color);
+    font-weight: bold;
   }
 
   .ant-menu-item-selected {
@@ -72,5 +73,24 @@
   .ant-menu-item > a,
   .ant-menu-submenu-title > a {
     text-decoration: none;
+  }
+
+  .ant-menu-vertical > .ant-menu-item,
+  .ant-menu-vertical-left > .ant-menu-item,
+  .ant-menu-vertical-right > .ant-menu-item,
+  .ant-menu-inline > .ant-menu-item,
+  .ant-menu-vertical > .ant-menu-submenu > .ant-menu-submenu-title,
+  .ant-menu-vertical-left > .ant-menu-submenu > .ant-menu-submenu-title,
+  .ant-menu-vertical-right > .ant-menu-submenu > .ant-menu-submenu-title,
+  .ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title {
+    height: 32px;
+    line-height: 32px;
+  }
+
+  .ant-menu-item .ant-menu-item-icon,
+  .ant-menu-submenu-title .ant-menu-item-icon,
+  .ant-menu-item .anticon,
+  .ant-menu-submenu-title .anticon {
+    margin-right: 24px;
   }
 }

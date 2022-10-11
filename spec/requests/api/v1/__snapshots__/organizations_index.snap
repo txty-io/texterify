@@ -1,0 +1,1137 @@
+{
+  "data" => [
+    [0] {
+                 "id" => "__REMOVED__",
+               "type" => "organization",
+         "attributes" => {
+                                         "id" => "__REMOVED__",
+                                       "name" => "Organization 1",
+                               "trial_active" => true,
+        "machine_translation_character_usage" => 0,
+        "machine_translation_character_limit" => 10000,
+                          "max_users_reached" => false,
+                       "deepl_api_token_type" => nil,
+                  "uses_custom_deepl_account" => false,
+                            "deepl_api_token" => nil,
+                          "current_user_role" => "translator",
+                              "trial_ends_at" => "__REMOVED__",
+                           "enabled_features" => [
+          [ 0] "FEATURE_UNLIMITED_PROJECTS",
+          [ 1] "FEATURE_UNLIMITED_LANGUAGES",
+          [ 2] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_VALIDATIONS",
+          [ 4] "FEATURE_KEY_HISTORY",
+          [ 5] "FEATURE_EXPORT_HIERARCHY",
+          [ 6] "FEATURE_POST_PROCESSING",
+          [ 7] "FEATURE_PROJECT_ACTIVITY",
+          [ 8] "FEATURE_TAG_MANAGEMENT",
+          [ 9] "FEATURE_TAGS",
+          [10] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [11] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
+          [12] "FEATURE_OTA",
+          [13] "FEATURE_HTML_EDITOR",
+          [14] "FEATURE_TEMPLATES",
+          [15] "FEATURE_PROJECT_GROUPS"
+        ],
+                               "all_features" => {
+                          "FEATURE_UNLIMITED_PROJECTS" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                         "FEATURE_UNLIMITED_LANGUAGES" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                                 "FEATURE_VALIDATIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                 "FEATURE_KEY_HISTORY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_EXPORT_HIERARCHY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                             "FEATURE_POST_PROCESSING" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_PROJECT_ACTIVITY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                              "FEATURE_TAG_MANAGEMENT" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                        "FEATURE_TAGS" => [
+            [0] "team",
+            [1] "business"
+          ],
+             "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
+            [0] "team",
+            [1] "business"
+          ],
+                  "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
+            [0] "business"
+          ],
+                                         "FEATURE_OTA" => [
+            [0] "business"
+          ],
+                                 "FEATURE_HTML_EDITOR" => [
+            [0] "business"
+          ],
+                                   "FEATURE_TEMPLATES" => [
+            [0] "business"
+          ],
+                              "FEATURE_PROJECT_GROUPS" => [
+            [0] "business"
+          ],
+          "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE" => [
+            [0] "business"
+          ]
+        },
+                   "current_user_deactivated" => false,
+            "current_user_deactivated_reason" => nil
+      },
+      "relationships" => {
+        "projects" => {
+          "data" => []
+        }
+      }
+    },
+    [1] {
+                 "id" => "__REMOVED__",
+               "type" => "organization",
+         "attributes" => {
+                                         "id" => "__REMOVED__",
+                                       "name" => "Organization 10",
+                               "trial_active" => true,
+        "machine_translation_character_usage" => 0,
+        "machine_translation_character_limit" => 10000,
+                          "max_users_reached" => false,
+                       "deepl_api_token_type" => nil,
+                  "uses_custom_deepl_account" => false,
+                            "deepl_api_token" => nil,
+                          "current_user_role" => "translator",
+                              "trial_ends_at" => "__REMOVED__",
+                           "enabled_features" => [
+          [ 0] "FEATURE_UNLIMITED_PROJECTS",
+          [ 1] "FEATURE_UNLIMITED_LANGUAGES",
+          [ 2] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_VALIDATIONS",
+          [ 4] "FEATURE_KEY_HISTORY",
+          [ 5] "FEATURE_EXPORT_HIERARCHY",
+          [ 6] "FEATURE_POST_PROCESSING",
+          [ 7] "FEATURE_PROJECT_ACTIVITY",
+          [ 8] "FEATURE_TAG_MANAGEMENT",
+          [ 9] "FEATURE_TAGS",
+          [10] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [11] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
+          [12] "FEATURE_OTA",
+          [13] "FEATURE_HTML_EDITOR",
+          [14] "FEATURE_TEMPLATES",
+          [15] "FEATURE_PROJECT_GROUPS"
+        ],
+                               "all_features" => {
+                          "FEATURE_UNLIMITED_PROJECTS" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                         "FEATURE_UNLIMITED_LANGUAGES" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                                 "FEATURE_VALIDATIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                 "FEATURE_KEY_HISTORY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_EXPORT_HIERARCHY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                             "FEATURE_POST_PROCESSING" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_PROJECT_ACTIVITY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                              "FEATURE_TAG_MANAGEMENT" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                        "FEATURE_TAGS" => [
+            [0] "team",
+            [1] "business"
+          ],
+             "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
+            [0] "team",
+            [1] "business"
+          ],
+                  "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
+            [0] "business"
+          ],
+                                         "FEATURE_OTA" => [
+            [0] "business"
+          ],
+                                 "FEATURE_HTML_EDITOR" => [
+            [0] "business"
+          ],
+                                   "FEATURE_TEMPLATES" => [
+            [0] "business"
+          ],
+                              "FEATURE_PROJECT_GROUPS" => [
+            [0] "business"
+          ],
+          "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE" => [
+            [0] "business"
+          ]
+        },
+                   "current_user_deactivated" => false,
+            "current_user_deactivated_reason" => nil
+      },
+      "relationships" => {
+        "projects" => {
+          "data" => []
+        }
+      }
+    },
+    [2] {
+                 "id" => "__REMOVED__",
+               "type" => "organization",
+         "attributes" => {
+                                         "id" => "__REMOVED__",
+                                       "name" => "Organization 11",
+                               "trial_active" => true,
+        "machine_translation_character_usage" => 0,
+        "machine_translation_character_limit" => 10000,
+                          "max_users_reached" => false,
+                       "deepl_api_token_type" => nil,
+                  "uses_custom_deepl_account" => false,
+                            "deepl_api_token" => nil,
+                          "current_user_role" => "translator",
+                              "trial_ends_at" => "__REMOVED__",
+                           "enabled_features" => [
+          [ 0] "FEATURE_UNLIMITED_PROJECTS",
+          [ 1] "FEATURE_UNLIMITED_LANGUAGES",
+          [ 2] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_VALIDATIONS",
+          [ 4] "FEATURE_KEY_HISTORY",
+          [ 5] "FEATURE_EXPORT_HIERARCHY",
+          [ 6] "FEATURE_POST_PROCESSING",
+          [ 7] "FEATURE_PROJECT_ACTIVITY",
+          [ 8] "FEATURE_TAG_MANAGEMENT",
+          [ 9] "FEATURE_TAGS",
+          [10] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [11] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
+          [12] "FEATURE_OTA",
+          [13] "FEATURE_HTML_EDITOR",
+          [14] "FEATURE_TEMPLATES",
+          [15] "FEATURE_PROJECT_GROUPS"
+        ],
+                               "all_features" => {
+                          "FEATURE_UNLIMITED_PROJECTS" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                         "FEATURE_UNLIMITED_LANGUAGES" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                                 "FEATURE_VALIDATIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                 "FEATURE_KEY_HISTORY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_EXPORT_HIERARCHY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                             "FEATURE_POST_PROCESSING" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_PROJECT_ACTIVITY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                              "FEATURE_TAG_MANAGEMENT" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                        "FEATURE_TAGS" => [
+            [0] "team",
+            [1] "business"
+          ],
+             "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
+            [0] "team",
+            [1] "business"
+          ],
+                  "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
+            [0] "business"
+          ],
+                                         "FEATURE_OTA" => [
+            [0] "business"
+          ],
+                                 "FEATURE_HTML_EDITOR" => [
+            [0] "business"
+          ],
+                                   "FEATURE_TEMPLATES" => [
+            [0] "business"
+          ],
+                              "FEATURE_PROJECT_GROUPS" => [
+            [0] "business"
+          ],
+          "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE" => [
+            [0] "business"
+          ]
+        },
+                   "current_user_deactivated" => false,
+            "current_user_deactivated_reason" => nil
+      },
+      "relationships" => {
+        "projects" => {
+          "data" => []
+        }
+      }
+    },
+    [3] {
+                 "id" => "__REMOVED__",
+               "type" => "organization",
+         "attributes" => {
+                                         "id" => "__REMOVED__",
+                                       "name" => "Organization 2",
+                               "trial_active" => true,
+        "machine_translation_character_usage" => 0,
+        "machine_translation_character_limit" => 10000,
+                          "max_users_reached" => false,
+                       "deepl_api_token_type" => nil,
+                  "uses_custom_deepl_account" => false,
+                            "deepl_api_token" => nil,
+                          "current_user_role" => "translator",
+                              "trial_ends_at" => "__REMOVED__",
+                           "enabled_features" => [
+          [ 0] "FEATURE_UNLIMITED_PROJECTS",
+          [ 1] "FEATURE_UNLIMITED_LANGUAGES",
+          [ 2] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_VALIDATIONS",
+          [ 4] "FEATURE_KEY_HISTORY",
+          [ 5] "FEATURE_EXPORT_HIERARCHY",
+          [ 6] "FEATURE_POST_PROCESSING",
+          [ 7] "FEATURE_PROJECT_ACTIVITY",
+          [ 8] "FEATURE_TAG_MANAGEMENT",
+          [ 9] "FEATURE_TAGS",
+          [10] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [11] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
+          [12] "FEATURE_OTA",
+          [13] "FEATURE_HTML_EDITOR",
+          [14] "FEATURE_TEMPLATES",
+          [15] "FEATURE_PROJECT_GROUPS"
+        ],
+                               "all_features" => {
+                          "FEATURE_UNLIMITED_PROJECTS" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                         "FEATURE_UNLIMITED_LANGUAGES" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                                 "FEATURE_VALIDATIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                 "FEATURE_KEY_HISTORY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_EXPORT_HIERARCHY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                             "FEATURE_POST_PROCESSING" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_PROJECT_ACTIVITY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                              "FEATURE_TAG_MANAGEMENT" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                        "FEATURE_TAGS" => [
+            [0] "team",
+            [1] "business"
+          ],
+             "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
+            [0] "team",
+            [1] "business"
+          ],
+                  "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
+            [0] "business"
+          ],
+                                         "FEATURE_OTA" => [
+            [0] "business"
+          ],
+                                 "FEATURE_HTML_EDITOR" => [
+            [0] "business"
+          ],
+                                   "FEATURE_TEMPLATES" => [
+            [0] "business"
+          ],
+                              "FEATURE_PROJECT_GROUPS" => [
+            [0] "business"
+          ],
+          "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE" => [
+            [0] "business"
+          ]
+        },
+                   "current_user_deactivated" => false,
+            "current_user_deactivated_reason" => nil
+      },
+      "relationships" => {
+        "projects" => {
+          "data" => []
+        }
+      }
+    },
+    [4] {
+                 "id" => "__REMOVED__",
+               "type" => "organization",
+         "attributes" => {
+                                         "id" => "__REMOVED__",
+                                       "name" => "Organization 3",
+                               "trial_active" => true,
+        "machine_translation_character_usage" => 0,
+        "machine_translation_character_limit" => 10000,
+                          "max_users_reached" => false,
+                       "deepl_api_token_type" => nil,
+                  "uses_custom_deepl_account" => false,
+                            "deepl_api_token" => nil,
+                          "current_user_role" => "translator",
+                              "trial_ends_at" => "__REMOVED__",
+                           "enabled_features" => [
+          [ 0] "FEATURE_UNLIMITED_PROJECTS",
+          [ 1] "FEATURE_UNLIMITED_LANGUAGES",
+          [ 2] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_VALIDATIONS",
+          [ 4] "FEATURE_KEY_HISTORY",
+          [ 5] "FEATURE_EXPORT_HIERARCHY",
+          [ 6] "FEATURE_POST_PROCESSING",
+          [ 7] "FEATURE_PROJECT_ACTIVITY",
+          [ 8] "FEATURE_TAG_MANAGEMENT",
+          [ 9] "FEATURE_TAGS",
+          [10] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [11] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
+          [12] "FEATURE_OTA",
+          [13] "FEATURE_HTML_EDITOR",
+          [14] "FEATURE_TEMPLATES",
+          [15] "FEATURE_PROJECT_GROUPS"
+        ],
+                               "all_features" => {
+                          "FEATURE_UNLIMITED_PROJECTS" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                         "FEATURE_UNLIMITED_LANGUAGES" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                                 "FEATURE_VALIDATIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                 "FEATURE_KEY_HISTORY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_EXPORT_HIERARCHY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                             "FEATURE_POST_PROCESSING" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_PROJECT_ACTIVITY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                              "FEATURE_TAG_MANAGEMENT" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                        "FEATURE_TAGS" => [
+            [0] "team",
+            [1] "business"
+          ],
+             "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
+            [0] "team",
+            [1] "business"
+          ],
+                  "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
+            [0] "business"
+          ],
+                                         "FEATURE_OTA" => [
+            [0] "business"
+          ],
+                                 "FEATURE_HTML_EDITOR" => [
+            [0] "business"
+          ],
+                                   "FEATURE_TEMPLATES" => [
+            [0] "business"
+          ],
+                              "FEATURE_PROJECT_GROUPS" => [
+            [0] "business"
+          ],
+          "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE" => [
+            [0] "business"
+          ]
+        },
+                   "current_user_deactivated" => false,
+            "current_user_deactivated_reason" => nil
+      },
+      "relationships" => {
+        "projects" => {
+          "data" => []
+        }
+      }
+    },
+    [5] {
+                 "id" => "__REMOVED__",
+               "type" => "organization",
+         "attributes" => {
+                                         "id" => "__REMOVED__",
+                                       "name" => "Organization 4",
+                               "trial_active" => true,
+        "machine_translation_character_usage" => 0,
+        "machine_translation_character_limit" => 10000,
+                          "max_users_reached" => false,
+                       "deepl_api_token_type" => nil,
+                  "uses_custom_deepl_account" => false,
+                            "deepl_api_token" => nil,
+                          "current_user_role" => "translator",
+                              "trial_ends_at" => "__REMOVED__",
+                           "enabled_features" => [
+          [ 0] "FEATURE_UNLIMITED_PROJECTS",
+          [ 1] "FEATURE_UNLIMITED_LANGUAGES",
+          [ 2] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_VALIDATIONS",
+          [ 4] "FEATURE_KEY_HISTORY",
+          [ 5] "FEATURE_EXPORT_HIERARCHY",
+          [ 6] "FEATURE_POST_PROCESSING",
+          [ 7] "FEATURE_PROJECT_ACTIVITY",
+          [ 8] "FEATURE_TAG_MANAGEMENT",
+          [ 9] "FEATURE_TAGS",
+          [10] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [11] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
+          [12] "FEATURE_OTA",
+          [13] "FEATURE_HTML_EDITOR",
+          [14] "FEATURE_TEMPLATES",
+          [15] "FEATURE_PROJECT_GROUPS"
+        ],
+                               "all_features" => {
+                          "FEATURE_UNLIMITED_PROJECTS" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                         "FEATURE_UNLIMITED_LANGUAGES" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                                 "FEATURE_VALIDATIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                 "FEATURE_KEY_HISTORY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_EXPORT_HIERARCHY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                             "FEATURE_POST_PROCESSING" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_PROJECT_ACTIVITY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                              "FEATURE_TAG_MANAGEMENT" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                        "FEATURE_TAGS" => [
+            [0] "team",
+            [1] "business"
+          ],
+             "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
+            [0] "team",
+            [1] "business"
+          ],
+                  "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
+            [0] "business"
+          ],
+                                         "FEATURE_OTA" => [
+            [0] "business"
+          ],
+                                 "FEATURE_HTML_EDITOR" => [
+            [0] "business"
+          ],
+                                   "FEATURE_TEMPLATES" => [
+            [0] "business"
+          ],
+                              "FEATURE_PROJECT_GROUPS" => [
+            [0] "business"
+          ],
+          "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE" => [
+            [0] "business"
+          ]
+        },
+                   "current_user_deactivated" => false,
+            "current_user_deactivated_reason" => nil
+      },
+      "relationships" => {
+        "projects" => {
+          "data" => []
+        }
+      }
+    },
+    [6] {
+                 "id" => "__REMOVED__",
+               "type" => "organization",
+         "attributes" => {
+                                         "id" => "__REMOVED__",
+                                       "name" => "Organization 5",
+                               "trial_active" => true,
+        "machine_translation_character_usage" => 0,
+        "machine_translation_character_limit" => 10000,
+                          "max_users_reached" => false,
+                       "deepl_api_token_type" => nil,
+                  "uses_custom_deepl_account" => false,
+                            "deepl_api_token" => nil,
+                          "current_user_role" => "translator",
+                              "trial_ends_at" => "__REMOVED__",
+                           "enabled_features" => [
+          [ 0] "FEATURE_UNLIMITED_PROJECTS",
+          [ 1] "FEATURE_UNLIMITED_LANGUAGES",
+          [ 2] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_VALIDATIONS",
+          [ 4] "FEATURE_KEY_HISTORY",
+          [ 5] "FEATURE_EXPORT_HIERARCHY",
+          [ 6] "FEATURE_POST_PROCESSING",
+          [ 7] "FEATURE_PROJECT_ACTIVITY",
+          [ 8] "FEATURE_TAG_MANAGEMENT",
+          [ 9] "FEATURE_TAGS",
+          [10] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [11] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
+          [12] "FEATURE_OTA",
+          [13] "FEATURE_HTML_EDITOR",
+          [14] "FEATURE_TEMPLATES",
+          [15] "FEATURE_PROJECT_GROUPS"
+        ],
+                               "all_features" => {
+                          "FEATURE_UNLIMITED_PROJECTS" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                         "FEATURE_UNLIMITED_LANGUAGES" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                                 "FEATURE_VALIDATIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                 "FEATURE_KEY_HISTORY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_EXPORT_HIERARCHY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                             "FEATURE_POST_PROCESSING" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_PROJECT_ACTIVITY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                              "FEATURE_TAG_MANAGEMENT" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                        "FEATURE_TAGS" => [
+            [0] "team",
+            [1] "business"
+          ],
+             "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
+            [0] "team",
+            [1] "business"
+          ],
+                  "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
+            [0] "business"
+          ],
+                                         "FEATURE_OTA" => [
+            [0] "business"
+          ],
+                                 "FEATURE_HTML_EDITOR" => [
+            [0] "business"
+          ],
+                                   "FEATURE_TEMPLATES" => [
+            [0] "business"
+          ],
+                              "FEATURE_PROJECT_GROUPS" => [
+            [0] "business"
+          ],
+          "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE" => [
+            [0] "business"
+          ]
+        },
+                   "current_user_deactivated" => false,
+            "current_user_deactivated_reason" => nil
+      },
+      "relationships" => {
+        "projects" => {
+          "data" => []
+        }
+      }
+    },
+    [7] {
+                 "id" => "__REMOVED__",
+               "type" => "organization",
+         "attributes" => {
+                                         "id" => "__REMOVED__",
+                                       "name" => "Organization 6",
+                               "trial_active" => true,
+        "machine_translation_character_usage" => 0,
+        "machine_translation_character_limit" => 10000,
+                          "max_users_reached" => false,
+                       "deepl_api_token_type" => nil,
+                  "uses_custom_deepl_account" => false,
+                            "deepl_api_token" => nil,
+                          "current_user_role" => "translator",
+                              "trial_ends_at" => "__REMOVED__",
+                           "enabled_features" => [
+          [ 0] "FEATURE_UNLIMITED_PROJECTS",
+          [ 1] "FEATURE_UNLIMITED_LANGUAGES",
+          [ 2] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_VALIDATIONS",
+          [ 4] "FEATURE_KEY_HISTORY",
+          [ 5] "FEATURE_EXPORT_HIERARCHY",
+          [ 6] "FEATURE_POST_PROCESSING",
+          [ 7] "FEATURE_PROJECT_ACTIVITY",
+          [ 8] "FEATURE_TAG_MANAGEMENT",
+          [ 9] "FEATURE_TAGS",
+          [10] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [11] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
+          [12] "FEATURE_OTA",
+          [13] "FEATURE_HTML_EDITOR",
+          [14] "FEATURE_TEMPLATES",
+          [15] "FEATURE_PROJECT_GROUPS"
+        ],
+                               "all_features" => {
+                          "FEATURE_UNLIMITED_PROJECTS" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                         "FEATURE_UNLIMITED_LANGUAGES" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                                 "FEATURE_VALIDATIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                 "FEATURE_KEY_HISTORY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_EXPORT_HIERARCHY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                             "FEATURE_POST_PROCESSING" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_PROJECT_ACTIVITY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                              "FEATURE_TAG_MANAGEMENT" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                        "FEATURE_TAGS" => [
+            [0] "team",
+            [1] "business"
+          ],
+             "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
+            [0] "team",
+            [1] "business"
+          ],
+                  "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
+            [0] "business"
+          ],
+                                         "FEATURE_OTA" => [
+            [0] "business"
+          ],
+                                 "FEATURE_HTML_EDITOR" => [
+            [0] "business"
+          ],
+                                   "FEATURE_TEMPLATES" => [
+            [0] "business"
+          ],
+                              "FEATURE_PROJECT_GROUPS" => [
+            [0] "business"
+          ],
+          "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE" => [
+            [0] "business"
+          ]
+        },
+                   "current_user_deactivated" => false,
+            "current_user_deactivated_reason" => nil
+      },
+      "relationships" => {
+        "projects" => {
+          "data" => []
+        }
+      }
+    },
+    [8] {
+                 "id" => "__REMOVED__",
+               "type" => "organization",
+         "attributes" => {
+                                         "id" => "__REMOVED__",
+                                       "name" => "Organization 7",
+                               "trial_active" => true,
+        "machine_translation_character_usage" => 0,
+        "machine_translation_character_limit" => 10000,
+                          "max_users_reached" => false,
+                       "deepl_api_token_type" => nil,
+                  "uses_custom_deepl_account" => false,
+                            "deepl_api_token" => nil,
+                          "current_user_role" => "translator",
+                              "trial_ends_at" => "__REMOVED__",
+                           "enabled_features" => [
+          [ 0] "FEATURE_UNLIMITED_PROJECTS",
+          [ 1] "FEATURE_UNLIMITED_LANGUAGES",
+          [ 2] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_VALIDATIONS",
+          [ 4] "FEATURE_KEY_HISTORY",
+          [ 5] "FEATURE_EXPORT_HIERARCHY",
+          [ 6] "FEATURE_POST_PROCESSING",
+          [ 7] "FEATURE_PROJECT_ACTIVITY",
+          [ 8] "FEATURE_TAG_MANAGEMENT",
+          [ 9] "FEATURE_TAGS",
+          [10] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [11] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
+          [12] "FEATURE_OTA",
+          [13] "FEATURE_HTML_EDITOR",
+          [14] "FEATURE_TEMPLATES",
+          [15] "FEATURE_PROJECT_GROUPS"
+        ],
+                               "all_features" => {
+                          "FEATURE_UNLIMITED_PROJECTS" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                         "FEATURE_UNLIMITED_LANGUAGES" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                                 "FEATURE_VALIDATIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                 "FEATURE_KEY_HISTORY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_EXPORT_HIERARCHY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                             "FEATURE_POST_PROCESSING" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_PROJECT_ACTIVITY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                              "FEATURE_TAG_MANAGEMENT" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                        "FEATURE_TAGS" => [
+            [0] "team",
+            [1] "business"
+          ],
+             "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
+            [0] "team",
+            [1] "business"
+          ],
+                  "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
+            [0] "business"
+          ],
+                                         "FEATURE_OTA" => [
+            [0] "business"
+          ],
+                                 "FEATURE_HTML_EDITOR" => [
+            [0] "business"
+          ],
+                                   "FEATURE_TEMPLATES" => [
+            [0] "business"
+          ],
+                              "FEATURE_PROJECT_GROUPS" => [
+            [0] "business"
+          ],
+          "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE" => [
+            [0] "business"
+          ]
+        },
+                   "current_user_deactivated" => false,
+            "current_user_deactivated_reason" => nil
+      },
+      "relationships" => {
+        "projects" => {
+          "data" => []
+        }
+      }
+    },
+    [9] {
+                 "id" => "__REMOVED__",
+               "type" => "organization",
+         "attributes" => {
+                                         "id" => "__REMOVED__",
+                                       "name" => "Organization 8",
+                               "trial_active" => true,
+        "machine_translation_character_usage" => 0,
+        "machine_translation_character_limit" => 10000,
+                          "max_users_reached" => false,
+                       "deepl_api_token_type" => nil,
+                  "uses_custom_deepl_account" => false,
+                            "deepl_api_token" => nil,
+                          "current_user_role" => "translator",
+                              "trial_ends_at" => "__REMOVED__",
+                           "enabled_features" => [
+          [ 0] "FEATURE_UNLIMITED_PROJECTS",
+          [ 1] "FEATURE_UNLIMITED_LANGUAGES",
+          [ 2] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_VALIDATIONS",
+          [ 4] "FEATURE_KEY_HISTORY",
+          [ 5] "FEATURE_EXPORT_HIERARCHY",
+          [ 6] "FEATURE_POST_PROCESSING",
+          [ 7] "FEATURE_PROJECT_ACTIVITY",
+          [ 8] "FEATURE_TAG_MANAGEMENT",
+          [ 9] "FEATURE_TAGS",
+          [10] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [11] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
+          [12] "FEATURE_OTA",
+          [13] "FEATURE_HTML_EDITOR",
+          [14] "FEATURE_TEMPLATES",
+          [15] "FEATURE_PROJECT_GROUPS"
+        ],
+                               "all_features" => {
+                          "FEATURE_UNLIMITED_PROJECTS" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                         "FEATURE_UNLIMITED_LANGUAGES" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+            [0] "basic",
+            [1] "team",
+            [2] "business"
+          ],
+                                 "FEATURE_VALIDATIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                 "FEATURE_KEY_HISTORY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_EXPORT_HIERARCHY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                             "FEATURE_POST_PROCESSING" => [
+            [0] "team",
+            [1] "business"
+          ],
+                            "FEATURE_PROJECT_ACTIVITY" => [
+            [0] "team",
+            [1] "business"
+          ],
+                              "FEATURE_TAG_MANAGEMENT" => [
+            [0] "team",
+            [1] "business"
+          ],
+                                        "FEATURE_TAGS" => [
+            [0] "team",
+            [1] "business"
+          ],
+             "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
+            [0] "team",
+            [1] "business"
+          ],
+                "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
+            [0] "team",
+            [1] "business"
+          ],
+                  "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
+            [0] "business"
+          ],
+                                         "FEATURE_OTA" => [
+            [0] "business"
+          ],
+                                 "FEATURE_HTML_EDITOR" => [
+            [0] "business"
+          ],
+                                   "FEATURE_TEMPLATES" => [
+            [0] "business"
+          ],
+                              "FEATURE_PROJECT_GROUPS" => [
+            [0] "business"
+          ],
+          "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE" => [
+            [0] "business"
+          ]
+        },
+                   "current_user_deactivated" => false,
+            "current_user_deactivated_reason" => nil
+      },
+      "relationships" => {
+        "projects" => {
+          "data" => []
+        }
+      }
+    }
+  ],
+  "meta" => {
+    "total" => 11
+  }
+}

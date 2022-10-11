@@ -1,6 +1,13 @@
 class LanguageSerializer
   include FastJsonapi::ObjectSerializer
-  attributes :id, :name, :is_default
+  attributes :id,
+             :name,
+             :is_default,
+             :supports_plural_zero,
+             :supports_plural_one,
+             :supports_plural_two,
+             :supports_plural_few,
+             :supports_plural_many
   belongs_to :country_code
   belongs_to :language_code
   belongs_to :parent
@@ -13,7 +20,7 @@ class LanguageSerializer
     if total_keys.zero?
       100
     else
-      translated_keys = language.translations.where.not(content: [nil, '']).count
+      translated_keys = language.translations.where.not(content: [nil, '']).where(export_config_id: nil).count
       (translated_keys.to_f / total_keys) * 100
     end
   end

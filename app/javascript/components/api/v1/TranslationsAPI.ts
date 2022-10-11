@@ -6,9 +6,14 @@ export interface ITranslation {
     type: "translation";
     attributes: {
         id: string;
-        content: string;
         key_id: string;
         language_id: string;
+        zero: string;
+        one: string;
+        two: string;
+        few: string;
+        many: string;
+        content: string; // other
         created_at: string;
     };
     relationships: {
@@ -23,7 +28,12 @@ const TranslationsAPI = {
         projectId: string;
         languageId: string;
         keyId: string;
-        content: string;
+        zero?: string;
+        one?: string;
+        two?: string;
+        few?: string;
+        many?: string;
+        content: string; // other
         exportConfigId?: string;
         triggerAutoTranslate?: boolean;
     }) => {
@@ -31,6 +41,11 @@ const TranslationsAPI = {
             language_id: options.languageId,
             key_id: options.keyId,
             translation: {
+                zero: options.zero,
+                one: options.one,
+                two: options.two,
+                few: options.few,
+                many: options.many,
                 content: options.content
             },
             export_config_id: options.exportConfigId,

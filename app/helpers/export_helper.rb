@@ -4,132 +4,82 @@ require 'yaml'
 require 'zip'
 
 module ExportHelper
-  def convert_html_translation(content)
-    if content.nil?
-      return nil
-    end
-
-    json_content = JSON.parse(content)
-
-    if json_content.is_a?(Numeric)
-      return json_content
-    end
-
-    converted = ''
-    json_content['blocks']&.map do |block|
-      if block['type'] == 'list'
-        if block['data']['style'] == 'ordered'
-          converted += '<ol>'
-        elsif block['data']['style'] == 'unordered'
-          converted += '<ul>'
-        end
-
-        block['data']['items'].map { |item| converted += "<li>#{item}</li>" }
-
-        if block['data']['style'] == 'ordered'
-          converted += '</ol>'
-        elsif block['data']['style'] == 'unordered'
-          converted += '</ul>'
-        end
-      elsif block['type'] == 'paragraph'
-        converted += "<p>#{block['data']['text']}</p>"
-      end
-    end
-
-    converted
-  rescue JSON::ParserError
-    nil
-  end
-
+  # Creates an export data object in the format:
+  # {
+  #   my.key.name: {
+  #     other: '',
+  #     zero: '',
+  #     one: '',
+  #     two: '',
+  #     few: '',
+  #     many: '',
+  #     pluralization_enabled: false,
+  #     description: ''
+  #   }
+  # }
   def create_language_export_data(project, export_config, language, post_processing_rules, **args)
     export_data = {}
+
+    # Load the translations for the given language and export config.
     project
       .keys
       .order_by_name
       .each do |key|
-        key_translation_export_config =
-          key
-            .translations
-            .where(language_id: language.id, export_config_id: export_config.id)
-            .order(created_at: :desc)
-            .first
-        if key_translation_export_config&.content.present?
-          key_translation = key_translation_export_config
+        key_translation = key.translation_for(language.id, export_config.id)
+        translation_export_data = nil
+
+        if key_translation
+          translation_export_data = key_translation.to_export_data(key, post_processing_rules, emojify: args[:emojify])
         else
-          key_translation =
-            key.translations.where(language_id: language.id, export_config_id: nil).order(created_at: :desc).first
+          translation_export_data =
+            language_export_data_line_from_simple_string('', pluralization_enabled: key.pluralization_enabled)
         end
 
-        content = ''
-        if key_translation.nil?
-          content = ''
-        elsif key.html_enabled
-          content = convert_html_translation(key_translation.content) || ''
-        else
-          content = key_translation.content
-        end
-
-        post_processing_rules.each do |post_processing_rule|
-          content = content.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
-        end
-
-        if args[:emojify]
-          content.gsub!(/[^\s]/, '❤️')
-        end
-
-        export_data[key.name] = content
+        export_data[key.name] = translation_export_data
       end
 
-    # Use translations of parent languages if translation is missing.
+    # Use translations of parent languages if translation for given language is missing.
     parent_language = language.parent
     while parent_language.present?
       parent_language.keys.each do |key|
-        if export_data[key.name].blank?
-          key_translation_export_config =
-            key
-              .translations
-              .where(language_id: parent_language.id, export_config_id: export_config.id)
-              .order(created_at: :desc)
-              .first
-          if key_translation_export_config&.content.present?
-            key_translation = key_translation_export_config
+        if export_data[key.name].nil? || export_data[key.name][:other].empty?
+          key_translation = key.translation_for(parent_language.id, export_config.id)
+          translation_export_data = nil
+
+          if key_translation
+            translation_export_data =
+              key_translation.to_export_data(key, post_processing_rules, emojify: args[:emojify])
           else
-            key_translation =
-              key
-                .translations
-                .where(language_id: parent_language.id, export_config_id: nil)
-                .order(created_at: :desc)
-                .first
+            translation_export_data =
+              language_export_data_line_from_simple_string('', pluralization_enabled: key.pluralization_enabled)
           end
 
-          content = ''
-          if key_translation.nil?
-            content = ''
-          elsif key.html_enabled
-            content = convert_html_translation(key_translation.content) || ''
-          else
-            content = key_translation.content
-          end
-
-          post_processing_rules.each do |post_processing_rule|
-            content = content.gsub(post_processing_rule.search_for, post_processing_rule.replace_with)
-          end
-
-          if args[:emojify]
-            content.gsub!(/[^\s]/, '❤️')
-          end
-
-          export_data[key.name] = content
+          export_data[key.name] = translation_export_data
         end
       end
+
       parent_language = parent_language.parent
     end
 
     if !args[:skip_timestamp]
-      export_data['texterify_timestamp'] = Time.now.utc.iso8601
+      export_data['texterify_timestamp'] = language_export_data_line_from_simple_string(Time.now.utc.iso8601)
     end
 
     export_data
+  end
+
+  # Create a simple export data line from a simple string.
+  def language_export_data_line_from_simple_string(text, pluralization_enabled: false)
+    {
+      other: text,
+      zero: '',
+      one: '',
+      two: '',
+      few: '',
+      many: '',
+      pluralization_enabled: pluralization_enabled,
+      description: ''
+    }
   end
 
   def create_export(project, export_config, file, **args)
@@ -165,23 +115,27 @@ module ExportHelper
               emojify: args[:emojify]
             )
 
-          duplicate_zip_entry_count = 0
-          loop do
-            file_path = export_config.filled_file_path(language)
+          export_file_objects = export_config.files(language, export_data, default_language, export_data_source)
 
-            if duplicate_zip_entry_count > 0
-              file_path += duplicate_zip_entry_count.to_s
+          export_file_objects.each do |export_file_object|
+            duplicate_zip_entry_count = 0
+            loop do
+              file_path = export_file_object[:path]
+
+              if duplicate_zip_entry_count > 0
+                file_path += duplicate_zip_entry_count.to_s
+              end
+
+              # Remove leading '/' because Zip::EntryNameError is otherwise thrown.
+              while file_path.start_with?('/')
+                file_path.delete_prefix!('/')
+              end
+
+              zip.add(file_path, export_file_object[:file])
+              break
+            rescue Zip::EntryExistsError
+              duplicate_zip_entry_count += 1
             end
-
-            # Remove leading '/' because Zip::EntryNameError is otherwise thrown.
-            while file_path.start_with?('/')
-              file_path.delete_prefix!('/')
-            end
-
-            zip.add(file_path, export_config.file(language, export_data, default_language, export_data_source))
-            break
-          rescue Zip::EntryExistsError
-            duplicate_zip_entry_count += 1
           end
         end
     end

@@ -1,0 +1,42 @@
+&,
+.dark-theme,
+.light-theme {
+  .ant-pagination-item {
+    a {
+      color: var(--pagination-color);
+    }
+
+    &:hover,
+    &:focus {
+      border-color: var(--input-border-hover-color);
+
+      a {
+        color: var(--input-border-hover-color);
+      }
+    }
+  }
+
+  .ant-pagination-prev:not(.ant-pagination-disabled),
+  .ant-pagination-next:not(.ant-pagination-disabled) {
+    &:hover .ant-pagination-item-link {
+      border-color: var(--input-border-focus-color);
+      color: var(--input-border-focus-color);
+    }
+  }
+
+  .ant-pagination-item-active {
+    border-color: var(--input-border-focus-color);
+
+    a {
+      color: var(--input-border-focus-color);
+    }
+
+    &:hover {
+      border-color: var(--input-border-focus-color);
+
+      a {
+        color: var(--input-border-focus-color);
+      }
+    }
+  }
+}

@@ -5,7 +5,6 @@
 </p>
 
 [![website](https://img.shields.io/badge/website-texterify.com-blue.svg)](https://texterify.com)
-[![build & push](https://github.com/texterify/texterify/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/texterify/texterify/actions)
 [![open issues](https://img.shields.io/github/issues-raw/texterify/texterify.svg)](https://github.com/texterify/texterify/issues)
 [![stars](https://img.shields.io/github/stars/texterify/texterify)](https://github.com/texterify/texterify)
 [![docker pulls](https://img.shields.io/docker/pulls/chrztoph/texterify)](https://hub.docker.com/r/chrztoph/texterify)

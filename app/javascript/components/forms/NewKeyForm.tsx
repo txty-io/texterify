@@ -5,7 +5,6 @@ import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
 import { KeysAPI } from "../api/v1/KeysAPI";
 import { TranslationsAPI } from "../api/v1/TranslationsAPI";
-import { TranslationCard } from "../sites/dashboard/editor/TranslationCard";
 import { dashboardStore } from "../stores/DashboardStore";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import { FeatureNotAvailable } from "../ui/FeatureNotAvailable";
@@ -16,6 +15,7 @@ import { KeystrokeHandler } from "../ui/KeystrokeHandler";
 import { TexterifyModal } from "../ui/TexterifyModal";
 import { LanguageUtils } from "../utilities/LanguageUtils";
 import { PermissionUtils } from "../utilities/PermissionUtils";
+import { EditTranslationForm, IEditTranslationFormFormValues } from "./EditTranslationForm";
 
 interface IProps {
     projectId: string;
@@ -25,24 +25,34 @@ interface IProps {
     onCreated?(): void;
 }
 
+interface IState {
+    defaultLangageTranslations: IEditTranslationFormFormValues;
+}
+
 interface IFormValues {
     name: string;
     description: string;
     htmlEnabled: boolean;
+    pluralizationEnabled: boolean;
     defaultLanguageContent: string;
-    defaultLanguageHTMLContent: string;
+    defaultLangageTranslations: IEditTranslationFormFormValues;
 }
 
-class NewKeyForm extends React.Component<IProps> {
+class NewKeyForm extends React.Component<IProps, IState> {
     formRef = React.createRef<FormInstance>();
 
+    state: IState = {
+        defaultLangageTranslations: null
+    };
+
     handleSubmit = async (values: IFormValues) => {
-        const response = await KeysAPI.createKey(
-            this.props.projectId,
-            values.name,
-            values.description,
-            values.htmlEnabled
-        );
+        const response = await KeysAPI.createKey({
+            projectId: this.props.projectId,
+            name: values.name,
+            description: values.description,
+            htmlEnabled: values.htmlEnabled,
+            pluralizationEnabled: values.pluralizationEnabled
+        });
 
         if (!response || !response.data || response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
@@ -66,25 +76,27 @@ class NewKeyForm extends React.Component<IProps> {
             return;
         }
 
-        if (values.defaultLanguageContent || values.defaultLanguageHTMLContent) {
-            const translationParams = {
+        if (
+            this.state.defaultLangageTranslations &&
+            (this.state.defaultLangageTranslations.zero ||
+                this.state.defaultLangageTranslations.one ||
+                this.state.defaultLangageTranslations.two ||
+                this.state.defaultLangageTranslations.few ||
+                this.state.defaultLangageTranslations.many ||
+                this.state.defaultLangageTranslations.other)
+        ) {
+            await TranslationsAPI.createTranslation({
                 projectId: this.props.projectId,
                 keyId: response.data.id,
-                languageId: LanguageUtils.getDefaultLanguage(this.props.languagesResponse).id
-            };
-
-            if (values.htmlEnabled) {
-                await TranslationsAPI.createTranslation({
-                    ...translationParams,
-                    content: values.defaultLanguageHTMLContent
-                });
-            } else if (!values.htmlEnabled) {
-                await TranslationsAPI.createTranslation({
-                    ...translationParams,
-                    content: values.defaultLanguageContent,
-                    triggerAutoTranslate: true
-                });
-            }
+                languageId: LanguageUtils.getDefaultLanguage(this.props.languagesResponse).id,
+                zero: this.state.defaultLangageTranslations.zero,
+                one: this.state.defaultLangageTranslations.one,
+                two: this.state.defaultLangageTranslations.two,
+                few: this.state.defaultLangageTranslations.few,
+                many: this.state.defaultLangageTranslations.many,
+                content: this.state.defaultLangageTranslations.other,
+                triggerAutoTranslate: true
+            });
         }
 
         if (this.props.onCreated) {
@@ -127,6 +139,10 @@ class NewKeyForm extends React.Component<IProps> {
                         ref={this.formRef}
                         id="newKeyForm"
                         onFinish={this.handleSubmit}
+                        onChange={() => {
+                            // Reset state to force a rerender because otherwise the checkboxes are not recognized correctly.
+                            this.setState(this.state);
+                        }}
                         style={{ maxWidth: "100%" }}
                         initialValues={{ htmlEnabled: false }}
                     >
@@ -144,7 +160,7 @@ class NewKeyForm extends React.Component<IProps> {
                         </Form.Item>
 
                         <Form.Item noStyle shouldUpdate>
-                            {({ getFieldValue, setFieldsValue }) => {
+                            {() => {
                                 return (
                                     <>
                                         <div style={{ display: "flex", alignItems: "center" }}>
@@ -167,67 +183,53 @@ class NewKeyForm extends React.Component<IProps> {
                                             <Tooltip title="If checked a editor will be used for translation that helps you to create HTML content. You can always change this later.">
                                                 <QuestionCircleOutlined />
                                             </Tooltip>
+                                            {!dashboardStore.featureEnabled("FEATURE_HTML_EDITOR") && (
+                                                <FeatureNotAvailable
+                                                    feature="FEATURE_HTML_EDITOR"
+                                                    style={{ marginLeft: 16 }}
+                                                />
+                                            )}
                                         </div>
 
-                                        {!dashboardStore.featureEnabled("FEATURE_HTML_EDITOR") && (
-                                            <FeatureNotAvailable
-                                                feature="FEATURE_HTML_EDITOR"
+                                        <div style={{ display: "flex", alignItems: "center", marginTop: 16 }}>
+                                            <Form.Item
+                                                name="pluralizationEnabled"
+                                                rules={[{ required: false }]}
+                                                valuePropName="checked"
                                                 style={{ marginBottom: 0 }}
-                                            />
-                                        )}
-
-                                        {defaultLanguage && (
-                                            <>
-                                                <h3 style={{ marginTop: 24 }}>
-                                                    {countryCode && (
-                                                        <span style={{ marginRight: 8 }}>
-                                                            <FlagIcon
-                                                                code={countryCode.attributes.code.toLowerCase()}
-                                                            />
-                                                        </span>
-                                                    )}
-                                                    {defaultLanguage.attributes.name}
-                                                </h3>
-                                                {getFieldValue("htmlEnabled") ? (
-                                                    <Form.Item
-                                                        name="defaultLanguageHTMLContent"
-                                                        rules={[{ required: false }]}
-                                                        className="defaultLanguageHTMLContent"
-                                                    >
-                                                        <TranslationCard
-                                                            projectId={this.props.projectId}
-                                                            languagesResponse={this.props.languagesResponse}
-                                                            defaultSelected={defaultLanguage}
-                                                            isHTMLKey
-                                                            hideLanguageSelection
-                                                            hideSaveButton
-                                                            onChange={(_changed, content) => {
-                                                                setFieldsValue({
-                                                                    defaultLanguageHTMLContent: content
-                                                                });
-                                                            }}
-                                                            initialValue={getFieldValue("defaultLanguageHTMLContent")}
-                                                        />
-                                                    </Form.Item>
-                                                ) : (
-                                                    <Form.Item
-                                                        name="defaultLanguageContent"
-                                                        rules={[{ required: false }]}
-                                                    >
-                                                        <Input.TextArea
-                                                            style={{ resize: "none" }}
-                                                            placeholder="Translation"
-                                                            autoSize={{ minRows: 4, maxRows: 4 }}
-                                                        />
-                                                    </Form.Item>
-                                                )}
-                                            </>
-                                        )}
+                                            >
+                                                <Checkbox>Enable pluralization</Checkbox>
+                                            </Form.Item>
+                                        </div>
                                     </>
                                 );
                             }}
                         </Form.Item>
                     </Form>
+
+                    {defaultLanguage && (
+                        <>
+                            <h3 style={{ marginTop: 24 }}>
+                                {countryCode && (
+                                    <span style={{ marginRight: 8 }}>
+                                        <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
+                                    </span>
+                                )}
+                                {defaultLanguage.attributes.name}
+                            </h3>
+                            <EditTranslationForm
+                                languagesResponse={this.props.languagesResponse}
+                                projectId={this.props.projectId}
+                                selectedLanguageId={defaultLanguage.id}
+                                selectedExportConfigId={null}
+                                onChange={(values) => {
+                                    this.setState({ defaultLangageTranslations: values });
+                                }}
+                                forceHTML={this.formRef.current?.getFieldValue("htmlEnabled")}
+                                forcePluralization={this.formRef.current?.getFieldValue("pluralizationEnabled")}
+                            />
+                        </>
+                    )}
                 </TexterifyModal>
 
                 <KeystrokeHandler

@@ -1,0 +1,12 @@
+{
+  "key_1" => {
+                    :other => "Translation 1",
+                     :zero => "",
+                      :one => "",
+                      :two => "",
+                      :few => "",
+                     :many => "",
+    :pluralization_enabled => false,
+              :description => ""
+  }
+}

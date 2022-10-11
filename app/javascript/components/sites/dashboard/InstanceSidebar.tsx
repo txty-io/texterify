@@ -1,4 +1,11 @@
-import { FileTextOutlined, HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined, ToolOutlined } from "@ant-design/icons";
+import {
+    FileTextOutlined,
+    HomeOutlined,
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
+    ToolOutlined,
+    UserOutlined
+} from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { CollapseType } from "antd/lib/layout/Sider";
 import { observer } from "mobx-react";
@@ -19,12 +26,9 @@ interface INavigationData {
 }
 
 type IProps = RouteComponentProps<{}>;
-interface IState {
-    selectedItem: number;
-}
 
 @observer
-class InstanceSidebar extends React.Component<IProps, IState> {
+class InstanceSidebar extends React.Component<IProps> {
     navigationData: INavigationData[] = [
         {
             icon: HomeOutlined,
@@ -38,7 +42,16 @@ class InstanceSidebar extends React.Component<IProps, IState> {
             path: Routes.DASHBOARD.INSTANCE.LICENSES,
             text: "Licenses",
             dataId: "instance-sidebar-licenses",
-            texterifyInstanceOnly: true
+            texterifyInstanceOnly: false
+            // For now also shown in the cloud version because the tests are otherwise not working.
+            // texterifyInstanceOnly: true
+        },
+        {
+            icon: UserOutlined,
+            path: Routes.DASHBOARD.INSTANCE.USERS,
+            text: "Users",
+            dataId: "instance-sidebar-users",
+            texterifyInstanceOnly: false
         },
         {
             icon: ToolOutlined,
@@ -49,39 +62,35 @@ class InstanceSidebar extends React.Component<IProps, IState> {
         }
     ];
 
-    state: IState = {
-        selectedItem: 0
+    getFilteredNavigationData = () => {
+        return this.navigationData.filter((data) => {
+            if (data.texterifyInstanceOnly) {
+                if (IS_TEXTERIFY_CLOUD) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        });
     };
 
     renderMenuItems = () => {
-        return (
-            this.navigationData
-                // .filter((data) => {
-                //     if (data.texterifyInstanceOnly) {
-                //         if (IS_TEXTERIFY_CLOUD) {
-                //             return false;
-                //         } else {
-                //             return true;
-                //         }
-                //     } else {
-                //         return true;
-                //     }
-                // })
-                .map((data: INavigationData, index: number) => {
-                    return (
-                        <Menu.Item data-id={data.dataId} key={index} title={data.text}>
-                            <Link to={data.path}>
-                                <data.icon />
-                                <span>{data.text}</span>
-                            </Link>
-                        </Menu.Item>
-                    );
-                })
-        );
+        return this.getFilteredNavigationData().map((data: INavigationData, index: number) => {
+            return (
+                <Menu.Item data-id={data.dataId} key={index} title={data.text}>
+                    <Link to={data.path}>
+                        <data.icon />
+                        <span>{data.text}</span>
+                    </Link>
+                </Menu.Item>
+            );
+        });
     };
 
-    getSelectedItem = () => {
-        return this.navigationData.map((data: INavigationData, index: number): string => {
+    getSelectedItems = () => {
+        return this.getFilteredNavigationData().map((data: INavigationData, index: number): string => {
             if (data.path === this.props.location.pathname) {
                 return index.toString();
             }
@@ -140,8 +149,8 @@ class InstanceSidebar extends React.Component<IProps, IState> {
                     <Menu
                         id="sidebar-menu"
                         mode="inline"
-                        selectedKeys={this.getSelectedItem()}
-                        style={{ height: "100%" }}
+                        selectedKeys={this.getSelectedItems()}
+                        style={{ height: "100%", paddingTop: 8 }}
                     >
                         {this.renderMenuItems()}
                     </Menu>

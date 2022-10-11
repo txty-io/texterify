@@ -21,7 +21,7 @@ import { PAGE_SIZE_OPTIONS } from "./Config";
 import { DeleteLink } from "./DeleteLink";
 import { FeatureNotAvailable } from "./FeatureNotAvailable";
 import { Flag } from "./Flag";
-import { Utils } from "./Utils";
+import { escapeHTML, Utils } from "./Utils";
 
 interface ITableRow {
     key: string;
@@ -218,9 +218,7 @@ class IssuesTable extends React.Component<IProps, IState> {
                     </Link>
                 ),
                 language: <Flag language={language} countryCode={countryCode} languageCode={languageCode} />,
-                content: key.attributes.html_enabled
-                    ? Utils.getHTMLContentPreview(translation.attributes.content)
-                    : translation.attributes.content,
+                content: escapeHTML(translation.attributes.content),
                 description: this.getValidationDescription({
                     validationViolation: validationViolation,
                     validation: validation,

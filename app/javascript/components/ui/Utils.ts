@@ -1,73 +1,22 @@
 import * as sanitizeHtml from "sanitize-html";
 import { IPlanIDS } from "../types/IPlan";
 import { BASIC_PLAN, BUSINESS_PLAN, TEAM_PLAN } from "./Licenses";
+import * as moment from "moment";
 
 export const DATE_FORMAT = "DD.MM.YYYY";
 export const DATE_TIME_FORMAT = "DD.MM.YYYY HH:mm";
 
-function escapeContent(htmlContent: string) {
-    return sanitizeHtml(htmlContent, {
-        allowedTags: ["b", "i", "a"]
+export function escapeHTML(content: string) {
+    if (!content) {
+        return "";
+    }
+
+    return sanitizeHtml(content, {
+        allowedTags: ["b", "i", "ul", "ol", "li", "p", "u", "pre", "code", "br"]
     });
 }
 
 const Utils = {
-    getHTMLContentPreview: (htmlContent: string) => {
-        try {
-            const json = JSON.parse(htmlContent);
-
-            let converted = "";
-            json.blocks.map((block) => {
-                if (block.type === "list") {
-                    if (block.data.style === "ordered") {
-                        converted += "<ol>";
-                    } else if (block.data.style === "unordered") {
-                        converted += "<ul>";
-                    }
-
-                    block.data.items.map((item) => {
-                        converted += `<li>${escapeContent(item)}</li>`;
-                    });
-
-                    if (block.data.style === "ordered") {
-                        converted += "</ol>";
-                    } else if (block.data.style === "unordered") {
-                        converted += "</ul>";
-                    }
-                } else if (block.type === "paragraph") {
-                    converted += `<p>${escapeContent(block.data.text)}</p>`;
-                }
-            });
-
-            return converted;
-        } catch (e) {
-            return htmlContent;
-        }
-    },
-
-    escapeEditorContent: (json: any) => {
-        if (json && json.blocks) {
-            const blocks = json.blocks.map((block) => {
-                if (block.type === "list") {
-                    const items = block.data.items.map((item) => {
-                        return escapeContent(item);
-                    });
-                    block.data.items = items;
-                } else if (block.type === "paragraph") {
-                    block.data.text = escapeContent(block.data.text);
-                }
-
-                return block;
-            });
-
-            json.blocks = blocks;
-        } else {
-            return {};
-        }
-
-        return json;
-    },
-
     capitalize: (s: string) => {
         return s.charAt(0).toUpperCase() + s.slice(1);
     },
@@ -115,6 +64,10 @@ const Utils = {
         } else if (planName === "business") {
             return BUSINESS_PLAN;
         }
+    },
+
+    formatDateTime(dateTime: string) {
+        return moment.utc(dateTime, "YYYY-MM-DD HH:mm:ss").local().format("YYYY-MM-DD HH:mm");
     }
 };
 

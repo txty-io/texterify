@@ -1,38 +1,16 @@
-import { LoadingOutlined } from "@ant-design/icons";
-import EditorJS from "@editorjs/editorjs";
-import List from "@editorjs/list";
-import { Button, message, Select } from "antd";
-import TextArea from "antd/lib/input/TextArea";
+import { Alert, Button, Select } from "antd";
 import * as React from "react";
-import styled from "styled-components";
 import { APIUtils } from "../../../api/v1/APIUtils";
 import { IGetKeyResponse, IPlaceholder } from "../../../api/v1/KeysAPI";
 import { IGetLanguagesResponse, ILanguage } from "../../../api/v1/LanguagesAPI";
 import {
     IGetMachineTranslationsSourceLanguages,
-    IGetMachineTranslationsTargetLanguages,
-    IGetMachineTranslationSuggestion
+    IGetMachineTranslationsTargetLanguages
 } from "../../../api/v1/MachineTranslationsAPI";
-import { TranslationsAPI } from "../../../api/v1/TranslationsAPI";
+import { EditTranslationForm } from "../../../forms/EditTranslationForm";
 import FlagIcon from "../../../ui/FlagIcons";
 import { MachineTranslationSuggestion } from "../../../ui/MachineTranslationSuggestion";
-import { Styles } from "../../../ui/Styles";
-import { Utils } from "../../../ui/Utils";
 import { TranslationUtils } from "../../../utilities/TranslationUtils";
-
-const EMPTY_EDITOR_HEIGHT = 108;
-
-const EditorWrapper = styled.div`
-    background: #fff;
-    border: 1px solid var(--border-color-flashier);
-    padding: 12px 40px 12px 20px;
-    border-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
-    transition: all 0.3s;
-
-    .dark-theme & {
-        background: transparent;
-    }
-`;
 
 interface IProps {
     projectId: string;
@@ -40,7 +18,6 @@ interface IProps {
     languagesResponse: IGetLanguagesResponse;
     defaultSelected: string;
     keyResponse?: IGetKeyResponse;
-    isHTMLKey?: boolean;
     hideLanguageSelection?: boolean;
     hideSaveButton?: boolean;
     exportConfigId?: string;
@@ -50,38 +27,26 @@ interface IProps {
     defaultLanguageTranslationContent?: string;
     supportedSourceLanguages?: IGetMachineTranslationsSourceLanguages;
     supportedTargetLanguages?: IGetMachineTranslationsTargetLanguages;
-    onChange?(changed: boolean, content: string);
-    onSave?();
+    onChange?(changed: boolean, content: string): void;
+    onSave?(): void;
     onSelectedLanguageIdChange?(languageId: string): void;
 }
 interface IState {
     selectedLanguageId: string;
-    editorContentChanged: boolean;
-    editorLoaded: boolean;
-    textareaContentChanged: boolean;
-    isHTMLKey: boolean;
+    contentChanged: boolean;
     translationForLanguage: string;
     content: string;
-    translationSuggestion: IGetMachineTranslationSuggestion;
-    translationSuggestionLoading: boolean;
-    initialMachineTranslationLoaded: boolean;
+    forceContentOther: string;
 }
 
 class TranslationCard extends React.Component<IProps, IState> {
     state: IState = {
         selectedLanguageId: this.props.defaultSelected,
-        editorContentChanged: false,
-        editorLoaded: false,
-        textareaContentChanged: false,
-        isHTMLKey: true,
+        contentChanged: false,
         translationForLanguage: null,
         content: null,
-        translationSuggestion: null,
-        translationSuggestionLoading: false,
-        initialMachineTranslationLoaded: false
+        forceContentOther: null
     };
-
-    editor: any;
 
     async componentDidMount() {
         await this.loadData();
@@ -93,124 +58,17 @@ class TranslationCard extends React.Component<IProps, IState> {
             keyResponse: this.props.keyResponse
         })?.attributes.content;
 
-        const isHTMLKey = this.props.keyResponse
-            ? this.props.keyResponse.data.attributes.html_enabled
-            : this.props.isHTMLKey;
-
-        if (isHTMLKey) {
-            let successfullyParsed = false;
-            let htmlData;
-            try {
-                htmlData = JSON.parse(this.props.initialValue || translationForLanguage);
-                successfullyParsed = true;
-            } catch (e) {
-                htmlData = this.props.initialValue || translationForLanguage;
-            }
-
-            console.error(htmlData);
-
-            this.editor = new EditorJS({
-                holder: `codex-editor-${this.state.selectedLanguageId}`,
-                minHeight: 40,
-                tools: {
-                    list: {
-                        class: List,
-                        inlineToolbar: true
-                    }
-                },
-                onChange: async () => {
-                    if (this.props.onChange) {
-                        const content = await this.editor.save();
-                        this.props.onChange(true, JSON.stringify(content));
-                    }
-                    this.setState({ editorContentChanged: true });
-                },
-                data: successfullyParsed
-                    ? Utils.escapeEditorContent(htmlData)
-                    : {
-                          blocks: [{ data: { text: htmlData }, type: "paragraph" }]
-                      }
-            });
-            await this.editor.isReady;
-        } else {
-            this.setState({ content: translationForLanguage });
-        }
-
         this.setState({
-            editorLoaded: true,
-            isHTMLKey: isHTMLKey,
-            translationForLanguage: translationForLanguage
+            translationForLanguage: translationForLanguage,
+            content: translationForLanguage,
+            contentChanged: false,
+            forceContentOther: null
         });
-    };
-
-    isHTMLKey = () => {
-        return this.state.isHTMLKey;
-    };
-
-    contentChanged = () => {
-        return this.state.editorContentChanged || this.state.textareaContentChanged;
-    };
-
-    getEditorLoadingOverlay = () => {
-        return (
-            <div
-                style={{
-                    width: "100%",
-                    height: "100%",
-                    position: "absolute",
-                    left: 0,
-                    top: 0,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center"
-                }}
-            >
-                <LoadingOutlined style={{ fontSize: 24, margin: "auto" }} spin />
-            </div>
-        );
-    };
-
-    saveChanges = async () => {
-        let promise;
-        if (this.state.isHTMLKey) {
-            promise = this.editor.save();
-        } else {
-            promise = Promise.resolve(this.state.content);
-        }
-
-        return promise
-            .then(async (content) => {
-                if (this.state.isHTMLKey) {
-                    content = JSON.stringify(content);
-                }
-
-                await TranslationsAPI.createTranslation({
-                    projectId: this.props.projectId,
-                    languageId: this.state.selectedLanguageId,
-                    keyId: this.props.keyResponse.data.id,
-                    exportConfigId: this.props.exportConfigId ? this.props.exportConfigId : undefined,
-                    content: content
-                });
-
-                if (this.props.onSave) {
-                    this.props.onSave();
-                }
-
-                this.setState({
-                    editorContentChanged: false,
-                    textareaContentChanged: false,
-                    translationForLanguage: content
-                });
-            })
-            .catch((error) => {
-                console.error(error);
-                message.error("Failed to save changes.");
-            });
     };
 
     render() {
         let defaultLanguageDisplay;
-        if (this.props.isDefaultLanguage && this.props.languages && !this.props.isHTMLKey) {
+        if (this.props.isDefaultLanguage && this.props.languages) {
             const language = this.props.languages[0];
 
             const countryCode = APIUtils.getIncludedObject(
@@ -219,7 +77,7 @@ class TranslationCard extends React.Component<IProps, IState> {
             );
 
             defaultLanguageDisplay = (
-                <div style={{ display: "flex", alignItems: "center", marginLeft: 12 }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
                     {countryCode && (
                         <span style={{ marginRight: 8 }}>
                             <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
@@ -259,6 +117,8 @@ class TranslationCard extends React.Component<IProps, IState> {
                     }
                 }, []);
             });
+
+        const editable = this.props.keyResponse?.data.attributes.editable_for_current_user;
 
         return (
             <div style={{ marginBottom: 24, width: "100%" }} data-id="translation-card">
@@ -308,9 +168,10 @@ class TranslationCard extends React.Component<IProps, IState> {
                         {!this.props.hideSaveButton && (
                             <Button
                                 type="primary"
-                                disabled={!this.contentChanged()}
+                                htmlType="submit"
+                                disabled={!this.state.contentChanged}
                                 style={{ marginLeft: "auto" }}
-                                onClick={this.saveChanges}
+                                form={`edit-translation-form-${this.state.selectedLanguageId}`}
                             >
                                 Save changes
                             </Button>
@@ -318,73 +179,43 @@ class TranslationCard extends React.Component<IProps, IState> {
                     </div>
                 )}
 
-                {this.isHTMLKey() ? (
-                    <div style={{ position: "relative" }}>
-                        <EditorWrapper
-                            style={{
-                                opacity: this.state.editorLoaded ? 1 : 0,
-                                height: this.state.editorLoaded ? undefined : EMPTY_EDITOR_HEIGHT
-                            }}
-                        >
-                            <div id={`codex-editor-${this.state.selectedLanguageId}`} />
-                        </EditorWrapper>
-                        {!this.state.editorLoaded && this.getEditorLoadingOverlay()}
-                    </div>
-                ) : (
-                    <div style={{ position: "relative" }}>
-                        <div
-                            style={{
-                                width: "100%",
-                                height: "100%",
-                                position: "absolute",
-                                top: 0,
-                                padding: "5px 12px",
-                                lineHeight: "1.5715",
-                                whiteSpace: "pre-wrap",
-                                wordWrap: "break-word"
-                            }}
-                        >
-                            {converted}
-                        </div>
-
-                        <TextArea
-                            autoSize={{ minRows: 8, maxRows: 12 }}
-                            placeholder="Language translation content"
-                            onChange={(event) => {
-                                const changed = event.target.value !== this.state.translationForLanguage;
-
-                                this.setState({ textareaContentChanged: changed });
-
-                                if (this.props.onChange) {
-                                    this.props.onChange(changed, event.target.value);
-                                }
-
-                                this.setState({ content: event.target.value });
-                            }}
-                            value={this.state.content}
-                            style={{ backgroundColor: "transparent" }}
-                        />
-                    </div>
-                )}
-
-                <MachineTranslationSuggestion
-                    defaultLanguage={this.props.defaultLanguage}
-                    isHTMLKey={this.state.isHTMLKey}
-                    defaultLanguageTranslationContent={this.props.defaultLanguageTranslationContent}
-                    supportedSourceLanguages={this.props.supportedSourceLanguages}
-                    supportedTargetLanguages={this.props.supportedTargetLanguages}
-                    onUseTranslation={(data) => {
-                        this.setState({
-                            content: data.suggestion.translation,
-                            editorContentChanged: true
-                        });
-                    }}
-                    selectedLanguageId={this.state.selectedLanguageId}
-                    translationForTargetLanguage={this.state.content}
+                <EditTranslationForm
+                    keyResponse={this.props.keyResponse}
                     languagesResponse={this.props.languagesResponse}
                     projectId={this.props.projectId}
-                    keyReponse={this.props.keyResponse}
+                    selectedLanguageId={this.state.selectedLanguageId}
+                    selectedExportConfigId={null}
+                    onChange={() => {
+                        this.setState({ contentChanged: true });
+                    }}
+                    onSuccess={(values) => {
+                        this.setState({ contentChanged: false, content: values.other, forceContentOther: null });
+                        if (this.props.onSave) {
+                            this.props.onSave();
+                        }
+                    }}
+                    formId={`edit-translation-form-${this.state.selectedLanguageId}`}
+                    forceContentOther={this.state.forceContentOther}
                 />
+
+                {editable && (
+                    <MachineTranslationSuggestion
+                        defaultLanguage={this.props.defaultLanguage}
+                        defaultLanguageTranslationContent={this.props.defaultLanguageTranslationContent}
+                        supportedSourceLanguages={this.props.supportedSourceLanguages}
+                        supportedTargetLanguages={this.props.supportedTargetLanguages}
+                        onUseTranslation={(data) => {
+                            this.setState({
+                                forceContentOther: data.suggestion.translation
+                            });
+                        }}
+                        selectedLanguageId={this.state.selectedLanguageId}
+                        translationForTargetLanguage={this.state.content}
+                        languagesResponse={this.props.languagesResponse}
+                        projectId={this.props.projectId}
+                        keyReponse={this.props.keyResponse}
+                    />
+                )}
             </div>
         );
     }

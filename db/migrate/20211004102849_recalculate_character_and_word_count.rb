@@ -16,7 +16,7 @@ class RecalculateCharacterAndWordCount < ActiveRecord::Migration[6.1]
           end
 
           character_count += translation.content.length
-          word_count += translation.content.split(' ').length
+          word_count += translation.content.split.length
         end
       end
 

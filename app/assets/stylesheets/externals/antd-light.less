@@ -1,23 +1,22 @@
-
 .light-theme {
-    .ant-layout {
-        background: #fefeff;
-    }
+  .ant-layout {
+    background: #fefeff;
+  }
 
+  .ant-layout-sider-trigger {
+    color: #000;
+    background: #fff;
+    border-right: 1px solid #f0f0f0;
+
+    &:hover {
+      color: var(--color-primary);
+    }
+  }
+
+  .ant-layout-sider-collapsed {
     .ant-layout-sider-trigger {
-        color: #000;
-        background: #fff;
-        border-right: 1px solid #f0f0f0;
-
-        &:hover {
-            color: var(--blue-color);
-        }
+      color: var(--color-primary);
+      background: var(--primary-light-color);
     }
-
-    .ant-layout-sider-collapsed {
-        .ant-layout-sider-trigger {
-            color: var(--blue-color);
-            background: var(--primary-light-color);
-        }
-    }
+  }
 }

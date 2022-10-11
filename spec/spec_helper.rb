@@ -1,7 +1,5 @@
-# require 'pry'
-
-# require 'simplecov'
-# SimpleCov.start 'rails'
+require 'simplecov'
+SimpleCov.start 'rails'
 
 # require 'simplecov_json_formatter'
 # SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter

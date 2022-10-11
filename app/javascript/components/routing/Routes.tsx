@@ -46,6 +46,7 @@ const Routes = {
         PROJECT_MACHINE_TRANSLATION_USAGE: "/dashboard/projects/:projectId/machine-translation/usage",
         PROJECT_EXPORT_CONFIGURATIONS: "/dashboard/projects/:projectId/export/configurations",
         PROJECT_EXPORT_HIERARCHY: "/dashboard/projects/:projectId/export/hierarchy",
+        PROJECT_TAGS: "/dashboard/projects/:projectId/tags",
         PROJECT_ISSUES_ACTIVE: "/dashboard/projects/:projectId/active-issues",
         PROJECT_ISSUES_IGNORED: "/dashboard/projects/:projectId/ignored-issues",
         PROJECT_SETTINGS: "/dashboard/projects/:projectId/settings",
@@ -161,6 +162,7 @@ const Routes = {
         INSTANCE: {
             ROOT: "/dashboard/instance",
             LICENSES: "/dashboard/instance/licenses",
+            USERS: "/dashboard/instance/users",
             SETTINGS: "/dashboard/instance/settings"
         }
     },

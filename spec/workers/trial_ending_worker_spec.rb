@@ -16,7 +16,7 @@ RSpec.describe TrialEndingWorker, type: :worker do
   end
 
   it 'enqueues a TrialEndingWorker' do
-    user = FactoryBot.create(:user_with_organizations, organizations_count: 1)
+    user = create(:user_with_organizations, organizations_count: 1)
     organization = user.organizations.first
 
     organization.trial_ends_at = Time.now.utc + 1.day

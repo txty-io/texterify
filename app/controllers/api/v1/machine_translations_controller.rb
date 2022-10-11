@@ -7,6 +7,8 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
 
     deepl_client = Deepl::V2::Client.new
     render json: deepl_client.usage
+  rescue DeeplInvalidTokenException => _e
+    render json: { error: true, message: 'MACHINE_TRANSLATION_INVALID_TOKEN' }, status: :bad_request
   end
 
   def source_languages
@@ -35,16 +37,11 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
 
     authorize translation
 
-    if translation.key.html_enabled
-      render json: { error: true, message: 'MACHINE_TRANSLATIONS_FOR_HTML_KEYS_NOT_SUPPROTED' }, status: :bad_request
-      return
-    end
-
     suggestion = Texterify::MachineTranslation.translate(project, translation, target_language)
 
     render json: { translation: suggestion }
   rescue OrganizationMachineTranslationUsageExceededException => e
-    render json: { error: true, message: 'MACHINE_TRANSLATIONS_USAGE_EXCEEDED', data: e.details }, status: :bad_request
+    render json: { error: true, message: 'MACHINE_TRANSLATION_USAGE_EXCEEDED', data: e.details }, status: :bad_request
     return
   end
 
@@ -69,14 +66,14 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
       render json: { error: true, message: 'FAILED_TO_MACHINE_TRANSLATE' }
     end
   rescue OrganizationMachineTranslationUsageExceededException => e
-    render json: { error: true, message: 'MACHINE_TRANSLATIONS_USAGE_EXCEEDED', data: e.details }, status: :bad_request
+    render json: { error: true, message: 'MACHINE_TRANSLATION_USAGE_EXCEEDED', data: e.details }, status: :bad_request
   end
 
   private
 
   def verify_deepl_configured
-    if ENV['DEEPL_API_TOKEN'].blank?
-      render json: { error: true, message: 'NOT_CONFIGURED' }, status: :bad_request
+    if ENV.fetch('DEEPL_API_TOKEN', nil).nil?
+      render json: { error: true, message: 'MACHINE_TRANSLATION_TOKEN_NOT_CONFIGURED' }, status: :bad_request
     end
   end
 end

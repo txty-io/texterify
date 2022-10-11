@@ -124,8 +124,8 @@ export const InstanceSite = observer(() => {
                                     <>
                                         <div>
                                             <RobotOutlined style={{ marginRight: 16 }} />
-                                            {machineTransationsUsage.character_count}/
-                                            {machineTransationsUsage.character_limit}
+                                            {machineTransationsUsage?.character_count || "-"}/
+                                            {machineTransationsUsage?.character_limit || "-"}
                                         </div>
                                         <div style={{ marginTop: 4 }}>
                                             <a
@@ -171,11 +171,7 @@ export const InstanceSite = observer(() => {
                         <Statistic
                             title="Domain filter"
                             valueRender={() => {
-                                return (
-                                    instanceInfos.domain_filter || (
-                                        <i style={{ color: "var(--color-passive)" }}>no filter</i>
-                                    )
-                                );
+                                return instanceInfos.domain_filter || "-";
                             }}
                             style={{ marginTop: 8 }}
                         />

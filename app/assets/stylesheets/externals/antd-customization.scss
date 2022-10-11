@@ -51,9 +51,12 @@
       }
     }
 
-    // Hide the margin of the last <p> in HTML key translations.
-    p:last-child {
-      margin-bottom: 0;
+    ul, ol, p {
+      margin-bottom: 16px !important;
+
+      &:last-child {
+        margin-bottom: 0 !important;
+      }
     }
   }
 
@@ -63,14 +66,6 @@
 
   .ant-table td {
     text-overflow: ellipsis;
-  }
-
-  .ant-breadcrumb a {
-    color: var(--blue-color);
-
-    &:hover {
-      text-decoration: underline;
-    }
   }
 
   .ant-layout {
@@ -102,10 +97,15 @@
   .ant-modal-title {
     font-size: 22px;
     line-height: 40px;
+    padding-right: 32px;
   }
 
   .ant-table-tbody .ant-form-item-control {
     line-height: 0;
+  }
+
+  .ant-spin-blur {
+    opacity: .25;
   }
 
   // Hide the loading indicator container because otherwise it still takes some
@@ -121,28 +121,14 @@
     }
   }
 
-  .ce-block__content {
-    max-width: 100%;
-  }
+  .ant-progress {
+    &.ant-progress-status-success .ant-progress-inner > .ant-progress-bg {
+      background-color: var(--progressbar-success-background-color);
+    }
 
-  .ce-toolbar__content {
-    max-width: 100%;
-  }
-
-  .cdx-list__item {
-    list-style: inherit;
-  }
-
-  .cdx-list--unordered {
-    list-style: disc;
-  }
-
-  .cdx-list--ordered {
-    list-style: decimal;
-  }
-
-  .ant-progress-status-success .ant-progress-bg {
-    background-color: var(--color-success);
+    .anticon-check-circle {
+      color: var(--progressbar-success-background-color);
+    }
   }
 
   .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab {

@@ -204,7 +204,7 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
             <LayoutWithSubSidebar>
                 <ExportSidebar projectId={this.props.match.params.projectId} />
 
-                <LayoutWithSubSidebarInner smallWidth>
+                <LayoutWithSubSidebarInner>
                     <Breadcrumbs breadcrumbName="projectExportHiearchy" />
                     <LayoutWithSubSidebarInnerContent>
                         <h1>Hierarchy</h1>

@@ -52,6 +52,7 @@ Rails
         get 'instance', to: 'instance#show'
         put 'instance/domain-filter', to: 'instance#domain_filter'
         put 'instance/sign-up-enabled', to: 'instance#sign_up_enabled'
+        get 'instance/users', to: 'instance_users#index'
 
         get :recently_viewed_projects, to: 'projects#recently_viewed'
 
@@ -69,6 +70,7 @@ Rails
           resources :keys, only: [:create, :show, :index, :destroy, :update] do
             get :activity
             resources :placeholders, only: [:create, :index, :destroy]
+            resources :tags, only: [:create, :destroy], controller: 'key_tags'
           end
           delete 'keys', to: 'keys#destroy_multiple'
 
@@ -130,6 +132,9 @@ Rails
           resources :forbidden_words_lists,
                     only: [:create, :index, :update, :destroy],
                     controller: 'forbidden_words_lists'
+
+          # Tags
+          resources :tags, only: [:create, :index, :update, :destroy]
 
           # WordPress Polylang integration
           get 'wordpress_polylang_connection', to: 'wordpress_polylang_connections#show'

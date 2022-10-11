@@ -63,7 +63,7 @@ class LoginForm extends React.Component<{}, IState> {
                             paddingTop: 8
                         }}
                     >
-                        <SiteWrapperLink data-id="sign-up-link" to={Routes.AUTH.SIGNUP} style={{ fontWeight: 600 }}>
+                        <SiteWrapperLink data-id="sign-up-link" to={Routes.AUTH.SIGNUP}>
                             Create new account
                         </SiteWrapperLink>
                         <Button tabIndex={3} type="primary" htmlType="submit" style={{ marginBottom: 0 }}>

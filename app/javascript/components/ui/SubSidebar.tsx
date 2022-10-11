@@ -6,17 +6,17 @@ import styled from "styled-components";
 const SidebarListItem = styled.li<{ active: boolean }>`
     position: relative;
 
-    &:before {
+    &:after {
         position: absolute;
         content: "";
         display: ${(props) => {
             return props.active ? "block" : "none";
         }};
-        top: 7px;
+        top: 9px;
         height: 20px;
-        width: 4px;
-        background: var(--sidebar-item-active-border-color);
-        border-radius: 0px 2px 2px 0px;
+        right: -1px;
+        width: 3px;
+        background: var(--sidebar-indicator-color);
     }
 
     a {
@@ -25,6 +25,9 @@ const SidebarListItem = styled.li<{ active: boolean }>`
         }};
         display: inline-block;
         width: 100%;
+        font-weight: ${(props) => {
+            return props.active ? "bold" : undefined;
+        }};
 
         &:hover {
             color: var(--sidebar-item-color-hover);

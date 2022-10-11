@@ -47,7 +47,7 @@ context("key", () => {
 
         // add some content
         cy.goToKeys();
-        cy.contains("a000").parent().next().next().children().type("hello world");
+        cy.contains("a000").parent().parent().next().next().children().type("hello world");
         cy.clickOutside();
         cy.goToProjectHome();
         cy.get(".data-id-project-home-word").should("contain", 2);
@@ -55,7 +55,7 @@ context("key", () => {
 
         // remove text from already existing translation
         cy.goToKeys();
-        cy.contains("a000").parent().next().next().children().click();
+        cy.contains("a000").parent().parent().next().next().children().click();
         cy.focused().clear().type("hello");
         cy.clickOutside();
         cy.goToProjectHome();
@@ -64,7 +64,7 @@ context("key", () => {
 
         // remove all text from already existing translation
         cy.goToKeys();
-        cy.contains("a000").parent().next().next().children().click();
+        cy.contains("a000").parent().parent().next().next().children().click();
         cy.focused().clear();
         cy.clickOutside();
         cy.goToProjectHome();
@@ -81,15 +81,15 @@ context("key", () => {
         const part4 = "a ";
         const part5 = "lie";
         cy.goToKeys();
-        cy.contains("a000").parent().next().next().children().click();
+        cy.contains("a000").parent().parent().next().next().children().click();
         cy.focused().clear().type(part1);
-        cy.contains("a111").parent().next().next().children().click();
+        cy.contains("a111").parent().parent().next().next().children().click();
         cy.focused().clear().type(part2);
-        cy.contains("a222").parent().next().next().children().click();
+        cy.contains("a222").parent().parent().next().next().children().click();
         cy.focused().clear().type(part3);
-        cy.contains("a333").parent().next().next().children().click();
+        cy.contains("a333").parent().parent().next().next().children().click();
         cy.focused().clear().type(part4);
-        cy.contains("a444").parent().next().next().children().click();
+        cy.contains("a444").parent().parent().next().next().children().click();
         cy.focused().clear().type(part5);
         cy.clickOutside();
         cy.goToProjectHome();
@@ -110,7 +110,7 @@ context("key", () => {
         // Add text to another language of a key
         const part6 = "hello in other language";
         cy.goToKeys();
-        cy.contains("a000").parent().next().next().children().click();
+        cy.contains("a000").parent().parent().next().next().children().click();
         cy.focused().clear().type(part6);
         cy.clickOutside();
         cy.goToProjectHome();
@@ -124,7 +124,7 @@ context("key", () => {
         // Change text of another language of a key
         const part7 = "just hello";
         cy.goToKeys();
-        cy.contains("a000").parent().next().next().children().click();
+        cy.contains("a000").parent().parent().next().next().children().click();
         cy.focused().clear().type(part7);
         cy.clickOutside();
         cy.goToProjectHome();

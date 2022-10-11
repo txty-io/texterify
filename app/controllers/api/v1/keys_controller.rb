@@ -12,6 +12,7 @@ class Api::V1::KeysController < Api::V1::ApiController
 
     options = {}
     options[:include] = [:translations, :'translations.language', :tags, :placeholders]
+    options[:params] = { current_user: current_user }
     render json: KeySerializer.new(key, options).serialized_json
   end
 
@@ -43,12 +44,12 @@ class Api::V1::KeysController < Api::V1::ApiController
 
       # Apply search query only to given languages
       if !language_ids.empty?
-        keys = keys.where('translations.language_id in (?)', language_ids)
+        keys = keys.where(translations: { language_id: language_ids })
       end
 
       # Apply search query only to given languages
       if !export_config_ids.empty?
-        keys = keys.where('translations.export_config_id in (?)', export_config_ids)
+        keys = keys.where(translations: { export_config_id: export_config_ids })
       end
 
       keys = keys.match_name_or_description_or_translation_content(params[:search], eq_op, match == 'exactly')
@@ -89,7 +90,7 @@ class Api::V1::KeysController < Api::V1::ApiController
       keys = keys.where("translations.export_config_id is not NULL and coalesce(trim(translations.content), '') != ''")
 
       if !language_ids.empty?
-        keys = keys.where('translations.language_id in (?)', language_ids)
+        keys = keys.where(translations: { language_id: language_ids })
       end
     end
 
@@ -117,6 +118,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     options = {}
     options[:meta] = { total: keys.size }
     options[:include] = [:translations, :'translations.language', :tags, :placeholders]
+    options[:params] = { current_user: current_user }
     render json: KeySerializer.new(keys.offset(page * per_page).limit(per_page), options).serialized_json
   end
 
@@ -128,6 +130,9 @@ class Api::V1::KeysController < Api::V1::ApiController
     authorize key
 
     if key.save
+      options = {}
+      options[:include] = [:translations, :'translations.language', :tags, :placeholders]
+      options[:params] = { current_user: current_user }
       render json: KeySerializer.new(key).serialized_json
     else
       render json: { error: true, errors: key.errors.details }, status: :bad_request
@@ -139,25 +144,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     key = project.keys.find(params[:id])
     authorize key
 
-    html_enabled_before_update = key.html_enabled
-
     if key.update(permitted_attributes(key))
-      # If the type of the key changes we also update the translations and convert between the
-      # text and HTML editor format.
-      if params.key?(:html_enabled) && params[:html_enabled] != html_enabled_before_update
-        key.translations.each do |translation|
-          if params[:html_enabled]
-            translation.content = {
-              "blocks": [{ "type": 'paragraph', "data": { "text": translation.content } }]
-            }.to_json
-          else
-            translation.content = helpers.convert_html_translation(translation.content) || ''
-          end
-
-          translation.save!
-        end
-      end
-
       render json: { message: 'Key updated' }
     else
       render json: { errors: key.errors.details }, status: :bad_request
@@ -201,6 +188,6 @@ class Api::V1::KeysController < Api::V1::ApiController
   private
 
   def key_params
-    params.require(:key).permit(:name, :description, :html_enabled)
+    params.require(:key).permit(:name, :description, :html_enabled, :pluralization_enabled)
   end
 end

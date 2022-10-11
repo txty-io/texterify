@@ -3,21 +3,21 @@ require 'rails_helper'
 describe 'Whether authentication is working correctly', type: :request do
   context 'when performing general authentication via API' do
     it 'gives you an authentication code if you successfully login' do
-      user = FactoryBot.create(:user)
+      user = create(:user)
       sign_in(user)
-      expect(response.has_header?('access-token')).to eq(true)
+      expect(response.has_header?('access-token')).to be(true)
     end
 
     it 'gives you a status 200 on signing in' do
-      user = FactoryBot.create(:user)
+      user = create(:user)
       sign_in(user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it 'gives you a status 401 on invalid signing in' do
-      user = FactoryBot.create(:user)
+      user = create(:user)
       sign_in_invalid(user)
-      expect(response.status).to eq(401)
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
@@ -29,7 +29,7 @@ describe 'Whether authentication is working correctly', type: :request do
     end
 
     def vary_authentication_age(token_age)
-      user = FactoryBot.create(:user)
+      user = create(:user)
       sign_in(user)
       auth_params = get_auth_params_from_login_response_headers(response)
       get api_v1_auth_validate_token_path, headers: auth_params

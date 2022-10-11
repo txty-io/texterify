@@ -48,13 +48,17 @@ class Project < ApplicationRecord
 
   def validations
     project_validations = super
-    project_validations << self.organization.validations
+    if self.organization
+      project_validations << self.organization.validations
+    end
     project_validations
   end
 
   def forbidden_words_lists
     project_forbidden_words_lists = super
-    project_forbidden_words_lists << self.organization.forbidden_words_lists
+    if self.organization
+      project_forbidden_words_lists << self.organization.forbidden_words_lists
+    end
     project_forbidden_words_lists
   end
 
@@ -115,5 +119,44 @@ class Project < ApplicationRecord
   # Rechecks placeholders of all keys of the project.
   def check_placeholders
     project.keys.each(&:check_placeholders)
+  end
+
+  # Recalculates the words and characters count of the project.
+  # This includes all translations and their content for the different
+  # quantity qualifiers.
+  def recalculate_words_and_characters_count!
+    character_count = 0
+    word_count = 0
+
+    self.translations.each do |translation|
+      if translation.zero.present?
+        character_count += translation.zero.length
+        word_count += translation.zero.split.length
+      end
+      if translation.one.present?
+        character_count += translation.one.length
+        word_count += translation.one.split.length
+      end
+      if translation.two.present?
+        character_count += translation.two.length
+        word_count += translation.two.split.length
+      end
+      if translation.few.present?
+        character_count += translation.few.length
+        word_count += translation.few.split.length
+      end
+      if translation.many.present?
+        character_count += translation.many.length
+        word_count += translation.many.split.length
+      end
+      if translation.content.present?
+        character_count += translation.content.length
+        word_count += translation.content.split.length
+      end
+    end
+
+    self.character_count = character_count
+    self.word_count = word_count
+    self.save!
   end
 end

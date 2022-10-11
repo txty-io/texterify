@@ -1,0 +1,29 @@
+{
+  "data" => [
+    [0] {
+              "id" => "__REMOVED__",
+            "type" => "tag",
+      "attributes" => {
+                                         "id" => "__REMOVED__",
+                                       "name" => "tag_1",
+                                     "custom" => false,
+                                 "project_id" => "__REMOVED__",
+        "disable_translation_for_translators" => false
+      }
+    },
+    [1] {
+              "id" => "__REMOVED__",
+            "type" => "tag",
+      "attributes" => {
+                                         "id" => "__REMOVED__",
+                                       "name" => "tag_2",
+                                     "custom" => false,
+                                 "project_id" => "__REMOVED__",
+        "disable_translation_for_translators" => false
+      }
+    }
+  ],
+  "meta" => {
+    "total" => 3
+  }
+}

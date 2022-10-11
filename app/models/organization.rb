@@ -110,6 +110,7 @@ class Organization < ApplicationRecord
   FEATURE_POST_PROCESSING = :FEATURE_POST_PROCESSING
   FEATURE_PROJECT_ACTIVITY = :FEATURE_PROJECT_ACTIVITY
   FEATURE_TAG_MANAGEMENT = :FEATURE_TAG_MANAGEMENT
+  FEATURE_TAGS = :FEATURE_TAGS
   FEATURE_MACHINE_TRANSLATION_LANGUAGE = :FEATURE_MACHINE_TRANSLATION_LANGUAGE
   FEATURE_MACHINE_TRANSLATION_SUGGESTIONS = :FEATURE_MACHINE_TRANSLATION_SUGGESTIONS
 
@@ -131,6 +132,7 @@ class Organization < ApplicationRecord
     FEATURE_POST_PROCESSING: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_PROJECT_ACTIVITY: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_TAG_MANAGEMENT: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
+    FEATURE_TAGS: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_MACHINE_TRANSLATION_SUGGESTIONS: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_MACHINE_TRANSLATION_LANGUAGE: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_ADVANCED_PERMISSION_SYSTEM: [Subscription::PLAN_BUSINESS],
@@ -144,18 +146,15 @@ class Organization < ApplicationRecord
   NOT_IN_TRIAL_AVAILABLE = [:FEATURE_MACHINE_TRANSLATION_LANGUAGE, :FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE].freeze
 
   FEATURES_BASIC_PLAN =
-    FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BASIC) ? feature : nil }.reject(&:nil?)
-      .freeze
+    FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BASIC) ? feature : nil }.compact.freeze
   FEATURES_TEAM_PLAN =
-    FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_TEAM) ? feature : nil }.reject(&:nil?)
-      .freeze
+    FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_TEAM) ? feature : nil }.compact.freeze
   FEATURES_BUSINESS_PLAN =
-    FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BUSINESS) ? feature : nil }.reject(&:nil?)
-      .freeze
+    FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BUSINESS) ? feature : nil }.compact.freeze
   FEATURES_TRIAL =
     FEATURES_PLANS.map do |feature, plans|
       plans.include?(Subscription::PLAN_BUSINESS) && NOT_IN_TRIAL_AVAILABLE.exclude?(feature) ? feature : nil
-    end.reject(&:nil?).freeze
+    end.compact.freeze
 
   def feature_enabled?(feature)
     feature_allowed_plans = FEATURES_PLANS[feature]
@@ -173,9 +172,7 @@ class Organization < ApplicationRecord
   def users_limit
     if custom_subscription
       custom_subscription.max_users
-    elsif trial_active
-      nil
-    elsif active_subscription
+    elsif trial_active || active_subscription
       nil
     else
       license = License.current_active
