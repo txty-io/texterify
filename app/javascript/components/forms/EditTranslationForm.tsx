@@ -132,7 +132,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
 
     const pluralizationEnabled = props.keyResponse?.data.attributes.pluralization_enabled || props.forcePluralization;
     const htmlEnabled = props.keyResponse?.data.attributes.html_enabled || props.forceHTML;
-    const editable = props.keyResponse.data.attributes.editable_for_current_user;
+    const editable = props.keyResponse?.data.attributes.editable_for_current_user;
 
     return (
         <Form
