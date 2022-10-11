@@ -95,7 +95,7 @@ class ProjectOTASite extends React.Component<IProps, IState> {
     getColumns = () => {
         return [
             {
-                title: "Export target",
+                title: "Export config",
                 dataIndex: "exportConfigName",
                 key: "exportConfigName"
             },

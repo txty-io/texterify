@@ -137,8 +137,8 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     authorize project
     language = project.languages.find(params[:language_id])
-    if params[:export_config_id].present?
-      export_config = project.export_configs.find(params[:export_config_id])
+    if params[:flavor_id].present?
+      flavor = project.flavors.find(params[:flavor_id])
     end
     file = params[:file]
 
@@ -188,8 +188,8 @@ class Api::V1::ProjectsController < Api::V1::ApiController
           translation.key_id = key.id
           translation.language_id = language.id
 
-          if export_config
-            translation.export_config_id = export_config.id
+          if flavor
+            translation.flavor_id = flavor.id
           end
         end
 
@@ -244,8 +244,8 @@ class Api::V1::ProjectsController < Api::V1::ApiController
           translation.key_id = key.id
           translation.language_id = language.id
 
-          if export_config
-            translation.export_config_id = export_config.id
+          if flavor
+            translation.flavor_id = flavor.id
           end
 
           if file_format == 'json-formatjs'

@@ -162,8 +162,8 @@ class AddEditPostProcessingRuleForm extends React.Component<IProps> {
                     </div>
 
                     <h3>
-                        Export target
-                        <Tooltip title="If specified this rule only applies to exports of the selected target.">
+                        Export config
+                        <Tooltip title="If specified this rule only applies to the selected exports configs.">
                             <QuestionCircleOutlined style={{ marginLeft: 8 }} />
                         </Tooltip>
                     </h3>

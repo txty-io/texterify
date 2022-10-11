@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_08_171150) do
+ActiveRecord::Schema.define(version: 2022_10_09_012816) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -122,8 +122,18 @@ ActiveRecord::Schema.define(version: 2022_10_08_171150) do
     t.string "split_on"
     t.string "file_path_stringsdict"
     t.string "default_language_file_path_stringsdict"
+    t.uuid "flavor_id"
+    t.index ["flavor_id"], name: "index_export_configs_on_flavor_id"
     t.index ["project_id", "name"], name: "index_export_configs_on_project_id_and_name", unique: true
     t.index ["project_id"], name: "index_export_configs_on_project_id"
+  end
+
+  create_table "flavors", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.uuid "project_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["project_id"], name: "index_flavors_on_project_id"
   end
 
   create_table "forbidden_words", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -463,15 +473,13 @@ ActiveRecord::Schema.define(version: 2022_10_08_171150) do
     t.uuid "language_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "export_config_id"
     t.text "zero"
     t.text "one"
     t.text "two"
     t.text "few"
     t.text "many"
-    t.index ["export_config_id"], name: "index_translations_on_export_config_id"
-    t.index ["key_id", "language_id", "export_config_id"], name: "translations_index_unique_1", unique: true, where: "(export_config_id IS NOT NULL)"
-    t.index ["key_id", "language_id"], name: "translations_index_unique_2", unique: true, where: "(export_config_id IS NULL)"
+    t.uuid "flavor_id"
+    t.index ["flavor_id"], name: "index_translations_on_flavor_id"
     t.index ["key_id"], name: "index_translations_on_key_id"
     t.index ["language_id"], name: "index_translations_on_language_id"
   end
@@ -603,7 +611,9 @@ ActiveRecord::Schema.define(version: 2022_10_08_171150) do
   add_foreign_key "background_jobs", "projects", on_delete: :cascade
   add_foreign_key "background_jobs", "users", on_delete: :nullify
   add_foreign_key "custom_subscriptions", "organizations", on_delete: :nullify
+  add_foreign_key "export_configs", "flavors", on_delete: :cascade
   add_foreign_key "export_configs", "projects", on_delete: :cascade
+  add_foreign_key "flavors", "projects", on_delete: :cascade
   add_foreign_key "forbidden_words", "forbidden_words_lists", on_delete: :cascade
   add_foreign_key "forbidden_words_lists", "country_codes", on_delete: :cascade
   add_foreign_key "forbidden_words_lists", "language_codes", on_delete: :cascade
@@ -644,7 +654,7 @@ ActiveRecord::Schema.define(version: 2022_10_08_171150) do
   add_foreign_key "sent_emails", "users", on_delete: :cascade
   add_foreign_key "subscriptions", "organizations"
   add_foreign_key "tags", "projects", on_delete: :cascade
-  add_foreign_key "translations", "export_configs", on_delete: :cascade
+  add_foreign_key "translations", "flavors", on_delete: :cascade
   add_foreign_key "translations", "keys", on_delete: :cascade
   add_foreign_key "translations", "languages", on_delete: :cascade
   add_foreign_key "user_licenses", "users"

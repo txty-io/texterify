@@ -20,11 +20,11 @@ const TranslationUtils = {
                 if (translation.relationships.language.data.id === data.languageId) {
                     if (data.exportConfigId) {
                         // If translation for export config is requested
-                        if (translation.relationships.export_config.data?.id === data.exportConfigId) {
+                        if (translation.relationships.flavor.data?.id === data.exportConfigId) {
                             translationForLanguage = translation;
                             return true;
                         }
-                    } else if (!translation.relationships.export_config.data?.id) {
+                    } else if (!translation.relationships.flavor.data?.id) {
                         // If the default translation for that language is requested
                         translationForLanguage = translation;
                         return true;

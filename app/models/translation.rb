@@ -7,7 +7,7 @@ class Translation < ApplicationRecord
 
   belongs_to :key
   belongs_to :language
-  belongs_to :export_config, optional: true
+  belongs_to :flavor, optional: true
 
   after_destroy :update_project_word_char_count_on_destroy
   after_save :update_project_word_char_count_on_update, :check_placeholders, :check_validations
@@ -183,7 +183,7 @@ class Translation < ApplicationRecord
         .where(is_default: false)
         .each do |target_language|
           source_translation = key.default_language_translation
-          target_translation = key.translations.find_by(language_id: target_language.id, export_config_id: nil)
+          target_translation = key.translations.find_by(language_id: target_language.id, flavor_id: nil)
 
           if source_translation.present? && (target_translation.nil? || target_translation.content.empty?)
             begin
@@ -264,7 +264,7 @@ class Translation < ApplicationRecord
   # Updates the project character and word count after a translation is updated.
   # Translations for export configs are ignored.
   def update_project_word_char_count_on_update
-    if self.export_config_id.nil? && self.saved_changes['content'].present?
+    if self.flavor_id.nil? && self.saved_changes['content'].present?
       content_before = self.saved_changes['content'][0] || '' # if it is a new key content[0] is nil
       content_after = self.saved_changes['content'][1] || ''
 
@@ -281,7 +281,7 @@ class Translation < ApplicationRecord
   # Updates the project character and word count after a translation is destroyed.
   # Translations for export configs are ignored.
   def update_project_word_char_count_on_destroy
-    if self.export_config_id.nil?
+    if self.flavor_id.nil?
       translation_content = self.content
 
       unless translation_content.nil?

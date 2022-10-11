@@ -286,7 +286,7 @@ class KeysSite extends React.Component<IProps, IState> {
                     title: (
                         <div style={{ whiteSpace: "nowrap" }}>
                             <span style={{ marginRight: 8 }}>Overwrites</span>
-                            <Tooltip title="For which export targets at least one of the translations is overwritten.">
+                            <Tooltip title="For which flavors at least one of the translations is overwritten.">
                                 <QuestionCircleOutlined />
                             </Tooltip>
                         </div>
@@ -381,13 +381,13 @@ class KeysSite extends React.Component<IProps, IState> {
                     this.state.keysResponse.included
                 );
 
-                const exportConfigId = translation.relationships.export_config.data?.id || null;
+                const flavorId = translation.relationships.flavor.data?.id || null;
                 const languageId = translation.relationships.language.data.id;
 
                 translations[languageId] = translations[languageId] || {};
 
-                if (!translations[languageId][exportConfigId]) {
-                    translations[languageId][exportConfigId] = translation;
+                if (!translations[languageId][flavorId]) {
+                    translations[languageId][flavorId] = translation;
                 }
             });
 
@@ -762,12 +762,12 @@ class KeysSite extends React.Component<IProps, IState> {
                 );
                 if (
                     TranslationUtils.hasContent(translation, language, currentKey.attributes.pluralization_enabled) &&
-                    translation.relationships.export_config &&
-                    translation.relationships.export_config.data &&
-                    translation.relationships.export_config.data.id === exportConfig.id
+                    translation.relationships.flavor &&
+                    translation.relationships.flavor.data &&
+                    translation.relationships.flavor.data.id === exportConfig.id
                 ) {
                     const exportConfigIncluded = APIUtils.getIncludedObject(
-                        translation.relationships.export_config.data,
+                        translation.relationships.flavor.data,
                         this.state.exportConfigsResponse.data
                     );
 
@@ -977,14 +977,14 @@ class KeysSite extends React.Component<IProps, IState> {
                                                           this.state.keysResponse.included
                                                       );
 
-                                                      const exportConfigId =
-                                                          translation.relationships.export_config.data?.id || null;
+                                                      const flavorId =
+                                                          translation.relationships.flavor.data?.id || null;
                                                       const languageId = translation.relationships.language.data.id;
 
                                                       translations[languageId] = translations[languageId] || {};
 
-                                                      if (!translations[languageId][exportConfigId]) {
-                                                          translations[languageId][exportConfigId] = translation;
+                                                      if (!translations[languageId][flavorId]) {
+                                                          translations[languageId][flavorId] = translation;
                                                       }
                                                   }
                                               );
@@ -1003,7 +1003,7 @@ class KeysSite extends React.Component<IProps, IState> {
 
                                           const columns = [
                                               {
-                                                  title: "Export target",
+                                                  title: "Export config",
                                                   dataIndex: "exportConfigName",
                                                   key: "exportConfigName"
                                               }

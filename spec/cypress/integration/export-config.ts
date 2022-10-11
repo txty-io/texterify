@@ -9,7 +9,7 @@ context("export-config", () => {
         });
     });
 
-    it("creates a project and an export target and exports it", () => {
+    it("creates a project and an export config and exports it", () => {
         cy.login(testData.login.user1.email, testData.login.user1.password);
 
         cy.createProject("My test project");
@@ -43,7 +43,7 @@ context("export-config", () => {
             .should("contain", testData.keys.firstKey.value);
 
         cy.get('[data-id="project-sidebar-export"]').click();
-        cy.contains("a", "Create an export target").click();
+        cy.contains("a", "Create an export config").click();
         cy.get('[data-id="configurations-site-new-button"]').click();
         cy.get("#name").type("name");
         cy.contains("div", "Select a file format").type("json");

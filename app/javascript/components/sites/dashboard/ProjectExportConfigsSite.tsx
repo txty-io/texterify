@@ -78,7 +78,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
             isDeleting: true
         });
         Modal.confirm({
-            title: "Do you really want to delete this export target?",
+            title: "Do you really want to delete this export config?",
             content: "This cannot be undone.",
             okText: "Yes",
             okButtonProps: {
@@ -171,7 +171,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                     </LayoutWithSubSidebarInnerContent>
 
                     <TexterifyModal
-                        title={this.state.exportConfigToEdit ? "Edit export target" : "Add a new export target"}
+                        title={this.state.exportConfigToEdit ? "Edit export config" : "Add a new export config"}
                         visible={this.state.addEditExportConfigOpen}
                         footer={
                             <div style={{ margin: "6px 0" }}>
@@ -183,7 +183,7 @@ class ProjectExportConfigsSite extends React.Component<IProps, IState> {
                                     Cancel
                                 </Button>
                                 <Button form="addEditExportConfigForm" type="primary" htmlType="submit">
-                                    {this.state.exportConfigToEdit ? "Save changes" : "Create export target"}
+                                    {this.state.exportConfigToEdit ? "Save changes" : "Create export config"}
                                 </Button>
                             </div>
                         }

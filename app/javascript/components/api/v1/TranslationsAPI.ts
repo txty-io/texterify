@@ -34,7 +34,7 @@ const TranslationsAPI = {
         few?: string;
         many?: string;
         content: string; // other
-        exportConfigId?: string;
+        flavorId?: string;
         triggerAutoTranslate?: boolean;
     }) => {
         return API.postRequest(`projects/${options.projectId}/translations`, true, {
@@ -48,7 +48,7 @@ const TranslationsAPI = {
                 many: options.many,
                 content: options.content
             },
-            export_config_id: options.exportConfigId,
+            flavor_id: options.flavorId,
             trigger_auto_translate: options.triggerAutoTranslate
         })
             .then(APIUtils.handleErrors)

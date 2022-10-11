@@ -255,10 +255,10 @@ class EditorSite extends React.Component<IProps, IState> {
                             translationReference,
                             this.state.keyResponse.included
                         );
-                        <Alert message="You are not allowed to edit this key. This key is either a system key or editing has been disabled via one of the assigned tags." />;
+
                         if (
                             translation &&
-                            translation.relationships.export_config.data === null &&
+                            translation.relationships.flavor.data === null &&
                             translation.relationships.language.data.id === defaultLanguage.id
                         ) {
                             defaultLanguageTranslationContent = translation.attributes.content;
@@ -414,7 +414,7 @@ class EditorSite extends React.Component<IProps, IState> {
 
                                                     return (
                                                         translation &&
-                                                        translation.relationships.export_config.data === null &&
+                                                        translation.relationships.flavor.data === null &&
                                                         translation.relationships.language.data.id ===
                                                             defaultLanguage.id
                                                     );

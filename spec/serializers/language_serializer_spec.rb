@@ -41,12 +41,12 @@ RSpec.describe LanguageSerializer, type: :serializer do
       0.0
     )
 
-    export_config = create(:export_config, project_id: project.id)
+    flavor = create(:flavor, project_id: project.id)
     create(
       :translation,
       key_id: key_one.id,
       language_id: language_one.id,
-      export_config_id: export_config.id,
+      flavor_id: flavor.id,
       content: 'should not have any impact'
     )
 

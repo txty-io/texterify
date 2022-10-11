@@ -44,7 +44,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
 
     const [form] = Form.useForm();
 
-    // Set the correct translation if language or export target changes.
+    // Set the correct translation if language or export config changes.
     React.useEffect(() => {
         if (props.selectedLanguageId && props.keyResponse) {
             setTranslationLoading(true);

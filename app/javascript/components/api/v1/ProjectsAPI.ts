@@ -173,14 +173,14 @@ const ProjectsAPI = {
         projectId: string;
         languageId: string;
         file: any;
-        exportConfigId: string;
+        flavorId: string;
         fileFormat: ImportFileFormats;
     }) => {
         const fileBase64 = await getBase64(options.file);
 
         return API.postRequest(`projects/${options.projectId}/import`, true, {
             language_id: options.languageId,
-            export_config_id: options.exportConfigId,
+            flavor_id: options.flavorId,
             name: options.file.name,
             file: fileBase64,
             file_format: options.fileFormat

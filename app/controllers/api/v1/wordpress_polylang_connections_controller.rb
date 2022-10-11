@@ -214,7 +214,7 @@ class Api::V1::WordpressPolylangConnectionsController < Api::V1::ApiController
         content.key_id = key.id
         content.save!
 
-        translation = project.translations.find_by(key_id: key.id, language_id: language.id, export_config_id: nil)
+        translation = project.translations.find_by(key_id: key.id, language_id: language.id, flavor_id: nil)
         if translation.blank?
           translation = Translation.new
           translation.key = key

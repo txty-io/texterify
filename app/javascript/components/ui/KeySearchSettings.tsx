@@ -12,7 +12,7 @@ export function parseKeySearchSettingsFromURL(): ISearchSettings {
 
     return {
         languageIds: currentQueryParams.l as string[],
-        exportConfigIds: currentQueryParams.ec as string[],
+        flavorIds: currentQueryParams.f as string[],
         showOnlyUntranslated: currentQueryParams.ou === "true",
         onlyHTMLEnabled: currentQueryParams.he === "true",
         checkCase: currentQueryParams.cc === "true",
@@ -31,7 +31,7 @@ type ISearchSettingsMatch = "contains" | "exactly";
 
 export interface ISearchSettings {
     languageIds: string[];
-    exportConfigIds: string[];
+    flavorIds: string[];
     showOnlyUntranslated: boolean;
     onlyHTMLEnabled: boolean;
     checkCase: boolean;
@@ -42,7 +42,7 @@ export interface ISearchSettings {
 }
 
 // l == languages
-// ec == export configs
+// f == flavors
 // ou == only untranslated
 // cc == check case
 // oo == only overrides
@@ -51,7 +51,7 @@ export interface ISearchSettings {
 // he == html enabled
 export interface ISearchSettingsQueryParams {
     l?: string | string[];
-    ec?: string | string[];
+    f?: string | string[];
     ou?: boolean;
     cc?: boolean;
     oo?: boolean;
@@ -63,13 +63,13 @@ export interface ISearchSettingsQueryParams {
 
 export function KeySearchSettings(props: {
     languagesResponse: any;
-    exportConfigsResponse: any;
+    flavorsResponse: any;
     onChange(options: ISearchSettings): void;
 }) {
     const currentQueryParams = useQuery();
 
     const [selectedLanguages, setSelectedLanguages] = React.useState<string | string[]>(currentQueryParams.l);
-    const [selectedExportConfigs, setSelectedExportConfigs] = React.useState<string | string[]>(currentQueryParams.ec);
+    const [selectedFlavors, setSelectedFlavors] = React.useState<string | string[]>(currentQueryParams.f);
     const [match, setMatch] = React.useState<string>((currentQueryParams.m as string) || "contains");
     const [onlyUntranslated, setOnlyUntranslated] = React.useState<boolean>(currentQueryParams.ou === "true");
     const [checkCase, setCheckCase] = React.useState<boolean>(currentQueryParams.cc === "true");
@@ -88,7 +88,7 @@ export function KeySearchSettings(props: {
         const query: ISearchSettingsQueryParams = currentQueryParams;
 
         query.l = selectedLanguages;
-        query.ec = selectedExportConfigs;
+        query.f = selectedFlavors;
 
         if (onlyUntranslated) {
             query.ou = onlyUntranslated;
@@ -144,7 +144,7 @@ export function KeySearchSettings(props: {
         onChange();
     }, [
         selectedLanguages,
-        selectedExportConfigs,
+        selectedFlavors,
         onlyUntranslated,
         checkCase,
         onlyKeysWithOverwrites,
@@ -214,20 +214,20 @@ export function KeySearchSettings(props: {
                     })}
                 </Select>
 
-                <h4 style={{ marginTop: 16 }}>Filter by export targets</h4>
+                <h4 style={{ marginTop: 16 }}>Filter by flavors</h4>
                 <Select
-                    placeholder="Select export targets"
+                    placeholder="Select flavors"
                     style={{ width: "100%" }}
                     onChange={(values: string[]) => {
-                        setSelectedExportConfigs(values);
+                        setSelectedFlavors(values);
                     }}
                     mode="multiple"
-                    defaultValue={selectedExportConfigs}
+                    defaultValue={selectedFlavors}
                 >
-                    {(props.exportConfigsResponse?.data || []).map((exportConfig) => {
+                    {(props.flavorsResponse?.data || []).map((flavor) => {
                         return (
-                            <Select.Option value={exportConfig.id} key={exportConfig.id}>
-                                {exportConfig.attributes.name}
+                            <Select.Option value={flavor.id} key={flavor.id}>
+                                {flavor.attributes.name}
                             </Select.Option>
                         );
                     })}

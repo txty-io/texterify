@@ -300,7 +300,7 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                     <Form.Item
                         name="name"
                         rules={[
-                            { required: true, whitespace: true, message: "Please enter the name of the export target." }
+                            { required: true, whitespace: true, message: "Please enter the name of the export config." }
                         ]}
                     >
                         <Input placeholder="Name" autoFocus />
@@ -402,7 +402,7 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                     />
                     {!this.props.hideDefaultSubmitButton && (
                         <Button type="primary" htmlType="submit" style={{ marginLeft: "auto", marginTop: 24 }}>
-                            {this.props.exportConfigToEdit ? "Save changes" : "Add export target"}
+                            {this.props.exportConfigToEdit ? "Save changes" : "Add export config"}
                         </Button>
                     )}
                 </Form>

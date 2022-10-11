@@ -31,25 +31,25 @@ class Api::V1::KeysController < Api::V1::ApiController
     changed_before = params[:changed_before]
     changed_after = params[:changed_after]
     language_ids = Array(params[:language_ids])
-    export_config_ids = Array(params[:export_config_ids])
+    flavor_ids = Array(params[:flavor_ids])
 
     keys = project.keys.left_outer_joins(:translations)
 
-    # Check if a search query has been applied
+    # Check if a search query has been applied.
     if params[:search]
       eq_op = 'ilike'
       if case_sensitive
         eq_op = 'like'
       end
 
-      # Apply search query only to given languages
+      # Apply search query only to given languages.
       if !language_ids.empty?
         keys = keys.where(translations: { language_id: language_ids })
       end
 
-      # Apply search query only to given languages
-      if !export_config_ids.empty?
-        keys = keys.where(translations: { export_config_id: export_config_ids })
+      # Apply search query only to given flavors.
+      if !flavor_ids.empty?
+        keys = keys.where(translations: { flavor_id: flavor_ids })
       end
 
       keys = keys.match_name_or_description_or_translation_content(params[:search], eq_op, match == 'exactly')
@@ -74,7 +74,7 @@ class Api::V1::KeysController < Api::V1::ApiController
           from translations
           where
             translations.key_id = keys.id and
-            translations.export_config_id is NULL and
+            translations.flavor_id is NULL and
             coalesce(trim(translations.content), '') != '' AND
             translations.language_id in (?)
         )",
@@ -87,7 +87,7 @@ class Api::V1::KeysController < Api::V1::ApiController
 
     # Check for keys with overwrites
     if only_with_overwrites
-      keys = keys.where("translations.export_config_id is not NULL and coalesce(trim(translations.content), '') != ''")
+      keys = keys.where("translations.flavor_id is not NULL and coalesce(trim(translations.content), '') != ''")
 
       if !language_ids.empty?
         keys = keys.where(translations: { language_id: language_ids })

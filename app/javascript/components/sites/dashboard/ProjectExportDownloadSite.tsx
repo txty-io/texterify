@@ -57,7 +57,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
             <Alert
                 type="info"
                 showIcon
-                message="No export target"
+                message="No export config"
                 style={{ marginTop: this.state.languagesLoaded && this.state.languages?.length === 0 ? 8 : 0 }}
                 description={
                     <>
@@ -67,7 +67,7 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                                 this.props.match.params.projectId
                             )}
                         >
-                            Create an export target
+                            Create an export config
                         </Link>{" "}
                         to export your keys.
                     </>

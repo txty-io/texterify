@@ -113,12 +113,12 @@ class AddReleaseForm extends React.Component<IProps, IState> {
                 onCancel={this.props.onCancelRequest}
             >
                 <Form ref={this.formRef} onFinish={this.handleSubmit} style={{ maxWidth: "100%" }} id="addReleaseForm">
-                    <h3>Export target</h3>
+                    <h3>Export config</h3>
                     {!this.hasExportConfigs() && (
                         <Alert
                             type="info"
                             showIcon
-                            message="No export target"
+                            message="No export config"
                             description={
                                 <p>
                                     <Link
@@ -127,7 +127,7 @@ class AddReleaseForm extends React.Component<IProps, IState> {
                                             this.props.projectId
                                         )}
                                     >
-                                        Create an export target
+                                        Create an export config
                                     </Link>{" "}
                                     to create releases.
                                 </p>
@@ -140,7 +140,7 @@ class AddReleaseForm extends React.Component<IProps, IState> {
                             rules={[
                                 {
                                     required: true,
-                                    message: "Please select an export target."
+                                    message: "Please select an export config."
                                 }
                             ]}
                         >

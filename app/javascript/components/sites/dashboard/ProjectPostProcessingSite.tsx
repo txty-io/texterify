@@ -124,7 +124,7 @@ class ProjectPostProcessingSite extends React.Component<IProps, IState> {
                 key: "replaceWith"
             },
             {
-                title: "Export target",
+                title: "Export config",
                 dataIndex: "exportConfig",
                 key: "exportConfig"
             },

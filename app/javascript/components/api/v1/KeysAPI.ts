@@ -96,7 +96,7 @@ const KeysAPI = {
                 changed_before: options && options.searchSettings && options.searchSettings.changedBefore,
                 changed_after: options && options.searchSettings && options.searchSettings.changedAfter,
                 language_ids: options && options.searchSettings && options.searchSettings.languageIds,
-                export_config_ids: options && options.searchSettings && options.searchSettings.exportConfigIds
+                flavor_ids: options && options.searchSettings && options.searchSettings.flavorIds
             },
             undefined,
             false,

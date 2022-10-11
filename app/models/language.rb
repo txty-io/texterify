@@ -48,7 +48,7 @@ class Language < ApplicationRecord
         .each do |key|
           target_language = self
           source_translation = key.default_language_translation
-          target_translation = key.translations.find_by(language_id: target_language.id, export_config_id: nil)
+          target_translation = key.translations.find_by(language_id: target_language.id, flavor_id: nil)
 
           if source_translation.present? && (target_translation.nil? || target_translation.content.empty?)
             content = Texterify::MachineTranslation.translate(self.project, source_translation, target_language)
