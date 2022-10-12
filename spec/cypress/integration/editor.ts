@@ -34,7 +34,6 @@ context("editor", () => {
         cy.get(".editor-key-content").should("have.length", 1);
         cy.get(".editor-key-name").should("contain", testData.keys.firstKey.keyName);
         cy.get(".editor-key-content").should("contain", "Set a default language for preview.");
-        cy.get(".editor-key-html").should("not.exist");
 
         cy.leaveEditor();
         cy.goToLanguages();
@@ -53,7 +52,6 @@ context("editor", () => {
         cy.get(".editor-key-content").should("have.length", 1);
         cy.get(".editor-key-name").should("contain", testData.keys.firstKey.keyName);
         cy.get(".editor-key-content").should("contain", "No content");
-        cy.get(".editor-key-html").should("not.exist");
 
         cy.leaveEditor();
         cy.goToKeys();
@@ -73,7 +71,6 @@ context("editor", () => {
 
         cy.get(".editor-key-name").eq(1).should("contain", testData.keys.secondKey.keyName);
         cy.get(".editor-key-content").eq(1).should("contain", testData.keys.secondKey.value);
-        cy.get(".editor-key-html").should("be.visible");
 
         cy.selectKeyInEditor(testData.keys.firstKey.keyName);
         cy.get('[data-id="translation-card"]').should("be.visible");
@@ -103,7 +100,6 @@ context("editor", () => {
         cy.get(".editor-key-content").should("have.length", 1);
         cy.get(".editor-key-name").should("contain", testData.keys.firstKey.keyName);
         cy.get(".editor-key-content").should("contain", "No content");
-        cy.get(".editor-key-html").should("not.exist");
 
         cy.leaveEditor();
         cy.goToKeys();
@@ -122,7 +118,6 @@ context("editor", () => {
 
         cy.get(".editor-key-name").eq(1).should("contain", testData.keys.secondKey.keyName);
         cy.get(".editor-key-content").eq(1).should("contain", "No content");
-        cy.get(".editor-key-html").should("be.visible");
 
         cy.selectKeyInEditor(testData.keys.firstKey.keyName);
         cy.get('[data-id="translation-card"]').should("be.visible");

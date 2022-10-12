@@ -2,12 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## Next release
+## v1.2.0
 
 - Add WordPress integration.
-
-## v1.0.7
-
 - Add new sidebars for easier navigation.
 - Add .arb import/export.
 - Add .yaml import/export
@@ -16,6 +13,8 @@ All notable changes to this project will be documented in this file.
 - Add placeholder checks.
 - Add validations.
 - Add issues system.
+- Add tags.
+- Add plural support.
 - Improve design and adjust colors.
 - Fix character and word count not beeing calculated correctly.
 - Fix missing check if auto-translate feature is available.
@@ -35,6 +34,7 @@ All notable changes to this project will be documented in this file.
 - Fix bug where HTML editor content is empty when editing after importing translations.
 - Fix bug if imported licenses are invalid.
 - Fix invalid import/export of Ruby on Rails translation files.
+- Fix bug when creating translations in parallel that would result in multiple issues.
 
 ## v1.0.6
 

@@ -16,7 +16,7 @@ class Key < ApplicationRecord
 
   belongs_to :project
   has_many :wordpress_contents, dependent: :destroy
-  has_many :translations, -> { order(created_at: :desc) }, dependent: :destroy, inverse_of: :key
+  has_many :translations, dependent: :destroy, inverse_of: :key
 
   # A key has many tags attached.
   has_many :key_tags, dependent: :delete_all
