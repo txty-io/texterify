@@ -2,12 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## Next release
+## v1.2.0
 
 - Add WordPress integration.
-
-## v1.0.7
-
 - Add new sidebars for easier navigation.
 - Add .arb import/export.
 - Add .yaml import/export
