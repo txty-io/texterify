@@ -122,5 +122,22 @@ user_1_access_token =
   )
 
 if License.count == 0
-  create(:license)
+  license = License.new
+
+  # Create test license
+  private_key = OpenSSL::PKey::RSA.new(File.read('test_license_key'))
+  Gitlab::License.encryption_key = private_key
+  license_file = Gitlab::License.new
+  license_file.licensee = { 'name': 'Name 1', 'email': 'test1@texterify.com' }
+  license_file.starts_at = Date.new(Date.current.year, 10, 6)
+  license_file.expires_at = Date.new(Date.current.year + 1, 10, 6)
+  license_file.restrictions = { active_users_count: 10 }
+  data = license_file.export
+
+  license.data = data
+  license.save!
+
+  puts 'Test license for on-premise testing created.'
+else
+  puts 'Test license for on-premise testing already created.'
 end
