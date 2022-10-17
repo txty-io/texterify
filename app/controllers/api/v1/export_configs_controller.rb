@@ -6,12 +6,16 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
 
     authorize ExportConfig.new(project_id: project.id)
 
+    page = parse_page(params[:page])
+    per_page = parse_per_page(params[:per_page])
+
     export_configs = project.export_configs.order_by_name
 
     options = {}
     options[:meta] = { total: export_configs.size }
     options[:include] = [:language_configs]
-    render json: ExportConfigSerializer.new(export_configs, options).serialized_json
+    render json:
+             ExportConfigSerializer.new(export_configs.offset(page * per_page).limit(per_page), options).serialized_json
   end
 
   def create
@@ -25,7 +29,7 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
     if export_config.save
       render json: ExportConfigSerializer.new(export_config).serialized_json
     else
-      render json: { errors: export_config.errors.details }, status: :bad_request
+      render json: { error: true, errors: export_config.errors.details }, status: :bad_request
     end
   end
 
@@ -38,7 +42,7 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
     if export_config.update(export_config_params)
       render json: ExportConfigSerializer.new(export_config).serialized_json
     else
-      render json: { errors: export_config.errors.details }, status: :bad_request
+      render json: { error: true, errors: export_config.errors.details }, status: :bad_request
     end
   end
 
@@ -49,9 +53,11 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
     authorize export_config
 
     if export_config.destroy
-      render json: { success: true }
+      render json: { error: false, details: 'EXPORT_CONFIG_DELETED' }
     else
-      render json: { errors: export_config.errors.details }, status: :bad_request
+      # :nocov:
+      render json: { error: true, errors: export_config.errors.details }, status: :bad_request
+      # :nocov:
     end
   end
 
@@ -63,7 +69,7 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
 
     project.export_configs.destroy(export_configs_to_destroy)
 
-    render json: { success: true, details: 'Export configs deleted' }
+    render json: { error: false, details: 'EXPORT_CONFIGS_DELETED' }
   end
 
   private

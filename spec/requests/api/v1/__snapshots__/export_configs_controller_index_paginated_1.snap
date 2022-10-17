@@ -1,0 +1,46 @@
+{
+      "data" => [
+    [0] {
+                 "id" => "__REMOVED__",
+               "type" => "export_config",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                          "name" => "Test Export Config 1",
+                                   "file_format" => "json",
+                                     "file_path" => "path",
+                         "file_path_stringsdict" => nil,
+                    "default_language_file_path" => nil,
+        "default_language_file_path_stringsdict" => nil,
+                                      "split_on" => nil
+      },
+      "relationships" => {
+        "language_configs" => {
+          "data" => []
+        }
+      }
+    },
+    [1] {
+                 "id" => "__REMOVED__",
+               "type" => "export_config",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                          "name" => "Test Export Config 2",
+                                   "file_format" => "json",
+                                     "file_path" => "path",
+                         "file_path_stringsdict" => nil,
+                    "default_language_file_path" => nil,
+        "default_language_file_path_stringsdict" => nil,
+                                      "split_on" => nil
+      },
+      "relationships" => {
+        "language_configs" => {
+          "data" => []
+        }
+      }
+    }
+  ],
+  "included" => [],
+      "meta" => {
+    "total" => 3
+  }
+}

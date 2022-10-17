@@ -24,7 +24,7 @@ class ExportConfig < ApplicationRecord
   validate :no_duplicate_export_configs_for_project
 
   belongs_to :project
-  has_many :translations, dependent: :destroy
+
   has_many :post_processing_rules, dependent: :destroy
   has_many :language_configs, dependent: :destroy
   has_many :releases, dependent: :destroy

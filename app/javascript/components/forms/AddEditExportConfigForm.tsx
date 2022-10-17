@@ -21,12 +21,13 @@ interface IFormValues {
     splitOn: string;
 }
 
-interface IProps {
+export interface IAddEditExportConfigFormProps {
     exportConfigToEdit?: IExportConfig;
     projectId: string;
     hideDefaultSubmitButton?: boolean;
     clearFieldsAfterSubmit?: boolean;
-    onCreated?(): void;
+    formId?: string;
+    onSaved?(): void;
 }
 interface IState {
     exportConfigsResponse: any;
@@ -39,7 +40,7 @@ interface IState {
     selectedFileFormat: ImportFileFormats | null;
 }
 
-class AddEditExportConfigForm extends React.Component<IProps, IState> {
+class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormProps, IState> {
     formRef = React.createRef<FormInstance>();
 
     state: IState = {
@@ -112,25 +113,23 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
             } else {
                 ErrorUtils.showErrors(response.errors);
             }
+        } else {
+            for (const changedLanguageConfig of this.state.languageConfigsToCreate) {
+                await LanguageConfigsAPI.createLanguageConfig({
+                    projectId: this.props.projectId,
+                    exportConfigId: response.data.id,
+                    languageId: changedLanguageConfig.languageId,
+                    languageCode: changedLanguageConfig.languageCode
+                });
+            }
 
-            return;
-        }
+            if (this.props.onSaved) {
+                this.props.onSaved();
+            }
 
-        for (const changedLanguageConfig of this.state.languageConfigsToCreate) {
-            await LanguageConfigsAPI.createLanguageConfig({
-                projectId: this.props.projectId,
-                exportConfigId: response.data.id,
-                languageId: changedLanguageConfig.languageId,
-                languageCode: changedLanguageConfig.languageCode
-            });
-        }
-
-        if (this.props.onCreated) {
-            this.props.onCreated();
-        }
-
-        if (this.props.clearFieldsAfterSubmit) {
-            this.formRef.current?.resetFields();
+            if (this.props.clearFieldsAfterSubmit) {
+                this.formRef.current?.resetFields();
+            }
         }
     };
 
@@ -280,7 +279,7 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                     ref={this.formRef}
                     onFinish={this.handleSubmit}
                     style={{ maxWidth: "100%", display: "flex", flexDirection: "column" }}
-                    id="addEditExportConfigForm"
+                    id={this.props.formId}
                     initialValues={
                         this.props.exportConfigToEdit && {
                             name: this.props.exportConfigToEdit.attributes.name,
@@ -401,7 +400,12 @@ class AddEditExportConfigForm extends React.Component<IProps, IState> {
                         }}
                     />
                     {!this.props.hideDefaultSubmitButton && (
-                        <Button type="primary" htmlType="submit" style={{ marginLeft: "auto", marginTop: 24 }}>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            style={{ marginLeft: "auto", marginTop: 24 }}
+                            data-id="export-config-form-submit-button"
+                        >
                             {this.props.exportConfigToEdit ? "Save changes" : "Add export config"}
                         </Button>
                     )}

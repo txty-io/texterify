@@ -332,7 +332,7 @@ class LanguagesSite extends React.Component<IProps, IState> {
                         projectId: this.props.match.params.projectId,
                         languageToEdit: this.state.languageToEdit,
 
-                        onCreated: async () => {
+                        onSaved: async () => {
                             this.setState({
                                 addDialogVisible: false,
                                 languageToEdit: null

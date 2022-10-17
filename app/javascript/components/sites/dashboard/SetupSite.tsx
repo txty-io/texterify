@@ -644,7 +644,7 @@ export function SetupSite(props: { step: number }) {
                         >
                             <AddEditLanguageForm
                                 projectId={projectId}
-                                onCreated={async () => {
+                                onSaved={async () => {
                                     setLanguagesTableReloader(languagesTableReloader + 1);
                                 }}
                                 clearFieldsAfterSubmit

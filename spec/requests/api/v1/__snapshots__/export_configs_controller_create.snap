@@ -1,0 +1,21 @@
+{
+  "data" => {
+               "id" => "__REMOVED__",
+             "type" => "export_config",
+       "attributes" => {
+                                          "id" => "__REMOVED__",
+                                        "name" => "Test Name",
+                                 "file_format" => "file_format",
+                                   "file_path" => "file_path",
+                       "file_path_stringsdict" => nil,
+                  "default_language_file_path" => nil,
+      "default_language_file_path_stringsdict" => nil,
+                                    "split_on" => nil
+    },
+    "relationships" => {
+      "language_configs" => {
+        "data" => []
+      }
+    }
+  }
+}

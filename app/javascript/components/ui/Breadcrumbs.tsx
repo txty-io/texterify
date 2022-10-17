@@ -260,7 +260,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
             },
             projectExportConfigurations: {
                 parent: "projectExport",
-                name: "Targets",
+                name: "Export configs",
                 path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
                     ":projectId",
                     this.props.match.params.projectId

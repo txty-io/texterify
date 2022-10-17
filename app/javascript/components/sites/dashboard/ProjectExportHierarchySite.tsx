@@ -222,7 +222,7 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
                         )}
 
                         {!dashboardStore.featureEnabled("FEATURE_EXPORT_HIERARCHY") && (
-                            <FeatureNotAvailable feature="FEATURE_EXPORT_HIERARCHY" />
+                            <FeatureNotAvailable feature="FEATURE_EXPORT_HIERARCHY" style={{ marginBottom: 16 }} />
                         )}
 
                         {this.state.responseLanguages && this.state.responseLanguages.data.length < 2 && (

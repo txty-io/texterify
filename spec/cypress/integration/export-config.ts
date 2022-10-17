@@ -44,7 +44,7 @@ context("export-config", () => {
 
         cy.get('[data-id="project-sidebar-export"]').click();
         cy.contains("a", "Create an export config").click();
-        cy.get('[data-id="configurations-site-new-button"]').click();
+        cy.get('[data-id="export-configs-table-new-button"]').click();
         cy.get("#name").type("name");
         cy.contains("div", "Select a file format").type("json");
         cy.get("body").type("{enter}");

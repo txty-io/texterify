@@ -15,7 +15,7 @@ export interface IAddEditLanguageFormProps {
     hideDefaultSubmitButton?: boolean;
     clearFieldsAfterSubmit?: boolean;
     formId?: string;
-    onCreated?(): void;
+    onSaved?(): void;
 }
 interface IState {
     countryCodes: any[];
@@ -109,8 +109,8 @@ class AddEditLanguageForm extends React.Component<IAddEditLanguageFormProps, ISt
 
             return;
         } else {
-            if (this.props.onCreated) {
-                this.props.onCreated();
+            if (this.props.onSaved) {
+                this.props.onSaved();
             }
 
             if (this.props.clearFieldsAfterSubmit) {

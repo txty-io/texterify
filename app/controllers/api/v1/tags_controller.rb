@@ -69,7 +69,7 @@ class Api::V1::TagsController < Api::V1::ApiController
     authorize tag
 
     if tag.destroy
-      render json: { error: false, details: 'TAG_DESTROYED' }
+      render json: { error: false, details: 'TAG_DELETED' }
     else
       render json: { error: true, errors: tag.errors.details }, status: :bad_request
     end

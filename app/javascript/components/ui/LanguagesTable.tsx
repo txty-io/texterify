@@ -232,7 +232,7 @@ export function LanguagesTable(props: { project: IProject; tableReloader?: numbe
                     projectId: props.project.id,
                     languageToEdit: languageToEdit,
 
-                    onCreated: async () => {
+                    onSaved: async () => {
                         setDialogVisible(false);
                         setLanguageToEdit(null);
                         reload();

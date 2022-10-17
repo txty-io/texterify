@@ -1,17 +1,63 @@
-import { Button, Empty, message, Modal, Table } from "antd";
+import { Button, Empty, message, Modal, Table, Tooltip } from "antd";
+import Paragraph from "antd/lib/typography/Paragraph";
 import * as React from "react";
-import { ExportConfigsAPI, IGetExportConfigsResponse } from "../api/v1/ExportConfigsAPI";
-import { IGetLanguagesOptions, ILanguage } from "../api/v1/LanguagesAPI";
+import { ExportConfigsAPI, IExportConfig, IGetExportConfigsResponse } from "../api/v1/ExportConfigsAPI";
+import { IGetLanguagesOptions } from "../api/v1/LanguagesAPI";
 import { IProject } from "../api/v1/ProjectsAPI";
+import { FileFormatOptions } from "../configs/FileFormatOptions";
+import { AddEditExportConfigFormModal } from "../forms/AddEditExportConfigFormModal";
 import { PermissionUtils } from "../utilities/PermissionUtils";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "./Config";
+import { Styles } from "./Styles";
+
+const prettifyFilePath = (path: string) => {
+    const splitted = path.split(/({languageCode})|({countryCode})/).filter((splittedPathElement) => {
+        return splittedPathElement;
+    });
+
+    return (
+        <div
+            style={{
+                display: "flex",
+                alignItems: "center",
+                fontSize: 14,
+                flexWrap: "wrap",
+                wordBreak: "break-word"
+            }}
+        >
+            {splitted.map((split, index) => {
+                if (split === "{languageCode}") {
+                    return (
+                        <span key={index} style={{ color: Styles.COLOR_SECONDARY }}>
+                            {"{languageCode}"}
+                        </span>
+                    );
+                } else if (split === "{countryCode}") {
+                    return (
+                        <span key={index} style={{ color: Styles.COLOR_SECONDARY }}>
+                            {"{countryCode}"}
+                        </span>
+                    );
+                } else {
+                    return <span key={index}>{split}</span>;
+                }
+            })}
+        </div>
+    );
+};
+
+const getFileFormatName = (fileFormat: string) => {
+    return FileFormatOptions.find((fileFormatOption) => {
+        return fileFormatOption.value === fileFormat;
+    }).text;
+};
 
 export function ExportConfigsTable(props: { project: IProject; tableReloader?: number; style?: React.CSSProperties }) {
     const [page, setPage] = React.useState<number>(1);
     const [perPage, setPerPage] = React.useState<number>(DEFAULT_PAGE_SIZE);
     const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
     const [dialogVisible, setDialogVisible] = React.useState<boolean>(false);
-    const [languageToEdit, setLanguageToEdit] = React.useState<ILanguage>(null);
+    const [exportConfigToEdit, setExportConfigToEdit] = React.useState<IExportConfig>(null);
     const [exportConfigResponse, setExportConfigResponse] = React.useState<IGetExportConfigsResponse>(null);
     const [exportConfigsLoading, setLanguagesLoading] = React.useState<boolean>(false);
     const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
@@ -47,14 +93,36 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
         return exportConfigResponse.data.map((exportConfig) => {
             return {
                 key: exportConfig.id,
-                fileFormat: exportConfig.attributes.file_format,
-                filePath: exportConfig.attributes.file_path,
+                name: exportConfig.attributes.name,
+                exportConfigId: (
+                    <Paragraph code copyable={{ text: exportConfig.id }} style={{ margin: 0, whiteSpace: "nowrap" }}>
+                        <Tooltip title={exportConfig.id}>{`${exportConfig.id.substring(0, 8)}...`}</Tooltip>
+                    </Paragraph>
+                ),
+                fileFormat: (
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                        {getFileFormatName(exportConfig.attributes.file_format)}
+                        {exportConfig.attributes.file_format === "json" && exportConfig.attributes.split_on && (
+                            <div style={{ marginTop: 16 }}>
+                                <h4 style={{ fontWeight: "bold" }}>Split keys on:</h4>
+                                {exportConfig.attributes.split_on}
+                            </div>
+                        )}
+                        {exportConfig.relationships.language_configs.data.length > 0 && (
+                            <div style={{ marginTop: 16 }}>
+                                <h4 style={{ fontWeight: "bold" }}>Number of language configs:</h4>
+                                {exportConfig.relationships.language_configs.data.length}
+                            </div>
+                        )}
+                    </div>
+                ),
+                filePath: prettifyFilePath(exportConfig.attributes.file_path),
                 defaultLanguageFilePath: exportConfig.attributes.default_language_file_path,
                 controls: (
                     <div style={{ display: "flex", justifyContent: "center" }}>
                         <Button
                             onClick={() => {
-                                // setLanguageToEdit(language);
+                                setExportConfigToEdit(exportConfig);
                                 setDialogVisible(true);
                             }}
                         >
@@ -68,6 +136,16 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
 
     function getColumns() {
         const columns: { title: string; dataIndex: string; key?: string; width?: number }[] = [
+            {
+                title: "Name",
+                dataIndex: "name",
+                key: "name"
+            },
+            {
+                title: "ID",
+                dataIndex: "exportConfigId",
+                key: "exportConfigId"
+            },
             {
                 title: "File format",
                 dataIndex: "fileFormat",
@@ -136,18 +214,28 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
 
     return (
         <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-            <Button
-                danger
-                onClick={onDelete}
-                disabled={
-                    selectedRowKeys.length === 0 ||
-                    !PermissionUtils.isDeveloperOrHigher(props.project.attributes.current_user_role)
-                }
-                loading={isDeleting}
-                style={{ marginBottom: 24, alignSelf: "flex-start" }}
-            >
-                Delete selected
-            </Button>
+            <div style={{ display: "flex" }}>
+                <Button
+                    onClick={() => {
+                        setDialogVisible(true);
+                    }}
+                    data-id="export-configs-table-new-button"
+                >
+                    Create new
+                </Button>
+                <Button
+                    danger
+                    onClick={onDelete}
+                    disabled={
+                        selectedRowKeys.length === 0 ||
+                        !PermissionUtils.isDeveloperOrHigher(props.project.attributes.current_user_role)
+                    }
+                    loading={isDeleting}
+                    style={{ marginBottom: 24, marginLeft: 8 }}
+                >
+                    Delete selected
+                </Button>
+            </div>
             <Table
                 style={props.style}
                 rowSelection={{
@@ -188,23 +276,22 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
                 }}
             />
 
-            {/* <AddEditLanguageFormModal
+            <AddEditExportConfigFormModal
                 visible={dialogVisible}
-                onCancelRequest={() => {
-                    setDialogVisible(false);
-                    setLanguageToEdit(null);
-                }}
-                languageFormProps={{
+                formProps={{
                     projectId: props.project.id,
-                    languageToEdit: languageToEdit,
-
-                    onCreated: async () => {
+                    exportConfigToEdit: exportConfigToEdit,
+                    onSaved: async () => {
                         setDialogVisible(false);
-                        setLanguageToEdit(null);
-                        reload();
+                        setExportConfigToEdit(null);
+                        await reload();
                     }
                 }}
-            /> */}
+                onCancelRequest={async () => {
+                    setDialogVisible(false);
+                    setExportConfigToEdit(null);
+                }}
+            />
         </div>
     );
 }
