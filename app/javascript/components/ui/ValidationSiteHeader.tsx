@@ -160,6 +160,9 @@ export class ValidationSiteHeader extends React.Component<IProps, IState> {
 
                 <Popconfirm
                     title="Do you want to check your translations for issues?"
+                    disabled={
+                        !this.state.getBackgroundJobsResponse || !dashboardStore.featureEnabled("FEATURE_VALIDATIONS")
+                    }
                     onConfirm={async () => {
                         this.setState({ checkingValidations: true });
 
