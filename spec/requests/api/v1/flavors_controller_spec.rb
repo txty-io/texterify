@@ -24,7 +24,7 @@ RSpec.describe Api::V1::FlavorsController, type: :request do
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data']).to eq([])
-      expect(body['included']).to eq(nil)
+      expect(body['included']).to be_nil
       expect(body['meta']['total']).to eq(0)
     end
 
