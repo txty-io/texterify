@@ -174,6 +174,7 @@ class ProjectSidebar extends React.Component<IProps> {
                         ":projectId",
                         this.props.match.params.projectId
                     ),
+                    Routes.DASHBOARD.PROJECT_EXPORT_FLAVORS.replace(":projectId", this.props.match.params.projectId),
                     Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", this.props.match.params.projectId)
                 ]
                 // subItems: [

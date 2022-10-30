@@ -1,0 +1,23 @@
+{
+  "data" => [
+    [0] {
+              "id" => "__REMOVED__",
+            "type" => "flavor",
+      "attributes" => {
+          "id" => "__REMOVED__",
+        "name" => "Flavor 1"
+      }
+    },
+    [1] {
+              "id" => "__REMOVED__",
+            "type" => "flavor",
+      "attributes" => {
+          "id" => "__REMOVED__",
+        "name" => "Flavor 2"
+      }
+    }
+  ],
+  "meta" => {
+    "total" => 3
+  }
+}

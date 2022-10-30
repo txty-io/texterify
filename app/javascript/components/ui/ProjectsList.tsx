@@ -9,7 +9,7 @@ import { ListContent } from "./ListContent";
 import { ProjectAvatar } from "./ProjectAvatar";
 import styled from "styled-components";
 import { IProject } from "../api/v1/ProjectsAPI";
-import { AlertFilled, ExclamationCircleFilled } from "@ant-design/icons";
+import { ExclamationCircleFilled } from "@ant-design/icons";
 
 const openProject = (project: IProject) => {
     dashboardStore.currentProject = project;

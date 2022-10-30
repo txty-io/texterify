@@ -82,6 +82,10 @@ Rails
             get :release, to: 'releases#release'
           end
 
+          # Flavors
+          delete 'flavors', to: 'flavors#destroy_multiple'
+          resources :flavors, only: [:create, :index, :destroy, :update]
+
           # Releases
           get 'releases', to: 'releases#index'
           delete 'releases', to: 'releases#destroy_multiple'

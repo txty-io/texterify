@@ -8,6 +8,7 @@ import { FileFormatOptions } from "../configs/FileFormatOptions";
 import { AddEditExportConfigFormModal } from "../forms/AddEditExportConfigFormModal";
 import { PermissionUtils } from "../utilities/PermissionUtils";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "./Config";
+import { QuestionIconWithTooltip } from "./QuestionIconWithTooltip";
 import { Styles } from "./Styles";
 
 const prettifyFilePath = (path: string) => {
@@ -28,15 +29,19 @@ const prettifyFilePath = (path: string) => {
             {splitted.map((split, index) => {
                 if (split === "{languageCode}") {
                     return (
-                        <span key={index} style={{ color: Styles.COLOR_SECONDARY }}>
-                            {"{languageCode}"}
-                        </span>
+                        <Tooltip title="This will be automatically replaced with the language code of the language.">
+                            <span key={index} style={{ color: Styles.COLOR_SECONDARY }}>
+                                {"{languageCode}"}
+                            </span>
+                        </Tooltip>
                     );
                 } else if (split === "{countryCode}") {
                     return (
-                        <span key={index} style={{ color: Styles.COLOR_SECONDARY }}>
-                            {"{countryCode}"}
-                        </span>
+                        <Tooltip title="This will be automatically replaced with the country code of the language.">
+                            <span key={index} style={{ color: Styles.COLOR_SECONDARY }}>
+                                {"{countryCode}"}
+                            </span>
+                        </Tooltip>
                     );
                 } else {
                     return <span key={index}>{split}</span>;
@@ -135,7 +140,7 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
     }
 
     function getColumns() {
-        const columns: { title: string; dataIndex: string; key?: string; width?: number }[] = [
+        const columns: { title: React.ReactNode; dataIndex: string; key?: string; width?: number }[] = [
             {
                 title: "Name",
                 dataIndex: "name",
@@ -152,12 +157,28 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
                 key: "fileFormat"
             },
             {
-                title: "File path",
+                title: (
+                    <>
+                        File path
+                        <QuestionIconWithTooltip
+                            tooltip="The folder and name of your language translation files."
+                            style={{ marginLeft: 8 }}
+                        />
+                    </>
+                ),
                 dataIndex: "filePath",
                 key: "filePath"
             },
             {
-                title: "Default language file path",
+                title: (
+                    <>
+                        Default language file path
+                        <QuestionIconWithTooltip
+                            tooltip="Overwrite the folder and name for your default language. If not set the normal file path will be used. Overwriting can be useful if the default language needs special treatment (e.g. Android)."
+                            style={{ marginLeft: 8 }}
+                        />
+                    </>
+                ),
                 dataIndex: "defaultLanguageFilePath",
                 key: "defaultLanguageFilePath"
             }
@@ -214,7 +235,7 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
 
     return (
         <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-            <div style={{ display: "flex" }}>
+            <div style={{ display: "flex", marginBottom: 24 }}>
                 <Button
                     onClick={() => {
                         setDialogVisible(true);
@@ -231,7 +252,7 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
                         !PermissionUtils.isDeveloperOrHigher(props.project.attributes.current_user_role)
                     }
                     loading={isDeleting}
-                    style={{ marginBottom: 24, marginLeft: 8 }}
+                    style={{ marginLeft: 8 }}
                 >
                     Delete selected
                 </Button>

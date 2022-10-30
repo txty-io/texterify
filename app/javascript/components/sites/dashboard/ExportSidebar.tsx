@@ -21,6 +21,11 @@ export function ExportSidebar(props: { projectId: string }) {
                             id: "configurations"
                         },
                         {
+                            path: Routes.DASHBOARD.PROJECT_EXPORT_FLAVORS.replace(":projectId", props.projectId),
+                            name: "Flavors",
+                            id: "flavors"
+                        },
+                        {
                             path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", props.projectId),
                             name: "Hierarchy",
                             id: "hierarchy"

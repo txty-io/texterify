@@ -1,0 +1,10 @@
+{
+  "data" => {
+            "id" => "__REMOVED__",
+          "type" => "flavor",
+    "attributes" => {
+        "id" => "__REMOVED__",
+      "name" => "Test Name"
+    }
+  }
+}

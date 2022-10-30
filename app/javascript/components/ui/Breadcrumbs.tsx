@@ -266,6 +266,11 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                     this.props.match.params.projectId
                 )
             },
+            projectExportFlavors: {
+                parent: "projectExport",
+                name: "Flavors",
+                path: Routes.DASHBOARD.PROJECT_EXPORT_FLAVORS.replace(":projectId", this.props.match.params.projectId)
+            },
             projectExportHiearchy: {
                 parent: "projectExport",
                 name: "Hierarchy",
@@ -322,5 +327,5 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
     }
 }
 
-const Breadcrumbs: any = withRouter(BreadcrumbsUnwrapped);
+const Breadcrumbs = withRouter(BreadcrumbsUnwrapped);
 export { Breadcrumbs };

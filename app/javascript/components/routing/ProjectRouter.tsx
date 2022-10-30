@@ -33,6 +33,7 @@ import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
 import { ProjectForbiddenWordsListsSite } from "../sites/dashboard/ProjectForbiddenWordsListsSite";
 import { ProjectTagsSite } from "../sites/dashboard/ProjectTagsSite";
+import { ProjectExportFlavorsSite } from "../sites/dashboard/ProjectExportFlavorsSite";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -201,6 +202,11 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         exact
                         path={Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS}
                         component={ProjectExportConfigsSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_EXPORT_FLAVORS}
+                        component={ProjectExportFlavorsSite}
                     />
                     <PrivateRoute
                         exact
