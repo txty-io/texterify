@@ -17,7 +17,7 @@ export interface ITranslation {
         created_at: string;
     };
     relationships: {
-        export_config?: { data: any };
+        flavor?: { data: any };
         key?: { data: any };
         language?: { data: any };
     };

@@ -1,11 +1,11 @@
-import { CrownOutlined, FilterOutlined, LockOutlined, MoreOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { CrownOutlined, FilterOutlined, MoreOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Drawer, Input, Layout, Modal, Pagination, PaginationProps, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as queryString from "query-string";
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { APIUtils } from "../../api/v1/APIUtils";
-import { ExportConfigsAPI, IExportConfig, IGetExportConfigsResponse } from "../../api/v1/ExportConfigsAPI";
+import { FlavorsAPI, IFlavor, IGetFlavorsResponse } from "../../api/v1/FlavorsAPI";
 import { IGetKeysOptions, IGetKeysResponse, IKey, KeysAPI } from "../../api/v1/KeysAPI";
 import { ILanguage, LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
@@ -40,20 +40,20 @@ interface IState {
     isDeleting: boolean;
     languagesResponse: any;
     keysResponse: IGetKeysResponse;
-    exportConfigsResponse: IGetExportConfigsResponse;
+    flavorsResponse: IGetFlavorsResponse;
     addDialogVisible: boolean;
     page: number;
     search: string | undefined;
     keysLoading: boolean;
     languagesLoading: boolean;
-    exportConfigsLoading: boolean;
+    flavorsLoading: boolean;
     projectColumnsLoading: boolean;
     projectColumns: any;
     editTranslationCellOpen: boolean;
     editTranslationKeyId: string;
     editTranslationKeyReponse: any;
     editTranslationLanguageId: string;
-    editTranslationExportConfigId: string;
+    editTranslationFlavorId: string;
     editTranslationContentChanged: boolean;
     keyToShowHistory: any;
     keyMenuVisible: string;
@@ -70,8 +70,8 @@ export interface IKeysTableExpandedRecord {
     key: string; // react key and not a translation key
     translations: { [key: string]: ITranslation };
     languages: ILanguage[];
-    exportConfigId: string | null;
-    exportConfigName: string | null;
+    flavorId: string | null;
+    flavorName: string | null;
 }
 
 export type IKeysTableRecord = IKeysTableExpandedRecord & {
@@ -79,7 +79,7 @@ export type IKeysTableRecord = IKeysTableExpandedRecord & {
     description?: string;
     nameEditable?: boolean;
     tags?: JSX.Element;
-    exportConfigOverwrites?: JSX.Element[];
+    flavorOverwrites?: JSX.Element[];
     more?: JSX.Element;
 };
 
@@ -134,20 +134,20 @@ class KeysSite extends React.Component<IProps, IState> {
             isDeleting: false,
             languagesResponse: null,
             keysResponse: null,
-            exportConfigsResponse: null,
+            flavorsResponse: null,
             addDialogVisible: false,
             page: 1,
             search: currentQueryParams.q as string,
             keysLoading: true,
             languagesLoading: true,
-            exportConfigsLoading: true,
+            flavorsLoading: true,
             projectColumnsLoading: true,
             projectColumns: null,
             editTranslationCellOpen: false,
             editTranslationKeyId: "",
             editTranslationKeyReponse: null,
             editTranslationLanguageId: "",
-            editTranslationExportConfigId: null,
+            editTranslationFlavorId: null,
             editTranslationContentChanged: false,
             keyToShowHistory: null,
             keyMenuVisible: null,
@@ -165,7 +165,7 @@ class KeysSite extends React.Component<IProps, IState> {
             const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, {
                 showAll: true
             });
-            const exportConfigsResponse = await ExportConfigsAPI.getExportConfigs({
+            const flavorsResponse = await FlavorsAPI.getFlavors({
                 projectId: this.props.match.params.projectId
             });
             const projectColumns = await ProjectColumnsAPI.getProjectColumns({
@@ -177,8 +177,8 @@ class KeysSite extends React.Component<IProps, IState> {
                 languagesLoading: false,
                 projectColumns: projectColumns,
                 projectColumnsLoading: false,
-                exportConfigsResponse: exportConfigsResponse,
-                exportConfigsLoading: false
+                flavorsResponse: flavorsResponse,
+                flavorsLoading: false
             });
         } catch (error) {
             console.error(error);
@@ -246,7 +246,7 @@ class KeysSite extends React.Component<IProps, IState> {
                             languageId: languageId,
                             keyId: data.record.keyObject.id,
                             content: content,
-                            exportConfigId: data.record.exportConfigId
+                            flavorId: data.record.flavorId
                         });
 
                         if (response.errors) {
@@ -291,8 +291,8 @@ class KeysSite extends React.Component<IProps, IState> {
                             </Tooltip>
                         </div>
                     ),
-                    dataIndex: "exportConfigOverwrites",
-                    key: "exportConfigOverwrites",
+                    dataIndex: "flavorOverwrites",
+                    key: "flavorOverwrites",
                     width: 80
                 });
             }
@@ -391,7 +391,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 }
             });
 
-            const overwrites = this.getKeyExportConfigOverwrites(key);
+            const overwrites = this.getKeyFlavorOverwrites(key);
 
             return {
                 tags: (
@@ -402,19 +402,19 @@ class KeysSite extends React.Component<IProps, IState> {
                         onTagRemoved={this.reloadTable}
                     />
                 ),
-                exportConfigOverwrites: overwrites.map((overwrite) => {
+                flavorOverwrites: overwrites.map((overwrite) => {
                     return (
                         <Tag
                             key={`${key.attributes.id}-${overwrite.id}`}
                             color="cyan"
                             style={{ margin: "0 4px 4px 0" }}
                         >
-                            {overwrite}
+                            {overwrite.attributes.name}
                         </Tag>
                     );
                 }),
-                exportConfigId: null,
-                exportConfigName: null,
+                flavorId: null,
+                flavorName: null,
                 keyObject: key,
                 keysResponse: this.state.keysResponse,
                 keyId: key.attributes.id,
@@ -741,13 +741,13 @@ class KeysSite extends React.Component<IProps, IState> {
         );
     };
 
-    getKeyExportConfigOverwrites = (key: IKey) => {
-        if (!this.state.exportConfigsResponse?.data) {
+    getKeyFlavorOverwrites = (key: IKey) => {
+        if (!this.state.flavorsResponse?.data) {
             return [];
         }
 
-        const exportConfigs: IExportConfig[] = [];
-        this.state.exportConfigsResponse.data.map((exportConfig) => {
+        const flavors: IFlavor[] = [];
+        this.state.flavorsResponse.data.map((flavor) => {
             const currentKey = this.state.keys.find((k) => {
                 return key.id === k.id;
             });
@@ -764,21 +764,26 @@ class KeysSite extends React.Component<IProps, IState> {
                     TranslationUtils.hasContent(translation, language, currentKey.attributes.pluralization_enabled) &&
                     translation.relationships.flavor &&
                     translation.relationships.flavor.data &&
-                    translation.relationships.flavor.data.id === exportConfig.id
+                    translation.relationships.flavor.data.id === flavor.id
                 ) {
-                    const exportConfigIncluded = APIUtils.getIncludedObject(
+                    const flavorIncluded: IFlavor = APIUtils.getIncludedObject(
                         translation.relationships.flavor.data,
-                        this.state.exportConfigsResponse.data
+                        this.state.flavorsResponse.data
                     );
 
-                    if (exportConfigIncluded && !exportConfigs.includes(exportConfigIncluded.attributes.name)) {
-                        exportConfigs.push(exportConfigIncluded.attributes.name);
+                    if (
+                        flavorIncluded &&
+                        !flavors.find((f) => {
+                            return f.id === flavorIncluded.id;
+                        })
+                    ) {
+                        flavors.push(flavorIncluded);
                     }
                 }
             });
         });
 
-        return exportConfigs;
+        return flavors;
     };
 
     render() {
@@ -853,7 +858,7 @@ class KeysSite extends React.Component<IProps, IState> {
                             >
                                 <KeySearchSettingsActiveFilters
                                     languagesResponse={this.state.languagesResponse}
-                                    exportConfigsResponse={this.state.exportConfigsResponse}
+                                    flavorsResponse={this.state.flavorsResponse}
                                 />
                                 <Input.Group
                                     compact
@@ -870,7 +875,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                         content={
                                             <KeySearchSettings
                                                 languagesResponse={this.state.languagesResponse}
-                                                exportConfigsResponse={this.state.exportConfigsResponse}
+                                                flavorsResponse={this.state.flavorsResponse}
                                                 onChange={(settings) => {
                                                     this.setState(
                                                         { searchSettings: settings, page: 1 },
@@ -934,7 +939,7 @@ class KeysSite extends React.Component<IProps, IState> {
                             loading={
                                 this.state.keysLoading ||
                                 this.state.languagesLoading ||
-                                this.state.exportConfigsLoading ||
+                                this.state.flavorsLoading ||
                                 this.state.projectColumnsLoading ||
                                 dashboardStore.currentProject.attributes.current_user_deactivated
                             }
@@ -960,12 +965,12 @@ class KeysSite extends React.Component<IProps, IState> {
                             }}
                             onSave={this.handleRowSave}
                             expandedRowRender={
-                                (this.state.exportConfigsResponse?.data || []).length === 0
+                                (this.state.flavorsResponse?.data || []).length === 0
                                     ? undefined
                                     : (record: IKeysTableRecord) => {
                                           const dataSource: IKeysTableExpandedRecord[] = [];
 
-                                          this.state.exportConfigsResponse.data.forEach((exportConfig) => {
+                                          this.state.flavorsResponse.data.forEach((flavor) => {
                                               const translations = {};
                                               const currentKey = this.state.keys.find((key) => {
                                                   return record.keyObject.id === key.id;
@@ -990,11 +995,11 @@ class KeysSite extends React.Component<IProps, IState> {
                                               );
 
                                               dataSource.push({
-                                                  key: `${record.keyObject.id}-${exportConfig.id}`,
+                                                  key: `${record.keyObject.id}-${flavor.id}`,
                                                   keyId: record.keyObject.id,
                                                   keyObject: record.keyObject,
-                                                  exportConfigId: exportConfig.id,
-                                                  exportConfigName: exportConfig.attributes.name,
+                                                  flavorId: flavor.id,
+                                                  flavorName: flavor.attributes.name,
                                                   translations: translations,
                                                   keysResponse: this.state.keysResponse,
                                                   languages: this.state.languages
@@ -1003,9 +1008,9 @@ class KeysSite extends React.Component<IProps, IState> {
 
                                           const columns = [
                                               {
-                                                  title: "Export config",
-                                                  dataIndex: "exportConfigName",
-                                                  key: "exportConfigName"
+                                                  title: "Flavor",
+                                                  dataIndex: "flavorName",
+                                                  key: "flavorName"
                                               }
                                           ]
                                               .concat(
@@ -1069,7 +1074,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                                           editTranslationKeyId: options.keyId,
                                                           editTranslationKeyReponse: keyResponse,
                                                           editTranslationLanguageId: options.languageId,
-                                                          editTranslationExportConfigId: options.exportConfigId
+                                                          editTranslationFlavorId: options.flavorId
                                                       });
                                                   }}
                                                   onSave={this.handleRowSave}
@@ -1128,12 +1133,12 @@ class KeysSite extends React.Component<IProps, IState> {
                         languagesResponse: this.state.languagesResponse,
                         keyResponse: this.state.editTranslationKeyReponse,
                         selectedLanguageId: this.state.editTranslationLanguageId,
-                        selectedExportConfigId: this.state.editTranslationExportConfigId,
+                        selectedFlavorId: this.state.editTranslationFlavorId,
                         onSuccess: async () => {
                             this.setState({
                                 editTranslationCellOpen: false,
                                 editTranslationContentChanged: false,
-                                editTranslationExportConfigId: null
+                                editTranslationFlavorId: null
                             });
                             await this.reloadTable();
                         }
@@ -1142,7 +1147,7 @@ class KeysSite extends React.Component<IProps, IState> {
                         this.setState({
                             editTranslationCellOpen: false,
                             editTranslationContentChanged: false,
-                            editTranslationExportConfigId: null
+                            editTranslationFlavorId: null
                         });
                     }}
                 />

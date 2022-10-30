@@ -7,9 +7,8 @@ class Key < ApplicationRecord
   scope :match_name_or_description_or_translation_content,
         lambda { |search, eq_op, exactly|
           where(
-            "(keys.name #{eq_op} :search or keys.description #{eq_op} :search or translations.content #{eq_op} :search) or (translations.content ilike :search_html and keys.html_enabled = true)",
-            search: exactly ? sanitize_sql_like(search) : "%#{sanitize_sql_like(search)}%",
-            search_html: "%#{sanitize_sql_like(search)}%"
+            "(keys.name #{eq_op} :search or keys.description #{eq_op} :search or translations.content #{eq_op} :search or translations.zero #{eq_op} :search or translations.one #{eq_op} :search or translations.two #{eq_op} :search or translations.few #{eq_op} :search or translations.many #{eq_op} :search)",
+            search: exactly ? sanitize_sql_like(search) : "%#{sanitize_sql_like(search)}%"
           )
         }
   scope :distinct_on_lower_name, -> { select('distinct on (lower("keys"."name")) keys.*') }

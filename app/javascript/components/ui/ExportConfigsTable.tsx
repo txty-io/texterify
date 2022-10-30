@@ -29,18 +29,20 @@ const prettifyFilePath = (path: string) => {
             {splitted.map((split, index) => {
                 if (split === "{languageCode}") {
                     return (
-                        <Tooltip title="This will be automatically replaced with the language code of the language.">
-                            <span key={index} style={{ color: Styles.COLOR_SECONDARY }}>
-                                {"{languageCode}"}
-                            </span>
+                        <Tooltip
+                            key={index}
+                            title="This will be automatically replaced with the language code of the language."
+                        >
+                            <span style={{ color: Styles.COLOR_SECONDARY }}>{"{languageCode}"}</span>
                         </Tooltip>
                     );
                 } else if (split === "{countryCode}") {
                     return (
-                        <Tooltip title="This will be automatically replaced with the country code of the language.">
-                            <span key={index} style={{ color: Styles.COLOR_SECONDARY }}>
-                                {"{countryCode}"}
-                            </span>
+                        <Tooltip
+                            key={index}
+                            title="This will be automatically replaced with the country code of the language."
+                        >
+                            <span style={{ color: Styles.COLOR_SECONDARY }}>{"{countryCode}"}</span>
                         </Tooltip>
                     );
                 } else {

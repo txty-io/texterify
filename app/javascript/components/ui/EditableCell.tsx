@@ -42,7 +42,7 @@ interface IEditableCellProps {
     rowSpan?: number;
 
     handleSave: (data: { record: IKeysTableRecord; values: IEditableCellFormValues }) => void;
-    onCellEdit(options: { languageId: string; keyId: string; exportConfigId: string }): void;
+    onCellEdit(options: { languageId: string; keyId: string; flavorId: string }): void;
 }
 
 export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellProps) => {
@@ -82,7 +82,7 @@ export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellP
             props.onCellEdit({
                 languageId: props.languageId,
                 keyId: props.record.keyId,
-                exportConfigId: props.record.exportConfigId
+                flavorId: props.record.flavorId
             });
         } else {
             setEditing(!editing);
@@ -90,7 +90,7 @@ export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellP
             if (props.languageId) {
                 const languageTranslations = props.record.translations[props.languageId] || {};
                 form.setFieldsValue({
-                    [props.dataIndex]: languageTranslations[props.record.exportConfigId]?.attributes.content
+                    [props.dataIndex]: languageTranslations[props.record.flavorId]?.attributes.content
                 });
             } else {
                 form.setFieldsValue({
@@ -135,7 +135,7 @@ export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellP
                         isCellEditable={isCellEditable}
                         dataIndex={props.dataIndex}
                         onClick={toggleEdit}
-                        exportConfigId={props.record.exportConfigId}
+                        flavorId={props.record.flavorId}
                     />
                 )
             ) : (

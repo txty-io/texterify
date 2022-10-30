@@ -20,7 +20,7 @@ interface IEditableTableProps {
     className?: string;
     showHeader?: boolean;
     onSave(data: { record: IKeysTableRecord; values: IEditableCellFormValues }): Promise<void>;
-    onCellEdit(options: { languageId: string; keyId: string; exportConfigId?: string }): void;
+    onCellEdit(options: { languageId: string; keyId: string; flavorId?: string }): void;
     onTranslationUpdated(translation: any): void;
     onKeyUpdated(key: IKey): void;
 }
@@ -53,20 +53,7 @@ class EditableTable extends React.Component<IEditableTableProps, IEditableTableS
     };
 
     handleSave = async (data: { record: IKeysTableRecord; values: IEditableCellFormValues }) => {
-        // const newData = [...this.state.dataSource];
-        // const index = newData.findIndex((item) => {
-        //     return item.keyObject.id === data.record.keyObject.id;
-        // });
-        // const oldRow = newData[index];
-        // const newItem = {
-        //     ...oldRow,
-        //     ...row
-        // };
-
         await this.props.onSave(data);
-
-        // newData.splice(index, 1, newItem);
-        // this.setState({ dataSource: newData });
     };
 
     render() {

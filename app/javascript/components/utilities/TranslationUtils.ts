@@ -5,7 +5,7 @@ import { ITranslation } from "../api/v1/TranslationsAPI";
 
 const TranslationUtils = {
     // Checks if the given language supports machine translation as source.
-    getTranslationForLanguage(data: { languageId: string; keyResponse: IGetKeyResponse; exportConfigId?: string }) {
+    getTranslationForLanguage(data: { languageId: string; keyResponse: IGetKeyResponse; flavorId?: string }) {
         if (!data.languageId) {
             return null;
         }
@@ -18,9 +18,9 @@ const TranslationUtils = {
 
                 // Check for language
                 if (translation.relationships.language.data.id === data.languageId) {
-                    if (data.exportConfigId) {
-                        // If translation for export config is requested
-                        if (translation.relationships.flavor.data?.id === data.exportConfigId) {
+                    if (data.flavorId) {
+                        // If translation for flavor is requested
+                        if (translation.relationships.flavor.data?.id === data.flavorId) {
                             translationForLanguage = translation;
                             return true;
                         }

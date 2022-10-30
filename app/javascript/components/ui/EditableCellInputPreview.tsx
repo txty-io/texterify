@@ -27,7 +27,7 @@ export function EditableCellInputPreview(props: {
     isCellEditable: boolean;
     dataIndex: string;
     languageId: string;
-    exportConfigId: string;
+    flavorId: string;
     onClick(): void;
 }) {
     const isNameColumnAndNotEditable = props.dataIndex === "name" && !props.record.nameEditable;
@@ -100,7 +100,7 @@ export function EditableCellInputPreview(props: {
 
         const languageTranslations = props.record.translations[language.id] || {};
 
-        const translation: ITranslation | undefined = languageTranslations[props.exportConfigId || null];
+        const translation: ITranslation | undefined = languageTranslations[props.flavorId || null];
 
         if (props.record.keyObject.attributes.pluralization_enabled) {
             let firstItem: "zero" | "one" | "two" | "few" | "many" | "other";

@@ -2,6 +2,7 @@ import { Tag } from "antd";
 import moment from "moment";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
+import { IGetFlavorsResponse } from "../api/v1/FlavorsAPI";
 import FlagIcon from "./FlagIcons";
 import { useQuery } from "./KeySearchSettings";
 
@@ -10,7 +11,7 @@ const TagStyle = { marginRight: 8, marginBottom: 4 };
 export function KeySearchSettingsActiveFilters(props: {
     style?: React.CSSProperties;
     languagesResponse: any;
-    exportConfigsResponse: any;
+    flavorsResponse: IGetFlavorsResponse;
 }) {
     const currentQueryParams = useQuery();
 
@@ -89,12 +90,12 @@ export function KeySearchSettingsActiveFilters(props: {
                 )}
                 {currentQueryParams.ec && (
                     <Tag color="cyan" style={TagStyle}>
-                        {props.exportConfigsResponse?.data
-                            ?.filter((exportConfig) => {
-                                return currentQueryParams.ec.includes(exportConfig.id);
+                        {props.flavorsResponse?.data
+                            ?.filter((flavor) => {
+                                return currentQueryParams.ec.includes(flavor.id);
                             })
-                            .map((exportConfig) => {
-                                return exportConfig.attributes.name;
+                            .map((flavor) => {
+                                return flavor.attributes.name;
                             })
                             .reduce((prev, curr) => {
                                 return [prev, " or ", curr];

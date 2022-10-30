@@ -18,7 +18,7 @@ export interface IEditTranslationFormProps {
     languagesResponse: IGetLanguagesResponse;
     keyResponse?: IGetKeyResponse;
     selectedLanguageId: string;
-    selectedExportConfigId: string | null;
+    selectedFlavorId: string | null;
     forceHTML?: boolean;
     forcePluralization?: boolean;
     forceContentOther?: string;
@@ -44,7 +44,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
 
     const [form] = Form.useForm();
 
-    // Set the correct translation if language or export config changes.
+    // Set the correct translation if language or flavor changes.
     React.useEffect(() => {
         if (props.selectedLanguageId && props.keyResponse) {
             setTranslationLoading(true);
@@ -53,7 +53,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                 const translationForLanguage = TranslationUtils.getTranslationForLanguage({
                     languageId: props.selectedLanguageId,
                     keyResponse: props.keyResponse,
-                    exportConfigId: props.selectedExportConfigId
+                    flavorId: props.selectedFlavorId
                 });
 
                 setTranslation(translationForLanguage);
@@ -64,13 +64,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
         }
 
         setTranslationLoading(false);
-    }, [
-        props.projectId,
-        props.keyResponse,
-        props.selectedLanguageId,
-        props.selectedExportConfigId,
-        props.languagesResponse
-    ]);
+    }, [props.projectId, props.keyResponse, props.selectedLanguageId, props.selectedFlavorId, props.languagesResponse]);
 
     React.useEffect(() => {
         if (props.forceContentOther) {
@@ -148,7 +142,7 @@ export function EditTranslationForm(props: IEditTranslationFormProps) {
                         few: values.few,
                         many: values.many,
                         content: values.other,
-                        exportConfigId: props.selectedExportConfigId
+                        flavorId: props.selectedFlavorId
                     });
 
                     if (response.error) {
