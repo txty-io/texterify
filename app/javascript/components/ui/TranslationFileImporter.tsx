@@ -10,14 +10,14 @@ import GNULogo from "images/gnu_logo.svg";
 import GoLogo from "images/go_logo_blue.svg";
 import JavaLogo from "images/java_logo.svg";
 import JSONLogo from "images/json_logo.svg";
-import TOMLLogo from "images/toml_logo.svg";
 import RailsLogo from "images/rails_logo.svg";
+import TOMLLogo from "images/toml_logo.svg";
 import { observer } from "mobx-react";
 import * as React from "react";
 import Dropzone from "react-dropzone";
 import { useParams } from "react-router";
 import { APIUtils } from "../api/v1/APIUtils";
-import { ExportConfigsAPI, IGetExportConfigsResponse } from "../api/v1/ExportConfigsAPI";
+import { FlavorsAPI, IGetFlavorsResponse } from "../api/v1/FlavorsAPI";
 import { IGetLanguagesResponse, LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { history } from "../routing/history";
@@ -277,10 +277,10 @@ export const TranslationFileImporter = observer(
         const [languagesLoading, setLanguagesLoading] = React.useState<boolean>(true);
         const [selectedLanguageId, setSelectedLanguageId] = React.useState<string>();
         const [search, setSearch] = React.useState<string>("");
-        const [showExportConfigSelect, setShowExportConfigSelect] = React.useState<boolean>(false);
+        const [showFlavorSelect, setFlavorSelect] = React.useState<boolean>(false);
         const [selectedImportFormat, setSelectedImportFormat] = React.useState<typeof SUPPORTED_FORMATS[0]>();
-        const [selectedExportConfigId, setSelectedExportConfigId] = React.useState<string>();
-        const [exportConfigsResponse, setExportConfigsResponse] = React.useState<IGetExportConfigsResponse>();
+        const [selectedFlavorId, setSelectedFlavorId] = React.useState<string>();
+        const [flavorsResponse, setFlavorsResponse] = React.useState<IGetFlavorsResponse>();
         const [files, setFiles] = React.useState<File[]>([]);
         const [loading, setLoading] = React.useState<boolean>(false);
         const [importSuccessful, setImportSuccessful] = React.useState<boolean>(false);
@@ -289,12 +289,12 @@ export const TranslationFileImporter = observer(
             (async () => {
                 try {
                     const responseLanguages = await LanguagesAPI.getLanguages(params.projectId, { showAll: true });
-                    const responseExportConfigs = await ExportConfigsAPI.getExportConfigs({
+                    const responseFlavors = await FlavorsAPI.getFlavors({
                         projectId: params.projectId
                     });
 
                     setLanguagesResponse(responseLanguages);
-                    setExportConfigsResponse(responseExportConfigs);
+                    setFlavorsResponse(responseFlavors);
                 } catch (e) {
                     console.error(e);
                 }
@@ -309,7 +309,7 @@ export const TranslationFileImporter = observer(
             const response = await ProjectsAPI.import({
                 projectId: params.projectId,
                 languageId: selectedLanguageId,
-                exportConfigId: selectedExportConfigId,
+                flavorId: selectedFlavorId,
                 file: files[0],
                 fileFormat: selectedImportFormat.id
             });
@@ -338,19 +338,19 @@ export const TranslationFileImporter = observer(
             setLoading(false);
         }
 
-        function getExportConfigSelect() {
+        function getFlavorSelect() {
             return (
                 <Select
                     style={{ flexGrow: 1 }}
                     onChange={(selectedValue: string) => {
-                        setSelectedExportConfigId(selectedValue);
+                        setSelectedFlavorId(selectedValue);
                     }}
-                    value={selectedExportConfigId}
+                    value={selectedFlavorId}
                 >
-                    {exportConfigsResponse.data.map((exportConfig) => {
+                    {flavorsResponse.data.map((flavor) => {
                         return (
-                            <Select.Option value={exportConfig.id} key={exportConfig.id}>
-                                {exportConfig.attributes.name}
+                            <Select.Option value={flavor.id} key={flavor.id}>
+                                {flavor.attributes.name}
                             </Select.Option>
                         );
                     })}
@@ -470,7 +470,7 @@ export const TranslationFileImporter = observer(
                                     })}
                                 </div>
                             </div>
-                            {showExportConfigSelect && exportConfigsResponse && exportConfigsResponse.data.length > 0 && (
+                            {showFlavorSelect && flavorsResponse && flavorsResponse.data.length > 0 && (
                                 <div
                                     style={{
                                         display: "flex",
@@ -478,18 +478,18 @@ export const TranslationFileImporter = observer(
                                         marginTop: 8
                                     }}
                                 >
-                                    <span style={{ marginRight: 8 }}>Select an export config:</span>
-                                    {getExportConfigSelect()}
+                                    <span style={{ marginRight: 8 }}>Select a flavor:</span>
+                                    {getFlavorSelect()}
                                 </div>
                             )}
 
-                            {!showExportConfigSelect && exportConfigsResponse && exportConfigsResponse.data.length > 0 && (
+                            {!showFlavorSelect && flavorsResponse && flavorsResponse.data.length > 0 && (
                                 <a
                                     onClick={() => {
-                                        setShowExportConfigSelect(true);
+                                        setFlavorSelect(true);
                                     }}
                                 >
-                                    Click here to import strings for an export config
+                                    Click here to import strings for a flavor
                                 </a>
                             )}
 
