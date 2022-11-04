@@ -1,11 +1,12 @@
 {
-  "data" => {
+      "data" => {
                "id" => "__REMOVED__",
              "type" => "export_config",
        "attributes" => {
                                           "id" => "__REMOVED__",
                                         "name" => "Test Name",
                                  "file_format" => "file_format",
+                                   "flavor_id" => nil,
                                    "file_path" => "file_path",
                        "file_path_stringsdict" => nil,
                   "default_language_file_path" => nil,
@@ -15,7 +16,11 @@
     "relationships" => {
       "language_configs" => {
         "data" => []
+      },
+                "flavor" => {
+        "data" => nil
       }
     }
-  }
+  },
+  "included" => []
 }

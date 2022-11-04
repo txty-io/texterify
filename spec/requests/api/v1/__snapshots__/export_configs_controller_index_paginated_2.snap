@@ -7,6 +7,7 @@
                                             "id" => "__REMOVED__",
                                           "name" => "Test Export Config 3",
                                    "file_format" => "json",
+                                     "flavor_id" => nil,
                                      "file_path" => "path",
                          "file_path_stringsdict" => nil,
                     "default_language_file_path" => nil,
@@ -16,6 +17,9 @@
       "relationships" => {
         "language_configs" => {
           "data" => []
+        },
+                  "flavor" => {
+          "data" => nil
         }
       }
     }
