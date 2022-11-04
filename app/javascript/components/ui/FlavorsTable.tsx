@@ -1,10 +1,10 @@
 import { Button, Empty, message, Modal, Table, Tooltip } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import * as React from "react";
-import { FlavorsAPI, IFlavor, IGetFlavorsResponse } from "../api/v1/FlavorsAPI";
-import { IGetLanguagesOptions } from "../api/v1/LanguagesAPI";
+import { FlavorsAPI, IFlavor } from "../api/v1/FlavorsAPI";
 import { IProject } from "../api/v1/ProjectsAPI";
 import { AddEditFlavorFormModal } from "../forms/AddEditFlavorFormModal";
+import useFlavors from "../hooks/useFlavors";
 import { PermissionUtils } from "../utilities/PermissionUtils";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "./Config";
 
@@ -14,39 +14,24 @@ export function FlavorsTable(props: { project: IProject; tableReloader?: number;
     const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
     const [dialogVisible, setDialogVisible] = React.useState<boolean>(false);
     const [flavorToEdit, setFlavorToEdit] = React.useState<IFlavor>(null);
-    const [flavorResponse, setFlavorResponse] = React.useState<IGetFlavorsResponse>(null);
-    const [flavorsLoading, setLanguagesLoading] = React.useState<boolean>(false);
     const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
-
-    async function reload(options?: IGetLanguagesOptions) {
-        setLanguagesLoading(true);
-
-        try {
-            const newFlavorsResponse = await FlavorsAPI.getFlavors({
-                projectId: props.project.id,
-                options: options
-            });
-            setFlavorResponse(newFlavorsResponse);
-        } catch (error) {
-            console.error(error);
-            message.error("Failed to load flavors.");
-        }
-
-        setLanguagesLoading(false);
-    }
+    const { flavorsResponse, flavorsLoading, flavorsForceReload } = useFlavors(props.project.id, {
+        page: page,
+        perPage: perPage
+    });
 
     React.useEffect(() => {
         (async () => {
-            await reload();
+            await flavorsForceReload();
         })();
     }, [props.tableReloader]);
 
     function getRows() {
-        if (!flavorResponse || !flavorResponse.data) {
+        if (!flavorsResponse || !flavorsResponse.data) {
             return [];
         }
 
-        return flavorResponse.data.map((flavor) => {
+        return flavorsResponse.data.map((flavor) => {
             return {
                 key: flavor.id,
                 name: flavor.attributes.name,
@@ -123,7 +108,7 @@ export function FlavorsTable(props: { project: IProject; tableReloader?: number;
                     console.error(error);
                 }
 
-                await reload();
+                await flavorsForceReload();
 
                 setIsDeleting(false);
                 setSelectedRowKeys([]);
@@ -179,17 +164,15 @@ export function FlavorsTable(props: { project: IProject; tableReloader?: number;
                     showSizeChanger: true,
                     current: page,
                     pageSize: perPage,
-                    total: flavorResponse?.meta?.total || 0,
+                    total: flavorsResponse?.meta?.total || 0,
                     onChange: async (newPage, newPerPage) => {
                         const isPageSizeChange = perPage !== newPerPage;
 
                         if (isPageSizeChange) {
                             setPage(1);
                             setPerPage(newPerPage);
-                            reload({ page: 1, perPage: newPerPage });
                         } else {
                             setPage(newPage);
-                            reload({ page: newPage });
                         }
                     }
                 }}
@@ -206,7 +189,7 @@ export function FlavorsTable(props: { project: IProject; tableReloader?: number;
                     onSaved: async () => {
                         setDialogVisible(false);
                         setFlavorToEdit(null);
-                        await reload();
+                        await flavorsForceReload();
                     }
                 }}
                 onCancelRequest={async () => {

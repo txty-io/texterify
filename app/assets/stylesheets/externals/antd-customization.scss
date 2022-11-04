@@ -68,6 +68,10 @@
     text-overflow: ellipsis;
   }
 
+  .ant-modal .ant-table tbody > tr.ant-table-row:hover > td {
+    background: inherit;
+  }
+
   .ant-layout {
     // Fix content overflowing horizontally.
     overflow-x: hidden;

@@ -3,6 +3,7 @@ import * as React from "react";
 import { TexterifyModal } from "../ui/TexterifyModal";
 import { AddEditExportConfigForm, IAddEditExportConfigFormProps } from "./AddEditExportConfigForm";
 import * as uuid from "uuid";
+import useFlavors from "../hooks/useFlavors";
 
 interface IProps {
     visible: boolean;
@@ -34,6 +35,7 @@ export function AddEditExportConfigFormModal(props: IProps) {
             onCancel={async () => {
                 props.onCancelRequest();
             }}
+            big
         >
             <AddEditExportConfigForm {...props.formProps} hideDefaultSubmitButton formId={formId} />
         </TexterifyModal>

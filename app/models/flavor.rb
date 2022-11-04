@@ -1,12 +1,12 @@
 class Flavor < ApplicationRecord
   belongs_to :project
 
+  has_many :export_configs, dependent: :destroy
+
   scope :order_by_name, -> { order(arel_table['name'].lower.asc) }
 
   validates :name, presence: true
   validate :no_duplicates_for_project
-
-  belongs_to :project
 
   def name=(name)
     self[:name] = name.strip

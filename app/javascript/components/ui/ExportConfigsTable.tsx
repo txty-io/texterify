@@ -1,7 +1,9 @@
 import { Button, Empty, message, Modal, Table, Tooltip } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import * as React from "react";
+import { APIUtils } from "../api/v1/APIUtils";
 import { ExportConfigsAPI, IExportConfig, IGetExportConfigsResponse } from "../api/v1/ExportConfigsAPI";
+import { IFlavor } from "../api/v1/FlavorsAPI";
 import { IGetLanguagesOptions } from "../api/v1/LanguagesAPI";
 import { IProject } from "../api/v1/ProjectsAPI";
 import { FileFormatOptions } from "../configs/FileFormatOptions";
@@ -98,6 +100,11 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
         }
 
         return exportConfigResponse.data.map((exportConfig) => {
+            const flavor: IFlavor | undefined = APIUtils.getIncludedObject(
+                exportConfig.relationships.flavor?.data,
+                exportConfigResponse.included
+            );
+
             return {
                 key: exportConfig.id,
                 name: exportConfig.attributes.name,
@@ -106,6 +113,7 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
                         <Tooltip title={exportConfig.id}>{`${exportConfig.id.substring(0, 8)}...`}</Tooltip>
                     </Paragraph>
                 ),
+                flavor: flavor?.attributes.name,
                 fileFormat: (
                     <div style={{ display: "flex", flexDirection: "column" }}>
                         {getFileFormatName(exportConfig.attributes.file_format)}
@@ -152,6 +160,11 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
                 title: "ID",
                 dataIndex: "exportConfigId",
                 key: "exportConfigId"
+            },
+            {
+                title: "Flavor",
+                dataIndex: "flavor",
+                key: "flavor"
             },
             {
                 title: "File format",
@@ -307,6 +320,9 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
                     onSaved: async () => {
                         setDialogVisible(false);
                         setExportConfigToEdit(null);
+                        await reload();
+                    },
+                    onLanguageConfigDeleted: async () => {
                         await reload();
                     }
                 }}

@@ -13,7 +13,7 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
 
     options = {}
     options[:meta] = { total: export_configs.size }
-    options[:include] = [:language_configs]
+    options[:include] = [:language_configs, :flavor]
     render json:
              ExportConfigSerializer.new(export_configs.offset(page * per_page).limit(per_page), options).serialized_json
   end
@@ -26,8 +26,11 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
 
     authorize export_config
 
+    options = {}
+    options[:include] = [:language_configs, :flavor]
+
     if export_config.save
-      render json: ExportConfigSerializer.new(export_config).serialized_json
+      render json: ExportConfigSerializer.new(export_config, options).serialized_json
     else
       render json: { error: true, errors: export_config.errors.details }, status: :bad_request
     end
@@ -39,8 +42,11 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
 
     authorize export_config
 
+    options = {}
+    options[:include] = [:language_configs, :flavor]
+
     if export_config.update(export_config_params)
-      render json: ExportConfigSerializer.new(export_config).serialized_json
+      render json: ExportConfigSerializer.new(export_config, options).serialized_json
     else
       render json: { error: true, errors: export_config.errors.details }, status: :bad_request
     end
@@ -80,6 +86,7 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
       .permit(
         :name,
         :file_format,
+        :flavor_id,
         :file_path,
         :file_path_stringsdict,
         :default_language_file_path,

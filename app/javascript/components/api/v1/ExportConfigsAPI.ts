@@ -9,6 +9,12 @@ export interface IExportConfigRelationships {
             type: "language_config";
         }[];
     };
+    flavor: {
+        data: {
+            id: string;
+            type: "flavor";
+        };
+    };
 }
 
 export interface IExportConfig {
@@ -18,6 +24,7 @@ export interface IExportConfig {
         id: string;
         name: string;
         file_format: string;
+        flavor_id: string;
         file_path: string;
         default_language_file_path: string;
         split_on: string;
@@ -57,6 +64,7 @@ const ExportConfigsAPI = {
         projectId: string;
         fileFormat: string;
         name: string;
+        flavorId: string;
         filePath: string;
         splitOn: string;
         defaultLanguageFilePath: string;
@@ -65,6 +73,7 @@ const ExportConfigsAPI = {
             name: options.name,
             language_id: options.projectId,
             file_format: options.fileFormat,
+            flavor_id: options.flavorId,
             file_path: options.filePath,
             default_language_file_path: options.defaultLanguageFilePath,
             split_on: options.splitOn
@@ -78,6 +87,7 @@ const ExportConfigsAPI = {
         exportConfigId: string;
         fileFormat: string;
         name: string;
+        flavorId: string;
         filePath: string;
         splitOn: string;
         defaultLanguageFilePath: string;
@@ -86,6 +96,7 @@ const ExportConfigsAPI = {
             name: options.name,
             language_id: options.projectId,
             file_format: options.fileFormat,
+            flavor_id: options.flavorId,
             file_path: options.filePath,
             default_language_file_path: options.defaultLanguageFilePath,
             split_on: options.splitOn

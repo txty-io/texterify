@@ -5,9 +5,11 @@ import Paragraph from "antd/lib/typography/Paragraph";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
 import { ExportConfigsAPI, IExportConfig } from "../api/v1/ExportConfigsAPI";
-import { IGetLanguageConfigsResponse, LanguageConfigsAPI } from "../api/v1/LanguageConfigsAPI";
-import { IGetLanguagesResponse, LanguagesAPI } from "../api/v1/LanguagesAPI";
+import { LanguageConfigsAPI } from "../api/v1/LanguageConfigsAPI";
 import { FileFormatOptions } from "../configs/FileFormatOptions";
+import useFlavors from "../hooks/useFlavors";
+import useLanguageConfigs from "../hooks/useLanguageConfigs";
+import useLanguages from "../hooks/useLanguages";
 import { ImportFileFormats } from "../sites/dashboard/FileImportSite";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import FlagIcon from "../ui/FlagIcons";
@@ -16,6 +18,7 @@ import { AddEditExportConfigLanguageForm, ICreateUpdateLanguageConfig } from "./
 interface IFormValues {
     name: string;
     fileFormat: ImportFileFormats;
+    flavorId: string;
     filePath: string;
     defaultLanguageFilePath: string;
     splitOn: string;
@@ -28,74 +31,51 @@ export interface IAddEditExportConfigFormProps {
     clearFieldsAfterSubmit?: boolean;
     formId?: string;
     onSaved?(): void;
-}
-interface IState {
-    exportConfigsResponse: any;
-    languagesResponse: IGetLanguagesResponse;
-    languageConfigsResponse: IGetLanguageConfigsResponse;
-    languageConfigsLoading: boolean;
-    addEditExportConfigLanguageConfigOpen: boolean;
-    exportConfigLanguageConfigToEdit: ICreateUpdateLanguageConfig;
-    languageConfigsToCreate: ICreateUpdateLanguageConfig[];
-    selectedFileFormat: ImportFileFormats | null;
+    onLanguageConfigDeleted?(): void;
 }
 
-class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormProps, IState> {
-    formRef = React.createRef<FormInstance>();
+export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
+    const formRef = React.createRef<FormInstance>();
 
-    state: IState = {
-        exportConfigsResponse: null,
-        languagesResponse: null,
-        languageConfigsResponse: null,
-        languageConfigsLoading: true,
-        addEditExportConfigLanguageConfigOpen: false,
-        exportConfigLanguageConfigToEdit: null,
-        languageConfigsToCreate: [],
-        selectedFileFormat: null
-    };
+    const [languageConfigsToCreate, setLanguageConfigsToCreate] = React.useState<ICreateUpdateLanguageConfig[]>([]);
+    const [selectedFileFormat, setSelectedFileFormat] = React.useState<ImportFileFormats | null>(null);
+    const [addEditExportConfigLanguageConfigOpen, setAddEditExportConfigLanguageConfigOpen] =
+        React.useState<boolean>(false);
+    const [exportConfigLanguageConfigToEdit, setExportConfigLanguageConfigToEdit] =
+        React.useState<ICreateUpdateLanguageConfig>(null);
+    const [flavorSearch, setFlavorSearch] = React.useState<string>("");
 
-    async componentDidMount() {
-        try {
-            const exportConfigsResponse = await ExportConfigsAPI.getExportConfigs({ projectId: this.props.projectId });
-            const languagesResponse = await LanguagesAPI.getLanguages(this.props.projectId, { showAll: true });
-
-            let languageConfigsResponse = null;
-            if (this.props.exportConfigToEdit) {
-                languageConfigsResponse = await LanguageConfigsAPI.getLanguageConfigs({
-                    projectId: this.props.projectId,
-                    exportConfigId: this.props.exportConfigToEdit.id
-                });
-            }
-
-            this.setState({
-                exportConfigsResponse: exportConfigsResponse,
-                languagesResponse: languagesResponse,
-                languageConfigsResponse: languageConfigsResponse,
-                languageConfigsLoading: false
-            });
-        } catch (error) {
-            console.error(error);
+    const { languagesResponse, languagesLoading } = useLanguages(props.projectId, {
+        showAll: true
+    });
+    const { flavorsResponse, flavorsLoading } = useFlavors(props.projectId, { search: flavorSearch });
+    const { languageConfigsResponse, languageConfigsLoading, languageConfigsForceReload } = useLanguageConfigs({
+        options: {
+            projectId: props.projectId,
+            exportConfigId: props.exportConfigToEdit?.id
         }
-    }
+    });
 
-    handleSubmit = async (values: IFormValues) => {
+    const handleSubmit = async (values: IFormValues) => {
         let response;
 
-        if (this.props.exportConfigToEdit) {
+        if (props.exportConfigToEdit) {
             response = await ExportConfigsAPI.updateExportConfig({
-                projectId: this.props.projectId,
+                projectId: props.projectId,
                 defaultLanguageFilePath: values.defaultLanguageFilePath,
                 fileFormat: values.fileFormat,
-                exportConfigId: this.props.exportConfigToEdit.id,
+                exportConfigId: props.exportConfigToEdit.id,
+                flavorId: values.flavorId,
                 filePath: values.filePath,
                 name: values.name,
                 splitOn: values.splitOn
             });
         } else {
             response = await ExportConfigsAPI.createExportConfig({
-                projectId: this.props.projectId,
+                projectId: props.projectId,
                 defaultLanguageFilePath: values.defaultLanguageFilePath,
                 fileFormat: values.fileFormat,
+                flavorId: values.flavorId,
                 filePath: values.filePath,
                 name: values.name,
                 splitOn: values.splitOn
@@ -104,7 +84,7 @@ class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormPr
 
         if (response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
-                this.formRef.current?.setFields([
+                formRef.current?.setFields([
                     {
                         name: "name",
                         errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
@@ -114,26 +94,26 @@ class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormPr
                 ErrorUtils.showErrors(response.errors);
             }
         } else {
-            for (const changedLanguageConfig of this.state.languageConfigsToCreate) {
+            for (const changedLanguageConfig of languageConfigsToCreate) {
                 await LanguageConfigsAPI.createLanguageConfig({
-                    projectId: this.props.projectId,
+                    projectId: props.projectId,
                     exportConfigId: response.data.id,
                     languageId: changedLanguageConfig.languageId,
                     languageCode: changedLanguageConfig.languageCode
                 });
             }
 
-            if (this.props.onSaved) {
-                this.props.onSaved();
+            if (props.onSaved) {
+                props.onSaved();
             }
 
-            if (this.props.clearFieldsAfterSubmit) {
-                this.formRef.current?.resetFields();
+            if (props.clearFieldsAfterSubmit) {
+                formRef.current?.resetFields();
             }
         }
     };
 
-    onDelete = async (createUpdateLanguageConfig: ICreateUpdateLanguageConfig) => {
+    const onDelete = async (createUpdateLanguageConfig: ICreateUpdateLanguageConfig) => {
         Modal.confirm({
             title: "Do you really want to delete this language config?",
             content: "This cannot be undone.",
@@ -146,55 +126,44 @@ class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormPr
             onOk: async () => {
                 if (createUpdateLanguageConfig.id) {
                     await LanguageConfigsAPI.deleteLanguageConfig({
-                        projectId: this.props.projectId,
-                        exportConfigId: this.props.exportConfigToEdit.id,
+                        projectId: props.projectId,
+                        exportConfigId: props.exportConfigToEdit.id,
                         languageConfigId: createUpdateLanguageConfig.id
                     });
 
-                    await this.reloadLanguageConfigs();
+                    await languageConfigsForceReload();
+                    props.onLanguageConfigDeleted();
                 } else {
-                    this.setState({
-                        languageConfigsToCreate: this.state.languageConfigsToCreate.filter((item) => {
+                    setLanguageConfigsToCreate(
+                        languageConfigsToCreate.filter((item) => {
                             return item.languageId !== createUpdateLanguageConfig.languageId;
                         })
-                    });
+                    );
                 }
             }
         });
     };
 
-    reloadLanguageConfigs = async () => {
-        this.setState({
-            languageConfigsLoading: true
-        });
+    const getRows = () => {
+        if (languagesLoading || languageConfigsLoading) {
+            return [];
+        }
 
-        const languageConfigsResponse = await LanguageConfigsAPI.getLanguageConfigs({
-            projectId: this.props.projectId,
-            exportConfigId: this.props.exportConfigToEdit.id
-        });
-
-        this.setState({
-            languageConfigsResponse: languageConfigsResponse,
-            languageConfigsLoading: false
-        });
-    };
-
-    getRows = () => {
         const existingLanguageConfigs =
-            this.state.languageConfigsResponse?.data
+            languageConfigsResponse?.data
                 .filter((languageConfig) => {
-                    return !this.state.languageConfigsToCreate.find((languageConfigToCreate) => {
+                    return !languageConfigsToCreate.find((languageConfigToCreate) => {
                         return languageConfig.attributes.language_id === languageConfigToCreate.languageId;
                     });
                 })
                 .map((languageConfig) => {
-                    const language = this.state.languagesResponse?.data.find((languageToFind) => {
+                    const language = languagesResponse?.data.find((languageToFind) => {
                         return languageConfig.attributes.language_id === languageToFind.id;
                     });
 
                     const countryCode = APIUtils.getIncludedObject(
                         language?.relationships.country_code.data,
-                        this.state.languagesResponse.included
+                        languagesResponse.included
                     );
 
                     return {
@@ -206,7 +175,7 @@ class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormPr
                     };
                 }) || [];
 
-        return [...this.state.languageConfigsToCreate, ...existingLanguageConfigs]
+        return [...languageConfigsToCreate, ...existingLanguageConfigs]
             .sort((a, b) => {
                 return a.languageName.toLowerCase() < b.languageName.toLowerCase() ? -1 : 1;
             })
@@ -228,10 +197,8 @@ class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormPr
                         <div style={{ display: "flex", justifyContent: "center" }}>
                             <Button
                                 onClick={() => {
-                                    this.setState({
-                                        addEditExportConfigLanguageConfigOpen: true,
-                                        exportConfigLanguageConfigToEdit: item
-                                    });
+                                    setAddEditExportConfigLanguageConfigOpen(true);
+                                    setExportConfigLanguageConfigToEdit(item);
                                 }}
                                 type="link"
                             >
@@ -239,7 +206,7 @@ class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormPr
                             </Button>
                             <Button
                                 onClick={() => {
-                                    this.onDelete(item);
+                                    onDelete(item);
                                 }}
                                 style={{ marginLeft: 8 }}
                                 type="link"
@@ -252,7 +219,7 @@ class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormPr
             });
     };
 
-    getColumns = () => {
+    const getColumns = () => {
         return [
             {
                 title: "Language",
@@ -272,34 +239,39 @@ class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormPr
         ];
     };
 
-    render() {
-        return (
-            <>
-                <Form
-                    ref={this.formRef}
-                    onFinish={this.handleSubmit}
-                    style={{ maxWidth: "100%", display: "flex", flexDirection: "column" }}
-                    id={this.props.formId}
-                    initialValues={
-                        this.props.exportConfigToEdit && {
-                            name: this.props.exportConfigToEdit.attributes.name,
-                            splitOn: this.props.exportConfigToEdit.attributes.split_on,
-                            fileFormat: this.props.exportConfigToEdit.attributes.file_format,
-                            filePath: this.props.exportConfigToEdit.attributes.file_path,
-                            defaultLanguageFilePath: this.props.exportConfigToEdit.attributes.default_language_file_path
-                        }
+    return (
+        <>
+            <Form
+                ref={formRef}
+                onFinish={handleSubmit}
+                style={{ maxWidth: "100%", display: "flex" }}
+                id={props.formId}
+                initialValues={
+                    props.exportConfigToEdit && {
+                        name: props.exportConfigToEdit.attributes.name,
+                        splitOn: props.exportConfigToEdit.attributes.split_on,
+                        fileFormat: props.exportConfigToEdit.attributes.file_format,
+                        flavorId: props.exportConfigToEdit.attributes.flavor_id,
+                        filePath: props.exportConfigToEdit.attributes.file_path,
+                        defaultLanguageFilePath: props.exportConfigToEdit.attributes.default_language_file_path
                     }
-                    onValuesChange={(changedValues: IFormValues) => {
-                        if (changedValues.fileFormat) {
-                            this.setState({ selectedFileFormat: changedValues.fileFormat });
-                        }
-                    }}
-                >
+                }
+                onValuesChange={(changedValues: IFormValues) => {
+                    if (changedValues.fileFormat) {
+                        setSelectedFileFormat(changedValues.fileFormat);
+                    }
+                }}
+            >
+                <div style={{ width: "50%", marginRight: 40 }}>
                     <h3>Name *</h3>
                     <Form.Item
                         name="name"
                         rules={[
-                            { required: true, whitespace: true, message: "Please enter the name of the export config." }
+                            {
+                                required: true,
+                                whitespace: true,
+                                message: "Please enter the name of the export config."
+                            }
                         ]}
                     >
                         <Input placeholder="Name" autoFocus />
@@ -309,7 +281,11 @@ class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormPr
                     <Form.Item
                         name="fileFormat"
                         rules={[
-                            { required: true, whitespace: true, message: "Please enter the file format of the files." }
+                            {
+                                required: true,
+                                whitespace: true,
+                                message: "Please enter the file format of the files."
+                            }
                         ]}
                     >
                         <Select
@@ -329,9 +305,7 @@ class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormPr
                         </Select>
                     </Form.Item>
 
-                    {(this.state.selectedFileFormat === "json" ||
-                        (this.state.selectedFileFormat === null &&
-                            this.props.exportConfigToEdit?.attributes.file_format)) && (
+                    {selectedFileFormat === "json" && (
                         <>
                             <h3>Split keys on</h3>
                             <p>
@@ -359,7 +333,11 @@ class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormPr
                     <Form.Item
                         name="filePath"
                         rules={[
-                            { required: true, whitespace: true, message: "Please enter the file path of the files." }
+                            {
+                                required: true,
+                                whitespace: true,
+                                message: "Please enter the file path of the files."
+                            }
                         ]}
                     >
                         <Input placeholder="File path" />
@@ -370,6 +348,31 @@ class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormPr
                     <Form.Item name="defaultLanguageFilePath" rules={[]}>
                         <Input placeholder="Default language file path" />
                     </Form.Item>
+                </div>
+                <div style={{ width: "50%" }}>
+                    <h3>Flavor</h3>
+                    <p>Setting a flavor will make the export config use the flavor translations.</p>
+                    <Form.Item name="flavorId">
+                        <Select
+                            showSearch
+                            placeholder="Select a flavor"
+                            optionFilterProp="children"
+                            filterOption
+                            style={{ width: "100%" }}
+                            loading={flavorsLoading}
+                            onSearch={(value) => {
+                                setFlavorSearch(value);
+                            }}
+                        >
+                            {flavorsResponse?.data?.map((flavor, index) => {
+                                return (
+                                    <Select.Option value={flavor.id} key={index}>
+                                        {flavor.attributes.name}
+                                    </Select.Option>
+                                );
+                            })}
+                        </Select>
+                    </Form.Item>
 
                     <h3>Override language codes</h3>
                     <p>Override the language codes used for exports in this configuration.</p>
@@ -377,19 +380,19 @@ class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormPr
                         <Button
                             style={{ marginTop: 8, marginLeft: "auto" }}
                             onClick={() => {
-                                this.setState({ addEditExportConfigLanguageConfigOpen: true });
+                                setAddEditExportConfigLanguageConfigOpen(true);
                             }}
                         >
                             Add new language code override
                         </Button>
                     </div>
                     <Table
-                        dataSource={this.getRows()}
-                        columns={this.getColumns()}
+                        dataSource={getRows()}
+                        columns={getColumns()}
                         style={{ marginTop: 16 }}
                         bordered
                         pagination={false}
-                        loading={this.state.languageConfigsLoading}
+                        loading={languageConfigsLoading || languagesLoading}
                         locale={{
                             emptyText: (
                                 <Empty
@@ -399,86 +402,73 @@ class AddEditExportConfigForm extends React.Component<IAddEditExportConfigFormPr
                             )
                         }}
                     />
-                    {!this.props.hideDefaultSubmitButton && (
+                    {!props.hideDefaultSubmitButton && (
                         <Button
                             type="primary"
                             htmlType="submit"
                             style={{ marginLeft: "auto", marginTop: 24 }}
                             data-id="export-config-form-submit-button"
                         >
-                            {this.props.exportConfigToEdit ? "Save changes" : "Add export config"}
+                            {props.exportConfigToEdit ? "Save changes" : "Add export config"}
                         </Button>
                     )}
-                </Form>
+                </div>
+            </Form>
 
-                <AddEditExportConfigLanguageForm
-                    languagesResponse={this.state.languagesResponse}
-                    languageConfigsResponse={this.state.languageConfigsResponse}
-                    projectId={this.props.projectId}
-                    languageConfigsToCreate={this.state.languageConfigsToCreate}
-                    exportConfigLanguageConfigToEdit={this.state.exportConfigLanguageConfigToEdit}
-                    visible={this.state.addEditExportConfigLanguageConfigOpen}
-                    onCreate={async (exportConfigLanguageConfig) => {
-                        if (this.props.exportConfigToEdit) {
-                            await LanguageConfigsAPI.createLanguageConfig({
-                                projectId: this.props.projectId,
-                                exportConfigId: this.props.exportConfigToEdit.id,
-                                languageId: exportConfigLanguageConfig.languageId,
-                                languageCode: exportConfigLanguageConfig.languageCode
-                            });
-
-                            await this.reloadLanguageConfigs();
-                        } else {
-                            this.setState({
-                                languageConfigsToCreate: [
-                                    ...this.state.languageConfigsToCreate.filter((item) => {
-                                        return item.languageId !== exportConfigLanguageConfig.languageId;
-                                    }),
-                                    exportConfigLanguageConfig
-                                ]
-                            });
-                        }
-
-                        this.setState({
-                            addEditExportConfigLanguageConfigOpen: false
+            <AddEditExportConfigLanguageForm
+                languagesResponse={languagesResponse}
+                languageConfigsResponse={languageConfigsResponse}
+                projectId={props.projectId}
+                languageConfigsToCreate={languageConfigsToCreate}
+                exportConfigLanguageConfigToEdit={exportConfigLanguageConfigToEdit}
+                visible={addEditExportConfigLanguageConfigOpen}
+                onCreate={async (exportConfigLanguageConfig) => {
+                    if (props.exportConfigToEdit) {
+                        await LanguageConfigsAPI.createLanguageConfig({
+                            projectId: props.projectId,
+                            exportConfigId: props.exportConfigToEdit.id,
+                            languageId: exportConfigLanguageConfig.languageId,
+                            languageCode: exportConfigLanguageConfig.languageCode
                         });
-                    }}
-                    onUpdate={async (exportConfigLanguageConfig) => {
-                        if (this.props.exportConfigToEdit) {
-                            await LanguageConfigsAPI.updateLanguageConfig({
-                                projectId: this.props.projectId,
-                                exportConfigId: this.props.exportConfigToEdit.id,
-                                languageConfigId: exportConfigLanguageConfig.id,
-                                languageCode: exportConfigLanguageConfig.languageCode,
-                                languageId: exportConfigLanguageConfig.languageId
-                            });
 
-                            await this.reloadLanguageConfigs();
-                        } else {
-                            this.setState({
-                                languageConfigsToCreate: [
-                                    ...this.state.languageConfigsToCreate.filter((item) => {
-                                        return item.languageId !== exportConfigLanguageConfig.languageId;
-                                    }),
-                                    exportConfigLanguageConfig
-                                ]
-                            });
-                        }
+                        await languageConfigsForceReload();
+                    } else {
+                        setLanguageConfigsToCreate([
+                            ...languageConfigsToCreate.filter((item) => {
+                                return item.languageId !== exportConfigLanguageConfig.languageId;
+                            }),
+                            exportConfigLanguageConfig
+                        ]);
+                    }
+                    setAddEditExportConfigLanguageConfigOpen(false);
+                }}
+                onUpdate={async (exportConfigLanguageConfig) => {
+                    if (props.exportConfigToEdit) {
+                        await LanguageConfigsAPI.updateLanguageConfig({
+                            projectId: props.projectId,
+                            exportConfigId: props.exportConfigToEdit.id,
+                            languageConfigId: exportConfigLanguageConfig.id,
+                            languageCode: exportConfigLanguageConfig.languageCode,
+                            languageId: exportConfigLanguageConfig.languageId
+                        });
 
-                        this.setState({
-                            addEditExportConfigLanguageConfigOpen: false
-                        });
-                    }}
-                    onCancelRequest={() => {
-                        this.setState({
-                            addEditExportConfigLanguageConfigOpen: false,
-                            exportConfigLanguageConfigToEdit: null
-                        });
-                    }}
-                />
-            </>
-        );
-    }
+                        await languageConfigsForceReload();
+                    } else {
+                        setLanguageConfigsToCreate([
+                            ...languageConfigsToCreate.filter((item) => {
+                                return item.languageId !== exportConfigLanguageConfig.languageId;
+                            }),
+                            exportConfigLanguageConfig
+                        ]);
+                    }
+
+                    setAddEditExportConfigLanguageConfigOpen(false);
+                }}
+                onCancelRequest={() => {
+                    setAddEditExportConfigLanguageConfigOpen(false);
+                    setExportConfigLanguageConfigToEdit(null);
+                }}
+            />
+        </>
+    );
 }
-
-export { AddEditExportConfigForm };

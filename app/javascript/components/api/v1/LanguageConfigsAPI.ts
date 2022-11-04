@@ -15,11 +15,13 @@ export interface IGetLanguageConfigsResponse {
     data: ILanguageConfig[];
 }
 
+export interface IGetLanguageConfigsOptions {
+    projectId: string;
+    exportConfigId: string;
+}
+
 const LanguageConfigsAPI = {
-    getLanguageConfigs: async (options: {
-        projectId: string;
-        exportConfigId: string;
-    }): Promise<IGetLanguageConfigsResponse> => {
+    getLanguageConfigs: async (options: IGetLanguageConfigsOptions): Promise<IGetLanguageConfigsResponse> => {
         return API.getRequest(
             `projects/${options.projectId}/export_configs/${options.exportConfigId}/language_configs`,
             true
