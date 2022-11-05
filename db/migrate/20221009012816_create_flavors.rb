@@ -10,6 +10,8 @@ class CreateFlavors < ActiveRecord::Migration[6.1]
     add_reference :translations, :flavor, type: :uuid, foreign_key: { on_delete: :cascade }
 
     ExportConfig.all.each do |export_config|
+      puts "Migrating export config with name: #{export_config.name}"
+
       # Create a new flavor for every export config.
       flavor = Flavor.new
       flavor.name = export_config.name
@@ -21,10 +23,7 @@ class CreateFlavors < ActiveRecord::Migration[6.1]
       export_config.save!
 
       # Reassign all translations to the flavor.
-      export_config.translations.each do |translation|
-        translation.flavor_id = flavor.id
-        translation.save!
-      end
+      Translation.where(export_config_id: export_config.id).update_all(flavor_id: flavor.id)
     end
 
     remove_column :translations, :export_config_id
