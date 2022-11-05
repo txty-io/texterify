@@ -98,6 +98,9 @@ class Organization < ApplicationRecord
     self.save!
   end
 
+  # Free features
+  FEATURE_TAGS = :FEATURE_TAGS
+
   # Basic plan features
   FEATURE_UNLIMITED_PROJECTS = :FEATURE_UNLIMITED_PROJECTS
   FEATURE_UNLIMITED_LANGUAGES = :FEATURE_UNLIMITED_LANGUAGES
@@ -109,8 +112,6 @@ class Organization < ApplicationRecord
   FEATURE_EXPORT_HIERARCHY = :FEATURE_EXPORT_HIERARCHY
   FEATURE_POST_PROCESSING = :FEATURE_POST_PROCESSING
   FEATURE_PROJECT_ACTIVITY = :FEATURE_PROJECT_ACTIVITY
-  FEATURE_TAG_MANAGEMENT = :FEATURE_TAG_MANAGEMENT
-  FEATURE_TAGS = :FEATURE_TAGS
   FEATURE_MACHINE_TRANSLATION_LANGUAGE = :FEATURE_MACHINE_TRANSLATION_LANGUAGE
   FEATURE_MACHINE_TRANSLATION_SUGGESTIONS = :FEATURE_MACHINE_TRANSLATION_SUGGESTIONS
 
@@ -131,8 +132,7 @@ class Organization < ApplicationRecord
     FEATURE_EXPORT_HIERARCHY: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_POST_PROCESSING: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_PROJECT_ACTIVITY: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
-    FEATURE_TAG_MANAGEMENT: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
-    FEATURE_TAGS: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
+    FEATURE_TAGS: [],
     FEATURE_MACHINE_TRANSLATION_SUGGESTIONS: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_MACHINE_TRANSLATION_LANGUAGE: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_ADVANCED_PERMISSION_SYSTEM: [Subscription::PLAN_BUSINESS],
@@ -143,6 +143,7 @@ class Organization < ApplicationRecord
     FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE: [Subscription::PLAN_BUSINESS]
   }.freeze
 
+  FREE_FEATURES = [:FEATURE_TAGS].freeze
   NOT_IN_TRIAL_AVAILABLE = [:FEATURE_MACHINE_TRANSLATION_LANGUAGE, :FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE].freeze
 
   FEATURES_BASIC_PLAN =
@@ -157,6 +158,11 @@ class Organization < ApplicationRecord
     end.compact.freeze
 
   def feature_enabled?(feature)
+    # Check if the feature is a free feature.
+    if FREE_FEATURES.include?(feature)
+      return true
+    end
+
     feature_allowed_plans = FEATURES_PLANS[feature]
     license = License.current_active
 

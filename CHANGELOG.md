@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.2.1
+
+- Make tags feature available for free
 ## v1.2.0
 
 - Add WordPress integration.

@@ -10,8 +10,9 @@ import { FileFormatOptions } from "../configs/FileFormatOptions";
 import { AddEditExportConfigFormModal } from "../forms/AddEditExportConfigFormModal";
 import { PermissionUtils } from "../utilities/PermissionUtils";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "./Config";
+import { CountryCodeWithTooltip } from "./CountryCodeWithTooltip";
+import { LanguageCodeWithTooltip } from "./LanguageCodeWithTooltip";
 import { QuestionIconWithTooltip } from "./QuestionIconWithTooltip";
-import { Styles } from "./Styles";
 
 const prettifyFilePath = (path: string) => {
     const splitted = path.split(/({languageCode})|({countryCode})/).filter((splittedPathElement) => {
@@ -30,23 +31,9 @@ const prettifyFilePath = (path: string) => {
         >
             {splitted.map((split, index) => {
                 if (split === "{languageCode}") {
-                    return (
-                        <Tooltip
-                            key={index}
-                            title="This will be automatically replaced with the language code of the language."
-                        >
-                            <span style={{ color: Styles.COLOR_SECONDARY }}>{"{languageCode}"}</span>
-                        </Tooltip>
-                    );
+                    return <LanguageCodeWithTooltip />;
                 } else if (split === "{countryCode}") {
-                    return (
-                        <Tooltip
-                            key={index}
-                            title="This will be automatically replaced with the country code of the language."
-                        >
-                            <span style={{ color: Styles.COLOR_SECONDARY }}>{"{countryCode}"}</span>
-                        </Tooltip>
-                    );
+                    return <CountryCodeWithTooltip />;
                 } else {
                     return <span key={index}>{split}</span>;
                 }

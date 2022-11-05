@@ -11,8 +11,10 @@ import useFlavors from "../hooks/useFlavors";
 import useLanguageConfigs from "../hooks/useLanguageConfigs";
 import useLanguages from "../hooks/useLanguages";
 import { ImportFileFormats } from "../sites/dashboard/FileImportSite";
+import { CountryCodeWithTooltip } from "../ui/CountryCodeWithTooltip";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import FlagIcon from "../ui/FlagIcons";
+import { LanguageCodeWithTooltip } from "../ui/LanguageCodeWithTooltip";
 import { AddEditExportConfigLanguageForm, ICreateUpdateLanguageConfig } from "./AddEditExportConfigLanguageForm";
 
 interface IFormValues {
@@ -323,11 +325,11 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
 
                     <p>You can make use of the following variables to create dynamic paths:</p>
                     <div style={{ display: "flex" }}>
-                        <Paragraph code copyable style={{ marginRight: 24 }}>
-                            {"{languageCode}"}
+                        <Paragraph code copyable={{ text: "{languageCode}" }} style={{ marginRight: 24 }}>
+                            <LanguageCodeWithTooltip />
                         </Paragraph>
-                        <Paragraph code copyable>
-                            {"{countryCode}"}
+                        <Paragraph code copyable={{ text: "{countryCode}" }}>
+                            <CountryCodeWithTooltip />
                         </Paragraph>
                     </div>
                     <Form.Item

@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { IKey, KeysAPI } from "../api/v1/KeysAPI";
 import { ITag, TagsAPI } from "../api/v1/TagsAPI";
 import { Routes } from "../routing/Routes";
+import { dashboardStore } from "../stores/DashboardStore";
+import { FeatureNotAvailable } from "../ui/FeatureNotAvailable";
 import { Loading } from "../ui/Loading";
 
 interface IFormValues {
@@ -86,6 +88,10 @@ export function AddTagToKeyForm(props: IAddTagToKeyFormProps) {
                 return keyTag.id === tag.id;
             });
         });
+    }
+
+    if (!dashboardStore.featureEnabled("FEATURE_TAGS")) {
+        return <FeatureNotAvailable feature="FEATURE_TAGS" />;
     }
 
     if (!tags) {

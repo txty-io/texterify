@@ -99,6 +99,7 @@
     "start:mailcatcher": "mailcatcher --http-ip 0.0.0.0",
     "test": "yarn test:backend && yarn test:frontend",
     "test:backend": "RAILS_ENV=test bundle exec rspec",
+    "test:backend:update": "UPDATE_SNAPSHOTS=true RAILS_ENV=test bundle exec rspec",
     "test:frontend": "yarn cypress install && yarn cypress:run",
     "dangerous:recreate-database": "SKIP_TEST_DATABASE=true bundle exec rails db:drop && SKIP_TEST_DATABASE=true bundle exec rails db:create && SKIP_TEST_DATABASE=true bundle exec rails db:migrate && SKIP_TEST_DATABASE=true bundle exec rails db:seed",
     "webpack-bundle-analyzer": "bin/webpack --profile --json > webpacker-stats.json && node_modules/.bin/webpack-bundle-analyzer webpacker-stats.json public/packs",

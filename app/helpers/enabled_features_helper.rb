@@ -39,6 +39,8 @@ module EnabledFeaturesHelper
         end
       end
 
+      features = (features + Organization::FREE_FEATURES).uniq
+
       organization&.trial_active ? (features + Organization::FEATURES_TRIAL).uniq : features
     end
   end
