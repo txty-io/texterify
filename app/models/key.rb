@@ -152,10 +152,15 @@ class Key < ApplicationRecord
     end
   end
 
-  # Returns the translation of the key for the given language and flavor.
-  def translation_for(language_id, flavor_id)
-    key_translation_flavor =
-      self.translations.where(language_id: language_id, flavor_id: flavor_id).order(created_at: :desc).first
+  # Returns the translation of the key for the given language and export config.
+  def translation_for(language_id, export_config_id)
+    flavor = export_config.flavor
+
+    key_translation_flavor = nil
+    if flavor.present?
+      key_translation_flavor =
+        self.translations.where(language_id: language_id, flavor_id: flavor.id).order(created_at: :desc).first
+    end
 
     # If there is a flavor translation use it.
     if key_translation_flavor&.content.present?
