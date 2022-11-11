@@ -154,7 +154,7 @@ class Key < ApplicationRecord
 
   # Returns the translation of the key for the given language and export config.
   def translation_for(language_id, export_config_id)
-    flavor = export_config.flavor
+    flavor = project.export_configs.find(export_config_id).flavor
 
     key_translation_flavor = nil
     if flavor.present?
