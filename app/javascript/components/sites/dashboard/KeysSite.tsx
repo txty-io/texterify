@@ -29,6 +29,7 @@ import { KeystrokeButtonWrapper } from "../../ui/KeystrokeButtonWrapper";
 import { KEYSTROKE_DEFINITIONS } from "../../ui/KeystrokeDefinitions";
 import { KeystrokeHandler } from "../../ui/KeystrokeHandler";
 import { KeyTags } from "../../ui/KeyTags";
+import { TagsFilter } from "../../ui/TagsFilter";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { TranslationUtils } from "../../utilities/TranslationUtils";
 
@@ -61,6 +62,7 @@ interface IState {
     pluralizationEnabledUpdating: boolean;
     htmlEnabledUpdating: boolean;
     addTagToKeyModalKey: IKey;
+    tagIds: string[];
 }
 
 export interface IKeysTableExpandedRecord {
@@ -154,7 +156,8 @@ class KeysSite extends React.Component<IProps, IState> {
             searchSettings: parseKeySearchSettingsFromURL(),
             pluralizationEnabledUpdating: false,
             htmlEnabledUpdating: false,
-            addTagToKeyModalKey: null
+            addTagToKeyModalKey: null,
+            tagIds: []
         };
     }
 
@@ -574,6 +577,7 @@ class KeysSite extends React.Component<IProps, IState> {
             search: this.state.search,
             page: this.state.page,
             perPage: dashboardStore.keysPerPage,
+            tagIds: this.state.tagIds,
             searchSettings: this.state.searchSettings
         };
         await this.fetchKeys(fetchOptions);
@@ -850,55 +854,76 @@ class KeysSite extends React.Component<IProps, IState> {
                             <div
                                 style={{
                                     display: "flex",
-                                    flexDirection: "column",
-                                    marginLeft: 120,
+                                    alignItems: "flex-end",
                                     flexGrow: 1,
-                                    maxWidth: 800
+                                    justifyContent: "flex-end",
+                                    marginLeft: 120
                                 }}
                             >
-                                <KeySearchSettingsActiveFilters
-                                    languagesResponse={this.state.languagesResponse}
-                                    flavorsResponse={this.state.flavorsResponse}
+                                <TagsFilter
+                                    projectId={this.props.match.params.projectId}
+                                    onChange={(values) => {
+                                        this.setState(
+                                            { tagIds: values },
+                                            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                            this.reloadTable
+                                        );
+                                    }}
+                                    style={{ minWidth: 140 }}
                                 />
-                                <Input.Group
-                                    compact
+                                <div
                                     style={{
-                                        width: "100%",
                                         display: "flex",
-                                        marginTop: 4
+                                        flexDirection: "column",
+                                        marginLeft: 24,
+                                        flexGrow: 1,
+                                        maxWidth: 800
                                     }}
                                 >
-                                    <Popover
-                                        title="Search filters"
-                                        placement="bottomLeft"
-                                        trigger="click"
-                                        content={
-                                            <KeySearchSettings
-                                                languagesResponse={this.state.languagesResponse}
-                                                flavorsResponse={this.state.flavorsResponse}
-                                                onChange={(settings) => {
-                                                    this.setState(
-                                                        { searchSettings: settings, page: 1 },
-                                                        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                                        this.reloadTable
-                                                    );
-                                                }}
-                                            />
-                                        }
-                                    >
-                                        <Button>
-                                            <FilterOutlined />
-                                        </Button>
-                                    </Popover>
-                                    <Input.Search
-                                        ref={this.searchInput}
-                                        placeholder="Search your translations"
-                                        onChange={this.onSearch}
-                                        data-id="project-keys-search"
-                                        allowClear
-                                        defaultValue={this.state.search}
+                                    <KeySearchSettingsActiveFilters
+                                        languagesResponse={this.state.languagesResponse}
+                                        flavorsResponse={this.state.flavorsResponse}
                                     />
-                                </Input.Group>
+                                    <Input.Group
+                                        compact
+                                        style={{
+                                            width: "100%",
+                                            display: "flex",
+                                            marginTop: 4
+                                        }}
+                                    >
+                                        <Popover
+                                            title="Search filters"
+                                            placement="bottomLeft"
+                                            trigger="click"
+                                            content={
+                                                <KeySearchSettings
+                                                    languagesResponse={this.state.languagesResponse}
+                                                    flavorsResponse={this.state.flavorsResponse}
+                                                    onChange={(settings) => {
+                                                        this.setState(
+                                                            { searchSettings: settings, page: 1 },
+                                                            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                                            this.reloadTable
+                                                        );
+                                                    }}
+                                                />
+                                            }
+                                        >
+                                            <Button>
+                                                <FilterOutlined />
+                                            </Button>
+                                        </Popover>
+                                        <Input.Search
+                                            ref={this.searchInput}
+                                            placeholder="Search your translations"
+                                            onChange={this.onSearch}
+                                            data-id="project-keys-search"
+                                            allowClear
+                                            defaultValue={this.state.search}
+                                        />
+                                    </Input.Group>
+                                </div>
                             </div>
                         </div>
                         <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", alignItems: "flex-end" }}>

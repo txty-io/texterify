@@ -141,3 +141,7 @@ if License.count == 0
 else
   puts 'Test license for on-premise testing already created.'
 end
+
+for i in 1..20
+  Tag.find_or_create_by!(project_id: project_1_id, name: "Tag #{i}", custom: false)
+end

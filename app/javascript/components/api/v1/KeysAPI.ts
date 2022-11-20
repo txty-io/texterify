@@ -63,6 +63,7 @@ export interface IGetKeysOptions {
     search?: string;
     page?: number;
     perPage?: number;
+    tagIds: string[];
     searchSettings?: ISearchSettings;
 }
 
@@ -96,7 +97,8 @@ const KeysAPI = {
                 changed_before: options && options.searchSettings && options.searchSettings.changedBefore,
                 changed_after: options && options.searchSettings && options.searchSettings.changedAfter,
                 language_ids: options && options.searchSettings && options.searchSettings.languageIds,
-                flavor_ids: options && options.searchSettings && options.searchSettings.flavorIds
+                flavor_ids: options && options.searchSettings && options.searchSettings.flavorIds,
+                tag_ids: options && options.tagIds
             },
             undefined,
             false,
