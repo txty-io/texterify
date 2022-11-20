@@ -34,6 +34,8 @@ import { DATE_TIME_FORMAT, escapeHTML, Utils } from "../../ui/Utils";
 import { TranslationCard } from "./editor/TranslationCard";
 import * as moment from "moment";
 import { KeyTags } from "../../ui/KeyTags";
+import { FlavorsAPI, IGetFlavorsResponse } from "../../api/v1/FlavorsAPI";
+import { TagsFilter } from "../../ui/TagsFilter";
 
 const Key = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
@@ -69,7 +71,7 @@ interface IState {
     keyResponse: IGetKeyResponse;
     keysLoading: boolean;
     languagesResponse: any;
-    exportConfigsResponse: any;
+    flavorsResponse: IGetFlavorsResponse;
     selectedLanguageIdFrom: string;
     selectedLanguageIdTo: string;
     search: string;
@@ -77,6 +79,7 @@ interface IState {
     searchSettings: ISearchSettings;
     supportedSourceLanguages: IGetMachineTranslationsSourceLanguages;
     supportedTargetLanguages: IGetMachineTranslationsTargetLanguages;
+    tagIds: string[];
 }
 
 let abortController;
@@ -90,14 +93,15 @@ class EditorSite extends React.Component<IProps, IState> {
         keyResponse: null,
         keysLoading: true,
         languagesResponse: null,
-        exportConfigsResponse: null,
+        flavorsResponse: null,
         selectedLanguageIdFrom: "",
         selectedLanguageIdTo: "",
         search: undefined,
         page: 1,
         searchSettings: parseKeySearchSettingsFromURL(),
         supportedSourceLanguages: null,
-        supportedTargetLanguages: null
+        supportedTargetLanguages: null,
+        tagIds: []
     };
 
     debouncedSearchReloader = _.debounce(
@@ -138,13 +142,13 @@ class EditorSite extends React.Component<IProps, IState> {
         await this.fetchKeys();
 
         const responseLanguages = await LanguagesAPI.getLanguages(this.props.match.params.projectId, { showAll: true });
-        const exportConfigsResponse = await ExportConfigsAPI.getExportConfigs({
+        const flavorsResponse = await FlavorsAPI.getFlavors({
             projectId: this.props.match.params.projectId
         });
 
         this.setState({
             languagesResponse: responseLanguages,
-            exportConfigsResponse: exportConfigsResponse
+            flavorsResponse: flavorsResponse
         });
 
         if (dashboardStore.currentProject?.attributes.machine_translation_active) {
@@ -166,7 +170,7 @@ class EditorSite extends React.Component<IProps, IState> {
         window.removeEventListener("resize", this.onResize);
     }
 
-    fetchKeys = async (options?: IGetKeysOptions) => {
+    fetchKeys = async () => {
         if (abortController) {
             abortController.abort();
         }
@@ -174,11 +178,12 @@ class EditorSite extends React.Component<IProps, IState> {
         abortController = new AbortController();
         const signal = abortController.signal;
 
-        options = options || {};
-        options.search = options.search || this.state.search;
-        options.page = options.page || this.state.page;
+        const options: IGetKeysOptions = {};
+        options.search = this.state.search;
+        options.page = this.state.page;
         options.perPage = dashboardStore.keysPerPageEditor;
         options.searchSettings = this.state.searchSettings;
+        options.tagIds = this.state.tagIds;
 
         this.setState({ keysLoading: true });
         try {
@@ -347,7 +352,7 @@ class EditorSite extends React.Component<IProps, IState> {
                             <div style={{ margin: 24, width: "auto" }}>
                                 <KeySearchSettingsActiveFilters
                                     languagesResponse={this.state.languagesResponse}
-                                    exportConfigsResponse={this.state.exportConfigsResponse}
+                                    flavorsResponse={this.state.flavorsResponse}
                                 />
                                 <Input.Group
                                     compact
@@ -364,7 +369,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                         content={
                                             <KeySearchSettings
                                                 languagesResponse={this.state.languagesResponse}
-                                                exportConfigsResponse={this.state.exportConfigsResponse}
+                                                flavorsResponse={this.state.flavorsResponse}
                                                 onChange={(settings) => {
                                                     // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                                     this.setState({ searchSettings: settings }, this.fetchKeys);
@@ -384,6 +389,18 @@ class EditorSite extends React.Component<IProps, IState> {
                                         defaultValue={this.state.search}
                                     />
                                 </Input.Group>
+
+                                <TagsFilter
+                                    projectId={this.props.match.params.projectId}
+                                    onChange={(values) => {
+                                        this.setState(
+                                            { tagIds: values },
+                                            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                            this.fetchKeys
+                                        );
+                                    }}
+                                    style={{ minWidth: 140, marginTop: 8 }}
+                                />
                             </div>
                             <div
                                 style={{

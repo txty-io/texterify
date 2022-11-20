@@ -63,7 +63,7 @@ export interface IGetKeysOptions {
     search?: string;
     page?: number;
     perPage?: number;
-    tagIds: string[];
+    tagIds?: string[];
     searchSettings?: ISearchSettings;
 }
 

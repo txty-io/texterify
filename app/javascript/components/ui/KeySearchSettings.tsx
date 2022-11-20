@@ -4,6 +4,8 @@ import * as queryString from "query-string";
 import * as React from "react";
 import { useLocation } from "react-router";
 import { APIUtils } from "../api/v1/APIUtils";
+import { IGetFlavorsResponse } from "../api/v1/FlavorsAPI";
+import { IGetLanguagesResponse } from "../api/v1/LanguagesAPI";
 import { history } from "../routing/history";
 import FlagIcon from "./FlagIcons";
 
@@ -62,8 +64,8 @@ export interface ISearchSettingsQueryParams {
 }
 
 export function KeySearchSettings(props: {
-    languagesResponse: any;
-    flavorsResponse: any;
+    languagesResponse: IGetLanguagesResponse;
+    flavorsResponse: IGetFlavorsResponse;
     onChange(options: ISearchSettings): void;
 }) {
     const currentQueryParams = useQuery();
