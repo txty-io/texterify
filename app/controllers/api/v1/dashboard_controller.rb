@@ -20,4 +20,12 @@ class Api::V1::DashboardController < Api::V1::ApiController
     options[:params] = { current_user: current_user }
     render json: ActivitySerializer.new(versions, options).serialized_json
   end
+
+  def changelog
+    skip_authorization
+
+    file = File.read('CHANGELOG.md')
+
+    render json: { changelog: file }
+  end
 end

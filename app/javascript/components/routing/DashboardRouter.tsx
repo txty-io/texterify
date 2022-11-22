@@ -1,4 +1,11 @@
-import { DeploymentUnitOutlined, HddFilled, LineChartOutlined, ProjectOutlined, SyncOutlined } from "@ant-design/icons";
+import {
+    DeploymentUnitOutlined,
+    HddFilled,
+    LineChartOutlined,
+    MessageOutlined,
+    ProjectOutlined,
+    SyncOutlined
+} from "@ant-design/icons";
 import * as antd from "antd";
 import WhiteLogoWithText from "images/logo_white_text.svg";
 import { observer } from "mobx-react";
@@ -30,6 +37,7 @@ import { DarkModeToggle } from "../ui/DarkModeToggle";
 import { getKeystrokePreview } from "../ui/KeystrokePreview";
 import { LicenseExpiring } from "../ui/LicenseExpiring";
 import { LicenseFreeTrial } from "../ui/LicenseFreeVersion";
+import { NotificationsManager } from "../ui/NotificationsManager";
 import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
@@ -401,6 +409,8 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 </MenuList>
                             </ul>
                         )}
+
+                        <NotificationsManager style={{ marginRight: 40 }} />
 
                         {this.props.match.params.projectId && (
                             <div

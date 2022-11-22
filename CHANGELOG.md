@@ -1,12 +1,5 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
-
-## Next release
-
-- Add tags filter to keys and editor site.
-- Add flavors.
-
 ## v1.2.1
 
 - Make tags feature available for free.
