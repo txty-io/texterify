@@ -175,10 +175,10 @@ class Api::V1::ProjectsController < Api::V1::ApiController
 
       if key.present?
         # Load default translations or export config translations.
-        if export_config
-          translation = key.translations.find_by(language: language, export_config: export_config)
+        if flavor
+          translation = key.translations.find_by(language: language, flavor: flavor)
         else
-          translation = key.translations.find_by(language: language, export_config: nil)
+          translation = key.translations.find_by(language: language, flavor: nil)
         end
 
         # If there is no translation create a new one
