@@ -44,6 +44,8 @@ Find out more at [texterify.com](https://texterify.com) or [sign up](https://app
 
 <h2 id="getting-started">🚀 Getting started</h2>
 
+<h3>Installation</h3>
+
 If you want to try out Texterify you can sign up at [texterify.com](https://texterify.com) and use the cloud version of Texterify without having to setup anything yourself.
 
 If you want to set it up yourself the easiest way to get the software up and running is by using the official [Docker image](https://hub.docker.com/r/chrztoph/texterify). We provide a `docker-compose` configuration for starting Texterify locally or on your server within seconds.
@@ -72,7 +74,12 @@ docker-compose exec app bin/rails db:create db:migrate db:seed
 # Service is now available at http://localhost. 🎉
 ```
 
-This will install the latest version of the service available at the time of setting up. You can update to a newer version by changing `TEXTERIFY_TAG` and restarting your service. For available versions see [here](https://hub.docker.com/repository/docker/chrztoph/texterify).
+This will install the latest version of the service available at the time of setting up.
+
+
+<h3>Update</h3>
+
+You can update to a newer version by following our upgrade guide [here](https://docs.texterify.com/installation/updating-the-service).
 
 <h2 id="tools-and-integrations">🛠️ Tools & Integrations</h2>
 
