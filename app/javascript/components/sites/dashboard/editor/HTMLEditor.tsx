@@ -3,6 +3,18 @@ import * as React from "react";
 import { EditorToolbar } from "./EditorToolbar";
 import * as Squire from "./squire";
 
+function prepareHTML(content: string) {
+    // The editor returns "<p><br></p>" if there is no content.
+    // If this is the case we use an empty string because otherwise when deleting
+    // the content with the HTML editor the saved translation is never empty and therefore the
+    // "show untranslated" filter won't work.
+    if (content === "<p><br></p>" || content === "<p></p>") {
+        content = "";
+    }
+
+    return content;
+}
+
 export function HTMLEditor(props: { value?: string; disabled?: boolean; onChange?(value: string, x: any): void }) {
     const [editor, setEditor] = React.useState(null);
     const [editorHTMLPreview, setEditorHTMLPreview] = React.useState(null);
@@ -19,10 +31,11 @@ export function HTMLEditor(props: { value?: string; disabled?: boolean; onChange
             }
 
             setEditor(squire);
-            setEditorHTMLPreview(squire.getHTML());
+            setEditorHTMLPreview(prepareHTML(squire.getHTML()));
 
             squire.addEventListener("input", () => {
-                const content = squire.getHTML();
+                const content = prepareHTML(squire.getHTML());
+
                 setEditorHTMLPreview(content);
 
                 if (props.onChange) {
@@ -34,9 +47,9 @@ export function HTMLEditor(props: { value?: string; disabled?: boolean; onChange
 
     React.useEffect(() => {
         if (editor && props.value) {
-            if (props.value !== editor.getHTML()) {
+            if (props.value !== prepareHTML(editor.getHTML())) {
                 editor.setHTML(props.value);
-                const content = editor.getHTML();
+                const content = prepareHTML(editor.getHTML());
                 setEditorHTMLPreview(content);
             }
         }
