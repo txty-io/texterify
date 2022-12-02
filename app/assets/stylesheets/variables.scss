@@ -70,6 +70,8 @@
   --sidebar-header-color: #1c70f51a;
   --sidebar-indicator-color: var(--dark-color);
   --sidebar-item-active-color: #000;
+  --sidebar-item-active-color-hover: #000;
+  --sidebar-item-active-background-color: #7070701c;
   --sidebar-item-color: rgba(0, 0, 0, 0.45);
   --sidebar-item-color-hover: #000;
   --sidebar-background-color: #fbfbfc;
@@ -80,6 +82,7 @@
 
   // breadcrumbs
   --breadcrumbs-color: rgba(0, 0, 0, 0.45);
+  --breadcrumbs-last-color: rgba(0, 0, 0, 0.65);
 
   // links
 
@@ -171,7 +174,9 @@
   --sidebar-header-color: #fff;
   --sidebar-indicator-color: #fff;
   --sidebar-item-active-color: #fff;
-  --sidebar-item-color: #8b8b8b;
+  --sidebar-item-active-color-hover: #fff;
+  --sidebar-item-active-background-color: #ffffff14;
+  --sidebar-item-color: #737373;
   --sidebar-item-color-hover: #fff;
   --sidebar-background-color: var(--background-color);
   --sidebar-border-color: var(--border-color);
@@ -180,11 +185,12 @@
   --progressbar-success-background-color: #3ffe75;
 
   // breadcrumbs
-  --breadcrumbs-color: rgba(255, 255, 255, 0.45);
+  --breadcrumbs-color: rgba(255, 255, 255, 0.35);
+  --breadcrumbs-last-color: rgba(255, 255, 255, 0.65);
 
   // links
-  --a-link: #4170f5;
-  --a-link-hover: #517cf6;
+  --a-link: #0893f5;
+  --a-link-hover: #0893f5;
 
   // select
   --select-single-color: rgba(255, 255, 255, 0.85);

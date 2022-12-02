@@ -10,8 +10,12 @@
       color: var(--breadcrumbs-color);
 
       &:hover {
-        color: var(--full-color);
+        color: var(--breadcrumbs-last-color);
       }
+    }
+
+    > span:last-child {
+      color: var(--breadcrumbs-last-color);
     }
   }
 }
