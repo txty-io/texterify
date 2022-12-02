@@ -33,7 +33,7 @@
     "@typescript-eslint/camelcase": "off",
     "require-await": "off",
     "prettier/prettier": "error",
-    "arrow-body-style": ["error", "always"],
+    "arrow-body-style": ["off", "always"],
     "curly": "error",
     "space-before-blocks": "error",
     "camelcase": "off",
