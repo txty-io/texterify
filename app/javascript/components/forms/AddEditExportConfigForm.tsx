@@ -10,11 +10,11 @@ import { FileFormatOptions } from "../configs/FileFormatOptions";
 import useFlavors from "../hooks/useFlavors";
 import useLanguageConfigs from "../hooks/useLanguageConfigs";
 import useLanguages from "../hooks/useLanguages";
-import { ImportFileFormats } from "../sites/dashboard/FileImportSite";
 import { CountryCodeWithTooltip } from "../ui/CountryCodeWithTooltip";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import FlagIcon from "../ui/FlagIcons";
 import { LanguageCodeWithTooltip } from "../ui/LanguageCodeWithTooltip";
+import { ImportFileFormats } from "../utilities/ImportUtils";
 import { AddEditExportConfigLanguageForm, ICreateUpdateLanguageConfig } from "./AddEditExportConfigLanguageForm";
 
 interface IFormValues {
