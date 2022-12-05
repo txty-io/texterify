@@ -19,6 +19,7 @@ class Project < ApplicationRecord
   has_many :validation_violations, dependent: :destroy
   has_many :invites, class_name: 'ProjectInvite', dependent: :destroy
   has_many :background_jobs, dependent: :destroy
+  has_many :imports, dependent: :destroy
 
   # Validations
   has_many :validations, dependent: :destroy

@@ -152,6 +152,10 @@ Rails
               to: 'wordpress_polylang_connections#wordpress_rest_activated'
           get 'wordpress_polylang_connection/authentication_valid',
               to: 'wordpress_polylang_connections#authentication_valid'
+
+          # Imports
+          resources :imports, only: [:create, :index, :show]
+          delete :imports, to: 'imports#destroy_multiple'
         end
 
         resources :access_tokens, only: [:create, :index, :destroy]
