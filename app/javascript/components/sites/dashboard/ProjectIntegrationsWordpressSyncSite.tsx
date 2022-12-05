@@ -2,6 +2,7 @@ import * as React from "react";
 import { useParams } from "react-router";
 import { Routes } from "../../routing/Routes";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { ImportSidebar } from "../../ui/ImportSidebar";
 import { LayoutWithSubSidebar } from "../../ui/LayoutWithSubSidebar";
 import { LayoutWithSubSidebarInner } from "../../ui/LayoutWithSubSidebarInner";
 import { LayoutWithSubSidebarInnerContent } from "../../ui/LayoutWithSubSidebarInnerContent";
@@ -14,7 +15,7 @@ export function ProjectIntegrationsWordpressSyncSite() {
     return (
         <>
             <LayoutWithSubSidebar>
-                <SidebarWordpressIntegration projectId={params.projectId} />
+                <ImportSidebar projectId={params.projectId} />
 
                 <LayoutWithSubSidebarInner>
                     <Breadcrumbs breadcrumbName="projectIntegrationsWordpressSync" />

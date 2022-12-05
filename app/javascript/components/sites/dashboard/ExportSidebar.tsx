@@ -8,53 +8,71 @@ export function ExportSidebar(props: { projectId: string }) {
         <SubSidebar
             menuItems={[
                 {
-                    title: "Export",
+                    menuTitle: "Export",
                     items: [
                         {
-                            path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", props.projectId),
-                            name: "Download",
-                            id: "download"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_EXPORT_DOWNLOAD.replace(
+                                        ":projectId",
+                                        props.projectId
+                                    ),
+                                    title: "Download",
+                                    dataId: "download"
+                                }
+                            ]
                         },
                         {
-                            path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(":projectId", props.projectId),
-                            name: "Export configs",
-                            id: "configurations"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
+                                        ":projectId",
+                                        props.projectId
+                                    ),
+                                    title: "Export configs",
+                                    dataId: "configurations"
+                                }
+                            ]
                         },
                         {
-                            path: Routes.DASHBOARD.PROJECT_EXPORT_FLAVORS.replace(":projectId", props.projectId),
-                            name: "Flavors",
-                            id: "flavors"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_EXPORT_FLAVORS.replace(
+                                        ":projectId",
+                                        props.projectId
+                                    ),
+                                    title: "Flavors",
+                                    dataId: "flavors"
+                                }
+                            ]
                         },
                         {
-                            path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(":projectId", props.projectId),
-                            name: "Hierarchy",
-                            id: "hierarchy"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_EXPORT_HIERARCHY.replace(
+                                        ":projectId",
+                                        props.projectId
+                                    ),
+                                    title: "Hierarchy",
+                                    dataId: "hierarchy"
+                                }
+                            ]
                         }
                     ]
                 },
                 {
-                    title: "Integrations",
+                    menuTitle: "Integrations",
                     items: [
                         {
-                            path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_RESOLVER({
-                                projectId: props.projectId
-                            }),
-                            name: (
-                                <>
-                                    WordPress <Tag style={{ marginLeft: 8 }}>beta</Tag>
-                                </>
-                            ),
-                            id: "wordpress"
-                        },
-                        {
-                            path: Routes.DASHBOARD.PROJECT_IMPORT_GITHUB,
-                            disabled: true,
-                            name: (
-                                <>
-                                    GitHub <Tag style={{ marginLeft: 8 }}>coming soon</Tag>
-                                </>
-                            ),
-                            id: "github"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_RESOLVER({
+                                        projectId: props.projectId
+                                    }),
+                                    title: "WordPress",
+                                    dataId: "wordpress"
+                                }
+                            ]
                         }
                     ]
                 }

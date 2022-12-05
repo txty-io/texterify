@@ -1,4 +1,3 @@
-import { Tag } from "antd";
 import * as React from "react";
 import { Routes } from "../routing/Routes";
 import { SubSidebar } from "./SubSidebar";
@@ -8,39 +7,54 @@ export function ImportSidebar(props: { projectId: string }) {
         <SubSidebar
             menuItems={[
                 {
-                    title: "Import",
+                    menuTitle: "Import",
                     items: [
                         {
-                            path: Routes.DASHBOARD.PROJECT_IMPORT_FILE.replace(":projectId", props.projectId),
-                            name: "File",
-                            id: "file"
-                        }
-                    ]
-                },
-                {
-                    title: "Integrations",
-                    items: [
-                        {
-                            path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_RESOLVER({
-                                projectId: props.projectId
-                            }),
-                            name: (
-                                <>
-                                    WordPress <Tag style={{ marginLeft: 8 }}>beta</Tag>
-                                </>
-                            ),
-                            id: "wordpress"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_IMPORTS.replace(":projectId", props.projectId),
+                                    dataId: "imports",
+                                    title: "Upload"
+                                }
+                            ]
                         },
                         {
-                            path: Routes.DASHBOARD.PROJECT_IMPORT_GITHUB,
-                            disabled: true,
-                            name: (
-                                <>
-                                    GitHub <Tag style={{ marginLeft: 8 }}>coming soon</Tag>
-                                </>
-                            ),
-                            id: "github"
+                            subMenuTitle: "WordPress",
+                            subMenuPath: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_RESOLVER({
+                                projectId: props.projectId
+                            }),
+                            subMenuDataId: "wordpress",
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER({
+                                        projectId: props.projectId
+                                    }),
+                                    title: "Synchronize",
+                                    dataId: "synchronize"
+                                },
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
+                                        projectId: props.projectId
+                                    }),
+                                    title: "Settings",
+                                    dataId: "settings"
+                                }
+                            ]
                         }
+                        // {
+                        //     paths: [
+                        //         {
+                        //             path: Routes.DASHBOARD.PROJECT_IMPORT_GITHUB.replace(":projectId", props.projectId),
+                        //             dataId: "github",
+                        //             disabled: true,
+                        //             title: (
+                        //                 <>
+                        //                     GitHub <Tag style={{ marginLeft: 8 }}>coming soon</Tag>
+                        //                 </>
+                        //             )
+                        //         }
+                        //     ]
+                        // }
                     ]
                 }
             ]}

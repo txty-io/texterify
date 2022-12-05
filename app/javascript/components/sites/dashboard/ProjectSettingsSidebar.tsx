@@ -7,17 +7,29 @@ export function ProjectSettingsSidebar(props: { projectId: string }) {
         <SubSidebar
             menuItems={[
                 {
-                    title: "Settings",
+                    menuTitle: "Settings",
                     items: [
                         {
-                            path: Routes.DASHBOARD.PROJECT_SETTINGS_GENERAL_RESOLVER({ projectId: props.projectId }),
-                            name: "General",
-                            id: "settings-sidebar-general"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_SETTINGS_GENERAL_RESOLVER({
+                                        projectId: props.projectId
+                                    }),
+                                    title: "General",
+                                    dataId: "settings-sidebar-general"
+                                }
+                            ]
                         },
                         {
-                            path: Routes.DASHBOARD.PROJECT_SETTINGS_ADVANCED_RESOLVER({ projectId: props.projectId }),
-                            name: "Advanced",
-                            id: "settings-sidebar-advanced"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_SETTINGS_ADVANCED_RESOLVER({
+                                        projectId: props.projectId
+                                    }),
+                                    title: "Advanced",
+                                    dataId: "settings-sidebar-advanced"
+                                }
+                            ]
                         }
                     ]
                 }

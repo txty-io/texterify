@@ -7,21 +7,29 @@ export function SidebarWordpressIntegration(props: { projectId: string }) {
         <SubSidebar
             menuItems={[
                 {
-                    title: "WordPress",
+                    menuTitle: "WordPress",
                     items: [
                         {
-                            path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
-                                projectId: props.projectId
-                            }),
-                            name: "Settings",
-                            id: "settings"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
+                                        projectId: props.projectId
+                                    }),
+                                    title: "Settings",
+                                    dataId: "settings"
+                                }
+                            ]
                         },
                         {
-                            path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER({
-                                projectId: props.projectId
-                            }),
-                            name: "Synchronize",
-                            id: "synchronize"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER({
+                                        projectId: props.projectId
+                                    }),
+                                    title: "Synchronize",
+                                    dataId: "synchronize"
+                                }
+                            ]
                         }
                     ]
                 }

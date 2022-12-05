@@ -37,6 +37,7 @@ interface INavigationData {
     path?: string;
     text?: React.ReactNode;
     paths?: string[];
+    pathsStartsWith?: string[];
     roles?: string[];
     dataId: string;
     subItems?: INavigationData[];
@@ -156,7 +157,16 @@ class ProjectSidebar extends React.Component<IProps> {
                 path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
                 paths: [
                     Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId),
-                    Routes.DASHBOARD.PROJECT_IMPORT_FILE.replace(":projectId", this.props.match.params.projectId)
+                    Routes.DASHBOARD.PROJECT_IMPORT_FILE.replace(":projectId", this.props.match.params.projectId),
+                    Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    }),
+                    Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER({
+                        projectId: this.props.match.params.projectId
+                    })
+                ],
+                pathsStartsWith: [
+                    Routes.DASHBOARD.PROJECT_IMPORTS_RESOLVER({ projectId: this.props.match.params.projectId })
                 ],
                 text: "Import",
                 roles: ROLES_DEVELOPER_UP,
@@ -169,7 +179,7 @@ class ProjectSidebar extends React.Component<IProps> {
                 dataId: "project-sidebar-export",
                 path: Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
                 paths: [
-                    Routes.DASHBOARD.PROJECT_EXPORT.replace(":projectId", this.props.match.params.projectId),
+                    Routes.DASHBOARD.PROJECT_EXPORT_DOWNLOAD_RESOLVER({ projectId: this.props.match.params.projectId }),
                     Routes.DASHBOARD.PROJECT_EXPORT_CONFIGURATIONS.replace(
                         ":projectId",
                         this.props.match.params.projectId
@@ -237,15 +247,7 @@ class ProjectSidebar extends React.Component<IProps> {
                 path: Routes.DASHBOARD.PROJECT_INTEGRATIONS.replace(":projectId", this.props.match.params.projectId),
                 text: "Integrations",
                 roles: ROLES_TRANSLATOR_UP,
-                dataId: "project-sidebar-integrations",
-                paths: [
-                    Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
-                        projectId: this.props.match.params.projectId
-                    }),
-                    Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SYNC_RESOLVER({
-                        projectId: this.props.match.params.projectId
-                    })
-                ]
+                dataId: "project-sidebar-integrations"
             },
             {
                 icon: SettingOutlined,
@@ -372,6 +374,11 @@ class ProjectSidebar extends React.Component<IProps> {
             if (data.paths?.includes(this.props.location.pathname)) {
                 return index.toString();
             } else if (data.path === this.props.location.pathname) {
+                return index.toString();
+            } else if (
+                data.pathsStartsWith &&
+                data.pathsStartsWith.find((p) => this.props.location.pathname.startsWith(p))
+            ) {
                 return index.toString();
             } else if (data.subItems) {
                 let foundIndex;

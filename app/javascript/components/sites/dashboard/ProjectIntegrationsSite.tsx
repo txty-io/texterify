@@ -63,18 +63,18 @@ class ProjectIntegrationsSite extends React.Component<IProps> {
                 name: "iOS SDK",
                 description: "Use the Over the Air SDK to update the translations in your apps in real-time.",
                 link: "https://github.com/texterify/texterify-ios"
+            },
+            {
+                key: "wordpress",
+                logo: WordpressLogo,
+                name: "WordPress",
+                description: "Synchonize content between Texterify and WordPress with ease.",
+                link: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
+                    projectId: this.props.match.params.projectId
+                }),
+                hasSubpage: true,
+                buttonText: "Settings"
             }
-            // {
-            //     key: "wordpress",
-            //     logo: WordpressLogo,
-            //     name: "WordPress",
-            //     description: "Synchonize content between Texterify and WordPress with ease.",
-            //     link: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
-            //         projectId: this.props.match.params.projectId
-            //     }),
-            //     hasSubpage: true,
-            //     buttonText: "Settings"
-            // }
         ] as IIntegration[];
     }
 

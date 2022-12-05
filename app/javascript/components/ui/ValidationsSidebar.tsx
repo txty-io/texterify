@@ -8,24 +8,38 @@ export const ValidationsSidebar = observer((props: { projectId: string }) => {
         <SubSidebar
             menuItems={[
                 {
-                    title: "QA",
+                    menuTitle: "QA",
                     items: [
                         {
-                            path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", props.projectId),
-                            name: "Validations",
-                            id: "validations-sidebar-validations"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", props.projectId),
+                                    title: "Validations",
+                                    dataId: "validations-sidebar-validations"
+                                }
+                            ]
                         },
                         {
-                            path: Routes.DASHBOARD.PROJECT_PLACEHOLDERS_RESOLVER({ projectId: props.projectId }),
-                            name: "Placeholders",
-                            id: "validations-sidebar-placeholders"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_PLACEHOLDERS_RESOLVER({
+                                        projectId: props.projectId
+                                    }),
+                                    title: "Placeholders",
+                                    dataId: "validations-sidebar-placeholders"
+                                }
+                            ]
                         },
                         {
-                            path: Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_RESOLVER({
-                                projectId: props.projectId
-                            }),
-                            name: "Forbidden words",
-                            id: "validations-sidebar-forbidden-words-lists"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.PROJECT_FORBIDDEN_WORDS_RESOLVER({
+                                        projectId: props.projectId
+                                    }),
+                                    title: "Forbidden words",
+                                    dataId: "validations-sidebar-forbidden-words-lists"
+                                }
+                            ]
                         }
                     ]
                 }

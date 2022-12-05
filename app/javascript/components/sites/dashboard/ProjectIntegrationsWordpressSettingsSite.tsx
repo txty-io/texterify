@@ -9,6 +9,7 @@ import {
 } from "../../api/v1/WordpressPolylangConnectionsAPI";
 import { Routes } from "../../routing/Routes";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { ImportSidebar } from "../../ui/ImportSidebar";
 import { LayoutWithSubSidebar } from "../../ui/LayoutWithSubSidebar";
 import { LayoutWithSubSidebarInner } from "../../ui/LayoutWithSubSidebarInner";
 import { LayoutWithSubSidebarInnerContent } from "../../ui/LayoutWithSubSidebarInnerContent";
@@ -127,7 +128,7 @@ export const ProjectIntegrationsWordpressSettingsSite = observer(() => {
 
     return (
         <LayoutWithSubSidebar>
-            <SidebarWordpressIntegration projectId={params.projectId} />
+            <ImportSidebar projectId={params.projectId} />
 
             <LayoutWithSubSidebarInner>
                 <Breadcrumbs breadcrumbName="projectIntegrationsWordpressSettings" />
@@ -136,13 +137,13 @@ export const ProjectIntegrationsWordpressSettingsSite = observer(() => {
                     <p style={{ marginTop: 8, maxWidth: 800 }}>
                         With the WordPress integration you can sync your content between WordPress and Texterify with
                         ease to make use of the powerful translation tools Texterify offers.
-                        <br />
+                        {/* <br />
                         <br />
                         Check out the{" "}
                         <a href={Routes.OTHER.WORDPRESS_INTEGRATION_GUIDE} target="_blank">
                             WordPress integration documentation
                         </a>{" "}
-                        for setup instructions.
+                        for setup instructions. */}
                     </p>
 
                     <div style={{ display: "flex", marginTop: 40 }}>

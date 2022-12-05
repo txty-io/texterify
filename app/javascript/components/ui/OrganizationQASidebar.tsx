@@ -8,21 +8,29 @@ export const OrganizationQASidebar = observer((props: { organizationId: string }
         <SubSidebar
             menuItems={[
                 {
-                    title: "QA",
+                    menuTitle: "QA",
                     items: [
                         {
-                            path: Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
-                                organizationId: props.organizationId
-                            }),
-                            name: "Validations",
-                            id: "organization-qa-sidebar-validations"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
+                                        organizationId: props.organizationId
+                                    }),
+                                    title: "Validations",
+                                    dataId: "organization-qa-sidebar-validations"
+                                }
+                            ]
                         },
                         {
-                            path: Routes.DASHBOARD.ORGANIZATION_FORBIDDEN_WORDS_RESOLVER({
-                                organizationId: props.organizationId
-                            }),
-                            name: "Forbidden words",
-                            id: "organization-qa-sidebar-forbidden-words"
+                            paths: [
+                                {
+                                    path: Routes.DASHBOARD.ORGANIZATION_FORBIDDEN_WORDS_RESOLVER({
+                                        organizationId: props.organizationId
+                                    }),
+                                    title: "Forbidden words",
+                                    dataId: "organization-qa-sidebar-forbidden-words"
+                                }
+                            ]
                         }
                     ]
                 }
