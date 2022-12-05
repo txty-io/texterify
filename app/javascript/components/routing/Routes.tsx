@@ -34,12 +34,30 @@ const Routes = {
         PROJECT: "/dashboard/projects/:projectId",
         PROJECT_LANGUAGES: "/dashboard/projects/:projectId/languages",
         PROJECT_IMPORT: "/dashboard/projects/:projectId/import",
+        PROJECT_IMPORT_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", options.projectId);
+        },
+        PROJECT_IMPORTS: "/dashboard/projects/:projectId/imports",
+        PROJECT_IMPORTS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_IMPORTS.replace(":projectId", options.projectId);
+        },
+        PROJECT_IMPORTS_DETAILS: "/dashboard/projects/:projectId/imports/:importId",
+        PROJECT_IMPORTS_DETAILS_RESOLVER: (options: { projectId: string; importId: string }) => {
+            return Routes.DASHBOARD.PROJECT_IMPORTS_DETAILS.replace(":projectId", options.projectId).replace(
+                ":importId",
+                options.importId
+            );
+        },
         PROJECT_IMPORT_FILE: "/dashboard/projects/:projectId/import/file",
         PROJECT_IMPORT_FILE_RESOLVER: (options: { projectId: string }) => {
             return Routes.DASHBOARD.PROJECT_IMPORT_FILE.replace(":projectId", options.projectId);
         },
         PROJECT_IMPORT_GITHUB: "/dashboard/projects/:projectId/import/github",
         PROJECT_EXPORT: "/dashboard/projects/:projectId/export",
+        PROJECT_EXPORT_DOWNLOAD: "/dashboard/projects/:projectId/export/download",
+        PROJECT_EXPORT_DOWNLOAD_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_EXPORT_DOWNLOAD.replace(":projectId", options.projectId);
+        },
         PROJECT_MEMBERS: "/dashboard/projects/:projectId/members",
         PROJECT_MACHINE_TRANSLATION: "/dashboard/projects/:projectId/machine-translation",
         PROJECT_MACHINE_TRANSLATION_SETTINGS: "/dashboard/projects/:projectId/machine-translation/settings",

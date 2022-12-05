@@ -3,7 +3,6 @@ import * as React from "react";
 import { Redirect, RouteComponentProps, Switch } from "react-router-dom";
 import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 import { ProjectsAPI } from "../api/v1/ProjectsAPI";
-import { FileImportSite } from "../sites/dashboard/FileImportSite";
 import { KeysSite } from "../sites/dashboard/KeysSite";
 import { LanguagesSite } from "../sites/dashboard/LanguagesSite";
 import { MembersSite } from "../sites/dashboard/MembersSite";
@@ -34,6 +33,8 @@ import { Routes } from "./Routes";
 import { ProjectForbiddenWordsListsSite } from "../sites/dashboard/ProjectForbiddenWordsListsSite";
 import { ProjectTagsSite } from "../sites/dashboard/ProjectTagsSite";
 import { ProjectExportFlavorsSite } from "../sites/dashboard/ProjectExportFlavorsSite";
+import { ImportsSite } from "../sites/dashboard/ImportsSite";
+import { ImportsDetailsSite } from "../sites/dashboard/ImportsDetailsSite";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -93,21 +94,61 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         component={ProjectIssuesIgnoredSite}
                     />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_KEYS} component={KeysSite} />
+
+                    {/* Redirect from general import route to correct import site. */}
                     <PrivateRoute
                         exact
                         path={Routes.DASHBOARD.PROJECT_IMPORT}
                         component={() => {
                             return (
                                 <Redirect
-                                    to={Routes.DASHBOARD.PROJECT_IMPORT_FILE_RESOLVER({
+                                    to={Routes.DASHBOARD.PROJECT_IMPORTS_RESOLVER({
                                         projectId: this.props.match.params.projectId
                                     })}
                                 />
                             );
                         }}
                     />
-                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_IMPORT_FILE} component={FileImportSite} />
-                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_EXPORT} component={ProjectExportDownloadSite} />
+
+                    {/* Redirect from old import site to new new import site. */}
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_IMPORT_FILE}
+                        component={() => {
+                            return (
+                                <Redirect
+                                    to={Routes.DASHBOARD.PROJECT_IMPORTS_RESOLVER({
+                                        projectId: this.props.match.params.projectId
+                                    })}
+                                />
+                            );
+                        }}
+                    />
+
+                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_IMPORTS} component={ImportsSite} />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_IMPORTS_DETAILS}
+                        component={ImportsDetailsSite}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_EXPORT}
+                        component={() => {
+                            return (
+                                <Redirect
+                                    to={Routes.DASHBOARD.PROJECT_EXPORT_DOWNLOAD_RESOLVER({
+                                        projectId: this.props.match.params.projectId
+                                    })}
+                                />
+                            );
+                        }}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={Routes.DASHBOARD.PROJECT_EXPORT_DOWNLOAD}
+                        component={ProjectExportDownloadSite}
+                    />
                     <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_MEMBERS} component={MembersSite} />
                     <PrivateRoute
                         exact

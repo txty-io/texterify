@@ -7,8 +7,9 @@ import { Routes } from "../routing/Routes";
 import { dashboardStore } from "../stores/DashboardStore";
 import { OrganizationAvatar } from "./OrganizationAvatar";
 
-type IProps = RouteComponentProps<{ projectId?: string; organizationId?: string }> & {
+type IProps = RouteComponentProps<{ projectId?: string; organizationId?: string; importId?: string }> & {
     breadcrumbName: string;
+    currentCrumbDescription?: string;
 };
 
 @observer
@@ -135,10 +136,18 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                 name: "Keys",
                 path: Routes.DASHBOARD.PROJECT_KEYS.replace(":projectId", this.props.match.params.projectId)
             },
-            import: {
+            imports: {
                 parent: "project",
-                name: "Import",
-                path: Routes.DASHBOARD.PROJECT_IMPORT.replace(":projectId", this.props.match.params.projectId)
+                name: "Imports",
+                path: Routes.DASHBOARD.PROJECT_IMPORTS.replace(":projectId", this.props.match.params.projectId)
+            },
+            importsDetails: {
+                parent: "imports",
+                name: this.props.currentCrumbDescription,
+                path: Routes.DASHBOARD.PROJECT_IMPORTS_DETAILS_RESOLVER({
+                    projectId: this.props.match.params.projectId,
+                    importId: this.props.match.params.importId
+                })
             },
             projectMembers: {
                 parent: "project",
@@ -227,7 +236,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                 path: Routes.DASHBOARD.PROJECT_INTEGRATIONS.replace(":projectId", this.props.match.params.projectId)
             },
             projectIntegrationsWordpress: {
-                parent: "projectIntegrations",
+                parent: "project",
                 name: "WordPress"
             },
             projectIntegrationsWordpressSettings: {

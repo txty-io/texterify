@@ -179,13 +179,13 @@ Cypress.Commands.add("importFile", (fileName: string) => {
     cy.get('[data-id="project-sidebar-import"]').click();
     cy.get('[data-id="file-importer-language-tag"]').click();
     cy.get('[data-id="file-importer-file-format-json-poeditor"]').click();
-    cy.get('[data-id="file-importer-file-uploader"]').selectFile(
+    cy.get('[data-id="files-importer-files-uploader"]').selectFile(
         {
             contents: `cypress/fixtures/${fileName}`
         },
         { force: true }
     );
-    cy.get('[data-id="file-importer-submit-button"]').click();
+    cy.get('[data-id="files-importer-submit-button"]').click();
 });
 
 Cypress.Commands.add("clickOutside", () => {

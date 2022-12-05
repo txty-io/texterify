@@ -1,5 +1,5 @@
 import { FileTextOutlined } from "@ant-design/icons";
-import { Alert, Button, Empty, Input, message, Modal, Result, Select, Tag } from "antd";
+import { Button, message } from "antd";
 import AppleLogoBlack from "images/apple_logo_black.svg";
 import AppleLogoWhite from "images/apple_logo_white.svg";
 import ChromeLogo from "images/chrome_logo.svg";
@@ -16,20 +16,12 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import Dropzone from "react-dropzone";
 import { useParams } from "react-router";
-import { APIUtils } from "../api/v1/APIUtils";
-import { FlavorsAPI, IGetFlavorsResponse } from "../api/v1/FlavorsAPI";
-import { IGetLanguagesResponse, LanguagesAPI } from "../api/v1/LanguagesAPI";
-import { ProjectsAPI } from "../api/v1/ProjectsAPI";
+import { ImportsAPI } from "../api/v1/ImportsAPI";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
-import { ImportFileFormats } from "../sites/dashboard/FileImportSite";
-import { generalStore } from "../stores/GeneralStore";
+import { ImportFileFormats } from "../utilities/ImportUtils";
 import { DropZoneWrapper } from "./DropZoneWrapper";
-import FlagIcon from "./FlagIcons";
-import { HoverCard } from "./HoverCard";
-import { Loading } from "./Loading";
 import { LoadingOverlay } from "./LoadingOverlay";
-import { Styles } from "./Styles";
 
 const SUPPORTED_FORMATS: {
     image?: string;
@@ -270,482 +262,124 @@ SUPPORTED_FORMATS.forEach((supportedFormat) => {
 });
 
 export const TranslationFileImporter = observer(
-    (props: { style?: React.CSSProperties; onCreateLanguageClick?(): void }) => {
+    (props: { style?: React.CSSProperties; fileDropOnly?: boolean; onCreateLanguageClick?(): void }) => {
         const params = useParams<{ organizationId?: string; projectId?: string }>();
 
-        const [languagesResponse, setLanguagesResponse] = React.useState<IGetLanguagesResponse>();
-        const [languagesLoading, setLanguagesLoading] = React.useState<boolean>(true);
-        const [selectedLanguageId, setSelectedLanguageId] = React.useState<string>();
-        const [search, setSearch] = React.useState<string>("");
-        const [showFlavorSelect, setFlavorSelect] = React.useState<boolean>(false);
-        const [selectedImportFormat, setSelectedImportFormat] = React.useState<typeof SUPPORTED_FORMATS[0]>();
-        const [selectedFlavorId, setSelectedFlavorId] = React.useState<string>();
-        const [flavorsResponse, setFlavorsResponse] = React.useState<IGetFlavorsResponse>();
         const [files, setFiles] = React.useState<File[]>([]);
         const [loading, setLoading] = React.useState<boolean>(false);
-        const [importSuccessful, setImportSuccessful] = React.useState<boolean>(false);
-
-        React.useEffect(() => {
-            (async () => {
-                try {
-                    const responseLanguages = await LanguagesAPI.getLanguages(params.projectId, { showAll: true });
-                    const responseFlavors = await FlavorsAPI.getFlavors({
-                        projectId: params.projectId
-                    });
-
-                    setLanguagesResponse(responseLanguages);
-                    setFlavorsResponse(responseFlavors);
-                } catch (e) {
-                    console.error(e);
-                }
-
-                setLanguagesLoading(false);
-            })();
-        }, []);
 
         async function upload() {
             setLoading(true);
 
-            const response = await ProjectsAPI.import({
-                projectId: params.projectId,
-                languageId: selectedLanguageId,
-                flavorId: selectedFlavorId,
-                file: files[0],
-                fileFormat: selectedImportFormat.id
-            });
-
-            if (response.success) {
-                message.success("Successfully imported translations.");
-                setFiles([]);
-                setSelectedLanguageId(null);
-                setImportSuccessful(true);
-            } else {
-                console.error(response.error_message);
-                Modal.error({
-                    title: "Translation file import failed",
-                    content: (
-                        <>
-                            <b>Error message:</b>
-                            <br />
-                            <code style={{ wordBreak: "break-word", whiteSpace: "break-spaces" }}>
-                                {response.error_message}
-                            </code>
-                        </>
-                    )
+            try {
+                const createImportResponse = await ImportsAPI.create({
+                    projectId: params.projectId,
+                    files: files
                 });
-            }
 
-            setLoading(false);
-        }
-
-        function getFlavorSelect() {
-            return (
-                <Select
-                    style={{ flexGrow: 1 }}
-                    onChange={(selectedValue: string) => {
-                        setSelectedFlavorId(selectedValue);
-                    }}
-                    value={selectedFlavorId}
-                >
-                    {flavorsResponse.data.map((flavor) => {
-                        return (
-                            <Select.Option value={flavor.id} key={flavor.id}>
-                                {flavor.attributes.name}
-                            </Select.Option>
-                        );
-                    })}
-                </Select>
-            );
-        }
-
-        function getFilteredFormats() {
-            return SUPPORTED_FORMATS.filter((format) => {
-                if (!search) {
-                    return true;
-                }
-
-                if (
-                    format.id.toLowerCase().includes(search.toLowerCase()) ||
-                    format.name.toLowerCase().includes(search.toLowerCase())
-                ) {
-                    return true;
-                } else {
-                    if (
-                        format.formats.find((f) => {
-                            return f.toLowerCase().includes(search.toLowerCase());
+                if (createImportResponse?.data) {
+                    history.push(
+                        Routes.DASHBOARD.PROJECT_IMPORTS_DETAILS_RESOLVER({
+                            projectId: params.projectId,
+                            importId: createImportResponse.data.attributes.id
                         })
-                    ) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    );
+                } else {
+                    message.error("An error occurred while uploading your files.");
                 }
-            });
-        }
-
-        if (importSuccessful) {
-            return (
-                <Result
-                    status="success"
-                    title="Your import was successful."
-                    style={{ margin: "auto" }}
-                    extra={[
-                        <Button
-                            type="primary"
-                            key="import-another"
-                            onClick={() => {
-                                setImportSuccessful(false);
-                            }}
-                        >
-                            Import another file
-                        </Button>
-                    ]}
-                />
-            );
+            } catch (error) {
+                console.error(error);
+                message.error("An error occurred while uploading your files.");
+            } finally {
+                setLoading(false);
+            }
         }
 
         return (
             <>
-                <div style={props.style}>
-                    {languagesLoading && <Loading />}
-                    {languagesResponse?.data?.length === 0 && (
-                        <>
-                            <Alert
-                                type="info"
-                                showIcon
-                                message="No language"
-                                description={
-                                    <>
-                                        <a
-                                            onClick={
-                                                props.onCreateLanguageClick
-                                                    ? props.onCreateLanguageClick
-                                                    : () => {
-                                                          history.push(
-                                                              Routes.DASHBOARD.PROJECT_LANGUAGES.replace(
-                                                                  ":projectId",
-                                                                  params.projectId
-                                                              )
-                                                          );
-                                                      }
-                                            }
-                                        >
-                                            Create a language
-                                        </a>{" "}
-                                        to import your keys.
-                                    </>
-                                }
-                            />
-                        </>
-                    )}
-                    {languagesResponse?.data?.length > 0 && (
-                        <>
-                            <div style={{ marginBottom: 8 }}>
-                                <h3>For which language do you want to import your existing translations?</h3>
-                                <p>Click on a language to continue.</p>
-                                <div style={{ marginTop: 24, display: "flex", alignItems: "center" }}>
-                                    {languagesResponse.data.map((language) => {
-                                        const countryCode = APIUtils.getIncludedObject(
-                                            language.relationships.country_code.data,
-                                            languagesResponse.included
-                                        );
-
-                                        return (
-                                            <Tag.CheckableTag
-                                                key={language.id}
-                                                checked={language.id === selectedLanguageId}
-                                                onChange={() => {
-                                                    setSelectedLanguageId(language.id);
-                                                }}
-                                                data-id="file-importer-language-tag"
-                                            >
-                                                {countryCode && (
-                                                    <span style={{ marginRight: 8 }}>
-                                                        <FlagIcon code={countryCode.attributes.code.toLowerCase()} />
-                                                    </span>
-                                                )}
-                                                {language.attributes.name}
-                                            </Tag.CheckableTag>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                            {showFlavorSelect && flavorsResponse && flavorsResponse.data.length > 0 && (
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginTop: 8
-                                    }}
-                                >
-                                    <span style={{ marginRight: 8 }}>Select a flavor:</span>
-                                    {getFlavorSelect()}
-                                </div>
-                            )}
-
-                            {!showFlavorSelect && flavorsResponse && flavorsResponse.data.length > 0 && (
-                                <a
-                                    onClick={() => {
-                                        setFlavorSelect(true);
-                                    }}
-                                >
-                                    Click here to import strings for a flavor
-                                </a>
-                            )}
-
-                            {selectedLanguageId && (
-                                <>
-                                    <h3 style={{ marginTop: 24 }}>Select your translations file format</h3>
-                                    <Input.Search
-                                        placeholder="Search for file formats"
-                                        onChange={(event) => {
-                                            setSearch(event.target.value);
-                                        }}
-                                    />
-                                    <div
-                                        style={{
-                                            display: "flex",
-                                            flexWrap: "wrap",
-                                            columnGap: 24,
-                                            rowGap: 24,
-                                            margin: "24px 0"
-                                        }}
-                                    >
-                                        {getFilteredFormats().map((supportedFormat) => {
-                                            return (
-                                                <HoverCard
+                <>
+                    <div style={{ ...props.style, display: "flex" }}>
+                        <div style={{ flexGrow: 1 }}>
+                            <Dropzone
+                                onDrop={(acceptedFiles) => {
+                                    setFiles(acceptedFiles);
+                                }}
+                                accept={ACCEPTED_FILE_FORMATS}
+                            >
+                                {({ getRootProps, getInputProps }) => {
+                                    return (
+                                        <DropZoneWrapper {...getRootProps()} style={{ minHeight: 320 }}>
+                                            {files.length > 0 ? (
+                                                <p
                                                     style={{
-                                                        padding: 24,
-                                                        width: 200,
+                                                        margin: 0,
                                                         display: "flex",
-                                                        flexDirection: "column",
                                                         alignItems: "center"
                                                     }}
-                                                    key={`${supportedFormat.id}-${supportedFormat.name}`}
-                                                    selected={
-                                                        selectedImportFormat?.id === supportedFormat.id &&
-                                                        selectedImportFormat?.name === supportedFormat.name
-                                                    }
-                                                    onClick={() => {
-                                                        setSelectedImportFormat(supportedFormat);
-                                                    }}
-                                                    data-id={`file-importer-file-format-${supportedFormat.id}`}
                                                 >
-                                                    {supportedFormat.image && (
-                                                        <img
-                                                            src={
-                                                                generalStore.theme === "dark" &&
-                                                                supportedFormat.imageDarkMode
-                                                                    ? supportedFormat.imageDarkMode
-                                                                    : supportedFormat.image
-                                                            }
-                                                            style={{ height: 32, maxWidth: 80 }}
-                                                        />
-                                                    )}
-                                                    <div style={{ fontSize: 18, fontWeight: "bold", marginTop: 16 }}>
-                                                        {supportedFormat.name}
-                                                    </div>
-                                                    <div style={{ marginTop: 16 }}>
-                                                        {supportedFormat.formats.map((format, index) => {
-                                                            return (
-                                                                <Tag
-                                                                    style={{
-                                                                        marginRight:
-                                                                            index === supportedFormat.formats.length - 1
-                                                                                ? 0
-                                                                                : 4
-                                                                    }}
-                                                                    key={format}
-                                                                >
-                                                                    {format}
-                                                                </Tag>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                </HoverCard>
-                                            );
-                                        })}
-                                        {getFilteredFormats().length === 0 && (
-                                            <Empty
-                                                description="We couldn't find the file format you requested."
-                                                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                                style={{
-                                                    gridColumnEnd: -1,
-                                                    gridColumnStart: 1
-                                                }}
-                                            />
-                                        )}
-                                    </div>
-
-                                    {selectedImportFormat && (
-                                        <div style={{ display: "flex" }}>
-                                            {(selectedImportFormat.documentationURL ||
-                                                selectedImportFormat.example) && (
-                                                <div
-                                                    style={{
-                                                        marginRight: 40,
-                                                        padding: 12,
-                                                        width: "50%",
-                                                        display: "flex",
-                                                        flexDirection: "column"
-                                                    }}
-                                                >
-                                                    <div
+                                                    <FileTextOutlined
                                                         style={{
-                                                            fontWeight: "bold",
-                                                            fontSize: 16,
-                                                            display: "flex",
-                                                            alignItems: "center"
+                                                            fontSize: 26,
+                                                            color: "#aaa",
+                                                            marginRight: 10
                                                         }}
-                                                    >
-                                                        {selectedImportFormat.image && (
-                                                            <img
-                                                                src={
-                                                                    generalStore.theme === "dark" &&
-                                                                    selectedImportFormat.imageDarkMode
-                                                                        ? selectedImportFormat.imageDarkMode
-                                                                        : selectedImportFormat.image
-                                                                }
-                                                                style={{ height: 32, maxWidth: 80, marginRight: 12 }}
-                                                            />
-                                                        )}
-                                                        {selectedImportFormat.name}
-                                                    </div>
-                                                    {selectedImportFormat.description && (
-                                                        <div style={{ marginTop: 8 }}>
-                                                            {selectedImportFormat.description}
-                                                        </div>
-                                                    )}
-                                                    {selectedImportFormat.documentationURL && (
-                                                        <div style={{ marginTop: 8 }}>
-                                                            <span style={{ fontWeight: "bold" }}>Documentation: </span>
-                                                            <a
-                                                                href={selectedImportFormat.documentationURL}
-                                                                target="_blank"
-                                                                style={{ wordBreak: "break-all" }}
-                                                            >
-                                                                {selectedImportFormat.documentationURL}
-                                                            </a>
-                                                        </div>
-                                                    )}
-                                                    {selectedImportFormat && (
-                                                        <>
-                                                            <div style={{ marginTop: 8, fontWeight: "bold" }}>
-                                                                Example:
-                                                            </div>
-                                                            <div
-                                                                style={{
-                                                                    marginTop: 8,
-                                                                    padding: 24,
-                                                                    borderRadius: Styles.DEFAULT_BORDER_RADIUS,
-                                                                    background: "var(--background-highlight-color)"
-                                                                }}
-                                                            >
-                                                                {selectedImportFormat.example}
-                                                            </div>
-                                                        </>
-                                                    )}
-                                                </div>
-                                            )}
-                                            <div style={{ flexGrow: 1 }}>
-                                                <Dropzone
-                                                    onDrop={(acceptedFiles) => {
-                                                        setFiles(acceptedFiles);
-                                                    }}
-                                                    accept={ACCEPTED_FILE_FORMATS}
-                                                    disabled={!selectedImportFormat}
-                                                >
-                                                    {({ getRootProps, getInputProps }) => {
-                                                        return (
-                                                            <DropZoneWrapper
-                                                                {...getRootProps()}
-                                                                disabled={!selectedImportFormat}
-                                                                style={{ minHeight: 320 }}
-                                                            >
-                                                                {files.length > 0 ? (
-                                                                    <p
-                                                                        style={{
-                                                                            margin: 0,
-                                                                            display: "flex",
-                                                                            alignItems: "center"
-                                                                        }}
-                                                                    >
-                                                                        <FileTextOutlined
-                                                                            style={{
-                                                                                fontSize: 26,
-                                                                                color: "#aaa",
-                                                                                marginRight: 10
-                                                                            }}
-                                                                        />
-                                                                        {files[0].name}
-                                                                    </p>
-                                                                ) : (
-                                                                    <p
-                                                                        style={{
-                                                                            margin: 0,
-                                                                            padding: 24,
-                                                                            textAlign: "center"
-                                                                        }}
-                                                                    >
-                                                                        {!selectedImportFormat ? (
-                                                                            <>Please select an import format.</>
-                                                                        ) : (
-                                                                            <>
-                                                                                Drop a{" "}
-                                                                                <b>
-                                                                                    {selectedImportFormat.formats.join(
-                                                                                        ", "
-                                                                                    )}
-                                                                                </b>{" "}
-                                                                                file here or click to upload one.
-                                                                            </>
-                                                                        )}
-                                                                    </p>
-                                                                )}
-                                                                <input
-                                                                    {...getInputProps()}
-                                                                    accept={ACCEPTED_FILE_FORMATS.join(",")}
-                                                                    data-id="file-importer-file-uploader"
-                                                                />
-                                                            </DropZoneWrapper>
-                                                        );
-                                                    }}
-                                                </Dropzone>
-                                                <div
+                                                    />
+                                                    <ul style={{ margin: 0 }}>
+                                                        {files.map((f) => {
+                                                            return <li>{f.name}</li>;
+                                                        })}
+                                                    </ul>
+                                                </p>
+                                            ) : (
+                                                <p
                                                     style={{
-                                                        marginTop: 10,
-                                                        justifyContent: "flex-end",
-                                                        display: "flex"
+                                                        margin: 0,
+                                                        padding: 24,
+                                                        textAlign: "center"
                                                     }}
                                                 >
-                                                    <Button
-                                                        disabled={files.length === 0}
-                                                        onClick={() => {
-                                                            setFiles([]);
-                                                        }}
-                                                        style={{ marginRight: 10 }}
-                                                    >
-                                                        Remove file
-                                                    </Button>
-                                                    <Button
-                                                        type="primary"
-                                                        disabled={files.length === 0 || !selectedLanguageId}
-                                                        onClick={upload}
-                                                        data-id="file-importer-submit-button"
-                                                    >
-                                                        Import file
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </>
-                            )}
+                                                    Drop your translation files here.
+                                                </p>
+                                            )}
+                                            <input
+                                                {...getInputProps()}
+                                                accept={ACCEPTED_FILE_FORMATS.join(",")}
+                                                data-id="files-importer-files-uploader"
+                                            />
+                                        </DropZoneWrapper>
+                                    );
+                                }}
+                            </Dropzone>
+                            <div
+                                style={{
+                                    marginTop: 10,
+                                    justifyContent: "flex-end",
+                                    display: "flex"
+                                }}
+                            >
+                                <Button
+                                    disabled={files.length === 0}
+                                    onClick={() => {
+                                        setFiles([]);
+                                    }}
+                                    style={{ marginRight: 10 }}
+                                >
+                                    Remove files
+                                </Button>
+                                <Button
+                                    type="primary"
+                                    disabled={files.length === 0}
+                                    onClick={upload}
+                                    data-id="files-importer-submit-button"
+                                >
+                                    Import files
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
 
-                            <LoadingOverlay isVisible={loading} loadingText="Importing data..." />
-                        </>
-                    )}
-                </div>
+                    <LoadingOverlay isVisible={loading} loadingText="Uploading files..." />
+                </>
             </>
         );
     }
