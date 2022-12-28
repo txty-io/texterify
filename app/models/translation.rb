@@ -1,4 +1,4 @@
-require_relative '../lib/texterify'
+require 'texterify'
 
 class Translation < ApplicationRecord
   has_paper_trail
@@ -197,7 +197,7 @@ class Translation < ApplicationRecord
                   target_translation.update(content: content)
                 end
               end
-            rescue OrganizationMachineTranslationUsageExceededException
+            rescue Texterify::MachineTranslation::OrganizationMachineTranslationUsageExceededException
               # ignored
             end
           end

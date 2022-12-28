@@ -1,5 +1,5 @@
 require 'sidekiq-scheduler'
-require_relative '../lib/deepl'
+require 'deepl'
 
 # Loads the supported languages of DeepL.
 # https://www.deepl.com/docs-api/other-functions/listing-supported-languages/
@@ -8,7 +8,7 @@ class DeeplSupportedLanguagesWorker
 
   def perform(*_args)
     if ENV.fetch('DEEPL_API_TOKEN', nil)
-      deepl_client = Deepl::V2::Client.new
+      deepl_client = Deepl::Client.new
 
       source_languages = deepl_client.source_languages
       source_languages&.each do |source_language|

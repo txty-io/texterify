@@ -1,4 +1,4 @@
-require_relative '../lib/texterify'
+require 'texterify'
 
 class Language < ApplicationRecord
   scope :order_by_name, -> { order(arel_table['name'].lower.asc) }

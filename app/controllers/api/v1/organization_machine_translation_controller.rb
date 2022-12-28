@@ -6,7 +6,7 @@ class Api::V1::OrganizationMachineTranslationController < Api::V1::ApiController
     # Determine if the given API token is a token for the free or pro API.
     deepl_api_token = params[:deepl_api_token]
     if deepl_api_token
-      deepl_client = Deepl::V2::Client.new
+      deepl_client = Deepl::Client.new
       deepl_client.set_api_credentials(deepl_api_token, DEEPL_FREE_API)
       response = deepl_client.usage
       if response.nil?

@@ -62,7 +62,7 @@ class Organization < ApplicationRecord
   def machine_translation_character_usage
     # If the organization uses a custom DeepL account use the usage from the account.
     if self.uses_custom_deepl_account?
-      deepl_client = Deepl::V2::Client.new(self)
+      deepl_client = Deepl::Client.new(self)
       usage = deepl_client.usage
       if usage
         usage['character_count']
@@ -76,7 +76,7 @@ class Organization < ApplicationRecord
   def machine_translation_character_limit
     # If the organization uses a custom DeepL account use the limit from the account.
     if self.uses_custom_deepl_account?
-      deepl_client = Deepl::V2::Client.new(self)
+      deepl_client = Deepl::Client.new(self)
       usage = deepl_client.usage
       if usage
         usage['character_limit']

@@ -5,7 +5,7 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
   def usage
     authorize :machine_translation, :usage?
 
-    deepl_client = Deepl::V2::Client.new
+    deepl_client = Deepl::Client.new
     render json: deepl_client.usage
   rescue DeeplInvalidTokenException => _e
     render json: { error: true, message: 'MACHINE_TRANSLATION_INVALID_TOKEN' }, status: :bad_request
@@ -40,7 +40,7 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
     suggestion = Texterify::MachineTranslation.translate(project, translation, target_language)
 
     render json: { translation: suggestion }
-  rescue OrganizationMachineTranslationUsageExceededException => e
+  rescue Texterify::MachineTranslation::OrganizationMachineTranslationUsageExceededException => e
     render json: { error: true, message: 'MACHINE_TRANSLATION_USAGE_EXCEEDED', data: e.details }, status: :bad_request
     return
   end
@@ -65,7 +65,7 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
     else
       render json: { error: true, message: 'FAILED_TO_MACHINE_TRANSLATE' }
     end
-  rescue OrganizationMachineTranslationUsageExceededException => e
+  rescue Texterify::MachineTranslation::OrganizationMachineTranslationUsageExceededException => e
     render json: { error: true, message: 'MACHINE_TRANSLATION_USAGE_EXCEEDED', data: e.details }, status: :bad_request
   end
 
