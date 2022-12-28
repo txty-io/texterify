@@ -5,6 +5,8 @@ class StripSerializer
     clear(data, 'project_id')
     clear(data, 'trial_ends_at')
     clear(data, 'texterify_timestamp')
+    clear(data, 'created_at')
+    clear(data, 'updated_at')
 
     data.ai(plain: true, indent: 2)
   end
