@@ -246,7 +246,6 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
             <Form
                 ref={formRef}
                 onFinish={handleSubmit}
-                style={{ maxWidth: "100%", display: "flex" }}
                 id={props.formId}
                 initialValues={
                     props.exportConfigToEdit && {

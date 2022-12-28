@@ -1,4 +1,4 @@
-puts "\nSeeding CLDR plurals...\n\n"
+puts "\nSeeding CLDR plurals..."
 
 # Add CLDR plurals from "seed_data/plurals_cldr_release_41.xml".
 # See also https://raw.githubusercontent.com/unicode-org/cldr/release-41/common/supplemental/plurals.xml.
@@ -71,5 +71,4 @@ puts "Updated language plurals: #{updated_language_plurals}"
 puts "Created language plurals: #{created_language_plurals}"
 puts "Updated languages: #{updated_languages}"
 puts "Language plurals without matching language code: #{language_plurals_without_matching_language_code}"
-
-puts "\nFinished seeding CLDR plurals.\n\n"
+puts "Finished seeding CLDR plurals.\n\n"

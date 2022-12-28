@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_09_012816) do
+ActiveRecord::Schema.define(version: 2022_12_28_205420) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -63,6 +63,8 @@ ActiveRecord::Schema.define(version: 2022_10_09_012816) do
     t.string "job_type", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.uuid "import_id"
+    t.index ["import_id"], name: "index_background_jobs_on_import_id"
     t.index ["project_id"], name: "index_background_jobs_on_project_id"
     t.index ["user_id"], name: "index_background_jobs_on_user_id"
   end
@@ -128,6 +130,12 @@ ActiveRecord::Schema.define(version: 2022_10_09_012816) do
     t.index ["project_id"], name: "index_export_configs_on_project_id"
   end
 
+  create_table "file_formats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "format", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "flavors", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.uuid "project_id", null: false
@@ -157,6 +165,30 @@ ActiveRecord::Schema.define(version: 2022_10_09_012816) do
     t.index ["language_code_id"], name: "index_forbidden_words_lists_on_language_code_id"
     t.index ["organization_id"], name: "index_forbidden_words_lists_on_organization_id"
     t.index ["project_id"], name: "index_forbidden_words_lists_on_project_id"
+  end
+
+  create_table "import_files", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "name", null: false
+    t.string "status", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "import_id", null: false
+    t.uuid "language_id"
+    t.uuid "file_format_id"
+    t.index ["file_format_id"], name: "index_import_files_on_file_format_id"
+    t.index ["import_id"], name: "index_import_files_on_import_id"
+    t.index ["language_id"], name: "index_import_files_on_language_id"
+  end
+
+  create_table "imports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "status", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "project_id", null: false
+    t.uuid "user_id"
+    t.index ["project_id"], name: "index_imports_on_project_id"
+    t.index ["user_id"], name: "index_imports_on_user_id"
   end
 
   create_table "keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -608,6 +640,7 @@ ActiveRecord::Schema.define(version: 2022_10_09_012816) do
   add_foreign_key "access_tokens", "users", on_delete: :cascade
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "background_jobs", "imports", on_delete: :nullify
   add_foreign_key "background_jobs", "projects", on_delete: :cascade
   add_foreign_key "background_jobs", "users", on_delete: :nullify
   add_foreign_key "custom_subscriptions", "organizations", on_delete: :nullify
@@ -619,6 +652,11 @@ ActiveRecord::Schema.define(version: 2022_10_09_012816) do
   add_foreign_key "forbidden_words_lists", "language_codes", on_delete: :cascade
   add_foreign_key "forbidden_words_lists", "organizations", on_delete: :cascade
   add_foreign_key "forbidden_words_lists", "projects", on_delete: :cascade
+  add_foreign_key "import_files", "file_formats", on_delete: :nullify
+  add_foreign_key "import_files", "imports", on_delete: :cascade
+  add_foreign_key "import_files", "languages", on_delete: :nullify
+  add_foreign_key "imports", "projects", on_delete: :cascade
+  add_foreign_key "imports", "users", on_delete: :nullify
   add_foreign_key "keys", "projects", on_delete: :cascade
   add_foreign_key "keys_tags", "keys", on_delete: :cascade
   add_foreign_key "keys_tags", "tags", on_delete: :cascade

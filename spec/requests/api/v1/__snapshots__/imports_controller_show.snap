@@ -1,0 +1,21 @@
+{
+      "data" => {
+               "id" => "__REMOVED__",
+             "type" => "import",
+       "attributes" => {
+              "id" => "__REMOVED__",
+            "name" => "import_1",
+      "created_at" => "__REMOVED__",
+          "status" => "CREATED"
+    },
+    "relationships" => {
+      "import_files" => {
+        "data" => []
+      },
+              "user" => {
+        "data" => nil
+      }
+    }
+  },
+  "included" => []
+}

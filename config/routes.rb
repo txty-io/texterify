@@ -154,7 +154,9 @@ Rails
               to: 'wordpress_polylang_connections#authentication_valid'
 
           # Imports
-          resources :imports, only: [:create, :index, :show]
+          resources :imports, only: [:create, :index, :show] do
+            post :verify, to: 'imports#verify'
+          end
           delete :imports, to: 'imports#destroy_multiple'
         end
 

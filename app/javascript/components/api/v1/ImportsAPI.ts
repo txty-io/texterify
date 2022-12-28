@@ -10,15 +10,27 @@ export interface IImport {
         name: string;
         user: string;
         created_at: string;
+        status: string;
     };
     relationships: {
         user: {
             data: { id: string; type: "user" };
+            import_files: { id: string; type: "import_file" }[];
         };
     };
 }
 
-export type IImportIncluded = IUser[];
+export interface IImportFile {
+    id: string;
+    type: "import_file";
+    attributes: {
+        id: string;
+        name: string;
+        status: string;
+    };
+}
+
+export type IImportIncluded = (IUser | IImportFile)[];
 
 export interface IGetImportsOptions {
     projectId: string;
@@ -48,6 +60,18 @@ export interface ICreateImportResponse {
     included: IImportIncluded;
 }
 
+export interface IVerifyImportOptions {
+    projectId: string;
+    importId: string;
+    fileLanguageAssignments: { [k: string]: string };
+    fileFormatAssignments: { [k: string]: string };
+}
+
+export interface IVerifyImportResponse {
+    data: IImport;
+    included: IImportIncluded;
+}
+
 const ImportsAPI = {
     get: async (options: IGetImportsOptions): Promise<IGetImportsResponse> => {
         return API.getRequest(`projects/${options.projectId}/imports`, true, {
@@ -61,6 +85,15 @@ const ImportsAPI = {
 
     detail: async (options: IGetImportOptions): Promise<IGetImportResponse> => {
         return API.getRequest(`projects/${options.projectId}/imports/${options.importId}`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    verify: async (options: IVerifyImportOptions): Promise<IVerifyImportResponse> => {
+        return API.postRequest(`projects/${options.projectId}/imports/${options.importId}/verify`, true, {
+            file_language_assignments: options.fileLanguageAssignments,
+            file_format_assignments: options.fileFormatAssignments
+        })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },

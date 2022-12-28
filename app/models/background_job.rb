@@ -1,6 +1,7 @@
 class BackgroundJob < ApplicationRecord
   belongs_to :project
   belongs_to :user
+  belongs_to :import, optional: true
 
   validates :status, presence: true
   validates :progress, presence: true

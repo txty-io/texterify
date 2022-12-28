@@ -1,7 +1,7 @@
-import { Layout, message, Skeleton } from "antd";
+import { Layout, Skeleton } from "antd";
 import * as React from "react";
 import { useParams } from "react-router";
-import { IGetImportResponse, ImportsAPI } from "../../api/v1/ImportsAPI";
+import useImport from "../../hooks/useImport";
 import { Routes } from "../../routing/Routes";
 import { BackButton } from "../../ui/BackButton";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
@@ -9,36 +9,10 @@ import { ImportFileAssigner } from "../../ui/ImportFileAssigner";
 import { ImportSidebar } from "../../ui/ImportSidebar";
 import { Utils } from "../../ui/Utils";
 
-export function ImportsDetailsSite() {
+export function ImportsAssignSite() {
     const params = useParams<{ projectId: string; importId: string }>();
 
-    const [importResponse, setImportResponse] = React.useState<IGetImportResponse>(null);
-    const [importLoading, setImportLoading] = React.useState(false);
-
-    async function load() {
-        setImportLoading(true);
-
-        try {
-            const response = await ImportsAPI.detail({
-                projectId: params.projectId,
-                importId: params.importId
-            });
-            if (response.data) {
-                setImportResponse(response);
-            }
-        } catch (e) {
-            console.error(e);
-            message.error("Failed to load import.");
-        } finally {
-            setImportLoading(false);
-        }
-    }
-
-    React.useEffect(() => {
-        (async function () {
-            await load();
-        })();
-    }, [params.projectId, params.importId]);
+    const { importResponse, importLoading } = useImport({ projectId: params.projectId, importId: params.importId });
 
     return (
         <>
@@ -47,7 +21,7 @@ export function ImportsDetailsSite() {
 
                 <div style={{ padding: "0px 24px 24px", flexGrow: 1 }}>
                     <Breadcrumbs
-                        breadcrumbName="importsDetails"
+                        breadcrumbName="importsAssign"
                         currentCrumbDescription={importResponse?.data.attributes.name}
                     />
                     <Layout.Content style={{ minHeight: 360, margin: "24px 16px 0px" }}>
@@ -62,13 +36,13 @@ export function ImportsDetailsSite() {
                                 <div style={{ color: "var(--color-passive)" }}>
                                     {Utils.formatDateTime(importResponse.data.attributes.created_at)}
                                 </div>
-                                <ImportFileAssigner
-                                    importResponse={importResponse}
-                                    importLoading={importLoading}
-                                    projectId={params.projectId}
-                                />
                             </>
                         )}
+                        <ImportFileAssigner
+                            importResponse={importResponse}
+                            importLoading={importLoading}
+                            projectId={params.projectId}
+                        />
                     </Layout.Content>
                 </div>
             </Layout>

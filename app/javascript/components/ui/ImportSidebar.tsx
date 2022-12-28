@@ -10,6 +10,7 @@ export function ImportSidebar(props: { projectId: string }) {
                     menuTitle: "Import",
                     items: [
                         {
+                            subMenuPath: Routes.DASHBOARD.PROJECT_IMPORTS.replace(":projectId", props.projectId),
                             paths: [
                                 {
                                     path: Routes.DASHBOARD.PROJECT_IMPORTS.replace(":projectId", props.projectId),

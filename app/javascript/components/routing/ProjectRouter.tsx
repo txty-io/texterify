@@ -35,6 +35,7 @@ import { ProjectTagsSite } from "../sites/dashboard/ProjectTagsSite";
 import { ProjectExportFlavorsSite } from "../sites/dashboard/ProjectExportFlavorsSite";
 import { ImportsSite } from "../sites/dashboard/ImportsSite";
 import { ImportsDetailsSite } from "../sites/dashboard/ImportsDetailsSite";
+import { ImportsAssignSite } from "../sites/dashboard/ImportsAssignSite";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -131,6 +132,8 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         path={Routes.DASHBOARD.PROJECT_IMPORTS_DETAILS}
                         component={ImportsDetailsSite}
                     />
+                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_IMPORTS_ASSIGN} component={ImportsAssignSite} />
+
                     <PrivateRoute
                         exact
                         path={Routes.DASHBOARD.PROJECT_EXPORT}

@@ -1,4 +1,4 @@
-puts "\nSeeding language and country codes...\n\n"
+puts "\nSeeding language and country codes..."
 
 # Add ISO 3166-1-alpha-2 codes from file "seed_data/country_codes.json".
 country_codes = ActiveSupport::JSON.decode(File.read('db/seed_data/country_codes.json'))
@@ -37,5 +37,4 @@ if language_codes_to_insert.size > 0
 end
 
 puts "Created language codes: #{language_codes_to_insert.size}"
-
-puts "\nFinished seeding language and country codes.\n\n"
+puts "Finished seeding language and country codes.\n"

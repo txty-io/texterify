@@ -48,6 +48,13 @@ const Routes = {
                 options.importId
             );
         },
+        PROJECT_IMPORTS_ASSIGN: "/dashboard/projects/:projectId/imports/:importId/assign",
+        PROJECT_IMPORTS_ASSIGN_RESOLVER: (options: { projectId: string; importId: string }) => {
+            return Routes.DASHBOARD.PROJECT_IMPORTS_ASSIGN.replace(":projectId", options.projectId).replace(
+                ":importId",
+                options.importId
+            );
+        },
         PROJECT_IMPORT_FILE: "/dashboard/projects/:projectId/import/file",
         PROJECT_IMPORT_FILE_RESOLVER: (options: { projectId: string }) => {
             return Routes.DASHBOARD.PROJECT_IMPORT_FILE.replace(":projectId", options.projectId);

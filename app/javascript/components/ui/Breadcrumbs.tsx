@@ -149,6 +149,14 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                     importId: this.props.match.params.importId
                 })
             },
+            importsAssign: {
+                parent: "imports",
+                name: this.props.currentCrumbDescription,
+                path: Routes.DASHBOARD.PROJECT_IMPORTS_ASSIGN_RESOLVER({
+                    projectId: this.props.match.params.projectId,
+                    importId: this.props.match.params.importId
+                })
+            },
             projectMembers: {
                 parent: "project",
                 name: "Members",
