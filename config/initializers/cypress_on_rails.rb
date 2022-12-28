@@ -7,7 +7,7 @@ if defined?(CypressOnRails)
     c.use_middleware = Rails.env.development? || Rails.env.test?
     c.logger = Rails.logger
   end
-  puts '[CypressOnRails]: Loaded'
+  # puts '[CypressOnRails]: Loaded'
 else
-  puts "[CypressOnRails]: Didn't load because it wasn't defined"
+  # puts "[CypressOnRails]: Didn't load because it wasn't defined"
 end

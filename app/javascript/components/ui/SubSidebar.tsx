@@ -35,7 +35,6 @@ const MenuItem: typeof Menu.Item & CustomMenuItemProps = styled(Menu.Item)<Custo
                 : undefined;
         }};
         border-radius: ${(props: CustomMenuItemProps) => {
-            console.log(props);
             return props["data-no-border-radius"] ? "0" : "4px";
         }};
         letter-spacing: 0.25px;
