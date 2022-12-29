@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_28_205420) do
+ActiveRecord::Schema.define(version: 2022_12_29_112457) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -165,6 +165,21 @@ ActiveRecord::Schema.define(version: 2022_12_28_205420) do
     t.index ["language_code_id"], name: "index_forbidden_words_lists_on_language_code_id"
     t.index ["organization_id"], name: "index_forbidden_words_lists_on_organization_id"
     t.index ["project_id"], name: "index_forbidden_words_lists_on_project_id"
+  end
+
+  create_table "import_file_translations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "key_name", null: false
+    t.text "key_description"
+    t.text "other"
+    t.text "zero"
+    t.text "one"
+    t.text "two"
+    t.text "few"
+    t.text "many"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "import_file_id", null: false
+    t.index ["import_file_id"], name: "index_import_file_translations_on_import_file_id"
   end
 
   create_table "import_files", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -652,6 +667,7 @@ ActiveRecord::Schema.define(version: 2022_12_28_205420) do
   add_foreign_key "forbidden_words_lists", "language_codes", on_delete: :cascade
   add_foreign_key "forbidden_words_lists", "organizations", on_delete: :cascade
   add_foreign_key "forbidden_words_lists", "projects", on_delete: :cascade
+  add_foreign_key "import_file_translations", "import_files", on_delete: :cascade
   add_foreign_key "import_files", "file_formats", on_delete: :nullify
   add_foreign_key "import_files", "imports", on_delete: :cascade
   add_foreign_key "import_files", "languages", on_delete: :nullify

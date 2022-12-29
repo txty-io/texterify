@@ -3,5 +3,7 @@ class ImportFile < ApplicationRecord
   belongs_to :language, optional: true
   belongs_to :file_format, optional: true
 
+  has_many :import_file_translations, dependent: :destroy
+
   has_one_attached :file
 end

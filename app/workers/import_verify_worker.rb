@@ -1,18 +1,16 @@
 class ImportVerifyWorker
   include Sidekiq::Worker
 
-  def perform(background_job_id, project_id, import_id)
+  def perform(background_job_id, _project_id, import_id)
     background_job = BackgroundJob.find(background_job_id)
     background_job.start!
     background_job.progress!(20)
 
-    project = Project.find(project_id)
     import = Import.find(import_id)
     import_files = import.import_files
 
     import_files.each do |import_file|
       file_format = import_file.file_format.format
-      language = import_file.language
 
       import_file.file.open do |file|
         file_content = file.read
@@ -33,107 +31,40 @@ class ImportVerifyWorker
                 next
               end
 
-              key = project.keys.find_by(name: key_name)
+              translation =
+                import_file.import_file_translations.find_or_initialize_by(
+                  import_file_id: import_file.id,
+                  key_name: key_name
+                )
+              translation.other = json_value
 
-              if key.present?
-                # Load default translations or export config translations.
-                # if flavor
-                #   translation = key.translations.find_by(language: language, flavor: flavor)
-                # else
-                translation = key.translations.find_by(language: language, flavor: nil)
-
-                # end
-
-                # If there is no translation create a new one
-                if translation.nil?
-                  translation = Translation.new
-                  translation.content = json_value
-                  translation.key_id = key.id
-                  translation.language_id = language.id
-
-                  # if flavor
-                  #   translation.flavor_id = flavor.id
-                  # end
-                end
-
-                if file_format == 'json-formatjs'
-                  translation.content = json_value['defaultMessage'] || json_value['message']
-
-                  key.description = json_value['description']
-                  key.save
-                elsif file_format == 'json-poeditor'
-                  translation.content = json_key['definition']
-
-                  key.description = json_key['comment']
-                  key.save
-                elsif file_format == 'toml' && json_value.is_a?(Hash)
-                  translation.content = json_value[:value]
-
-                  key.description = json_value[:description]
-                  key.save
-                elsif file_format == 'po' && json_value.is_a?(Hash)
-                  translation.content = json_value[:value]
-
-                  key.description = json_value[:description]
-                  key.save
-                elsif file_format == 'arb' && json_value.is_a?(Hash)
-                  translation.content = json_value[:value]
-
-                  key.description = json_value[:description]
-                  key.save
-                else
-                  translation.content = json_value
-                end
-
-                translation.save
+              if file_format == 'json-formatjs'
+                translation.other = json_value['defaultMessage'] || json_value['message']
+                translation.key_description = json_value['description']
+              elsif file_format == 'json-poeditor'
+                translation.other = json_key['definition']
+                translation.key_description = json_key['comment']
+              elsif file_format == 'toml' && json_value.is_a?(Hash)
+                translation.other = json_value[:value]
+                translation.key_description = json_value[:description]
+              elsif file_format == 'po' && json_value.is_a?(Hash)
+                translation.other = json_value[:value]
+                translation.key_description = json_value[:description]
+              elsif file_format == 'arb' && json_value.is_a?(Hash)
+                translation.other = json_value[:value]
+                translation.key_description = json_value[:description]
               else
-                key = Key.new(name: key_name)
-                key.project_id = project.id
-
-                if file_format == 'json-formatjs'
-                  key.description = json_value['description']
-                elsif file_format == 'json-poeditor'
-                  key.description = json_key['comment']
-                elsif file_format == 'toml' && json_value.is_a?(Hash)
-                  key.description = json_value[:description]
-                elsif file_format == 'po' && json_value.is_a?(Hash)
-                  key.description = json_value[:description]
-                elsif file_format == 'arb' && json_value.is_a?(Hash)
-                  key.description = json_value[:description]
-                end
-
-                if key.save
-                  translation = Translation.new
-                  translation.key_id = key.id
-                  translation.language_id = language.id
-
-                  # if flavor
-                  #   translation.flavor_id = flavor.id
-                  # end
-
-                  if file_format == 'json-formatjs'
-                    translation.content = json_value['defaultMessage']
-                  elsif file_format == 'json-poeditor'
-                    translation.content = json_key['definition']
-                  elsif file_format == 'toml' && json_value.is_a?(Hash)
-                    translation.content = json_value[:value]
-                  elsif file_format == 'po' && json_value.is_a?(Hash)
-                    translation.content = json_value[:value]
-                  elsif file_format == 'arb' && json_value.is_a?(Hash)
-                    translation.content = json_value[:value]
-                  else
-                    translation.content = json_value
-                  end
-
-                  translation.save!
-                end
+                translation.other = json_value
               end
+
+              translation.save!
             end
             import_file.status = 'VERIFIED'
           else
             import_file.status = 'ERROR'
           end
         rescue StandardError => e
+          logger.error(e)
           import_file.status = 'ERROR'
           Sentry.capture_exception(e)
         end

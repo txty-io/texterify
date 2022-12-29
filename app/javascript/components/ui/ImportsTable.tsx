@@ -27,7 +27,9 @@ export function ImportsTable(props: { project: IProject; tableReloader?: number;
                 projectId: props.project.id,
                 ...options
             });
-            setImportsResponse(newImportsResponse);
+            if (newImportsResponse.data) {
+                setImportsResponse(newImportsResponse);
+            }
         } catch (error) {
             console.error(error);
             message.error("Failed to load imports.");
