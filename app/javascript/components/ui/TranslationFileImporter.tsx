@@ -325,8 +325,8 @@ export const TranslationFileImporter = observer(
                                                         }}
                                                     />
                                                     <ul style={{ margin: 0 }}>
-                                                        {files.map((f) => {
-                                                            return <li>{f.name}</li>;
+                                                        {files.map((f, index) => {
+                                                            return <li key={index}>{f.name}</li>;
                                                         })}
                                                     </ul>
                                                 </p>

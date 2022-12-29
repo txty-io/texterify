@@ -19,4 +19,16 @@ class Api::V1::BackgroundJobsController < Api::V1::ApiController
     options[:include] = []
     render json: BackgroundJobSerializer.new(background_jobs, options).serialized_json
   end
+
+  def show
+    project = current_user.projects.find(params[:project_id])
+
+    authorize BackgroundJob.new(project_id: project.id)
+
+    background_job = project.background_jobs.find_by(id: params[:id])
+
+    options = {}
+    options[:include] = []
+    render json: BackgroundJobSerializer.new(background_job, options).serialized_json
+  end
 end

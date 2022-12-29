@@ -1,5 +1,6 @@
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
+import { IBackgroundJob } from "./BackgroundJobsAPI";
 import { IUser } from "./OrganizationMembersAPI";
 
 export interface IImport {
@@ -11,6 +12,7 @@ export interface IImport {
         user: string;
         created_at: string;
         status: string;
+        project_id: string;
     };
     relationships: {
         user: {
@@ -68,8 +70,9 @@ export interface IVerifyImportOptions {
 }
 
 export interface IVerifyImportResponse {
-    data: IImport;
-    included: IImportIncluded;
+    error: boolean;
+    message: string;
+    background_job: IBackgroundJob;
 }
 
 const ImportsAPI = {

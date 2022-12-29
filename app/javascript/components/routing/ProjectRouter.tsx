@@ -3,13 +3,18 @@ import * as React from "react";
 import { Redirect, RouteComponentProps, Switch } from "react-router-dom";
 import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 import { ProjectsAPI } from "../api/v1/ProjectsAPI";
+import { ImportsAssignSite } from "../sites/dashboard/ImportsAssignSite";
+import { ImportsDetailsSite } from "../sites/dashboard/ImportsDetailsSite";
+import { ImportsSite } from "../sites/dashboard/ImportsSite";
 import { KeysSite } from "../sites/dashboard/KeysSite";
 import { LanguagesSite } from "../sites/dashboard/LanguagesSite";
 import { MembersSite } from "../sites/dashboard/MembersSite";
 import { ProjectActivitySite } from "../sites/dashboard/ProjectActivitySite";
 import { ProjectExportConfigsSite } from "../sites/dashboard/ProjectExportConfigsSite";
 import { ProjectExportDownloadSite } from "../sites/dashboard/ProjectExportDownloadSite";
+import { ProjectExportFlavorsSite } from "../sites/dashboard/ProjectExportFlavorsSite";
 import { ProjectExportHierarchySite } from "../sites/dashboard/ProjectExportHierarchySite";
+import { ProjectForbiddenWordsListsSite } from "../sites/dashboard/ProjectForbiddenWordsListsSite";
 import { ProjectIntegrationsSite } from "../sites/dashboard/ProjectIntegrationsSite";
 import { ProjectIntegrationsWordpressSettingsSite } from "../sites/dashboard/ProjectIntegrationsWordpressSettingsSite";
 import { ProjectIntegrationsWordpressSyncSite } from "../sites/dashboard/ProjectIntegrationsWordpressSyncSite";
@@ -19,23 +24,18 @@ import { ProjectMachineTranslationSettingsSite } from "../sites/dashboard/Projec
 import { ProjectMachineTranslationSite } from "../sites/dashboard/ProjectMachineTranslationSite";
 import { ProjectMachineTranslationUsageSite } from "../sites/dashboard/ProjectMachineTranslationUsageSite";
 import { ProjectOTASite } from "../sites/dashboard/ProjectOTASite";
+import { ProjectPlaceholdersSite } from "../sites/dashboard/ProjectPlaceholdersSite";
 import { ProjectPostProcessingSite } from "../sites/dashboard/ProjectPostProcessingSite";
 import { ProjectSettingsAdvancedSite } from "../sites/dashboard/ProjectSettingsAdvancedSite";
 import { ProjectSettingsGeneralSite } from "../sites/dashboard/ProjectSettingsGeneralSite";
-import { ProjectPlaceholdersSite } from "../sites/dashboard/ProjectPlaceholdersSite";
 import { ProjectSite } from "../sites/dashboard/ProjectSite";
+import { ProjectTagsSite } from "../sites/dashboard/ProjectTagsSite";
 import { ProjectValidationsSite } from "../sites/dashboard/ProjectValidationsSite";
 import { dashboardStore } from "../stores/DashboardStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { UserDeactivatedProjectModal } from "../ui/UserDeactivatedProjectModal";
 import { PrivateRoute } from "./PrivateRoute";
 import { Routes } from "./Routes";
-import { ProjectForbiddenWordsListsSite } from "../sites/dashboard/ProjectForbiddenWordsListsSite";
-import { ProjectTagsSite } from "../sites/dashboard/ProjectTagsSite";
-import { ProjectExportFlavorsSite } from "../sites/dashboard/ProjectExportFlavorsSite";
-import { ImportsSite } from "../sites/dashboard/ImportsSite";
-import { ImportsDetailsSite } from "../sites/dashboard/ImportsDetailsSite";
-import { ImportsAssignSite } from "../sites/dashboard/ImportsAssignSite";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -132,7 +132,6 @@ class ProjectRouter extends React.Component<IProps, IState> {
                         path={Routes.DASHBOARD.PROJECT_IMPORTS_DETAILS}
                         component={ImportsDetailsSite}
                     />
-                    <PrivateRoute exact path={Routes.DASHBOARD.PROJECT_IMPORTS_ASSIGN} component={ImportsAssignSite} />
 
                     <PrivateRoute
                         exact

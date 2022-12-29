@@ -1,4 +1,4 @@
-import { Button, Empty, Form, List, Select, Skeleton } from "antd";
+import { Button, Empty, Form, List, message, Select, Skeleton } from "antd";
 import React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
 import { IGetImportResponse, IImportFile, ImportsAPI } from "../api/v1/ImportsAPI";
@@ -7,12 +7,12 @@ import useLanguages from "../hooks/useLanguages";
 import FlagIcon from "./FlagIcons";
 
 export function ImportFileAssigner(props: {
-    projectId: string;
     importResponse: IGetImportResponse;
     importLoading: boolean;
     style?: React.CSSProperties;
+    onAssigningComplete(): void;
 }) {
-    const { languagesResponse, languagesLoading } = useLanguages(props.projectId, {
+    const { languagesResponse, languagesLoading } = useLanguages(props.importResponse.data.attributes.project_id, {
         showAll: true
     });
 
@@ -41,12 +41,18 @@ export function ImportFileAssigner(props: {
                         }
                     });
 
-                    await ImportsAPI.verify({
-                        projectId: props.projectId,
-                        importId: props.importResponse.data.id,
-                        fileLanguageAssignments: fileLanguageAssignments,
-                        fileFormatAssignments: fileFormatAssignments
-                    });
+                    try {
+                        await ImportsAPI.verify({
+                            projectId: props.importResponse.data.attributes.project_id,
+                            importId: props.importResponse.data.id,
+                            fileLanguageAssignments: fileLanguageAssignments,
+                            fileFormatAssignments: fileFormatAssignments
+                        });
+                        props.onAssigningComplete();
+                    } catch (error) {
+                        console.error(error);
+                        message.error("Failed to verify import.");
+                    }
                 }}
                 style={{ display: "flex", flexDirection: "column" }}
             >

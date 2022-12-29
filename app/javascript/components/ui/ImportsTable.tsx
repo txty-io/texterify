@@ -68,7 +68,7 @@ export function ImportsTable(props: { project: IProject; tableReloader?: number;
                 status: (
                     <span style={{ whiteSpace: "nowrap", fontWeight: "bold" }}>
                         <LoadingOutlined style={{ marginRight: 16 }} />
-                        Importing
+                        {imp.attributes.status}
                     </span>
                 )
             };

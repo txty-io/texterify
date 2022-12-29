@@ -100,9 +100,9 @@ class Api::V1::ImportsController < Api::V1::ApiController
     end
 
     # Verify the import.
-    import.verify(current_user)
+    background_job = import.verify(current_user)
 
-    render json: { error: false, message: 'VERIFYING' }
+    render json: { error: false, message: 'VERIFYING', background_job: BackgroundJobSerializer.new(background_job) }
   end
 
   def destroy_multiple
