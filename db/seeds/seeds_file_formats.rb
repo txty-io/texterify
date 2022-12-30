@@ -1,6 +1,18 @@
 puts 'Seeding file formats...'
 
-formats = ['json', 'json-formatjs', 'json-poeditor', 'ios', 'toml', 'properties', 'po', 'arb', 'xliff', 'rails', 'yaml']
+formats = [
+  'json',
+  'json-formatjs',
+  'json-poeditor',
+  'ios',
+  'toml',
+  'properties',
+  'po',
+  'arb',
+  'xliff',
+  'rails',
+  'yaml'
+]
 
 file_formats_created = 0
 formats.each do |format|

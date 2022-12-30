@@ -156,6 +156,8 @@ Rails
           # Imports
           resources :imports, only: [:create, :index, :show] do
             post :verify, to: 'imports#verify'
+            get :review, to: 'imports#review'
+            post :import, to: 'imports#import'
           end
           delete :imports, to: 'imports#destroy_multiple'
         end

@@ -8,32 +8,40 @@ import { Routes } from "../../routing/Routes";
 import { BackButton } from "../../ui/BackButton";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { ImportFileAssigner } from "../../ui/ImportFileAssigner";
+import { ImportReviewTable } from "../../ui/ImportReviewTable";
 import { ImportSidebar } from "../../ui/ImportSidebar";
 import { Loading } from "../../ui/Loading";
 import { Utils } from "../../ui/Utils";
 
-function ImportVerifyingChecker(props: { importReloader(): void }) {
+function ImportStatusChecker(props: { text: string; importReloader(): void }) {
     React.useEffect(() => {
         const interval = setInterval(() => {
             props.importReloader();
-        }, 500);
+        }, 1000);
 
         return () => clearInterval(interval);
     }, []);
 
-    return <Loading text="Verifying import..." />;
+    return <Loading text={props.text} />;
 }
 
 function ImportDetailsContent(props: {
     importResponse: IGetImportResponse;
     importLoading: boolean;
+    projectId: string;
+    importId: string;
     onAssigningComplete(): void;
+    onImport(): void;
     importReloader(): void;
 }) {
     if (!props.importResponse) {
         return <Skeleton active loading />;
     } else if (props.importResponse.data.attributes.status === "VERIFYING") {
-        return <ImportVerifyingChecker importReloader={props.importReloader} />;
+        return <ImportStatusChecker importReloader={props.importReloader} text="Verifying import..." />;
+    } else if (props.importResponse.data.attributes.status === "IMPORTING") {
+        return <ImportStatusChecker importReloader={props.importReloader} text="Importing..." />;
+    } else if (props.importResponse.data.attributes.status === "VERIFIED") {
+        return <ImportReviewTable projectId={props.projectId} importId={props.importId} onImport={props.onImport} />;
     } else if (props.importLoading) {
         return <Skeleton active loading />;
     } else {
@@ -88,7 +96,12 @@ export function ImportsDetailsSite() {
                             onAssigningComplete={async () => {
                                 await importForceReload();
                             }}
+                            onImport={async () => {
+                                await importForceReload();
+                            }}
                             importReloader={importForceReload}
+                            projectId={params.projectId}
+                            importId={params.importId}
                         />
                     </Layout.Content>
                 </div>

@@ -60,6 +60,11 @@ class Api::V1::ImportsController < Api::V1::ApiController
 
     authorize import
 
+    if import.status != IMPORT_STATUS_CREATED
+      render json: { error: true, message: 'IMPORT_NOT_IN_CREATED_STATE' }
+      return
+    end
+
     # Set the language for the import files.
     file_language_assignments = params[:file_language_assignments]
     missing_language_assignments = []
@@ -101,6 +106,75 @@ class Api::V1::ImportsController < Api::V1::ApiController
 
     # Verify the import.
     background_job = import.verify(current_user)
+
+    render json: { error: false, message: 'VERIFYING', background_job: BackgroundJobSerializer.new(background_job) }
+  end
+
+  def review
+    project = current_user.projects.find(params[:project_id])
+    import = project.imports.find(params[:import_id])
+
+    authorize import
+
+    if import.status != IMPORT_STATUS_VERIFIED
+      render json: { error: true, message: 'IMPORT_NOT_IN_VERIFIED_STATE' }
+      return
+    end
+
+    converted_import_file_translations = {}
+    import.import_files.each do |import_file|
+      import_file.import_file_translations.each do |import_file_translation|
+        if converted_import_file_translations[import_file.language_id].nil?
+          converted_import_file_translations[import_file.language_id] = {}
+        end
+
+        key = project.keys.find_by(name: import_file_translation.key_name)
+        if key
+          translation = key.translations.find_by(language_id: import_file.language_id, flavor_id: nil)
+        end
+
+        if !key || !translation || import_file_translation.differs_to_translation(translation)
+          converted_import_file_translations[import_file.language_id][import_file_translation.key_name] = {
+            old: {
+              other: translation&.content || '',
+              zero: translation&.zero || '',
+              one: translation&.one || '',
+              two: translation&.two || '',
+              few: translation&.few || '',
+              many: translation&.many || '',
+              description: key&.description || ''
+            },
+            new: {
+              other: import_file_translation.other || '',
+              zero: import_file_translation.zero || '',
+              one: import_file_translation.one || '',
+              two: import_file_translation.two || '',
+              few: import_file_translation.few || '',
+              many: import_file_translation.many || '',
+              description: import_file_translation.key_description || ''
+            }
+          }
+        end
+      end
+    end
+
+    render json: converted_import_file_translations
+  end
+
+  def import
+    skip_authorization
+    project = current_user.projects.find(params[:project_id])
+    import = project.imports.find(params[:import_id])
+
+    authorize import
+
+    if import.status != IMPORT_STATUS_VERIFIED
+      render json: { error: true, message: 'IMPORT_NOT_IN_VERIFIED_STATE' }
+      return
+    end
+
+    # Import the translations.
+    background_job = import.import(current_user)
 
     render json: { error: false, message: 'VERIFYING', background_job: BackgroundJobSerializer.new(background_job) }
   end

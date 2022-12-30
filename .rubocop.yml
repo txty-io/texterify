@@ -110,6 +110,9 @@ Style/WhileUntilModifier:
 Style/SymbolProc:
   Enabled: false
 
+Style/MultilineTernaryOperator:
+  Enabled: false
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: "indented"
 

@@ -52,9 +52,50 @@ export interface IGetImportOptions {
     importId: string;
 }
 
+export interface IGetImportReviewOptions {
+    projectId: string;
+    importId: string;
+}
+
+export interface IGetImportImportOptions {
+    projectId: string;
+    importId: string;
+}
+
 export interface IGetImportResponse {
     data: IImport;
     included: IImportIncluded;
+}
+
+export interface IImportReviewResponse {
+    [k: string]: {
+        [k: string]: {
+            old: {
+                other: string;
+                zero: string;
+                one: string;
+                two: string;
+                few: string;
+                many: string;
+                description: string;
+            };
+            new: {
+                other: string;
+                zero: string;
+                one: string;
+                two: string;
+                few: string;
+                many: string;
+                description: string;
+            };
+        };
+    };
+}
+
+export interface IImportImportResponse {
+    error: boolean;
+    message: string;
+    background_job: IBackgroundJob;
 }
 
 export interface ICreateImportResponse {
@@ -88,6 +129,18 @@ const ImportsAPI = {
 
     detail: async (options: IGetImportOptions): Promise<IGetImportResponse> => {
         return API.getRequest(`projects/${options.projectId}/imports/${options.importId}`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    review: async (options: IGetImportReviewOptions): Promise<IImportReviewResponse> => {
+        return API.getRequest(`projects/${options.projectId}/imports/${options.importId}/review`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    import: async (options: IGetImportImportOptions): Promise<IImportImportResponse> => {
+        return API.postRequest(`projects/${options.projectId}/imports/${options.importId}/import`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },

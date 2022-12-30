@@ -2,9 +2,9 @@ import { Button, Empty, Form, List, message, Select, Skeleton } from "antd";
 import React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
 import { IGetImportResponse, IImportFile, ImportsAPI } from "../api/v1/ImportsAPI";
-import { FileFormatOptions } from "../configs/FileFormatOptions";
 import useLanguages from "../hooks/useLanguages";
 import FlagIcon from "./FlagIcons";
+import { SUPPORTED_FORMATS } from "./TranslationFileImporter";
 
 export function ImportFileAssigner(props: {
     importResponse: IGetImportResponse;
@@ -12,9 +12,12 @@ export function ImportFileAssigner(props: {
     style?: React.CSSProperties;
     onAssigningComplete(): void;
 }) {
-    const { languagesResponse, languagesLoading } = useLanguages(props.importResponse.data.attributes.project_id, {
-        showAll: true
-    });
+    const { languagesResponse, languagesLoading, getCountryCodeForLanguage } = useLanguages(
+        props.importResponse.data.attributes.project_id,
+        {
+            showAll: true
+        }
+    );
 
     const importFiles = props.importResponse.included.filter((i) => i.type === "import_file") as IImportFile[];
 
@@ -42,13 +45,17 @@ export function ImportFileAssigner(props: {
                     });
 
                     try {
-                        await ImportsAPI.verify({
+                        const response = await ImportsAPI.verify({
                             projectId: props.importResponse.data.attributes.project_id,
                             importId: props.importResponse.data.id,
                             fileLanguageAssignments: fileLanguageAssignments,
                             fileFormatAssignments: fileFormatAssignments
                         });
-                        props.onAssigningComplete();
+                        if (response.error) {
+                            message.error(`Failed to verify import: ${response.message}`);
+                        } else {
+                            props.onAssigningComplete();
+                        }
                     } catch (error) {
                         console.error(error);
                         message.error("Failed to verify import.");
@@ -94,10 +101,10 @@ export function ImportFileAssigner(props: {
                                             optionFilterProp="children"
                                             filterOption
                                         >
-                                            {FileFormatOptions.map((fileFormat, index) => {
+                                            {SUPPORTED_FORMATS.map((supportedFormat, index) => {
                                                 return (
-                                                    <Select.Option value={fileFormat.value} key={index}>
-                                                        {fileFormat.text}
+                                                    <Select.Option value={supportedFormat.id} key={index}>
+                                                        {supportedFormat.name}
                                                     </Select.Option>
                                                 );
                                             })}
@@ -120,10 +127,7 @@ export function ImportFileAssigner(props: {
                                             filterOption
                                         >
                                             {languagesResponse?.data.map((language, index) => {
-                                                const countryCode = APIUtils.getIncludedObject(
-                                                    language.relationships.country_code.data,
-                                                    languagesResponse.included
-                                                );
+                                                const countryCode = getCountryCodeForLanguage(language);
 
                                                 return (
                                                     <Select.Option value={language.attributes.id} key={index}>

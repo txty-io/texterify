@@ -7,15 +7,23 @@ class ImportPolicy
   end
 
   def show?
-    ROLES_DEVELOPER_UP.include? project_user_role
+    ROLES_TRANSLATOR_UP.include? project_user_role
   end
 
   def verify?
-    ROLES_DEVELOPER_UP.include? project_user_role
+    ROLES_TRANSLATOR_UP.include? project_user_role
+  end
+
+  def review?
+    ROLES_TRANSLATOR_UP.include? project_user_role
+  end
+
+  def import?
+    ROLES_TRANSLATOR_UP.include? project_user_role
   end
 
   def destroy_multiple?
-    ROLES_DEVELOPER_UP.include? project_user_role
+    ROLES_TRANSLATOR_UP.include? project_user_role
   end
 
   private

@@ -73,7 +73,7 @@ class ImportVerifyWorker
       end
     end
 
-    import.status = 'VERIFIED'
+    import.status = IMPORT_STATUS_VERIFIED
     import.save!
     background_job.complete!
   end

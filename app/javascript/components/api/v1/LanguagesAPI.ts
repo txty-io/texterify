@@ -11,6 +11,16 @@ export interface ILanguageCode {
     };
 }
 
+export interface ICountryCode {
+    id: string;
+    type: "country_code";
+    attributes: {
+        id: string;
+        name: string;
+        code: string;
+    };
+}
+
 export interface ILanguage {
     id: string;
     type: "language";

@@ -23,7 +23,7 @@ import { ImportFileFormats } from "../utilities/ImportUtils";
 import { DropZoneWrapper } from "./DropZoneWrapper";
 import { LoadingOverlay } from "./LoadingOverlay";
 
-const SUPPORTED_FORMATS: {
+export const SUPPORTED_FORMATS: {
     image?: string;
     imageDarkMode?: any;
     name: string;
