@@ -135,6 +135,7 @@ class Api::V1::ImportsController < Api::V1::ApiController
 
         if !key || !translation || import_file_translation.differs_to_translation(translation)
           converted_import_file_translations[import_file.language_id][import_file_translation.key_name] = {
+            new_translation: translation.nil?,
             old: {
               other: translation&.content || '',
               zero: translation&.zero || '',

@@ -1,4 +1,4 @@
-import { Button, message, Modal, Table } from "antd";
+import { Button, message, Modal, Table, Tag } from "antd";
 import * as React from "react";
 import { ImportsAPI } from "../api/v1/ImportsAPI";
 import useImportReview from "../hooks/useImportReview";
@@ -132,7 +132,7 @@ export function ImportReviewTable(props: {
         const rows = [];
         Object.keys(importReviewResponse).forEach((languageId) => {
             Object.keys(importReviewResponse[languageId]).forEach((keyName) => {
-                const translationObjects = importReviewResponse[languageId][keyName];
+                const translationObject = importReviewResponse[languageId][keyName];
                 const language = getLanguageForId(languageId);
                 const countryCode = getCountryCodeForLanguage(language);
 
@@ -146,8 +146,13 @@ export function ImportReviewTable(props: {
                             countryCode={countryCode?.attributes.code}
                         />
                     ),
-                    old: <Preview old={translationObjects.old} new={translationObjects.new} dataSource="old" />,
-                    new: <Preview old={translationObjects.old} new={translationObjects.new} dataSource="new" />
+                    old: <Preview old={translationObject.old} new={translationObject.new} dataSource="old" />,
+                    new: <Preview old={translationObject.old} new={translationObject.new} dataSource="new" />,
+                    status: translationObject.new_translation ? (
+                        <Tag color="green">New</Tag>
+                    ) : (
+                        <Tag color="orange">Update</Tag>
+                    )
                 });
             });
         });
@@ -157,6 +162,12 @@ export function ImportReviewTable(props: {
 
     function getColumns() {
         const columns: { title: React.ReactNode; dataIndex: string; key?: string; width?: number }[] = [
+            {
+                title: "Status",
+                dataIndex: "status",
+                key: "status",
+                width: 64
+            },
             {
                 title: "Name",
                 dataIndex: "name",
@@ -176,12 +187,12 @@ export function ImportReviewTable(props: {
                 title: "New",
                 dataIndex: "new",
                 key: "new"
-            },
-            {
-                title: "",
-                dataIndex: "controls",
-                width: 50
             }
+            // {
+            //     title: "",
+            //     dataIndex: "controls",
+            //     width: 50
+            // }
         ];
 
         return columns;

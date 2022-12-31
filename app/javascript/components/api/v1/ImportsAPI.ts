@@ -70,6 +70,7 @@ export interface IGetImportResponse {
 export interface IImportReviewResponse {
     [k: string]: {
         [k: string]: {
+            new_translation: boolean;
             old: {
                 other: string;
                 zero: string;
