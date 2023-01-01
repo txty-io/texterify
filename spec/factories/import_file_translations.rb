@@ -1,10 +1,10 @@
 FactoryBot.define do
   factory :import_file_translation do
-    other { "MyText" }
-    zero { "MyText" }
-    one { "MyText" }
-    two { "MyText" }
-    few { "MyText" }
-    many { "MyText" }
+    other { 'Other text' }
+    zero { 'Zero text' }
+    one { 'One text' }
+    two { 'Two text' }
+    few { 'Few text' }
+    many { 'Many Text' }
   end
 end

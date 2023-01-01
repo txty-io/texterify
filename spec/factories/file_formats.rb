@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :file_format do
-    format { "MyString" }
+    format { 'Format text' }
   end
 end
