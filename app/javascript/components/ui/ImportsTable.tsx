@@ -1,15 +1,61 @@
-import { LoadingOutlined } from "@ant-design/icons";
-import { Button, Empty, message, Modal, Table } from "antd";
+import { CheckCircleFilled, LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { Button, Empty, message, Modal, Table, Tooltip } from "antd";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { APIUtils } from "../api/v1/APIUtils";
-import { IGetImportsOptions, IGetImportsResponse, ImportsAPI } from "../api/v1/ImportsAPI";
+import { IGetImportResponse, IGetImportsOptions, IGetImportsResponse, ImportsAPI } from "../api/v1/ImportsAPI";
 import { IUser } from "../api/v1/OrganizationMembersAPI";
 import { IProject } from "../api/v1/ProjectsAPI";
 import { Routes } from "../routing/Routes";
 import { PermissionUtils } from "../utilities/PermissionUtils";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "./Config";
 import { Utils } from "./Utils";
+
+function ImportStatus(props: { status: IGetImportResponse["data"]["attributes"]["status"] }) {
+    let statusContent;
+
+    if (props.status === "CREATED") {
+        statusContent = (
+            <span style={{ color: "var(--color-golden)" }}>
+                Please specify formats and languages
+                <Tooltip title="Please specify the correspondig languages and formats of your uploaded files.">
+                    <QuestionCircleOutlined style={{ marginLeft: 8 }} />
+                </Tooltip>
+            </span>
+        );
+    } else if (props.status === "VERIFYING") {
+        statusContent = (
+            <>
+                <LoadingOutlined style={{ marginRight: 16 }} />
+                {props.status}
+            </>
+        );
+    } else if (props.status === "VERIFIED") {
+        statusContent = (
+            <span style={{ color: "var(--color-golden)" }}>
+                Review changes before import
+                <Tooltip title="Review the translation changes of your upload before importing them.">
+                    <QuestionCircleOutlined style={{ marginLeft: 8 }} />
+                </Tooltip>
+            </span>
+        );
+    } else if (props.status === "IMPORTING") {
+        statusContent = (
+            <>
+                <LoadingOutlined style={{ marginRight: 16 }} />
+                Importing...
+            </>
+        );
+    } else if (props.status === "IMPORTED") {
+        statusContent = (
+            <span style={{ color: "var(--color-success)" }}>
+                <CheckCircleFilled style={{ marginRight: 8 }} />
+                Imported
+            </span>
+        );
+    }
+    return <span style={{ whiteSpace: "nowrap" }}>{statusContent}</span>;
+}
 
 export function ImportsTable(props: { project: IProject; tableReloader?: number; style?: React.CSSProperties }) {
     const [page, setPage] = React.useState<number>(1);
@@ -67,12 +113,7 @@ export function ImportsTable(props: { project: IProject; tableReloader?: number;
                 ),
                 user: user?.attributes.username,
                 importedAt: Utils.formatDateTime(imp.attributes.created_at),
-                status: (
-                    <span style={{ whiteSpace: "nowrap", fontWeight: "bold" }}>
-                        <LoadingOutlined style={{ marginRight: 16 }} />
-                        {imp.attributes.status}
-                    </span>
-                )
+                status: <ImportStatus status={imp.attributes.status} />
             };
         });
     }
@@ -95,24 +136,19 @@ export function ImportsTable(props: { project: IProject; tableReloader?: number;
                 key: "importedAt"
             },
             {
-                title: "User",
+                title: "Uploaded by",
                 dataIndex: "user",
                 key: "user"
-            },
-            {
-                title: "ID",
-                dataIndex: "id",
-                key: "id"
             }
         ];
 
-        if (PermissionUtils.isDeveloperOrHigher(props.project.attributes.current_user_role)) {
-            columns.push({
-                title: "",
-                dataIndex: "controls",
-                width: 50
-            });
-        }
+        // if (PermissionUtils.isDeveloperOrHigher(props.project.attributes.current_user_role)) {
+        //     columns.push({
+        //         title: "",
+        //         dataIndex: "controls",
+        //         width: 50
+        //     });
+        // }
 
         return columns;
     }

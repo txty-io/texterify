@@ -1,4 +1,4 @@
-import { Layout, Skeleton } from "antd";
+import { Button, Layout, Result, Skeleton } from "antd";
 import * as React from "react";
 import { useParams } from "react-router";
 import { IGetImportResponse } from "../../api/v1/ImportsAPI";
@@ -42,6 +42,35 @@ function ImportDetailsContent(props: {
         return <ImportStatusChecker importReloader={props.importReloader} text="Importing..." />;
     } else if (props.importResponse.data.attributes.status === "VERIFIED") {
         return <ImportReviewTable projectId={props.projectId} importId={props.importId} onImport={props.onImport} />;
+    } else if (props.importResponse.data.attributes.status === "IMPORTED") {
+        return (
+            <>
+                <Result
+                    status="success"
+                    title="Your import was successful."
+                    subTitle={props.importResponse.data.attributes.name}
+                    extra={[
+                        <Button
+                            type="primary"
+                            key="go-to-key"
+                            onClick={() => {
+                                history.push(Routes.DASHBOARD.PROJECT_KEYS_RESOLVER({ projectId: props.projectId }));
+                            }}
+                        >
+                            Go to keys
+                        </Button>,
+                        <Button
+                            key="upload-more"
+                            onClick={() => {
+                                history.push(Routes.DASHBOARD.PROJECT_IMPORTS_RESOLVER({ projectId: props.projectId }));
+                            }}
+                        >
+                            Upload more files
+                        </Button>
+                    ]}
+                />
+            </>
+        );
     } else if (props.importLoading) {
         return <Skeleton active loading />;
     } else {

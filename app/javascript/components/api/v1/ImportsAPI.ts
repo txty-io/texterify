@@ -11,7 +11,7 @@ export interface IImport {
         name: string;
         user: string;
         created_at: string;
-        status: string;
+        status: "CREATED" | "VERIFYING" | "VERIFIED" | "IMPORTING" | "IMPORTED";
         project_id: string;
     };
     relationships: {

@@ -81,6 +81,9 @@ const Routes = {
             return Routes.DASHBOARD.PROJECT_SETTINGS_ADVANCED.replace(":projectId", options.projectId);
         },
         PROJECT_KEYS: "/dashboard/projects/:projectId/keys",
+        PROJECT_KEYS_RESOLVER: (options: { projectId: string }) => {
+            return Routes.DASHBOARD.PROJECT_KEYS.replace(":projectId", options.projectId);
+        },
         PROJECT_ACTIVITY: "/dashboard/projects/:projectId/activity",
         PROJECT_INTEGRATIONS: "/dashboard/projects/:projectId/integrations",
         PROJECT_INTEGRATIONS_RESOLVER: (options: { projectId: string }) => {

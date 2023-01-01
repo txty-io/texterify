@@ -2,7 +2,13 @@ import { message } from "antd";
 import * as React from "react";
 import useDeepCompareEffect from "use-deep-compare-effect";
 import { APIUtils } from "../api/v1/APIUtils";
-import { LanguagesAPI, IGetLanguagesOptions, IGetLanguagesResponse, ILanguage, ICountryCode } from "../api/v1/LanguagesAPI";
+import {
+    LanguagesAPI,
+    IGetLanguagesOptions,
+    IGetLanguagesResponse,
+    ILanguage,
+    ICountryCode
+} from "../api/v1/LanguagesAPI";
 
 export default function useLanguages(projectId: string, options?: IGetLanguagesOptions) {
     const [languagesResponse, setLanguagesResponse] = React.useState<IGetLanguagesResponse>(null);
@@ -31,7 +37,11 @@ export default function useLanguages(projectId: string, options?: IGetLanguagesO
     }
 
     function getCountryCodeForLanguage(language: ILanguage): ICountryCode {
-        return APIUtils.getIncludedObject(language?.relationships.country_code.data, languagesResponse.included);
+        if (!language || !languagesResponse) {
+            return null;
+        }
+
+        return APIUtils.getIncludedObject(language.relationships.country_code.data, languagesResponse.included);
     }
 
     useDeepCompareEffect(() => {
