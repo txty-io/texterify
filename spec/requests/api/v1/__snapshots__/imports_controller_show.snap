@@ -6,13 +6,17 @@
               "id" => "__REMOVED__",
             "name" => "import_1",
       "created_at" => "__REMOVED__",
-          "status" => "CREATED"
+          "status" => "CREATED",
+      "project_id" => "__REMOVED__"
     },
     "relationships" => {
-      "import_files" => {
+        "import_files" => {
         "data" => []
       },
-              "user" => {
+      "background_job" => {
+        "data" => nil
+      },
+                "user" => {
         "data" => nil
       }
     }

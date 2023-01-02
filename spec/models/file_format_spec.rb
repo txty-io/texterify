@@ -1,5 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe FileFormat, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it 'creates a file format' do
+    project = create(:project, :with_organization)
+    project.save!
+
+    file_format = FileFormat.new
+    file_format.format = 'My file format'
+    file_format.save!
+  end
 end

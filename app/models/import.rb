@@ -13,6 +13,7 @@ class Import < ApplicationRecord
   has_one :background_job, dependent: :destroy
 
   validates :name, presence: true
+  validates :status, presence: true
 
   def verify(user)
     background_job =

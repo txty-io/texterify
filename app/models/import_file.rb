@@ -6,4 +6,7 @@ class ImportFile < ApplicationRecord
   has_many :import_file_translations, dependent: :destroy
 
   has_one_attached :file
+
+  validates :name, presence: true
+  validates :status, presence: true
 end
