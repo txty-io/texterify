@@ -42,7 +42,7 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
 
     # The default role of a user for a project that belongs to an organization
     # is the role the user has in the organization.
-    user_organization_role = project.organization ? project.organization.role_of(user) : nil
+    user_organization_role = project.organization&.role_of(user)
     if user_organization_role
       project_user.role = user_organization_role
     end
@@ -116,7 +116,7 @@ class Api::V1::ProjectUsersController < Api::V1::ApiController
 
     # The lowest role a user can have for a project that belongs to an organization
     # is the role the user has in the organization.
-    user_organization_role = project.organization ? project.organization.role_of(project_user.user) : nil
+    user_organization_role = project.organization&.role_of(project_user.user)
     if user_organization_role && helpers.higher_role?(user_organization_role, role)
       render json: { errors: [{ code: 'USER_PROJECT_ROLE_LOWER_THAN_USER_ORGANIZATION_ROLE' }] }, status: :bad_request
       skip_authorization

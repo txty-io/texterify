@@ -59,8 +59,8 @@ module ReleasesHelper
 
     export_data = {
       is_default: language.is_default,
-      language_code: language.language_code ? language.language_code.code : nil,
-      country_code: language.country_code ? language.country_code.code : nil,
+      language_code: language.language_code&.code,
+      country_code: language.country_code&.code,
       texts: language_data.map { |key, value| { key: key, value: value } },
       plurals: [] # TODO: Add plural support
     }

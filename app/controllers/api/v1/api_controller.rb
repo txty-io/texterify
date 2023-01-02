@@ -62,14 +62,7 @@ module Api::V1
     def parse_per_page(params_per_page)
       if params_per_page.present?
         per_page = params_per_page.to_i || 10
-
-        if per_page < 1
-          10
-        elsif per_page > 50
-          50
-        else
-          per_page
-        end
+        per_page < 1 ? 10 : [per_page, 50].min
       else
         10
       end

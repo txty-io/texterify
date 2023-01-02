@@ -189,7 +189,7 @@ RSpec.describe ExportConfig, type: :model do
     end
 
     it 'does not escape already escaped single quote for android' do
-      files = export_config.files(@language, { "x": export_data_value("\'") })
+      files = export_config.files(@language, { "x": export_data_value("'") })
       files[0][:file].open
       expect(files[0][:file].read).to eq(
         "<?xml version=\"1.0\"?>\n<resources>\n  <string name=\"x\">\\'</string>\n</resources>\n"

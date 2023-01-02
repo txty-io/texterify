@@ -39,7 +39,7 @@ class ProjectSerializer
     elsif project_user
       project_user.role
     else
-      organization_user ? organization_user.role : nil
+      organization_user&.role
     end
   end
 

@@ -36,7 +36,7 @@ class Organization < ApplicationRecord
 
   def role_of(user)
     organization_user = organization_users.find_by(user_id: user.id)
-    organization_user ? organization_user.role : nil
+    organization_user&.role
   end
 
   def owners
