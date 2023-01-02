@@ -9,6 +9,8 @@ class ImportVerifyWorker
     import = Import.find(import_id)
     import_files = import.import_files
 
+    has_one_successful_upload = false
+
     import_files.each do |import_file|
       file_format = import_file.file_format.format
 
@@ -60,12 +62,16 @@ class ImportVerifyWorker
               translation.save!
             end
             import_file.status = 'VERIFIED'
+            has_one_successful_upload = true
           else
             import_file.status = 'ERROR'
+            import_file.status_message = 'ERROR_WHILE_PARSING'
           end
         rescue StandardError => e
           logger.error(e)
           import_file.status = 'ERROR'
+          import_file.status_message = 'UNKNOWN_ERROR'
+          import_file.error_message = e.message
           Sentry.capture_exception(e)
         end
 
@@ -73,7 +79,12 @@ class ImportVerifyWorker
       end
     end
 
-    import.status = IMPORT_STATUS_VERIFIED
+    if has_one_successful_upload
+      import.status = IMPORT_STATUS_VERIFIED
+    else
+      import.status = IMPORT_STATUS_ERROR
+    end
+
     import.save!
     background_job.complete!
   end

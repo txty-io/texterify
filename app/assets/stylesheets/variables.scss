@@ -16,6 +16,7 @@
   --color-success: #52c41a;
   --color-warn: #e84b00;
   --color-golden: #d5bc00;
+  --color-error: #e84749;
 
   // drawer
   --drawer-background-color: var(--background-color);
@@ -43,6 +44,11 @@
   --primary-btn-color: var(--color-primary);
   --primary-btn-hover-color: var(--color-primary-light);
   --default-btn-hover-color: var(--color-primary-light);
+  --text-btn-hover-color: var(--a-link);
+  --text-btn-hover-background-color: #7070701c;
+  --link-btn-color: var(--a-link);
+  --link-btn-hover-color: var(--a-link);
+  --link-btn-hover-background-color: #7070701c;
 
   // input
   --input-border-color: #d9d9d9;
@@ -149,11 +155,17 @@
   --primary-btn-color: var(--color-primary);
   --primary-btn-hover-color: var(--color-primary-light);
   --default-btn-hover-color: var(--color-primary-light);
+  --text-btn-color: var(--full-color);
+  --text-btn-hover-color: var(--a-link);
+  --text-btn-hover-background-color: #5696ff12;
+  --link-btn-color: var(--a-link);
+  --link-btn-hover-color: var(--a-link);
+  --link-btn-hover-background-color: #5696ff12;
 
   // input
   --input-border-color: #434343;
-  --input-border-hover-color: var(--color-primary);
-  --input-border-focus-color: var(--color-primary);
+  --input-border-hover-color: var(--a-link);
+  --input-border-focus-color: var(--a-link);
   --input-border-disabled-color: #434343;
 
   // popover
@@ -173,9 +185,9 @@
   // sub sidebar
   --sidebar-header-color: #fff;
   --sidebar-indicator-color: #fff;
-  --sidebar-item-active-color: #8ab4f8;
-  --sidebar-item-active-color-hover: #8ab4f8;
-  --sidebar-item-active-background-color: #8ab4f814;
+  --sidebar-item-active-color: #5696ff;
+  --sidebar-item-active-color-hover: #5696ff;
+  --sidebar-item-active-background-color: #5696ff12;
   --sidebar-item-color: #737373;
   --sidebar-item-color-hover: #fff;
   --sidebar-background-color: var(--background-color);
@@ -189,8 +201,8 @@
   --breadcrumbs-last-color: rgba(255, 255, 255, 0.65);
 
   // links
-  --a-link: #8ab4f9;
-  --a-link-hover: #8ab4f9;
+  --a-link: #5696ff;
+  --a-link-hover: #5696ff;
 
   // typography code
   --typography-code-background: transparent;

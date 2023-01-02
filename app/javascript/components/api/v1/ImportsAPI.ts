@@ -11,7 +11,7 @@ export interface IImport {
         name: string;
         user: string;
         created_at: string;
-        status: "CREATED" | "VERIFYING" | "VERIFIED" | "IMPORTING" | "IMPORTED";
+        status: "CREATED" | "VERIFYING" | "VERIFIED" | "IMPORTING" | "IMPORTED" | "ERROR";
         project_id: string;
     };
     relationships: {
@@ -28,7 +28,9 @@ export interface IImportFile {
     attributes: {
         id: string;
         name: string;
-        status: string;
+        status: "CREATED" | "ERROR" | "VERIFIED";
+        status_message: "ERROR_WHILE_PARSING" | "UNKNOWN_ERROR";
+        error_message: string;
     };
 }
 
@@ -57,6 +59,11 @@ export interface IGetImportReviewOptions {
     importId: string;
 }
 
+export interface IGetImportImportFilesOptions {
+    projectId: string;
+    importId: string;
+}
+
 export interface IGetImportImportOptions {
     projectId: string;
     importId: string;
@@ -67,27 +74,34 @@ export interface IGetImportResponse {
     included: IImportIncluded;
 }
 
+export interface IGetImportFilesResponse {
+    data: IImportFile[];
+}
+
 export interface IImportReviewResponse {
-    [k: string]: {
+    imported_files: { data: IImportFile[] };
+    new_translations: {
         [k: string]: {
-            new_translation: boolean;
-            old: {
-                other: string;
-                zero: string;
-                one: string;
-                two: string;
-                few: string;
-                many: string;
-                description: string;
-            };
-            new: {
-                other: string;
-                zero: string;
-                one: string;
-                two: string;
-                few: string;
-                many: string;
-                description: string;
+            [k: string]: {
+                new_translation: boolean;
+                old: {
+                    other: string;
+                    zero: string;
+                    one: string;
+                    two: string;
+                    few: string;
+                    many: string;
+                    description: string;
+                };
+                new: {
+                    other: string;
+                    zero: string;
+                    one: string;
+                    two: string;
+                    few: string;
+                    many: string;
+                    description: string;
+                };
             };
         };
     };
@@ -136,6 +150,12 @@ const ImportsAPI = {
 
     review: async (options: IGetImportReviewOptions): Promise<IImportReviewResponse> => {
         return API.getRequest(`projects/${options.projectId}/imports/${options.importId}/review`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    getImportFiles: async (options: IGetImportImportFilesOptions): Promise<IGetImportFilesResponse> => {
+        return API.getRequest(`projects/${options.projectId}/imports/${options.importId}/import_files`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     },

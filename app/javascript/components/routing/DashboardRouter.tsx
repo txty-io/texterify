@@ -1,11 +1,4 @@
-import {
-    DeploymentUnitOutlined,
-    HddFilled,
-    LineChartOutlined,
-    MessageOutlined,
-    ProjectOutlined,
-    SyncOutlined
-} from "@ant-design/icons";
+import { DeploymentUnitOutlined, HddFilled, LineChartOutlined, ProjectOutlined, SyncOutlined } from "@ant-design/icons";
 import * as antd from "antd";
 import WhiteLogoWithText from "images/logo_white_text.svg";
 import { observer } from "mobx-react";
@@ -46,6 +39,7 @@ import {
     JOBS_CHANNEL_EVENT_JOB_COMPLETED,
     JOBS_CHANNEL_EVENT_JOB_PROGRESS,
     JOBS_CHANNEL_TYPE_CHECK_PLACEHOLDERS,
+    JOBS_CHANNEL_TYPE_IMPORT_IMPORT,
     JOBS_CHANNEL_TYPE_RECHECK_ALL_VALIDATIONS
 } from "../utilities/JobsChannelEvents";
 import {
@@ -55,6 +49,7 @@ import {
     PUBSUB_RECHECK_ALL_VALIDATIONS_PROGRESS
 } from "../utilities/PubSubEvents";
 import { consumer } from "../WebsocketClient";
+import { history } from "./history";
 import { InstanceRouter } from "./InstanceRouter";
 import { OrganizationRouter } from "./OrganizationRouter";
 import { PrivateRoute } from "./PrivateRoute";
@@ -180,6 +175,8 @@ class DashboardRouter extends React.Component<IProps, IState> {
             { channel: "JobsChannel" },
             {
                 received: (data: IJobsChannelEvent) => {
+                    console.log("Received background job event:", data);
+
                     // Only care about the finished job if it is a job of the currently selected project.
                     if (data.project_id === this.props.match.params.projectId) {
                         dashboardStore.loadBackgroundJobs(data.project_id);
@@ -214,6 +211,39 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             data.event === JOBS_CHANNEL_EVENT_JOB_COMPLETED
                         ) {
                             PubSub.publish(PUBSUB_CHECK_PLACEHOLDERS_FINISHED, { projectId: data.project_id });
+                        }
+
+                        // Send an event that the check placeholders job has finished.
+                        if (
+                            data.type === JOBS_CHANNEL_TYPE_IMPORT_IMPORT &&
+                            data.event === JOBS_CHANNEL_EVENT_JOB_COMPLETED
+                        ) {
+                            antd.notification.info({
+                                message: "Import finished",
+                                key: data.import_id,
+                                description: (
+                                    <>
+                                        An import has finished.
+                                        <br />
+                                        <antd.Button
+                                            onClick={() => {
+                                                antd.notification.close(data.import_id);
+                                                history.push(
+                                                    Routes.DASHBOARD.PROJECT_IMPORTS_DETAILS_RESOLVER({
+                                                        projectId: data.project_id,
+                                                        importId: data.import_id
+                                                    })
+                                                );
+                                            }}
+                                            type="primary"
+                                            style={{ marginTop: 16 }}
+                                        >
+                                            Go to import
+                                        </antd.Button>
+                                    </>
+                                ),
+                                placement: "topRight"
+                            });
                         }
                     }
                 }

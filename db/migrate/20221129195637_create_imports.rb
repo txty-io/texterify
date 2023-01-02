@@ -1,8 +1,8 @@
 class CreateImports < ActiveRecord::Migration[6.1]
   def change
     create_table :imports, id: :uuid do |t|
-      t.string :name, null: false
-      t.string :status, null: false
+      t.text :name, null: false
+      t.text :status, null: false
 
       t.timestamps
     end

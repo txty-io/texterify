@@ -1,8 +1,9 @@
-import { Button, message, Modal, Table, Tag } from "antd";
+import { Button, message, Modal, Popconfirm, Table, Tag } from "antd";
 import * as React from "react";
 import { ImportsAPI } from "../api/v1/ImportsAPI";
 import useImportReview from "../hooks/useImportReview";
 import useLanguages from "../hooks/useLanguages";
+import { ImportFilesTable } from "./ImportFilesTable";
 import { LanguageNameWithFlag } from "./LanguageNameWithFlag";
 
 function PreviewItem(props: { children: React.ReactNode }) {
@@ -125,14 +126,14 @@ export function ImportReviewTable(props: {
     }, [props.tableReloader]);
 
     function getRows() {
-        if (!importReviewResponse) {
+        if (!importReviewResponse?.new_translations) {
             return [];
         }
 
         const rows = [];
-        Object.keys(importReviewResponse).forEach((languageId) => {
-            Object.keys(importReviewResponse[languageId]).forEach((keyName) => {
-                const translationObject = importReviewResponse[languageId][keyName];
+        Object.keys(importReviewResponse.new_translations).forEach((languageId) => {
+            Object.keys(importReviewResponse.new_translations[languageId]).forEach((keyName) => {
+                const translationObject = importReviewResponse.new_translations[languageId][keyName];
                 const language = getLanguageForId(languageId);
                 const countryCode = getCountryCodeForLanguage(language);
 
@@ -236,29 +237,31 @@ export function ImportReviewTable(props: {
         });
     }
 
+    const rows = getRows();
+
     return (
-        <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+        <div style={{ display: "flex", flexDirection: "column", minWidth: 0, ...props.style }}>
             <div style={{ display: "flex", marginBottom: 24 }}>
                 <Button danger onClick={onDelete} disabled={selectedRowKeys.length === 0} loading={isDeleting}>
                     Delete selected
                 </Button>
             </div>
             <Table
-                style={props.style}
                 rowSelection={{
                     onChange: (newSelectedRowKeys) => {
                         setSelectedRowKeys(newSelectedRowKeys);
                     }
                 }}
-                dataSource={getRows()}
+                dataSource={rows}
                 columns={getColumns()}
                 bordered
                 loading={importReviewLoading}
                 pagination={false}
             />
-            <Button
-                type="primary"
-                onClick={async () => {
+            <Popconfirm
+                title="Are you sure you want to import the new translations?"
+                okText="Import"
+                onConfirm={async () => {
                     try {
                         const response = await ImportsAPI.import({
                             projectId: props.projectId,
@@ -274,10 +277,11 @@ export function ImportReviewTable(props: {
                         message.error("Failed to start import.");
                     }
                 }}
-                style={{ alignSelf: "flex-end", marginTop: 24 }}
             >
-                Import
-            </Button>
+                <Button type="primary" style={{ alignSelf: "flex-end", marginTop: 24 }}>
+                    Import translations
+                </Button>
+            </Popconfirm>
         </div>
     );
 }

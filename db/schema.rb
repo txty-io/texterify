@@ -131,7 +131,7 @@ ActiveRecord::Schema.define(version: 2022_12_29_112457) do
   end
 
   create_table "file_formats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "format", null: false
+    t.text "format", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -184,7 +184,9 @@ ActiveRecord::Schema.define(version: 2022_12_29_112457) do
 
   create_table "import_files", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "name", null: false
-    t.string "status", null: false
+    t.text "status", null: false
+    t.text "status_message"
+    t.text "error_message"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "import_id", null: false
@@ -196,8 +198,8 @@ ActiveRecord::Schema.define(version: 2022_12_29_112457) do
   end
 
   create_table "imports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name", null: false
-    t.string "status", null: false
+    t.text "name", null: false
+    t.text "status", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "project_id", null: false

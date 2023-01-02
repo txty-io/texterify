@@ -3,6 +3,7 @@ IMPORT_STATUS_VERIFYING = 'VERIFYING'.freeze
 IMPORT_STATUS_VERIFIED = 'VERIFIED'.freeze
 IMPORT_STATUS_IMPORTING = 'IMPORTING'.freeze
 IMPORT_STATUS_IMPORTED = 'IMPORTED'.freeze
+IMPORT_STATUS_ERROR = 'ERROR'.freeze
 
 class Import < ApplicationRecord
   belongs_to :project

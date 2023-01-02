@@ -11,6 +11,7 @@ export function ImportSidebar(props: { projectId: string }) {
                     items: [
                         {
                             subMenuPath: Routes.DASHBOARD.PROJECT_IMPORTS.replace(":projectId", props.projectId),
+                            subMenuDataId: "upload",
                             paths: [
                                 {
                                     path: Routes.DASHBOARD.PROJECT_IMPORTS.replace(":projectId", props.projectId),

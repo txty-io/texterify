@@ -1,3 +1,4 @@
+import { FileOutlined } from "@ant-design/icons";
 import { Button, Empty, Form, List, message, Select, Skeleton } from "antd";
 import React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
@@ -82,7 +83,12 @@ export function ImportFileAssigner(props: {
                             >
                                 <List.Item.Meta
                                     style={{ wordBreak: "break-word", width: 320, maxWidth: 320 }}
-                                    title={item.attributes.name}
+                                    title={
+                                        <span>
+                                            <FileOutlined style={{ marginRight: 8 }} />
+                                            {item.attributes.name}
+                                        </span>
+                                    }
                                 />
                                 <div style={{ flexGrow: 1, display: "flex", gap: 40 }}>
                                     <Form.Item

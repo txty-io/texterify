@@ -1,4 +1,4 @@
-import { CheckCircleFilled, LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { CheckCircleFilled, LoadingOutlined, QuestionCircleOutlined, WarningOutlined } from "@ant-design/icons";
 import { Button, Empty, message, Modal, Table, Tooltip } from "antd";
 import * as React from "react";
 import { Link } from "react-router-dom";
@@ -53,7 +53,17 @@ function ImportStatus(props: { status: IGetImportResponse["data"]["attributes"][
                 Imported
             </span>
         );
+    } else if (props.status === "ERROR") {
+        statusContent = (
+            <span style={{ color: "var(--color-error)" }}>
+                <WarningOutlined style={{ marginRight: 8 }} />
+                Import failed
+            </span>
+        );
+    } else {
+        statusContent = props.status;
     }
+
     return <span style={{ whiteSpace: "nowrap" }}>{statusContent}</span>;
 }
 

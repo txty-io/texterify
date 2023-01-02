@@ -159,7 +159,19 @@ class Api::V1::ImportsController < Api::V1::ApiController
       end
     end
 
-    render json: converted_import_file_translations
+    render json: {
+             imported_files: ImportFileSerializer.new(import.import_files),
+             new_translations: converted_import_file_translations
+           }
+  end
+
+  def import_files
+    project = current_user.projects.find(params[:project_id])
+    import = project.imports.find(params[:import_id])
+
+    authorize import
+
+    render json: ImportFileSerializer.new(import.import_files)
   end
 
   def import

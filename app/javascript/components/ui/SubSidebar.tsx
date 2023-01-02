@@ -96,22 +96,22 @@ export interface ISubSidebarProps {
 }
 
 function getSelectedMenuItems(items: ISubSidebarProps["menuItems"][0]["items"], currentLocation: Location) {
-    const selectItems = [];
+    const selectedItems = [];
     items.forEach((data) => {
         if (data.subMenuPath) {
             if (currentLocation.pathname.startsWith(data.subMenuPath)) {
-                selectItems.push(data.subMenuDataId);
+                selectedItems.push(data.subMenuDataId);
             }
         }
 
         data.paths.forEach((path) => {
-            if (currentLocation.pathname === path.path) {
-                selectItems.push(path.dataId);
+            if (currentLocation.pathname.startsWith(path.path)) {
+                selectedItems.push(path.dataId);
             }
         });
     });
 
-    return selectItems;
+    return selectedItems;
 }
 
 export function SubSidebar(props: ISubSidebarProps) {

@@ -18,6 +18,10 @@ class ImportPolicy
     ROLES_TRANSLATOR_UP.include? project_user_role
   end
 
+  def import_files?
+    ROLES_TRANSLATOR_UP.include? project_user_role
+  end
+
   def import?
     ROLES_TRANSLATOR_UP.include? project_user_role
   end
