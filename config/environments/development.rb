@@ -28,9 +28,7 @@ Rails.application.configure do
     config.action_controller.enable_fragment_cache_logging = true
 
     config.cache_store = :memory_store
-    config.public_file_server.headers = {
-      'Cache-Control' => "public, max-age=#{2.days.to_i}"
-    }
+    config.public_file_server.headers = { 'Cache-Control' => "public, max-age=#{2.days.to_i}" }
   else
     config.action_controller.perform_caching = false
 
@@ -39,15 +37,15 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    :authentication => ENV["SMTP_AUTHENTICATION"].blank? ? nil : ENV["SMTP_AUTHENTICATION"].to_sym,
-    :address => ENV["SMTP_ADDRESS"].blank? ? nil : ENV["SMTP_ADDRESS"],
-    :port => ENV["SMTP_PORT"].blank? ? nil : ENV["SMTP_PORT"],
-    :domain => ENV["SMTP_DOMAIN"].blank? ? nil : ENV["SMTP_DOMAIN"],
-    :user_name => ENV["SMTP_USERNAME"].blank? ? nil : ENV["SMTP_USERNAME"],
-    :password => ENV["SMTP_PASSWORD"].blank? ? nil : ENV["SMTP_PASSWORD"],
-    :enable_starttls_auto => ENV["SMTP_ENABLE_STARTTLS_AUTO"].blank? ? nil : ENV["SMTP_ENABLE_STARTTLS_AUTO"],
-    :openssl_verify_mode => ENV["SMTP_OPENSSL_VERIFY_MODE"].blank? ? nil : ENV["SMTP_OPENSSL_VERIFY_MODE"],
-    :tls => ENV["SMTP_TLS"].blank? ? nil : ENV["SMTP_TLS"]
+    authentication: ENV['SMTP_AUTHENTICATION'].blank? ? nil : ENV['SMTP_AUTHENTICATION'].to_sym,
+    address: ENV['SMTP_ADDRESS'].blank? ? nil : ENV['SMTP_ADDRESS'],
+    port: ENV['SMTP_PORT'].blank? ? nil : ENV['SMTP_PORT'],
+    domain: ENV['SMTP_DOMAIN'].blank? ? nil : ENV['SMTP_DOMAIN'],
+    user_name: ENV['SMTP_USERNAME'].blank? ? nil : ENV['SMTP_USERNAME'],
+    password: ENV['SMTP_PASSWORD'].blank? ? nil : ENV['SMTP_PASSWORD'],
+    enable_starttls_auto: ENV['SMTP_ENABLE_STARTTLS_AUTO'].blank? ? nil : ENV['SMTP_ENABLE_STARTTLS_AUTO'],
+    openssl_verify_mode: ENV['SMTP_OPENSSL_VERIFY_MODE'].blank? ? nil : ENV['SMTP_OPENSSL_VERIFY_MODE'],
+    tls: ENV['SMTP_TLS'].blank? ? nil : ENV['SMTP_TLS']
   }
 
   # Set host so asset_path returns a full URL instead of a relative path.
@@ -63,7 +61,7 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
-  config.action_mailer.default_url_options = { host: "localhost:3000" }
+  config.action_mailer.default_url_options = { host: 'localhost:3000' }
 
   # Set host so asset_path returns a full URL instead of a relative path.
   # Otherwise images in emails don't work.
@@ -97,7 +95,5 @@ Rails.application.configure do
   # config.file_watcher = ActiveSupport::EventedFileUpdateChecker
   config.file_watcher = ActiveSupport::FileUpdateChecker
 
-  if ENV['PROPRIETARY_MODE'] == 'true'
-    config.active_job.queue_adapter = :sidekiq
-  end
+  config.active_job.queue_adapter = :sidekiq
 end

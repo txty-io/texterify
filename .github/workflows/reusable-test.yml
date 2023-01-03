@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Run docker-compose
-        run: docker-compose up -d && sleep 10
+        run: docker-compose up -d
 
       - name: Create and seed test database
         run: docker-compose exec -T app bundle exec rails db:create db:migrate db:seed RAILS_ENV=test

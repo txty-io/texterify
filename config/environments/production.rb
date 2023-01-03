@@ -11,7 +11,7 @@ Rails.application.configure do
   config.eager_load = true
 
   # Full error reports are disabled and caching is turned on.
-  config.consider_all_requests_local       = false
+  config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
 
   # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
@@ -51,7 +51,7 @@ Rails.application.configure do
   config.log_level = :debug
 
   # Prepend all log lines with the following tags.
-  config.log_tags = [ :request_id ]
+  config.log_tags = [:request_id]
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
@@ -59,6 +59,8 @@ Rails.application.configure do
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "texterify_production"
+
+  config.active_job.queue_adapter = :sidekiq
 
   config.action_mailer.perform_caching = false
 
@@ -68,15 +70,15 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    :authentication => ENV["SMTP_AUTHENTICATION"].blank? ? nil : ENV["SMTP_AUTHENTICATION"].to_sym,
-    :address => ENV["SMTP_ADDRESS"].blank? ? nil : ENV["SMTP_ADDRESS"],
-    :port => ENV["SMTP_PORT"].blank? ? nil : ENV["SMTP_PORT"],
-    :domain => ENV["SMTP_DOMAIN"].blank? ? nil : ENV["SMTP_DOMAIN"],
-    :user_name => ENV["SMTP_USERNAME"].blank? ? nil : ENV["SMTP_USERNAME"],
-    :password => ENV["SMTP_PASSWORD"].blank? ? nil : ENV["SMTP_PASSWORD"],
-    :enable_starttls_auto => ENV["SMTP_ENABLE_STARTTLS_AUTO"].blank? ? nil : ENV["SMTP_ENABLE_STARTTLS_AUTO"],
-    :openssl_verify_mode => ENV["SMTP_OPENSSL_VERIFY_MODE"].blank? ? nil : ENV["SMTP_OPENSSL_VERIFY_MODE"],
-    :tls => ENV["SMTP_TLS"].blank? ? nil : ENV["SMTP_TLS"]
+    authentication: ENV['SMTP_AUTHENTICATION'].blank? ? nil : ENV['SMTP_AUTHENTICATION'].to_sym,
+    address: ENV['SMTP_ADDRESS'].blank? ? nil : ENV['SMTP_ADDRESS'],
+    port: ENV['SMTP_PORT'].blank? ? nil : ENV['SMTP_PORT'],
+    domain: ENV['SMTP_DOMAIN'].blank? ? nil : ENV['SMTP_DOMAIN'],
+    user_name: ENV['SMTP_USERNAME'].blank? ? nil : ENV['SMTP_USERNAME'],
+    password: ENV['SMTP_PASSWORD'].blank? ? nil : ENV['SMTP_PASSWORD'],
+    enable_starttls_auto: ENV['SMTP_ENABLE_STARTTLS_AUTO'].blank? ? nil : ENV['SMTP_ENABLE_STARTTLS_AUTO'],
+    openssl_verify_mode: ENV['SMTP_OPENSSL_VERIFY_MODE'].blank? ? nil : ENV['SMTP_OPENSSL_VERIFY_MODE'],
+    tls: ENV['SMTP_TLS'].blank? ? nil : ENV['SMTP_TLS']
   }
 
   # Set host so asset_path returns a full URL instead of a relative path.
@@ -100,10 +102,10 @@ Rails.application.configure do
   # require 'syslog/logger'
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
-  if ENV["RAILS_LOG_TO_STDOUT"].present?
-    logger           = ActiveSupport::Logger.new(STDOUT)
+  if ENV['RAILS_LOG_TO_STDOUT'].present?
+    logger = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
-    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+    config.logger = ActiveSupport::TaggedLogging.new(logger)
   end
 
   # Do not dump schema after migrations.
