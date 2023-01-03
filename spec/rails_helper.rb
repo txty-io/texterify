@@ -66,6 +66,9 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include FactoryBot::Syntax::Methods
+
+  config.before(:suite) { Sidekiq::Testing.fake! }
+  config.after(:suite) { Sidekiq::Testing.inline! }
 end
 
 RSpec::Sidekiq.configure { |config| config.warn_when_jobs_not_processed_by_sidekiq = false }
