@@ -15,10 +15,10 @@ jobs:
     uses: ./.github/workflows/reusable-test.yml
 
   build-and-push:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     needs: [test]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set RELEASE_VERSION env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
