@@ -12,6 +12,9 @@ if Rails.env.production?
 end
 
 require 'rspec/rails'
+
+Sidekiq::Testing.inline! # an inline mode that runs the job immediately instead of enqueuing it
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
