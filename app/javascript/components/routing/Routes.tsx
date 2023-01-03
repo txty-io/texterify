@@ -14,6 +14,7 @@ const Routes = {
     },
     OTHER: {
         TERMS_OF_SERVICE: "https://texterify.com/terms-of-service",
+        DOCUMENTATION: "https://docs.texterify.com",
         PRIVACY_POLICY: "https://texterify.com/privacy-policy",
         WORDPRESS_INTEGRATION_GUIDE: "https://docs.texterify.com/integrations/wordpress",
         PLACEHOLDERS: "https://docs.texterify.com/placeholders"

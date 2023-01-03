@@ -1,5 +1,5 @@
 import { CrownOutlined } from "@ant-design/icons";
-import { Empty, Layout, message, Pagination, Progress, Skeleton, Statistic, Tooltip } from "antd";
+import { Alert, Empty, Layout, message, Pagination, Progress, Skeleton, Statistic, Tooltip } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { observer } from "mobx-react";
 import * as moment from "moment";
@@ -272,6 +272,44 @@ class ProjectSite extends React.Component<IProps, IState> {
                     )}
                     <div style={{ display: "flex", marginTop: 40 }}>
                         <div style={{ width: "50%", marginRight: 40 }}>
+                            {dashboardStore.currentProject?.attributes.character_count === 0 && (
+                                <Alert
+                                    showIcon
+                                    message="Congratulations to your new project 🎉"
+                                    description={
+                                        <>
+                                            We are happy to welcome you here. To start translating you first need to
+                                            import your translation files. You can do so by clicking{" "}
+                                            <Link
+                                                to={Routes.DASHBOARD.PROJECT_IMPORTS_RESOLVER({
+                                                    projectId: dashboardStore.currentProject?.id
+                                                })}
+                                            >
+                                                here
+                                            </Link>{" "}
+                                            or if you are starting from scratch you can also create new translations
+                                            manually{" "}
+                                            <Link
+                                                to={Routes.DASHBOARD.PROJECT_KEYS_RESOLVER({
+                                                    projectId: dashboardStore.currentProject?.id
+                                                })}
+                                            >
+                                                here
+                                            </Link>
+                                            .
+                                            <br />
+                                            <br />
+                                            Make sure to also check out our{" "}
+                                            <a href={Routes.OTHER.DOCUMENTATION} target="_blank">
+                                                documentation
+                                            </a>
+                                            .
+                                        </>
+                                    }
+                                    type="info"
+                                    style={{ marginBottom: 24, maxWidth: "100%" }}
+                                />
+                            )}
                             {this.renderLanguagesProgress()}
 
                             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
