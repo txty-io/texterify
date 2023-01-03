@@ -189,7 +189,7 @@ Cypress.Commands.add("importFile", (fileName: string, fileFormat: string, langua
     cy.get(`[data-id="import-file-assigner-select-language"][data-import-name="${fileName}"]`).type(languageName);
     cy.get("body").type("{enter}");
     cy.get('[data-id="import-file-assigner-import-button"]').click();
-    cy.get('[data-id="import-review-import-button"]').click();
+    cy.get('[data-id="import-review-import-button"]', { timeout: 30000 }).click();
     cy.get('[data-id="import-review-import-button-confirm"]').click();
     cy.contains("Your import was successful").should("exist");
 });
