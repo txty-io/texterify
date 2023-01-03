@@ -1,12 +1,16 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
+
 # ENV['RAILS_ENV'] ||= 'test'
 ENV['RAILS_ENV'] = 'test'
+
 require File.expand_path('../config/environment', __dir__)
+
 # Prevent database truncation if the environment is production
 if Rails.env.production?
   abort('The Rails environment is running in production mode!')
 end
+
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -34,14 +38,17 @@ rescue ActiveRecord::PendingMigrationError => e
   exit 1
 end
 RSpec.configure do |config|
+  # Add own login helper functions like "sign_in(user)" for easy authentication.
   config.include LoginHelper
 
-  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
+  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures.
   config.fixture_path = Rails.root.join('spec', 'fixtures')
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
+  # We use the "database_cleaner" gem instead.
+  # Learn more here: https://relishapp.com/rspec/rspec-rails/docs/transactions
   config.use_transactional_fixtures = false
 
   # RSpec Rails can automatically mix in different behaviours to your tests
@@ -60,15 +67,31 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   # Filter lines from Rails gems in backtraces.
+  # Learn more here: https://relishapp.com/rspec/rspec-rails/docs/backtrace-filtering
   config.filter_rails_from_backtrace!
 
-  # arbitrary gems may also be filtered via:
-  # config.filter_gems_from_backtrace("gem name")
-
+  # Helper methods like "create(:model)" or "build(:model)".
+  # Without everything needs to be prefaced with "FactoryBot".
+  # Learn more here:
+  #   - https://www.rubydoc.info/gems/factory_bot/FactoryBot/Syntax/Methods
+  #   - https://github.com/thoughtbot/factory_bot/blob/main/GETTING_STARTED.md#configure-your-test-suite
   config.include FactoryBot::Syntax::Methods
 
+  # During rspec tests we don't really want to execute jobs.
+  # After the rspec tests we reactivate the real jobs queue via redis (e.g. for the cypress tests).
+  # Learn more here: https://github.com/mperham/sidekiq/wiki/Testing
   config.before(:suite) { Sidekiq::Testing.fake! }
   config.after(:suite) { Sidekiq::Testing.inline! }
 end
 
-RSpec::Sidekiq.configure { |config| config.warn_when_jobs_not_processed_by_sidekiq = false }
+# Learn more here: https://github.com/philostler/rspec-sidekiq#configuration
+RSpec::Sidekiq.configure do |config|
+  # Clears all job queues before each example
+  config.clear_all_enqueued_jobs = true # default => true
+
+  # Whether to use terminal colours when outputting messages
+  config.enable_terminal_colours = true # default => true
+
+  # Warn when jobs are not enqueued to Redis but to a job array
+  config.warn_when_jobs_not_processed_by_sidekiq = true # default => true
+end
