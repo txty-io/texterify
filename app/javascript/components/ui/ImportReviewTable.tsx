@@ -261,6 +261,11 @@ export function ImportReviewTable(props: {
             <Popconfirm
                 title="Are you sure you want to import the new translations?"
                 okText="Import"
+                okButtonProps={
+                    {
+                        "data-id": "import-review-import-button-confirm"
+                    } as any
+                }
                 onConfirm={async () => {
                     try {
                         const response = await ImportsAPI.import({
@@ -278,7 +283,11 @@ export function ImportReviewTable(props: {
                     }
                 }}
             >
-                <Button type="primary" style={{ alignSelf: "flex-end", marginTop: 24 }}>
+                <Button
+                    type="primary"
+                    style={{ alignSelf: "flex-end", marginTop: 24 }}
+                    data-id="import-review-import-button"
+                >
                     Import translations
                 </Button>
             </Popconfirm>

@@ -15,9 +15,8 @@ import { IOrganization } from "../../stores/DashboardStore";
 import { IPlanIDS } from "../../types/IPlan";
 import { useQuery } from "../../ui/KeySearchSettings";
 import { LanguagesTable } from "../../ui/LanguagesTable";
-import { Loading } from "../../ui/Loading";
 import { getPlanById, handleCheckout, Licenses } from "../../ui/Licenses";
-import { TranslationFileImporter } from "../../ui/TranslationFileImporter";
+import { Loading } from "../../ui/Loading";
 import { Utils } from "../../ui/Utils";
 import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
 
@@ -26,7 +25,6 @@ let STEPS: {
     PLAN?: number;
     PROJECT: number;
     LANGUAGES: number;
-    IMPORT: number;
     INTEGRATIONS?: number;
     SUCCESS: number;
 };
@@ -37,16 +35,14 @@ if (IS_TEXTERIFY_CLOUD) {
         PLAN: 1,
         PROJECT: 2,
         LANGUAGES: 3,
-        IMPORT: 4,
-        SUCCESS: 5
+        SUCCESS: 4
     };
 } else {
     STEPS = {
         ORGANIZATION: 0,
         PROJECT: 1,
         LANGUAGES: 2,
-        IMPORT: 3,
-        SUCCESS: 4
+        SUCCESS: 3
     };
 }
 
@@ -80,13 +76,6 @@ function SetupSteps(props: {
                 <Steps.Step
                     title="Languages"
                     // description="Set languages you want your project to be translated in."
-                    disabled={!props.organization || !props.project}
-                />
-            )}
-            {STEPS.IMPORT !== undefined && (
-                <Steps.Step
-                    title="Import"
-                    // description="Import your keys and translations."
                     disabled={!props.organization || !props.project}
                 />
             )}
@@ -192,11 +181,6 @@ function goToStep(options: {
         }
     } else if (options.step === STEPS.LANGUAGES && options.project) {
         url = Routes.DASHBOARD.SETUP_PROJECT_LANGUAGES_RESOLVER({
-            organizationId: options.organization.id,
-            projectId: options.project.id
-        });
-    } else if (options.step === STEPS.IMPORT && options.project) {
-        url = Routes.DASHBOARD.SETUP_PROJECT_IMPORT_RESOLVER({
             organizationId: options.organization.id,
             projectId: options.project.id
         });
@@ -348,11 +332,6 @@ export function SetupSite(props: { step: number }) {
                 projectId: project.id
             });
         } else if (props.step === STEPS.LANGUAGES && project) {
-            return Routes.DASHBOARD.SETUP_PROJECT_IMPORT_RESOLVER({
-                organizationId: org.id,
-                projectId: project.id
-            });
-        } else if (props.step === STEPS.IMPORT && project) {
             return Routes.DASHBOARD.SETUP_PROJECT_SUCCESS_RESOLVER({
                 organizationId: org.id,
                 projectId: project.id
@@ -382,13 +361,8 @@ export function SetupSite(props: { step: number }) {
                 organizationId: organization.id,
                 projectId: project.id
             });
-        } else if (props.step === STEPS.IMPORT && project) {
-            return Routes.DASHBOARD.SETUP_PROJECT_LANGUAGES_RESOLVER({
-                organizationId: organization.id,
-                projectId: project.id
-            });
         } else if (props.step === STEPS.SUCCESS && project) {
-            return Routes.DASHBOARD.SETUP_PROJECT_IMPORT_RESOLVER({
+            return Routes.DASHBOARD.SETUP_PROJECT_LANGUAGES_RESOLVER({
                 organizationId: organization.id,
                 projectId: project.id
             });
@@ -656,59 +630,8 @@ export function SetupSite(props: { step: number }) {
                     </StepWrapper>
                 )}
 
-                {props.step === STEPS.IMPORT && (
-                    <StepWrapper
-                        title="Import your content"
-                        description={
-                            <>
-                                If you already have some translations you can import them now.
-                                <br />
-                                Don't worry, you can also import them later at any time.
-                            </>
-                        }
-                        backTo={getPreviousStep()}
-                        nextTo={getNextStep()}
-                        buttons={
-                            <Button
-                                onClick={() => {
-                                    history.push({ pathname: getNextStep(), search: history.location.search });
-                                }}
-                                style={{ marginTop: 24 }}
-                                type="primary"
-                            >
-                                Next
-                            </Button>
-                        }
-                        fullWidth
-                    >
-                        <TranslationFileImporter
-                            onCreateLanguageClick={() => {
-                                history.push({ pathname: getPreviousStep(), search: history.location.search });
-                            }}
-                        />
-                    </StepWrapper>
-                )}
-
                 {props.step === STEPS.SUCCESS && (
                     <StepWrapper backTo={getPreviousStep()} fullWidth>
-                        {/* <div
-                            style={{
-                                display: "grid",
-                                gridTemplateColumns: "1fr 2fr",
-                                columnGap: 40,
-                                rowGap: 40
-                            }}
-                        >
-                            <AddEditExportConfigForm
-                                projectId={projectId}
-                                onCreated={async () => {
-                                    setExportConfigsReloader(exportConfigsReloader + 1);
-                                }}
-                                clearFieldsAfterSubmit
-                            />
-
-                            {project && <ExportConfigsTable project={project} tableReloader={exportConfigsReloader} />}
-                        </div> */}
                         <Result
                             status="success"
                             title="Everything is set up."

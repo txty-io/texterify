@@ -63,7 +63,7 @@ declare global {
             featureNotAvailableInPlanShown(id: string): void;
             addUser(email: string): void;
             checkIfKeyExists(options: { key: string; description?: string; content?: string }): void;
-            importFile(fileName: string);
+            importFile(fileName: string, fileFormat: string, languageName: string);
         }
     }
 }

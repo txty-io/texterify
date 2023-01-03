@@ -175,10 +175,8 @@ Cypress.Commands.add("checkIfKeyExists", (options: { key: string; description?: 
     }
 });
 
-Cypress.Commands.add("importFile", (fileName: string) => {
+Cypress.Commands.add("importFile", (fileName: string, fileFormat: string, languageName: string) => {
     cy.get('[data-id="project-sidebar-import"]').click();
-    cy.get('[data-id="file-importer-language-tag"]').click();
-    cy.get('[data-id="file-importer-file-format-json-poeditor"]').click();
     cy.get('[data-id="files-importer-files-uploader"]').selectFile(
         {
             contents: `cypress/fixtures/${fileName}`
@@ -186,6 +184,14 @@ Cypress.Commands.add("importFile", (fileName: string) => {
         { force: true }
     );
     cy.get('[data-id="files-importer-submit-button"]').click();
+    cy.get(`[data-id="import-file-assigner-select-format"][data-import-name="${fileName}"]`).type(fileFormat);
+    cy.get("body").type("{enter}");
+    cy.get(`[data-id="import-file-assigner-select-language"][data-import-name="${fileName}"]`).type(languageName);
+    cy.get("body").type("{enter}");
+    cy.get('[data-id="import-file-assigner-import-button"]').click();
+    cy.get('[data-id="import-review-import-button"]').click();
+    cy.get('[data-id="import-review-import-button-confirm"]').click();
+    cy.contains("Your import was successful").should("exist");
 });
 
 Cypress.Commands.add("clickOutside", () => {

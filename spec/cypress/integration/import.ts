@@ -19,14 +19,8 @@ context("import", () => {
             languageName: testData.languages.german.languageName
         });
 
-        cy.get('[data-id="project-sidebar-import"]').click();
-        cy.get('[data-id="file-importer-language-tag"]').click();
-        cy.get('[data-id="file-importer-file-format-json"]').click();
-        cy.get('[data-id="files-importer-files-uploader"]').selectFile(
-            "cypress/fixtures/test_file_texterify_timestamp.json",
-            { force: true }
-        );
-        cy.get('[data-id="files-importer-submit-button"]').click();
+        cy.importFile("test_file_texterify_timestamp.json", "JSON", testData.languages.german.languageName);
+
         cy.goToKeys();
         cy.contains("normal_key");
         cy.contains("texterify_timestamp").should("not.exist");
@@ -45,7 +39,7 @@ context("import", () => {
             languageName: testData.languages.german.languageName
         });
 
-        cy.importFile("test_poeditor.json");
+        cy.importFile("test_poeditor.json", "JSON POEditor", testData.languages.german.languageName);
 
         cy.checkIfKeyExists({
             key: "welcome_screen.app_title",

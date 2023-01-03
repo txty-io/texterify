@@ -1,7 +1,6 @@
 import { FileOutlined } from "@ant-design/icons";
 import { Button, Empty, Form, List, message, Select, Skeleton } from "antd";
 import React from "react";
-import { APIUtils } from "../api/v1/APIUtils";
 import { IGetImportResponse, IImportFile, ImportsAPI } from "../api/v1/ImportsAPI";
 import useLanguages from "../hooks/useLanguages";
 import FlagIcon from "./FlagIcons";
@@ -106,6 +105,9 @@ export function ImportFileAssigner(props: {
                                             placeholder="Select a file format"
                                             optionFilterProp="children"
                                             filterOption
+                                            data-id="import-file-assigner-select-format"
+                                            data-import-file-id={item.id}
+                                            data-import-name={item.attributes.name}
                                         >
                                             {SUPPORTED_FORMATS.map((supportedFormat, index) => {
                                                 return (
@@ -131,6 +133,9 @@ export function ImportFileAssigner(props: {
                                             placeholder="Select a language"
                                             optionFilterProp="children"
                                             filterOption
+                                            data-id="import-file-assigner-select-language"
+                                            data-import-file-id={item.id}
+                                            data-import-name={item.attributes.name}
                                         >
                                             {languagesResponse?.data.map((language, index) => {
                                                 const countryCode = getCountryCodeForLanguage(language);
@@ -155,7 +160,12 @@ export function ImportFileAssigner(props: {
                         );
                     }}
                 />
-                <Button type="primary" htmlType="submit" style={{ alignSelf: "flex-end", marginTop: 24 }}>
+                <Button
+                    type="primary"
+                    htmlType="submit"
+                    style={{ alignSelf: "flex-end", marginTop: 24 }}
+                    data-id="import-file-assigner-import-button"
+                >
                     Import
                 </Button>
             </Form>
