@@ -2,7 +2,7 @@
 # Learn more here:
 #   - https://github.com/philostler/rspec-sidekiq
 #   - https://github.com/mperham/sidekiq/wiki/Testing
-# require 'sidekiq/testing'
+require 'sidekiq/testing'
 Sidekiq::Testing.inline!
 puts '[sidekiq]: Sidekiq::Testing.inline! called'
 
