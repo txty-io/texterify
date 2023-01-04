@@ -218,7 +218,7 @@ class IssuesTable extends React.Component<IProps, IState> {
                     </Link>
                 ),
                 language: <Flag language={language} countryCode={countryCode} languageCode={languageCode} />,
-                content: escapeHTML(translation.attributes.content),
+                content: translation.attributes.content,
                 description: this.getValidationDescription({
                     validationViolation: validationViolation,
                     validation: validation,

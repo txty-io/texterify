@@ -1,14 +1,15 @@
-import { ArrowLeftOutlined, FilterOutlined, HddOutlined, LoadingOutlined, SettingOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, FilterOutlined, HddOutlined, LoadingOutlined } from "@ant-design/icons";
 import { Alert, Button, Input, Layout, Pagination, Popover, Skeleton, Tabs, Tag } from "antd";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
+import * as moment from "moment";
 import * as queryString from "query-string";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { APIUtils } from "../../api/v1/APIUtils";
-import { ExportConfigsAPI } from "../../api/v1/ExportConfigsAPI";
+import { FlavorsAPI, IGetFlavorsResponse } from "../../api/v1/FlavorsAPI";
 import { IGetKeyResponse, IGetKeysOptions, IPlaceholder, KeysAPI } from "../../api/v1/KeysAPI";
 import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import {
@@ -28,14 +29,12 @@ import FlagIcon from "../../ui/FlagIcons";
 import { KeyHistory } from "../../ui/KeyHistory";
 import { ISearchSettings, KeySearchSettings, parseKeySearchSettingsFromURL } from "../../ui/KeySearchSettings";
 import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActiveFilters";
-import { Styles } from "../../ui/Styles";
-import { UserProfileHeader } from "../../ui/UserProfileHeader";
-import { DATE_TIME_FORMAT, escapeHTML, Utils } from "../../ui/Utils";
-import { TranslationCard } from "./editor/TranslationCard";
-import * as moment from "moment";
 import { KeyTags } from "../../ui/KeyTags";
-import { FlavorsAPI, IGetFlavorsResponse } from "../../api/v1/FlavorsAPI";
+import { Styles } from "../../ui/Styles";
 import { TagsFilter } from "../../ui/TagsFilter";
+import { UserProfileHeader } from "../../ui/UserProfileHeader";
+import { DATE_TIME_FORMAT } from "../../ui/Utils";
+import { TranslationCard } from "./editor/TranslationCard";
 
 const Key = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
@@ -444,7 +443,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     this.state.keysResponse.included
                                                 );
 
-                                                let content = escapeHTML(translation.attributes.content);
+                                                let content = translation.attributes.content;
 
                                                 if (this.state.keysResponse) {
                                                     let converted = [content];
