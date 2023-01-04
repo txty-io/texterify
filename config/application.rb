@@ -13,10 +13,6 @@ ActiveSupport::Deprecation.silenced = true
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-if ENV['SENTRY_DSN_BACKEND'].present?
-  Sentry.init { |config| config.dsn = ENV['SENTRY_DSN_BACKEND'] }
-end
-
 module Texterify
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
