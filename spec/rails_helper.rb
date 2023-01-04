@@ -13,14 +13,6 @@ end
 
 require 'rspec/rails'
 
-# Set sidekiq to an inline mode that runs the job immediately instead of enqueuing it.
-# By using the rspec-sidekiq gem this is automatically set to a fake mode where jobs are not
-# automatically excuted.
-# Learn more here:
-#   - https://github.com/philostler/rspec-sidekiq
-#   - https://github.com/mperham/sidekiq/wiki/Testing
-Sidekiq::Testing.inline!
-
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
