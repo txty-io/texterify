@@ -2,10 +2,10 @@
 <resources>
 <% @data.each do |key, value| %><% if value[:pluralization_enabled] %>  <plurals name="<%= key %>">
       <item quantity="other"><%= value[:other] %></item>
-      <item quantity="zero"><%= value[:zero] %></item>
-      <item quantity="one"><%= value[:one] %></item>
-      <item quantity="two"><%= value[:two] %></item>
-      <item quantity="few"><%= value[:few] %></item>
-      <item quantity="many"><%= value[:many] %></item>
+<% if value.key?(:zero) %>      <item quantity="zero"><%= value[:zero] %></item><% end %>
+<% if value.key?(:one) %>      <item quantity="one"><%= value[:one] %></item><% end %>
+<% if value.key?(:two) %>      <item quantity="two"><%= value[:two] %></item><% end %>
+<% if value.key?(:few) %>      <item quantity="few"><%= value[:few] %></item><% end %>
+<% if value.key?(:many) %>      <item quantity="many"><%= value[:many] %></item><% end %>
   </plurals><% else %>  <string name="<%= key %>"><%= value[:other] %></string><% end %>
 <% end %></resources>

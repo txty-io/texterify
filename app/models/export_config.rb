@@ -1,3 +1,5 @@
+require 'poparser'
+
 class AndroidTemplateData
   attr_accessor :data
 
@@ -80,31 +82,49 @@ class ExportConfig < ApplicationRecord
     language.country_code ? path.sub('{countryCode}', language.country_code.code) : path
   end
 
-  def files(language, export_data, language_source = nil, export_data_source = nil)
+  def files(
+    language,
+    export_data,
+    language_source = nil,
+    export_data_source = nil,
+    skip_empty_plural_translations: false,
+    **args
+  )
     if file_format == 'json'
-      json(language, export_data)
+      json(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
     elsif file_format == 'json-formatjs'
-      json_formatjs(language, export_data)
+      json_formatjs(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
     elsif file_format == 'typescript'
-      typescript(language, export_data)
+      typescript(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
     elsif file_format == 'android'
-      android(language, export_data)
+      android(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
     elsif file_format == 'ios'
-      ios(language, export_data)
+      ios(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
     elsif file_format == 'yaml'
-      yaml(language, export_data)
+      yaml(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
     elsif file_format == 'rails'
-      yaml(language, export_data, group_by_language_and_country_code: true)
+      yaml(
+        language,
+        export_data,
+        skip_empty_plural_translations: skip_empty_plural_translations,
+        group_by_language_and_country_code: true
+      )
     elsif file_format == 'toml'
-      toml(language, export_data)
+      toml(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
     elsif file_format == 'properties'
-      properties(language, export_data)
+      properties(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
     elsif file_format == 'po'
-      po(language, export_data)
+      po(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
     elsif file_format == 'arb'
-      arb(language, export_data)
+      arb(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
     elsif file_format == 'xliff'
-      xliff(language, export_data, language_source, export_data_source)
+      xliff(
+        language,
+        export_data,
+        language_source,
+        export_data_source,
+        skip_empty_plural_translations: skip_empty_plural_translations
+      )
     end
   end
 
@@ -139,20 +159,30 @@ class ExportConfig < ApplicationRecord
     end.public_send(:[]=, keys.last, value)
   end
 
-  def json(language, export_data)
+  def json(language, export_data, skip_empty_plural_translations: false)
     language_file = Tempfile.new(language.id.to_s)
 
     plural_data = {}
     export_data.each do |key, value|
       if value[:pluralization_enabled]
-        plural_data[key] = {
-          other: value[:other],
-          zero: value[:zero],
-          one: value[:one],
-          two: value[:two],
-          few: value[:few],
-          many: value[:many]
-        }
+        plural_data[key] = {}
+        plural_data[key][:other] = value[:other]
+
+        if !skip_empty_plural_translations || value[:zero].present?
+          plural_data[key][:zero] = value[:zero]
+        end
+        if !skip_empty_plural_translations || value[:one].present?
+          plural_data[key][:one] = value[:one]
+        end
+        if !skip_empty_plural_translations || value[:two].present?
+          plural_data[key][:two] = value[:two]
+        end
+        if !skip_empty_plural_translations || value[:few].present?
+          plural_data[key][:few] = value[:few]
+        end
+        if !skip_empty_plural_translations || value[:many].present?
+          plural_data[key][:many] = value[:many]
+        end
       else
         plural_data[key] = value[:other]
       end
@@ -175,17 +205,28 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  def json_formatjs(language, export_data)
+  def json_formatjs(language, export_data, skip_empty_plural_translations: false)
     language_file = Tempfile.new(language.id.to_s)
 
     data = {}
     export_data.each do |key, value|
       if value[:pluralization_enabled]
-        data["#{key}.zero"] = { defaultMessage: value[:zero], description: value[:description] }
-        data["#{key}.one"] = { defaultMessage: value[:one], description: value[:description] }
-        data["#{key}.two"] = { defaultMessage: value[:two], description: value[:description] }
-        data["#{key}.few"] = { defaultMessage: value[:few], description: value[:description] }
-        data["#{key}.many"] = { defaultMessage: value[:many], description: value[:description] }
+        if !skip_empty_plural_translations || value[:zero].present?
+          data["#{key}.zero"] = { defaultMessage: value[:zero], description: value[:description] }
+        end
+        if !skip_empty_plural_translations || value[:one].present?
+          data["#{key}.one"] = { defaultMessage: value[:one], description: value[:description] }
+        end
+        if !skip_empty_plural_translations || value[:two].present?
+          data["#{key}.two"] = { defaultMessage: value[:two], description: value[:description] }
+        end
+        if !skip_empty_plural_translations || value[:few].present?
+          data["#{key}.few"] = { defaultMessage: value[:few], description: value[:description] }
+        end
+        if !skip_empty_plural_translations || value[:many].present?
+          data["#{key}.many"] = { defaultMessage: value[:many], description: value[:description] }
+        end
+
         data["#{key}.other"] = { defaultMessage: value[:other], description: value[:description] }
       else
         data[key] = { defaultMessage: value[:other], description: value[:description] }
@@ -198,7 +239,7 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  def arb(language, export_data)
+  def arb(language, export_data, skip_empty_plural_translations: false)
     language_file = Tempfile.new(language.id.to_s)
 
     data = {}
@@ -224,23 +265,39 @@ class ExportConfig < ApplicationRecord
 
   # Creates an export for the Android platform.
   # Plurals: https://developer.android.com/guide/topics/resources/string-resource#Plurals
-  def android(language, export_data)
+  def android(language, export_data, skip_empty_plural_translations: false)
     template = ERB.new(File.read('app/views/templates/android.xml.erb'))
-    sanitized_data =
-      export_data.transform_values do |v|
-        # https://developer.android.com/guide/topics/resources/string-resource#escaping_quotes
-        # & and < must be escaped manually if necessary.
-        v[:other] = android_sanitize_string(v[:other])
-        v[:zero] = android_sanitize_string(v[:zero])
-        v[:one] = android_sanitize_string(v[:one])
-        v[:two] = android_sanitize_string(v[:two])
-        v[:few] = android_sanitize_string(v[:few])
-        v[:many] = android_sanitize_string(v[:many])
-        v
+    sanitized_data = {}
+    export_data.each do |k, v|
+      sanitized_data[k] = {}
+      sanitized_data[k][:pluralization_enabled] = v[:pluralization_enabled]
+
+      # https://developer.android.com/guide/topics/resources/string-resource#escaping_quotes
+      # & and < must be escaped manually if necessary.
+      sanitized_data[k][:other] = android_sanitize_string(v[:other])
+
+      if !skip_empty_plural_translations || v[:zero].present?
+        sanitized_data[k][:zero] = android_sanitize_string(v[:zero])
       end
+      if !skip_empty_plural_translations || v[:one].present?
+        sanitized_data[k][:one] = android_sanitize_string(v[:one])
+      end
+      if !skip_empty_plural_translations || v[:two].present?
+        sanitized_data[k][:two] = android_sanitize_string(v[:two])
+      end
+      if !skip_empty_plural_translations || v[:few].present?
+        sanitized_data[k][:few] = android_sanitize_string(v[:few])
+      end
+      if !skip_empty_plural_translations || v[:many].present?
+        sanitized_data[k][:many] = android_sanitize_string(v[:many])
+      end
+    end
 
     data = AndroidTemplateData.new(sanitized_data)
     output = template.result(data.get_binding)
+
+    # Remove all empty lines.
+    output.gsub!(/^$\n/, '')
 
     language_file = Tempfile.new(language.id.to_s)
     language_file.puts(output)
@@ -249,7 +306,13 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  def xliff(language, export_data, language_source = nil, export_data_source = nil)
+  def xliff(
+    language,
+    export_data,
+    language_source = nil,
+    export_data_source = nil,
+    skip_empty_plural_translations: false
+  )
     builder =
       Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
         xml.xliff version: '1.2', xmlns: 'urn:oasis:names:tc:xliff:document:1.2' do
@@ -279,7 +342,7 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  def typescript(language, export_data)
+  def typescript(language, export_data, skip_empty_plural_translations: false)
     plural_data = {}
     export_data.each do |key, value|
       if value[:pluralization_enabled]
@@ -306,7 +369,7 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  def ios(language, export_data)
+  def ios(language, export_data, skip_empty_plural_translations: false)
     files = []
 
     plural_data = {}
@@ -379,7 +442,7 @@ class ExportConfig < ApplicationRecord
     files
   end
 
-  def yaml(language, export_data, group_by_language_and_country_code: false)
+  def yaml(language, export_data, group_by_language_and_country_code: false, skip_empty_plural_translations: false)
     converted_data = {}
     export_data.each do |key, value|
       if value[:pluralization_enabled]
@@ -412,7 +475,7 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  def toml(language, export_data)
+  def toml(language, export_data, skip_empty_plural_translations: false)
     converted_data = {}
     export_data.each do |key, value|
       if value[:pluralization_enabled]
@@ -435,7 +498,7 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  def properties(language, export_data)
+  def properties(language, export_data, skip_empty_plural_translations: false)
     converted_data = {}
     export_data.each do |key, value|
       if value[:pluralization_enabled]
@@ -458,7 +521,7 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  def po(language, export_data)
+  def po(language, export_data, skip_empty_plural_translations: false)
     language_file = Tempfile.new(language.id.to_s)
     po = PoParser.parse_file(language_file)
     po_data = export_data.map { |k, v| { msgid: k, msgstr: v[:other] } }

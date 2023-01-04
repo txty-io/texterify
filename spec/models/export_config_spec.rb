@@ -2,14 +2,14 @@ require 'rails_helper'
 require 'securerandom'
 
 RSpec.describe ExportConfig, type: :model do
-  def export_data_value(text, pluralization_enabled: false)
+  def export_data_value(text, pluralization_enabled: false, empty_plurals: false)
     {
       other: text,
-      zero: 'zero text',
-      one: 'one text',
-      two: 'two text',
-      few: 'few text',
-      many: 'many text',
+      zero: empty_plurals ? '' : 'zero text',
+      one: empty_plurals ? '' : 'one text',
+      two: empty_plurals ? '' : 'two text',
+      few: empty_plurals ? '' : 'few text',
+      many: empty_plurals ? '' : 'many text',
       pluralization_enabled: pluralization_enabled,
       description: 'description text'
     }
@@ -170,6 +170,21 @@ RSpec.describe ExportConfig, type: :model do
         )
       files[0][:file].open
       expect(files[0][:file].read).to match_snapshot('create_android_file_content_plural')
+    end
+
+    it 'creates android content but skips empty plural translations' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'a': export_data_value('', pluralization_enabled: true, empty_plurals: true),
+            'c': export_data_value('', empty_plurals: true),
+            'c.a': export_data_value('e', pluralization_enabled: true, empty_plurals: true)
+          },
+          skip_empty_plural_translations: true
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('android_export_skip_empty_plural_translations')
     end
 
     it 'escapes a single quote for android' do
@@ -577,6 +592,21 @@ RSpec.describe ExportConfig, type: :model do
         )
       files[0][:file].open
       expect(files[0][:file].read).to match_snapshot('json_export_plural')
+    end
+
+    it 'creates JSON content but skips empty plural translations' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'a' => export_data_value('', pluralization_enabled: true, empty_plurals: true),
+            'c' => export_data_value('', empty_plurals: true),
+            'c.a' => export_data_value('e', pluralization_enabled: true, empty_plurals: true)
+          },
+          skip_empty_plural_translations: true
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('json_export_skip_empty_plural_translations')
     end
 
     it 'create JSON file content from parsed data with split on .' do

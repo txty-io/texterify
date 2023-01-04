@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<resources>
+  <plurals name="a">
+      <item quantity="other"></item>
+  </plurals>
+  <string name="c"></string>
+  <plurals name="c.a">
+      <item quantity="other">e</item>
+  </plurals>
+</resources>
