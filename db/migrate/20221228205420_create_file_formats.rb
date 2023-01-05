@@ -1,7 +1,7 @@
 class CreateFileFormats < ActiveRecord::Migration[6.1]
   def change
     create_table :file_formats, id: :uuid do |t|
-      t.text :format, unique: true, null: false
+      t.text :format, null: false
 
       t.timestamps
     end

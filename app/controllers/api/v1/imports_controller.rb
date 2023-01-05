@@ -89,7 +89,7 @@ class Api::V1::ImportsController < Api::V1::ApiController
     missing_format_assignments = []
     import.import_files.each do |import_file|
       file_format_name = file_format_assignments[import_file.id]
-      file_format = FileFormat.find_by(format: file_format_name)
+      file_format = FileFormat.find_by(format: file_format_name, import_support: true)
       if file_format.nil?
         missing_format_assignments.push(import_file.id)
       else
