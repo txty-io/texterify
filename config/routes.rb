@@ -18,6 +18,9 @@ Rails
       scope :v1, module: :v1 do
         mount_devise_token_auth_for 'User', at: 'auth', controllers: { registrations: 'api/v1/registrations' }
 
+        # File formats
+        get :file_formats, to: 'file_formats#index'
+
         # Machine translations
         get :machine_translations_usage, to: 'machine_translations#usage'
         get :machine_translations_target_languages, to: 'machine_translations#target_languages'

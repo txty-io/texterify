@@ -94,35 +94,63 @@ class ExportConfig < ApplicationRecord
     elsif file_format == 'json-formatjs'
       json_formatjs(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
     elsif file_format == 'typescript'
-      typescript(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
+      typescript(
+        language,
+        export_data
+        # skip_empty_plural_translations: skip_empty_plural_translations
+      )
     elsif file_format == 'android'
       android(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
     elsif file_format == 'ios'
-      ios(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
+      ios(
+        language,
+        export_data
+        # skip_empty_plural_translations: skip_empty_plural_translations
+      )
     elsif file_format == 'yaml'
-      yaml(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
+      yaml(
+        language,
+        export_data
+        # skip_empty_plural_translations: skip_empty_plural_translations
+      )
     elsif file_format == 'rails'
       yaml(
         language,
         export_data,
-        skip_empty_plural_translations: skip_empty_plural_translations,
         group_by_language_and_country_code: true
+        # skip_empty_plural_translations: skip_empty_plural_translations
       )
     elsif file_format == 'toml'
-      toml(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
+      toml(
+        language,
+        export_data
+        # skip_empty_plural_translations: skip_empty_plural_translations
+      )
     elsif file_format == 'properties'
-      properties(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
+      properties(
+        language,
+        export_data
+        # skip_empty_plural_translations: skip_empty_plural_translations
+      )
     elsif file_format == 'po'
-      po(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
+      po(
+        language,
+        export_data
+        # skip_empty_plural_translations: skip_empty_plural_translations
+      )
     elsif file_format == 'arb'
-      arb(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
+      arb(
+        language,
+        export_data
+        # skip_empty_plural_translations: skip_empty_plural_translations
+      )
     elsif file_format == 'xliff'
       xliff(
         language,
         export_data,
         language_source,
-        export_data_source,
-        skip_empty_plural_translations: skip_empty_plural_translations
+        export_data_source
+        # skip_empty_plural_translations: skip_empty_plural_translations
       )
     end
   end
