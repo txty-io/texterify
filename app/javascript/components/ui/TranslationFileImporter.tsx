@@ -1,5 +1,5 @@
 import { FileTextOutlined } from "@ant-design/icons";
-import { Button, message } from "antd";
+import { Alert, Button, message } from "antd";
 import AppleLogoBlack from "images/apple_logo_black.svg";
 import AppleLogoWhite from "images/apple_logo_white.svg";
 import ChromeLogo from "images/chrome_logo.svg";
@@ -15,12 +15,17 @@ import TOMLLogo from "images/toml_logo.svg";
 import { observer } from "mobx-react";
 import * as React from "react";
 import Dropzone from "react-dropzone";
+import { useQuery } from "react-query";
 import { useParams } from "react-router";
+import { Link } from "react-router-dom";
+import { FileFormatsAPI } from "../api/v1/FileFormatsAPI";
 import { ImportsAPI } from "../api/v1/ImportsAPI";
+import useLanguages from "../hooks/useLanguages";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
 import { ImportFileFormats } from "../utilities/ImportUtils";
 import { DropZoneWrapper } from "./DropZoneWrapper";
+import { Loading } from "./Loading";
 import { LoadingOverlay } from "./LoadingOverlay";
 
 export const SUPPORTED_FORMATS: {
@@ -251,19 +256,21 @@ msgstr "Awesome app"
     }
 ];
 
-const ACCEPTED_FILE_FORMATS = [];
-
-SUPPORTED_FORMATS.forEach((supportedFormat) => {
-    supportedFormat.formats.forEach((format) => {
-        if (!ACCEPTED_FILE_FORMATS.includes(format)) {
-            ACCEPTED_FILE_FORMATS.push(format);
-        }
-    });
-});
-
 export const TranslationFileImporter = observer(
-    (props: { style?: React.CSSProperties; fileDropOnly?: boolean; onCreateLanguageClick?(): void }) => {
-        const params = useParams<{ organizationId?: string; projectId?: string }>();
+    (props: {
+        projectId: string;
+        style?: React.CSSProperties;
+        fileDropOnly?: boolean;
+        onCreateLanguageClick?(): void;
+    }) => {
+        const { data: fileFormatExtensionsData } = useQuery("fileFormatExtensions", async ({ signal }) => {
+            const response = await FileFormatsAPI.getFileFormatExtensions({ signal });
+            return response.data;
+        });
+
+        const { languagesLoading, languagesResponse } = useLanguages(props.projectId, {
+            showAll: true
+        });
 
         const [files, setFiles] = React.useState<File[]>([]);
         const [loading, setLoading] = React.useState<boolean>(false);
@@ -273,14 +280,14 @@ export const TranslationFileImporter = observer(
 
             try {
                 const createImportResponse = await ImportsAPI.create({
-                    projectId: params.projectId,
+                    projectId: props.projectId,
                     files: files
                 });
 
                 if (createImportResponse?.data) {
                     history.push(
                         Routes.DASHBOARD.PROJECT_IMPORTS_DETAILS_RESOLVER({
-                            projectId: params.projectId,
+                            projectId: props.projectId,
                             importId: createImportResponse.data.attributes.id
                         })
                     );
@@ -295,6 +302,30 @@ export const TranslationFileImporter = observer(
             }
         }
 
+        if (languagesLoading) {
+            return <Loading />;
+        }
+
+        if (languagesResponse?.data.length === 0) {
+            return (
+                <Alert
+                    type="info"
+                    showIcon
+                    message="No language"
+                    description={
+                        <>
+                            You need to{" "}
+                            <Link to={Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", props.projectId)}>
+                                create a language
+                            </Link>{" "}
+                            before you can upload your translations.
+                        </>
+                    }
+                    style={{ ...props.style }}
+                />
+            );
+        }
+
         return (
             <>
                 <>
@@ -304,7 +335,9 @@ export const TranslationFileImporter = observer(
                                 onDrop={(acceptedFiles) => {
                                     setFiles(acceptedFiles);
                                 }}
-                                accept={ACCEPTED_FILE_FORMATS}
+                                accept={fileFormatExtensionsData?.data.map((fileFormatExtension) => {
+                                    return `.${fileFormatExtension.attributes.extension}`;
+                                })}
                             >
                                 {({ getRootProps, getInputProps }) => {
                                     return (
@@ -343,7 +376,11 @@ export const TranslationFileImporter = observer(
                                             )}
                                             <input
                                                 {...getInputProps()}
-                                                accept={ACCEPTED_FILE_FORMATS.join(",")}
+                                                accept={fileFormatExtensionsData?.data
+                                                    .map((fileFormatExtension) => {
+                                                        return `.${fileFormatExtension.attributes.extension}`;
+                                                    })
+                                                    .join(",")}
                                                 data-id="files-importer-files-uploader"
                                             />
                                         </DropZoneWrapper>

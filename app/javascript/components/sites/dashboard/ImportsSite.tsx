@@ -19,8 +19,8 @@ export function ImportsSite() {
                     <Breadcrumbs breadcrumbName="imports" />
                     <Layout.Content style={{ minHeight: 360, margin: "24px 16px 0px" }}>
                         <h2>Upload your translation files</h2>
-                        <TranslationFileImporter fileDropOnly />
-                        <ImportsTable project={dashboardStore.currentProject} />
+                        <TranslationFileImporter projectId={params.projectId} fileDropOnly />
+                        <ImportsTable style={{ marginTop: 24 }} project={dashboardStore.currentProject} />
                     </Layout.Content>
                 </div>
             </Layout>

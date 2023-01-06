@@ -1,10 +1,11 @@
 import { FileOutlined } from "@ant-design/icons";
 import { Button, Empty, Form, List, message, Select, Skeleton } from "antd";
 import React from "react";
+import { useQuery } from "react-query";
+import { FileFormatsAPI } from "../api/v1/FileFormatsAPI";
 import { IGetImportResponse, IImportFile, ImportsAPI } from "../api/v1/ImportsAPI";
 import useLanguages from "../hooks/useLanguages";
 import FlagIcon from "./FlagIcons";
-import { SUPPORTED_FORMATS } from "./TranslationFileImporter";
 
 export function ImportFileAssigner(props: {
     importResponse: IGetImportResponse;
@@ -12,12 +13,19 @@ export function ImportFileAssigner(props: {
     style?: React.CSSProperties;
     onAssigningComplete(): void;
 }) {
+    const { data: fileFormatsData } = useQuery("fileFormats", async ({ signal }) => {
+        const response = await FileFormatsAPI.getFileFormats({ signal });
+        return response.data;
+    });
+
     const { languagesResponse, languagesLoading, getCountryCodeForLanguage } = useLanguages(
         props.importResponse.data.attributes.project_id,
         {
             showAll: true
         }
     );
+
+    const [verifying, setVerifying] = React.useState<boolean>(false);
 
     const importFiles = props.importResponse.included.filter((i) => i.type === "import_file") as IImportFile[];
 
@@ -45,6 +53,7 @@ export function ImportFileAssigner(props: {
                     });
 
                     try {
+                        setVerifying(true);
                         const response = await ImportsAPI.verify({
                             projectId: props.importResponse.data.attributes.project_id,
                             importId: props.importResponse.data.id,
@@ -59,6 +68,8 @@ export function ImportFileAssigner(props: {
                     } catch (error) {
                         console.error(error);
                         message.error("Failed to verify import.");
+                    } finally {
+                        setVerifying(false);
                     }
                 }}
                 style={{ display: "flex", flexDirection: "column" }}
@@ -109,13 +120,15 @@ export function ImportFileAssigner(props: {
                                             data-import-file-id={item.id}
                                             data-import-name={item.attributes.name}
                                         >
-                                            {SUPPORTED_FORMATS.map((supportedFormat, index) => {
-                                                return (
-                                                    <Select.Option value={supportedFormat.id} key={index}>
-                                                        {supportedFormat.name}
-                                                    </Select.Option>
-                                                );
-                                            })}
+                                            {fileFormatsData?.data
+                                                .filter((fileFormat) => fileFormat.attributes.import_support)
+                                                .map((fileFormat, index) => {
+                                                    return (
+                                                        <Select.Option value={fileFormat.id} key={index}>
+                                                            {fileFormat.attributes.name}
+                                                        </Select.Option>
+                                                    );
+                                                })}
                                         </Select>
                                     </Form.Item>
                                     <Form.Item
@@ -165,6 +178,7 @@ export function ImportFileAssigner(props: {
                     htmlType="submit"
                     style={{ alignSelf: "flex-end", marginTop: 24 }}
                     data-id="import-file-assigner-import-button"
+                    loading={verifying}
                 >
                     Import
                 </Button>

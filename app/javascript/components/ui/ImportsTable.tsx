@@ -202,7 +202,7 @@ export function ImportsTable(props: { project: IProject; tableReloader?: number;
     }
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+        <div style={{ display: "flex", flexDirection: "column", minWidth: 0, ...props.style }}>
             <div style={{ display: "flex", marginBottom: 24 }}>
                 <Button
                     danger
@@ -217,7 +217,6 @@ export function ImportsTable(props: { project: IProject; tableReloader?: number;
                 </Button>
             </div>
             <Table
-                style={props.style}
                 rowSelection={{
                     onChange: (newSelectedRowKeys) => {
                         setSelectedRowKeys(newSelectedRowKeys);

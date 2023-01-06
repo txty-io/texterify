@@ -11,7 +11,7 @@ import {
 } from "../api/v1/LanguagesAPI";
 
 export default function useLanguages(projectId: string, options?: IGetLanguagesOptions) {
-    const [languagesResponse, setLanguagesResponse] = React.useState<IGetLanguagesResponse>(null);
+    const [languagesResponse, setLanguagesResponse] = React.useState<IGetLanguagesResponse | null>(null);
     const [languagesError, setLanguagesError] = React.useState(null);
     const [languagesLoading, setLanguagesLoading] = React.useState(false);
 
@@ -36,8 +36,8 @@ export default function useLanguages(projectId: string, options?: IGetLanguagesO
         });
     }
 
-    function getCountryCodeForLanguage(language: ILanguage): ICountryCode {
-        if (!language || !languagesResponse) {
+    function getCountryCodeForLanguage(language: ILanguage): ICountryCode | null {
+        if (!language.relationships.country_code.data || !languagesResponse) {
             return null;
         }
 
