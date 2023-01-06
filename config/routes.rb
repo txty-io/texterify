@@ -19,7 +19,8 @@ Rails
         mount_devise_token_auth_for 'User', at: 'auth', controllers: { registrations: 'api/v1/registrations' }
 
         # File formats
-        get :file_formats, to: 'file_formats#index'
+        get :file_formats, to: 'file_formats#file_formats'
+        get :file_format_extensions, to: 'file_formats#file_format_extensions'
 
         # Machine translations
         get :machine_translations_usage, to: 'machine_translations#usage'

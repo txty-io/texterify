@@ -7,7 +7,8 @@ formats = [
     import_support: true,
     export_support: true,
     plural_support: true,
-    skip_empty_plural_translations_support: true
+    skip_empty_plural_translations_support: true,
+    file_format_extensions: ['json']
   },
   {
     format: 'json-formatjs',
@@ -15,7 +16,8 @@ formats = [
     import_support: true,
     export_support: true,
     plural_support: true,
-    skip_empty_plural_translations_support: true
+    skip_empty_plural_translations_support: true,
+    file_format_extensions: ['json']
   },
   {
     format: 'json-poeditor',
@@ -23,7 +25,8 @@ formats = [
     import_support: true,
     export_support: true,
     plural_support: true,
-    skip_empty_plural_translations_support: true
+    skip_empty_plural_translations_support: true,
+    file_format_extensions: ['json']
   },
   {
     format: 'ios',
@@ -31,7 +34,8 @@ formats = [
     import_support: true,
     export_support: true,
     plural_support: true,
-    skip_empty_plural_translations_support: false
+    skip_empty_plural_translations_support: false,
+    file_format_extensions: ['strings']
   },
   {
     format: 'toml',
@@ -39,7 +43,8 @@ formats = [
     import_support: true,
     export_support: true,
     plural_support: true,
-    skip_empty_plural_translations_support: false
+    skip_empty_plural_translations_support: false,
+    file_format_extensions: ['toml']
   },
   {
     format: 'properties',
@@ -47,7 +52,8 @@ formats = [
     import_support: true,
     export_support: true,
     plural_support: true,
-    skip_empty_plural_translations_support: false
+    skip_empty_plural_translations_support: false,
+    file_format_extensions: ['properties']
   },
   {
     format: 'po',
@@ -55,7 +61,8 @@ formats = [
     import_support: true,
     export_support: true,
     plural_support: false,
-    skip_empty_plural_translations_support: false
+    skip_empty_plural_translations_support: false,
+    file_format_extensions: ['po']
   },
   {
     format: 'arb',
@@ -63,7 +70,8 @@ formats = [
     import_support: true,
     export_support: true,
     plural_support: false,
-    skip_empty_plural_translations_support: false
+    skip_empty_plural_translations_support: false,
+    file_format_extensions: ['arb']
   },
   {
     format: 'xliff',
@@ -71,7 +79,8 @@ formats = [
     import_support: true,
     export_support: true,
     plural_support: false,
-    skip_empty_plural_translations_support: false
+    skip_empty_plural_translations_support: false,
+    file_format_extensions: ['xlf', 'xliff']
   },
   {
     format: 'rails',
@@ -79,7 +88,8 @@ formats = [
     import_support: true,
     export_support: true,
     plural_support: true,
-    skip_empty_plural_translations_support: true
+    skip_empty_plural_translations_support: true,
+    file_format_extensions: ['yml', 'yaml']
   },
   {
     format: 'yaml',
@@ -87,7 +97,8 @@ formats = [
     import_support: true,
     export_support: true,
     plural_support: true,
-    skip_empty_plural_translations_support: false
+    skip_empty_plural_translations_support: false,
+    file_format_extensions: ['yml', 'yaml']
   },
   {
     format: 'typescript',
@@ -95,7 +106,8 @@ formats = [
     import_support: false,
     export_support: true,
     plural_support: true,
-    skip_empty_plural_translations_support: false
+    skip_empty_plural_translations_support: false,
+    file_format_extensions: ['ts']
   },
   {
     format: 'android',
@@ -103,7 +115,8 @@ formats = [
     import_support: false,
     export_support: true,
     plural_support: true,
-    skip_empty_plural_translations_support: true
+    skip_empty_plural_translations_support: true,
+    file_format_extensions: ['xml']
   }
 ]
 
@@ -112,14 +125,15 @@ file_formats_updated = 0
 formats.each do |format|
   file_format = FileFormat.find_by(format: format[:format])
   if file_format.nil?
-    FileFormat.create!(
-      format: format[:format],
-      name: format[:name],
-      import_support: format[:import_support],
-      export_support: format[:export_support],
-      plural_support: format[:plural_support],
-      skip_empty_plural_translations_support: format[:skip_empty_plural_translations_support]
-    )
+    file_format =
+      FileFormat.create!(
+        format: format[:format],
+        name: format[:name],
+        import_support: format[:import_support],
+        export_support: format[:export_support],
+        plural_support: format[:plural_support],
+        skip_empty_plural_translations_support: format[:skip_empty_plural_translations_support]
+      )
     file_formats_created += 1
   else
     file_format.update!(
@@ -130,6 +144,14 @@ formats.each do |format|
       skip_empty_plural_translations_support: format[:skip_empty_plural_translations_support]
     )
     file_formats_updated += 1
+  end
+
+  format[:file_format_extensions].each do |extension|
+    file_format_extension = FileFormatExtension.find_or_create_by!(extension: extension)
+    FileFormatFileFormatExtension.find_or_create_by!(
+      file_format_id: file_format.id,
+      file_format_extension_id: file_format_extension.id
+    )
   end
 end
 

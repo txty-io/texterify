@@ -1,0 +1,384 @@
+{
+  "data" => [
+    [ 0] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "android",
+                                          "name" => "Android",
+                                "import_support" => false,
+                                "export_support" => true,
+                                "plural_support" => true,
+        "skip_empty_plural_translations_support" => true
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [ 1] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "arb",
+                                          "name" => "Flutter .arb",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => false,
+        "skip_empty_plural_translations_support" => false
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [ 2] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "ios",
+                                          "name" => "iOS",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => true,
+        "skip_empty_plural_translations_support" => false
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [ 3] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "properties",
+                                          "name" => "Java .properties",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => true,
+        "skip_empty_plural_translations_support" => false
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [ 4] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "json",
+                                          "name" => "JSON",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => true,
+        "skip_empty_plural_translations_support" => true
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [ 5] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "json-chrome",
+                                          "name" => "JSON Chrome",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => true,
+        "skip_empty_plural_translations_support" => true
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [ 6] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "json-formatjs",
+                                          "name" => "JSON Format.js",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => true,
+        "skip_empty_plural_translations_support" => true
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [ 7] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "json-poeditor",
+                                          "name" => "JSON POEditor",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => true,
+        "skip_empty_plural_translations_support" => true
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [ 8] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "po",
+                                          "name" => "PO",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => false,
+        "skip_empty_plural_translations_support" => false
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [ 9] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "po-django",
+                                          "name" => "PO Django",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => false,
+        "skip_empty_plural_translations_support" => false
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [10] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "rails",
+                                          "name" => "Ruby on Rails",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => true,
+        "skip_empty_plural_translations_support" => true
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            },
+            [1] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [11] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "toml",
+                                          "name" => "TOML",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => true,
+        "skip_empty_plural_translations_support" => false
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [12] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "toml-go-i18n",
+                                          "name" => "TOML go-i18n",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => true,
+        "skip_empty_plural_translations_support" => false
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [13] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "typescript",
+                                          "name" => "TypeScript",
+                                "import_support" => false,
+                                "export_support" => true,
+                                "plural_support" => true,
+        "skip_empty_plural_translations_support" => false
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [14] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "xliff",
+                                          "name" => "XLIFF .xlf, .xliff",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => false,
+        "skip_empty_plural_translations_support" => false
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            },
+            [1] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [15] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "yaml",
+                                          "name" => "YAML",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => true,
+        "skip_empty_plural_translations_support" => false
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            },
+            [1] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

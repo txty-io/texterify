@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_05_135403) do
+ActiveRecord::Schema.define(version: 2023_01_06_112552) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -130,6 +130,13 @@ ActiveRecord::Schema.define(version: 2023_01_05_135403) do
     t.index ["project_id"], name: "index_export_configs_on_project_id"
   end
 
+  create_table "file_format_extensions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "extension", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["extension"], name: "index_file_format_extensions_unique", unique: true
+  end
+
   create_table "file_formats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "format", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -140,6 +147,16 @@ ActiveRecord::Schema.define(version: 2023_01_05_135403) do
     t.boolean "skip_empty_plural_translations_support", default: false, null: false
     t.text "name", default: "", null: false
     t.index ["format"], name: "index_file_formats_on_format", unique: true
+  end
+
+  create_table "file_formats_file_format_extensions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "file_format_id", null: false
+    t.uuid "file_format_extension_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["file_format_extension_id"], name: "index_file_format_extensions_join_table_format_extension_id"
+    t.index ["file_format_id", "file_format_extension_id"], name: "index_file_format_extensions_join_table_unique", unique: true
+    t.index ["file_format_id"], name: "index_file_format_extensions_join_table_format_id"
   end
 
   create_table "flavors", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -669,6 +686,8 @@ ActiveRecord::Schema.define(version: 2023_01_05_135403) do
   add_foreign_key "custom_subscriptions", "organizations", on_delete: :nullify
   add_foreign_key "export_configs", "flavors", on_delete: :cascade
   add_foreign_key "export_configs", "projects", on_delete: :cascade
+  add_foreign_key "file_formats_file_format_extensions", "file_format_extensions", on_delete: :cascade
+  add_foreign_key "file_formats_file_format_extensions", "file_formats", on_delete: :cascade
   add_foreign_key "flavors", "projects", on_delete: :cascade
   add_foreign_key "forbidden_words", "forbidden_words_lists", on_delete: :cascade
   add_foreign_key "forbidden_words_lists", "country_codes", on_delete: :cascade
