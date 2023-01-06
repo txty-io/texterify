@@ -2,6 +2,7 @@ import * as queryString from "query-string";
 import { authStore } from "../../stores/AuthStore";
 import { APIUtils } from "../v1/APIUtils";
 import { IAuthData } from "./AuthAPI";
+import axios from "axios";
 
 export interface IFetchOptions {
     signal?: AbortSignal;
@@ -82,6 +83,22 @@ async function request(options: {
 
     return response && !options.isFileDownload ? response.json() : response;
 }
+
+export const axiosInstance = axios.create({
+    baseURL: `/${API_BASE_URL}/${API_VERSION}/`,
+    timeout: 1000,
+    headers: DEFAULT_HEADERS
+});
+
+axiosInstance.interceptors.request.use((config) => {
+    if (config.headers) {
+        config.headers["client"] = authStore.client;
+        config.headers["access-token"] = authStore.accessToken;
+        config.headers["uid"] = authStore.currentUser && authStore.currentUser.email;
+    }
+
+    return config;
+});
 
 const API = {
     getRequest: (
