@@ -39,7 +39,7 @@
     "camelcase": "off",
     "complexity": "off",
     "constructor-super": "error",
-    "dot-notation": "error",
+    "dot-notation": "off",
     "eqeqeq": "error",
     "guard-for-in": "error",
     "id-match": "error",
