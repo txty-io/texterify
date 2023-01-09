@@ -71,7 +71,7 @@ RSpec.describe Api::V1::ExportConfigsController, type: :request do
       post "/api/v1/projects/#{@project.id}/export_configs",
            params: {
              name: name,
-             file_format: 'json'
+             file_format_id: FileFormat.find_by!(format: 'json').id
            },
            headers: @auth_params,
            as: :json
@@ -85,7 +85,7 @@ RSpec.describe Api::V1::ExportConfigsController, type: :request do
       post "/api/v1/projects/#{@project.id}/export_configs",
            params: {
              name: '',
-             file_format: 'json'
+             file_format_id: FileFormat.find_by!(format: 'json').id
            },
            headers: @auth_params,
            as: :json
@@ -102,7 +102,7 @@ RSpec.describe Api::V1::ExportConfigsController, type: :request do
            params: {
              name: name,
              file_path: file_path,
-             file_format: 'json'
+             file_format_id: FileFormat.find_by!(format: 'json').id
            },
            headers: @auth_params,
            as: :json
@@ -159,7 +159,8 @@ RSpec.describe Api::V1::ExportConfigsController, type: :request do
       put "/api/v1/projects/#{@project.id}/export_configs/#{export_config.id}",
           params: {
             name: name,
-            disable_translation_for_translators: true
+            disable_translation_for_translators: true,
+            file_format_id: FileFormat.find_by!(format: 'android').id
           },
           headers: @auth_params,
           as: :json

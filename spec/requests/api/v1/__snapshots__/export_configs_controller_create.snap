@@ -5,17 +5,7 @@
        "attributes" => {
                                           "id" => "__REMOVED__",
                                         "name" => "Test Name",
-                                 "file_format" => {
-                                            "id" => "__REMOVED__",
-                                        "format" => "json",
-                                    "created_at" => "__REMOVED__",
-                                    "updated_at" => "__REMOVED__",
-                                "import_support" => true,
-                                "export_support" => true,
-                                "plural_support" => true,
-        "skip_empty_plural_translations_support" => true,
-                                          "name" => "JSON"
-      },
+                              "file_format_id" => "980232ec-a156-4f19-8b92-b2025412ef5f",
                                    "flavor_id" => nil,
                                    "file_path" => "file_path",
                        "file_path_stringsdict" => nil,
@@ -30,6 +20,12 @@
       },
                 "flavor" => {
         "data" => nil
+      },
+           "file_format" => {
+        "data" => {
+            "id" => "__REMOVED__",
+          "type" => "file_format"
+        }
       }
     }
   },
