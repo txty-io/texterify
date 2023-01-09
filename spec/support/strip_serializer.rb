@@ -3,6 +3,7 @@ class StripSerializer
     clear(data, 'id')
     clear(data, 'organization_id')
     clear(data, 'project_id')
+    clear(data, 'file_format_id')
     clear(data, 'trial_ends_at')
     clear(data, 'texterify_timestamp')
     clear(data, 'created_at')
