@@ -1,13 +1,13 @@
 import { Button, Form, Input } from "antd";
 import { FormInstance } from "antd/lib/form";
 import * as React from "react";
+import { IImportFileFormat } from "../api/v1/FileFormatsAPI";
 import { FlavorsAPI, IFlavor } from "../api/v1/FlavorsAPI";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
-import { ImportFileFormats } from "../utilities/ImportUtils";
 
 interface IFormValues {
     name: string;
-    fileFormat: ImportFileFormats;
+    fileFormat: IImportFileFormat;
     filePath: string;
     defaultLanguageFilePath: string;
     splitOn: string;

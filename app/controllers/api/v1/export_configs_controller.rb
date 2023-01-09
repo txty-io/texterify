@@ -23,7 +23,7 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
 
     export_config = ExportConfig.new(export_config_params)
     export_config.project = project
-    export_config.file_format = FileFormat.find_by!(format: params[:file_format])
+    export_config.file_format_id = FileFormat.find_by!(id: params[:file_format_id], export_support: true).id
 
     authorize export_config
 
@@ -41,8 +41,8 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     export_config = project.export_configs.find(params[:id])
 
-    if params[:file_format]
-      export_config.file_format = FileFormat.find_by!(format: params[:file_format])
+    if params[:file_format_id]
+      export_config.file_format_id = FileFormat.find_by!(id: params[:file_format_id], export_support: true).id
     end
 
     authorize export_config

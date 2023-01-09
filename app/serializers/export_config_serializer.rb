@@ -2,7 +2,7 @@ class ExportConfigSerializer
   include FastJsonapi::ObjectSerializer
   attributes :id,
              :name,
-             :file_format,
+             :file_format_id,
              :flavor_id,
              :file_path,
              :file_path_stringsdict,
@@ -13,4 +13,5 @@ class ExportConfigSerializer
 
   has_many :language_configs
   belongs_to :flavor
+  belongs_to :file_format
 end

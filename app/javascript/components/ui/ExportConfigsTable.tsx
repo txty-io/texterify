@@ -1,8 +1,10 @@
 import { Button, Empty, message, Modal, Table, Tooltip } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import * as React from "react";
+import { useQuery } from "react-query";
 import { APIUtils } from "../api/v1/APIUtils";
 import { ExportConfigsAPI, IExportConfig, IGetExportConfigsResponse } from "../api/v1/ExportConfigsAPI";
+import { FileFormatsAPI, IFileFormat, IGetFileFormatsResponse } from "../api/v1/FileFormatsAPI";
 import { IFlavor } from "../api/v1/FlavorsAPI";
 import { IGetLanguagesOptions } from "../api/v1/LanguagesAPI";
 import { IProject } from "../api/v1/ProjectsAPI";
@@ -31,9 +33,9 @@ const prettifyFilePath = (path: string) => {
         >
             {splitted.map((split, index) => {
                 if (split === "{languageCode}") {
-                    return <LanguageCodeWithTooltip />;
+                    return <LanguageCodeWithTooltip key={index} />;
                 } else if (split === "{countryCode}") {
-                    return <CountryCodeWithTooltip />;
+                    return <CountryCodeWithTooltip key={index} />;
                 } else {
                     return <span key={index}>{split}</span>;
                 }
@@ -42,10 +44,10 @@ const prettifyFilePath = (path: string) => {
     );
 };
 
-const getFileFormatName = (fileFormat: string) => {
-    return FileFormatOptions.find((fileFormatOption) => {
-        return fileFormatOption.value === fileFormat;
-    }).text;
+const getFileFormatName = (fileFormatsData: IGetFileFormatsResponse | undefined, exportConfig: IExportConfig) => {
+    return fileFormatsData?.data.find((fileFormat) => {
+        return fileFormat.attributes.id === exportConfig.attributes.file_format_id;
+    })?.attributes.name;
 };
 
 export function ExportConfigsTable(props: { project: IProject; tableReloader?: number; style?: React.CSSProperties }) {
@@ -57,6 +59,11 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
     const [exportConfigResponse, setExportConfigResponse] = React.useState<IGetExportConfigsResponse>(null);
     const [exportConfigsLoading, setLanguagesLoading] = React.useState<boolean>(false);
     const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
+
+    const { data: fileFormatsData } = useQuery("fileFormats", async ({ signal }) => {
+        const response = await FileFormatsAPI.getFileFormats({ signal });
+        return response.data;
+    });
 
     async function reload(options?: IGetLanguagesOptions) {
         setLanguagesLoading(true);
@@ -92,6 +99,11 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
                 exportConfigResponse.included
             );
 
+            const fileFormat: IFileFormat | undefined = APIUtils.getIncludedObject(
+                exportConfig.relationships.file_format?.data,
+                exportConfigResponse.included
+            );
+
             return {
                 key: exportConfig.id,
                 name: exportConfig.attributes.name,
@@ -103,8 +115,8 @@ export function ExportConfigsTable(props: { project: IProject; tableReloader?: n
                 flavor: flavor?.attributes.name,
                 fileFormat: (
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                        {getFileFormatName(exportConfig.attributes.file_format)}
-                        {exportConfig.attributes.file_format === "json" && exportConfig.attributes.split_on && (
+                        {getFileFormatName(fileFormatsData, exportConfig)}
+                        {fileFormat?.attributes.format === "json" && exportConfig.attributes.split_on && (
                             <div style={{ marginTop: 16 }}>
                                 <h4 style={{ fontWeight: "bold" }}>Split keys on:</h4>
                                 {exportConfig.attributes.split_on}

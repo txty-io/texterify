@@ -3,10 +3,11 @@ import { Button, Empty, Form, Input, Modal, Select, Table } from "antd";
 import { FormInstance } from "antd/lib/form";
 import Paragraph from "antd/lib/typography/Paragraph";
 import * as React from "react";
+import { useQuery } from "react-query";
 import { APIUtils } from "../api/v1/APIUtils";
 import { ExportConfigsAPI, IExportConfig } from "../api/v1/ExportConfigsAPI";
+import { FileFormatsAPI } from "../api/v1/FileFormatsAPI";
 import { LanguageConfigsAPI } from "../api/v1/LanguageConfigsAPI";
-import { FileFormatOptions } from "../configs/FileFormatOptions";
 import useFlavors from "../hooks/useFlavors";
 import useLanguageConfigs from "../hooks/useLanguageConfigs";
 import useLanguages from "../hooks/useLanguages";
@@ -14,12 +15,11 @@ import { CountryCodeWithTooltip } from "../ui/CountryCodeWithTooltip";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import FlagIcon from "../ui/FlagIcons";
 import { LanguageCodeWithTooltip } from "../ui/LanguageCodeWithTooltip";
-import { ImportFileFormats } from "../utilities/ImportUtils";
 import { AddEditExportConfigLanguageForm, ICreateUpdateLanguageConfig } from "./AddEditExportConfigLanguageForm";
 
 interface IFormValues {
     name: string;
-    fileFormat: ImportFileFormats;
+    fileFormatId: string;
     flavorId: string;
     filePath: string;
     defaultLanguageFilePath: string;
@@ -40,25 +40,29 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
     const formRef = React.createRef<FormInstance>();
 
     const [languageConfigsToCreate, setLanguageConfigsToCreate] = React.useState<ICreateUpdateLanguageConfig[]>([]);
-    const [selectedFileFormat, setSelectedFileFormat] = React.useState<ImportFileFormats | null>(null);
+    const [selectedFileFormatId, setSelectedFileFormatId] = React.useState<string | undefined>(
+        props.exportConfigToEdit?.attributes.file_format_id
+    );
     const [addEditExportConfigLanguageConfigOpen, setAddEditExportConfigLanguageConfigOpen] =
         React.useState<boolean>(false);
     const [exportConfigLanguageConfigToEdit, setExportConfigLanguageConfigToEdit] =
-        React.useState<ICreateUpdateLanguageConfig>(null);
+        React.useState<ICreateUpdateLanguageConfig | undefined>(undefined);
     const [flavorSearch, setFlavorSearch] = React.useState<string>("");
 
-    const { languagesResponse, languagesLoading, getLanguageForId, getCountryCodeForLanguage } = useLanguages(
-        props.projectId,
-        {
-            showAll: true
-        }
-    );
+    const { languagesResponse, languagesLoading } = useLanguages(props.projectId, {
+        showAll: true
+    });
     const { flavorsResponse, flavorsLoading } = useFlavors(props.projectId, { search: flavorSearch });
     const { languageConfigsResponse, languageConfigsLoading, languageConfigsForceReload } = useLanguageConfigs({
         options: {
             projectId: props.projectId,
             exportConfigId: props.exportConfigToEdit?.id
         }
+    });
+
+    const { data: fileFormatsData } = useQuery("fileFormats", async ({ signal }) => {
+        const response = await FileFormatsAPI.getFileFormats({ signal });
+        return response.data;
     });
 
     const handleSubmit = async (values: IFormValues) => {
@@ -68,7 +72,7 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
             response = await ExportConfigsAPI.updateExportConfig({
                 projectId: props.projectId,
                 defaultLanguageFilePath: values.defaultLanguageFilePath,
-                fileFormat: values.fileFormat,
+                fileFormatId: values.fileFormatId,
                 exportConfigId: props.exportConfigToEdit.id,
                 flavorId: values.flavorId,
                 filePath: values.filePath,
@@ -79,7 +83,7 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
             response = await ExportConfigsAPI.createExportConfig({
                 projectId: props.projectId,
                 defaultLanguageFilePath: values.defaultLanguageFilePath,
-                fileFormat: values.fileFormat,
+                fileFormatId: values.fileFormatId,
                 flavorId: values.flavorId,
                 filePath: values.filePath,
                 name: values.name,
@@ -244,6 +248,10 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
         ];
     };
 
+    const selectedFileFormat = fileFormatsData?.data.find(
+        (fileFormat) => fileFormat.attributes.id === selectedFileFormatId
+    );
+
     return (
         <>
             <Form
@@ -251,20 +259,23 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
                 onFinish={handleSubmit}
                 id={props.formId}
                 initialValues={
-                    props.exportConfigToEdit && {
+                    props.exportConfigToEdit &&
+                    ({
                         name: props.exportConfigToEdit.attributes.name,
                         splitOn: props.exportConfigToEdit.attributes.split_on,
-                        fileFormat: props.exportConfigToEdit.attributes.file_format,
                         flavorId: props.exportConfigToEdit.attributes.flavor_id,
                         filePath: props.exportConfigToEdit.attributes.file_path,
-                        defaultLanguageFilePath: props.exportConfigToEdit.attributes.default_language_file_path
-                    }
+                        defaultLanguageFilePath: props.exportConfigToEdit.attributes.default_language_file_path,
+                        skipEmptyPluralTranslations: props.exportConfigToEdit.attributes.skip_empty_plural_translations,
+                        fileFormatId: props.exportConfigToEdit.attributes.file_format_id
+                    } as IFormValues)
                 }
                 onValuesChange={(changedValues: IFormValues) => {
-                    if (changedValues.fileFormat) {
-                        setSelectedFileFormat(changedValues.fileFormat);
+                    if (changedValues.fileFormatId) {
+                        setSelectedFileFormatId(changedValues.fileFormatId);
                     }
                 }}
+                style={{ display: "flex" }}
             >
                 <div style={{ width: "50%", marginRight: 40 }}>
                     <h3>Name *</h3>
@@ -283,7 +294,7 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
 
                     <h3>File format *</h3>
                     <Form.Item
-                        name="fileFormat"
+                        name="fileFormatId"
                         rules={[
                             {
                                 required: true,
@@ -299,17 +310,19 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
                             filterOption
                             style={{ width: "100%" }}
                         >
-                            {FileFormatOptions.map((fileFormat, index) => {
-                                return (
-                                    <Select.Option value={fileFormat.value} key={index}>
-                                        {fileFormat.text}
-                                    </Select.Option>
-                                );
-                            })}
+                            {fileFormatsData?.data
+                                .filter((fileFormat) => fileFormat.attributes.export_support)
+                                .map((fileFormat) => {
+                                    return (
+                                        <Select.Option value={fileFormat.id} key={fileFormat.id}>
+                                            {fileFormat.attributes.name}
+                                        </Select.Option>
+                                    );
+                                })}
                         </Select>
                     </Form.Item>
 
-                    {selectedFileFormat === "json" && (
+                    {selectedFileFormat?.attributes.format === "json" && (
                         <>
                             <h3>Split keys on</h3>
                             <p>

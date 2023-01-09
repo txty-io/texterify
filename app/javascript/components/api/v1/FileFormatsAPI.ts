@@ -1,5 +1,19 @@
 import { axiosInstance } from "./API";
 
+export type IImportFileFormat =
+    | "json"
+    | "json-formatjs"
+    | "json-poeditor"
+    | "ios"
+    | "android"
+    | "toml"
+    | "rails"
+    | "properties"
+    | "po"
+    | "arb"
+    | "yaml"
+    | "xliff";
+
 export interface IFileFormatExtension {
     id: string;
     type: "file_format_extension";
@@ -15,7 +29,7 @@ export interface IFileFormat {
     attributes: {
         id: string;
         name: string;
-        format: string;
+        format: IImportFileFormat;
         import_support: boolean;
         export_support: boolean;
         plural_support: boolean;

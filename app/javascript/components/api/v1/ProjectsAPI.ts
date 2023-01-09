@@ -3,9 +3,9 @@ import { IFeature } from "../../types/IFeature";
 import { IPlanIDS } from "../../types/IPlan";
 import { IUserRole } from "../../types/IUserRole";
 import { IErrorsResponse } from "../../ui/ErrorUtils";
-import { ImportFileFormats } from "../../utilities/ImportUtils";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
+import { IImportFileFormat } from "./FileFormatsAPI";
 
 interface IProjectAttributes {
     id: string;
@@ -174,7 +174,7 @@ const ProjectsAPI = {
         languageId: string;
         file: any;
         flavorId: string;
-        fileFormat: ImportFileFormats;
+        fileFormat: IImportFileFormat;
     }) => {
         const fileBase64 = await getBase64(options.file);
 

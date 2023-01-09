@@ -86,7 +86,6 @@ async function request(options: {
 
 export const axiosInstance = axios.create({
     baseURL: `/${API_BASE_URL}/${API_VERSION}/`,
-    timeout: 1000,
     headers: DEFAULT_HEADERS
 });
 

@@ -15,6 +15,12 @@ export interface IExportConfigRelationships {
             type: "flavor";
         };
     };
+    file_format: {
+        data: {
+            id: string;
+            type: "file_format";
+        };
+    };
 }
 
 export interface IExportConfig {
@@ -23,7 +29,7 @@ export interface IExportConfig {
     attributes: {
         id: string;
         name: string;
-        file_format: string;
+        file_format_id: string;
         flavor_id: string;
         file_path: string;
         default_language_file_path: string;
@@ -63,7 +69,7 @@ const ExportConfigsAPI = {
 
     createExportConfig: async (options: {
         projectId: string;
-        fileFormat: string;
+        fileFormatId: string;
         name: string;
         flavorId: string;
         filePath: string;
@@ -73,7 +79,7 @@ const ExportConfigsAPI = {
         return API.postRequest(`projects/${options.projectId}/export_configs`, true, {
             name: options.name,
             language_id: options.projectId,
-            file_format: options.fileFormat,
+            file_format_id: options.fileFormatId,
             flavor_id: options.flavorId,
             file_path: options.filePath,
             default_language_file_path: options.defaultLanguageFilePath,
@@ -86,7 +92,7 @@ const ExportConfigsAPI = {
     updateExportConfig: async (options: {
         projectId: string;
         exportConfigId: string;
-        fileFormat: string;
+        fileFormatId: string;
         name: string;
         flavorId: string;
         filePath: string;
@@ -96,7 +102,7 @@ const ExportConfigsAPI = {
         return API.putRequest(`projects/${options.projectId}/export_configs/${options.exportConfigId}`, true, {
             name: options.name,
             language_id: options.projectId,
-            file_format: options.fileFormat,
+            file_format_id: options.fileFormatId,
             flavor_id: options.flavorId,
             file_path: options.filePath,
             default_language_file_path: options.defaultLanguageFilePath,
