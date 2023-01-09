@@ -1,5 +1,8 @@
 FactoryBot.define do
   factory :file_format do
-    format { 'Format text' }
+    name { 'name' }
+    sequence :format do |n|
+      "format #{n}"
+    end
   end
 end

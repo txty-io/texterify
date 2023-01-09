@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_06_112552) do
+ActiveRecord::Schema.define(version: 2023_01_06_185236) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -120,11 +120,13 @@ ActiveRecord::Schema.define(version: 2023_01_06_112552) do
     t.uuid "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "file_format", null: false
     t.string "split_on"
     t.string "file_path_stringsdict"
     t.string "default_language_file_path_stringsdict"
     t.uuid "flavor_id"
+    t.boolean "skip_empty_plural_translations", default: false, null: false
+    t.uuid "file_format_id", null: false
+    t.index ["file_format_id"], name: "index_export_configs_on_file_format_id"
     t.index ["flavor_id"], name: "index_export_configs_on_flavor_id"
     t.index ["project_id", "name"], name: "index_export_configs_on_project_id_and_name", unique: true
     t.index ["project_id"], name: "index_export_configs_on_project_id"
@@ -684,6 +686,7 @@ ActiveRecord::Schema.define(version: 2023_01_06_112552) do
   add_foreign_key "background_jobs", "projects", on_delete: :cascade
   add_foreign_key "background_jobs", "users", on_delete: :nullify
   add_foreign_key "custom_subscriptions", "organizations", on_delete: :nullify
+  add_foreign_key "export_configs", "file_formats"
   add_foreign_key "export_configs", "flavors", on_delete: :cascade
   add_foreign_key "export_configs", "projects", on_delete: :cascade
   add_foreign_key "file_formats_file_format_extensions", "file_format_extensions", on_delete: :cascade

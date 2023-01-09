@@ -4,8 +4,8 @@ FactoryBot.define do
       "Test Export Config #{n}"
     end
 
-    file_format { 'json' }
     file_path { 'path' }
     project_id { nil }
+    file_format_id { nil }
   end
 end

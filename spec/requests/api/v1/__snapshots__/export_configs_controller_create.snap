@@ -5,13 +5,24 @@
        "attributes" => {
                                           "id" => "__REMOVED__",
                                         "name" => "Test Name",
-                                 "file_format" => "file_format",
+                                 "file_format" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "json",
+                                    "created_at" => "__REMOVED__",
+                                    "updated_at" => "__REMOVED__",
+                                "import_support" => true,
+                                "export_support" => true,
+                                "plural_support" => true,
+        "skip_empty_plural_translations_support" => true,
+                                          "name" => "JSON"
+      },
                                    "flavor_id" => nil,
                                    "file_path" => "file_path",
                        "file_path_stringsdict" => nil,
                   "default_language_file_path" => nil,
       "default_language_file_path_stringsdict" => nil,
-                                    "split_on" => nil
+                                    "split_on" => nil,
+              "skip_empty_plural_translations" => false
     },
     "relationships" => {
       "language_configs" => {

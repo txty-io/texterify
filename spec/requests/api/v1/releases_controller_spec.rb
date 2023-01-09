@@ -5,7 +5,8 @@ RSpec.describe Api::V1::ReleasesController, type: :request do
     @user = create(:user)
     @auth_params = sign_in(@user)
     @project = create(:project, :with_organization)
-    @export_config = create(:export_config, project_id: @project.id)
+    @export_config =
+      create(:export_config, project_id: @project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
     @export_config.save!
 
     project_user = ProjectUser.new

@@ -120,29 +120,6 @@
                "type" => "file_format",
          "attributes" => {
                                             "id" => "__REMOVED__",
-                                        "format" => "json-chrome",
-                                          "name" => "JSON Chrome",
-                                "import_support" => true,
-                                "export_support" => true,
-                                "plural_support" => true,
-        "skip_empty_plural_translations_support" => true
-      },
-      "relationships" => {
-        "file_format_extensions" => {
-          "data" => [
-            [0] {
-                "id" => "__REMOVED__",
-              "type" => "file_format_extension"
-            }
-          ]
-        }
-      }
-    },
-    [ 6] {
-                 "id" => "__REMOVED__",
-               "type" => "file_format",
-         "attributes" => {
-                                            "id" => "__REMOVED__",
                                         "format" => "json-formatjs",
                                           "name" => "JSON Format.js",
                                 "import_support" => true,
@@ -161,7 +138,7 @@
         }
       }
     },
-    [ 7] {
+    [ 6] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -184,7 +161,7 @@
         }
       }
     },
-    [ 8] {
+    [ 7] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -207,30 +184,7 @@
         }
       }
     },
-    [ 9] {
-                 "id" => "__REMOVED__",
-               "type" => "file_format",
-         "attributes" => {
-                                            "id" => "__REMOVED__",
-                                        "format" => "po-django",
-                                          "name" => "PO Django",
-                                "import_support" => true,
-                                "export_support" => true,
-                                "plural_support" => false,
-        "skip_empty_plural_translations_support" => false
-      },
-      "relationships" => {
-        "file_format_extensions" => {
-          "data" => [
-            [0] {
-                "id" => "__REMOVED__",
-              "type" => "file_format_extension"
-            }
-          ]
-        }
-      }
-    },
-    [10] {
+    [ 8] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -257,7 +211,7 @@
         }
       }
     },
-    [11] {
+    [ 9] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -280,30 +234,7 @@
         }
       }
     },
-    [12] {
-                 "id" => "__REMOVED__",
-               "type" => "file_format",
-         "attributes" => {
-                                            "id" => "__REMOVED__",
-                                        "format" => "toml-go-i18n",
-                                          "name" => "TOML go-i18n",
-                                "import_support" => true,
-                                "export_support" => true,
-                                "plural_support" => true,
-        "skip_empty_plural_translations_support" => false
-      },
-      "relationships" => {
-        "file_format_extensions" => {
-          "data" => [
-            [0] {
-                "id" => "__REMOVED__",
-              "type" => "file_format_extension"
-            }
-          ]
-        }
-      }
-    },
-    [13] {
+    [10] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -326,7 +257,7 @@
         }
       }
     },
-    [14] {
+    [11] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -353,7 +284,7 @@
         }
       }
     },
-    [15] {
+    [12] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {

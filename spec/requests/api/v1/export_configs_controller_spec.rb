@@ -29,9 +29,9 @@ RSpec.describe Api::V1::ExportConfigsController, type: :request do
     end
 
     it 'has status code 200 and returns data paginated' do
-      create(:export_config, project_id: @project.id)
-      create(:export_config, project_id: @project.id)
-      create(:export_config, project_id: @project.id)
+      create(:export_config, project_id: @project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
+      create(:export_config, project_id: @project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
+      create(:export_config, project_id: @project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
       get "/api/v1/projects/#{@project.id}/export_configs", headers: @auth_params, params: { per_page: 2 }
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
@@ -68,15 +68,27 @@ RSpec.describe Api::V1::ExportConfigsController, type: :request do
       @project_user.save!
 
       name = 'Test Name'
-      post "/api/v1/projects/#{@project.id}/export_configs", params: { name: name }, headers: @auth_params, as: :json
+      post "/api/v1/projects/#{@project.id}/export_configs",
+           params: {
+             name: name,
+             file_format: 'json'
+           },
+           headers: @auth_params,
+           as: :json
       expect(response).to have_http_status(:forbidden)
     end
 
-    it 'fails to create a new export config wihtout name' do
+    it 'fails to create a new export config without name' do
       @project_user.role = 'developer'
       @project_user.save!
 
-      post "/api/v1/projects/#{@project.id}/export_configs", params: { name: '' }, headers: @auth_params, as: :json
+      post "/api/v1/projects/#{@project.id}/export_configs",
+           params: {
+             name: '',
+             file_format: 'json'
+           },
+           headers: @auth_params,
+           as: :json
       expect(response).to have_http_status(:bad_request)
     end
 
@@ -86,12 +98,11 @@ RSpec.describe Api::V1::ExportConfigsController, type: :request do
 
       name = 'Test Name'
       file_path = 'file_path'
-      file_format = 'file_format'
       post "/api/v1/projects/#{@project.id}/export_configs",
            params: {
              name: name,
              file_path: file_path,
-             file_format: file_format
+             file_format: 'json'
            },
            headers: @auth_params,
            as: :json
@@ -107,7 +118,8 @@ RSpec.describe Api::V1::ExportConfigsController, type: :request do
       @project_user.role = 'translator'
       @project_user.save!
 
-      export_config = create(:export_config, project_id: @project.id)
+      export_config =
+        create(:export_config, project_id: @project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
 
       name = 'New Test Name'
       put "/api/v1/projects/#{@project.id}/export_configs/#{export_config.id}",
@@ -123,7 +135,8 @@ RSpec.describe Api::V1::ExportConfigsController, type: :request do
       @project_user.role = 'developer'
       @project_user.save!
 
-      export_config = create(:export_config, project_id: @project.id)
+      export_config =
+        create(:export_config, project_id: @project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
 
       put "/api/v1/projects/#{@project.id}/export_configs/#{export_config.id}",
           params: {
@@ -138,7 +151,8 @@ RSpec.describe Api::V1::ExportConfigsController, type: :request do
       @project_user.role = 'developer'
       @project_user.save!
 
-      export_config = create(:export_config, project_id: @project.id)
+      export_config =
+        create(:export_config, project_id: @project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
 
       name = 'New Test Name'
       expect(export_config.name).not_to eq(name)
@@ -161,7 +175,8 @@ RSpec.describe Api::V1::ExportConfigsController, type: :request do
       @project_user.role = 'translator'
       @project_user.save!
 
-      export_config = create(:export_config, project_id: @project.id)
+      export_config =
+        create(:export_config, project_id: @project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
 
       delete "/api/v1/projects/#{@project.id}/export_configs/#{export_config.id}", headers: @auth_params, as: :json
       expect(response).to have_http_status(:forbidden)
@@ -171,7 +186,8 @@ RSpec.describe Api::V1::ExportConfigsController, type: :request do
       @project_user.role = 'developer'
       @project_user.save!
 
-      export_config = create(:export_config, project_id: @project.id)
+      export_config =
+        create(:export_config, project_id: @project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
 
       delete "/api/v1/projects/#{@project.id}/export_configs/#{export_config.id}", headers: @auth_params, as: :json
       expect(response).to have_http_status(:ok)
@@ -185,8 +201,10 @@ RSpec.describe Api::V1::ExportConfigsController, type: :request do
       @project_user.role = 'translator'
       @project_user.save!
 
-      export_config1 = create(:export_config, project_id: @project.id)
-      export_config2 = create(:export_config, project_id: @project.id)
+      export_config1 =
+        create(:export_config, project_id: @project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
+      export_config2 =
+        create(:export_config, project_id: @project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
 
       delete "/api/v1/projects/#{@project.id}/export_configs",
              params: {
@@ -201,8 +219,10 @@ RSpec.describe Api::V1::ExportConfigsController, type: :request do
       @project_user.role = 'developer'
       @project_user.save!
 
-      export_config1 = create(:export_config, project_id: @project.id)
-      export_config2 = create(:export_config, project_id: @project.id)
+      export_config1 =
+        create(:export_config, project_id: @project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
+      export_config2 =
+        create(:export_config, project_id: @project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
 
       delete "/api/v1/projects/#{@project.id}/export_configs",
              params: {

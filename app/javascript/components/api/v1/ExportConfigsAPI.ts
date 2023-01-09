@@ -28,6 +28,7 @@ export interface IExportConfig {
         file_path: string;
         default_language_file_path: string;
         split_on: string;
+        skip_empty_plural_translations: boolean;
     };
     relationships: IExportConfigRelationships;
 }

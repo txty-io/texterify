@@ -290,7 +290,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
     it 'returns an error if project has no languages' do
       project = create(:project, :with_organization)
       create(:project_user, project_id: project.id, user_id: @user.id, role: 'owner')
-      export_config = create(:export_config, project_id: project.id)
+      export_config = create(:export_config, project_id: project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
 
       get "/api/v1/projects/#{project.id}/exports/#{export_config.id}", headers: @auth_params, as: :json
 
@@ -304,7 +304,7 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       project = create(:project, :with_organization)
       create(:project_user, project_id: project.id, user_id: @user.id, role: 'owner')
       create(:language, project_id: project.id)
-      export_config = create(:export_config, project_id: project.id)
+      export_config = create(:export_config, project_id: project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
 
       get "/api/v1/projects/#{project.id}/exports/#{export_config.id}", headers: @auth_params, as: :json
 

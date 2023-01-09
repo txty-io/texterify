@@ -22,11 +22,11 @@ class ExportConfig < ApplicationRecord
 
   validates :name, presence: true
   validates :file_path, presence: true
-  validates :file_format, presence: true
   validate :no_duplicate_export_configs_for_project
 
   belongs_to :project
   belongs_to :flavor, optional: true
+  belongs_to :file_format, optional: true
 
   has_many :post_processing_rules, dependent: :destroy
   has_many :language_configs, dependent: :destroy
@@ -42,10 +42,6 @@ class ExportConfig < ApplicationRecord
 
   def file_path=(file_path)
     self[:file_path] = file_path.strip
-  end
-
-  def file_format=(file_format)
-    self[:file_format] = file_format.strip
   end
 
   def filled_file_path(language, path_for: nil)
@@ -89,62 +85,62 @@ class ExportConfig < ApplicationRecord
     export_data_source = nil,
     skip_empty_plural_translations: false
   )
-    if file_format == 'json'
+    if self.file_format.format == 'json'
       json(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
-    elsif file_format == 'json-formatjs'
+    elsif self.file_format.format == 'json-formatjs'
       json_formatjs(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
-    elsif file_format == 'typescript'
+    elsif self.file_format.format == 'typescript'
       typescript(
         language,
         export_data
         # skip_empty_plural_translations: skip_empty_plural_translations
       )
-    elsif file_format == 'android'
+    elsif self.file_format.format == 'android'
       android(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
-    elsif file_format == 'ios'
+    elsif self.file_format.format == 'ios'
       ios(
         language,
         export_data
         # skip_empty_plural_translations: skip_empty_plural_translations
       )
-    elsif file_format == 'yaml'
+    elsif self.file_format.format == 'yaml'
       yaml(
         language,
         export_data
         # skip_empty_plural_translations: skip_empty_plural_translations
       )
-    elsif file_format == 'rails'
+    elsif self.file_format.format == 'rails'
       yaml(
         language,
         export_data,
         group_by_language_and_country_code: true
         # skip_empty_plural_translations: skip_empty_plural_translations
       )
-    elsif file_format == 'toml'
+    elsif self.file_format.format == 'toml'
       toml(
         language,
         export_data
         # skip_empty_plural_translations: skip_empty_plural_translations
       )
-    elsif file_format == 'properties'
+    elsif self.file_format.format == 'properties'
       properties(
         language,
         export_data
         # skip_empty_plural_translations: skip_empty_plural_translations
       )
-    elsif file_format == 'po'
+    elsif self.file_format.format == 'po'
       po(
         language,
         export_data
         # skip_empty_plural_translations: skip_empty_plural_translations
       )
-    elsif file_format == 'arb'
+    elsif self.file_format.format == 'arb'
       arb(
         language,
         export_data
         # skip_empty_plural_translations: skip_empty_plural_translations
       )
-    elsif file_format == 'xliff'
+    elsif self.file_format.format == 'xliff'
       xliff(
         language,
         export_data,

@@ -9,7 +9,8 @@ RSpec.describe Texterify::Export do
       language_child = create(:language, project_id: project.id)
       language_child.parent_id = language_parent.id
       language_child.save!
-      export_config = create(:export_config, project_id: project.id)
+      export_config =
+        create(:export_config, project_id: project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
       key1 = create(:key, project_id: project.id)
       create(:translation, key_id: key1.id, language_id: language_parent.id)
 

@@ -12,7 +12,7 @@ RSpec.describe LanguageConfig, type: :model do
 
     export_config = ExportConfig.new
     export_config.name = 'export config name'
-    export_config.file_format = 'json'
+    export_config.file_format = FileFormat.find_by!(format: 'json')
     export_config.file_path = 'my_file_path'
     export_config.file_path = '{languageCode}-{countryCode}'
     export_config.project_id = project.id
