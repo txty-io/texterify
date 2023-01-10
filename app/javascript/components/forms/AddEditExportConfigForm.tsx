@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Empty, Form, Input, Modal, Select, Table } from "antd";
+import { Button, Checkbox, Empty, Form, Input, Modal, Select, Table } from "antd";
 import { FormInstance } from "antd/lib/form";
 import Paragraph from "antd/lib/typography/Paragraph";
 import * as React from "react";
@@ -24,6 +24,7 @@ interface IFormValues {
     filePath: string;
     defaultLanguageFilePath: string;
     splitOn: string;
+    skipEmptyPluralTranslations: boolean;
 }
 
 export interface IAddEditExportConfigFormProps {
@@ -77,7 +78,8 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
                 flavorId: values.flavorId,
                 filePath: values.filePath,
                 name: values.name,
-                splitOn: values.splitOn
+                splitOn: values.splitOn,
+                skipEmptyPluralTranslations: values.skipEmptyPluralTranslations
             });
         } else {
             response = await ExportConfigsAPI.createExportConfig({
@@ -87,7 +89,8 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
                 flavorId: values.flavorId,
                 filePath: values.filePath,
                 name: values.name,
-                splitOn: values.splitOn
+                splitOn: values.splitOn,
+                skipEmptyPluralTranslations: values.skipEmptyPluralTranslations
             });
         }
 
@@ -331,6 +334,23 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
                             </p>
                             <Form.Item name="splitOn">
                                 <Input placeholder="For example: ." />
+                            </Form.Item>
+                        </>
+                    )}
+
+                    {selectedFileFormat?.attributes.skip_empty_plural_translations_support && (
+                        <>
+                            <h3>Skip empty plural translations</h3>
+                            <p>
+                                Activating this option will not export empty plural translation except of the{" "}
+                                <code>other</code> form which is always required.
+                            </p>
+                            <Form.Item
+                                name="skipEmptyPluralTranslations"
+                                rules={[{ required: false }]}
+                                valuePropName="checked"
+                            >
+                                <Checkbox>Skip empty plural translations</Checkbox>
                             </Form.Item>
                         </>
                     )}

@@ -75,6 +75,7 @@ const ExportConfigsAPI = {
         filePath: string;
         splitOn: string;
         defaultLanguageFilePath: string;
+        skipEmptyPluralTranslations: boolean;
     }) => {
         return API.postRequest(`projects/${options.projectId}/export_configs`, true, {
             name: options.name,
@@ -83,7 +84,8 @@ const ExportConfigsAPI = {
             flavor_id: options.flavorId,
             file_path: options.filePath,
             default_language_file_path: options.defaultLanguageFilePath,
-            split_on: options.splitOn
+            split_on: options.splitOn,
+            skip_empty_plural_translations: options.skipEmptyPluralTranslations
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
@@ -98,6 +100,7 @@ const ExportConfigsAPI = {
         filePath: string;
         splitOn: string;
         defaultLanguageFilePath: string;
+        skipEmptyPluralTranslations: boolean;
     }) => {
         return API.putRequest(`projects/${options.projectId}/export_configs/${options.exportConfigId}`, true, {
             name: options.name,
@@ -106,7 +109,8 @@ const ExportConfigsAPI = {
             flavor_id: options.flavorId,
             file_path: options.filePath,
             default_language_file_path: options.defaultLanguageFilePath,
-            split_on: options.splitOn
+            split_on: options.splitOn,
+            skip_empty_plural_translations: options.skipEmptyPluralTranslations
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);

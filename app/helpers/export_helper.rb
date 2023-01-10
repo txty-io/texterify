@@ -115,7 +115,14 @@ module ExportHelper
               emojify: args[:emojify]
             )
 
-          export_file_objects = export_config.files(language, export_data, default_language, export_data_source)
+          export_file_objects =
+            export_config.files(
+              language,
+              export_data,
+              default_language,
+              export_data_source,
+              skip_empty_plural_translations: export_config.skip_empty_plural_translations
+            )
 
           export_file_objects.each do |export_file_object|
             duplicate_zip_entry_count = 0
