@@ -86,7 +86,7 @@ export_config_1 =
     id: export_config_1_id,
     project_id: project_1.id,
     name: 'Export Config 1 Android',
-    file_format: 'android',
+    file_format: FileFormat.find_by!(format: 'android'),
     file_path: 'values-{languageCode}/strings.xml',
     default_language_file_path: 'values/strings.xml'
   )
@@ -95,7 +95,7 @@ export_config_2 =
     id: export_config_2_id,
     project_id: project_1.id,
     name: 'Export Config 2 iOS',
-    file_format: 'ios',
+    file_format: FileFormat.find_by!(format: 'ios'),
     file_path: '{languageCode}.lproj/Localizable.strings'
   )
 export_config_3 =
@@ -103,7 +103,7 @@ export_config_3 =
     id: export_config_3_id,
     project_id: project_1.id,
     name: 'Export Config 3 JSON',
-    file_format: 'json',
+    file_format: FileFormat.find_by!(format: 'json'),
     file_path: '{languageCode}-{countryCode}.json'
   )
 
