@@ -1,14 +1,16 @@
 RSpec.configure do |config|
   config.before(:suite) do
+    # puts '[rspec]: before suite'
+
     DatabaseCleaner.clean_with(:truncation)
     load(Rails.root.join('db', 'seeds.rb').to_s)
+    DatabaseCleaner.strategy = :transaction
   end
 
-  config.before(:each) { DatabaseCleaner.strategy = :transaction }
-
-  config.before(:each, js: true) { DatabaseCleaner.strategy = :truncation }
-
   config.before(:each) do
+    # puts '[rspec]: before each'
+
+    # Start transaction.
     DatabaseCleaner.start
 
     # Clear all queued jobs.
@@ -16,6 +18,9 @@ RSpec.configure do |config|
   end
 
   config.after(:each) do
+    # puts '[rspec]: after each'
+
+    # Revert transaction.
     DatabaseCleaner.clean
 
     # Reload factory to reset sequences between tests so tests are deterministic when

@@ -144,9 +144,12 @@ RSpec.describe ExportConfig, type: :model do
 
   # Android
   context 'when file format is android' do
-    export_config = ExportConfig.new
-    export_config.file_format = FileFormat.find_by(format: 'android')
-    export_config.file_path = 'my_file_path'
+    let(:export_config) do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'android')
+      export_config.file_path = 'my_file_path'
+      export_config
+    end
 
     it 'create android file content from parsed data' do
       files =
@@ -310,9 +313,12 @@ RSpec.describe ExportConfig, type: :model do
 
   # XLIFF
   context 'when file format is xliff' do
-    export_config = ExportConfig.new
-    export_config.file_format = FileFormat.find_by(format: 'xliff')
-    export_config.file_path = 'my_file_path'
+    let(:export_config) do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'xliff')
+      export_config.file_path = 'my_file_path'
+      export_config
+    end
 
     it 'create xliff file content from parsed data' do
       files =
@@ -347,9 +353,12 @@ RSpec.describe ExportConfig, type: :model do
 
   # ARB
   context 'when file format is arb' do
-    export_config = ExportConfig.new
-    export_config.file_format = FileFormat.find_by(format: 'arb')
-    export_config.file_path = 'my_file_path'
+    let(:export_config) do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'arb')
+      export_config.file_path = 'my_file_path'
+      export_config
+    end
 
     it 'create arb file content from parsed data' do
       files = export_config.files(@language, { 'a' => export_data_value('b'), '_' => export_data_value('!') })
@@ -360,9 +369,12 @@ RSpec.describe ExportConfig, type: :model do
 
   # TypeScript
   context 'when file format is typescript' do
-    export_config = ExportConfig.new
-    export_config.file_format = FileFormat.find_by(format: 'typescript')
-    export_config.file_path = 'my_file_path'
+    let(:export_config) do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'typescript')
+      export_config.file_path = 'my_file_path'
+      export_config
+    end
 
     it 'create typescript file content from parsed data' do
       files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
@@ -387,9 +399,12 @@ RSpec.describe ExportConfig, type: :model do
 
   # iOS
   context 'when file format is ios' do
-    export_config = ExportConfig.new
-    export_config.file_format = FileFormat.find_by(format: 'ios')
-    export_config.file_path = 'my_file_path'
+    let(:export_config) do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'ios')
+      export_config.file_path = 'my_file_path'
+      export_config
+    end
 
     it 'create ios file content from parsed data' do
       files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
@@ -459,9 +474,12 @@ RSpec.describe ExportConfig, type: :model do
 
   # YAML
   context 'when file format is yaml' do
-    export_config = ExportConfig.new
-    export_config.file_format = FileFormat.find_by(format: 'yaml')
-    export_config.file_path = 'my_file_path'
+    let(:export_config) do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'yaml')
+      export_config.file_path = 'my_file_path'
+      export_config
+    end
 
     it 'create yaml file content from parsed data' do
       files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
@@ -486,9 +504,12 @@ RSpec.describe ExportConfig, type: :model do
 
   # Rails
   context 'when file format is rails' do
-    export_config = ExportConfig.new
-    export_config.file_format = FileFormat.find_by(format: 'rails')
-    export_config.file_path = 'my_file_path'
+    let(:export_config) do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'rails')
+      export_config.file_path = 'my_file_path'
+      export_config
+    end
 
     it 'create rails file content from parsed data' do
       files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
@@ -499,9 +520,12 @@ RSpec.describe ExportConfig, type: :model do
 
   # TOML
   context 'when file format is toml' do
-    export_config = ExportConfig.new
-    export_config.file_format = FileFormat.find_by(format: 'toml')
-    export_config.file_path = 'my_file_path'
+    let(:export_config) do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'toml')
+      export_config.file_path = 'my_file_path'
+      export_config
+    end
 
     it 'create toml file content from parsed data' do
       files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
@@ -526,9 +550,12 @@ RSpec.describe ExportConfig, type: :model do
 
   # Properties
   context 'when file format is properties' do
-    export_config = ExportConfig.new
-    export_config.file_format = FileFormat.find_by(format: 'properties')
-    export_config.file_path = 'my_file_path'
+    let(:export_config) do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'properties')
+      export_config.file_path = 'my_file_path'
+      export_config
+    end
 
     it 'create properties file content from parsed data' do
       files = export_config.files(@language, { "a": export_data_value('b'), "_": export_data_value('!') })
@@ -553,9 +580,12 @@ RSpec.describe ExportConfig, type: :model do
 
   # PO
   context 'when file format is po' do
-    export_config = ExportConfig.new
-    export_config.file_format = FileFormat.find_by(format: 'po')
-    export_config.file_path = 'my_file_path'
+    let(:export_config) do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'po')
+      export_config.file_path = 'my_file_path'
+      export_config
+    end
 
     it 'create po file content from parsed data' do
       files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
@@ -566,9 +596,12 @@ RSpec.describe ExportConfig, type: :model do
 
   # JSON
   context 'when file format is JSON' do
-    export_config = ExportConfig.new
-    export_config.file_format = FileFormat.find_by(format: 'json')
-    export_config.file_path = 'my_file_path'
+    let(:export_config) do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'json')
+      export_config.file_path = 'my_file_path'
+      export_config
+    end
 
     it 'create JSON file content from parsed data' do
       files =
@@ -652,9 +685,12 @@ RSpec.describe ExportConfig, type: :model do
 
   # Format.js JSON
   context 'when file format is formatjs' do
-    export_config = ExportConfig.new
-    export_config.file_format = FileFormat.find_by(format: 'json-formatjs')
-    export_config.file_path = 'my_file_path'
+    let(:export_config) do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'json-formatjs')
+      export_config.file_path = 'my_file_path'
+      export_config
+    end
 
     it 'create formatjs file content from parsed data' do
       files =
