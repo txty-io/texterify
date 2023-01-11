@@ -21,7 +21,7 @@ class AppContainer extends React.Component {
         return (
             <QueryClientProvider client={queryClient}>
                 <AppRouter />
-                <ReactQueryDevtools initialIsOpen />
+                {/* <ReactQueryDevtools initialIsOpen /> */}
             </QueryClientProvider>
         );
     }
