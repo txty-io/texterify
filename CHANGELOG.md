@@ -1,8 +1,9 @@
 # Changelog
 
-## v1.2.1
+## Next
 
 - Make tags feature available for free.
+- Add support to skip empty plural translations during export.
 
 ## v1.2.0
 
