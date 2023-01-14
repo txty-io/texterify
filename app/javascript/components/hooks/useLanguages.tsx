@@ -36,8 +36,8 @@ export default function useLanguages(projectId: string, options?: IGetLanguagesO
         });
     }
 
-    function getCountryCodeForLanguage(language: ILanguage): ICountryCode | null {
-        if (!language.relationships.country_code.data || !languagesResponse) {
+    function getCountryCodeForLanguage(language?: ILanguage): ICountryCode | null {
+        if (!language?.relationships.country_code.data || !languagesResponse) {
             return null;
         }
 
