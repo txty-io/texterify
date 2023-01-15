@@ -15,7 +15,7 @@ formats = [
     name: 'JSON Format.js',
     import_support: true,
     export_support: true,
-    plural_support: true,
+    plural_support: false,
     skip_empty_plural_translations_support: true,
     file_format_extensions: ['json']
   },
@@ -42,7 +42,7 @@ formats = [
     name: 'TOML',
     import_support: true,
     export_support: true,
-    plural_support: true,
+    plural_support: false,
     skip_empty_plural_translations_support: false,
     file_format_extensions: ['toml']
   },
@@ -51,7 +51,7 @@ formats = [
     name: 'Java .properties',
     import_support: true,
     export_support: true,
-    plural_support: true,
+    plural_support: false,
     skip_empty_plural_translations_support: false,
     file_format_extensions: ['properties']
   },
@@ -105,7 +105,7 @@ formats = [
     name: 'TypeScript',
     import_support: false,
     export_support: true,
-    plural_support: true,
+    plural_support: false,
     skip_empty_plural_translations_support: false,
     file_format_extensions: ['ts']
   },
@@ -117,6 +117,15 @@ formats = [
     plural_support: true,
     skip_empty_plural_translations_support: true,
     file_format_extensions: ['xml']
+  },
+  {
+    format: 'csv',
+    name: 'CSV',
+    import_support: false,
+    export_support: true,
+    plural_support: false,
+    skip_empty_plural_translations_support: true,
+    file_format_extensions: ['csv']
   }
 ]
 

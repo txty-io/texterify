@@ -148,6 +148,14 @@ class ExportConfig < ApplicationRecord
         export_data_source
         # skip_empty_plural_translations: skip_empty_plural_translations
       )
+    elsif self.file_format.format == 'csv'
+      Texterify::ExportFormats::CSV.files(
+        language,
+        export_data,
+        language_source,
+        export_data_source
+        # skip_empty_plural_translations: skip_empty_plural_translations
+      )
     end
   end
 
@@ -182,7 +190,7 @@ class ExportConfig < ApplicationRecord
     end.public_send(:[]=, keys.last, value)
   end
 
-  # Plural support: ✅
+  # Dedicated plural support: ✅
   # Skip empty plural translations: ✅
   def json(language, export_data, skip_empty_plural_translations: false)
     language_file = Tempfile.new(language.id.to_s)
@@ -230,7 +238,7 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  # Plural support: ✅
+  # Dedicated plural support: ❌
   # Skip empty plural translations: ✅
   def json_formatjs(language, export_data, skip_empty_plural_translations: false)
     language_file = Tempfile.new(language.id.to_s)
@@ -266,7 +274,7 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  # Plural support: ❌
+  # Dedicated plural support: ❌
   # Skip empty plural translations: ❌
   def arb(
     language,
@@ -298,7 +306,7 @@ class ExportConfig < ApplicationRecord
 
   # Creates an export for the Android platform.
   # Plurals: https://developer.android.com/guide/topics/resources/string-resource#Plurals
-  # Plural support: ✅
+  # Dedicated plural support: ✅
   # Skip empty plural translations: ✅
   def android(language, export_data, skip_empty_plural_translations: false)
     template = ERB.new(File.read('app/views/templates/android.xml.erb'))
@@ -341,7 +349,7 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  # Plural support: ❌
+  # Dedicated plural support: ❌
   # Skip empty plural translations: ❌
   def xliff(
     language,
@@ -379,7 +387,7 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  # Plural support: ✅
+  # Dedicated plural support: ✅
   # Skip empty plural translations: ❌
   def typescript(
     language,
@@ -412,7 +420,7 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  # Plural support: ✅
+  # Dedicated plural support: ✅
   # Skip empty plural translations: ❌
   def ios(
     language,
@@ -491,7 +499,7 @@ class ExportConfig < ApplicationRecord
     files
   end
 
-  # Plural support: ✅
+  # Dedicated plural support: ✅
   # Skip empty plural translations: ❌
   def yaml(
     language,
@@ -531,7 +539,7 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  # Plural support: ✅
+  # Dedicated plural support: ❌
   # Skip empty plural translations: ❌
   def toml(
     language,
@@ -560,7 +568,7 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  # Plural support: ✅
+  # Dedicated plural support: ❌
   # Skip empty plural translations: ❌
   def properties(
     language,
@@ -589,7 +597,7 @@ class ExportConfig < ApplicationRecord
     [{ path: self.filled_file_path(language), file: language_file }]
   end
 
-  # Plural support: ❌
+  # Dedicated plural support: ❌
   # Skip empty plural translations: ❌
   def po(
     language,

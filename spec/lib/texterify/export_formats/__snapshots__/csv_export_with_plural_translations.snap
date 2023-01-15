@@ -1,0 +1,13 @@
+a.zero,description text,zero text
+a.one,description text,one text
+a.two,description text,two text
+a.few,description text,few text
+a.many,description text,many text
+a.other,description text,b
+c,description text,d
+c.a.zero,description text,zero text
+c.a.one,description text,one text
+c.a.two,description text,two text
+c.a.few,description text,few text
+c.a.many,description text,many text
+c.a.other,description text,e

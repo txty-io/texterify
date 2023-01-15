@@ -28,6 +28,29 @@
                "type" => "file_format",
          "attributes" => {
                                             "id" => "__REMOVED__",
+                                        "format" => "csv",
+                                          "name" => "CSV",
+                                "import_support" => false,
+                                "export_support" => true,
+                                "plural_support" => false,
+        "skip_empty_plural_translations_support" => true
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [ 2] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
                                         "format" => "arb",
                                           "name" => "Flutter .arb",
                                 "import_support" => true,
@@ -46,7 +69,7 @@
         }
       }
     },
-    [ 2] {
+    [ 3] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -69,7 +92,7 @@
         }
       }
     },
-    [ 3] {
+    [ 4] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -78,7 +101,7 @@
                                           "name" => "Java .properties",
                                 "import_support" => true,
                                 "export_support" => true,
-                                "plural_support" => true,
+                                "plural_support" => false,
         "skip_empty_plural_translations_support" => false
       },
       "relationships" => {
@@ -92,7 +115,7 @@
         }
       }
     },
-    [ 4] {
+    [ 5] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -115,7 +138,7 @@
         }
       }
     },
-    [ 5] {
+    [ 6] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -124,7 +147,7 @@
                                           "name" => "JSON Format.js",
                                 "import_support" => true,
                                 "export_support" => true,
-                                "plural_support" => true,
+                                "plural_support" => false,
         "skip_empty_plural_translations_support" => true
       },
       "relationships" => {
@@ -138,7 +161,7 @@
         }
       }
     },
-    [ 6] {
+    [ 7] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -161,7 +184,7 @@
         }
       }
     },
-    [ 7] {
+    [ 8] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -184,7 +207,7 @@
         }
       }
     },
-    [ 8] {
+    [ 9] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -211,7 +234,7 @@
         }
       }
     },
-    [ 9] {
+    [10] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -220,30 +243,7 @@
                                           "name" => "TOML",
                                 "import_support" => true,
                                 "export_support" => true,
-                                "plural_support" => true,
-        "skip_empty_plural_translations_support" => false
-      },
-      "relationships" => {
-        "file_format_extensions" => {
-          "data" => [
-            [0] {
-                "id" => "__REMOVED__",
-              "type" => "file_format_extension"
-            }
-          ]
-        }
-      }
-    },
-    [10] {
-                 "id" => "__REMOVED__",
-               "type" => "file_format",
-         "attributes" => {
-                                            "id" => "__REMOVED__",
-                                        "format" => "typescript",
-                                          "name" => "TypeScript",
-                                "import_support" => false,
-                                "export_support" => true,
-                                "plural_support" => true,
+                                "plural_support" => false,
         "skip_empty_plural_translations_support" => false
       },
       "relationships" => {
@@ -258,6 +258,29 @@
       }
     },
     [11] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "typescript",
+                                          "name" => "TypeScript",
+                                "import_support" => false,
+                                "export_support" => true,
+                                "plural_support" => false,
+        "skip_empty_plural_translations_support" => false
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [12] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -284,7 +307,7 @@
         }
       }
     },
-    [12] {
+    [13] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
