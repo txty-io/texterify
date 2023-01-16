@@ -4,7 +4,7 @@ class LinkFileFormatToExportConfigs < ActiveRecord::Migration[6.1]
     add_reference :export_configs, :file_format, type: :uuid, null: true
     add_foreign_key :export_configs, :file_formats
 
-    Rails.application.load_seed
+    load "#{Rails.root}/db/seeds/seeds_file_formats.rb"
 
     ExportConfig.all.each do |export_config|
       file_format = FileFormat.find_by!(format: export_config[:file_format])
