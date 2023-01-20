@@ -14,7 +14,7 @@ jobs:
   test:
     uses: ./.github/workflows/reusable-test.yml
 
-  build-and-push:
+  publish-on-premise:
     runs-on: ubuntu-22.04
     needs: [test]
     steps:
@@ -23,16 +23,13 @@ jobs:
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build the Docker image
+      - name: Build the Docker image for on-premise
         run: docker build . --file Dockerfile --target production --build-arg COMMIT_HASH=$GITHUB_SHA --tag chrztoph/texterify:$GITHUB_SHA
-
-      - name: Build the Docker image for the cloud version
-        run: docker build . --file Dockerfile --target production --build-arg COMMIT_HASH=$GITHUB_SHA --build-arg PROPRIETARY_MODE=${{ secrets.PROPRIETARY_MODE }} --build-arg STRIPE_PUBLIC_API_KEY=${{ secrets.STRIPE_PUBLIC_API_KEY }} --build-arg TEXTERIFY_PAYMENT_SERVER=${{ secrets.TEXTERIFY_PAYMENT_SERVER }} --build-arg SENTRY_DSN_FRONTEND=${{ secrets.SENTRY_DSN_FRONTEND }} --tag chrztoph/texterify-cloud:$GITHUB_SHA
 
       - name: Tag image also as latest
         run: docker tag chrztoph/texterify:$GITHUB_SHA chrztoph/texterify:latest
@@ -50,11 +47,3 @@ jobs:
         if: env.RELEASE_VERSION
         run: |
           docker push chrztoph/texterify:${{ env.RELEASE_VERSION }}
-
-      - name: Tag cloud image also as latest
-        run: docker tag chrztoph/texterify-cloud:$GITHUB_SHA chrztoph/texterify-cloud:latest
-
-      - name: Push images
-        run: |
-          docker push chrztoph/texterify-cloud:$GITHUB_SHA
-          docker push chrztoph/texterify-cloud:latest

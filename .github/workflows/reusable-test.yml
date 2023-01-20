@@ -15,23 +15,11 @@ jobs:
       - name: Run docker-compose
         run: docker-compose up -d
 
-  linters:
-    runs-on: ubuntu-22.04
-    needs: setup
-    steps:
       - name: Run linters
         run: docker-compose exec -T app yarn lint
 
-  tests:
-    runs-on: ubuntu-22.04
-    needs: setup
-    steps:
       - name: Run tests
         run: docker-compose exec -T app yarn test
 
-  database-consistency:
-    runs-on: ubuntu-22.04
-    needs: setup
-    steps:
       - name: Check database consistency
         run: docker-compose exec -T app yarn check:database-consistency:test

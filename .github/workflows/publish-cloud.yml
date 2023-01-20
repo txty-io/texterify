@@ -1,0 +1,49 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+    tags:
+      - v1.*
+      - v2.*
+      - v3.*
+      - v4.*
+      - v5.*
+
+jobs:
+  test:
+    uses: ./.github/workflows/reusable-test.yml
+
+  publish-cloud:
+    runs-on: ubuntu-22.04
+    needs: [test]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set RELEASE_VERSION env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build the Docker image for cloud
+        run: docker build . --file Dockerfile --target production --build-arg COMMIT_HASH=$GITHUB_SHA --build-arg PROPRIETARY_MODE=${{ secrets.PROPRIETARY_MODE }} --build-arg STRIPE_PUBLIC_API_KEY=${{ secrets.STRIPE_PUBLIC_API_KEY }} --build-arg TEXTERIFY_PAYMENT_SERVER=${{ secrets.TEXTERIFY_PAYMENT_SERVER }} --build-arg SENTRY_DSN_FRONTEND=${{ secrets.SENTRY_DSN_FRONTEND }} --tag chrztoph/texterify-cloud:$GITHUB_SHA
+
+      - name: Tag cloud image also as latest
+        run: docker tag chrztoph/texterify-cloud:$GITHUB_SHA chrztoph/texterify-cloud:latest
+
+      - name: Push images
+        run: |
+          docker push chrztoph/texterify-cloud:$GITHUB_SHA
+          docker push chrztoph/texterify-cloud:latest
+
+      - name: Tag image if tag is set
+        if: env.RELEASE_VERSION
+        run: docker tag chrztoph/texterify-cloud:$GITHUB_SHA chrztoph/texterify-cloud:${{ env.RELEASE_VERSION }}
+
+      - name: Push images if tag is set
+        if: env.RELEASE_VERSION
+        run: |
+          docker push chrztoph/texterify-cloud:${{ env.RELEASE_VERSION }}
