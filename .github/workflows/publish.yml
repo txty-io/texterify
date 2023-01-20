@@ -49,7 +49,14 @@ jobs:
         run: |
           docker push chrztoph/texterify-cloud:${{ env.RELEASE_VERSION }}
 
-      - uses: ./.github/workflows/report.yml
+      - name: Send notification to Slack if job fails
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,workflow,job,took
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: failure()
 
   publish-on-premise:
     runs-on: ubuntu-22.04
@@ -85,4 +92,11 @@ jobs:
         run: |
           docker push chrztoph/texterify:${{ env.RELEASE_VERSION }}
 
-      - uses: ./.github/workflows/report.yml
+      - name: Send notification to Slack if job fails
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,workflow,job,took
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: failure()

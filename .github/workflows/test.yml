@@ -11,8 +11,3 @@ jobs:
   test:
     uses: ./.github/workflows/reusable-test.yml
     secrets: inherit
-
-  report:
-    uses: ./.github/workflows/report.yml
-    secrets: inherit
-    needs: [test]

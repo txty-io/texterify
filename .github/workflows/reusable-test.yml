@@ -28,4 +28,11 @@ jobs:
       - name: Check database consistency
         run: docker-compose exec -T app yarn check:database-consistency:test
 
-      - uses: ./.github/workflows/report.yml
+      - name: Send notification to Slack if job fails
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,workflow,job,took
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: failure()
