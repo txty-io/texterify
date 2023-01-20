@@ -47,3 +47,37 @@ jobs:
         if: env.RELEASE_VERSION
         run: |
           docker push chrztoph/texterify-cloud-beta:${{ env.RELEASE_VERSION }}
+
+  publish-on-premise-beta:
+    runs-on: ubuntu-22.04
+    needs: [test]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set RELEASE_VERSION env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build the Docker image for on-premise
+        run: docker build . --file Dockerfile --target production --build-arg COMMIT_HASH=$GITHUB_SHA --tag chrztoph/texterify-beta:$GITHUB_SHA
+
+      - name: Tag image also as latest
+        run: docker tag chrztoph/texterify-beta:$GITHUB_SHA chrztoph/texterify-beta:latest
+
+      - name: Push images
+        run: |
+          docker push chrztoph/texterify-beta:$GITHUB_SHA
+          docker push chrztoph/texterify-beta:latest
+
+      - name: Tag image if tag is set
+        if: env.RELEASE_VERSION
+        run: docker tag chrztoph/texterify-beta:$GITHUB_SHA chrztoph/texterify-beta:${{ env.RELEASE_VERSION }}
+
+      - name: Push images if tag is set
+        if: env.RELEASE_VERSION
+        run: |
+          docker push chrztoph/texterify-beta:${{ env.RELEASE_VERSION }}
