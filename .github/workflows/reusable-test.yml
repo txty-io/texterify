@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  setup:
+  test:
     runs-on: ubuntu-22.04
     env:
       DB_TEST_HOST: db
