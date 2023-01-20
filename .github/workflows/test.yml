@@ -9,6 +9,5 @@ on:
 
 jobs:
   test:
-    steps:
-      - uses: ./.github/workflows/reusable-test.yml
-        secrets: inherit
+    uses: ./.github/workflows/reusable-test.yml
+    secrets: inherit
