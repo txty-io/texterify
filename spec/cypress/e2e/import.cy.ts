@@ -43,7 +43,7 @@ context("import", () => {
         { id: "yaml", file: "example_yaml.yml", searchFor: "yaml" },
         { id: "xliff", file: "example_xliff.xlf", searchFor: "xliff" }
     ].forEach((fileFormat) => {
-        it.only(`it imports ${fileFormat.id} files`, () => {
+        it(`it imports ${fileFormat.id} files`, () => {
             cy.appScenario("default");
             cy.login(testData.login.default.email, testData.login.default.password);
             cy.goToProject(testData.login.default.projects["1"].id);
