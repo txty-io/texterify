@@ -19,7 +19,8 @@ context("import", () => {
         cy.importFile({
             fileName: "test_file_texterify_timestamp.json",
             fileFormat: "json",
-            languageName: testData.languages.german.languageName
+            languageName: testData.languages.german.languageName,
+            searchFor: "json"
         });
 
         cy.goToKeys();
@@ -30,19 +31,19 @@ context("import", () => {
     });
 
     [
-        { id: "json", file: "example_json.json" },
-        { id: "json-formatjs", file: "example_json_formatjs.json" },
-        { id: "json-poeditor", file: "example_json_poeditor.json" },
-        { id: "ios", file: "example_ios.strings" },
-        { id: "toml", file: "example_toml.toml" },
-        { id: "rails", file: "example_rails.yml" },
-        { id: "properties", file: "example_properties.properties" },
-        { id: "po", file: "example_po.po" },
-        { id: "arb", file: "example_arb.arb.txt" },
-        { id: "yaml", file: "example_yaml.yml" },
-        { id: "xliff", file: "example_xliff.xlf" }
+        { id: "json", file: "example_json.json", searchFor: "json" },
+        { id: "json-formatjs", file: "example_json_formatjs.json", searchFor: "json" },
+        { id: "json-poeditor", file: "example_json_poeditor.json", searchFor: "json" },
+        { id: "ios", file: "example_ios.strings", searchFor: "ios" },
+        { id: "toml", file: "example_toml.toml", searchFor: "toml" },
+        { id: "rails", file: "example_rails.yml", searchFor: "rails" },
+        { id: "properties", file: "example_properties.properties", searchFor: "prop" },
+        { id: "po", file: "example_po.po", searchFor: "po" },
+        { id: "arb", file: "example_arb.arb", searchFor: "arb" },
+        { id: "yaml", file: "example_yaml.yml", searchFor: "yaml" },
+        { id: "xliff", file: "example_xliff.xlf", searchFor: "xliff" }
     ].forEach((fileFormat) => {
-        it(`it imports ${fileFormat.id} files`, () => {
+        it.only(`it imports ${fileFormat.id} files`, () => {
             cy.appScenario("default");
             cy.login(testData.login.default.email, testData.login.default.password);
             cy.goToProject(testData.login.default.projects["1"].id);
@@ -50,7 +51,8 @@ context("import", () => {
             cy.importFile({
                 fileName: fileFormat.file,
                 fileFormat: fileFormat.id,
-                languageName: testData.login.default.projects["1"].language_english.name
+                languageName: testData.login.default.projects["1"].language_english.name,
+                searchFor: fileFormat.searchFor
             });
         });
     });

@@ -115,7 +115,6 @@ export function ImportFileAssigner(props: {
                                             showSearch
                                             placeholder="Select a file format"
                                             optionFilterProp="children"
-                                            filterOption
                                             data-id="import-file-assigner-select-format"
                                             data-import-file-id={item.id}
                                             data-import-name={item.attributes.name}

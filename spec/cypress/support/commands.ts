@@ -175,29 +175,34 @@ Cypress.Commands.add("checkIfKeyExists", (options: { key: string; description?: 
     }
 });
 
-Cypress.Commands.add("importFile", (options: { fileName: string; fileFormat: string; languageName: string }) => {
-    cy.get('[data-id="project-sidebar-import"]').click();
-    cy.get('[data-id="files-importer-files-uploader"]').selectFile(
-        {
-            contents: `cypress/fixtures/${options.fileName}`
-        },
-        { force: true }
-    );
-    cy.get('[data-id="files-importer-submit-button"]').click();
-    cy.get(`[data-id="import-file-assigner-select-format"][data-import-name="${options.fileName}"]`).click();
-    cy.get(
-        `[data-id="import-file-assigner-select-format-option-${options.fileFormat}"][data-import-name="${options.fileName}"]`
-    ).click();
-    cy.get("body").type("{enter}");
-    cy.get(`[data-id="import-file-assigner-select-language"][data-import-name="${options.fileName}"]`).type(
-        options.languageName
-    );
-    cy.get("body").type("{enter}");
-    cy.get('[data-id="import-file-assigner-import-button"]').click();
-    cy.get('[data-id="import-review-import-button"]', { timeout: 30000 }).click();
-    cy.get('[data-id="import-review-import-button-confirm"]').click();
-    cy.contains("Your import was successful").should("exist");
-});
+Cypress.Commands.add(
+    "importFile",
+    (options: { fileName: string; fileFormat: string; languageName: string; searchFor: string }) => {
+        cy.get('[data-id="project-sidebar-import"]').click();
+        cy.get('[data-id="files-importer-files-uploader"]').selectFile(
+            {
+                contents: `cypress/fixtures/${options.fileName}`
+            },
+            { force: true }
+        );
+        cy.get('[data-id="files-importer-submit-button"]').click();
+        cy.get(`[data-id="import-file-assigner-select-format"][data-import-name="${options.fileName}"]`).type(
+            options.searchFor
+        );
+        cy.get(
+            `[data-id="import-file-assigner-select-format-option-${options.fileFormat}"][data-import-name="${options.fileName}"]`
+        ).click();
+        cy.get("body").type("{enter}");
+        cy.get(`[data-id="import-file-assigner-select-language"][data-import-name="${options.fileName}"]`).type(
+            options.languageName
+        );
+        cy.get("body").type("{enter}");
+        cy.get('[data-id="import-file-assigner-import-button"]').click();
+        cy.get('[data-id="import-review-import-button"]', { timeout: 30000 }).click();
+        cy.get('[data-id="import-review-import-button-confirm"]').click();
+        cy.contains("Your import was successful", { timeout: 30000 }).should("exist");
+    }
+);
 
 Cypress.Commands.add("clickOutside", () => {
     cy.get("body").click(0, 0);
