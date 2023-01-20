@@ -23,3 +23,13 @@ jobs:
 
       - name: Check database consistency
         run: docker-compose exec -T app yarn check:database-consistency:test
+
+      - name: Notify slack fail
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          channel: github-actions-errors
+          status: FAILED
+          color: danger
