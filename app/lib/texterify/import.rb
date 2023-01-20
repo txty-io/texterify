@@ -33,7 +33,7 @@ module Texterify
       elsif file_format == 'yaml'
         yaml?(file_content)
       else
-        raise 'INVALID_FILE_FORMAT'
+        raise Texterify::MachineTranslation::InvalidFileFormatException.new({ file_format: file_format })
       end
     end
 
