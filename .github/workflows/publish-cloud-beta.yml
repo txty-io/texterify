@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [master]
+    branches: [beta]
     tags:
       - v1.*
       - v2.*
