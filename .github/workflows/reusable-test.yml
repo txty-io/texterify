@@ -29,4 +29,3 @@ jobs:
         run: docker-compose exec -T app yarn check:database-consistency:test
 
       - uses: ./.github/workflows/report.yml
-        secrets: inherit
