@@ -12,7 +12,8 @@ on:
 
 jobs:
   test:
-    uses: ./.github/workflows/reusable-test.yml
+    steps:
+      - uses: ./.github/workflows/reusable-test.yml
       - name: Notify slack fail
         uses: 8398a7/action-slack@v3
         with:
