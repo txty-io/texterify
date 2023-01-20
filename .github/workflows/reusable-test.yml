@@ -13,9 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: test fail
-        run: faefjaeifojesfos
-
       - name: Run docker-compose
         run: docker-compose up -d
 

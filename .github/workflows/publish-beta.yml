@@ -1,4 +1,4 @@
-name: Deploy
+name: Publish Beta
 
 on:
   push:
