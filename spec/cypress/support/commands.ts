@@ -215,3 +215,6 @@ Cypress.Commands.add("selectKeyInEditor", (name: string) => {
 Cypress.Commands.add("featureNotAvailableInPlanShown", (id: string) => {
     cy.get(`[data-id="${id}"]`).should("contain", "Upgrade plan");
 });
+
+// Source: https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
+Cypress.on("uncaught:exception", (err) => !err.message.includes("ResizeObserver loop limit exceeded"));
