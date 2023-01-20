@@ -14,6 +14,7 @@ jobs:
   test:
     steps:
       - uses: ./.github/workflows/reusable-test.yml
+        secrets: inherit
 
   publish-cloud:
     runs-on: ubuntu-22.04
