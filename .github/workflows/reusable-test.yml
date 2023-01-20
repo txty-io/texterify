@@ -16,6 +16,15 @@ jobs:
       - name: test fail
         run: faefjaeifojesfos
 
+      - name: Notify slack fail
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest # selectable (default: repo,message)
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+        if: always() # Pick up events even if the job fails or is canceled.
+
       - name: Run docker-compose
         run: docker-compose up -d
 
