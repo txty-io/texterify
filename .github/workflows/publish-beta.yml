@@ -86,3 +86,4 @@ jobs:
   report:
     uses: ./.github/workflows/report.yml
     secrets: inherit
+    needs: [test, publish-cloud-beta, publish-on-premise-beta]
