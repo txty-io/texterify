@@ -16,6 +16,9 @@ jobs:
       - name: Run docker-compose
         run: docker-compose up -d
 
+      - name: Create and seed test database
+        run: docker-compose exec -T app bundle exec rails db:create db:migrate db:seed RAILS_ENV=test
+
       - name: Run linters
         run: docker-compose exec -T app yarn lint
 
