@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_06_185236) do
+ActiveRecord::Schema.define(version: 2023_01_19_225605) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -283,6 +283,7 @@ ActiveRecord::Schema.define(version: 2023_01_06_185236) do
     t.boolean "supports_plural_many", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["code"], name: "index_language_plurals_on_code", unique: true
   end
 
   create_table "languages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
