@@ -49,6 +49,9 @@ jobs:
         run: |
           docker push chrztoph/texterify-cloud:${{ env.RELEASE_VERSION }}
 
+      - uses: ./.github/workflows/report.yml
+        secrets: inherit
+
   publish-on-premise:
     runs-on: ubuntu-22.04
     needs: [test]
@@ -83,7 +86,5 @@ jobs:
         run: |
           docker push chrztoph/texterify:${{ env.RELEASE_VERSION }}
 
-  report:
-    uses: ./.github/workflows/report.yml
-    secrets: inherit
-    needs: [test, publish-cloud, publish-on-premise]
+      - uses: ./.github/workflows/report.yml
+        secrets: inherit
