@@ -43,24 +43,28 @@ function ErrorDetails(props: { importFile: IImportFile }) {
     return (
         <div>
             <div style={{ color: "var(--color-error)" }}>{statusMessage}</div>
-            <Button type="link" onClick={() => setShowDetails(!showDetails)} style={{ marginTop: 8 }}>
-                {showDetails ? (
-                    <>
-                        Hide details <DownOutlined style={{ marginLeft: 4 }} />
-                    </>
-                ) : (
-                    <>
-                        More details <RightOutlined style={{ marginLeft: 4 }} />
-                    </>
-                )}
-            </Button>
-            {showDetails && (
-                <Alert
-                    showIcon
-                    message={props.importFile.attributes.error_message}
-                    type="error"
-                    style={{ marginTop: 8 }}
-                />
+            {props.importFile.attributes.error_message && (
+                <>
+                    <Button type="link" onClick={() => setShowDetails(!showDetails)} style={{ marginTop: 8 }}>
+                        {showDetails ? (
+                            <>
+                                Hide details <DownOutlined style={{ marginLeft: 4 }} />
+                            </>
+                        ) : (
+                            <>
+                                More details <RightOutlined style={{ marginLeft: 4 }} />
+                            </>
+                        )}
+                    </Button>
+                    {showDetails && (
+                        <Alert
+                            showIcon
+                            message={props.importFile.attributes.error_message}
+                            type="error"
+                            style={{ marginTop: 8 }}
+                        />
+                    )}
+                </>
             )}
         </div>
     );

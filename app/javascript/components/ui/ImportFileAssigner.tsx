@@ -124,7 +124,12 @@ export function ImportFileAssigner(props: {
                                                 .filter((fileFormat) => fileFormat.attributes.import_support)
                                                 .map((fileFormat, index) => {
                                                     return (
-                                                        <Select.Option value={fileFormat.id} key={index}>
+                                                        <Select.Option
+                                                            value={fileFormat.id}
+                                                            key={index}
+                                                            data-id={`import-file-assigner-select-format-option-${fileFormat.attributes.format}`}
+                                                            data-import-name={item.attributes.name}
+                                                        >
                                                             {fileFormat.attributes.name}
                                                         </Select.Option>
                                                     );

@@ -1,62 +1,75 @@
 {
-    "login":
-    {
-        "user1":
-        {
-            "email": "test1@texterify.com",
-            "password": "password"
+  "login": {
+    "default": {
+      "email": "test@texterify.com",
+      "password": "password",
+      "user_id": "86d959da-9ff8-444d-8623-6614bfa5476e",
+      "organization_id": "854fed83-7a1b-4597-af65-48c3613de3e4",
+      "projects": {
+        "1": {
+            "id": "1bfa0215-46d2-478c-8cba-54df0f89c8d4",
+            "language_german": { "name": "German", "id": "5229b07a-5ab6-4f2a-8a0f-abf5a36e238e" },
+            "language_english": { "name": "English", "id": "c454538f-4415-474e-81b2-d081d0079627" },
+            "language_spanish": { "name": "Spanish", "id": "202c50b6-bd64-42cf-98fa-4f35c5d8bb98" }
         },
-        "user2":
-        {
-            "email": "test2@texterify.com",
-            "password": "password"
-        },
-        "unregistered":
-        {
-            "email": "invalidtest@texterify.com",
-            "password": "password"
-        }
+        "2": { "id": "1ba85b6a-ddcf-4058-8b72-15d7e355197e" },
+        "3": { "id": "8c53ceb0-162c-45b3-b255-83dab4a08233" },
+        "4": { "id": "c221f8a0-94b9-4318-83b2-dbf9705059d9" },
+        "5": { "id": "d1390154-a1c5-44e1-87db-ff766e26cda0" },
+        "6": { "id": "11ec0b1a-01a8-45a8-b4a4-92a821feff10" },
+        "7": { "id": "61bcfa54-fb51-45d0-9a77-9869e4aef9cb" },
+        "8": { "id": "acd371c5-ccc0-437b-b91c-19e2cae0dafc" },
+        "9": { "id": "1d56b3bf-51f6-45da-afa7-fbd2d2000561" },
+        "10": { "id": "bd6869ed-d0d8-45e4-815d-a5890ec585ea" },
+        "11": { "id": "476983ea-9d3b-4f87-bde2-da13d30b887d" }
+      }
     },
-    "languages":
-    {
-        "german":
-        {
-            "languageCode": "German (de)",
-            "languageCodeShort": "de",
-            "countryCode": "Austria (AT)",
-            "countryCodeShort": "AT",
-            "languageName": "FirstLanguage"
-        },
-        "english":
-        {
-            "languageCode": "English (en)",
-            "languageCodeShort": "en",
-            "countryCode": "United Kingdom (GB)",
-            "countryCodeShort": "GB",
-            "languageName": "SecondLanguage"
-        },
-        "spanish":
-        {
-            "languageCode": "Spanish (es)",
-            "languageCodeShort": "es",
-            "countryCode": "Spain (ES)",
-            "countryCodeShort": "ES",
-            "languageName": "ThirdLanguage"
-        }
+    "user1": {
+      "email": "test1@texterify.com",
+      "password": "password"
     },
-    "keys":
-    {
-        "firstKey":
-        {
-            "keyName": "First Key",
-            "keyDescription": "This is the description for the first key.",
-            "value": "This is the first test."
-        },
-        "secondKey":
-        {
-            "keyName": "Second Key",
-            "keyDescription": "This is the description for the second key.",
-            "value": "This is the second test."
-        }
+    "user2": {
+      "email": "test2@texterify.com",
+      "password": "password"
+    },
+    "unregistered": {
+      "email": "invalidtest@texterify.com",
+      "password": "password"
+    }
+  },
+  "languages": {
+    "german": {
+      "languageCode": "German (de)",
+      "languageCodeShort": "de",
+      "countryCode": "Austria (AT)",
+      "countryCodeShort": "AT",
+      "languageName": "FirstLanguage"
+    },
+    "english": {
+      "languageCode": "English (en)",
+      "languageCodeShort": "en",
+      "countryCode": "United Kingdom (GB)",
+      "countryCodeShort": "GB",
+      "languageName": "SecondLanguage"
+    },
+    "spanish": {
+      "languageCode": "Spanish (es)",
+      "languageCodeShort": "es",
+      "countryCode": "Spain (ES)",
+      "countryCodeShort": "ES",
+      "languageName": "ThirdLanguage"
+    }
+  },
+  "keys": {
+    "firstKey": {
+      "keyName": "First Key",
+      "keyDescription": "This is the description for the first key.",
+      "value": "This is the first test."
+    },
+    "secondKey": {
+      "keyName": "Second Key",
+      "keyDescription": "This is the description for the second key.",
+      "value": "This is the second test."
     }
   }
+}
