@@ -35,7 +35,7 @@ RSpec.describe Api::V1::KeysController, type: :request do
       post "/api/v1/projects/#{@project.id}/keys", params: { name: name }, headers: @auth_params, as: :json
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
-      expect(body).to match_snapshot('keys_controller_create')
+      expect(body).to match_snapshot('keys_controller_create', { snapshot_serializer: StripSerializer })
     end
   end
 end
