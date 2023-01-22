@@ -30,6 +30,21 @@ class Key < ApplicationRecord
   before_validation :strip_leading_and_trailing_whitespace
   before_validation :check_html_allowed
 
+  after_create :increase_organization_keys_count
+  after_destroy :decrease_organization_keys_count
+
+  def increase_organization_keys_count
+    organization = self.project.organization
+    organization.keys_count += 1
+    organization.save
+  end
+
+  def decrease_organization_keys_count
+    organization = self.project.organization
+    organization.keys_count -= 1
+    organization.save
+  end
+
   def name_editable
     self.wordpress_contents.empty?
   end
@@ -181,7 +196,7 @@ class Key < ApplicationRecord
     end
   end
 
-  # Removes the leading and trailing whitespace of the key name.
+  # Removes the leading and trailing whitespaces of the key name.
   def strip_leading_and_trailing_whitespace
     self.name = name.strip
   end
