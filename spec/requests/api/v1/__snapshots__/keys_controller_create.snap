@@ -1,0 +1,31 @@
+{
+  "data" => {
+               "id" => "8c3e0818-d4e3-4d31-8fa2-46db6af2fd59",
+             "type" => "key",
+       "attributes" => {
+                         "id" => "8c3e0818-d4e3-4d31-8fa2-46db6af2fd59",
+                 "project_id" => "bc1ee351-54a1-4f49-9d21-87d7dcc8f19f",
+                       "name" => "German",
+                "description" => nil,
+               "html_enabled" => false,
+              "name_editable" => true,
+                 "created_at" => "2023-01-22T22:39:29.541Z",
+                 "updated_at" => "2023-01-22T22:39:29.541Z",
+      "pluralization_enabled" => false
+    },
+    "relationships" => {
+            "translations" => {
+        "data" => []
+      },
+                    "tags" => {
+        "data" => []
+      },
+      "wordpress_contents" => {
+        "data" => []
+      },
+            "placeholders" => {
+        "data" => []
+      }
+    }
+  }
+}
