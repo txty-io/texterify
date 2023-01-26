@@ -28,7 +28,7 @@
           [1] "team",
           [2] "business"
         ],
-                   "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+                   "FEATURE_PERMISSION_SYSTEM" => [
           [0] "basic",
           [1] "team",
           [2] "business"
@@ -65,7 +65,7 @@
                 "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
           [0] "business"
         ],
-                                       "FEATURE_OTA" => [
+                                       "FEATURE_OVER_THE_AIR" => [
           [0] "business"
         ],
                                "FEATURE_HTML_EDITOR" => [

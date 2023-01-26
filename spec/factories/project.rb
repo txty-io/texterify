@@ -8,11 +8,10 @@ FactoryBot.define do
   end
 
   trait :with_organization do
-    after(:create) do |project|
+    before(:create) do |project|
       organization = create(:organization)
 
       project.organization_id = organization.id
-      project.save!
     end
   end
 

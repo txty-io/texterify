@@ -23,18 +23,6 @@ class Subscription < ApplicationRecord
          unpaid: 'unpaid'
        }
 
-  ACCESS_GRANTING_STATUSES = %w[trialing active past_due].freeze
-  PLAN_BASIC = 'basic'.freeze
-  PLAN_TEAM = 'team'.freeze
-  PLAN_BUSINESS = 'business'.freeze
-  VALID_PLANS = [PLAN_BASIC, PLAN_TEAM, PLAN_BUSINESS].freeze
-
-  scope :active_or_trialing, -> { where(stripe_status: ACCESS_GRANTING_STATUSES) }
-
-  def active_or_trialing?
-    ACCESS_GRANTING_STATUSES.include?(status)
-  end
-
   def interrupt
     if Texterify.cloud? && !canceled
       self.canceled = true
@@ -55,7 +43,7 @@ class Subscription < ApplicationRecord
 
   def change_plan(plan)
     if Texterify.cloud?
-      if VALID_PLANS.include?(plan)
+      if Plan.exists?(name: plan) && plan != 'trial'
         self.plan = plan
         self.canceled = false
         save!

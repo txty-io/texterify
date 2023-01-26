@@ -36,24 +36,4 @@ class ApplicationController < ActionController::Base
   def user_not_authorized
     head(:forbidden)
   end
-
-  def feature_enabled?(object, feature)
-    if object.feature_enabled?(feature)
-      true
-    else
-      feature_allowed_plans = Organization::FEATURES_PLANS[feature]
-
-      render json: {
-               errors: [
-                 {
-                   code: 'FEATURE_NOT_AVAILABLE_IN_PLAN',
-                   description: "Please upgrade your plan to one of the following: #{feature_allowed_plans.join(', ')}"
-                 }
-               ]
-             },
-             status: :forbidden
-
-      false
-    end
-  end
 end

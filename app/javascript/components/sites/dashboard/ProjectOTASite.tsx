@@ -249,8 +249,8 @@ class ProjectOTASite extends React.Component<IProps, IState> {
                             store.
                         </p>
 
-                        {!dashboardStore.featureEnabled("FEATURE_OTA") && (
-                            <FeatureNotAvailable style={{ marginBottom: 24 }} feature="FEATURE_OTA" />
+                        {!dashboardStore.featureEnabled("FEATURE_OVER_THE_AIR") && (
+                            <FeatureNotAvailable style={{ marginBottom: 24 }} feature="FEATURE_OVER_THE_AIR" />
                         )}
 
                         <div style={{ display: "flex", flexShrink: 0 }}>
@@ -263,7 +263,7 @@ class ProjectOTASite extends React.Component<IProps, IState> {
                                     style={{ marginRight: 8 }}
                                     disabled={
                                         !PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) ||
-                                        !dashboardStore.featureEnabled("FEATURE_OTA")
+                                        !dashboardStore.featureEnabled("FEATURE_OVER_THE_AIR")
                                     }
                                 >
                                     Create release

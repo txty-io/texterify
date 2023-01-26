@@ -28,7 +28,7 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
     translation = project.translations.find(params[:translation_id])
     target_language = project.languages.find(params[:language_id])
 
-    if !project.feature_enabled?(Organization::FEATURE_MACHINE_TRANSLATION_SUGGESTIONS)
+    if !project.feature_enabled?(Plan::FEATURE_MACHINE_TRANSLATION_SUGGESTIONS)
       skip_authorization
 
       render json: { error: true, message: 'FEATURE_NOT_AVAILABLE' }, status: :bad_request
@@ -49,7 +49,7 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     language = project.languages.find(params[:language_id])
 
-    if !project.feature_enabled?(Organization::FEATURE_MACHINE_TRANSLATION_LANGUAGE)
+    if !project.feature_enabled?(Plan::FEATURE_MACHINE_TRANSLATION_LANGUAGE)
       skip_authorization
 
       render json: { error: true, message: 'FEATURE_NOT_AVAILABLE' }, status: :bad_request

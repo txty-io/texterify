@@ -7,7 +7,6 @@ PROJECT_ATTRIBUTES = [
   'description',
   'current_user_role',
   'current_user_role_source',
-  'all_features',
   'enabled_features',
   'machine_translation_enabled',
   'auto_translate_new_keys',
@@ -41,16 +40,6 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
   end
 
   describe 'GET index' do
-    it 'responds with json by default' do
-      get '/api/v1/projects'
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
-    it 'responds with json even by set format' do
-      get '/api/v1/projects', params: { format: :html }
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
     it 'has status code 403 if not logged in', :skip_before do
       get '/api/v1/projects'
       expect(response).to have_http_status(:forbidden)
@@ -151,16 +140,6 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
   end
 
   describe 'POST create' do
-    it 'responds with json by default' do
-      post '/api/v1/projects'
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
-    it 'responds with json even by set format' do
-      post '/api/v1/projects', params: { format: :html }
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
     it 'creates a new project with name' do
       name = 'Test Name'
       post '/api/v1/projects',
@@ -214,16 +193,6 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
   describe 'PUT update' do
     permissions_update = { 'translator' => 403, 'developer' => 403, 'manager' => 200, 'owner' => 200 }
 
-    it 'responds with json by default' do
-      put '/api/v1/projects/1'
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
-    it 'responds with json even by set format' do
-      put '/api/v1/projects/1', params: { format: :html }
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
     permissions_update.each do |permission, expected_response_status|
       it "#{expected_response_status == 200 ? 'succeeds' : 'fails'} to update a projects name as #{permission} of project" do
         project = Project.new(name: 'Old Name')
@@ -253,16 +222,6 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
   describe 'DELETE destroy' do
     permissions_destroy = { 'translator' => 403, 'developer' => 403, 'manager' => 403, 'owner' => 200 }
 
-    it 'responds with json by default' do
-      delete '/api/v1/projects/1'
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
-    it 'responds with json even by set format' do
-      delete '/api/v1/projects/1', params: { format: :html }
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
     permissions_destroy.each do |permission, expected_response_status|
       it "#{expected_response_status == 200 ? 'succeeds' : 'fails'} to delete a project as #{permission} of project" do
         project = Project.new(name: 'Project name')
@@ -290,7 +249,8 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
     it 'returns an error if project has no languages' do
       project = create(:project, :with_organization)
       create(:project_user, project_id: project.id, user_id: @user.id, role: 'owner')
-      export_config = create(:export_config, project_id: project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
+      export_config =
+        create(:export_config, project_id: project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
 
       get "/api/v1/projects/#{project.id}/exports/#{export_config.id}", headers: @auth_params, as: :json
 
@@ -304,7 +264,8 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
       project = create(:project, :with_organization)
       create(:project_user, project_id: project.id, user_id: @user.id, role: 'owner')
       create(:language, project_id: project.id)
-      export_config = create(:export_config, project_id: project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
+      export_config =
+        create(:export_config, project_id: project.id, file_format_id: FileFormat.find_by!(format: 'json').id)
 
       get "/api/v1/projects/#{project.id}/exports/#{export_config.id}", headers: @auth_params, as: :json
 

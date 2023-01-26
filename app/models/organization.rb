@@ -8,9 +8,12 @@ class Organization < ApplicationRecord
   has_many :projects, dependent: :destroy
   has_many :project_users, through: :projects, dependent: :destroy
   has_many :subscriptions, dependent: :destroy
-  has_one :custom_subscription, dependent: :nullify
   has_many :sent_emails, dependent: :destroy
   has_many :invites, class_name: 'OrganizationInvite', dependent: :destroy
+
+  # Subscription
+  belongs_to :plan, optional: true
+  has_one :custom_subscription, dependent: :nullify
 
   # Validations
   has_many :validations, dependent: :destroy
@@ -98,80 +101,31 @@ class Organization < ApplicationRecord
     self.save!
   end
 
-  # Free features
-  FEATURE_TAGS = :FEATURE_TAGS
-
-  # Basic plan features
-  FEATURE_UNLIMITED_PROJECTS = :FEATURE_UNLIMITED_PROJECTS
-  FEATURE_UNLIMITED_LANGUAGES = :FEATURE_UNLIMITED_LANGUAGES
-  FEATURE_BASIC_PERMISSION_SYSTEM = :FEATURE_BASIC_PERMISSION_SYSTEM
-
-  # Team plan features
-  FEATURE_VALIDATIONS = :FEATURE_VALIDATIONS
-  FEATURE_KEY_HISTORY = :FEATURE_KEY_HISTORY
-  FEATURE_EXPORT_HIERARCHY = :FEATURE_EXPORT_HIERARCHY
-  FEATURE_POST_PROCESSING = :FEATURE_POST_PROCESSING
-  FEATURE_PROJECT_ACTIVITY = :FEATURE_PROJECT_ACTIVITY
-  FEATURE_MACHINE_TRANSLATION_LANGUAGE = :FEATURE_MACHINE_TRANSLATION_LANGUAGE
-  FEATURE_MACHINE_TRANSLATION_SUGGESTIONS = :FEATURE_MACHINE_TRANSLATION_SUGGESTIONS
-
-  # Business plan features
-  FEATURE_ADVANCED_PERMISSION_SYSTEM = :FEATURE_ADVANCED_PERMISSION_SYSTEM
-  FEATURE_OTA = :FEATURE_OTA
-  FEATURE_HTML_EDITOR = :FEATURE_HTML_EDITOR
-  FEATURE_TEMPLATES = :FEATURE_TEMPLATES
-  FEATURE_PROJECT_GROUPS = :FEATURE_PROJECT_GROUPS
-  FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE = :FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE
-
-  FEATURES_PLANS = {
-    FEATURE_UNLIMITED_PROJECTS: [Subscription::PLAN_BASIC, Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
-    FEATURE_UNLIMITED_LANGUAGES: [Subscription::PLAN_BASIC, Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
-    FEATURE_BASIC_PERMISSION_SYSTEM: [Subscription::PLAN_BASIC, Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
-    FEATURE_VALIDATIONS: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
-    FEATURE_KEY_HISTORY: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
-    FEATURE_EXPORT_HIERARCHY: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
-    FEATURE_POST_PROCESSING: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
-    FEATURE_PROJECT_ACTIVITY: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
-    FEATURE_TAGS: [],
-    FEATURE_MACHINE_TRANSLATION_SUGGESTIONS: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
-    FEATURE_MACHINE_TRANSLATION_LANGUAGE: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
-    FEATURE_ADVANCED_PERMISSION_SYSTEM: [Subscription::PLAN_BUSINESS],
-    FEATURE_OTA: [Subscription::PLAN_BUSINESS],
-    FEATURE_HTML_EDITOR: [Subscription::PLAN_BUSINESS],
-    FEATURE_TEMPLATES: [Subscription::PLAN_BUSINESS],
-    FEATURE_PROJECT_GROUPS: [Subscription::PLAN_BUSINESS],
-    FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE: [Subscription::PLAN_BUSINESS]
-  }.freeze
-
-  FREE_FEATURES = [:FEATURE_TAGS].freeze
-  NOT_IN_TRIAL_AVAILABLE = [:FEATURE_MACHINE_TRANSLATION_LANGUAGE, :FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE].freeze
-
-  FEATURES_BASIC_PLAN =
-    FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BASIC) ? feature : nil }.compact.freeze
-  FEATURES_TEAM_PLAN =
-    FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_TEAM) ? feature : nil }.compact.freeze
-  FEATURES_BUSINESS_PLAN =
-    FEATURES_PLANS.map { |feature, plans| plans.include?(Subscription::PLAN_BUSINESS) ? feature : nil }.compact.freeze
-  FEATURES_TRIAL =
-    FEATURES_PLANS.map do |feature, plans|
-      plans.include?(Subscription::PLAN_BUSINESS) && NOT_IN_TRIAL_AVAILABLE.exclude?(feature) ? feature : nil
-    end.compact.freeze
-
-  def feature_enabled?(feature)
-    # Check if the feature is a free feature.
-    if FREE_FEATURES.include?(feature)
-      return true
+  def current_plan
+    current_plan_name = 'free'
+    if custom_subscription&.plan
+      current_plan_name = custom_subscription.plan
+    elsif active_subscription&.plan
+      current_plan_name = active_subscription.plan
+    elsif trial_active
+      current_plan_name = 'trial'
+    else
+      license = License.current_active
+      if license&.restrictions
+        current_plan_name = license.restrictions[:plan]
+      end
     end
 
-    feature_allowed_plans = FEATURES_PLANS[feature]
-    license = License.current_active
+    Plan.find_by(name: current_plan_name)
+  end
 
-    return(
-      (custom_subscription && feature_allowed_plans.include?(custom_subscription.plan)) ||
-        (trial_active && NOT_IN_TRIAL_AVAILABLE.exclude?(feature)) ||
-        (active_subscription && feature_allowed_plans.include?(active_subscription.plan)) ||
-        (license && feature_allowed_plans.include?(license.restrictions[:plan]))
-    )
+  def feature_enabled?(feature)
+    plan = current_plan
+    plan ? plan.feature_enabled?(feature) : false
+  end
+
+  def enabled_features
+    current_plan&.enabled_features
   end
 
   # Returns the max amount of users for an organization.
@@ -201,9 +155,14 @@ class Organization < ApplicationRecord
     ).size
   end
 
-  # Returns true if the organization users limit has been reached.
-  def max_users_reached
+  # Returns true if the users limit has been reached.
+  def max_users_reached?
     self.users_limit.nil? ? false : self.active_users_count >= self.users_limit
+  end
+
+  # Returns true if the projects limit has been reached.
+  def max_projects_reached?
+    self.plan.nil? ? false : self.projects.size >= self.plan&.projects_limit
   end
 
   # Checks if the number of characters would exceed the machine translation limit of the organization.

@@ -44,15 +44,6 @@ export function FeatureNotAvailable(props: { feature: IFeature; dataId?: string;
         return null;
     }
 
-    // const featureAvailableInPlans = currentOrganization.attributes.all_features[props.feature];
-    // const capitalizedFeatureAvailableInPlans = featureAvailableInPlans.map((plan) => {
-    //     return (
-    //         <span key={plan} style={{ fontWeight: "bold", marginRight: 8 }}>
-    //             {Utils.capitalize(plan)}
-    //         </span>
-    //     );
-    // });
-
     const buttonEnabled = IS_TEXTERIFY_CLOUD
         ? PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentOrganizationRole())
         : true;

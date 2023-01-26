@@ -177,7 +177,7 @@ class Api::V1::KeysController < Api::V1::ApiController
   def activity
     skip_authorization
     project = current_user.projects.find(params[:project_id])
-    unless feature_enabled?(project, Organization::FEATURE_KEY_HISTORY)
+    unless project.feature_enabled?(Plan::FEATURE_KEY_HISTORY)
       return
     end
 

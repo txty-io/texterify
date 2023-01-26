@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_21_000241) do
+ActiveRecord::Schema.define(version: 2023_01_24_233146) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -361,7 +361,9 @@ ActiveRecord::Schema.define(version: 2023_01_21_000241) do
     t.string "deepl_api_token_type"
     t.integer "keys_limit", default: 0, null: false
     t.integer "keys_count", default: 0, null: false
+    t.uuid "plan_id"
     t.index ["name"], name: "index_organizations_on_name", unique: true
+    t.index ["plan_id"], name: "index_organizations_on_plan_id"
   end
 
   create_table "organizations_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -385,6 +387,29 @@ ActiveRecord::Schema.define(version: 2023_01_21_000241) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["key_id"], name: "index_placeholders_on_key_id"
     t.index ["name", "key_id"], name: "index_placeholders_on_name_and_key_id", unique: true
+  end
+
+  create_table "plans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "name", null: false
+    t.integer "keys_limit"
+    t.integer "projects_limit"
+    t.integer "languages_limit"
+    t.boolean "permission_system", null: false
+    t.boolean "validations", null: false
+    t.boolean "key_history", null: false
+    t.boolean "export_hierarchy", null: false
+    t.boolean "post_processing", null: false
+    t.boolean "project_activity", null: false
+    t.boolean "over_the_air", null: false
+    t.boolean "tags", null: false
+    t.boolean "machine_translation_suggestions", null: false
+    t.boolean "machine_translation_language", null: false
+    t.boolean "machine_translation_auto_translate", null: false
+    t.integer "machine_translation_character_limit"
+    t.boolean "html_editor", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_plans_on_name", unique: true
   end
 
   create_table "post_processing_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -429,7 +454,7 @@ ActiveRecord::Schema.define(version: 2023_01_21_000241) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "organization_id"
+    t.uuid "organization_id", null: false
     t.boolean "machine_translation_enabled", default: true, null: false
     t.boolean "auto_translate_new_keys", default: false, null: false
     t.boolean "auto_translate_new_languages", default: false, null: false
@@ -722,6 +747,7 @@ ActiveRecord::Schema.define(version: 2023_01_21_000241) do
   add_foreign_key "machine_translation_memories", "language_codes", column: "source_language_code_id"
   add_foreign_key "machine_translation_memories", "language_codes", column: "target_language_code_id"
   add_foreign_key "organization_invites", "organizations", on_delete: :cascade
+  add_foreign_key "organizations", "plans", on_delete: :nullify
   add_foreign_key "organizations_users", "organizations", on_delete: :cascade
   add_foreign_key "organizations_users", "users", on_delete: :cascade
   add_foreign_key "placeholders", "keys", on_delete: :cascade

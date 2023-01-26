@@ -38,7 +38,7 @@ class Api::V1::ReleasesController < Api::V1::ApiController
     skip_authorization
 
     project = Project.find(params[:project_id])
-    unless feature_enabled?(project, Organization::FEATURE_OTA)
+    unless project.feature_enabled?(Plan::FEATURE_OVER_THE_AIR)
       return
     end
 
@@ -101,7 +101,7 @@ class Api::V1::ReleasesController < Api::V1::ApiController
     release = Release.new
     release.export_config = export_config
     authorize release
-    unless feature_enabled?(project, Organization::FEATURE_OTA)
+    unless project.feature_enabled?(Plan::FEATURE_OVER_THE_AIR)
       return
     end
 

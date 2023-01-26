@@ -5,7 +5,7 @@ class Api::V1::PlaceholdersController < Api::V1::ApiController
 
     project = current_user.projects.find(params[:project_id])
 
-    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+    unless project.feature_enabled?(Plan::FEATURE_VALIDATIONS)
       return
     end
 

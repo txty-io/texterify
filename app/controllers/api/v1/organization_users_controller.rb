@@ -146,7 +146,7 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
   def ensure_feature_enabled
     organization = current_user.organizations.find(params[:organization_id])
 
-    if !organization.feature_enabled?(Organization::FEATURE_BASIC_PERMISSION_SYSTEM)
+    if !organization.feature_enabled?(Plan::FEATURE_PERMISSION_SYSTEM)
       skip_authorization
 
       render json: { error: true, message: 'BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE' }, status: :bad_request

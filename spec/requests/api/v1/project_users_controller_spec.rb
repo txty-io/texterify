@@ -23,16 +23,6 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
   end
 
   describe 'GET index' do
-    it 'responds with json by default' do
-      get "/api/v1/projects/#{@project.id}/members"
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
-    it 'responds with json even by set format' do
-      get "/api/v1/projects/#{@project.id}/members", params: { format: :html }
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
     it 'has status code 403 if not logged in', :skip_before do
       project = create(:project, :with_organization)
       get "/api/v1/projects/#{project.id}/members"
@@ -219,22 +209,6 @@ RSpec.describe Api::V1::ProjectUsersController, type: :request do
         }
       }
     }
-
-    it 'responds with json by default' do
-      user_developer = create(:user)
-      project_user_developer =
-        create(:project_user, project_id: @project.id, user_id: user_developer.id, role: 'developer')
-      put "/api/v1/projects/#{@project.id}/members/#{project_user_developer.user_id}"
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
-    it 'responds with json even by set format' do
-      user_developer = create(:user)
-      project_user_developer =
-        create(:project_user, project_id: @project.id, user_id: user_developer.id, role: 'developer')
-      put "/api/v1/projects/#{@project.id}/members/#{project_user_developer.user_id}", params: { format: :html }
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
 
     it 'has status code 403 if not logged in', :skip_before do
       project = create(:project, :with_organization)

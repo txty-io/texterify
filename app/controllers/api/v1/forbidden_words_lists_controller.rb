@@ -27,7 +27,7 @@ class Api::V1::ForbiddenWordsListsController < Api::V1::ApiController
     if params[:project_id]
       project = current_user.projects.find(params[:project_id])
 
-      unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+      unless project.feature_enabled?(Plan::FEATURE_VALIDATIONS)
         render json: { error: true, details: 'FEATURE_NOT_AVAILABLE_FOR_PLAN' }
         return
       end
@@ -37,7 +37,7 @@ class Api::V1::ForbiddenWordsListsController < Api::V1::ApiController
     else
       organization = current_user.organizations.find(params[:organization_id])
 
-      unless feature_enabled?(organization, Organization::FEATURE_VALIDATIONS)
+      unless organization.feature_enabled?(Plan::FEATURE_VALIDATIONS)
         render json: { error: true, details: 'FEATURE_NOT_AVAILABLE_FOR_PLAN' }
         return
       end
@@ -60,7 +60,7 @@ class Api::V1::ForbiddenWordsListsController < Api::V1::ApiController
       project = current_user.projects.find(params[:project_id])
       forbidden_words_list = project.forbidden_words_lists.find(params[:id])
 
-      unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+      unless project.feature_enabled?(Plan::FEATURE_VALIDATIONS)
         render json: { error: true, details: 'FEATURE_NOT_AVAILABLE_FOR_PLAN' }
         return
       end
@@ -68,7 +68,7 @@ class Api::V1::ForbiddenWordsListsController < Api::V1::ApiController
       organization = current_user.organizations.find(params[:organization_id])
       forbidden_words_list = organization.forbidden_words_lists.find(params[:id])
 
-      unless feature_enabled?(organization, Organization::FEATURE_VALIDATIONS)
+      unless organization.feature_enabled?(Plan::FEATURE_VALIDATIONS)
         render json: { error: true, details: 'FEATURE_NOT_AVAILABLE_FOR_PLAN' }
         return
       end

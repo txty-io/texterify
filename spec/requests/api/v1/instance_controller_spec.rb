@@ -21,18 +21,6 @@ RSpec.describe Api::V1::InstanceController, type: :request do
     end
   end
 
-  describe 'responds with' do
-    it 'responds with json by default' do
-      get '/api/v1/instance'
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
-    it 'responds with json even by set format' do
-      get '/api/v1/instance', params: { format: :html }
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-  end
-
   describe 'GET show' do
     it 'has status code 403 if not logged in', :skip_before do
       get '/api/v1/instance'

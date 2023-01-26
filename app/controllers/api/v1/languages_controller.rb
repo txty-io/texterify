@@ -43,7 +43,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
 
     project = current_user.projects.find(params[:project_id])
 
-    if !project.feature_enabled?(Organization::FEATURE_UNLIMITED_LANGUAGES) && project.languages.size >= 2
+    if project.max_languages_reached?
       skip_authorization
 
       render json: { error: true, message: 'MAXIMUM_NUMBER_OF_LANGUAGES_REACHED' }, status: :bad_request
@@ -72,7 +72,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     end
 
     if params[:parent].present?
-      unless feature_enabled?(project, Organization::FEATURE_EXPORT_HIERARCHY)
+      unless project.feature_enabled?(Plan::FEATURE_EXPORT_HIERARCHY)
         return
       end
 
@@ -98,7 +98,8 @@ class Api::V1::LanguagesController < Api::V1::ApiController
       end
 
       render json: { success: true, details: 'Language successfully created.' }, status: :ok
-      if project.auto_translate_new_languages && project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
+      if project.auto_translate_new_languages &&
+           project.feature_enabled?(Plan::FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
         # TODO: Handle machine translation errors. Fix it by moving this to a background job that will display errors if failed.
         begin
           language.translate_untranslated_using_machine_translation
@@ -142,7 +143,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
     end
 
     if params.key?(:parent)
-      unless feature_enabled?(project, Organization::FEATURE_EXPORT_HIERARCHY)
+      unless project.feature_enabled?(Plan::FEATURE_EXPORT_HIERARCHY)
         return
       end
 

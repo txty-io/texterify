@@ -87,19 +87,11 @@ class Project < ApplicationRecord
     project_user ? 'project' : 'organization'
   end
 
-  def feature_enabled?(feature)
-    if organization
-      organization.feature_enabled?(feature)
-    else
-      license = License.current_active
+  delegate :feature_enabled?, to: :organization
 
-      if license
-        feature_allowed_plans = Organization::FEATURES_PLANS[feature]
-        feature_allowed_plans.include?(license.restrictions[:plan])
-      else
-        false
-      end
-    end
+  # Returns true if the languages limit has been reached.
+  def max_languages_reached?
+    self.organization.plan.nil? ? false : self.languages.size >= self.organization.plan&.languages_limit
   end
 
   # Creates the tag if it does not exist.

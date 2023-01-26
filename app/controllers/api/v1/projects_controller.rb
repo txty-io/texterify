@@ -59,7 +59,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     skip_authorization
     organization = current_user.organizations.find(params[:organization_id])
 
-    if !organization.feature_enabled?(Organization::FEATURE_UNLIMITED_PROJECTS) && organization.projects.size >= 1
+    if organization.max_projects_reached?
       render json: { error: true, message: 'MAXIMUM_NUMBER_OF_PROJECTS_REACHED' }, status: :bad_request
       return
     end
@@ -295,7 +295,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     end
 
     project = current_user.projects.find(params[:project_id])
-    unless feature_enabled?(project, Organization::FEATURE_PROJECT_ACTIVITY)
+    unless project.feature_enabled?(Plan::FEATURE_PROJECT_ACTIVITY)
       return
     end
 

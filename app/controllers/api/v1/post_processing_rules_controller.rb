@@ -30,7 +30,7 @@ class Api::V1::PostProcessingRulesController < Api::V1::ApiController
     end
 
     authorize post_processing_rule
-    unless feature_enabled?(project, Organization::FEATURE_POST_PROCESSING)
+    unless project.feature_enabled?(Plan::FEATURE_POST_PROCESSING)
       return
     end
 
@@ -63,7 +63,7 @@ class Api::V1::PostProcessingRulesController < Api::V1::ApiController
     project = current_user.projects.find(params[:project_id])
     post_processing_rule = project.post_processing_rules.find(params[:id])
     authorize post_processing_rule
-    unless feature_enabled?(project, Organization::FEATURE_POST_PROCESSING)
+    unless project.feature_enabled?(Plan::FEATURE_POST_PROCESSING)
       return
     end
 

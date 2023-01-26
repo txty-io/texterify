@@ -1,6 +1,5 @@
 class ProjectSerializer
   include FastJsonapi::ObjectSerializer
-  include EnabledFeaturesHelper
   extend ApplicationHelper
 
   attributes :id,
@@ -58,11 +57,7 @@ class ProjectSerializer
   end
 
   attribute :enabled_features do |object|
-    enabled_features_organization(object.organization)
-  end
-
-  attribute :all_features do
-    Organization::FEATURES_PLANS
+    object.organization.plan&.enabled_features
   end
 
   attribute :machine_translation_active do |object|

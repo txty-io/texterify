@@ -19,7 +19,7 @@
           [ 0] "FEATURE_TAGS",
           [ 1] "FEATURE_UNLIMITED_PROJECTS",
           [ 2] "FEATURE_UNLIMITED_LANGUAGES",
-          [ 3] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_PERMISSION_SYSTEM",
           [ 4] "FEATURE_VALIDATIONS",
           [ 5] "FEATURE_KEY_HISTORY",
           [ 6] "FEATURE_EXPORT_HIERARCHY",
@@ -27,7 +27,7 @@
           [ 8] "FEATURE_PROJECT_ACTIVITY",
           [ 9] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
           [10] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
-          [11] "FEATURE_OTA",
+          [11] "FEATURE_OVER_THE_AIR",
           [12] "FEATURE_HTML_EDITOR",
           [13] "FEATURE_TEMPLATES",
           [14] "FEATURE_PROJECT_GROUPS"
@@ -43,7 +43,7 @@
             [1] "team",
             [2] "business"
           ],
-                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+                     "FEATURE_PERMISSION_SYSTEM" => [
             [0] "basic",
             [1] "team",
             [2] "business"
@@ -80,7 +80,7 @@
                   "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
             [0] "business"
           ],
-                                         "FEATURE_OTA" => [
+                                         "FEATURE_OVER_THE_AIR" => [
             [0] "business"
           ],
                                  "FEATURE_HTML_EDITOR" => [
@@ -124,7 +124,7 @@
           [ 0] "FEATURE_TAGS",
           [ 1] "FEATURE_UNLIMITED_PROJECTS",
           [ 2] "FEATURE_UNLIMITED_LANGUAGES",
-          [ 3] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_PERMISSION_SYSTEM",
           [ 4] "FEATURE_VALIDATIONS",
           [ 5] "FEATURE_KEY_HISTORY",
           [ 6] "FEATURE_EXPORT_HIERARCHY",
@@ -132,7 +132,7 @@
           [ 8] "FEATURE_PROJECT_ACTIVITY",
           [ 9] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
           [10] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
-          [11] "FEATURE_OTA",
+          [11] "FEATURE_OVER_THE_AIR",
           [12] "FEATURE_HTML_EDITOR",
           [13] "FEATURE_TEMPLATES",
           [14] "FEATURE_PROJECT_GROUPS"
@@ -148,7 +148,7 @@
             [1] "team",
             [2] "business"
           ],
-                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+                     "FEATURE_PERMISSION_SYSTEM" => [
             [0] "basic",
             [1] "team",
             [2] "business"
@@ -185,7 +185,7 @@
                   "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
             [0] "business"
           ],
-                                         "FEATURE_OTA" => [
+                                         "FEATURE_OVER_THE_AIR" => [
             [0] "business"
           ],
                                  "FEATURE_HTML_EDITOR" => [
@@ -229,7 +229,7 @@
           [ 0] "FEATURE_TAGS",
           [ 1] "FEATURE_UNLIMITED_PROJECTS",
           [ 2] "FEATURE_UNLIMITED_LANGUAGES",
-          [ 3] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_PERMISSION_SYSTEM",
           [ 4] "FEATURE_VALIDATIONS",
           [ 5] "FEATURE_KEY_HISTORY",
           [ 6] "FEATURE_EXPORT_HIERARCHY",
@@ -237,7 +237,7 @@
           [ 8] "FEATURE_PROJECT_ACTIVITY",
           [ 9] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
           [10] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
-          [11] "FEATURE_OTA",
+          [11] "FEATURE_OVER_THE_AIR",
           [12] "FEATURE_HTML_EDITOR",
           [13] "FEATURE_TEMPLATES",
           [14] "FEATURE_PROJECT_GROUPS"
@@ -253,7 +253,7 @@
             [1] "team",
             [2] "business"
           ],
-                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+                     "FEATURE_PERMISSION_SYSTEM" => [
             [0] "basic",
             [1] "team",
             [2] "business"
@@ -290,7 +290,7 @@
                   "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
             [0] "business"
           ],
-                                         "FEATURE_OTA" => [
+                                         "FEATURE_OVER_THE_AIR" => [
             [0] "business"
           ],
                                  "FEATURE_HTML_EDITOR" => [
@@ -334,7 +334,7 @@
           [ 0] "FEATURE_TAGS",
           [ 1] "FEATURE_UNLIMITED_PROJECTS",
           [ 2] "FEATURE_UNLIMITED_LANGUAGES",
-          [ 3] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_PERMISSION_SYSTEM",
           [ 4] "FEATURE_VALIDATIONS",
           [ 5] "FEATURE_KEY_HISTORY",
           [ 6] "FEATURE_EXPORT_HIERARCHY",
@@ -342,7 +342,7 @@
           [ 8] "FEATURE_PROJECT_ACTIVITY",
           [ 9] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
           [10] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
-          [11] "FEATURE_OTA",
+          [11] "FEATURE_OVER_THE_AIR",
           [12] "FEATURE_HTML_EDITOR",
           [13] "FEATURE_TEMPLATES",
           [14] "FEATURE_PROJECT_GROUPS"
@@ -358,7 +358,7 @@
             [1] "team",
             [2] "business"
           ],
-                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+                     "FEATURE_PERMISSION_SYSTEM" => [
             [0] "basic",
             [1] "team",
             [2] "business"
@@ -395,7 +395,7 @@
                   "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
             [0] "business"
           ],
-                                         "FEATURE_OTA" => [
+                                         "FEATURE_OVER_THE_AIR" => [
             [0] "business"
           ],
                                  "FEATURE_HTML_EDITOR" => [
@@ -439,7 +439,7 @@
           [ 0] "FEATURE_TAGS",
           [ 1] "FEATURE_UNLIMITED_PROJECTS",
           [ 2] "FEATURE_UNLIMITED_LANGUAGES",
-          [ 3] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_PERMISSION_SYSTEM",
           [ 4] "FEATURE_VALIDATIONS",
           [ 5] "FEATURE_KEY_HISTORY",
           [ 6] "FEATURE_EXPORT_HIERARCHY",
@@ -447,7 +447,7 @@
           [ 8] "FEATURE_PROJECT_ACTIVITY",
           [ 9] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
           [10] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
-          [11] "FEATURE_OTA",
+          [11] "FEATURE_OVER_THE_AIR",
           [12] "FEATURE_HTML_EDITOR",
           [13] "FEATURE_TEMPLATES",
           [14] "FEATURE_PROJECT_GROUPS"
@@ -463,7 +463,7 @@
             [1] "team",
             [2] "business"
           ],
-                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+                     "FEATURE_PERMISSION_SYSTEM" => [
             [0] "basic",
             [1] "team",
             [2] "business"
@@ -500,7 +500,7 @@
                   "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
             [0] "business"
           ],
-                                         "FEATURE_OTA" => [
+                                         "FEATURE_OVER_THE_AIR" => [
             [0] "business"
           ],
                                  "FEATURE_HTML_EDITOR" => [
@@ -544,7 +544,7 @@
           [ 0] "FEATURE_TAGS",
           [ 1] "FEATURE_UNLIMITED_PROJECTS",
           [ 2] "FEATURE_UNLIMITED_LANGUAGES",
-          [ 3] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_PERMISSION_SYSTEM",
           [ 4] "FEATURE_VALIDATIONS",
           [ 5] "FEATURE_KEY_HISTORY",
           [ 6] "FEATURE_EXPORT_HIERARCHY",
@@ -552,7 +552,7 @@
           [ 8] "FEATURE_PROJECT_ACTIVITY",
           [ 9] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
           [10] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
-          [11] "FEATURE_OTA",
+          [11] "FEATURE_OVER_THE_AIR",
           [12] "FEATURE_HTML_EDITOR",
           [13] "FEATURE_TEMPLATES",
           [14] "FEATURE_PROJECT_GROUPS"
@@ -568,7 +568,7 @@
             [1] "team",
             [2] "business"
           ],
-                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+                     "FEATURE_PERMISSION_SYSTEM" => [
             [0] "basic",
             [1] "team",
             [2] "business"
@@ -605,7 +605,7 @@
                   "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
             [0] "business"
           ],
-                                         "FEATURE_OTA" => [
+                                         "FEATURE_OVER_THE_AIR" => [
             [0] "business"
           ],
                                  "FEATURE_HTML_EDITOR" => [
@@ -649,7 +649,7 @@
           [ 0] "FEATURE_TAGS",
           [ 1] "FEATURE_UNLIMITED_PROJECTS",
           [ 2] "FEATURE_UNLIMITED_LANGUAGES",
-          [ 3] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_PERMISSION_SYSTEM",
           [ 4] "FEATURE_VALIDATIONS",
           [ 5] "FEATURE_KEY_HISTORY",
           [ 6] "FEATURE_EXPORT_HIERARCHY",
@@ -657,7 +657,7 @@
           [ 8] "FEATURE_PROJECT_ACTIVITY",
           [ 9] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
           [10] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
-          [11] "FEATURE_OTA",
+          [11] "FEATURE_OVER_THE_AIR",
           [12] "FEATURE_HTML_EDITOR",
           [13] "FEATURE_TEMPLATES",
           [14] "FEATURE_PROJECT_GROUPS"
@@ -673,7 +673,7 @@
             [1] "team",
             [2] "business"
           ],
-                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+                     "FEATURE_PERMISSION_SYSTEM" => [
             [0] "basic",
             [1] "team",
             [2] "business"
@@ -710,7 +710,7 @@
                   "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
             [0] "business"
           ],
-                                         "FEATURE_OTA" => [
+                                         "FEATURE_OVER_THE_AIR" => [
             [0] "business"
           ],
                                  "FEATURE_HTML_EDITOR" => [
@@ -754,7 +754,7 @@
           [ 0] "FEATURE_TAGS",
           [ 1] "FEATURE_UNLIMITED_PROJECTS",
           [ 2] "FEATURE_UNLIMITED_LANGUAGES",
-          [ 3] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_PERMISSION_SYSTEM",
           [ 4] "FEATURE_VALIDATIONS",
           [ 5] "FEATURE_KEY_HISTORY",
           [ 6] "FEATURE_EXPORT_HIERARCHY",
@@ -762,7 +762,7 @@
           [ 8] "FEATURE_PROJECT_ACTIVITY",
           [ 9] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
           [10] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
-          [11] "FEATURE_OTA",
+          [11] "FEATURE_OVER_THE_AIR",
           [12] "FEATURE_HTML_EDITOR",
           [13] "FEATURE_TEMPLATES",
           [14] "FEATURE_PROJECT_GROUPS"
@@ -778,7 +778,7 @@
             [1] "team",
             [2] "business"
           ],
-                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+                     "FEATURE_PERMISSION_SYSTEM" => [
             [0] "basic",
             [1] "team",
             [2] "business"
@@ -815,7 +815,7 @@
                   "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
             [0] "business"
           ],
-                                         "FEATURE_OTA" => [
+                                         "FEATURE_OVER_THE_AIR" => [
             [0] "business"
           ],
                                  "FEATURE_HTML_EDITOR" => [
@@ -859,7 +859,7 @@
           [ 0] "FEATURE_TAGS",
           [ 1] "FEATURE_UNLIMITED_PROJECTS",
           [ 2] "FEATURE_UNLIMITED_LANGUAGES",
-          [ 3] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_PERMISSION_SYSTEM",
           [ 4] "FEATURE_VALIDATIONS",
           [ 5] "FEATURE_KEY_HISTORY",
           [ 6] "FEATURE_EXPORT_HIERARCHY",
@@ -867,7 +867,7 @@
           [ 8] "FEATURE_PROJECT_ACTIVITY",
           [ 9] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
           [10] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
-          [11] "FEATURE_OTA",
+          [11] "FEATURE_OVER_THE_AIR",
           [12] "FEATURE_HTML_EDITOR",
           [13] "FEATURE_TEMPLATES",
           [14] "FEATURE_PROJECT_GROUPS"
@@ -883,7 +883,7 @@
             [1] "team",
             [2] "business"
           ],
-                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+                     "FEATURE_PERMISSION_SYSTEM" => [
             [0] "basic",
             [1] "team",
             [2] "business"
@@ -920,7 +920,7 @@
                   "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
             [0] "business"
           ],
-                                         "FEATURE_OTA" => [
+                                         "FEATURE_OVER_THE_AIR" => [
             [0] "business"
           ],
                                  "FEATURE_HTML_EDITOR" => [
@@ -964,7 +964,7 @@
           [ 0] "FEATURE_TAGS",
           [ 1] "FEATURE_UNLIMITED_PROJECTS",
           [ 2] "FEATURE_UNLIMITED_LANGUAGES",
-          [ 3] "FEATURE_BASIC_PERMISSION_SYSTEM",
+          [ 3] "FEATURE_PERMISSION_SYSTEM",
           [ 4] "FEATURE_VALIDATIONS",
           [ 5] "FEATURE_KEY_HISTORY",
           [ 6] "FEATURE_EXPORT_HIERARCHY",
@@ -972,7 +972,7 @@
           [ 8] "FEATURE_PROJECT_ACTIVITY",
           [ 9] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
           [10] "FEATURE_ADVANCED_PERMISSION_SYSTEM",
-          [11] "FEATURE_OTA",
+          [11] "FEATURE_OVER_THE_AIR",
           [12] "FEATURE_HTML_EDITOR",
           [13] "FEATURE_TEMPLATES",
           [14] "FEATURE_PROJECT_GROUPS"
@@ -988,7 +988,7 @@
             [1] "team",
             [2] "business"
           ],
-                     "FEATURE_BASIC_PERMISSION_SYSTEM" => [
+                     "FEATURE_PERMISSION_SYSTEM" => [
             [0] "basic",
             [1] "team",
             [2] "business"
@@ -1025,7 +1025,7 @@
                   "FEATURE_ADVANCED_PERMISSION_SYSTEM" => [
             [0] "business"
           ],
-                                         "FEATURE_OTA" => [
+                                         "FEATURE_OVER_THE_AIR" => [
             [0] "business"
           ],
                                  "FEATURE_HTML_EDITOR" => [

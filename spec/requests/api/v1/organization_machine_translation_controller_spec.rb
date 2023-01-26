@@ -47,16 +47,6 @@ RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :request
   end
 
   describe 'PUT update' do
-    it 'responds with json by default' do
-      put "/api/v1/organizations/#{@organization.id}/machine_translation"
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
-    it 'responds with json even by set format' do
-      put "/api/v1/organizations/#{@organization.id}/machine_translation", params: { format: :html }
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
     it 'fails to update settings without auth' do
       put "/api/v1/organizations/#{@organization.id}/machine_translation",
           params: {

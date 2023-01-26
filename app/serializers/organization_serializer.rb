@@ -1,13 +1,12 @@
 class OrganizationSerializer
   include FastJsonapi::ObjectSerializer
-  include EnabledFeaturesHelper
 
   attributes :id,
              :name,
              :trial_active,
              :machine_translation_character_usage,
              :machine_translation_character_limit,
-             :max_users_reached,
+             :max_users_reached?,
              :deepl_api_token_type
   has_many :projects
 
@@ -38,11 +37,7 @@ class OrganizationSerializer
   end
 
   attribute :enabled_features do |object|
-    enabled_features_organization(object)
-  end
-
-  attribute :all_features do
-    Organization::FEATURES_PLANS
+    object.plan&.enabled_features
   end
 
   attribute :current_user_deactivated, if: proc { |_, params| params[:current_user] } do |object, params|

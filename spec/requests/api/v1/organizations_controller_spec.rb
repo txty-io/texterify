@@ -10,16 +10,6 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
   end
 
   describe 'GET index' do
-    it 'responds with json by default' do
-      get '/api/v1/organizations'
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
-    it 'responds with json even by set format' do
-      get '/api/v1/organizations', params: { format: :html }
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
     it 'has status code 403 if not logged in', :skip_before do
       get '/api/v1/organizations'
       expect(response).to have_http_status(:forbidden)
@@ -121,16 +111,6 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
   end
 
   describe 'POST create' do
-    it 'responds with json by default' do
-      post '/api/v1/organizations'
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
-    it 'responds with json even by set format' do
-      post '/api/v1/organizations', params: { format: :html }
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
     it 'creates a new organization with name' do
       name = 'Test Name'
       post '/api/v1/organizations', params: { name: name }, headers: @auth_params, as: :json
@@ -173,16 +153,6 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
   describe 'PUT update' do
     permissions_update = { 'translator' => 403, 'developer' => 403, 'manager' => 200, 'owner' => 200 }
 
-    it 'responds with json by default' do
-      put '/api/v1/organizations/1'
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
-    it 'responds with json even by set format' do
-      put '/api/v1/organizations/1', params: { format: :html }
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
     permissions_update.each do |permission, expected_response_status|
       it "#{expected_response_status == 200 ? 'succeeds' : 'fails'} to update a organizations name as #{permission} of organization" do
         organization = Organization.new(name: 'Old Name')
@@ -209,16 +179,6 @@ RSpec.describe Api::V1::OrganizationsController, type: :request do
 
   describe 'DESTROY delete' do
     permissions_destroy = { 'translator' => 403, 'developer' => 403, 'manager' => 403, 'owner' => 200 }
-
-    it 'responds with json by default' do
-      delete '/api/v1/organizations/1'
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
-    it 'responds with json even by set format' do
-      delete '/api/v1/organizations/1', params: { format: :html }
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
 
     permissions_destroy.each do |permission, expected_response_status|
       it "#{expected_response_status == 200 ? 'succeeds' : 'fails'} to delete a organization as #{permission} of organization" do

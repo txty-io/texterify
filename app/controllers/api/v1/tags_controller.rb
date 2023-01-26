@@ -3,7 +3,7 @@ class Api::V1::TagsController < Api::V1::ApiController
     skip_authorization
 
     project = current_user.projects.find(params[:project_id])
-    unless feature_enabled?(project, Organization::FEATURE_TAGS)
+    unless project.feature_enabled?(Plan::FEATURE_TAGS)
       return
     end
 
@@ -24,7 +24,7 @@ class Api::V1::TagsController < Api::V1::ApiController
 
   def create
     project = current_user.projects.find(params[:project_id])
-    unless feature_enabled?(project, Organization::FEATURE_TAGS)
+    unless project.feature_enabled?(Plan::FEATURE_TAGS)
       return
     end
 
@@ -43,7 +43,7 @@ class Api::V1::TagsController < Api::V1::ApiController
 
   def update
     project = current_user.projects.find(params[:project_id])
-    unless feature_enabled?(project, Organization::FEATURE_TAGS)
+    unless project.feature_enabled?(Plan::FEATURE_TAGS)
       return
     end
 
@@ -60,7 +60,7 @@ class Api::V1::TagsController < Api::V1::ApiController
 
   def destroy
     project = current_user.projects.find(params[:project_id])
-    unless feature_enabled?(project, Organization::FEATURE_TAGS)
+    unless project.feature_enabled?(Plan::FEATURE_TAGS)
       return
     end
 

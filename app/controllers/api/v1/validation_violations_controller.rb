@@ -4,7 +4,7 @@ class Api::V1::ValidationViolationsController < Api::V1::ApiController
 
     project = current_user.projects.find(params[:project_id])
 
-    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+    unless project.feature_enabled?(Plan::FEATURE_VALIDATIONS)
       return
     end
 
@@ -46,7 +46,7 @@ class Api::V1::ValidationViolationsController < Api::V1::ApiController
 
     project = current_user.projects.find(params[:project_id])
 
-    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+    unless project.feature_enabled?(Plan::FEATURE_VALIDATIONS)
       return
     end
 
@@ -56,7 +56,7 @@ class Api::V1::ValidationViolationsController < Api::V1::ApiController
   def destroy
     project = current_user.projects.find(params[:project_id])
 
-    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+    unless project.feature_enabled?(Plan::FEATURE_VALIDATIONS)
       return
     end
 
@@ -70,7 +70,7 @@ class Api::V1::ValidationViolationsController < Api::V1::ApiController
   def destroy_multiple
     project = current_user.projects.find(params[:project_id])
 
-    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+    unless project.feature_enabled?(Plan::FEATURE_VALIDATIONS)
       return
     end
 
@@ -84,7 +84,7 @@ class Api::V1::ValidationViolationsController < Api::V1::ApiController
   def update
     project = current_user.projects.find(params[:project_id])
 
-    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+    unless project.feature_enabled?(Plan::FEATURE_VALIDATIONS)
       return
     end
 
@@ -99,7 +99,7 @@ class Api::V1::ValidationViolationsController < Api::V1::ApiController
   def update_multiple
     project = current_user.projects.find(params[:project_id])
 
-    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+    unless project.feature_enabled?(Plan::FEATURE_VALIDATIONS)
       return
     end
 

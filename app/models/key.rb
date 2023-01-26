@@ -191,7 +191,7 @@ class Key < ApplicationRecord
   protected
 
   def check_html_allowed
-    if html_enabled_changed? && !project.feature_enabled?(Organization::FEATURE_HTML_EDITOR)
+    if html_enabled_changed? && !project.feature_enabled?(Plan::FEATURE_HTML_EDITOR)
       self.html_enabled = false
     end
   end

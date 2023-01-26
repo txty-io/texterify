@@ -4,13 +4,13 @@ class Api::V1::ValidationsController < Api::V1::ApiController
 
     if params[:project_id]
       project = current_user.projects.find(params[:project_id])
-      unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+      unless project.feature_enabled?(Plan::FEATURE_VALIDATIONS)
         return
       end
       validations = project.validations
     else
       organization = current_user.organizations.find(params[:organization_id])
-      unless feature_enabled?(organization, Organization::FEATURE_VALIDATIONS)
+      unless organization.feature_enabled?(Plan::FEATURE_VALIDATIONS)
         return
       end
       validations = organization.validations
@@ -30,7 +30,7 @@ class Api::V1::ValidationsController < Api::V1::ApiController
   def create
     if params[:project_id]
       project = current_user.projects.find(params[:project_id])
-      unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+      unless project.feature_enabled?(Plan::FEATURE_VALIDATIONS)
         return
       end
 
@@ -38,7 +38,7 @@ class Api::V1::ValidationsController < Api::V1::ApiController
       validation.project = project
     else
       organization = current_user.organizations.find(params[:organization_id])
-      unless feature_enabled?(organization, Organization::FEATURE_VALIDATIONS)
+      unless organization.feature_enabled?(Plan::FEATURE_VALIDATIONS)
         return
       end
 
@@ -58,13 +58,13 @@ class Api::V1::ValidationsController < Api::V1::ApiController
   def update
     if params[:project_id]
       project = current_user.projects.find(params[:project_id])
-      unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+      unless project.feature_enabled?(Plan::FEATURE_VALIDATIONS)
         return
       end
       validations = project.validations
     else
       organization = current_user.organizations.find(params[:organization_id])
-      unless feature_enabled?(organization, Organization::FEATURE_VALIDATIONS)
+      unless organization.feature_enabled?(Plan::FEATURE_VALIDATIONS)
         return
       end
       validations = organization.validations
@@ -84,13 +84,13 @@ class Api::V1::ValidationsController < Api::V1::ApiController
   def destroy
     if params[:project_id]
       project = current_user.projects.find(params[:project_id])
-      unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+      unless project.feature_enabled?(Plan::FEATURE_VALIDATIONS)
         return
       end
       validations = project.validations
     else
       organization = current_user.organizations.find(params[:organization_id])
-      unless feature_enabled?(organization, Organization::FEATURE_VALIDATIONS)
+      unless organization.feature_enabled?(Plan::FEATURE_VALIDATIONS)
         return
       end
       validations = organization.validations
@@ -111,7 +111,7 @@ class Api::V1::ValidationsController < Api::V1::ApiController
   def recheck
     project = current_user.projects.find(params[:project_id])
 
-    unless feature_enabled?(project, Organization::FEATURE_VALIDATIONS)
+    unless project.feature_enabled?(Plan::FEATURE_VALIDATIONS)
       return
     end
 

@@ -24,7 +24,6 @@ interface IOrganizationAttributes {
     trial_ends_at: string;
     trial_active: boolean;
     enabled_features: IFeature[];
-    all_features: { [k in IFeature]: IPlanIDS[] };
     machine_translation_character_usage: string;
     machine_translation_character_limit: string;
     deepl_api_token: string;
