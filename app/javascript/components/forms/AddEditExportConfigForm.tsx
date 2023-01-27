@@ -22,7 +22,9 @@ interface IFormValues {
     fileFormatId: string;
     flavorId: string;
     filePath: string;
+    filePathStringsdict: string;
     defaultLanguageFilePath: string;
+    defaultLanguageFilePathStringsdict: string;
     splitOn: string;
     skipEmptyPluralTranslations: boolean;
 }
@@ -73,10 +75,12 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
             response = await ExportConfigsAPI.updateExportConfig({
                 projectId: props.projectId,
                 defaultLanguageFilePath: values.defaultLanguageFilePath,
+                defaultLanguageFilePathStringsdict: values.defaultLanguageFilePathStringsdict,
                 fileFormatId: values.fileFormatId,
                 exportConfigId: props.exportConfigToEdit.id,
                 flavorId: values.flavorId,
                 filePath: values.filePath,
+                filePathStringsdict: values.filePathStringsdict,
                 name: values.name,
                 splitOn: values.splitOn,
                 skipEmptyPluralTranslations: values.skipEmptyPluralTranslations
@@ -85,9 +89,11 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
             response = await ExportConfigsAPI.createExportConfig({
                 projectId: props.projectId,
                 defaultLanguageFilePath: values.defaultLanguageFilePath,
+                defaultLanguageFilePathStringsdict: values.defaultLanguageFilePathStringsdict,
                 fileFormatId: values.fileFormatId,
                 flavorId: values.flavorId,
                 filePath: values.filePath,
+                filePathStringsdict: values.filePathStringsdict,
                 name: values.name,
                 splitOn: values.splitOn,
                 skipEmptyPluralTranslations: values.skipEmptyPluralTranslations
@@ -268,7 +274,10 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
                         splitOn: props.exportConfigToEdit.attributes.split_on,
                         flavorId: props.exportConfigToEdit.attributes.flavor_id,
                         filePath: props.exportConfigToEdit.attributes.file_path,
+                        filePathStringsdict: props.exportConfigToEdit.attributes.file_path_stringsdict,
                         defaultLanguageFilePath: props.exportConfigToEdit.attributes.default_language_file_path,
+                        defaultLanguageFilePathStringsdict:
+                            props.exportConfigToEdit.attributes.default_language_file_path_stringsdict,
                         skipEmptyPluralTranslations: props.exportConfigToEdit.attributes.skip_empty_plural_translations,
                         fileFormatId: props.exportConfigToEdit.attributes.file_format_id
                     } as IFormValues)
@@ -379,12 +388,31 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
                     >
                         <Input placeholder="File path" />
                     </Form.Item>
+                    {selectedFileFormat?.attributes.format === "ios" && (
+                        <Form.Item
+                            name="filePathStringsdict"
+                            rules={[
+                                {
+                                    required: false,
+                                    whitespace: true,
+                                    message: "Please enter the file path of the stringsdict files."
+                                }
+                            ]}
+                        >
+                            <Input placeholder="File path for stringsdict file" />
+                        </Form.Item>
+                    )}
 
                     <h3>Default language file path</h3>
                     <p>A special file path for the default language if available.</p>
                     <Form.Item name="defaultLanguageFilePath" rules={[]}>
                         <Input placeholder="Default language file path" />
                     </Form.Item>
+                    {selectedFileFormat?.attributes.format === "ios" && (
+                        <Form.Item name="defaultLanguageFilePathStringsdict" rules={[]}>
+                            <Input placeholder="Default language file path for stringsdict file" />
+                        </Form.Item>
+                    )}
                 </div>
                 <div style={{ width: "50%" }}>
                     <h3>Flavor</h3>
