@@ -32,7 +32,9 @@ export interface IExportConfig {
         file_format_id: string;
         flavor_id: string;
         file_path: string;
+        file_path_stringsdict: string;
         default_language_file_path: string;
+        default_language_file_path_stringsdict: string;
         split_on: string;
         skip_empty_plural_translations: boolean;
     };
@@ -73,8 +75,10 @@ const ExportConfigsAPI = {
         name: string;
         flavorId: string;
         filePath: string;
+        filePathStringsdict: string;
         splitOn: string;
         defaultLanguageFilePath: string;
+        defaultLanguageFilePathStringsdict: string;
         skipEmptyPluralTranslations: boolean;
     }) => {
         return API.postRequest(`projects/${options.projectId}/export_configs`, true, {
@@ -83,7 +87,9 @@ const ExportConfigsAPI = {
             file_format_id: options.fileFormatId,
             flavor_id: options.flavorId,
             file_path: options.filePath,
+            file_path_stringsdict: options.filePathStringsdict,
             default_language_file_path: options.defaultLanguageFilePath,
+            default_language_file_path_stringsdict: options.defaultLanguageFilePathStringsdict,
             split_on: options.splitOn,
             skip_empty_plural_translations: options.skipEmptyPluralTranslations
         })
@@ -98,8 +104,10 @@ const ExportConfigsAPI = {
         name: string;
         flavorId: string;
         filePath: string;
+        filePathStringsdict: string;
         splitOn: string;
         defaultLanguageFilePath: string;
+        defaultLanguageFilePathStringsdict: string;
         skipEmptyPluralTranslations: boolean;
     }) => {
         return API.putRequest(`projects/${options.projectId}/export_configs/${options.exportConfigId}`, true, {
@@ -108,7 +116,9 @@ const ExportConfigsAPI = {
             file_format_id: options.fileFormatId,
             flavor_id: options.flavorId,
             file_path: options.filePath,
+            file_path_stringsdict: options.filePathStringsdict,
             default_language_file_path: options.defaultLanguageFilePath,
+            default_language_file_path_stringsdict: options.defaultLanguageFilePathStringsdict,
             split_on: options.splitOn,
             skip_empty_plural_translations: options.skipEmptyPluralTranslations
         })

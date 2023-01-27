@@ -493,7 +493,7 @@ class ExportConfig < ApplicationRecord
       stringsdict_file.close
       stringsdict_file_path = self.filled_file_path(language, path_for: 'stringsdict')
 
-      files << { path: stringsdict_file_path, file: stringsdict_file }
+      files << { path: stringsdict_file_path || strings_file_path, file: stringsdict_file }
     end
 
     files
