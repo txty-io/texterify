@@ -103,6 +103,7 @@ class Organization < ApplicationRecord
 
   def current_plan
     current_plan_name = 'free'
+
     if custom_subscription&.plan
       current_plan_name = custom_subscription.plan
     elsif active_subscription&.plan
@@ -162,7 +163,7 @@ class Organization < ApplicationRecord
 
   # Returns true if the projects limit has been reached.
   def max_projects_reached?
-    self.plan.nil? ? false : self.projects.size >= self.plan&.projects_limit
+    self.plan&.projects_limit.nil? ? false : self.projects.size >= self.plan.projects_limit
   end
 
   # Checks if the number of characters would exceed the machine translation limit of the organization.

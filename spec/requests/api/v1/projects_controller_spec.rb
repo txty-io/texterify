@@ -195,7 +195,8 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
 
     permissions_update.each do |permission, expected_response_status|
       it "#{expected_response_status == 200 ? 'succeeds' : 'fails'} to update a projects name as #{permission} of project" do
-        project = Project.new(name: 'Old Name')
+        organization = create(:organization)
+        project = Project.new(name: 'Old Name', organization_id: organization.id)
         project.save!
 
         project_user = ProjectUser.new
@@ -224,7 +225,8 @@ RSpec.describe Api::V1::ProjectsController, type: :request do
 
     permissions_destroy.each do |permission, expected_response_status|
       it "#{expected_response_status == 200 ? 'succeeds' : 'fails'} to delete a project as #{permission} of project" do
-        project = Project.new(name: 'Project name')
+        organization = create(:organization)
+        project = Project.new(name: 'Project name', organization_id: organization.id)
         project.save!
 
         project_user = ProjectUser.new

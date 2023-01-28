@@ -13,7 +13,7 @@ FactoryBot.define do
       transient { projects_count { 5 } }
 
       after(:create) do |user, evaluator|
-        create_list(:project, :with_organization, evaluator.projects_count, users_project: [user])
+        create_list(:project, evaluator.projects_count, users_project: [user], organization: create(:organization))
       end
     end
 

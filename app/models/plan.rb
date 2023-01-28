@@ -47,27 +47,49 @@ class Plan < ApplicationRecord
 
     if self.permission_system
       features << FEATURE_PERMISSION_SYSTEM
-    elsif self.validations
+    end
+
+    if self.validations
       features << FEATURE_VALIDATIONS
-    elsif self.key_history
+    end
+
+    if self.key_history
       features << FEATURE_KEY_HISTORY
-    elsif self.export_hierarchy
+    end
+
+    if self.export_hierarchy
       features << FEATURE_EXPORT_HIERARCHY
-    elsif self.post_processing
+    end
+
+    if self.post_processing
       features << FEATURE_POST_PROCESSING
-    elsif self.project_activity
+    end
+
+    if self.project_activity
       features << FEATURE_PROJECT_ACTIVITY
-    elsif self.over_the_air
+    end
+
+    if self.over_the_air
       features << FEATURE_OVER_THE_AIR
-    elsif self.tags
+    end
+
+    if self.tags
       features << FEATURE_TAGS
-    elsif self.html_editor
+    end
+
+    if self.html_editor
       features << FEATURE_HTML_EDITOR
-    elsif self.machine_translation_suggestions
+    end
+
+    if self.machine_translation_suggestions
       features << FEATURE_MACHINE_TRANSLATION_SUGGESTIONS
-    elsif self.machine_translation_language
+    end
+
+    if self.machine_translation_language
       features << FEATURE_MACHINE_TRANSLATION_LANGUAGE
-    elsif self.machine_translation_auto_translate
+    end
+
+    if self.machine_translation_auto_translate
       features << FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE
     end
 

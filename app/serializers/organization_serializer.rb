@@ -6,12 +6,15 @@ class OrganizationSerializer
              :trial_active,
              :machine_translation_character_usage,
              :machine_translation_character_limit,
-             :max_users_reached?,
              :deepl_api_token_type
   has_many :projects
 
   attribute :uses_custom_deepl_account do |object|
     object.uses_custom_deepl_account?
+  end
+
+  attribute :max_users_reached do |object|
+    object.max_users_reached?
   end
 
   attribute :deepl_api_token do |object|
@@ -37,7 +40,7 @@ class OrganizationSerializer
   end
 
   attribute :enabled_features do |object|
-    object.plan&.enabled_features
+    object.current_plan&.enabled_features
   end
 
   attribute :current_user_deactivated, if: proc { |_, params| params[:current_user] } do |object, params|
