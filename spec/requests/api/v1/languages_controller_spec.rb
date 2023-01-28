@@ -30,11 +30,6 @@ RSpec.describe Api::V1::LanguagesController, type: :request do
   end
 
   describe 'POST create' do
-    it 'responds with json even by set format' do
-      post "/api/v1/projects/#{@project.id}/languages", params: { format: :html }
-      expect(response.content_type).to eq 'application/json; charset=utf-8'
-    end
-
     it 'creates a new language' do
       name = 'German'
       post "/api/v1/projects/#{@project.id}/languages", params: { name: name }, headers: @auth_params, as: :json

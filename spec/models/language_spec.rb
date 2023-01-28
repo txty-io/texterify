@@ -11,7 +11,7 @@ RSpec.describe Language, type: :model do
     language.save!
   end
 
-  it 'fails to a creates a language with the same name for a project' do
+  it 'fails to creates a language with the same name for a project' do
     project = create(:project, :with_organization)
     project.save!
 

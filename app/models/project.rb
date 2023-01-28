@@ -91,7 +91,8 @@ class Project < ApplicationRecord
 
   # Returns true if the languages limit has been reached.
   def max_languages_reached?
-    self.organization.plan.nil? ? false : self.languages.size >= self.organization.plan&.languages_limit
+    organization_plan = self.organization.plan
+    organization_plan.nil? ? false : self.languages.size >= organization_plan.languages_limit
   end
 
   # Creates the tag if it does not exist.
