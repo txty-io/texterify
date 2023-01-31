@@ -440,7 +440,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                             </ul>
                         )}
 
-                        <NotificationsManager style={{ marginRight: 40 }} />
+                        {/* <NotificationsManager style={{ marginRight: 40 }} /> */}
 
                         {this.props.match.params.projectId && (
                             <div

@@ -98,11 +98,7 @@ class ExportConfig < ApplicationRecord
     elsif self.file_format.format == 'android'
       android(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
     elsif self.file_format.format == 'ios'
-      ios(
-        language,
-        export_data
-        # skip_empty_plural_translations: skip_empty_plural_translations
-      )
+      ios(language, export_data, skip_empty_plural_translations: skip_empty_plural_translations)
     elsif self.file_format.format == 'yaml'
       yaml(
         language,
@@ -421,12 +417,8 @@ class ExportConfig < ApplicationRecord
   end
 
   # Dedicated plural support: ✅
-  # Skip empty plural translations: ❌
-  def ios(
-    language,
-    export_data
-    # skip_empty_plural_translations: false
-  )
+  # Skip empty plural translations: ✅
+  def ios(language, export_data, skip_empty_plural_translations: false)
     files = []
 
     plural_data = {}
@@ -470,16 +462,32 @@ class ExportConfig < ApplicationRecord
                     xml.string { xml.text 'NSStringPluralRuleType' }
                     xml.key { xml.text 'NSStringFormatValueTypeKey' }
                     xml.string { xml.text 'd' }
-                    xml.key { xml.text 'zero' }
-                    xml.string { xml.text value[:zero] }
-                    xml.key { xml.text 'one' }
-                    xml.string { xml.text value[:one] }
-                    xml.key { xml.text 'two' }
-                    xml.string { xml.text value[:two] }
-                    xml.key { xml.text 'few' }
-                    xml.string { xml.text value[:few] }
-                    xml.key { xml.text 'many' }
-                    xml.string { xml.text value[:many] }
+
+                    if !skip_empty_plural_translations || value[:zero].present?
+                      xml.key { xml.text 'zero' }
+                      xml.string { xml.text value[:zero] }
+                    end
+
+                    if !skip_empty_plural_translations || value[:one].present?
+                      xml.key { xml.text 'one' }
+                      xml.string { xml.text value[:one] }
+                    end
+
+                    if !skip_empty_plural_translations || value[:two].present?
+                      xml.key { xml.text 'two' }
+                      xml.string { xml.text value[:two] }
+                    end
+
+                    if !skip_empty_plural_translations || value[:few].present?
+                      xml.key { xml.text 'few' }
+                      xml.string { xml.text value[:few] }
+                    end
+
+                    if !skip_empty_plural_translations || value[:many].present?
+                      xml.key { xml.text 'many' }
+                      xml.string { xml.text value[:many] }
+                    end
+
                     xml.key { xml.text 'other' }
                     xml.string { xml.text value[:other] }
                   end
