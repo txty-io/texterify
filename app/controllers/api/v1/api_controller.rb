@@ -75,8 +75,9 @@ module Api::V1
       end
     end
 
-    # Checks if a user is deactivated for an organization or project.
+    # Checks if a user is deactivated for the requested organization or project.
     # Depends on the params ":project_id" and ":organization_id".
+    # Always returns false if the user is a superadmin.
     def user_deactivated?
       project_id = nil
       if params[:project_id].present?
@@ -101,7 +102,8 @@ module Api::V1
         organization_user = organization.organization_users.find_by(user_id: current_user.id)
       end
 
-      (!project_user || project_user.deactivated) && (!organization_user || organization_user.deactivated)
+      (!project_user || project_user.deactivated) && (!organization_user || organization_user.deactivated) &&
+        !current_user.is_superadmin
     end
   end
 end
