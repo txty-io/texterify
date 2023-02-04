@@ -83,7 +83,9 @@ class LoginForm extends React.Component<{}, IState> {
         try {
             response = await AuthAPI.login(values.email, values.password);
         } catch (e) {
+            console.error(e);
             authStore.resetAuth();
+
             this.setState({
                 loginErrors: ["An unknown error occurred."],
                 isLoading: false
@@ -92,9 +94,22 @@ class LoginForm extends React.Component<{}, IState> {
             return;
         }
 
-        if (!response?.data) {
+        if (!response) {
             this.setState({
-                loginErrors: response.errors ? response.errors : ["An unknown error occurred."],
+                loginErrors: ["An unknown error occurred."],
+                isLoading: false
+            });
+        } else if (!response.data) {
+            let errors = response.errors ? response.errors : ["An unknown error occurred."];
+
+            if (response.error_type === "USER_IS_DEACTIVATED") {
+                errors = [
+                    "Your account has been deactivated. Please contact support or your server admin if you think this is an error."
+                ];
+            }
+
+            this.setState({
+                loginErrors: errors,
                 isLoading: false
             });
         } else {

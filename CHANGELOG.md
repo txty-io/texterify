@@ -1,9 +1,10 @@
 # Changelog
 
-## Next
+## 1.2.1
 
 - Make tags feature available for free.
 - Add support to skip empty plural translations during export.
+- Add possibility to deactivate users at instance, organization and project level.
 
 ## v1.2.0
 

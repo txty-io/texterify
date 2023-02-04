@@ -1,6 +1,7 @@
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
 import { ICustomSubscription } from "./OrganizationsAPI";
+import { PostDeactivateUserPayload, PostDeactivateUserResponse } from "../../../typings/APITypes";
 
 export interface IGetUserRedeemableCustomSubscriptions {
     data: ICustomSubscription[];
@@ -38,6 +39,18 @@ const UsersAPI = {
 
     uploadImage: async (formData): Promise<any> => {
         return API.postRequest("users/image", true, formData, null, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    deactivateUser: async (options: { userId: string }): Promise<PostDeactivateUserResponse> => {
+        return API.postRequest(`users/${options.userId}/deactivate`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
+    },
+
+    activateUser: async (options: { userId: string }): Promise<PostDeactivateUserResponse> => {
+        return API.postRequest(`users/${options.userId}/activate`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
     }

@@ -1,4 +1,4 @@
-import { Empty, Input, message, Table } from "antd";
+import { Button, Empty, Input, message, Table, Tooltip } from "antd";
 import * as React from "react";
 import { IGetInstanceUsersOptions, IGetInstanceUsersResponse, InstanceUsersAPI } from "../api/v1/InstanceUsersAPI";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "./Config";
@@ -6,6 +6,7 @@ import { OkIndicator } from "./OkIndicator";
 import { Utils } from "./Utils";
 import { WarningIndicator } from "./WarningIndicator";
 import * as _ from "lodash";
+import { UsersAPI } from "../api/v1/UsersAPI";
 
 type DATA_INDEX =
     | "username"
@@ -33,8 +34,8 @@ type IRow = {
 export function InstanceUsersTable(props: { tableReloader?: number; style?: React.CSSProperties }) {
     const [page, setPage] = React.useState<number>(1);
     const [perPage, setPerPage] = React.useState<number>(DEFAULT_PAGE_SIZE);
-    const [search, setSearch] = React.useState<string>(null);
-    const [usersResponse, setUsersResponse] = React.useState<IGetInstanceUsersResponse>(null);
+    const [search, setSearch] = React.useState<string>("");
+    const [usersResponse, setUsersResponse] = React.useState<IGetInstanceUsersResponse | null>(null);
     const [loading, setLoading] = React.useState<boolean>(false);
 
     async function reload(options?: IGetInstanceUsersOptions) {
@@ -86,7 +87,32 @@ export function InstanceUsersTable(props: { tableReloader?: number; style?: Reac
                 last_sign_in_at: user.attributes.last_sign_in_at
                     ? Utils.formatDateTime(user.attributes.last_sign_in_at)
                     : "-",
-                created_at: Utils.formatDateTime(user.attributes.created_at)
+                created_at: Utils.formatDateTime(user.attributes.created_at),
+                controls: (
+                    <Tooltip
+                        title={
+                            user.attributes.is_superadmin && !user.attributes.deactivated
+                                ? "Instance admins can't be deactivated."
+                                : undefined
+                        }
+                    >
+                        <Button
+                            onClick={async () => {
+                                if (user.attributes.deactivated) {
+                                    await UsersAPI.activateUser({ userId: user.id });
+                                } else {
+                                    await UsersAPI.deactivateUser({ userId: user.id });
+                                }
+
+                                await reload();
+                            }}
+                            danger={!user.attributes.deactivated}
+                            disabled={user.attributes.is_superadmin && !user.attributes.deactivated}
+                        >
+                            {user.attributes.deactivated ? "Activate" : "Deactivate"}
+                        </Button>
+                    </Tooltip>
+                )
             };
         }, []);
     }
@@ -137,7 +163,8 @@ export function InstanceUsersTable(props: { tableReloader?: number; style?: Reac
                 title: "Created at",
                 dataIndex: "created_at",
                 key: "created_at"
-            }
+            },
+            { title: "", dataIndex: "controls", key: "controls" }
         ];
 
         return columns;
@@ -171,7 +198,7 @@ export function InstanceUsersTable(props: { tableReloader?: number; style?: Reac
                     current: page,
                     pageSize: perPage,
                     total: usersResponse?.meta?.total || 0,
-                    onChange: async (newPage, newPerPage) => {
+                    onChange: async (newPage, newPerPage: number) => {
                         const isPageSizeChange = perPage !== newPerPage;
 
                         if (isPageSizeChange) {

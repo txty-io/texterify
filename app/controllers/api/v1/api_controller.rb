@@ -5,6 +5,7 @@ module Api::V1
     before_action :authenticate_user_from_token!
     before_action :verify_signed_in
     before_action :set_paper_trail_whodunnit
+    before_action :check_if_user_activated
 
     after_action :verify_authorized
 
@@ -71,7 +72,7 @@ module Api::V1
     # Returns an error if the user is not activated.
     def check_if_user_activated
       if self.user_deactivated?
-        render json: { error: true, message: 'USER_IS_DEACTIVATED' }, status: :bad_request
+        render json: { error: true, error_type: 'USER_IS_DEACTIVATED' }, status: :forbidden
       end
     end
 
@@ -102,8 +103,15 @@ module Api::V1
         organization_user = organization.organization_users.find_by(user_id: current_user.id)
       end
 
-      (!project_user || project_user.deactivated) && (!organization_user || organization_user.deactivated) &&
-        !current_user.is_superadmin
+      if current_user.deactivated
+        return true
+      elsif project_user&.deactivated
+        return true
+      elsif organization_user&.deactivated
+        return true
+      end
+
+      false
     end
   end
 end

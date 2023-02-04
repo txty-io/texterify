@@ -1,6 +1,5 @@
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
-import { IGetUsersResponse, IUser } from "./OrganizationMembersAPI";
 
 export interface IGetInstanceUsersOptions {
     search?: string;

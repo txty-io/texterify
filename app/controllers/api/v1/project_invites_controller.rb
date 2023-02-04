@@ -1,6 +1,5 @@
 class Api::V1::ProjectInvitesController < Api::V1::ApiController
   before_action :ensure_feature_enabled, only: [:create]
-  before_action :check_if_user_activated
 
   def create
     project = current_user.projects.find(params[:project_id])

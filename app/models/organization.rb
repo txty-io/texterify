@@ -193,11 +193,19 @@ class Organization < ApplicationRecord
     end
   end
 
-  # Returns the number of active (non-deactivated) unique users in the organization or in any of organization projects.
+  # Returns the number of active (non-deactivated) unique users in the organization or in any of the organization projects.
   def active_users_count
     (
-      self.project_users.where(deactivated: false).pluck(:id) +
-        self.organization_users.where(deactivated: false).pluck(:id)
+      self
+        .project_users
+        .joins(:user)
+        .where('projects_users.deactivated = false and users.deactivated = false')
+        .pluck(:id) +
+        self
+          .organization_users
+          .joins(:user)
+          .where('organizations_users.deactivated = false and users.deactivated = false')
+          .pluck(:id)
     ).size
   end
 

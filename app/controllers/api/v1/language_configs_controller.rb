@@ -1,6 +1,4 @@
 class Api::V1::LanguageConfigsController < Api::V1::ApiController
-  before_action :check_if_user_activated
-
   def index
     project = current_user.projects.find(params[:project_id])
     export_config = project.export_configs.find(params[:export_config_id])

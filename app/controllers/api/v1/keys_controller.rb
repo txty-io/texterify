@@ -1,6 +1,4 @@
 class Api::V1::KeysController < Api::V1::ApiController
-  before_action :check_if_user_activated
-
   def info_for_paper_trail
     { project_id: params[:project_id] }
   end
