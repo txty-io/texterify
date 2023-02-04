@@ -71,7 +71,8 @@ async function request(options: {
 
             return {
                 error: true,
-                message: "FORBIDDEN"
+                message: "FORBIDDEN",
+                error_type: json?.error_type
             };
         } else {
             APIUtils.saveTokenFromResponseIfAvailable(response);

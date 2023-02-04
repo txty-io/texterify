@@ -278,8 +278,8 @@ class ProjectSite extends React.Component<IProps, IState> {
                                     message="Congratulations to your new project 🎉"
                                     description={
                                         <>
-                                            We are happy to welcome you here. To start translating you first need to
-                                            import your translation files. You can do so by clicking{" "}
+                                            To start translating you first need to import your translation files. You
+                                            can do so by clicking{" "}
                                             <Link
                                                 to={Routes.DASHBOARD.PROJECT_IMPORTS_RESOLVER({
                                                     projectId: dashboardStore.currentProject?.id

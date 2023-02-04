@@ -1,6 +1,4 @@
 class Api::V1::ExportConfigsController < Api::V1::ApiController
-  before_action :check_if_user_activated
-
   def index
     project = current_user.projects.find(params[:project_id])
 

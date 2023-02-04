@@ -1,5 +1,6 @@
 class Api::V1::FileFormatsController < Api::V1::ApiController
   skip_before_action :verify_signed_in, only: [:file_formats, :file_format_extensions]
+  skip_before_action :check_if_user_activated, only: [:file_formats, :file_format_extensions]
 
   # Public route
   def file_formats

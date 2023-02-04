@@ -3,8 +3,6 @@ require 'php-serialize'
 require 'htmlentities'
 
 class Api::V1::WordpressPolylangConnectionsController < Api::V1::ApiController
-  before_action :check_if_user_activated
-
   def show
     project = current_user.projects.find(params[:project_id])
     connection = project.wordpress_polylang_connection

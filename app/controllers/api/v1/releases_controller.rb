@@ -9,7 +9,7 @@ end
 
 class Api::V1::ReleasesController < Api::V1::ApiController
   skip_before_action :verify_signed_in, only: :release
-  before_action :check_if_user_activated, except: [:release]
+  skip_before_action :check_if_user_activated, only: :release
 
   def index
     project = current_user.projects.find(params[:project_id])

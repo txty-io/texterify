@@ -16,7 +16,12 @@ Rails
 
     scope :api, module: :api, defaults: { format: :json } do
       scope :v1, module: :v1 do
-        mount_devise_token_auth_for 'User', at: 'auth', controllers: { registrations: 'api/v1/registrations' }
+        mount_devise_token_auth_for 'User',
+                                    at: 'auth',
+                                    controllers: {
+                                      registrations: 'api/v1/registrations',
+                                      sessions: 'api/v1/sessions'
+                                    }
 
         # File formats
         get :file_formats, to: 'file_formats#file_formats'
@@ -175,10 +180,14 @@ Rails
         resources :user_licenses, only: [:index]
         get 'dashboard/activity', to: 'dashboard#activity'
         get 'dashboard/changelog', to: 'dashboard#changelog'
+
+        # Users
         get 'users/info', to: 'users#info'
         get 'users/image', to: 'users#image'
         post 'users/image', to: 'users#image_create'
         delete 'users/image', to: 'users#image_destroy'
+        post 'users/:id/deactivate', to: 'users#deactivate'
+        post 'users/:id/activate', to: 'users#activate'
       end
     end
 

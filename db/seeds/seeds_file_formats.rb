@@ -34,7 +34,7 @@ formats = [
     import_support: true,
     export_support: true,
     plural_support: true,
-    skip_empty_plural_translations_support: false,
+    skip_empty_plural_translations_support: true,
     file_format_extensions: ['strings']
   },
   {

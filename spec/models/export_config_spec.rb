@@ -431,6 +431,26 @@ RSpec.describe ExportConfig, type: :model do
       expect(files[1][:file].read).to match_snapshot('create_ios_file_content_plural_stringsdict')
     end
 
+    it 'create ios file content with plurals from parsed data but skips empty plural translations' do
+      files =
+        export_config.files(
+          @language,
+          {
+            'non_plural_key_on' => export_data_value('other content 1'),
+            'non_plural_key_two' => export_data_value('other content 2'),
+            'plural_key_one' => export_data_value('other content 3', pluralization_enabled: true, empty_plurals: true),
+            'plural_key_two' => export_data_value('other content 4', pluralization_enabled: true)
+          },
+          skip_empty_plural_translations: true
+        )
+      files[0][:file].open
+      files[1][:file].open
+      expect(files[0][:path]).to eq('my_file_path')
+      expect(files[1][:path]).to eq('my_file_path')
+      expect(files[0][:file].read).to match_snapshot('create_ios_file_content_plural_strings_skip_empty_plurals')
+      expect(files[1][:file].read).to match_snapshot('create_ios_file_content_plural_stringsdict_skip_empty_plurals')
+    end
+
     it 'create ios file content with plurals from parsed data with custom paths' do
       export_config.file_path_stringsdict = 'my_file_path_stringsdict'
       export_config.default_language_file_path_stringsdict = 'my_file_path_stringsdict_default'

@@ -30,4 +30,38 @@ class Api::V1::UsersController < Api::V1::ApiController
     skip_authorization
     current_user.image.purge
   end
+
+  def deactivate
+    skip_authorization
+    unless current_user.is_superadmin
+      render json: { errors: [{ code: 'SUPERADMIN_PERMISSION_REQUIRED' }] }, status: :forbidden
+      return
+    end
+
+    user = User.find(params[:id])
+
+    if user.is_superadmin
+      render json: { errors: [{ code: 'SUPERADMINS_CANT_BE_DEACTIVATED' }] }, status: :forbidden
+      return
+    end
+
+    user.deactivated = true
+    user.save!
+
+    render json: { error: false, details: 'USER_DEACTIVATED' }
+  end
+
+  def activate
+    skip_authorization
+    unless current_user.is_superadmin
+      render json: { errors: [{ code: 'SUPERADMIN_PERMISSION_REQUIRED' }] }, status: :forbidden
+      return
+    end
+
+    user = User.find(params[:id])
+    user.deactivated = false
+    user.save!
+
+    render json: { error: false, details: 'USER_ACTIVATED' }
+  end
 end
