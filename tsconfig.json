@@ -21,7 +21,8 @@
     "**/*.spec.ts",
     "node_modules",
     "vendor",
-    "public"
+    "public",
+    "**/openapi-typescript-client"
   ],
   "compileOnSave": false
 }

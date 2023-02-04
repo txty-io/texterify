@@ -1,0 +1,68 @@
+openapi: 3.0.3
+info:
+  title: Texterify API
+  version: latest
+servers:
+  - url: https://app.texterify.com/api/v1
+
+paths:
+  /users/{userId}/deactivate:
+    post:
+      operationId: UsersDeactivatePost
+      summary: Deactivates the given user. The user will no longer be able to log in or do any other action.
+      tags:
+        - users
+      parameters:
+        - schema:
+          $ref: '#/components/parameters/userIdParam'
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDeactivateUserResponse'
+
+  /users/{userId}/activate:
+    post:
+      operationId: UsersActivatePost
+      summary: Activates the given user. The user will be able to log in again.
+      tags:
+        - users
+      parameters:
+        - schema:
+          $ref: '#/components/parameters/userIdParam'
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostActivateUserResponse'
+
+components:
+  schemas:
+    PostDeactivateUserResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+        details:
+          type: string
+    PostActivateUserResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+        details:
+          type: string
+
+  parameters:
+    userIdParam:
+      schema:
+        type: string
+        format: uuid4
+      description: ID of the user
+      name: userId
+      in: path
+      required: true

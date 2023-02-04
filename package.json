@@ -109,7 +109,8 @@
     "webpack-bundle-analyzer": "bin/webpack --profile --json > webpacker-stats.json && node_modules/.bin/webpack-bundle-analyzer webpacker-stats.json public/packs",
     "cypress:open": "yarn cypress open --project ./spec",
     "cypress:run": "yarn cypress run --project ./spec",
-    "db:seed": "bundle exec rails db:seed"
+    "db:seed": "bundle exec rails db:seed",
+    "codegen": "./docs/swagger-codegen.sh"
   },
   "husky": {
     "hooks": {
