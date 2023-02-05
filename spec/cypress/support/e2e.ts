@@ -35,12 +35,7 @@ declare global {
             createProject(name: string, description?: string, fromOrganizationPage?: boolean): void;
             addKey(data: { name: string; description?: string; content?: string; isHtml?: boolean }): void;
             appScenario(
-                scenario:
-                    | "project_with_keys"
-                    | "set_cloud"
-                    | "set_on_premise"
-                    | "all_entities"
-                    | "default"
+                scenario: "project_with_keys" | "set_cloud" | "set_on_premise" | "all_entities" | "default"
             ): void;
             addLanguage(data: {
                 languageName: string;
