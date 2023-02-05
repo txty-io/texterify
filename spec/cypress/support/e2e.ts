@@ -37,7 +37,6 @@ declare global {
             appScenario(
                 scenario:
                     | "project_with_keys"
-                    | "project_with_languages"
                     | "set_cloud"
                     | "set_on_premise"
                     | "all_entities"

@@ -4,9 +4,9 @@ context("language", () => {
     });
 
     it("loads languages correctly when searching on last page", () => {
-        cy.appScenario("project_with_languages");
-        cy.login("project-with-languages@texterify.com", "password");
-        cy.get('[data-id="project-f03a8834-424a-419f-8b92-a7283da76a1f"]').click();
+        cy.appScenario("default");
+        cy.login("test@texterify.com", "password");
+        cy.get('[data-id="project-1bfa0215-46d2-478c-8cba-54df0f89c8d4"]').click();
         cy.get('[data-id="project-sidebar-languages"]').click();
         cy.get(".ant-pagination-item-2").click();
         cy.get('[data-id="project-languages-search"]').type("a");
