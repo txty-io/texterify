@@ -76,24 +76,6 @@ RSpec.describe ExportConfig, type: :model do
       expect(export_config.latest_release.id).to eq(release2.id)
     end
 
-    it 'fails to create two export configs with the same name for a project' do
-      export_config1 = ExportConfig.new
-      export_config1.name = 'export config name'
-      export_config1.file_format = FileFormat.find_by!(format: 'json')
-      export_config1.file_path = 'my_file_path'
-      export_config1.project_id = @project.id
-      export_config1.save!
-
-      export_config2 = ExportConfig.new
-      export_config2.name = 'export config name'
-      export_config2.file_format = FileFormat.find_by!(format: 'json')
-      export_config2.file_path = 'my_file_path'
-      export_config2.project_id = @project.id
-
-      export_config2.save
-      expect(export_config2.errors.added?(:name, :taken)).to be(true)
-    end
-
     it 'exports without language and country code' do
       export_config = ExportConfig.new
       export_config.name = 'export config name'

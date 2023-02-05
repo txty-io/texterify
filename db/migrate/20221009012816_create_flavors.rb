@@ -19,8 +19,7 @@ class CreateFlavors < ActiveRecord::Migration[6.1]
       flavor.save!
 
       # Assign the export config to the new flavor.
-      export_config.flavor_id = flavor.id
-      export_config.save!
+      export_config.update_column(:flavor_id, flavor.id)
 
       # Reassign all translations to the flavor.
       Translation.where(export_config_id: export_config.id).update_all(flavor_id: flavor.id)

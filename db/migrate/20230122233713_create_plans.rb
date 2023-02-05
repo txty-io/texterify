@@ -22,8 +22,5 @@ class CreatePlans < ActiveRecord::Migration[6.1]
     end
 
     add_index :plans, :name, unique: true
-
-    add_reference :organizations, :plan, type: :uuid, null: true
-    add_foreign_key :organizations, :plans, on_delete: :nullify
   end
 end

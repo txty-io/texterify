@@ -12,7 +12,6 @@ class Organization < ApplicationRecord
   has_many :invites, class_name: 'OrganizationInvite', dependent: :destroy
 
   # Subscription
-  belongs_to :plan, optional: true
   has_one :custom_subscription, dependent: :nullify
 
   # Validations
@@ -117,7 +116,7 @@ class Organization < ApplicationRecord
       end
     end
 
-    Plan.find_by(name: current_plan_name)
+    Plan.find_by(name: current_plan_name || 'free')
   end
 
   def feature_enabled?(feature)
@@ -171,7 +170,7 @@ class Organization < ApplicationRecord
 
   # Returns true if the projects limit has been reached.
   def max_projects_reached?
-    self.plan&.projects_limit.nil? ? false : self.projects.size >= self.plan.projects_limit
+    self.current_plan&.projects_limit.nil? ? false : self.projects.size >= self.current_plan.projects_limit
   end
 
   # Checks if the number of characters would exceed the machine translation limit of the organization.

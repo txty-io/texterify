@@ -5,6 +5,8 @@
 - Make tags feature available for free.
 - Add support to skip empty plural translations during export.
 - Add possibility to deactivate users at instance, organization and project level.
+- Create a new organization for projects without organization and make the organization required.
+- Remove uniqueness of export config name per project.
 
 ## v1.2.0
 

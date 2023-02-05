@@ -101,16 +101,7 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
         }
 
         if (response.errors) {
-            if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {
-                formRef.current?.setFields([
-                    {
-                        name: "name",
-                        errors: [ErrorUtils.getErrorMessage("name", ERRORS.TAKEN)]
-                    }
-                ]);
-            } else {
-                ErrorUtils.showErrors(response.errors);
-            }
+            ErrorUtils.showErrors(response.errors);
         } else {
             for (const changedLanguageConfig of languageConfigsToCreate) {
                 await LanguageConfigsAPI.createLanguageConfig({

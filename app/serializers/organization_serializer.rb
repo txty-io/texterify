@@ -40,7 +40,7 @@ class OrganizationSerializer
   end
 
   attribute :enabled_features do |object|
-    object.current_plan&.enabled_features
+    object.current_plan&.enabled_features || []
   end
 
   attribute :current_user_deactivated, if: proc { |_, params| params[:current_user] } do |object, params|

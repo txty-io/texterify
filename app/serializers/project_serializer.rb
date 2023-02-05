@@ -57,7 +57,7 @@ class ProjectSerializer
   end
 
   attribute :enabled_features do |object|
-    object.organization.plan&.enabled_features
+    object.organization.current_plan&.enabled_features || []
   end
 
   attribute :machine_translation_active do |object|

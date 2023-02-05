@@ -22,11 +22,10 @@ class ExportConfig < ApplicationRecord
 
   validates :name, presence: true
   validates :file_path, presence: true
-  validate :no_duplicate_export_configs_for_project
 
   belongs_to :project
+  belongs_to :file_format
   belongs_to :flavor, optional: true
-  belongs_to :file_format, optional: true
 
   has_many :post_processing_rules, dependent: :destroy
   has_many :language_configs, dependent: :destroy
@@ -152,20 +151,6 @@ class ExportConfig < ApplicationRecord
         export_data_source
         # skip_empty_plural_translations: skip_empty_plural_translations
       )
-    end
-  end
-
-  # Validates that there are no export configs with the same name for a project.
-  def no_duplicate_export_configs_for_project
-    project = Project.find(project_id)
-    export_config = project.export_configs.find_by(name: name)
-
-    if export_config.present?
-      updating_export_config = export_config.id == id
-
-      if !updating_export_config
-        errors.add(:name, :taken)
-      end
     end
   end
 

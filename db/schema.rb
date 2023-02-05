@@ -361,9 +361,7 @@ ActiveRecord::Schema.define(version: 2023_01_24_233146) do
     t.string "deepl_api_token_type"
     t.integer "keys_limit", default: 0, null: false
     t.integer "keys_count", default: 0, null: false
-    t.uuid "plan_id"
     t.index ["name"], name: "index_organizations_on_name", unique: true
-    t.index ["plan_id"], name: "index_organizations_on_plan_id"
   end
 
   create_table "organizations_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -747,7 +745,6 @@ ActiveRecord::Schema.define(version: 2023_01_24_233146) do
   add_foreign_key "machine_translation_memories", "language_codes", column: "source_language_code_id"
   add_foreign_key "machine_translation_memories", "language_codes", column: "target_language_code_id"
   add_foreign_key "organization_invites", "organizations", on_delete: :cascade
-  add_foreign_key "organizations", "plans", on_delete: :nullify
   add_foreign_key "organizations_users", "organizations", on_delete: :cascade
   add_foreign_key "organizations_users", "users", on_delete: :cascade
   add_foreign_key "placeholders", "keys", on_delete: :cascade
