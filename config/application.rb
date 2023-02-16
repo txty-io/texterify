@@ -44,5 +44,7 @@ module Texterify
     end
 
     config.to_prepare { Devise::Mailer.layout 'email' }
+
+    config.autoload_paths << "#{root}/app/lib"
   end
 end
