@@ -57,4 +57,35 @@ RSpec.describe Api::V1::InstanceController, type: :request do
       expect(body['releases_count']).to eq(0)
     end
   end
+
+  describe 'GET debug' do
+    it 'has status code 403 if no debug secret is set' do
+      get '/api/v1/instance/debug'
+      expect(response).to have_http_status(:forbidden)
+      body = JSON.parse(response.body)
+      expect(body).to match_snapshot(
+        'instance_controller_debug_secret_not_set',
+        { snapshot_serializer: StripSerializer }
+      )
+    end
+
+    it 'has status code 403 if debug secret does not match' do
+      ENV['DEBUG_SECRET'] = 'other secret'
+      get '/api/v1/instance/debug', params: { secret: 'debug secret' }
+      expect(response).to have_http_status(:forbidden)
+      body = JSON.parse(response.body)
+      expect(body).to match_snapshot(
+        'instance_controller_debug_invalid_secret',
+        { snapshot_serializer: StripSerializer }
+      )
+    end
+
+    it 'returns debug information' do
+      ENV['DEBUG_SECRET'] = 'debug secret'
+      get '/api/v1/instance/debug', params: { secret: 'debug secret' }
+      expect(response).to have_http_status(:ok)
+      body = JSON.parse(response.body)
+      expect(body).to match_snapshot('instance_controller_debug_ok', { snapshot_serializer: StripSerializer })
+    end
+  end
 end
