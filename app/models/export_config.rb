@@ -16,8 +16,6 @@ class AndroidTemplateData
 end
 
 class ExportConfig < ApplicationRecord
-  include ExportHelper
-
   scope :order_by_name, -> { order(arel_table['name'].lower.asc) }
 
   validates :name, presence: true
