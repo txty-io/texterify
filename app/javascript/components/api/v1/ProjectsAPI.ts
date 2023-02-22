@@ -169,26 +169,6 @@ const ProjectsAPI = {
         return response;
     },
 
-    import: async (options: {
-        projectId: string;
-        languageId: string;
-        file: any;
-        flavorId: string;
-        fileFormat: IImportFileFormat;
-    }) => {
-        const fileBase64 = await getBase64(options.file);
-
-        return API.postRequest(`projects/${options.projectId}/import`, true, {
-            language_id: options.languageId,
-            flavor_id: options.flavorId,
-            name: options.file.name,
-            file: fileBase64,
-            file_format: options.fileFormat
-        })
-            .then(APIUtils.handleErrors)
-            .catch(APIUtils.handleErrors);
-    },
-
     deleteProject: async (projectId: string) => {
         return API.deleteRequest(`projects/${projectId}`, true)
             .then(APIUtils.handleErrors)
