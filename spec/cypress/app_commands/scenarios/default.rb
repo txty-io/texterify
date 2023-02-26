@@ -19,7 +19,17 @@ project_languages = {
   '1bfa0215-46d2-478c-8cba-54df0f89c8d4' => [
     { name: 'German', id: '5229b07a-5ab6-4f2a-8a0f-abf5a36e238e' },
     { name: 'English', id: 'c454538f-4415-474e-81b2-d081d0079627' },
-    { name: 'Spanish', id: '202c50b6-bd64-42cf-98fa-4f35c5d8bb98' }
+    { name: 'Spanish', id: '202c50b6-bd64-42cf-98fa-4f35c5d8bb98' },
+    { name: 'Language 01', id: '740f9c28-bef2-4ee5-bfe5-f572be9e34c8' },
+    { name: 'Language 02', id: 'eea404c8-a351-4c86-94bd-9c8495d2ff48' },
+    { name: 'Language 03', id: 'd42b0d26-4f3a-4f49-935b-ff86f53b0635' },
+    { name: 'Language 04', id: '308ba02b-9706-4355-802b-9cfe240eccb9' },
+    { name: 'Language 05', id: '81a45104-8e69-4615-a6ba-c422299af223' },
+    { name: 'Language 06', id: '5ca968af-1fff-4603-8b43-e629fd711dd4' },
+    { name: 'Language 07', id: '7f760ac2-e38e-4c67-9f5e-58aaed4819bb' },
+    { name: 'Language 08', id: 'f2622168-c4cb-4631-89ca-dc7df04edb34' },
+    { name: 'Language 09', id: '0889ab98-ef84-46c7-aae2-ec0a834b360c' },
+    { name: 'Language 10', id: '74f991bc-582f-4b1c-8030-3ce03476c1e6' }
   ]
 }
 

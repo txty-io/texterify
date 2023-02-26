@@ -198,6 +198,6 @@ class Key < ApplicationRecord
 
   # Removes the leading and trailing whitespaces of the key name.
   def strip_leading_and_trailing_whitespace
-    self.name = name.strip
+    self.name = name&.strip
   end
 end

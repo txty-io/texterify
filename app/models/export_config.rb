@@ -16,8 +16,6 @@ class AndroidTemplateData
 end
 
 class ExportConfig < ApplicationRecord
-  include ExportHelper
-
   scope :order_by_name, -> { order(arel_table['name'].lower.asc) }
 
   validates :name, presence: true
@@ -144,12 +142,11 @@ class ExportConfig < ApplicationRecord
         # skip_empty_plural_translations: skip_empty_plural_translations
       )
     elsif self.file_format.format == 'csv'
-      Texterify::ExportFormats::CSV.files(
+      Texterify::ExportFormats::Csv.files(
+        self,
         language,
         export_data,
-        language_source,
-        export_data_source
-        # skip_empty_plural_translations: skip_empty_plural_translations
+        skip_empty_plural_translations: skip_empty_plural_translations
       )
     end
   end

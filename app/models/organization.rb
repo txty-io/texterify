@@ -67,11 +67,13 @@ class Organization < ApplicationRecord
       deepl_client = Deepl::Client.new(self)
       usage = deepl_client.usage
       if usage
-        usage['character_count']
+        return usage['character_count'] || 0
+      else
+        return 0
       end
     else
       # Otherwise use the usage of the organization.
-      self[:machine_translation_character_usage]
+      return self[:machine_translation_character_usage]
     end
   end
 

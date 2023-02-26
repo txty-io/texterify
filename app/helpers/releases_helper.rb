@@ -1,8 +1,6 @@
 require 'securerandom'
 
 module ReleasesHelper
-  include ExportHelper
-
   def create_release(project, export_config, version)
     timestamp = Time.now.utc.iso8601
 
@@ -55,7 +53,13 @@ module ReleasesHelper
     post_processing_rules = project.post_processing_rules.where(export_config_id: [export_config.id, nil]).order_by_name
 
     language_data =
-      create_language_export_data(project, export_config, language, post_processing_rules, skip_timestamp: true)
+      Texterify::Export.create_language_export_data(
+        project,
+        export_config,
+        language,
+        post_processing_rules,
+        skip_timestamp: true
+      )
 
     export_data = {
       is_default: language.is_default,

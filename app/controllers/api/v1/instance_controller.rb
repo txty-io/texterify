@@ -1,4 +1,7 @@
 class Api::V1::InstanceController < Api::V1::ApiController
+  skip_before_action :verify_signed_in, only: [:debug]
+  skip_before_action :check_if_user_activated, only: [:debug]
+
   def show
     authorize :instance, :show?
 
@@ -29,6 +32,20 @@ class Api::V1::InstanceController < Api::V1::ApiController
     Setting.domain_filter = domain_filter
 
     render json: { error: false, message: 'OK' }
+  end
+
+  def debug
+    skip_authorization
+
+    secret = ENV.fetch('DEBUG_SECRET', nil)
+
+    if secret.blank?
+      render json: { error: true, message: 'DEBUG_SECRET_NOT_SET' }, status: :forbidden
+    elsif secret == params[:secret]
+      render json: { error: false, data: { env: Rails.env } }
+    else
+      render json: { error: true, message: 'INVALID_SECRET' }, status: :forbidden
+    end
   end
 
   def sign_up_enabled
