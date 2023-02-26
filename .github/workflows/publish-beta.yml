@@ -55,7 +55,7 @@ jobs:
           status: ${{ job.status }}
           fields: repo,message,workflow,job,took
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_CI_ERRORS }}
         if: failure()
 
   publish-on-premise-beta:
@@ -98,5 +98,5 @@ jobs:
           status: ${{ job.status }}
           fields: repo,message,workflow,job,took
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_CI_ERRORS }}
         if: failure()

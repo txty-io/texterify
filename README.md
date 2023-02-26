@@ -4,9 +4,9 @@
   </a>
 </p>
 
-[![website](https://img.shields.io/badge/website-texterify.com-blue.svg)](https://texterify.com)
-[![open issues](https://img.shields.io/github/issues-raw/texterify/texterify.svg)](https://github.com/texterify/texterify/issues)
-[![stars](https://img.shields.io/github/stars/texterify/texterify)](https://github.com/texterify/texterify)
+[![website](https://img.shields.io/badge/website-texterify.com-blue.svg?style=flat-square)](https://texterify.com)
+[![license](https://img.shields.io/github/license/txty-io/txty-cli?style=flat-square)](https://github.com/txty-io/texterify/blob/master/LICENSE)
+[![stars](https://img.shields.io/github/stars/texterify/texterify)](https://github.com/txty-io/texterify)
 [![docker pulls](https://img.shields.io/docker/pulls/chrztoph/texterify)](https://hub.docker.com/r/chrztoph/texterify)
 
 [Texterify](https://texterify.com) is a localization management platform which aims to make software localization as easy as possible. A very clean, fast and user friendly interface makes it super easy to use while providing full flexibility and powerful tools to perfectly integrate it into your workflow.
@@ -37,9 +37,9 @@ Find out more at [texterify.com](https://texterify.com) or [sign up](https://app
 - [Tools & Integrations](#tools-and-integrations)
 - [Contributing](#contributing)
 - [Troubleshooting](#troubleshooting)
-- [Security](#security)
 - [Changelog](#changelog)
 - [Support](#support)
+- [Security](#security)
 - [License](#license)
 
 <h2 id="getting-started">🚀 Getting started</h2>
@@ -144,12 +144,6 @@ Try to run the following command:
 rails webpacker:compile
 ```
 
-<h2 id="security">🔒 Security</h2>
-
-Found a security issue? Please **don't** create an issue on GitHub. Instead send an email with your findings to [security@texterify.com](mailto:security@texterify.com) so a bugfix can be developed before the security flaw is publicly disclosed. We take security very seriously.
-
-See [SECURITY](SECURITY.md) for details.
-
 <h2 id="changelog">📋 Changelog</h2>
 
 See [CHANGELOG](CHANGELOG.md) for changelog.
@@ -166,6 +160,12 @@ Our goal is to make software accessible to as many people as possible by making 
 - Send us some kind words where and how you are using Texterify
 
 If you have any questions or just want to say hello you can always reach us at support@texterify.com.
+
+<h2 id="security">🔒 Security</h2>
+
+Found a security issue? Please **don't** create an issue on GitHub. Instead send an email with your findings to [security@texterify.com](mailto:security@texterify.com) so a bugfix can be developed before the security flaw is publicly disclosed.
+
+See [SECURITY](SECURITY.md) for details.
 
 <h2 id="license">📝 License</h2>
 
