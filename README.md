@@ -38,7 +38,6 @@ Find out more at [texterify.com](https://texterify.com) or [sign up](https://app
 - [Contributing](#contributing)
 - [Troubleshooting](#troubleshooting)
 - [Changelog](#changelog)
-- [Support](#support)
 - [Security](#security)
 - [License](#license)
 
@@ -147,19 +146,6 @@ rails webpacker:compile
 <h2 id="changelog">📋 Changelog</h2>
 
 See [CHANGELOG](CHANGELOG.md) for changelog.
-
-<h2 id="support">❤️ Support</h2>
-
-Our goal is to make software accessible to as many people as possible by making it super easy for teams to localize their software. Language should never be a barrier. This is the reason why we are offering a free plan and on-premise hosting so everybody can easily translate their software into multiple languages. If you want to help you can do the following:
-
-- Leave a 🌟 and recommend Texterify to your colleagues
-- [Create a pull request](https://github.com/texterify/texterify/pulls) and fix bugs or add new features
-- Propose new features [here](https://github.com/texterify/texterify/issues/new)
-- [Sponsor](https://github.com/sponsors/texterify) the project
-- Get a license or select a premium plan and get access to [advanced features](https://texterify.com/pricing)
-- Send us some kind words where and how you are using Texterify
-
-If you have any questions or just want to say hello you can always reach us at support@texterify.com.
 
 <h2 id="security">🔒 Security</h2>
 
