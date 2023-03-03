@@ -3,11 +3,12 @@
                "id" => "__REMOVED__",
              "type" => "import",
        "attributes" => {
-              "id" => "__REMOVED__",
-            "name" => "import_1",
-      "created_at" => "__REMOVED__",
-          "status" => "CREATED",
-      "project_id" => "__REMOVED__"
+                 "id" => "__REMOVED__",
+               "name" => "import_1",
+         "created_at" => "__REMOVED__",
+             "status" => "CREATED",
+         "project_id" => "__REMOVED__",
+      "error_message" => nil
     },
     "relationships" => {
         "import_files" => {
