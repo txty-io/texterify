@@ -46,4 +46,18 @@ class BackgroundJob < ApplicationRecord
       import_id: self.import_id
     )
   end
+
+  # Marks the background job as failed and sends an event to the channel.
+  def error!
+    self.status = 'ERROR'
+    self.progress = 100
+    self.save!
+    JobsChannel.broadcast_to(
+      self.user,
+      event: 'JOB_ERROR',
+      type: self.job_type,
+      project_id: self.project_id,
+      import_id: self.import_id
+    )
+  end
 end

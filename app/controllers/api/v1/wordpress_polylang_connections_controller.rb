@@ -224,6 +224,8 @@ class Api::V1::WordpressPolylangConnectionsController < Api::V1::ApiController
       end
     end
 
+    project.enqueue_check_validations_job(current_user.id)
+
     render json: { error: false, message: 'OK' }, status: :ok
   end
 

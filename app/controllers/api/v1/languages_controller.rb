@@ -100,7 +100,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
            project.feature_enabled?(Plan::FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE)
         # TODO: Handle machine translation errors. Fix it by moving this to a background job that will display errors if failed.
         begin
-          language.translate_untranslated_using_machine_translation
+          language.translate_untranslated_using_machine_translation(current_user)
         rescue Texterify::MachineTranslation::OrganizationMachineTranslationUsageExceededException
           # ignored
         end

@@ -58,7 +58,7 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
 
     authorize language
 
-    translation_success = language.translate_untranslated_using_machine_translation
+    translation_success = language.translate_untranslated_using_machine_translation(current_user)
 
     if translation_success
       render json: { error: false, message: 'OK' }

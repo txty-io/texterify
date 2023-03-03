@@ -20,7 +20,7 @@ class Api::V1::TranslationsController < Api::V1::ApiController
         render json: TranslationSerializer.new(translation).serialized_json
 
         if params[:trigger_auto_translate]
-          translation.auto_translate_untranslated
+          translation.auto_translate_untranslated(current_user)
         end
       else
         render json: { errors: translation.errors.details }, status: :bad_request
@@ -49,11 +49,13 @@ class Api::V1::TranslationsController < Api::V1::ApiController
 
       authorize translation
 
-      if translation.save
+      if translation.save!
         render json: TranslationSerializer.new(translation).serialized_json
 
+        translation.check_validations
+
         if params[:trigger_auto_translate]
-          translation.auto_translate_untranslated
+          translation.auto_translate_untranslated(current_user)
         end
       else
         render json: { errors: translation.errors.details }, status: :bad_request

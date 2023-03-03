@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_24_233146) do
+ActiveRecord::Schema.define(version: 2023_03_03_165606) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -229,6 +229,7 @@ ActiveRecord::Schema.define(version: 2023_01_24_233146) do
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "project_id", null: false
     t.uuid "user_id"
+    t.text "error_message"
     t.index ["project_id"], name: "index_imports_on_project_id"
     t.index ["user_id"], name: "index_imports_on_user_id"
   end

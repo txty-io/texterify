@@ -8,7 +8,7 @@ class Translation < ApplicationRecord
   belongs_to :flavor, optional: true
 
   after_destroy :update_project_word_char_count_on_destroy
-  after_save :update_project_word_char_count_on_update, :check_placeholders, :check_validations
+  after_save :update_project_word_char_count_on_update, :check_placeholders
 
   # Checks all enabled validations and creates violations if necessary.
   # If a validation is given only that validation is checked.
@@ -169,7 +169,7 @@ class Translation < ApplicationRecord
     end
   end
 
-  def auto_translate_untranslated
+  def auto_translate_untranslated(current_user)
     project = key.project
 
     if ENV.fetch('DEEPL_API_TOKEN', nil).present? && project.machine_translation_enabled &&
@@ -202,6 +202,8 @@ class Translation < ApplicationRecord
             end
           end
         end
+
+      project.enqueue_check_validations_job(current_user.id)
     end
   end
 

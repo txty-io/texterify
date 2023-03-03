@@ -154,4 +154,21 @@ class Project < ApplicationRecord
     self.word_count = word_count
     self.save!
   end
+
+  def enqueue_check_validations_job(user_id)
+    background_job =
+      BackgroundJob.find_by(project_id: self.id, job_type: 'RECHECK_ALL_VALIDATIONS', status: ['CREATED', 'RUNNING'])
+    unless background_job
+      background_job = BackgroundJob.new
+      background_job.status = 'CREATED'
+      background_job.job_type = 'RECHECK_ALL_VALIDATIONS'
+      background_job.user_id = user_id
+      background_job.project_id = self.id
+      background_job.save!
+
+      CheckValidationsWorker.perform_async(background_job.id, self.id)
+    end
+
+    background_job
+  end
 end

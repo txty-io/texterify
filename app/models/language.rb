@@ -39,7 +39,7 @@ class Language < ApplicationRecord
   end
 
   # Translates all non export config translations for the language which are empty using machine translation.
-  def translate_untranslated_using_machine_translation
+  def translate_untranslated_using_machine_translation(current_user)
     if (ENV.fetch('DEEPL_API_TOKEN', nil).present? || Rails.env.test?) && self.project.machine_translation_enabled &&
          project.feature_enabled?(:FEATURE_MACHINE_TRANSLATION_LANGUAGE)
       self
@@ -65,6 +65,8 @@ class Language < ApplicationRecord
             end
           end
         end
+
+      self.project.enqueue_check_validations_job(current_user.id)
 
       return true
     end

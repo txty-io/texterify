@@ -54,8 +54,15 @@ class ImportImportWorker
       end
     end
 
+    project.enqueue_check_validations_job(import.user_id)
+
     import.status = IMPORT_STATUS_IMPORTED
     import.save!
     background_job.complete!
+  rescue StandardError => e
+    import.status = IMPORT_STATUS_ERROR
+    import.error_message = e.message
+    import.save!
+    background_job.error!
   end
 end
