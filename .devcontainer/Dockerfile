@@ -33,6 +33,8 @@ WORKDIR $RAILS_ROOT
 # Install gems.
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
+# Fixes bug with nokogiri.
+RUN bundle config set force_ruby_platform true
 RUN gem install bundler:2.1.4
 RUN bundle install --jobs 20 --retry 5
 
@@ -55,10 +57,7 @@ ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
 # Install yarn.
-RUN apt-get install apt-transport-https
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install yarn -y
+RUN npm install -g yarn
 
 # Keep bash history between runs.
 RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/command-history/.bash_history" \
