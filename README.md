@@ -96,7 +96,15 @@ Want to help build Texterify?
 
 We are happy about every help. For major changes, please [open an issue](https://github.com/texterify/texterify/issues/new) first to discuss what you would like to change.
 
-The easiest way to get started working on Texterify is by using [Visual Studio Code Remote Containers](https://code.visualstudio.com/docs/remote/containers). Follow the guide and open the dev container. After the container has started open a terminal inside of VSC and run the following commands:
+The easiest way to get started working on Texterify is by using [Visual Studio Code Remote Containers](https://code.visualstudio.com/docs/remote/containers) and Docker.
+
+First create a Docker network by running:
+
+```sh
+docker network create txty-network
+```
+
+Then follow the [Visual Studio Code Remote Containers](https://code.visualstudio.com/docs/remote/containers) guide and open the dev container. After the container has started open a terminal inside of VSC and run the following commands:
 
 ```sh
 yarn
