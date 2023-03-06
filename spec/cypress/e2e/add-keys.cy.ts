@@ -86,6 +86,19 @@ context("add-keys", () => {
         cy.contains('Key names starting with "texterify_" are reserved and can\'t be used.');
     });
 
+    it("fails to add a key with the prefix 'txty_' via new key dialog", () => {
+        cy.login(testData.login.user1.email, testData.login.user1.password);
+        cy.createProject("My test project");
+        cy.addLanguage({
+            languageCode: testData.languages.german.languageCode,
+            countryCode: testData.languages.german.countryCode,
+            languageName: testData.languages.german.languageName
+        });
+
+        cy.addKey({ name: "txty_timestamp", description: testData.keys.firstKey.keyDescription });
+        cy.contains('Key names starting with "txty" are reserved and can\'t be used.');
+    });
+
     it("fails to add a key with the prefix 'texterify_' via keys table", () => {
         cy.login(testData.login.user1.email, testData.login.user1.password);
         cy.createProject("My test project");
@@ -101,5 +114,22 @@ context("add-keys", () => {
         cy.clickOutside();
 
         cy.contains('Key names starting with "texterify_" are reserved and can\'t be used.');
+    });
+
+    it("fails to add a key with the prefix 'txty_' via keys table", () => {
+        cy.login(testData.login.user1.email, testData.login.user1.password);
+        cy.createProject("My test project");
+        cy.addLanguage({
+            languageCode: testData.languages.german.languageCode,
+            countryCode: testData.languages.german.countryCode,
+            languageName: testData.languages.german.languageName
+        });
+
+        cy.addKey({ name: "txty", description: "123" });
+        cy.contains("txty").click();
+        cy.contains("txty").clear().type("txty_");
+        cy.clickOutside();
+
+        cy.contains('Key names starting with "txty_" are reserved and can\'t be used.');
     });
 });

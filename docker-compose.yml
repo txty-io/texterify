@@ -16,11 +16,11 @@ services:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - DB_TEST_HOST=${DB_TEST_HOST}
       - DB_TEST_USERNAME=${DB_TEST_USERNAME}
-    image: chrztoph/texterify:test
+    image: txty/txty:test
     build:
       context: .
       args:
-        SENTRY_SOURCE_MAPS_ORGANIZATION: texterify
+        SENTRY_SOURCE_MAPS_ORGANIZATION: txty
         COMMIT_HASH: ${GITHUB_SHA}
         PROPRIETARY_MODE: "true"
         RAILS_ENV_ARG: test
@@ -29,9 +29,9 @@ services:
     depends_on:
       - db
     volumes:
-      - ./coverage:/var/www/texterify/coverage
+      - ./coverage:/var/www/app/coverage
   sidekiq:
-    image: chrztoph/texterify:test
+    image: txty/txty:test
     environment:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - DB_TEST_HOST=${DB_TEST_HOST}

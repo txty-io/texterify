@@ -1,0 +1,9 @@
+{
+	"normal_key": "this key should be imported",
+	"texterify_": "this key should NOT be imported",
+	"texterify_timestamp": "this key should NOT be imported",
+	"texterify_whatever": "this key should NOT be imported",
+	"txty_": "this key should NOT be imported",
+	"txty_timestamp": "this key should NOT be imported",
+	"txty_whatever": "this key should NOT be imported"
+}

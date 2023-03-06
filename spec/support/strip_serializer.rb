@@ -6,6 +6,7 @@ class StripSerializer
     clear(data, 'file_format_id')
     clear(data, 'trial_ends_at')
     clear(data, 'texterify_timestamp')
+    clear(data, 'txty_timestamp')
     clear(data, 'created_at')
     clear(data, 'updated_at')
 

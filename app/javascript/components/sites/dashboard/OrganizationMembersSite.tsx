@@ -301,22 +301,14 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                             {((record as IOrganizationUserRow).deactivated_for_organization ||
                                 (record as IProjectUserRow).deactivated_for_project) && (
                                 <Tooltip title="User has been deactivated for this organization.">
-                                    <Tag
-                                        className="texterify-table-row-disabled-skip"
-                                        style={{ marginLeft: 24 }}
-                                        color="red"
-                                    >
+                                    <Tag className="app-table-row-disabled-skip" style={{ marginLeft: 24 }} color="red">
                                         Deactivated
                                     </Tag>
                                 </Tooltip>
                             )}
                             {record.deactivated_for_instance && (
                                 <Tooltip title="User account has been deactivated.">
-                                    <Tag
-                                        className="texterify-table-row-disabled-skip"
-                                        style={{ marginLeft: 24 }}
-                                        color="red"
-                                    >
+                                    <Tag className="app-table-row-disabled-skip" style={{ marginLeft: 24 }} color="red">
                                         Deactivated account
                                     </Tag>
                                 </Tooltip>
@@ -478,7 +470,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                     width: 80,
                     render: (_text: any, record: IOrganizationUserRow) => {
                         return (
-                            <div style={{ display: "flex" }} className="texterify-table-row-disabled-skip">
+                            <div style={{ display: "flex" }} className="app-table-row-disabled-skip">
                                 {record.deactivated_for_organization && (
                                     <div style={{ marginRight: 16 }}>
                                         <Tooltip
@@ -701,7 +693,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                 bordered
                                 rowClassName={(row: IOrganizationUserRow) => {
                                     return row.deactivated_for_instance || row.deactivated_for_organization
-                                        ? "texterify-table-row-disabled"
+                                        ? "app-table-row-disabled"
                                         : null;
                                 }}
                                 locale={{
@@ -730,7 +722,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                                 bordered
                                 rowClassName={(row: IProjectUserRow) => {
                                     return row.deactivated_for_instance || row.deactivated_for_project
-                                        ? "texterify-table-row-disabled"
+                                        ? "app-table-row-disabled"
                                         : null;
                                 }}
                                 locale={{

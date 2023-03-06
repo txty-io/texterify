@@ -33,6 +33,11 @@ class ImportVerifyWorker
                 next
               end
 
+              # Skip "txty_" keys because they are reserved and can't be imported.
+              if key_name.start_with?('txty_')
+                next
+              end
+
               translation =
                 import_file.import_file_translations.find_or_initialize_by(
                   import_file_id: import_file.id,

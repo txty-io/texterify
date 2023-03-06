@@ -5,7 +5,7 @@ context("language", () => {
 
     it("loads languages correctly when searching on last page", () => {
         cy.appScenario("default");
-        cy.login("test@texterify.com", "password");
+        cy.login("test@example.com", "password");
         cy.get('[data-id="project-1bfa0215-46d2-478c-8cba-54df0f89c8d4"]').click();
         cy.get('[data-id="project-sidebar-languages"]').click();
         cy.get(".ant-pagination-item-2").click();

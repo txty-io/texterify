@@ -20,7 +20,7 @@ const PaymentSuccessSite = observer(() => {
             const parsed = queryString.parse(history.location.search);
             setHostingType(parsed.type as IHostingType);
             const response = await fetch(
-                `${process.env.TEXTERIFY_PAYMENT_SERVER}/subscriptions/session?id=${parsed["session-id"]}`,
+                `${process.env.PAYMENT_SERVER}/subscriptions/session?id=${parsed["session-id"]}`,
                 {
                     method: "GET"
                 }
@@ -55,8 +55,8 @@ const PaymentSuccessSite = observer(() => {
                     <p style={{ fontSize: 12, maxWidth: 480, textAlign: "center", color: "#aaa" }}>
                         If you are having any problems receiving or activating your license you can contact us by
                         emailing{" "}
-                        <a href="mailto:support@texterify.com" target="_blank">
-                            support@texterify.com
+                        <a href="mailto:support@txty.io" target="_blank">
+                            support@txty.io
                         </a>
                         .
                     </p>
@@ -65,8 +65,8 @@ const PaymentSuccessSite = observer(() => {
             {hostingType === "cloud" && (
                 <p style={{ fontSize: 12, maxWidth: 480, textAlign: "center", color: "#aaa" }}>
                     If you are having any problems or questions you can contact us by emailing{" "}
-                    <a href="mailto:support@texterify.com" target="_blank">
-                        support@texterify.com
+                    <a href="mailto:support@txty.io" target="_blank">
+                        support@txty.io
                     </a>
                     .
                 </p>

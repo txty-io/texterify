@@ -93,7 +93,7 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
 
     async openCustomerPortal() {
         const response = await fetch(
-            `${process.env.TEXTERIFY_PAYMENT_SERVER}/portal/${dashboardStore.currentOrganization.id}?return_url=${window.location}`,
+            `${process.env.PAYMENT_SERVER}/portal/${dashboardStore.currentOrganization.id}?return_url=${window.location}`,
             {
                 method: "GET",
                 headers: {
@@ -168,8 +168,8 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                                         the trial for free. Select a plan that fits your needs to continue using the
                                         premium features after your trial end. If you have any questions contact us by
                                         sending us an email to{" "}
-                                        <a href="mailto:support@texterify.com" target="_blank">
-                                            support@texterify.com
+                                        <a href="mailto:support@txty.io" target="_blank">
+                                            support@txty.io
                                         </a>
                                         .
                                     </>

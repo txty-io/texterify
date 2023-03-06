@@ -25,8 +25,8 @@ export const OrganizationMachineTranslationTotalUsage = (props: {
                         <>
                             Your available machine translation characters are reset on the first of every month. If you
                             need more monthly machine translation characters contact support via{" "}
-                            <a href="mailto:support@texterify.com" target="_blank">
-                                support@texterify.com
+                            <a href="mailto:support@txty.io" target="_blank">
+                                support@txty.io
                             </a>
                             .
                         </>

@@ -53,17 +53,13 @@ class SiteWrapper extends React.Component<IProps> {
 
                         <p style={{ color: "rgba(255, 255, 255, 0.85)", marginTop: 40 }}>
                             Make sure to check out Texterify on{" "}
-                            <a
-                                href="https://github.com/texterify/texterify"
-                                target="_blank"
-                                style={{ whiteSpace: "nowrap" }}
-                            >
+                            <a href="https://github.com/txty-io/txty" target="_blank" style={{ whiteSpace: "nowrap" }}>
                                 <GithubOutlined style={{ marginRight: 4 }} />
                                 GitHub
                             </a>{" "}
                             and{" "}
-                            <a href="https://texterify.com" target="_blank" style={{ whiteSpace: "nowrap" }}>
-                                texterify.com
+                            <a href="https://txty.io" target="_blank" style={{ whiteSpace: "nowrap" }}>
+                                txty.io
                             </a>
                             .
                         </p>
@@ -75,7 +71,7 @@ class SiteWrapper extends React.Component<IProps> {
                     {IS_TEXTERIFY_CLOUD && (
                         <>
                             <a
-                                href="https://texterify.com/privacy-policy"
+                                href="https://txty.io/privacy-policy"
                                 rel="noopener noreferrer"
                                 style={{ marginLeft: 24, marginRight: 16 }}
                                 target="_blank"
@@ -83,14 +79,14 @@ class SiteWrapper extends React.Component<IProps> {
                                 Privacy policy
                             </a>
                             <a
-                                href="https://texterify.com/terms-of-service"
+                                href="https://txty.io/terms-of-service"
                                 rel="noopener noreferrer"
                                 style={{ marginRight: 16 }}
                                 target="_blank"
                             >
                                 Terms of service
                             </a>
-                            <a href="https://texterify.com/cookie-settings" rel="noopener noreferrer" target="_blank">
+                            <a href="https://txty.io/cookie-settings" rel="noopener noreferrer" target="_blank">
                                 Cookie settings
                             </a>
                         </>

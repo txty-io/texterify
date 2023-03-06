@@ -4,7 +4,7 @@ FactoryBot.define do
       "Test User #{n}"
     end
     sequence :email do |n|
-      "test-user-#{n}@texterify.com"
+      "test-user-#{n}@example.com"
     end
     password { 'password' }
     password_confirmation { password.to_s }

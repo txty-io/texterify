@@ -13,11 +13,11 @@ const Routes = {
         INVALID_ACCOUNT_CONFIRMATION_LINK: "/invalid-account-confirmation-link"
     },
     OTHER: {
-        TERMS_OF_SERVICE: "https://texterify.com/terms-of-service",
-        DOCUMENTATION: "https://docs.texterify.com",
-        PRIVACY_POLICY: "https://texterify.com/privacy-policy",
-        WORDPRESS_INTEGRATION_GUIDE: "https://docs.texterify.com/integrations/wordpress",
-        PLACEHOLDERS: "https://docs.texterify.com/placeholders"
+        TERMS_OF_SERVICE: "https://txty.io/terms-of-service",
+        DOCUMENTATION: "https://docs.txty.io",
+        PRIVACY_POLICY: "https://txty.io/privacy-policy",
+        WORDPRESS_INTEGRATION_GUIDE: "https://docs.txty.io/integrations/wordpress",
+        PLACEHOLDERS: "https://docs.txty.io/placeholders"
     },
     PRODUCT: {
         FEATURES: "/features",

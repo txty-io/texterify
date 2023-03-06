@@ -4,7 +4,7 @@ context("organization", () => {
     });
 
     it("creates an organization", () => {
-        cy.login("test1@texterify.com", "password");
+        cy.login("test1@example.com", "password");
         cy.addOrganization("My org");
     });
 });

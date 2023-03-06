@@ -1,7 +1,7 @@
 {
   "login": {
     "default": {
-      "email": "test@texterify.com",
+      "email": "test@example.com",
       "password": "password",
       "user_id": "86d959da-9ff8-444d-8623-6614bfa5476e",
       "organization_id": "854fed83-7a1b-4597-af65-48c3613de3e4",
@@ -25,15 +25,15 @@
       }
     },
     "user1": {
-      "email": "test1@texterify.com",
+      "email": "test1@example.com",
       "password": "password"
     },
     "user2": {
-      "email": "test2@texterify.com",
+      "email": "test2@example.com",
       "password": "password"
     },
     "unregistered": {
-      "email": "invalidtest@texterify.com",
+      "email": "invalidtest@example.com",
       "password": "password"
     }
   },

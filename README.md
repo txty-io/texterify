@@ -1,15 +1,15 @@
  <p align="center">
-  <a href="https://texterify.com/?utm_source=github&utm_medium=logo" target="_blank">
-    <img src="https://raw.github.com/texterify/texterify/master/app/assets/images/logo_white_background_rounded.png?sanitize=true" alt="Texterify logo" height="160">
+  <a href="https://txty.io/?utm_source=github&utm_medium=logo" target="_blank">
+    <img src="https://raw.github.com/txty-io/txty/master/app/assets/images/logo_white_background_rounded.png?sanitize=true" alt="txty logo" height="160">
   </a>
 </p>
 
-[![website](https://img.shields.io/badge/website-texterify.com-blue.svg?style=flat-square)](https://texterify.com)
-[![license](https://img.shields.io/github/license/txty-io/txty-cli?style=flat-square)](https://github.com/txty-io/texterify/blob/master/LICENSE)
-[![stars](https://img.shields.io/github/stars/texterify/texterify)](https://github.com/txty-io/texterify)
-[![docker pulls](https://img.shields.io/docker/pulls/chrztoph/texterify)](https://hub.docker.com/r/chrztoph/texterify)
+[![website](https://img.shields.io/badge/website-txty.io-blue.svg?style=flat-square)](https://txty.io)
+[![license](https://img.shields.io/github/license/txty-io/txty-cli?style=flat-square)](https://github.com/txty-io/txty/blob/master/LICENSE)
+[![stars](https://img.shields.io/github/stars/txty-io/txty)](https://github.com/txty-io/txty)
+[![docker pulls](https://img.shields.io/docker/pulls/txty-io/txty)](https://hub.docker.com/r/txty-io/txty)
 
-[Texterify](https://texterify.com) is a localization management platform which aims to make software localization as easy as possible. A very clean, fast and user friendly interface makes it super easy to use while providing full flexibility and powerful tools to perfectly integrate it into your workflow.
+[Txty](https://txty.io) is a localization management platform which aims to make software localization as easy as possible. A very clean, fast and user friendly interface makes it super easy to use while providing full flexibility and powerful tools to perfectly integrate it into your workflow.
 
 - Beautiful light and dark mode for every situation
 - Built-in WYSIWYG HTML editor for easy rich content editing
@@ -21,14 +21,14 @@
 - A big selection of integrations
 - Cloud and on-premise options
 
-For future features see our [public roadmap](https://github.com/texterify/texterify/projects/1).
+For future features see our [public roadmap](https://github.com/txty-io/txty/projects/1).
 
-Find out more at [texterify.com](https://texterify.com) or [sign up](https://app.texterify.com/signup) here.
+Find out more at [txty.io](https://txty.io) or [sign up](https://app.txty.io/signup) here.
 
 <p align="center">
-  <img src="https://raw.github.com/texterify/texterify/screenshots/example_1.png" width="290">
-  <img src="https://raw.github.com/texterify/texterify/screenshots/example_2.png" width="290">
-  <img src="https://raw.github.com/texterify/texterify/screenshots/example_3.png" width="290">
+  <img src="https://raw.github.com/txty-io/txty/screenshots/example_1.png" width="290">
+  <img src="https://raw.github.com/txty-io/txty/screenshots/example_2.png" width="290">
+  <img src="https://raw.github.com/txty-io/txty/screenshots/example_3.png" width="290">
 </p>
 
 <h2>Table of contents</h2>
@@ -45,9 +45,9 @@ Find out more at [texterify.com](https://texterify.com) or [sign up](https://app
 
 <h3>Installation</h3>
 
-If you want to try out Texterify you can sign up at [texterify.com](https://texterify.com) and use the cloud version of Texterify without having to setup anything yourself.
+If you want to try out Txty you can sign up at [txty.io](https://txty.io) and use the cloud version of Txty without having to setup anything yourself.
 
-If you want to set it up yourself the easiest way to get the software up and running is by using the official [Docker image](https://hub.docker.com/r/chrztoph/texterify). We provide a `docker-compose` configuration for starting Texterify locally or on your server within seconds.
+If you want to set it up yourself the easiest way to get the software up and running is by using the official [Docker image](https://hub.docker.com/r/txty-io/txty). We provide a `docker-compose` configuration for starting Txty locally or on your server within seconds.
 
 You only need to have `docker` and `docker-compose` installed.
 
@@ -55,16 +55,16 @@ The process of starting the application is the following:
 
 ```sh
 # Clone the docker-compose configuration.
-git clone https://github.com/texterify/texterify-docker-compose-setup.git
-cd texterify-docker-compose-setup
+git clone https://github.com/txty-io/txty-docker-compose-setup.git
+cd txty-docker-compose-setup
 
 # Generate a secret key for the app.
 # Make sure to keep this private.
 echo SECRET_KEY_BASE=`openssl rand -hex 64` > secrets.env
 
 # Start the service.
-docker volume create --name=texterify-database
-docker volume create --name=texterify-assets
+docker volume create --name=txty-database
+docker volume create --name=txty-assets
 docker-compose up
 
 # After everything has started create the database in another terminal.
@@ -78,25 +78,25 @@ This will install the latest version of the service available at the time of set
 
 <h3>Update</h3>
 
-You can update to a newer version by following our upgrade guide [here](https://docs.texterify.com/installation/updating-the-service).
+You can update to a newer version by following our upgrade guide [here](https://docs.txty.io/installation/updating-the-service).
 
 <h2 id="tools-and-integrations">🛠️ Tools & Integrations</h2>
 
-We provide several different tools and integrations to make localization as easy as possible. If you are missing anything you would love to have create a ticket [here](https://github.com/texterify/texterify/issues) and let us know or tell us what you created and we will include it here.
+We provide several different tools and integrations to make localization as easy as possible. If you are missing anything you would love to have create a ticket [here](https://github.com/txty-io/txty/issues) and let us know or tell us what you created and we will include it here.
 
-- Texterify VSC Extension (https://github.com/texterify/texterify-vsc)
-- Texterify CLI (https://github.com/texterify/texterify-cli)
-- Texterify Android SDK (https://github.com/texterify/texterify-android)
-- Texterify iOS SDK (https://github.com/texterify/texterify-ios)
-- Texterify API Node (https://github.com/texterify/texterify-api-node)
+- Txty VSC Extension (https://github.com/txty-io/txty-vsc)
+- Txty CLI (https://github.com/txty-io/txty-cli)
+- Txty Android SDK (https://github.com/txty-io/txty-android)
+- Txty iOS SDK (https://github.com/txty-io/txty-ios)
+- Txty API Node (https://github.com/txty-io/txty-api-node)
 
 <h2 id="contributing">🤝 Contributing</h2>
 
-Want to help build Texterify?
+Want to help build Txty?
 
-We are happy about every help. For major changes, please [open an issue](https://github.com/texterify/texterify/issues/new) first to discuss what you would like to change.
+We are happy about every help. For major changes, please [open an issue](https://github.com/txty-io/txty/issues/new) first to discuss what you would like to change.
 
-The easiest way to get started working on Texterify is by using [Visual Studio Code Remote Containers](https://code.visualstudio.com/docs/remote/containers) and Docker.
+The easiest way to get started working on Txty is by using [Visual Studio Code Remote Containers](https://code.visualstudio.com/docs/remote/containers) and Docker.
 
 First create a Docker network by running:
 
@@ -122,9 +122,9 @@ yarn start
 yarn start:watcher
 ```
 
-Having done that you can open [http://localhost:3000](http://localhost:3000) and see your local development instance of Texterify.
+Having done that you can open [http://localhost:3000](http://localhost:3000) and see your local development instance of Txty.
 
-Make sure to also check out our development docs page at [https://docs.texterify.com/development](https://docs.texterify.com/development).
+Make sure to also check out our development docs page at [https://docs.txty.io/development](https://docs.txty.io/development).
 
 <h2 id="troubleshooting">👀 Troubleshooting</h2>
 
@@ -157,7 +157,7 @@ See [CHANGELOG](CHANGELOG.md) for changelog.
 
 <h2 id="security">🔒 Security</h2>
 
-Found a security issue? Please **don't** create an issue on GitHub. Instead send an email with your findings to [security@texterify.com](mailto:security@texterify.com) so a bugfix can be developed before the security flaw is publicly disclosed.
+Found a security issue? Please **don't** create an issue on GitHub. Instead send an email with your findings to [security@txty.io](mailto:security@txty.io) so a bugfix can be developed before the security flaw is publicly disclosed.
 
 See [SECURITY](SECURITY.md) for details.
 
@@ -165,4 +165,4 @@ See [SECURITY](SECURITY.md) for details.
 
 See the [LICENSE](LICENSE) file for details.
 
-You can find more information at [texterify.com/pricing](https://texterify.com/pricing).
+You can find more information at [txty.io/pricing](https://txty.io/pricing).

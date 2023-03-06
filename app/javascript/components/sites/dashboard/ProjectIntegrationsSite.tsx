@@ -35,34 +35,34 @@ class ProjectIntegrationsSite extends React.Component<IProps> {
                 textLogo: "CLI",
                 name: "CLI Tool",
                 description: "Manage your translations directly from the command line.",
-                link: "https://github.com/texterify/texterify-cli"
+                link: "https://github.com/txty-io/txty-cli"
             },
             /* {this.renderIntegration({
             textLogo: "API",
             name: "Application Programming Interface",
             description: "Use the API.",
-            link: "https://docs.texterify.com/api/basics"
+            link: "https://docs.txty.io/api/basics"
         })} */
             {
                 key: "vsc",
                 logo: VisualStudioCodeLogo,
                 name: "Visual Studio Code Extension",
                 description: "Add and download translations right from your editor.",
-                link: "https://github.com/texterify/texterify-vsc"
+                link: "https://github.com/txty-io/txty-vsc"
             },
             {
                 key: "android",
                 logo: AndroidLogo,
                 name: "Android SDK",
                 description: "Use the Over the Air SDK to update the translations in your apps in real-time.",
-                link: "https://github.com/texterify/texterify-android"
+                link: "https://github.com/txty-io/txty-android"
             },
             {
                 key: "ios",
                 logo: generalStore.theme === "light" ? AppleLogoBlack : AppleLogoWhite,
                 name: "iOS SDK",
                 description: "Use the Over the Air SDK to update the translations in your apps in real-time.",
-                link: "https://github.com/texterify/texterify-ios"
+                link: "https://github.com/txty-io/txty-ios"
             },
             {
                 key: "wordpress",

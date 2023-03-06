@@ -112,7 +112,7 @@ export function InstanceSettingsSite() {
                             name="domainFilter"
                             rules={[{ required: false, whitespace: true, message: "Please enter a domain." }]}
                         >
-                            <Input addonBefore="glados@" placeholder="texterify.com" disabled={loading} />
+                            <Input addonBefore="john@" placeholder="txty.io" disabled={loading} />
                         </Form.Item>
                         <Button
                             type="primary"

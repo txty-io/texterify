@@ -9,8 +9,8 @@ import { DropZoneWrapper } from "../../../ui/DropZoneWrapper";
 import { Loading } from "../../../ui/Loading";
 import { PrimaryButton } from "../../../ui/PrimaryButton";
 
-const TEXTERIFY_LICENSE_FILE_NAME = "texterify.texterify-license";
-const TEXTERIFY_LICENSE_FILE_ACCEPT = ".texterify-license";
+const TEXTERIFY_LICENSE_FILE_NAME = "txty.txty-license";
+const TEXTERIFY_LICENSE_FILE_ACCEPT = [".texterify-license", ".txty-license"];
 
 export const InstanceLicensesSite = observer(() => {
     const [licenses, setLicenses] = React.useState<ILicense[]>([]);
@@ -123,7 +123,7 @@ export const InstanceLicensesSite = observer(() => {
                     onDrop={(acceptedFiles) => {
                         onDrop(acceptedFiles);
                     }}
-                    accept={[TEXTERIFY_LICENSE_FILE_ACCEPT]}
+                    accept={TEXTERIFY_LICENSE_FILE_ACCEPT}
                 >
                     {({ getRootProps, getInputProps }) => {
                         return (
@@ -143,7 +143,7 @@ export const InstanceLicensesSite = observer(() => {
                                         Drop your <b>{TEXTERIFY_LICENSE_FILE_NAME}</b> file here or click to upload one.
                                     </p>
                                 )}
-                                <input {...getInputProps()} accept={TEXTERIFY_LICENSE_FILE_ACCEPT} />
+                                <input {...getInputProps()} accept={TEXTERIFY_LICENSE_FILE_ACCEPT.join(",")} />
                             </DropZoneWrapper>
                         );
                     }}

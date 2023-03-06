@@ -17,7 +17,7 @@ context("import", () => {
         });
 
         cy.importFile({
-            fileName: "test_file_texterify_timestamp.json",
+            fileName: "test_file_app_timestamp.json",
             fileFormat: "json",
             languageName: testData.languages.german.languageName,
             searchFor: "json"
@@ -25,9 +25,12 @@ context("import", () => {
 
         cy.goToKeys();
         cy.contains("normal_key");
-        cy.contains("texterify_timestamp").should("not.exist");
         cy.contains("texterify_").should("not.exist");
+        cy.contains("texterify_timestamp").should("not.exist");
         cy.contains("texterify_whatever").should("not.exist");
+        cy.contains("txty_").should("not.exist");
+        cy.contains("txty_timestamp").should("not.exist");
+        cy.contains("txty_whatever").should("not.exist");
     });
 
     [

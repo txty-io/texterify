@@ -66,6 +66,7 @@ module Texterify
 
       if !args[:skip_timestamp]
         export_data['texterify_timestamp'] = language_export_data_line_from_simple_string(Time.now.utc.iso8601)
+        export_data['txty_timestamp'] = language_export_data_line_from_simple_string(Time.now.utc.iso8601)
       end
 
       export_data

@@ -121,7 +121,7 @@ export const handleCheckout = async (
         }
 
         // Create the checkout session
-        const response = await fetch(`${process.env.TEXTERIFY_PAYMENT_SERVER}/subscriptions`, {
+        const response = await fetch(`${process.env.PAYMENT_SERVER}/subscriptions`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

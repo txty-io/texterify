@@ -5,7 +5,7 @@ task create_test_license_team: [:environment] do
     license = Gitlab::License.new
     license.licensee = {
         name: 'Test License User Team',
-        email: 'test-license-user-team@texterify.com',
+        email: 'test-license-user-team@example.com',
         company: 'Test License Company Team'
     }
     license.starts_at = DateTime.now
@@ -13,5 +13,5 @@ task create_test_license_team: [:environment] do
     license.restrictions = { plan: 'team', active_users_count: 3 }
     data = license.export
 
-    File.write('test_team.texterify-license', data)
+    File.write('test_team.txty-license', data)
 end

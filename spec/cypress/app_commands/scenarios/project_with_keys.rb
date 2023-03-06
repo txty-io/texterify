@@ -5,7 +5,7 @@ user =
   User.create!(
     id: user_id,
     username: 'project-with-keys',
-    email: 'project-with-keys@texterify.com',
+    email: 'project-with-keys@example.com',
     password: 'password',
     password_confirmation: 'password',
     confirmed_at: Time.now.utc,

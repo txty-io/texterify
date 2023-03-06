@@ -5,12 +5,12 @@ context("basic plan", () => {
 
     it("imports the plan", () => {
         cy.appScenario("set_on_premise");
-        cy.login("test1@texterify.com", "password");
+        cy.login("test1@example.com", "password");
         cy.get('[data-id="main-menu-instance-settings"]').click();
         cy.get('[data-id="instance-sidebar-licenses"]').click();
         cy.get('input[type="file"]').selectFile(
             {
-                contents: "cypress/fixtures/test_basic.texterify-license"
+                contents: "cypress/fixtures/test_basic.txty-license"
             },
             { force: true }
         );

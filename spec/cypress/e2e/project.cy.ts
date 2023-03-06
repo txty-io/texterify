@@ -9,13 +9,13 @@ context("project", () => {
     });
 
     it("creates a project", () => {
-        cy.login("test1@texterify.com", "password");
+        cy.login("test1@example.com", "password");
         cy.createProject("My test project");
         cy.location("pathname").should("contain", "/dashboard/projects/");
     });
 
     it("updates a project name and description", () => {
-        cy.login("test1@texterify.com", "password");
+        cy.login("test1@example.com", "password");
         cy.createProject("My test project");
         cy.location("pathname").should("contain", "/dashboard/projects/");
         cy.goToProjectSettings();
@@ -31,7 +31,7 @@ context("project", () => {
     });
 
     it("deletes a project with translations", () => {
-        cy.login("test1@texterify.com", "password");
+        cy.login("test1@example.com", "password");
         cy.createProject("My test project");
         cy.location("pathname").should("contain", "/dashboard/projects/");
 

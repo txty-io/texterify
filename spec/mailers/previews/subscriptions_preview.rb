@@ -3,7 +3,7 @@ class SubscriptionsPreview < ActionMailer::Preview
   def trial_expiring
     owner = User.new
     owner.username = 'Christoph Werner'
-    owner.email = 'test@texterify.com'
+    owner.email = 'test@example.com'
 
     organization = Organization.new
     organization.name = 'My Organization'

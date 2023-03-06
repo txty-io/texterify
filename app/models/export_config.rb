@@ -339,7 +339,7 @@ class ExportConfig < ApplicationRecord
     builder =
       Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
         xml.xliff version: '1.2', xmlns: 'urn:oasis:names:tc:xliff:document:1.2' do
-          xml.file original: 'Texterify API',
+          xml.file original: 'Txty API',
                    "source-language": language_source&.language_tag,
                    "target-language": language.language_tag do
             xml.body do

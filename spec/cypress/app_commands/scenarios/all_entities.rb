@@ -2,7 +2,7 @@ user_owner =
   User.create!(
     id: '0c537a53-7656-4d68-bcef-c6dbf5ab50c1',
     username: 'user_owner',
-    email: 'user_owner@texterify.com',
+    email: 'user_owner@example.com',
     password: 'password',
     password_confirmation: 'password',
     confirmed_at: Time.now.utc,
@@ -14,7 +14,7 @@ user_developer =
   User.create!(
     id: 'd8475ed3-ab5c-4080-b45d-b5ae6fd3e0d5',
     username: 'user_developer',
-    email: 'user_developer@texterify.com',
+    email: 'user_developer@example.com',
     password: 'password',
     password_confirmation: 'password',
     confirmed_at: Time.now.utc,
@@ -26,7 +26,7 @@ user_translator =
   User.create!(
     id: 'b4a86874-adbe-4c9e-bb68-f51eb73828eb',
     username: 'user_translator',
-    email: 'user_translator@texterify.com',
+    email: 'user_translator@example.com',
     password: 'password',
     password_confirmation: 'password',
     confirmed_at: Time.now.utc,

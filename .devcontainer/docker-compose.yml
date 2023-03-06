@@ -41,7 +41,7 @@ services:
     volumes:
       # Update this to wherever you want VS Code to mount the folder of your project
       - .:/workspace:delegated
-      - texterify-app-bash-history:/command-history
+      - txty-app-bash-history:/command-history
 
       # Uncomment the next line to use Docker from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker-compose for details.
       # - /var/run/docker.sock:/var/run/docker.sock
@@ -52,7 +52,7 @@ services:
     # security_opt:
     #   - seccomp:unconfined
 
-    image: chrztoph/texterify:local
+    image: txty/txty:local
 
     env_file:
       - .devcontainer/.env
@@ -83,4 +83,4 @@ services:
     image: redis:6.2.0-alpine
 
 volumes:
-  texterify-app-bash-history:
+  txty-app-bash-history:

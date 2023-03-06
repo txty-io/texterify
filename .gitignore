@@ -27,6 +27,7 @@ public/assets
 storage
 
 texterify.json
+txty.json
 
 .DS_Store
 
@@ -35,6 +36,7 @@ coverage
 
 license_key
 texterify.texterify-license
+txty.txty-license
 
 webpacker-stats.json
 

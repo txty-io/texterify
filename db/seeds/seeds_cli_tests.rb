@@ -12,7 +12,7 @@ else
     User.create!(
       id: user_1_id,
       username: 'Test User 1',
-      email: 'test1@texterify.com',
+      email: 'test1@example.com',
       password: 'password',
       password_confirmation: 'password',
       confirmed_at: Time.now,
@@ -30,7 +30,7 @@ else
     User.create!(
       id: user_2_id,
       username: 'Test User 2',
-      email: 'test2@texterify.com',
+      email: 'test2@example.com',
       password: 'password',
       password_confirmation: 'password',
       confirmed_at: Time.now
@@ -47,7 +47,7 @@ else
     User.create!(
       id: user_3_id,
       username: 'Test User 3',
-      email: 'test3@texterify.com',
+      email: 'test3@example.com',
       password: 'password',
       password_confirmation: 'password',
       confirmed_at: Time.now

@@ -37,7 +37,7 @@ user =
   User.create!(
     id: user_id,
     username: 'default',
-    email: 'test@texterify.com',
+    email: 'test@example.com',
     password: 'password',
     password_confirmation: 'password',
     confirmed_at: Time.now.utc

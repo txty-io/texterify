@@ -63,10 +63,14 @@ class Key < ApplicationRecord
     end
   end
 
-  # Checks if a key starts with the prefix "texterify_" which is reserved for special Texterify keys
-  # like the "texterify_timestamp".
+  # Checks if a key starts with the prefix "texterify_" or "txty_" which is reserved for special Txty keys
+  # like the "txty_timestamp".
   def no_reserved_key_names
     if self.name&.start_with?('texterify_')
+      errors.add(:name, :key_name_reserved)
+    end
+
+    if self.name&.start_with?('txty_')
       errors.add(:name, :key_name_reserved)
     end
   end

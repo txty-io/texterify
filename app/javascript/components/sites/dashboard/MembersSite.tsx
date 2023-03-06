@@ -209,22 +209,14 @@ class MembersSite extends React.Component<IProps, IState> {
                             <span style={{ color: "var(--full-color)", fontWeight: "bold" }}>{record.username}</span>
                             {record.deactivated_for_project && (
                                 <Tooltip title="User has been deactivated for this organization. Go to your organization users site to activate this user.">
-                                    <Tag
-                                        className="texterify-table-row-disabled-skip"
-                                        style={{ marginLeft: 24 }}
-                                        color="red"
-                                    >
+                                    <Tag className="app-table-row-disabled-skip" style={{ marginLeft: 24 }} color="red">
                                         Deactivated
                                     </Tag>
                                 </Tooltip>
                             )}
                             {record.deactivated_for_instance && (
                                 <Tooltip title="User account has been deactivated.">
-                                    <Tag
-                                        className="texterify-table-row-disabled-skip"
-                                        style={{ marginLeft: 24 }}
-                                        color="red"
-                                    >
+                                    <Tag className="app-table-row-disabled-skip" style={{ marginLeft: 24 }} color="red">
                                         Deactivated account
                                     </Tag>
                                 </Tooltip>
@@ -415,7 +407,7 @@ class MembersSite extends React.Component<IProps, IState> {
                                 bordered
                                 rowClassName={(row: IUserRow) => {
                                     return row.deactivated_for_instance || row.deactivated_for_project
-                                        ? "texterify-table-row-disabled"
+                                        ? "app-table-row-disabled"
                                         : null;
                                 }}
                             />
@@ -434,7 +426,7 @@ class MembersSite extends React.Component<IProps, IState> {
                                 bordered
                                 // rowClassName={(row: IUserRow) => {
                                 //     return row.deactivated_for_instance || row.deactivated_for_organization
-                                //         ? "texterify-table-row-disabled"
+                                //         ? "app-table-row-disabled"
                                 //         : null;
                                 // }}
                             />

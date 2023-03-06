@@ -1,9 +1,9 @@
 openapi: 3.0.3
 info:
-  title: Texterify API
+  title: Txty API
   version: latest
 servers:
-  - url: https://app.texterify.com/api/v1
+  - url: https://app.txty.io/api/v1
 
 paths:
   /users/{userId}/deactivate:
