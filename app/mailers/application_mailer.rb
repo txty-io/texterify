@@ -2,8 +2,8 @@
 
 class ApplicationMailer < ActionMailer::Base
   default(
-    from: "Texterify <no-reply@#{ENV.fetch('MAILER_HOST', 'example.com')}>",
-    reply_to: "Texterify <no-reply@#{ENV.fetch('MAILER_HOST', 'example.com')}>"
+    from: "Texterify <#{ENV.fetch('SMTP_FROM_EMAIL', 'no-reply@example.com')}>",
+    reply_to: "Texterify <#{ENV.fetch('SMTP_FROM_EMAIL', 'no-reply@example.com')}>"
   )
   layout 'email'
 end
