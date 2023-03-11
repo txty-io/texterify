@@ -1,5 +1,11 @@
 # Changelog
 
+## Next
+
+- Renaming from Texterify to Txty
+- Switched default databases to be prefixed with `txty_` instead of `texterify_`
+- Adding keys with prefix `txty_` is no longer possible
+
 ## 1.2.1
 
 - Make tags feature available for free.
