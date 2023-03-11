@@ -15,7 +15,7 @@ AllCops:
     - 'node_modules/**/*'
     - 'bin/**/*'
     - 'spec/cypress/fixtures/**/*'
-  TargetRubyVersion: 2.7.1
+  TargetRubyVersion: 2.7.5
 
 Rails:
   Enabled: true

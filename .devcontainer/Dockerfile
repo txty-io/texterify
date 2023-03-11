@@ -1,4 +1,4 @@
-FROM ruby:2.7.1
+FROM ruby:2.7.5-bullseye
 SHELL ["/bin/bash", "-c"]
 
 EXPOSE 3000
@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     build-essential \
     libpq-dev \
     curl \
+    iproute2 \
     # Install cypress libraries
     libgtk2.0-0 \
     libgtk-3-0 \
