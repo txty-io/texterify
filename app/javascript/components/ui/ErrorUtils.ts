@@ -5,7 +5,7 @@ export const ERROR_MESSAGES = {
     TAKEN: "{name} is already in use.",
     NOT_FOUND: "{name} could not be found.",
     BLANK: "{name} cannot be blank.",
-    KEY_NAME_RESERVED: 'Key names starting with "texterify_" are reserved and can\'t be used.'
+    KEY_NAME_RESERVED: 'Key names starting with "texterify_" and "txty_" are reserved and can\'t be used.'
 };
 
 type ERRORS_MESSAGE_IDS = keyof typeof ERROR_MESSAGES;

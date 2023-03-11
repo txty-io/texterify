@@ -83,7 +83,7 @@ context("add-keys", () => {
         });
 
         cy.addKey({ name: "texterify_timestamp", description: testData.keys.firstKey.keyDescription });
-        cy.contains('Key names starting with "texterify_" are reserved and can\'t be used.');
+        cy.contains('Key names starting with "texterify_" and "txty_" are reserved and can\'t be used.');
     });
 
     it("fails to add a key with the prefix 'txty_' via new key dialog", () => {
@@ -96,7 +96,7 @@ context("add-keys", () => {
         });
 
         cy.addKey({ name: "txty_timestamp", description: testData.keys.firstKey.keyDescription });
-        cy.contains('Key names starting with "txty" are reserved and can\'t be used.');
+        cy.contains('Key names starting with "texterify_" and "txty_" are reserved and can\'t be used.');
     });
 
     it("fails to add a key with the prefix 'texterify_' via keys table", () => {
@@ -113,7 +113,7 @@ context("add-keys", () => {
         cy.contains("texterify").clear().type("texterify_");
         cy.clickOutside();
 
-        cy.contains('Key names starting with "texterify_" are reserved and can\'t be used.');
+        cy.contains('Key names starting with "texterify_" and "txty_" are reserved and can\'t be used.');
     });
 
     it("fails to add a key with the prefix 'txty_' via keys table", () => {
@@ -130,6 +130,6 @@ context("add-keys", () => {
         cy.contains("txty").clear().type("txty_");
         cy.clickOutside();
 
-        cy.contains('Key names starting with "txty_" are reserved and can\'t be used.');
+        cy.contains('Key names starting with "texterify_" and "txty_" are reserved and can\'t be used.');
     });
 });
