@@ -13,7 +13,7 @@ import { dashboardStore } from "../stores/DashboardStore";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { UserDeactivatedOrganizationModal } from "../ui/UserDeactivatedOrganizationModal";
 import { PrivateRoute } from "./PrivateRoute";
-import { PrivateRouteTexterifyCloud } from "./PrivateRouteTexterifyCloud";
+import { PrivateRouteCloud } from "./PrivateRouteCloud";
 import { Routes } from "./Routes";
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
@@ -73,7 +73,7 @@ class OrganizationRouter extends React.Component<IProps> {
                         path={Routes.DASHBOARD.ORGANIZATION_FORBIDDEN_WORDS}
                         component={OrganizationForbiddenWordsSite}
                     />
-                    <PrivateRouteTexterifyCloud
+                    <PrivateRouteCloud
                         exact
                         path={Routes.DASHBOARD.ORGANIZATION_SUBSCRIPTION}
                         component={OrganizationSubscriptionSite}

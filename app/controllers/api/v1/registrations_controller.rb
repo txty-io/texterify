@@ -43,7 +43,7 @@ class Api::V1::RegistrationsController < DeviseTokenAuth::RegistrationsControlle
   # Checks if the user limit has been reached for the current license in on-premise mode.
   def check_users_limit_on_premise
     # TODO: Enable if user management has been added for the admin.
-    # on_premise_in_production = Texterify.on_premise? && Rails.env.production?
+    # on_premise_in_production = Txty.on_premise? && Rails.env.production?
     # if on_premise_in_production
     #   license = License.current_active
     #   with_license_users_exceeded =

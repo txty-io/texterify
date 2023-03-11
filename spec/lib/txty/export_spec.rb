@@ -1,6 +1,6 @@
-require 'texterify'
+require 'txty'
 
-RSpec.describe Texterify::Export do
+RSpec.describe Txty::Export do
   describe 'creates language export data correctly' do
     it 'create language data correctly with for language with parent' do
       project = create(:project, :with_organization)
@@ -15,11 +15,11 @@ RSpec.describe Texterify::Export do
       create(:translation, key_id: key1.id, language_id: language_parent.id)
 
       language_child_data =
-        Texterify::Export.create_language_export_data(project, export_config, language_child, [], skip_timestamp: true)
+        Txty::Export.create_language_export_data(project, export_config, language_child, [], skip_timestamp: true)
       language_parent_data =
-        Texterify::Export.create_language_export_data(project, export_config, language_parent, [], skip_timestamp: true)
+        Txty::Export.create_language_export_data(project, export_config, language_parent, [], skip_timestamp: true)
       language_no_connection_data =
-        Texterify::Export.create_language_export_data(
+        Txty::Export.create_language_export_data(
           project,
           export_config,
           language_no_connection,

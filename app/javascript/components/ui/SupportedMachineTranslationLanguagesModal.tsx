@@ -4,7 +4,7 @@ import {
     IGetMachineTranslationsSourceLanguages,
     IGetMachineTranslationsTargetLanguages
 } from "../api/v1/MachineTranslationsAPI";
-import { TexterifyModal } from "./TexterifyModal";
+import { CustomModal } from "./CustomModal";
 
 function NoLanguagesLoaded() {
     return <i>No languages loaded.</i>;
@@ -27,7 +27,7 @@ export function SupportedMachineTranslationLanguagesModal(props: {
         }) || [];
 
     return (
-        <TexterifyModal
+        <CustomModal
             title="Supported languages for machine translation"
             visible={props.visible}
             footer={
@@ -59,6 +59,6 @@ export function SupportedMachineTranslationLanguagesModal(props: {
                     <ul>{supportedTargetElements.length > 0 ? supportedTargetElements : <NoLanguagesLoaded />}</ul>
                 </div>
             </div>
-        </TexterifyModal>
+        </CustomModal>
     );
 }

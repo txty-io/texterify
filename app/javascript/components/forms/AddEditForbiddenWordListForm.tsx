@@ -12,7 +12,7 @@ import { LanguageCodesAPI } from "../api/v1/LanguageCodesAPI";
 import { DATA_IDS } from "../ui/DataIds";
 import { ErrorUtils } from "../ui/ErrorUtils";
 import FlagIcon from "../ui/FlagIcons";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 
 interface IProps {
     forbiddenWordListToEdit?: IForbiddenWordsList;
@@ -122,7 +122,7 @@ class AddEditForbiddenWordsListForm extends React.Component<IProps, IState> {
 
     render() {
         return (
-            <TexterifyModal
+            <CustomModal
                 title={this.props.forbiddenWordListToEdit ? "Edit list" : "Add a new list"}
                 visible={this.props.visible}
                 footer={
@@ -265,7 +265,7 @@ class AddEditForbiddenWordsListForm extends React.Component<IProps, IState> {
                         </div>
                     </div>
                 </Form>
-            </TexterifyModal>
+            </CustomModal>
         );
     }
 }

@@ -135,8 +135,7 @@ export const ProjectIntegrationsWordpressSettingsSite = observer(() => {
                 <LayoutWithSubSidebarInnerContent>
                     <h1>WordPress Integration Settings</h1>
                     <p style={{ marginTop: 8, maxWidth: 800 }}>
-                        With the WordPress integration you can sync your content between WordPress and Texterify with
-                        ease to make use of the powerful translation tools Texterify offers.
+                        With the WordPress integration you can sync your content with WordPress with ease.
                         {/* <br />
                         <br />
                         Check out the{" "}

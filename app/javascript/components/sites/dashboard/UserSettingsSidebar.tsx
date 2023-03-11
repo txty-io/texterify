@@ -3,13 +3,13 @@ import { Layout, Menu } from "antd";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Routes } from "../../routing/Routes";
-import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
+import { IS_CLOUD } from "../../utilities/Env";
 
 interface INavigationData {
     icon: any;
     path: string;
     text: string;
-    texterifyCloudOnly: boolean;
+    cloudOnly: boolean;
     dataId: string;
 }
 
@@ -21,36 +21,36 @@ class UserSettingsSidebar extends React.Component<IProps> {
             icon: UserOutlined,
             path: Routes.USER.SETTINGS.ACCOUNT,
             text: "Account",
-            texterifyCloudOnly: false,
+            cloudOnly: false,
             dataId: "user-sidebar-account"
         },
         {
             icon: LockOutlined,
             path: Routes.USER.SETTINGS.ACCESS_TOKENS,
             text: "Access tokens",
-            texterifyCloudOnly: false,
+            cloudOnly: false,
             dataId: "user-sidebar-access-tokens"
         },
         {
             icon: SolutionOutlined,
             path: Routes.USER.SETTINGS.LICENSES,
             text: "Get a license",
-            texterifyCloudOnly: true,
+            cloudOnly: true,
             dataId: "user-sidebar-licenses"
         },
         {
             icon: InfoCircleOutlined,
             path: Routes.USER.SETTINGS.ABOUT,
             text: "About",
-            texterifyCloudOnly: false,
+            cloudOnly: false,
             dataId: "user-sidebar-about"
         }
     ];
 
     getFilteredNavigationData = () => {
         return this.navigationData.filter((data) => {
-            if (data.texterifyCloudOnly) {
-                if (IS_TEXTERIFY_CLOUD) {
+            if (data.cloudOnly) {
+                if (IS_CLOUD) {
                     return true;
                 } else {
                     return false;

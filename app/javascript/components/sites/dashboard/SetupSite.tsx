@@ -18,7 +18,7 @@ import { LanguagesTable } from "../../ui/LanguagesTable";
 import { getPlanById, handleCheckout, Licenses } from "../../ui/Licenses";
 import { Loading } from "../../ui/Loading";
 import { Utils } from "../../ui/Utils";
-import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
+import { IS_CLOUD } from "../../utilities/Env";
 
 let STEPS: {
     ORGANIZATION: number;
@@ -29,7 +29,7 @@ let STEPS: {
     SUCCESS: number;
 };
 
-if (IS_TEXTERIFY_CLOUD) {
+if (IS_CLOUD) {
     STEPS = {
         ORGANIZATION: 0,
         PLAN: 1,
@@ -305,7 +305,7 @@ export function SetupSite(props: { step: number }) {
         }
 
         if (props.step === STEPS.ORGANIZATION) {
-            if (IS_TEXTERIFY_CLOUD) {
+            if (IS_CLOUD) {
                 return Routes.DASHBOARD.SETUP_PLAN_RESOLVER({ organizationId: org.id });
             } else {
                 if (project) {
@@ -349,7 +349,7 @@ export function SetupSite(props: { step: number }) {
         } else if (props.step === STEPS.PLAN) {
             return Routes.DASHBOARD.SETUP_ORGANIZATION_RESOLVER({ organizationId: organization.id });
         } else if (props.step === STEPS.PROJECT) {
-            if (IS_TEXTERIFY_CLOUD) {
+            if (IS_CLOUD) {
                 return Routes.DASHBOARD.SETUP_PLAN_RESOLVER({ organizationId: organization.id });
             } else {
                 return Routes.DASHBOARD.SETUP_ORGANIZATION_RESOLVER({

@@ -16,7 +16,7 @@ class Api::V1::InstanceController < Api::V1::ApiController
              keys_count: Key.count,
              translations_count: Translation.count,
              releases_count: Release.count,
-             is_cloud: Texterify.cloud?,
+             is_cloud: Txty.cloud?,
              sidekiq_processes: sidekiq_processes.size,
              email_confirmation_required: ENV.fetch('EMAIL_CONFIRMATION_REQUIRED', nil) == 'true',
              domain_filter: Setting.domain_filter,

@@ -3,7 +3,7 @@ import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
 import FlagIcon from "../ui/FlagIcons";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { IGetLanguageConfigsResponse } from "../api/v1/LanguageConfigsAPI";
 
@@ -63,7 +63,7 @@ class AddEditExportConfigLanguageForm extends React.Component<IProps> {
 
     render() {
         return (
-            <TexterifyModal
+            <CustomModal
                 title={
                     this.props.exportConfigLanguageConfigToEdit ? "Edit language config" : "Add a new language config"
                 }
@@ -165,7 +165,7 @@ class AddEditExportConfigLanguageForm extends React.Component<IProps> {
                         <Input placeholder="Language code" />
                     </Form.Item>
                 </Form>
-            </TexterifyModal>
+            </CustomModal>
         );
     }
 }

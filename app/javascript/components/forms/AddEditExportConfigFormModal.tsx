@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import * as React from "react";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 import { AddEditExportConfigForm, IAddEditExportConfigFormProps } from "./AddEditExportConfigForm";
 import * as uuid from "uuid";
 import useFlavors from "../hooks/useFlavors";
@@ -15,7 +15,7 @@ export function AddEditExportConfigFormModal(props: IProps) {
     const formId = `addEditExportConfigForm-${uuid.v4()}`;
 
     return (
-        <TexterifyModal
+        <CustomModal
             title={props.formProps.exportConfigToEdit ? "Edit export config" : "Add a new export config"}
             visible={props.visible}
             footer={
@@ -38,6 +38,6 @@ export function AddEditExportConfigFormModal(props: IProps) {
             big
         >
             <AddEditExportConfigForm {...props.formProps} hideDefaultSubmitButton formId={formId} />
-        </TexterifyModal>
+        </CustomModal>
     );
 }

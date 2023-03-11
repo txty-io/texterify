@@ -3,8 +3,8 @@ require 'nokogiri'
 require 'yaml'
 require 'zip'
 
-# Texterify::Export
-module Texterify
+# Txty::Export
+module Txty
   class Export
     # Creates an export data object in the format:
     # {

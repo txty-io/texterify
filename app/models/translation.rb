@@ -1,4 +1,4 @@
-require 'texterify'
+require 'txty'
 
 class Translation < ApplicationRecord
   has_paper_trail
@@ -185,7 +185,7 @@ class Translation < ApplicationRecord
 
           if source_translation.present? && (target_translation.nil? || target_translation.content.empty?)
             begin
-              content = Texterify::MachineTranslation.translate(project, source_translation, target_language)
+              content = Txty::MachineTranslation.translate(project, source_translation, target_language)
 
               unless content.nil?
                 if target_translation.nil?
@@ -197,7 +197,7 @@ class Translation < ApplicationRecord
                   target_translation.update(content: content)
                 end
               end
-            rescue Texterify::MachineTranslation::OrganizationMachineTranslationUsageExceededException
+            rescue Txty::MachineTranslation::OrganizationMachineTranslationUsageExceededException
               # ignored
             end
           end

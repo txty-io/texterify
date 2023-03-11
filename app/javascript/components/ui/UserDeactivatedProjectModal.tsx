@@ -10,13 +10,13 @@ import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
 import { dashboardStore } from "../stores/DashboardStore";
 import { ErrorUtils } from "./ErrorUtils";
-import { TexterifyModal } from "./TexterifyModal";
+import { CustomModal } from "./CustomModal";
 
 function getTextByDeactivatedReason(reason: IProject["attributes"]["current_user_deactivated_reason"]) {
     if (reason === "manually_by_admin") {
         return "Your accout has been disabled by an administrator of your organization. If you think this was a mistake please contact them to reactivate your account.";
     } else if (reason === "user_limit_exceeded") {
-        return "Your account has been disabled because the subscription of your project organization expired. Please contact your organization administrator to inform them that they need to resubscribe and then activate your account. Unless then you won't be able to use Texterify again within this organization.";
+        return "Your account has been disabled because the subscription of your project organization expired. Please contact your organization administrator to inform them that they need to resubscribe and then activate your account. Unless then you won't be able to use Txty again within this organization.";
     } else {
         return "Your account has been disabled. Please contact your project organization administrator to enable your account.";
     }
@@ -24,7 +24,7 @@ function getTextByDeactivatedReason(reason: IProject["attributes"]["current_user
 
 export function UserDeactivatedProjectModal() {
     return (
-        <TexterifyModal
+        <CustomModal
             visible
             title={
                 <>
@@ -133,6 +133,6 @@ export function UserDeactivatedProjectModal() {
                 message="Although your account has been disabled for this organization you might still be able to access other organizations."
                 style={{ marginTop: 24 }}
             />
-        </TexterifyModal>
+        </CustomModal>
     );
 }

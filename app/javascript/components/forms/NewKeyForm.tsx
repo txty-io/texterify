@@ -12,7 +12,7 @@ import FlagIcon from "../ui/FlagIcons";
 import { KeystrokeButtonWrapper } from "../ui/KeystrokeButtonWrapper";
 import { KEYSTROKE_DEFINITIONS } from "../ui/KeystrokeDefinitions";
 import { KeystrokeHandler } from "../ui/KeystrokeHandler";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 import { LanguageUtils } from "../utilities/LanguageUtils";
 import { PermissionUtils } from "../utilities/PermissionUtils";
 import { EditTranslationForm, IEditTranslationFormFormValues } from "./EditTranslationForm";
@@ -116,7 +116,7 @@ class NewKeyForm extends React.Component<IProps, IState> {
 
         return (
             <>
-                <TexterifyModal
+                <CustomModal
                     title="Add a new key"
                     visible={this.props.visible}
                     footer={
@@ -230,7 +230,7 @@ class NewKeyForm extends React.Component<IProps, IState> {
                             />
                         </>
                     )}
-                </TexterifyModal>
+                </CustomModal>
 
                 <KeystrokeHandler
                     keys={KEYSTROKE_DEFINITIONS.SUBMIT_MODAL_FORM}

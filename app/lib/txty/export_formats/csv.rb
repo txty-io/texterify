@@ -1,6 +1,6 @@
 require 'csv'
 
-module Texterify
+module Txty
   module ExportFormats
     class Csv
       def self.files(export_config, language, export_data, skip_empty_plural_translations: false)
@@ -38,7 +38,7 @@ module Texterify
         language_file.puts(content)
         language_file.close
 
-        [{ path: Texterify::ExportFormats::Helpers.filled_file_path(export_config, language), file: language_file }]
+        [{ path: Txty::ExportFormats::Helpers.filled_file_path(export_config, language), file: language_file }]
       end
     end
   end

@@ -6,7 +6,7 @@ import { authStore } from "../stores/AuthStore";
 import { ErrorUtils } from "../ui/ErrorUtils";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { SiteWrapperLink } from "../ui/SiteWrapperLink";
-import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
+import { IS_CLOUD } from "../utilities/Env";
 import * as queryString from "query-string";
 import { history } from "../routing/history";
 
@@ -131,7 +131,7 @@ class SignupForm extends React.Component<IProps, IState> {
                         <Input type="password" placeholder="Password confirmation" autoComplete="new-password" />
                     </Form.Item>
 
-                    {IS_TEXTERIFY_CLOUD && (
+                    {IS_CLOUD && (
                         <Form.Item
                             name="agreeTermsOfServiceAndPrivacyPolicy"
                             rules={[

@@ -142,7 +142,7 @@ class ExportConfig < ApplicationRecord
         # skip_empty_plural_translations: skip_empty_plural_translations
       )
     elsif self.file_format.format == 'csv'
-      Texterify::ExportFormats::Csv.files(
+      Txty::ExportFormats::Csv.files(
         self,
         language,
         export_data,

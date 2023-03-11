@@ -2,7 +2,7 @@ import { Button, Form, Input, Select, Tooltip } from "antd";
 import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import { ErrorUtils, ERRORS } from "../ui/ErrorUtils";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 import { PostProcessingRulesAPI, IPostProcessingRule } from "../api/v1/PostProcessingRulesAPI";
 import { ExportConfigsAPI } from "../api/v1/ExportConfigsAPI";
 import { QuestionCircleOutlined } from "@ant-design/icons";
@@ -91,7 +91,7 @@ class AddEditPostProcessingRuleForm extends React.Component<IProps> {
 
     render() {
         return (
-            <TexterifyModal
+            <CustomModal
                 title={this.props.ruleToEdit ? "Edit post processing rule" : "Add a new rule"}
                 visible={this.props.visible}
                 footer={
@@ -186,7 +186,7 @@ class AddEditPostProcessingRuleForm extends React.Component<IProps> {
                         </Select>
                     </Form.Item>
                 </Form>
-            </TexterifyModal>
+            </CustomModal>
         );
     }
 }

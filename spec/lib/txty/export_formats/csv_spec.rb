@@ -1,6 +1,6 @@
-require 'texterify'
+require 'txty'
 
-RSpec.describe Texterify::ExportFormats::Csv do
+RSpec.describe Txty::ExportFormats::Csv do
   describe 'exports translations as CSV' do
     let(:export_config) do
       export_config = ExportConfig.new
@@ -26,13 +26,13 @@ RSpec.describe Texterify::ExportFormats::Csv do
 
     it 'creates files' do
       files =
-        Texterify::ExportFormats::Csv.files(
+        Txty::ExportFormats::Csv.files(
           export_config,
           @language,
           {
-            'a' => Texterify::ExportFormats::Helpers.export_data_value('b'),
-            'c' => Texterify::ExportFormats::Helpers.export_data_value('d'),
-            'c.a' => Texterify::ExportFormats::Helpers.export_data_value('e')
+            'a' => Txty::ExportFormats::Helpers.export_data_value('b'),
+            'c' => Txty::ExportFormats::Helpers.export_data_value('d'),
+            'c.a' => Txty::ExportFormats::Helpers.export_data_value('e')
           }
         )
       files[0][:file].open
@@ -41,13 +41,13 @@ RSpec.describe Texterify::ExportFormats::Csv do
 
     it 'creates files with plural translations' do
       files =
-        Texterify::ExportFormats::Csv.files(
+        Txty::ExportFormats::Csv.files(
           export_config,
           @language,
           {
-            'a' => Texterify::ExportFormats::Helpers.export_data_value('b', pluralization_enabled: true),
-            'c' => Texterify::ExportFormats::Helpers.export_data_value('d'),
-            'c.a' => Texterify::ExportFormats::Helpers.export_data_value('e', pluralization_enabled: true)
+            'a' => Txty::ExportFormats::Helpers.export_data_value('b', pluralization_enabled: true),
+            'c' => Txty::ExportFormats::Helpers.export_data_value('d'),
+            'c.a' => Txty::ExportFormats::Helpers.export_data_value('e', pluralization_enabled: true)
           }
         )
       files[0][:file].open
@@ -56,15 +56,14 @@ RSpec.describe Texterify::ExportFormats::Csv do
 
     it 'creates files but skips empty plural translations' do
       files =
-        Texterify::ExportFormats::Csv.files(
+        Txty::ExportFormats::Csv.files(
           export_config,
           @language,
           {
-            'a' =>
-              Texterify::ExportFormats::Helpers.export_data_value('', pluralization_enabled: true, empty_plurals: true),
-            'c' => Texterify::ExportFormats::Helpers.export_data_value('', empty_plurals: true),
+            'a' => Txty::ExportFormats::Helpers.export_data_value('', pluralization_enabled: true, empty_plurals: true),
+            'c' => Txty::ExportFormats::Helpers.export_data_value('', empty_plurals: true),
             'c.a' =>
-              Texterify::ExportFormats::Helpers.export_data_value('e', pluralization_enabled: true, empty_plurals: true)
+              Txty::ExportFormats::Helpers.export_data_value('e', pluralization_enabled: true, empty_plurals: true)
           },
           skip_empty_plural_translations: true
         )

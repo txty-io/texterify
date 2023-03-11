@@ -10,7 +10,7 @@ export const AboutSite = observer(() => {
                 <h1>About</h1>
                 <div style={{ display: "flex", flexWrap: "wrap" }}>
                     <Card style={{ marginBottom: 40, marginRight: 40 }}>
-                        <Statistic title="Texterify Version" value={authStore.version || "-"} />
+                        <Statistic title="Txty Version" value={authStore.version || "-"} />
                     </Card>
                 </div>
             </Layout.Content>

@@ -1,7 +1,7 @@
 import { Alert } from "antd";
 import * as React from "react";
 import { IOrganization } from "../stores/DashboardStore";
-import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
+import { IS_CLOUD } from "../utilities/Env";
 
 export const OrganizationMachineTranslationTotalUsage = (props: {
     organization: IOrganization;
@@ -17,7 +17,7 @@ export const OrganizationMachineTranslationTotalUsage = (props: {
                 {props.organization?.attributes.machine_translation_character_limit} characters
             </div>
 
-            {IS_TEXTERIFY_CLOUD && !props.organization?.attributes.uses_custom_deepl_account && (
+            {IS_CLOUD && !props.organization?.attributes.uses_custom_deepl_account && (
                 <Alert
                     showIcon
                     type="info"

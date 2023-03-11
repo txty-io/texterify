@@ -1,10 +1,10 @@
-require 'texterify'
+require 'txty'
 
-RSpec.describe Texterify::Import do
+RSpec.describe Txty::Import do
   describe 'parse XLIFF' do
     it 'parses Angular extract XLIFF file' do
       file = File.read('spec/fixtures/xliff/angular_i18n_example_extract.xlf')
-      parse_result = Texterify::Import.parse_file_content('', file, 'xliff')
+      parse_result = Txty::Import.parse_file_content('', file, 'xliff')
 
       expect(parse_result[:content]).to eq(
         {
@@ -24,7 +24,7 @@ RSpec.describe Texterify::Import do
 
     it 'parses invalid source/target XLIFF file' do
       file = File.read('spec/fixtures/xliff/source_target_invalid.xlf')
-      parse_result = Texterify::Import.parse_file_content('', file, 'xliff')
+      parse_result = Txty::Import.parse_file_content('', file, 'xliff')
 
       # Because there is one target element in the XLIFF file
       # only the target content will be imported. Therefore the "source"
@@ -36,7 +36,7 @@ RSpec.describe Texterify::Import do
   describe 'parse YAML' do
     it 'parses YAML file' do
       file = File.read('spec/fixtures/yaml/devise_example.yml')
-      parse_result = Texterify::Import.parse_file_content('', file, 'yaml')
+      parse_result = Txty::Import.parse_file_content('', file, 'yaml')
       expect(parse_result[:content]).to eq(
         {
           'en.devise.confirmations.confirmed' => 'Your email address has been successfully confirmed.',

@@ -5,7 +5,7 @@ class ResetMachineTranslationCharactersUsageWorker
   include Sidekiq::Worker
 
   def perform(*_args)
-    if Texterify.cloud? || Rails.env.development? || Rails.env.test?
+    if Txty.cloud? || Rails.env.development? || Rails.env.test?
       Organization.all.each do |organization|
         organization.machine_translation_character_usage = 0
         organization.save!

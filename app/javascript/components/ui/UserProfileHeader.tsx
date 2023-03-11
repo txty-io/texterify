@@ -8,7 +8,7 @@ import { AuthAPI } from "../api/v1/AuthAPI";
 import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
 import { authStore } from "../stores/AuthStore";
-import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
+import { IS_CLOUD } from "../utilities/Env";
 import { Styles } from "./Styles";
 import { UserAvatar } from "./UserAvatar";
 
@@ -94,7 +94,7 @@ class UserProfileHeader extends React.Component<{}, IState> {
                                         Access tokens
                                     </Link>
                                 </li>
-                                {IS_TEXTERIFY_CLOUD && (
+                                {IS_CLOUD && (
                                     <li
                                         role="button"
                                         onClick={(e) => {

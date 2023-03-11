@@ -44,9 +44,9 @@ export function LicenseFreeTrial(props: { hasLicense: boolean; expiresAt: string
             }}
         >
             {props.hasLicense ? (
-                <>Your license expired and you are now using the free version of Texterify.</>
+                <>Your license expired and you are now using the free version of Txty.</>
             ) : (
-                <>You are currently using the free version of Texterify.</>
+                <>You are currently using the free version of Txty.</>
             )}{" "}
             Upgrade to a paid plan to get access to the premium features.
             <TransparentButton

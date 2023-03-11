@@ -2,7 +2,7 @@ import { DeploymentUnitOutlined, LeftOutlined, LockOutlined, RightOutlined } fro
 import { Alert, Button, Select } from "antd";
 import * as React from "react";
 import { Styles } from "../ui/Styles";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 import { IProps as NewProjectFormProps, NewProjectForm } from "./NewProjectForm";
 import styled from "styled-components";
 import { IGetOrganizationsOptions, OrganizationsAPI } from "../api/v1/OrganizationsAPI";
@@ -110,7 +110,7 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
 
     render() {
         return (
-            <TexterifyModal
+            <CustomModal
                 afterClose={() => {
                     this.setState(this.initialState);
                 }}
@@ -246,7 +246,7 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
                         orientation="vertical"
                     />
                 )}
-            </TexterifyModal>
+            </CustomModal>
         );
     }
 }

@@ -4,13 +4,13 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { Routes } from "../routing/Routes";
 import { dashboardStore, IOrganization } from "../stores/DashboardStore";
-import { TexterifyModal } from "./TexterifyModal";
+import { CustomModal } from "./CustomModal";
 
 function getTextByDeactivatedReason(reason: IOrganization["attributes"]["current_user_deactivated_reason"]) {
     if (reason === "manually_by_admin") {
         return "Your accout has been disabled by an administrator of your organization. If you think this was a mistake please contact them to reactivate your account.";
     } else if (reason === "user_limit_exceeded") {
-        return "Your account has been disabled because the subscription of your organization expired. Please contact your organization administrator to inform them that they need to resubscribe and then activate your account. Unless then you won't be able to use Texterify again within this organization.";
+        return "Your account has been disabled because the subscription of your organization expired. Please contact your organization administrator to inform them that they need to resubscribe and then activate your account. Unless then you won't be able to use Txty again within this organization.";
     } else {
         return "Your account has been disabled. Please contact your organization administrator to enable your account.";
     }
@@ -18,7 +18,7 @@ function getTextByDeactivatedReason(reason: IOrganization["attributes"]["current
 
 export function UserDeactivatedOrganizationModal() {
     return (
-        <TexterifyModal
+        <CustomModal
             visible
             title={
                 <>
@@ -48,6 +48,6 @@ export function UserDeactivatedOrganizationModal() {
                 description=""
                 style={{ marginBottom: 16 }}
             />
-        </TexterifyModal>
+        </CustomModal>
     );
 }

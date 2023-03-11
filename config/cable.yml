@@ -8,4 +8,4 @@ test:
 production:
   adapter: redis
   url: <%= ENV.fetch("REDIS_URL") { "redis://redis:6379/0" } %>
-  channel_prefix: texterify_production
+  channel_prefix: txty_production

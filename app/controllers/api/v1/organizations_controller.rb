@@ -49,7 +49,7 @@ class Api::V1::OrganizationsController < Api::V1::ApiController
   def create
     skip_authorization
     organization = Organization.new(organization_params)
-    if Texterify.cloud?
+    if Txty.cloud?
       organization.trial_ends_at = (Time.now.utc + 7.days).end_of_day
     end
 

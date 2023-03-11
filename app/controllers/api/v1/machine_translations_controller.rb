@@ -37,10 +37,10 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
 
     authorize translation
 
-    suggestion = Texterify::MachineTranslation.translate(project, translation, target_language)
+    suggestion = Txty::MachineTranslation.translate(project, translation, target_language)
 
     render json: { translation: suggestion }
-  rescue Texterify::MachineTranslation::OrganizationMachineTranslationUsageExceededException => e
+  rescue Txty::MachineTranslation::OrganizationMachineTranslationUsageExceededException => e
     render json: { error: true, message: 'MACHINE_TRANSLATION_USAGE_EXCEEDED', data: e.details }, status: :bad_request
     return
   end
@@ -65,7 +65,7 @@ class Api::V1::MachineTranslationsController < Api::V1::ApiController
     else
       render json: { error: true, message: 'FAILED_TO_MACHINE_TRANSLATE' }
     end
-  rescue Texterify::MachineTranslation::OrganizationMachineTranslationUsageExceededException => e
+  rescue Txty::MachineTranslation::OrganizationMachineTranslationUsageExceededException => e
     render json: { error: true, message: 'MACHINE_TRANSLATION_USAGE_EXCEEDED', data: e.details }, status: :bad_request
   end
 

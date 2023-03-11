@@ -10,7 +10,7 @@ interface IElementData {
     path: string;
     dataId: string;
     disabled?: boolean;
-    texterifyInstanceOnly?: boolean;
+    instanceOnly?: boolean;
 }
 
 type CustomMenuItemProps = MenuItemProps;

@@ -1,8 +1,8 @@
 require 'deepl'
 
-# Texterify::MachineTranslation
-module Texterify
-  # Texterify::MachineTranslation::OrganizationMachineTranslationUsageExceededException
+# Txty::MachineTranslation
+module Txty
+  # Txty::MachineTranslation::OrganizationMachineTranslationUsageExceededException
   class OrganizationMachineTranslationUsageExceededException < StandardError
     attr_reader :details
 
@@ -40,7 +40,7 @@ module Texterify
 
         # Check if the organization has exceeded their machine translation usage.
         if organization.exceeds_machine_translation_usage?(character_count)
-          raise Texterify::MachineTranslation::OrganizationMachineTranslationUsageExceededException.new(
+          raise Txty::MachineTranslation::OrganizationMachineTranslationUsageExceededException.new(
                   {
                     machine_translation_character_usage: organization.machine_translation_character_usage,
                     machine_translation_character_limit: organization.machine_translation_character_limit,

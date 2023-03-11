@@ -1,4 +1,4 @@
-module Texterify
+module Txty
   module ExportFormats
   end
 end

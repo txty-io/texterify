@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import { IInstanceInfo, InstanceAPI } from "../../../api/v1/InstanceAPI";
 import { IGetMachineTranslationsUsage, MachineTranslationsAPI } from "../../../api/v1/MachineTranslationsAPI";
 import { Loading } from "../../../ui/Loading";
-import { IS_TEXTERIFY_CLOUD } from "../../../utilities/Env";
+import { IS_CLOUD } from "../../../utilities/Env";
 
 export const InstanceSite = observer(() => {
     const [instanceInfos, setInstanceInfos] = React.useState<IInstanceInfo>();
@@ -145,9 +145,9 @@ export const InstanceSite = observer(() => {
                     <Card style={{ width: 240, marginBottom: 40, marginRight: 40 }}>
                         <Statistic
                             title="Frontend mode"
-                            prefix={IS_TEXTERIFY_CLOUD ? <CloudOutlined /> : <HomeOutlined />}
+                            prefix={IS_CLOUD ? <CloudOutlined /> : <HomeOutlined />}
                             valueRender={() => {
-                                return IS_TEXTERIFY_CLOUD ? "cloud" : "on-premise";
+                                return IS_CLOUD ? "cloud" : "on-premise";
                             }}
                         />
 

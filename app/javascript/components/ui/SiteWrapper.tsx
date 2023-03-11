@@ -1,7 +1,7 @@
 import { GithubOutlined } from "@ant-design/icons";
 import WhiteLogoWithText from "images/logo_white_text.svg";
 import * as React from "react";
-import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
+import { IS_CLOUD } from "../utilities/Env";
 
 interface IProps {
     style?: React.CSSProperties;
@@ -52,7 +52,7 @@ class SiteWrapper extends React.Component<IProps> {
                         {this.props.children}
 
                         <p style={{ color: "rgba(255, 255, 255, 0.85)", marginTop: 40 }}>
-                            Make sure to check out Texterify on{" "}
+                            Make sure to check out Txty on{" "}
                             <a href="https://github.com/txty-io/txty" target="_blank" style={{ whiteSpace: "nowrap" }}>
                                 <GithubOutlined style={{ marginRight: 4 }} />
                                 GitHub
@@ -67,8 +67,8 @@ class SiteWrapper extends React.Component<IProps> {
                 </div>
 
                 <div style={{ marginTop: "auto", padding: 24, color: "#fff" }}>
-                    Copyright © Texterify. All rights reserved.
-                    {IS_TEXTERIFY_CLOUD && (
+                    Copyright © Txty. All rights reserved.
+                    {IS_CLOUD && (
                         <>
                             <a
                                 href="https://txty.io/privacy-policy"

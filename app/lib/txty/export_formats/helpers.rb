@@ -1,4 +1,4 @@
-module Texterify
+module Txty
   module ExportFormats
     class Helpers
       def self.export_data_value(text, pluralization_enabled: false, empty_plurals: false)

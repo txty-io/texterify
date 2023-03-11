@@ -1,4 +1,4 @@
-require 'texterify'
+require 'txty'
 
 class Language < ApplicationRecord
   scope :order_by_name, -> { order(arel_table['name'].lower.asc) }
@@ -51,7 +51,7 @@ class Language < ApplicationRecord
           target_translation = key.translations.find_by(language_id: target_language.id, flavor_id: nil)
 
           if source_translation.present? && (target_translation.nil? || target_translation.content.empty?)
-            content = Texterify::MachineTranslation.translate(self.project, source_translation, target_language)
+            content = Txty::MachineTranslation.translate(self.project, source_translation, target_language)
 
             unless content.nil?
               if target_translation.nil?

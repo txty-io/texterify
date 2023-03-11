@@ -18,7 +18,7 @@ class ImportVerifyWorker
         file_content = file.read
 
         begin
-          parsed_result = Texterify::Import.parse_file_content(import_file.name, file_content, file_format)
+          parsed_result = Txty::Import.parse_file_content(import_file.name, file_content, file_format)
 
           if parsed_result[:success]
             parsed_result[:content].each do |json_key, json_value|

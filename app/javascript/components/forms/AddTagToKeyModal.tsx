@@ -2,7 +2,7 @@ import { Button } from "antd";
 import * as React from "react";
 import * as uuid from "uuid";
 import { IKey } from "../api/v1/KeysAPI";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 import { AddTagToKeyForm } from "./AddTagToKeyForm";
 
 interface IProps {
@@ -17,7 +17,7 @@ export function AddTagToKeyModal(props: IProps) {
 
     const formId = `addTagToKeyForm-${uuid.v4()}`;
     return (
-        <TexterifyModal
+        <CustomModal
             title="Add tag to key"
             visible={props.visible}
             footer={
@@ -54,6 +54,6 @@ export function AddTagToKeyModal(props: IProps) {
                     props.onSaved();
                 }}
             />
-        </TexterifyModal>
+        </CustomModal>
     );
 }

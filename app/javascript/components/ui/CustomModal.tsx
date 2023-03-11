@@ -3,7 +3,7 @@ import { Modal } from "antd";
 import { ModalProps } from "antd/lib/modal";
 import { CloseCircleFilled } from "@ant-design/icons";
 
-export function TexterifyModal(props: ModalProps & { children: React.ReactNode; big?: boolean }) {
+export function CustomModal(props: ModalProps & { children: React.ReactNode; big?: boolean }) {
     const { children, ...rest } = props;
 
     return (

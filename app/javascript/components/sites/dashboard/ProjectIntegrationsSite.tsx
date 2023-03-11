@@ -68,7 +68,7 @@ class ProjectIntegrationsSite extends React.Component<IProps> {
                 key: "wordpress",
                 logo: WordpressLogo,
                 name: "WordPress",
-                description: "Synchonize content between Texterify and WordPress with ease.",
+                description: "Synchonize content with WordPress.",
                 link: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
                     projectId: this.props.match.params.projectId
                 }),

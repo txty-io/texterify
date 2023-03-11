@@ -239,7 +239,7 @@ function PaymentPlan(props: {
                         <>
                             <h3>
                                 <span style={{ marginRight: 8 }}>Choose number of users</span>
-                                <Tooltip title="The number of users that can use Texterify.">
+                                <Tooltip title="The number of users that can use Txty.">
                                     <QuestionCircleOutlined />
                                 </Tooltip>
                             </h3>

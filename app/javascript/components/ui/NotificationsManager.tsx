@@ -4,8 +4,8 @@ import * as React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { DashboardAPI } from "../api/v1/DashboardAPI";
-import { TexterifyModalFooterWrapper } from "../forms/TexterifyModalFooterWrapper";
-import { TexterifyModal } from "./TexterifyModal";
+import { CustomModalFooterWrapper } from "../forms/CustomModalFooterWrapper";
+import { CustomModal } from "./CustomModal";
 
 export function NotificationsManager(props: { style?: React.CSSProperties }) {
     const [open, setOpen] = React.useState<boolean>(false);
@@ -39,11 +39,11 @@ export function NotificationsManager(props: { style?: React.CSSProperties }) {
                     }}
                 />
             </Tooltip>
-            <TexterifyModal
+            <CustomModal
                 visible={open}
                 title="Release notes"
                 footer={
-                    <TexterifyModalFooterWrapper>
+                    <CustomModalFooterWrapper>
                         <Button
                             onClick={() => {
                                 setOpen(false);
@@ -51,7 +51,7 @@ export function NotificationsManager(props: { style?: React.CSSProperties }) {
                         >
                             Close
                         </Button>
-                    </TexterifyModalFooterWrapper>
+                    </CustomModalFooterWrapper>
                 }
                 big
                 onCancel={() => {
@@ -64,7 +64,7 @@ export function NotificationsManager(props: { style?: React.CSSProperties }) {
                         <ReactMarkdown children={changelog} remarkPlugins={[remarkGfm]} disallowedElements={["h1"]} />
                     </div>
                 )}
-            </TexterifyModal>
+            </CustomModal>
         </>
     );
 }

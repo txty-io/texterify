@@ -245,7 +245,7 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                                         message={
                                             <>
                                                 You have canceled your subscription and will loose access to the premium
-                                                Texterify features on{" "}
+                                                Txty features on{" "}
                                                 <span style={{ fontWeight: "bold" }}>
                                                     {this.state.subscription.attributes.renews_or_cancels_on}
                                                 </span>
@@ -291,7 +291,7 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                         <p style={{ maxWidth: 480, marginTop: 16 }}>
                             {dashboardStore.currentOrganization.attributes.trial_active &&
                                 !this.state.subscription &&
-                                "You are currently experiencing the trial period but you can already select a plan that fits your needs to continue using Texterify without interruptions. Your paid plan will start after your trial has ended."}
+                                "You are currently experiencing the trial period but you can already select a plan that fits your needs to continue using Txty without interruptions. Your paid plan will start after your trial has ended."}
                             {dashboardStore.currentOrganization.attributes.trial_active &&
                                 !this.state.subscription &&
                                 " Select a subscription that fits your needs."}
@@ -318,8 +318,8 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                 <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                     <h1>Subscription</h1>
                     <p>
-                        Manage your subscription for the cloud version of Texterify. <br />
-                        If you want to host Texterify in your own infrastructure you can get a license{" "}
+                        Manage your subscription for the cloud version of Txty. <br />
+                        If you want to host Txty in your own infrastructure you can get a license{" "}
                         <Link to={Routes.USER.SETTINGS.LICENSES}>here</Link>.
                     </p>
                     {(!dashboardStore.currentOrganization ||

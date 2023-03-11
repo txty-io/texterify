@@ -80,7 +80,7 @@ export const SUPPORTED_FORMATS: {
             <pre style={{ whiteSpace: "break-spaces" }}>{`[
     {
         "term": "app_title",
-        "definition": "Texterify",
+        "definition": "My App",
         "context": "welcome screen",
         "term_plural": "",
         "reference": "",

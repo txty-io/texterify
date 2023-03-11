@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import * as React from "react";
 import * as uuid from "uuid";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 import { ITagFromProps, TagForm } from "./TagForm";
 
 interface IProps {
@@ -13,7 +13,7 @@ interface IProps {
 export function TagFormModal(props: IProps) {
     const formId = `tagForm-${uuid.v4()}`;
     return (
-        <TexterifyModal
+        <CustomModal
             title={props.formProps.tag ? "Change tag" : "Create tag"}
             visible={props.visible}
             footer={
@@ -33,6 +33,6 @@ export function TagFormModal(props: IProps) {
             onCancel={props.onCancelRequest}
         >
             <TagForm {...props.formProps} formId={formId} noButton />
-        </TexterifyModal>
+        </CustomModal>
     );
 }

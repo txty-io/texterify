@@ -5,7 +5,7 @@ import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
 import { dashboardStore } from "../stores/DashboardStore";
 import { IFeature } from "../types/IFeature";
-import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
+import { IS_CLOUD } from "../utilities/Env";
 import { PermissionUtils } from "../utilities/PermissionUtils";
 import { Constants } from "./Constants";
 
@@ -44,7 +44,7 @@ export function FeatureNotAvailable(props: { feature: IFeature; dataId?: string;
         return null;
     }
 
-    const buttonEnabled = IS_TEXTERIFY_CLOUD
+    const buttonEnabled = IS_CLOUD
         ? PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentOrganizationRole())
         : true;
 
@@ -62,7 +62,7 @@ export function FeatureNotAvailable(props: { feature: IFeature; dataId?: string;
             }}
             disabled={!buttonEnabled}
             onClick={() => {
-                if (IS_TEXTERIFY_CLOUD) {
+                if (IS_CLOUD) {
                     if (PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentOrganizationRole())) {
                         history.push(
                             Routes.DASHBOARD.ORGANIZATION_SUBSCRIPTION.replace(
@@ -100,7 +100,7 @@ export function FeatureNotAvailable(props: { feature: IFeature; dataId?: string;
     //             <>
     //                 This feature is not available on your current plan. Please{" "}
     //                 {PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) ? (
-    //                     IS_TEXTERIFY_CLOUD ? (
+    //                     IS_CLOUD ? (
     //                         <Link
     //                             to={Routes.DASHBOARD.ORGANIZATION_SUBSCRIPTION.replace(
     //                                 ":organizationId",

@@ -6,7 +6,7 @@ import { ExportConfigsAPI, IGetExportConfigsResponse } from "../api/v1/ExportCon
 import { ReleasesAPI } from "../api/v1/ReleasesAPI";
 import { Routes } from "../routing/Routes";
 import { ErrorUtils } from "../ui/ErrorUtils";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 
 interface IProps {
     projectId: string;
@@ -87,7 +87,7 @@ class AddReleaseForm extends React.Component<IProps, IState> {
 
     render() {
         return (
-            <TexterifyModal
+            <CustomModal
                 title="Create a new release"
                 visible={this.props.visible}
                 footer={
@@ -164,7 +164,7 @@ class AddReleaseForm extends React.Component<IProps, IState> {
                         </Form.Item>
                     )}
                 </Form>
-            </TexterifyModal>
+            </CustomModal>
         );
     }
 }

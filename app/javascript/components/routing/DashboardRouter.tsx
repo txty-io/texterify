@@ -33,7 +33,7 @@ import { LicenseFreeTrial } from "../ui/LicenseFreeVersion";
 import { NotificationsManager } from "../ui/NotificationsManager";
 import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
-import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
+import { IS_CLOUD } from "../utilities/Env";
 import {
     IJobsChannelEvent,
     JOBS_CHANNEL_EVENT_JOB_COMPLETED,
@@ -53,7 +53,7 @@ import { history } from "./history";
 import { InstanceRouter } from "./InstanceRouter";
 import { OrganizationRouter } from "./OrganizationRouter";
 import { PrivateRoute } from "./PrivateRoute";
-import { PrivateRouteTexterifyCloud } from "./PrivateRouteTexterifyCloud";
+import { PrivateRouteCloud } from "./PrivateRouteCloud";
 import { ProjectRouter } from "./ProjectRouter";
 import { Routes } from "./Routes";
 import { SuperadminRoute } from "./SuperadminRoute";
@@ -159,7 +159,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
             hasSidebar: this.hasSidebar()
         });
 
-        if (!IS_TEXTERIFY_CLOUD) {
+        if (!IS_CLOUD) {
             await this.loadCurrentLicense();
         }
 
@@ -312,7 +312,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                     }}
                     allowRepeat
                 />
-                {!IS_TEXTERIFY_CLOUD && this.state.currentLicenseInfoLoaded && (
+                {!IS_CLOUD && this.state.currentLicenseInfoLoaded && (
                     <>
                         <LicenseFreeTrial
                             hasLicense={this.state.currentLicenseInfo.has_license}
@@ -589,7 +589,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 component={UserAccessTokensSettingsSite}
                             />
                             <PrivateRoute exact path={Routes.USER.SETTINGS.ABOUT} component={AboutSite} />
-                            <PrivateRouteTexterifyCloud
+                            <PrivateRouteCloud
                                 exact
                                 path={Routes.USER.SETTINGS.LICENSES}
                                 component={UserLicensesSite}

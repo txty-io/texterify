@@ -125,7 +125,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     file = Tempfile.new(project.id)
 
     begin
-      Texterify::Export.create_export(project, export_config, file, emojify: params[:emojify])
+      Txty::Export.create_export(project, export_config, file, emojify: params[:emojify])
 
       send_file(file, type: 'application/zip')
     ensure

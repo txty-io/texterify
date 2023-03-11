@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import * as React from "react";
 import * as uuid from "uuid";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 import { AddEditFlavorForm, IAddEditFlavorFormProps } from "./AddEditFlavorForm";
 
 interface IProps {
@@ -14,7 +14,7 @@ export function AddEditFlavorFormModal(props: IProps) {
     const formId = `addEditFlavorForm-${uuid.v4()}`;
 
     return (
-        <TexterifyModal
+        <CustomModal
             title={props.formProps.flavorToEdit ? "Edit flavor" : "Add a new flavor"}
             visible={props.visible}
             footer={
@@ -36,6 +36,6 @@ export function AddEditFlavorFormModal(props: IProps) {
             }}
         >
             <AddEditFlavorForm {...props.formProps} hideDefaultSubmitButton formId={formId} />
-        </TexterifyModal>
+        </CustomModal>
     );
 }

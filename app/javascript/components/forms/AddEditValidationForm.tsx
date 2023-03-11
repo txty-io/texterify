@@ -2,7 +2,7 @@ import { Button, Form, Input, Select } from "antd";
 import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import { ErrorUtils } from "../ui/ErrorUtils";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 import { IValidation, IValidationLinkedTo, ValidationsAPI } from "../api/v1/ValidationsAPI";
 
 interface IProps {
@@ -85,7 +85,7 @@ class AddEditValidationForm extends React.Component<IProps, IState> {
         );
 
         return (
-            <TexterifyModal
+            <CustomModal
                 title={this.props.validationToEdit ? "Edit validation" : "Add a new validation"}
                 visible={this.props.visible}
                 footer={
@@ -144,7 +144,7 @@ class AddEditValidationForm extends React.Component<IProps, IState> {
                         </Form.Item>
                     </div>
                 </Form>
-            </TexterifyModal>
+            </CustomModal>
         );
     }
 }

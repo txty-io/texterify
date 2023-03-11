@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import * as React from "react";
 import { IProject } from "../stores/DashboardStore";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 import { TransferProjectForm } from "./TransferProjectForm";
 
 interface IProps {
@@ -24,7 +24,7 @@ class TransferProjectFormModal extends React.Component<IProps, IState> {
 
     render() {
         return (
-            <TexterifyModal
+            <CustomModal
                 title="Transfer project"
                 visible={this.props.visible}
                 onCancel={() => {
@@ -59,7 +59,7 @@ class TransferProjectFormModal extends React.Component<IProps, IState> {
                         this.props.onSuccess();
                     }}
                 />
-            </TexterifyModal>
+            </CustomModal>
         );
     }
 }

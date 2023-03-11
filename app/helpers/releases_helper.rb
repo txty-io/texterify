@@ -53,7 +53,7 @@ module ReleasesHelper
     post_processing_rules = project.post_processing_rules.where(export_config_id: [export_config.id, nil]).order_by_name
 
     language_data =
-      Texterify::Export.create_language_export_data(
+      Txty::Export.create_language_export_data(
         project,
         export_config,
         language,

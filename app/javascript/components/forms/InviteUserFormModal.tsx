@@ -8,7 +8,7 @@ import { ProjectInvitesAPI } from "../api/v1/ProjectInvitesAPI";
 import { dashboardStore } from "../stores/DashboardStore";
 import { IUserRole } from "../types/IUserRole";
 import { ErrorUtils } from "../ui/ErrorUtils";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 
 function InviteUserFormModal(props: {
     organizationId?: string;
@@ -141,7 +141,7 @@ function InviteUserFormModal(props: {
 
     return (
         <>
-            <TexterifyModal
+            <CustomModal
                 title={
                     <>
                         <UserAddOutlined style={{ marginRight: 8 }} /> Invite a user
@@ -228,7 +228,7 @@ function InviteUserFormModal(props: {
                         </Radio>
                     </Space>
                 </Radio.Group>
-            </TexterifyModal>
+            </CustomModal>
         </>
     );
 }

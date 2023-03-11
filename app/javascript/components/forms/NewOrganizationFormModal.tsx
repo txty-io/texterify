@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import * as React from "react";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 import { IProps as NewOrganizationFormProps, NewOrganizationForm } from "./NewOrganizationForm";
 
 interface IProps {
@@ -12,7 +12,7 @@ interface IProps {
 class NewOrganizationFormModal extends React.Component<IProps> {
     render() {
         return (
-            <TexterifyModal
+            <CustomModal
                 title="Add a new organization"
                 visible={this.props.visible}
                 footer={
@@ -37,7 +37,7 @@ class NewOrganizationFormModal extends React.Component<IProps> {
                 onCancel={this.props.onCancelRequest}
             >
                 <NewOrganizationForm {...this.props.newOrganizationFormProps} orientation="vertical" />
-            </TexterifyModal>
+            </CustomModal>
         );
     }
 }

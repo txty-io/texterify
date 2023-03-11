@@ -38,7 +38,7 @@ class User < ApplicationRecord
   # Override Devise::Confirmable#after_confirmation
   # https://www.rubydoc.info/github/plataformatec/devise/Devise/Models/Confirmable:after_confirmation
   def after_confirmation
-    if Texterify.cloud?
+    if Txty.cloud?
       UserMailer.welcome(email, username).deliver_later
     end
 

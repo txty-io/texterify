@@ -16,7 +16,7 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { SidebarTrigger } from "../../ui/SidebarTrigger";
-import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
+import { IS_CLOUD } from "../../utilities/Env";
 import { ROLES_OWNER_UP, ROLES_TRANSLATOR_UP } from "../../utilities/PermissionUtils";
 import { SidebarUtils } from "../../utilities/SidebarUtils";
 const { Sider } = Layout;
@@ -27,7 +27,7 @@ interface INavigationData {
     paths?: string[];
     text: string;
     roles?: string[];
-    texterifyCloudOnly: boolean;
+    cloudOnly: boolean;
 }
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
@@ -39,7 +39,7 @@ class OrganizationSidebar extends React.Component<IProps> {
             icon: HomeOutlined,
             path: Routes.DASHBOARD.ORGANIZATION.replace(":organizationId", this.props.match.params.organizationId),
             text: "Home",
-            texterifyCloudOnly: false
+            cloudOnly: false
         },
         {
             icon: TeamOutlined,
@@ -48,7 +48,7 @@ class OrganizationSidebar extends React.Component<IProps> {
                 this.props.match.params.organizationId
             ),
             text: "Users",
-            texterifyCloudOnly: false
+            cloudOnly: false
         },
         {
             icon: RobotOutlined,
@@ -57,7 +57,7 @@ class OrganizationSidebar extends React.Component<IProps> {
                 this.props.match.params.organizationId
             ),
             text: "MT",
-            texterifyCloudOnly: false
+            cloudOnly: false
         },
         {
             icon: MonitorOutlined,
@@ -74,7 +74,7 @@ class OrganizationSidebar extends React.Component<IProps> {
             ],
             text: "QA",
             roles: ROLES_TRANSLATOR_UP,
-            texterifyCloudOnly: false
+            cloudOnly: false
         },
         {
             icon: ReloadOutlined,
@@ -83,7 +83,7 @@ class OrganizationSidebar extends React.Component<IProps> {
                 this.props.match.params.organizationId
             ),
             text: "Subscription",
-            texterifyCloudOnly: true,
+            cloudOnly: true,
             roles: ROLES_OWNER_UP
         },
         {
@@ -93,14 +93,14 @@ class OrganizationSidebar extends React.Component<IProps> {
                 this.props.match.params.organizationId
             ),
             text: "Settings",
-            texterifyCloudOnly: false
+            cloudOnly: false
         }
     ];
 
     getFilteredNavigationData = () => {
         return this.navigationData.filter((data) => {
-            if (data.texterifyCloudOnly) {
-                if (IS_TEXTERIFY_CLOUD) {
+            if (data.cloudOnly) {
+                if (IS_CLOUD) {
                     return true;
                 } else {
                     return false;

@@ -5,7 +5,7 @@ class TrialEndingWorker
   include Sidekiq::Worker
 
   def perform(*_args)
-    if Texterify.cloud? || Rails.env.development? || Rails.env.test?
+    if Txty.cloud? || Rails.env.development? || Rails.env.test?
       topic = SentEmail::TRIAL_EXPIRES_IN_ONE_DAY
 
       trials_expiring_in_one_day =

@@ -5,8 +5,8 @@ require 'toml-rb'
 require 'java-properties'
 require 'poparser'
 
-# Texterify::Import
-module Texterify
+# Txty::Import
+module Txty
   class Import
     REGEX_CONTENT = /"((\\"|[^"])+)"/.freeze
     REGEX_KEY_VALUE = /#{REGEX_CONTENT}\s*=\s*#{REGEX_CONTENT}*/.freeze
@@ -33,7 +33,7 @@ module Texterify
       elsif file_format == 'yaml'
         yaml?(file_content)
       else
-        raise Texterify::MachineTranslation::InvalidFileFormatException.new({ file_format: file_format })
+        raise Txty::MachineTranslation::InvalidFileFormatException.new({ file_format: file_format })
       end
     end
 

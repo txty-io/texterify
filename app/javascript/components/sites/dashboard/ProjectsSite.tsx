@@ -195,7 +195,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                                     style={{ maxWidth: 80, borderRadius: Styles.DEFAULT_BORDER_RADIUS }}
                                 />
                                 <h1 style={{ fontSize: 32, marginTop: 16 }}>
-                                    Welcome to Texterify <span style={{ marginLeft: 4 }}>👋</span>
+                                    Welcome to Txty <span style={{ marginLeft: 4 }}>👋</span>
                                 </h1>
                                 <p>The best tool to manage all your translations in one single place.</p>
                                 <p style={{ fontSize: 24 }}>Let's create your first project.</p>

@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import * as React from "react";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 import { AddEditLanguageForm, IAddEditLanguageFormProps } from "./AddEditLanguageForm";
 import * as uuid from "uuid";
 
@@ -15,7 +15,7 @@ class AddEditLanguageFormModal extends React.Component<IProps> {
         const formId = `addEditLanguageForm-${uuid.v4()}`;
 
         return (
-            <TexterifyModal
+            <CustomModal
                 title={this.props.languageFormProps.languageToEdit ? "Edit language" : "Add a new language"}
                 visible={this.props.visible}
                 footer={
@@ -38,7 +38,7 @@ class AddEditLanguageFormModal extends React.Component<IProps> {
                 }}
             >
                 <AddEditLanguageForm {...this.props.languageFormProps} hideDefaultSubmitButton formId={formId} />
-            </TexterifyModal>
+            </CustomModal>
         );
     }
 }

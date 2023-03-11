@@ -1,3 +1,3 @@
-const IS_TEXTERIFY_CLOUD = process.env.PROPRIETARY_MODE === "true";
+const IS_CLOUD = process.env.PROPRIETARY_MODE === "true";
 
-export { IS_TEXTERIFY_CLOUD };
+export { IS_CLOUD };

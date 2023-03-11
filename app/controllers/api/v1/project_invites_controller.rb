@@ -23,7 +23,7 @@ class Api::V1::ProjectInvitesController < Api::V1::ApiController
     else
       project_invite.save!
 
-      UserMailer.invite(email, current_user.username, Texterify.on_premise?).deliver_later
+      UserMailer.invite(email, current_user.username, Txty.on_premise?).deliver_later
 
       render json: { error: false, message: 'OK' }
     end

@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import * as React from "react";
 import * as uuid from "uuid";
-import { TexterifyModal } from "../ui/TexterifyModal";
+import { CustomModal } from "../ui/CustomModal";
 import { EditTranslationForm, IEditTranslationFormProps } from "./EditTranslationForm";
 
 interface IProps {
@@ -13,7 +13,7 @@ interface IProps {
 export function EditTranslationFormModal(props: IProps) {
     const formId = `editTranslationForm-${uuid.v4()}`;
     return (
-        <TexterifyModal
+        <CustomModal
             title={props.formProps.keyResponse?.data.attributes.name}
             visible={props.visible}
             footer={
@@ -33,6 +33,6 @@ export function EditTranslationFormModal(props: IProps) {
             onCancel={props.onCancelRequest}
         >
             <EditTranslationForm {...props.formProps} formId={formId} />
-        </TexterifyModal>
+        </CustomModal>
     );
 }

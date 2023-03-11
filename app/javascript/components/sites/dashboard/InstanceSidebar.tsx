@@ -14,7 +14,7 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { SidebarTrigger } from "../../ui/SidebarTrigger";
-import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
+import { IS_CLOUD } from "../../utilities/Env";
 const { Sider } = Layout;
 
 interface INavigationData {
@@ -22,7 +22,7 @@ interface INavigationData {
     path: string;
     text: string;
     dataId: string;
-    texterifyInstanceOnly: boolean;
+    instanceOnly: boolean;
 }
 
 type IProps = RouteComponentProps<{}>;
@@ -35,37 +35,37 @@ class InstanceSidebar extends React.Component<IProps> {
             path: Routes.DASHBOARD.INSTANCE.ROOT,
             text: "Home",
             dataId: "instance-sidebar-home",
-            texterifyInstanceOnly: false
+            instanceOnly: false
         },
         {
             icon: FileTextOutlined,
             path: Routes.DASHBOARD.INSTANCE.LICENSES,
             text: "Licenses",
             dataId: "instance-sidebar-licenses",
-            texterifyInstanceOnly: false
+            instanceOnly: false
             // For now also shown in the cloud version because the tests are otherwise not working.
-            // texterifyInstanceOnly: true
+            // instanceOnly: true
         },
         {
             icon: UserOutlined,
             path: Routes.DASHBOARD.INSTANCE.USERS,
             text: "Users",
             dataId: "instance-sidebar-users",
-            texterifyInstanceOnly: false
+            instanceOnly: false
         },
         {
             icon: ToolOutlined,
             path: Routes.DASHBOARD.INSTANCE.SETTINGS,
             text: "Settings",
             dataId: "instance-sidebar-settings",
-            texterifyInstanceOnly: false
+            instanceOnly: false
         }
     ];
 
     getFilteredNavigationData = () => {
         return this.navigationData.filter((data) => {
-            if (data.texterifyInstanceOnly) {
-                if (IS_TEXTERIFY_CLOUD) {
+            if (data.instanceOnly) {
+                if (IS_CLOUD) {
                     return false;
                 } else {
                     return true;

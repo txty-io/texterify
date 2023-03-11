@@ -44,11 +44,11 @@ export function LicenseExpiring(props: { expiresAt: string }) {
                 color: "#fff"
             }}
         >
-            The Texterify license will expire soon on{" "}
+            The Txty license will expire soon on{" "}
             <span style={{ fontWeight: "bold", marginLeft: 4 }}>{props.expiresAt}</span>.{" "}
             {authStore.currentUser?.is_superadmin ? (
                 <>
-                    Get a new license before you loose access to the premium features of Texterify.
+                    Get a new license before you loose access to the premium features of Txty.
                     <TransparentButton
                         type="primary"
                         onClick={() => {
