@@ -65,7 +65,7 @@ module ReleasesHelper
       is_default: language.is_default,
       language_code: language.language_code&.code,
       country_code: language.country_code&.code,
-      texts: language_data.map { |key, value| { key: key, value: value } },
+      texts: language_data.map { |key, value| { key: key, value: value[:other] } },
       plurals: [] # TODO: Add plural support
     }
 

@@ -76,9 +76,9 @@ class AddReleaseForm extends React.Component<IProps, IState> {
             }
         } catch (error) {
             console.error(error);
+        } finally {
+            this.setState({ submitting: false });
         }
-
-        this.setState({ submitting: false });
     };
 
     hasExportConfigs = () => {
