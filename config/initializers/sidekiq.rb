@@ -8,6 +8,10 @@ if Rails.env.test?
   puts '[sidekiq]: Sidekiq jobs are processed during tests from now on.'
 end
 
-Sidekiq.configure_server { |config| config.redis = { url: 'redis://redis:6379/0' } }
+Sidekiq.configure_server do |config|
+  config.redis = { url: ENV.fetch('SIDEKIQ_REDIS_SERVER_URL', 'redis://redis:6379/0') }
+end
 
-Sidekiq.configure_client { |config| config.redis = { url: 'redis://redis:6379/0' } }
+Sidekiq.configure_client do |config|
+  config.redis = { url: ENV.fetch('SIDEKIQ_REDIS_CLIENT_URL', 'redis://redis:6379/0') }
+end
