@@ -1,5 +1,10 @@
 # Changelog
 
+## Next release
+
+- Fix bug that caused create OTA release button to be in loading state forever.
+- Fix invalid format of OTA releases for SDKs.
+
 ## 1.2.1
 
 - Make tags feature available for free.

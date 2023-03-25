@@ -2,17 +2,17 @@ require 'deepl'
 
 # Texterify::MachineTranslation
 module Texterify
-  # Texterify::MachineTranslation::OrganizationMachineTranslationUsageExceededException
-  class OrganizationMachineTranslationUsageExceededException < StandardError
-    attr_reader :details
-
-    def initialize(details)
-      @details = details
-      super()
-    end
-  end
-
   class MachineTranslation
+    # Texterify::MachineTranslation::OrganizationMachineTranslationUsageExceededException
+    class OrganizationMachineTranslationUsageExceededException < StandardError
+      attr_reader :details
+
+      def initialize(details)
+        @details = details
+        super()
+      end
+    end
+
     # Returns nil if the translation couldn't be translated.
     # Otherwise returns the translated content.
     # @throws OrganizationMachineTranslationUsageExceededException
