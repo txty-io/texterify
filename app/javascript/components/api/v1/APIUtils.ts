@@ -68,7 +68,7 @@ const APIUtils = {
         }
     },
 
-    getIncludedObject(object: { id: string; type: string }, included: any) {
+    getIncludedObject(object: { id: string; type: string } | null, included: any) {
         if (!object) {
             return null;
         }

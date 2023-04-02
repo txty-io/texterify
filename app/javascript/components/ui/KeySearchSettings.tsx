@@ -65,7 +65,7 @@ export interface ISearchSettingsQueryParams {
 
 export function KeySearchSettings(props: {
     languagesResponse: IGetLanguagesResponse;
-    flavorsResponse: IGetFlavorsResponse;
+    flavorsResponse?: IGetFlavorsResponse;
     onChange(options: ISearchSettings): void;
 }) {
     const currentQueryParams = useQuery();

@@ -11,7 +11,7 @@ const TagStyle = { marginRight: 8, marginBottom: 4 };
 export function KeySearchSettingsActiveFilters(props: {
     style?: React.CSSProperties;
     languagesResponse: any;
-    flavorsResponse: IGetFlavorsResponse;
+    flavorsResponse?: IGetFlavorsResponse;
 }) {
     const currentQueryParams = useQuery();
 
@@ -64,7 +64,7 @@ export function KeySearchSettingsActiveFilters(props: {
                     <Tag color="green" style={TagStyle}>
                         {props.languagesResponse?.data
                             ?.filter((language) => {
-                                return currentQueryParams.l.includes(language.id);
+                                return currentQueryParams.l?.includes(language.id);
                             })
                             .map((language, index) => {
                                 const countryCode = APIUtils.getIncludedObject(
@@ -92,7 +92,7 @@ export function KeySearchSettingsActiveFilters(props: {
                     <Tag color="cyan" style={TagStyle}>
                         {props.flavorsResponse?.data
                             ?.filter((flavor) => {
-                                return currentQueryParams.ec.includes(flavor.id);
+                                return currentQueryParams.ec?.includes(flavor.id);
                             })
                             .map((flavor) => {
                                 return flavor.attributes.name;

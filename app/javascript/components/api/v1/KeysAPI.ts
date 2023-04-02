@@ -78,7 +78,7 @@ const KeysAPI = {
 
     getKeys: async (
         projectId: string,
-        options: IGetKeysOptions,
+        options?: IGetKeysOptions,
         fetchOptions?: IFetchOptions
     ): Promise<IGetKeysResponse> => {
         return API.getRequest(
@@ -133,7 +133,7 @@ const KeysAPI = {
         projectId: string;
         keyId: string;
         name: string;
-        description: string;
+        description: string | null;
         htmlEnabled: boolean;
         pluralizationEnabled: boolean;
     }) => {
