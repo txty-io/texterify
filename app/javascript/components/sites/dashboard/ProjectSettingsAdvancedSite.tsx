@@ -69,51 +69,51 @@ class ProjectSettingsAdvancedSite extends React.Component<IProps, IState> {
                                 message="Remove project"
                                 description={
                                     <>
-                                        <p>
-                                            Removing the project will delete the project and all ressources related to
-                                            the project.
-                                        </p>
-                                        <p>
-                                            <b>This cannot be undone.</b>
-                                        </p>
+                                        Removing the project will delete the project and all ressources related to the
+                                        project.
+                                        <br />
+                                        <br />
+                                        <b>This cannot be undone.</b>
+                                        <div style={{ marginTop: 16, marginBottom: 4 }}>
+                                            <Button
+                                                danger
+                                                onClick={this.onDeleteProjectClick}
+                                                disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}
+                                                data-id="project-advanced-settings-delete"
+                                                type="primary"
+                                            >
+                                                Remove project
+                                            </Button>
+                                        </div>
                                     </>
                                 }
-                                type="warning"
+                                type="error"
                                 showIcon
                             />
-                            <Button
-                                danger
-                                onClick={this.onDeleteProjectClick}
-                                style={{ alignSelf: "flex-end", marginTop: 16 }}
-                                disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}
-                                data-id="project-advanced-settings-delete"
-                            >
-                                Remove project
-                            </Button>
 
                             <Alert
                                 message="Transfer project"
                                 description={
                                     <>
-                                        <p>
-                                            Transfering this project to an organization will make it available to the
-                                            users of the organization.
-                                        </p>
+                                        Transfering this project to an organization will make it available to the users
+                                        of the organization.
+                                        <div style={{ marginTop: 16, marginBottom: 4 }}>
+                                            <Button
+                                                danger
+                                                onClick={this.onTransferProjectClick}
+                                                disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}
+                                                data-id="project-advanced-settings-transfer"
+                                                type="primary"
+                                            >
+                                                Transfer project
+                                            </Button>
+                                        </div>
                                     </>
                                 }
-                                type="warning"
+                                type="error"
                                 showIcon
                                 style={{ marginTop: 40 }}
                             />
-                            <Button
-                                danger
-                                onClick={this.onTransferProjectClick}
-                                style={{ alignSelf: "flex-end", marginTop: 16 }}
-                                disabled={!PermissionUtils.isOwner(dashboardStore.getCurrentRole())}
-                                data-id="project-advanced-settings-transfer"
-                            >
-                                Transfer project
-                            </Button>
                         </SettingsSectionWrapper>
                     </LayoutWithSubSidebarInnerContent>
                 </LayoutWithSubSidebarInner>

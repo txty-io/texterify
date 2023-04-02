@@ -275,35 +275,37 @@ class ProjectSite extends React.Component<IProps, IState> {
                             {dashboardStore.currentProject?.attributes.character_count === 0 && (
                                 <Alert
                                     showIcon
-                                    message="Congratulations to your new project 🎉"
+                                    icon="👋"
+                                    message="Welcome to your new project"
                                     description={
                                         <>
-                                            To start translating you first need to import your translation files. You
-                                            can do so by clicking{" "}
+                                            To start translating{" "}
                                             <Link
                                                 to={Routes.DASHBOARD.PROJECT_IMPORTS_RESOLVER({
                                                     projectId: dashboardStore.currentProject?.id
                                                 })}
                                             >
-                                                here
-                                            </Link>{" "}
-                                            or if you are starting from scratch you can also create new translations
-                                            manually{" "}
+                                                import your translation files
+                                            </Link>
+                                            . If you don't have any translation files to upload you can also{" "}
                                             <Link
                                                 to={Routes.DASHBOARD.PROJECT_KEYS_RESOLVER({
                                                     projectId: dashboardStore.currentProject?.id
                                                 })}
                                             >
-                                                here
+                                                manually create new translations
                                             </Link>
                                             .
                                             <br />
                                             <br />
-                                            Make sure to also check out our{" "}
+                                            Learn more in our{" "}
                                             <a href={Routes.OTHER.DOCUMENTATION} target="_blank">
                                                 documentation
                                             </a>
                                             .
+                                            <br />
+                                            <br />
+                                            <b>Happy translating!</b>
                                         </>
                                     }
                                     type="info"
