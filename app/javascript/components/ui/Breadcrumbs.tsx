@@ -1,4 +1,4 @@
-import { DeploymentUnitOutlined, ProjectOutlined, RightOutlined } from "@ant-design/icons";
+import { BuildingStorefrontIcon, ChevronRightIcon, FolderIcon } from "@heroicons/react/24/solid";
 import { Breadcrumb } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -30,7 +30,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                 parent: "dashboard",
                 name: (
                     <>
-                        <ProjectOutlined style={{ marginRight: 8 }} />
+                        <FolderIcon style={{ marginRight: 8 }} />
                         Projects
                     </>
                 ),
@@ -46,7 +46,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
                 parent: "dashboard",
                 name: (
                     <>
-                        <DeploymentUnitOutlined style={{ marginRight: 8 }} /> Organizations
+                        <BuildingStorefrontIcon width={12} style={{ marginRight: 8 }} /> Organizations
                     </>
                 ),
                 path: Routes.DASHBOARD.ORGANIZATIONS
@@ -328,7 +328,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
         return (
             <Breadcrumb
                 style={{ margin: "32px 16px 0", display: "flex", alignItems: "center", flexShrink: 0 }}
-                separator={<RightOutlined />}
+                separator={<ChevronRightIcon width={12} />}
             >
                 {items}
             </Breadcrumb>

@@ -173,6 +173,9 @@ const Routes = {
         ORGANIZATION_MEMBERS: "/dashboard/organizations/:organizationId/members",
         ORGANIZATION_SETTINGS: "/dashboard/organizations/:organizationId/settings",
         ORGANIZATION_SUBSCRIPTION: "/dashboard/organizations/:organizationId/subscription",
+        ORGANIZATION_SUBSCRIPTION_RESOLVER: (options: { organizationId: string }) => {
+            return Routes.DASHBOARD.ORGANIZATION_SUBSCRIPTION.replace(":organizationId", options.organizationId);
+        },
         ORGANIZATION_MACHINE_TRANSLATION: "/dashboard/organizations/:organizationId/machine-translation",
         ORGANIZATION_VALIDATIONS: "/dashboard/organizations/:organizationId/validations",
         ORGANIZATION_VALIDATIONS_RESOLVER: (options: { organizationId: string }) => {

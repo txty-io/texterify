@@ -1,4 +1,10 @@
-import { DeploymentUnitOutlined, HddFilled, LineChartOutlined, ProjectOutlined, SyncOutlined } from "@ant-design/icons";
+import {
+    ArrowPathIcon,
+    Bars4Icon,
+    BuildingStorefrontIcon,
+    FolderIcon,
+    ServerStackIcon
+} from "@heroicons/react/24/solid";
 import * as antd from "antd";
 import WhiteLogoWithText from "images/logo_white_text.svg";
 import { observer } from "mobx-react";
@@ -30,7 +36,6 @@ import { DarkModeToggle } from "../ui/DarkModeToggle";
 import { getKeystrokePreview } from "../ui/KeystrokePreview";
 import { LicenseExpiring } from "../ui/LicenseExpiring";
 import { LicenseFreeTrial } from "../ui/LicenseFreeVersion";
-import { NotificationsManager } from "../ui/NotificationsManager";
 import { SearchOverlay } from "../ui/SearchOverlay";
 import { UserProfileHeader } from "../ui/UserProfileHeader";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
@@ -106,7 +111,7 @@ const MenuLinkTextWrapper = styled.span`
 
     @media (min-width: 1040px) {
         display: inline;
-        margin-left: 8px;
+        margin-left: 12px;
     }
 `;
 
@@ -118,12 +123,12 @@ const SearchInputWrapper = styled.div`
     margin-right: 40px;
 
     input::placeholder {
-        color: #999 !important;
+        color: #7b8ca0 !important;
     }
 
     &:hover {
         input::placeholder {
-            color: #ccc !important;
+            color: #fff !important;
         }
     }
 `;
@@ -354,9 +359,15 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 >
                                     <Link
                                         to={Routes.DASHBOARD.PROJECTS}
-                                        style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                        style={{
+                                            textOverflow: "inherit",
+                                            overflow: "hidden",
+                                            maxWidth: "100%",
+                                            display: "flex",
+                                            alignItems: "center"
+                                        }}
                                     >
-                                        <ProjectOutlined />
+                                        <FolderIcon width={16} />
                                         <MenuLinkTextWrapper>Projects</MenuLinkTextWrapper>
                                     </Link>
                                 </MenuLinkWrapper>
@@ -368,9 +379,15 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 >
                                     <Link
                                         to={Routes.DASHBOARD.ORGANIZATIONS}
-                                        style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                        style={{
+                                            textOverflow: "inherit",
+                                            overflow: "hidden",
+                                            maxWidth: "100%",
+                                            display: "flex",
+                                            alignItems: "center"
+                                        }}
                                     >
-                                        <DeploymentUnitOutlined />
+                                        <BuildingStorefrontIcon width={16} />
                                         <MenuLinkTextWrapper>Organizations</MenuLinkTextWrapper>
                                     </Link>
                                 </MenuLinkWrapper>
@@ -382,9 +399,15 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 >
                                     <Link
                                         to={Routes.DASHBOARD.ACTIVITY}
-                                        style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
+                                        style={{
+                                            textOverflow: "inherit",
+                                            overflow: "hidden",
+                                            maxWidth: "100%",
+                                            display: "flex",
+                                            alignItems: "center"
+                                        }}
                                     >
-                                        <LineChartOutlined />
+                                        <Bars4Icon width={16} />
                                         <MenuLinkTextWrapper>Activity</MenuLinkTextWrapper>
                                     </Link>
                                 </MenuLinkWrapper>
@@ -405,37 +428,6 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                 style={{ border: 0, boxShadow: "none", color: "transparent" }}
                             />
                         </SearchInputWrapper>
-
-                        {authStore.currentUser?.is_superadmin && (
-                            <ul
-                                className="dashboard-main-menu"
-                                style={{
-                                    overflow: "hidden",
-                                    marginBottom: 0,
-                                    marginLeft: 0,
-                                    marginRight: 24,
-                                    display: "flex",
-                                    alignItems: "center"
-                                }}
-                            >
-                                <MenuList>
-                                    <MenuLinkWrapper
-                                        isActive={this.props.history.location.pathname.startsWith(
-                                            Routes.DASHBOARD.INSTANCE.ROOT
-                                        )}
-                                        data-id="main-menu-instance-settings"
-                                    >
-                                        <Link
-                                            to={Routes.DASHBOARD.INSTANCE.ROOT}
-                                            style={{ textOverflow: "inherit", overflow: "hidden", maxWidth: "100%" }}
-                                        >
-                                            <HddFilled />
-                                            <MenuLinkTextWrapper>Admin</MenuLinkTextWrapper>
-                                        </Link>
-                                    </MenuLinkWrapper>
-                                </MenuList>
-                            </ul>
-                        )}
 
                         {/* <NotificationsManager style={{ marginRight: 40 }} /> */}
 
@@ -468,7 +460,8 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                             marginRight: 40
                                         }}
                                     >
-                                        <SyncOutlined
+                                        <ArrowPathIcon
+                                            width={16}
                                             style={{
                                                 animation:
                                                     dashboardStore.activeBackgroundJobsResponse?.meta?.total > 0
@@ -508,6 +501,43 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                     </div>
                                 </antd.Popover>
                             </div>
+                        )}
+
+                        {authStore.currentUser?.is_superadmin && (
+                            <ul
+                                className="dashboard-main-menu"
+                                style={{
+                                    overflow: "hidden",
+                                    marginBottom: 0,
+                                    marginLeft: 0,
+                                    marginRight: 24,
+                                    display: "flex",
+                                    alignItems: "center"
+                                }}
+                            >
+                                <MenuList>
+                                    <MenuLinkWrapper
+                                        isActive={this.props.history.location.pathname.startsWith(
+                                            Routes.DASHBOARD.INSTANCE.ROOT
+                                        )}
+                                        data-id="main-menu-instance-settings"
+                                    >
+                                        <Link
+                                            to={Routes.DASHBOARD.INSTANCE.ROOT}
+                                            style={{
+                                                textOverflow: "inherit",
+                                                overflow: "hidden",
+                                                maxWidth: "100%",
+                                                display: "flex",
+                                                alignItems: "center"
+                                            }}
+                                        >
+                                            <ServerStackIcon width={16} style={{ marginRight: 8 }} />
+                                            <MenuLinkTextWrapper>Admin</MenuLinkTextWrapper>
+                                        </Link>
+                                    </MenuLinkWrapper>
+                                </MenuList>
+                            </ul>
                         )}
 
                         {/* <MessageOutlined style={{ marginRight: 40 }} /> */}

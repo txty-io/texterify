@@ -66,14 +66,10 @@ class ProjectSettingsAdvancedSite extends React.Component<IProps, IState> {
 
                         <SettingsSectionWrapper>
                             <Alert
-                                message="Remove project"
+                                message="Delete project"
                                 description={
                                     <>
-                                        Removing the project will delete the project and all ressources related to the
-                                        project.
-                                        <br />
-                                        <br />
-                                        <b>This cannot be undone.</b>
+                                        Deleting a project will delete all data related to the project.
                                         <div style={{ marginTop: 16, marginBottom: 4 }}>
                                             <Button
                                                 danger
@@ -82,7 +78,7 @@ class ProjectSettingsAdvancedSite extends React.Component<IProps, IState> {
                                                 data-id="project-advanced-settings-delete"
                                                 type="primary"
                                             >
-                                                Remove project
+                                                Delete project
                                             </Button>
                                         </div>
                                     </>

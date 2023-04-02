@@ -1,8 +1,8 @@
-import { BulbFilled, BulbOutlined, AlertFilled, AlertOutlined, FireFilled, FireOutlined } from "@ant-design/icons";
-import { Tooltip } from "antd";
+import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
+import { Switch, Tooltip } from "antd";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { generalStore } from "../stores/GeneralStore";
-import { observer } from "mobx-react";
 
 function toggleLightDarkTheme() {
     if (generalStore.theme === "light") {
@@ -14,23 +14,18 @@ function toggleLightDarkTheme() {
 
 export const DarkModeToggle = observer(
     (props: { text?: string; disableTooltip?: boolean; style?: React.CSSProperties }) => {
-        let Element = FireFilled;
-
-        if (generalStore.theme === "dark") {
-            Element = FireOutlined;
-        }
-
         const toggle = (
             <div
                 style={{ height: 40, display: "flex", alignItems: "center", cursor: "pointer", ...props.style }}
                 onClick={toggleLightDarkTheme}
             >
                 {props.text && <span style={{ marginRight: 16 }}>{props.text}</span>}
-                <Element
-                    style={{
-                        fontSize: 16,
-                        color: generalStore.theme === "light" ? "#fff" : undefined
-                    }}
+
+                <Switch
+                    checked={generalStore.theme === "light"}
+                    checkedChildren={<SunIcon />}
+                    unCheckedChildren={<MoonIcon />}
+                    style={{ background: generalStore.theme === "light" ? "#3368ff" : "#122450" }}
                 />
             </div>
         );

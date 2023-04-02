@@ -45,6 +45,8 @@ module.exports = function (api) {
       require('@babel/plugin-transform-destructuring').default,
       ["@babel/plugin-proposal-decorators", { "legacy": true }],
       ["@babel/plugin-proposal-class-properties", { "loose": true }],
+      ["@babel/plugin-proposal-private-methods", { "loose": true }],
+      ["@babel/plugin-proposal-private-property-in-object", { "loose": true }],
       [
         require('@babel/plugin-proposal-object-rest-spread').default,
         {

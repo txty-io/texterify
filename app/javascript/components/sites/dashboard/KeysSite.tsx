@@ -12,6 +12,7 @@ import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
 import { ITranslation, TranslationsAPI } from "../../api/v1/TranslationsAPI";
 import { EditTranslationFormModal } from "../../forms/EditTranslationFormModal";
 import { NewKeyForm } from "../../forms/NewKeyForm";
+import { useOrganization } from "../../network/useOrganization";
 import { history } from "../../routing/history";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
@@ -29,6 +30,7 @@ import { KeystrokeButtonWrapper } from "../../ui/KeystrokeButtonWrapper";
 import { KEYSTROKE_DEFINITIONS } from "../../ui/KeystrokeDefinitions";
 import { KeystrokeHandler } from "../../ui/KeystrokeHandler";
 import { KeyTags } from "../../ui/KeyTags";
+import { KeysLimitAlert } from "../../ui/payment/KeysLimitAlert";
 import { TagsFilter } from "../../ui/TagsFilter";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { TranslationUtils } from "../../utilities/TranslationUtils";
@@ -40,8 +42,8 @@ interface IState {
     selectedRowKeys: any[];
     isDeleting: boolean;
     languagesResponse: any;
-    keysResponse: IGetKeysResponse;
-    flavorsResponse: IGetFlavorsResponse;
+    keysResponse?: IGetKeysResponse;
+    flavorsResponse?: IGetFlavorsResponse;
     addDialogVisible: boolean;
     page: number;
     search: string | undefined;
@@ -54,26 +56,26 @@ interface IState {
     editTranslationKeyId: string;
     editTranslationKeyReponse: any;
     editTranslationLanguageId: string;
-    editTranslationFlavorId: string;
+    editTranslationFlavorId?: string;
     editTranslationContentChanged: boolean;
     keyToShowHistory: any;
-    keyMenuVisible: string;
+    keyMenuVisible?: string;
     searchSettings: ISearchSettings;
     pluralizationEnabledUpdating: boolean;
     htmlEnabledUpdating: boolean;
-    addTagToKeyModalKey: IKey;
+    addTagToKeyModalKey?: IKey;
     tagIds: string[];
 }
 
 export interface IKeysTableExpandedRecord {
-    keysResponse: IGetKeysResponse;
+    keysResponse?: IGetKeysResponse;
     keyObject: IKey;
     keyId: string;
     key: string; // react key and not a translation key
     translations: { [key: string]: ITranslation };
     languages: ILanguage[];
-    flavorId: string | null;
-    flavorName: string | null;
+    flavorId?: string;
+    flavorName: string;
 }
 
 export type IKeysTableRecord = IKeysTableExpandedRecord & {
@@ -84,6 +86,14 @@ export type IKeysTableRecord = IKeysTableExpandedRecord & {
     flavorOverwrites?: JSX.Element[];
     more?: JSX.Element;
 };
+
+interface IColumn {
+    title: React.ReactNode | string;
+    dataIndex: string;
+    key: string;
+    width?: number;
+    editable?: boolean;
+}
 
 class KeysSite extends React.Component<IProps, IState> {
     debouncedSearchReloader = _.debounce(
@@ -135,8 +145,8 @@ class KeysSite extends React.Component<IProps, IState> {
             selectedRowKeys: [],
             isDeleting: false,
             languagesResponse: null,
-            keysResponse: null,
-            flavorsResponse: null,
+            keysResponse: undefined,
+            flavorsResponse: undefined,
             addDialogVisible: false,
             page: 1,
             search: currentQueryParams.q as string,
@@ -149,14 +159,14 @@ class KeysSite extends React.Component<IProps, IState> {
             editTranslationKeyId: "",
             editTranslationKeyReponse: null,
             editTranslationLanguageId: "",
-            editTranslationFlavorId: null,
+            editTranslationFlavorId: undefined,
             editTranslationContentChanged: false,
             keyToShowHistory: null,
-            keyMenuVisible: null,
+            keyMenuVisible: undefined,
             searchSettings: parseKeySearchSettingsFromURL(),
             pluralizationEnabledUpdating: false,
             htmlEnabledUpdating: false,
-            addTagToKeyModalKey: null,
+            addTagToKeyModalKey: undefined,
             tagIds: []
         };
     }
@@ -265,14 +275,14 @@ class KeysSite extends React.Component<IProps, IState> {
         }
     };
 
-    getColumns = () => {
+    getColumns = (): IColumn[] => {
         const filteredLanguages = (this.state.languages || []).filter((language) => {
             return _.find(this.state.projectColumns.included, (o) => {
                 return o.attributes.id === language.attributes.id;
             });
         });
 
-        const columns = [];
+        const columns: IColumn[] = [];
 
         if (this.state.projectColumns) {
             if (this.isTagsColumnVisible()) {
@@ -755,14 +765,14 @@ class KeysSite extends React.Component<IProps, IState> {
             const currentKey = this.state.keys.find((k) => {
                 return key.id === k.id;
             });
-            currentKey.relationships.translations.data.forEach((translationReference) => {
+            currentKey?.relationships.translations.data.forEach((translationReference) => {
                 const translation: ITranslation = APIUtils.getIncludedObject(
                     translationReference,
-                    this.state.keysResponse.included
+                    this.state.keysResponse?.included
                 );
                 const language = APIUtils.getIncludedObject(
-                    translation.relationships.language.data,
-                    this.state.keysResponse.included
+                    translation.relationships.language?.data,
+                    this.state.keysResponse?.included
                 );
                 if (
                     TranslationUtils.hasContent(translation, language, currentKey.attributes.pluralization_enabled) &&
@@ -772,7 +782,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 ) {
                     const flavorIncluded: IFlavor = APIUtils.getIncludedObject(
                         translation.relationships.flavor.data,
-                        this.state.flavorsResponse.data
+                        this.state.flavorsResponse?.data
                     );
 
                     if (
@@ -830,7 +840,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 <KeystrokeHandler
                     keys={KEYSTROKE_DEFINITIONS.KEYS_SITE_SEARCH}
                     onActivated={() => {
-                        this.searchInput.current.focus();
+                        this.searchInput.current?.focus();
                     }}
                 />
 
@@ -838,6 +848,13 @@ class KeysSite extends React.Component<IProps, IState> {
                     <Breadcrumbs breadcrumbName="keys" />
                     <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                         <h1>Keys</h1>
+
+                        <KeysLimitAlert
+                            project={dashboardStore.currentProject}
+                            refetchTrigger={this.state.keysResponse?.meta.total || 0}
+                            style={{ marginBottom: 16 }}
+                        />
+
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <div>
                                 <Button
@@ -995,21 +1012,21 @@ class KeysSite extends React.Component<IProps, IState> {
                                     : (record: IKeysTableRecord) => {
                                           const dataSource: IKeysTableExpandedRecord[] = [];
 
-                                          this.state.flavorsResponse.data.forEach((flavor) => {
+                                          this.state.flavorsResponse?.data.forEach((flavor) => {
                                               const translations = {};
                                               const currentKey = this.state.keys.find((key) => {
                                                   return record.keyObject.id === key.id;
                                               });
-                                              currentKey.relationships.translations.data.forEach(
+                                              currentKey?.relationships.translations.data.forEach(
                                                   (translationReference) => {
                                                       const translation: ITranslation = APIUtils.getIncludedObject(
                                                           translationReference,
-                                                          this.state.keysResponse.included
+                                                          this.state.keysResponse?.included
                                                       );
 
                                                       const flavorId =
-                                                          translation.relationships.flavor.data?.id || null;
-                                                      const languageId = translation.relationships.language.data.id;
+                                                          translation.relationships.flavor?.data?.id || null;
+                                                      const languageId = translation.relationships.language?.data.id;
 
                                                       translations[languageId] = translations[languageId] || {};
 
@@ -1031,7 +1048,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                               });
                                           });
 
-                                          const columns = [
+                                          const columns: IColumn[] = [
                                               {
                                                   title: "Flavor",
                                                   dataIndex: "flavorName",
@@ -1045,7 +1062,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                                       );
                                                   })
                                               )
-                                              .map((column) => {
+                                              .map((column): IColumn => {
                                                   if (column.key.startsWith("language-")) {
                                                       return {
                                                           ...column,
@@ -1055,14 +1072,14 @@ class KeysSite extends React.Component<IProps, IState> {
                                                                       "language-".length
                                                                   )}"]`
                                                               )
-                                                              ?.parentElement.getBoundingClientRect().width
+                                                              ?.parentElement?.getBoundingClientRect().width
                                                       };
                                                   } else if (column.key === "more") {
                                                       return {
                                                           ...column,
                                                           width: document
                                                               .querySelector("[data-more-column]")
-                                                              ?.parentElement.getBoundingClientRect().width
+                                                              ?.parentElement?.getBoundingClientRect().width
                                                       };
                                                   } else {
                                                       return column;

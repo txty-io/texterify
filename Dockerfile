@@ -31,7 +31,7 @@ RUN apt-get update \
 # Install nvm.
 ENV NVM_DIR /usr/local/nvm
 RUN mkdir -p $NVM_DIR
-ENV NODE_VERSION 14.13.1
+ENV NODE_VERSION 18.15.0
 ENV NODE_ENV=$NODE_ENV_ARG
 ENV NODE_OPTIONS="--max_old_space_size=8192"
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
@@ -47,10 +47,7 @@ ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
 # Install yarn.
-RUN apt-get install apt-transport-https
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install yarn -y
+RUN npm install --global yarn@1.22.19
 
 # Copy project files.
 COPY . .

@@ -96,7 +96,7 @@
 
   // breadcrumbs
   --breadcrumbs-color: rgba(0, 0, 0, 0.45);
-  --breadcrumbs-last-color: rgba(0, 0, 0, 0.65);
+  --breadcrumbs-last-color: rgba(0, 0, 0, 1);
 
   // links
 
@@ -125,7 +125,7 @@
 .dark-theme {
   --full-color: #fff;
   --background-color: var(--dark-color);
-  --border-color: rgb(27, 31, 33);
+  --border-color: #ffffff1a;
   --border-color-flashier: #4e4e4e;
   --highlight-color: rgba(255, 255, 255, 0.85);
   --highlight-color-decent: #ffffff0f;
@@ -163,7 +163,7 @@
   // alert error
   --alert-error-background-color: #5107115c;
   --alert-error-border-color: #8b2027;
-  --alert-error-color: #f2373a;
+  --alert-error-color: #ff1e22;
 
   // header
   // same as for light mode
@@ -196,13 +196,13 @@
   --main-sidebar-active-background-color: var(--background-color);
   --main-sidebar-active-color: #fff;
   --main-sidebar-hover-color: #fff;
-  --main-sidebar-color: #8b8b8b;
+  --main-sidebar-color: #7b8ca0;
   --main-sidebar-indicator-color: #fff;
 
   // sub sidebar
   --sidebar-header-color: #fff;
   --sidebar-indicator-color: #fff;
-  --sidebar-item-active-color: #5696ff;
+  --sidebar-item-active-color: #fff;
   --sidebar-item-active-color-hover: #5696ff;
   --sidebar-item-active-background-color: #5696ff12;
   --sidebar-item-color: #737373;
@@ -214,8 +214,8 @@
   --progressbar-success-background-color: #3ffe75;
 
   // breadcrumbs
-  --breadcrumbs-color: rgba(255, 255, 255, 0.35);
-  --breadcrumbs-last-color: rgba(255, 255, 255, 0.65);
+  --breadcrumbs-color: #7b8ca0;
+  --breadcrumbs-last-color: rgba(255, 255, 255, 1);
 
   // links
   --a-link: #5696ff;
