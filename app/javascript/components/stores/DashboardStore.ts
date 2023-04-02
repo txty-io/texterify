@@ -6,7 +6,6 @@ import { BackgroundJobsAPI, IGetBackgroundJobsResponse } from "../api/v1/Backgro
 import { IProject, ProjectsAPI } from "../api/v1/ProjectsAPI";
 import { ValidationViolationsAPI } from "../api/v1/ValidationViolationsAPI";
 import { IFeature } from "../types/IFeature";
-import { IPlanIDS } from "../types/IPlan";
 import { IUserRole } from "../types/IUserRole";
 import { DEFAULT_PAGE_SIZE } from "../ui/Config";
 
@@ -32,6 +31,8 @@ interface IOrganizationAttributes {
     current_user_deactivated?: boolean;
     current_user_deactivated_reason?: "manually_by_admin" | "user_limit_exceeded";
     max_users_reached: boolean;
+    keys_count: number;
+    keys_limit: number;
 }
 
 class DashboardStore {

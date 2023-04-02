@@ -6,6 +6,8 @@ class OrganizationSerializer
              :trial_active,
              :machine_translation_character_usage,
              :machine_translation_character_limit,
+             :keys_count,
+             :keys_limit,
              :deepl_api_token_type
   has_many :projects
 
