@@ -12,7 +12,6 @@ import { ProjectColumnsAPI } from "../../api/v1/ProjectColumnsAPI";
 import { ITranslation, TranslationsAPI } from "../../api/v1/TranslationsAPI";
 import { EditTranslationFormModal } from "../../forms/EditTranslationFormModal";
 import { NewKeyForm } from "../../forms/NewKeyForm";
-import { useOrganization } from "../../network/useOrganization";
 import { history } from "../../routing/history";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
@@ -82,6 +81,7 @@ export type IKeysTableRecord = IKeysTableExpandedRecord & {
     name?: string;
     description?: string;
     nameEditable?: boolean;
+    organizationId?: string;
     tags?: JSX.Element;
     flavorOverwrites?: JSX.Element[];
     more?: JSX.Element;
@@ -436,6 +436,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 description: key.attributes.description,
                 translations: translations,
                 nameEditable: key.attributes.name_editable,
+                organizationId: dashboardStore.getProjectOrganization()?.id,
                 languages: this.state.languages,
                 more: (
                     <Popover
@@ -591,6 +592,7 @@ class KeysSite extends React.Component<IProps, IState> {
             searchSettings: this.state.searchSettings
         };
         await this.fetchKeys(fetchOptions);
+        await dashboardStore.loadProject(this.props.match.params.projectId);
 
         void dashboardStore.reloadCurrentProjectIssuesCount();
     };
@@ -863,7 +865,10 @@ class KeysSite extends React.Component<IProps, IState> {
                                     onClick={() => {
                                         this.setState({ addDialogVisible: true });
                                     }}
-                                    disabled={!PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole())}
+                                    disabled={
+                                        !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole()) ||
+                                        dashboardStore.getProjectOrganization()?.attributes.key_limit_reached
+                                    }
                                 >
                                     Create key <KeystrokeButtonWrapper keys={KEYSTROKE_DEFINITIONS.KEYS_SITE_NEW_KEY} />
                                 </Button>
@@ -985,6 +990,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                 this.state.projectColumnsLoading ||
                                 dashboardStore.currentProject.attributes.current_user_deactivated
                             }
+                            disabled={dashboardStore.getProjectOrganization()?.attributes.key_limit_reached}
                             projectId={this.props.match.params.projectId}
                             onCellEdit={async (options: { languageId: string; keyId: string }) => {
                                 const keyResponse = await KeysAPI.getKey(

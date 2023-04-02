@@ -33,6 +33,7 @@ interface IOrganizationAttributes {
     max_users_reached: boolean;
     keys_count: number;
     keys_limit: number;
+    key_limit_reached: boolean;
 }
 
 class DashboardStore {
@@ -46,7 +47,7 @@ class DashboardStore {
     @observable activeBackgroundJobsResponse: IGetBackgroundJobsResponse = null;
     @observable activeBackgroundJobsResponseProjectId: string = null;
 
-    loadProject = async (projectId) => {
+    loadProject = async (projectId: string) => {
         const getProjectResponse = await ProjectsAPI.getProject(projectId);
         if (!getProjectResponse.errors) {
             this.currentProject = getProjectResponse.data;
@@ -79,7 +80,7 @@ class DashboardStore {
         }
     };
 
-    getProjectOrganization = () => {
+    getProjectOrganization = (): IOrganization | undefined => {
         return (
             this.currentProject &&
             APIUtils.getIncludedObject(this.currentProject.relationships.organization.data, this.currentProjectIncluded)

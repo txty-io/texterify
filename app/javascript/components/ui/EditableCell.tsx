@@ -1,6 +1,7 @@
 import { Form, Input } from "antd";
 import FormItem from "antd/lib/form/FormItem";
 import * as React from "react";
+import { useOrganization } from "../network/useOrganization";
 import { IKeysTableRecord } from "../sites/dashboard/KeysSite";
 import { dashboardStore } from "../stores/DashboardStore";
 import { PermissionUtils } from "../utilities/PermissionUtils";
@@ -34,7 +35,7 @@ interface IEditableCellProps {
     children: React.ReactNode;
     dataIndex: string;
     languageId: string;
-    record: IKeysTableRecord;
+    record?: IKeysTableRecord;
 
     // antd injected properties
     className?: string;
@@ -50,6 +51,10 @@ export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellP
     const inputRef = React.useRef<any>();
     const form = React.useContext(EditableContext);
 
+    const { data: organizationResponse } = useOrganization({
+        organizationId: props.record?.organizationId
+    });
+
     if (!props.record) {
         return (
             <td className={props.className} colSpan={props.colSpan} rowSpan={props.rowSpan}>
@@ -64,7 +69,11 @@ export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellP
     const isNameColumnAndNotEditable = props.dataIndex === "name" && !props.record.nameEditable;
     const isEditableForCurrentUser = props.record.keyObject.attributes.editable_for_current_user;
 
-    const isCellEditable = isAllowedToChangeColumn && !isNameColumnAndNotEditable && isEditableForCurrentUser;
+    const isCellEditable =
+        isAllowedToChangeColumn &&
+        !isNameColumnAndNotEditable &&
+        isEditableForCurrentUser &&
+        !organizationResponse?.data.attributes.key_limit_reached;
 
     React.useEffect(() => {
         if (editing && inputRef && inputRef.current) {

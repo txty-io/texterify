@@ -54,4 +54,8 @@ class OrganizationSerializer
     organization_user = OrganizationUser.find_by(organization_id: object.id, user_id: params[:current_user].id)
     organization_user&.deactivated_reason
   end
+
+  attribute :key_limit_reached do |object|
+    object.keys_count > object.keys_limit
+  end
 end

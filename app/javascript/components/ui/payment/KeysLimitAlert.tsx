@@ -14,10 +14,7 @@ export function KeysLimitAlert(props: { style?: React.CSSProperties; project: IP
         organizationRefetch();
     }, [props.refetchTrigger]);
 
-    if (
-        !organizationData ||
-        organizationData.data.attributes.keys_count < organizationData.data.attributes.keys_limit
-    ) {
+    if (!organizationData || !organizationData.data.attributes.key_limit_reached) {
         return null;
     }
 
