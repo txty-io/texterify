@@ -24,7 +24,11 @@ const PermissionUtils = {
     isManagerOrHigher: (role: string) => {
         return ROLES_MANAGER_UP.includes(role);
     },
-    isDeveloperOrHigher: (role: string) => {
+    isDeveloperOrHigher: (role?: string) => {
+        if (!role) {
+            return false;
+        }
+
         return ROLES_DEVELOPER_UP.includes(role);
     },
     isHigherRole: (roleA: string, roleB: string) => {

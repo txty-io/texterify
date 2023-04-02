@@ -5,6 +5,7 @@ import { APIUtils } from "../api/v1/APIUtils";
 import { IGetLanguagesOptions, IGetLanguagesResponse, ILanguage, LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { IProject } from "../api/v1/ProjectsAPI";
 import { AddEditLanguageFormModal } from "../forms/AddEditLanguageFormModal";
+import { useProject } from "../network/useProject";
 import { PermissionUtils } from "../utilities/PermissionUtils";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "./Config";
 import FlagIcon from "./FlagIcons";
@@ -14,10 +15,14 @@ export function LanguagesTable(props: { project: IProject; tableReloader?: numbe
     const [perPage, setPerPage] = React.useState<number>(DEFAULT_PAGE_SIZE);
     const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
     const [dialogVisible, setDialogVisible] = React.useState<boolean>(false);
-    const [languageToEdit, setLanguageToEdit] = React.useState<ILanguage>(null);
-    const [languagesResponse, setLanguagesResponse] = React.useState<IGetLanguagesResponse>(null);
+    const [languageToEdit, setLanguageToEdit] = React.useState<ILanguage | null>(null);
+    const [languagesResponse, setLanguagesResponse] = React.useState<IGetLanguagesResponse | null>(null);
     const [languagesLoading, setLanguagesLoading] = React.useState<boolean>(false);
     const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
+
+    const { data: projectResponse, refetch: projectResponseRefetch } = useProject({
+        projectId: props.project.id
+    });
 
     async function reload(options?: IGetLanguagesOptions) {
         setLanguagesLoading(true);
@@ -159,6 +164,8 @@ export function LanguagesTable(props: { project: IProject; tableReloader?: numbe
 
                 await reload();
 
+                await projectResponseRefetch();
+
                 setIsDeleting(false);
                 setSelectedRowKeys([]);
             },
@@ -204,7 +211,7 @@ export function LanguagesTable(props: { project: IProject; tableReloader?: numbe
                     current: page,
                     pageSize: perPage,
                     total: languagesResponse?.meta?.total || 0,
-                    onChange: async (newPage, newPerPage) => {
+                    onChange: async (newPage, newPerPage: number) => {
                         const isPageSizeChange = perPage !== newPerPage;
 
                         if (isPageSizeChange) {

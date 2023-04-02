@@ -1,9 +1,11 @@
 import { CloseCircleFilled } from "@ant-design/icons";
+import { ArrowTopRightOnSquareIcon, ArrowUpRightIcon } from "@heroicons/react/24/solid";
+import { Button } from "antd";
 import * as moment from "moment";
 import * as React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Constants } from "./Constants";
-import { TransparentButton } from "./TransparentButton";
 
 const CloseIcon = styled(CloseCircleFilled)`
     opacity: 0.5;
@@ -36,8 +38,8 @@ export function LicenseFreeTrial(props: { hasLicense: boolean; expiresAt: string
     return (
         <div
             style={{
-                padding: "12px 24px",
-                background: "var(--primary-btn-color)",
+                padding: "16px 24px",
+                background: "var(--free-version-banner-background)",
                 color: "#fff",
                 display: "flex",
                 alignItems: "center"
@@ -48,16 +50,14 @@ export function LicenseFreeTrial(props: { hasLicense: boolean; expiresAt: string
             ) : (
                 <>You are currently using the free version of Texterify.</>
             )}{" "}
-            Upgrade to a paid plan to get access to the premium features.
-            <TransparentButton
-                type="primary"
-                onClick={() => {
-                    window.open(Constants.TEXTERIFY_NEW_LICENSE_SITE, "_blank", "noopener noreferrer");
-                }}
-                style={{ marginLeft: 24, marginRight: 40 }}
+            Upgrade to a paid plan to get access to premium features.
+            <a
+                href={Constants.TEXTERIFY_NEW_LICENSE_SITE}
+                target="_blank"
+                style={{ marginLeft: 24, marginRight: 40, display: "flex", alignItems: "center" }}
             >
-                Upgrade plan
-            </TransparentButton>
+                Upgrade plan <ArrowUpRightIcon width={16} style={{ marginLeft: 8 }} />
+            </a>
             <div style={{ marginLeft: "auto" }}>
                 <CloseIcon
                     style={{ cursor: "pointer" }}

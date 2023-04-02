@@ -220,6 +220,8 @@ class LanguagesSite extends React.Component<IProps, IState> {
 
                 await this.reloadTable();
 
+                await dashboardStore.loadProject(this.props.match.params.projectId);
+
                 this.setState({
                     isDeleting: false,
                     deleteDialogVisible: false,

@@ -89,10 +89,19 @@ class Project < ApplicationRecord
 
   delegate :feature_enabled?, to: :organization
 
+  # Returns the number of languages.
+  def language_count
+    self.languages.size
+  end
+
+  # Returns the max number of languages.
+  def language_limit
+    self.organization.current_plan&.languages_limit
+  end
+
   # Returns true if the languages limit has been reached.
-  def max_languages_reached?
-    organization_plan = self.organization.current_plan
-    organization_plan&.languages_limit.nil? ? false : self.languages.size >= organization_plan.languages_limit
+  def language_limit_reached
+    self.language_limit.nil? ? false : self.languages.size >= self.language_limit
   end
 
   # Creates the tag if it does not exist.

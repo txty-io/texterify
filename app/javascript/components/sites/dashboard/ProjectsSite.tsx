@@ -3,7 +3,7 @@ import LogoWhiteBackground from "images/logo_white_background.png";
 import * as _ from "lodash";
 import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import { OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
+import { IGetOrganizationsResponse, OrganizationsAPI } from "../../api/v1/OrganizationsAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { NewProjectFormModal } from "../../forms/NewProjectFormModal";
 import { history } from "../../routing/history";
@@ -19,7 +19,7 @@ interface IState {
     projectsResponse: any;
     projects: any[];
     organizationsLoading: boolean;
-    organizationsResponse: any;
+    organizationsResponse: IGetOrganizationsResponse | null;
     recentlyViewedProjectsLoading: boolean;
     recentlyViewedProjectsResponse: any;
     addDialogVisible: boolean;
@@ -121,7 +121,7 @@ class ProjectsSiteUnwrapped extends React.Component<IProps, IState> {
                         {this.state.projectsLoading ||
                         this.state.organizationsLoading ||
                         this.state.projects.length > 0 ||
-                        this.state.organizationsResponse?.data?.length > 0 ? (
+                        (this.state.organizationsResponse?.data?.length || []) > 0 ? (
                             <>
                                 <div style={{ flexGrow: 1, flexShrink: 0, flexBasis: 0, marginRight: 80 }}>
                                     <h1 style={{ flexGrow: 1 }}>Your projects</h1>

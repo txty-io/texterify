@@ -91,6 +91,28 @@ class Organization < ApplicationRecord
     end
   end
 
+  # Returns the number of projects.
+  def project_count
+    self.projects.size
+  end
+
+  # Returns the max number of projects or nil if there is no limit.
+  def project_limit
+    organization_plan = self.current_plan
+    organization_plan&.projects_limit
+  end
+
+  # Returns true if the max number of projects has been reached.
+  def project_limit_reached
+    self.project_limit.nil? ? false : self.projects.size >= self.project_limit
+  end
+
+  # Returns the max number of languages per project or nil if there is no limit.
+  def language_limit_per_project
+    organization_plan = self.current_plan
+    organization_plan&.languages_limit
+  end
+
   # Returns true if the organization has a custom DeepL account set.
   def uses_custom_deepl_account?
     self.deepl_api_token.present? && self.deepl_api_token_type.present?
@@ -168,11 +190,6 @@ class Organization < ApplicationRecord
   # Returns true if the users limit has been reached.
   def max_users_reached?
     self.users_limit.nil? ? false : self.active_users_count >= self.users_limit
-  end
-
-  # Returns true if the projects limit has been reached.
-  def max_projects_reached?
-    self.current_plan&.projects_limit.nil? ? false : self.projects.size >= self.current_plan.projects_limit
   end
 
   # Checks if the number of characters would exceed the machine translation limit of the organization.

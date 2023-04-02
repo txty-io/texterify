@@ -8,6 +8,10 @@ class OrganizationSerializer
              :machine_translation_character_limit,
              :keys_count,
              :keys_limit,
+             :project_count,
+             :project_limit,
+             :project_limit_reached,
+             :language_limit_per_project,
              :deepl_api_token_type
   has_many :projects
 

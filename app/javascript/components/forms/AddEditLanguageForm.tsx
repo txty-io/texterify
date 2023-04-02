@@ -8,6 +8,7 @@ import { LanguagesAPI } from "../api/v1/LanguagesAPI";
 import { dashboardStore } from "../stores/DashboardStore";
 import { ERRORS, ErrorUtils } from "../ui/ErrorUtils";
 import FlagIcon from "../ui/FlagIcons";
+import { LanguageLimitAlert } from "../ui/payment/LanguageLimitAlert";
 
 export interface IAddEditLanguageFormProps {
     languageToEdit?: any;
@@ -73,6 +74,8 @@ class AddEditLanguageForm extends React.Component<IAddEditLanguageFormProps, ISt
                 isDefault: values.is_default
             });
         }
+
+        await dashboardStore.loadProject(this.props.projectId);
 
         if (response.error) {
             if (response.message === "MAXIMUM_NUMBER_OF_LANGUAGES_REACHED") {
@@ -224,12 +227,22 @@ class AddEditLanguageForm extends React.Component<IAddEditLanguageFormProps, ISt
                     <Tooltip title="Mark the language as the default language. You can specify custom export settings and directly add a translation for new keys in the default language.">
                         <QuestionCircleOutlined />
                     </Tooltip>
+                </div>
+
+                <LanguageLimitAlert
+                    projectId={this.props.projectId}
+                    refetchTrigger={dashboardStore.currentProject?.attributes.language_count || 0}
+                    style={{ marginTop: 24 }}
+                />
+
+                <div style={{ display: "flex", alignItems: "center" }}>
                     {!this.props.hideDefaultSubmitButton && (
                         <Button
                             type="primary"
                             htmlType="submit"
-                            style={{ marginLeft: "auto" }}
+                            style={{ marginLeft: "auto", marginTop: 24 }}
                             data-id="language-form-submit-button"
+                            disabled={dashboardStore.currentProject?.attributes.language_limit_reached}
                         >
                             {this.props.languageToEdit ? "Save changes" : "Add language"}
                         </Button>

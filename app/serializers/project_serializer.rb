@@ -18,7 +18,10 @@ class ProjectSerializer
              :validate_double_whitespace,
              :validate_https,
              :organization_id,
-             :issues_count
+             :issues_count,
+             :language_count,
+             :language_limit,
+             :language_limit_reached
 
   belongs_to :organization
 

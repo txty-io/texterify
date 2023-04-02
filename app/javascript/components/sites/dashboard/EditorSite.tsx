@@ -291,8 +291,7 @@ class EditorSite extends React.Component<IProps, IState> {
                 >
                     <div style={{ flexGrow: 1, whiteSpace: "nowrap" }}>
                         <Button
-                            type="primary"
-                            ghost
+                            type="link"
                             style={{
                                 marginRight: 24
                             }}

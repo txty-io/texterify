@@ -1,4 +1,4 @@
-import { Layout, message } from "antd";
+import { Layout, message, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -50,17 +50,31 @@ class OrganizationSite extends React.Component<IProps, IState> {
                                     organization={dashboardStore.currentOrganization}
                                     style={{ marginRight: 16 }}
                                 />
-                                {dashboardStore.currentOrganization &&
-                                    dashboardStore.currentOrganization.attributes.name}
-                                <PrimaryButton
-                                    data-id="organization-create-project"
-                                    style={{ marginLeft: 40 }}
-                                    onClick={() => {
-                                        this.setState({ addDialogVisible: true });
-                                    }}
+                                <div style={{ marginRight: 40 }}>
+                                    {dashboardStore.currentOrganization &&
+                                        dashboardStore.currentOrganization.attributes.name}
+                                </div>
+                                <Tooltip
+                                    title={
+                                        dashboardStore.currentOrganization?.attributes.project_limit_reached
+                                            ? "Project limit reached. Upgrade to a higher plan to create more projects."
+                                            : undefined
+                                    }
                                 >
-                                    Create project
-                                </PrimaryButton>
+                                    <div>
+                                        <PrimaryButton
+                                            data-id="organization-create-project"
+                                            onClick={() => {
+                                                this.setState({ addDialogVisible: true });
+                                            }}
+                                            disabled={
+                                                dashboardStore.currentOrganization?.attributes.project_limit_reached
+                                            }
+                                        >
+                                            Create project
+                                        </PrimaryButton>
+                                    </div>
+                                </Tooltip>
                             </h1>
                         </div>
                         <div style={{ display: "flex", marginTop: 40 }}>

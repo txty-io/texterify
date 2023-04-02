@@ -41,7 +41,7 @@ class Api::V1::LanguagesController < Api::V1::ApiController
 
     project = current_user.projects.find(params[:project_id])
 
-    if project.max_languages_reached?
+    if project.language_limit_reached
       skip_authorization
 
       render json: { error: true, message: 'MAXIMUM_NUMBER_OF_LANGUAGES_REACHED' }, status: :bad_request

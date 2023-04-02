@@ -59,7 +59,7 @@ class Api::V1::ProjectsController < Api::V1::ApiController
     skip_authorization
     organization = current_user.organizations.find(params[:organization_id])
 
-    if organization.max_projects_reached?
+    if organization.project_limit_reached
       render json: { error: true, message: 'MAXIMUM_NUMBER_OF_PROJECTS_REACHED' }, status: :bad_request
       return
     end

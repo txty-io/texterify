@@ -10,6 +10,8 @@ import { OrganizationAvatar } from "../ui/OrganizationAvatar";
 import { ModalStep } from "../ui/ModalStep";
 import { Link } from "react-router-dom";
 import { Routes } from "../routing/Routes";
+import { ProjectLimitAlert } from "../ui/payment/ProjectLimitAlert";
+import { IOrganization } from "../stores/DashboardStore";
 
 const TypeSelection = styled.div<{ active: boolean }>`
     border: 1px solid
@@ -50,11 +52,11 @@ interface IProps {
     visible: boolean;
     newProjectFormProps: NewProjectFormProps;
     organization?: any;
-    onCancelRequest?(): void;
+    onCancelRequest(): void;
 }
 
 interface IState {
-    selectedOrganization: any;
+    selectedOrganization: IOrganization;
     organizationsResponse: any;
     organizationsLoading: boolean;
     step: number;
@@ -67,7 +69,7 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
         organizationsResponse: null,
         organizationsLoading: false,
         step: this.props.organization ? 2 : 1,
-        search: null
+        search: ""
     };
 
     state: IState = this.initialState;
@@ -150,7 +152,10 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
                     <div style={{ margin: "6px 0" }}>
                         {this.state.step === 1 && (
                             <Button
-                                disabled={!this.state.selectedOrganization}
+                                disabled={
+                                    !this.state.selectedOrganization ||
+                                    this.state.selectedOrganization.attributes.project_limit_reached
+                                }
                                 onClick={() => {
                                     this.setState({ step: 2 });
                                 }}
@@ -232,6 +237,10 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
                                         );
                                     })}
                                 </Select>
+                                <ProjectLimitAlert
+                                    organization={this.state.selectedOrganization}
+                                    style={{ marginTop: 24 }}
+                                />
                             </>
                         )}
                     </>

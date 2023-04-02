@@ -34,12 +34,16 @@ interface IOrganizationAttributes {
     keys_count: number;
     keys_limit: number;
     key_limit_reached: boolean;
+    project_count: number;
+    project_limit: number;
+    project_limit_reached: boolean;
+    language_limit_per_project: number;
 }
 
 class DashboardStore {
-    @observable currentProject: IProject = null;
+    @observable currentProject?: IProject;
     @observable currentProjectIncluded: any = null;
-    @observable currentOrganization?: IOrganization = null;
+    @observable currentOrganization?: IOrganization;
     @observable @persist sidebarMinimized: boolean;
     @observable @persist keysPerPage = DEFAULT_PAGE_SIZE;
     @observable @persist keysPerPageEditor = DEFAULT_PAGE_SIZE;

@@ -31,6 +31,9 @@ interface IProjectAttributes {
     current_user_in_project_organization?: boolean;
     current_user_in_project?: boolean;
     organization_id: string;
+    language_count: number;
+    language_limit: number;
+    language_limit_reached: boolean;
 }
 
 export interface IProject {

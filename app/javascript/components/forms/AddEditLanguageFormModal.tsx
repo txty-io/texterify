@@ -3,6 +3,7 @@ import * as React from "react";
 import { TexterifyModal } from "../ui/TexterifyModal";
 import { AddEditLanguageForm, IAddEditLanguageFormProps } from "./AddEditLanguageForm";
 import * as uuid from "uuid";
+import { dashboardStore } from "../stores/DashboardStore";
 
 interface IProps {
     visible: boolean;
@@ -27,7 +28,13 @@ class AddEditLanguageFormModal extends React.Component<IProps> {
                         >
                             Cancel
                         </Button>
-                        <Button form={formId} type="primary" htmlType="submit" data-id="language-form-submit-button">
+                        <Button
+                            form={formId}
+                            type="primary"
+                            htmlType="submit"
+                            data-id="language-form-submit-button"
+                            disabled={dashboardStore.currentProject?.attributes.language_limit_reached}
+                        >
                             {this.props.languageFormProps.languageToEdit ? "Save changes" : "Create language"}
                         </Button>
                     </div>
