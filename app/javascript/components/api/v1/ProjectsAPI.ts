@@ -4,7 +4,6 @@ import { IUserRole } from "../../types/IUserRole";
 import { IErrorsResponse } from "../../ui/ErrorUtils";
 import { API } from "./API";
 import { APIUtils } from "./APIUtils";
-import { IImportFileFormat } from "./FileFormatsAPI";
 
 interface IProjectAttributes {
     id: string;

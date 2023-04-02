@@ -2,12 +2,31 @@
 .dark-theme,
 .light-theme {
   .ant-alert {
-    max-width: 480px;
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  // Fix hidden alert descriptions.
+  .ant-alert-description {
+    display: block;
+  }
+
+  .ant-alert-message {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .ant-alert-icon {
+    line-height: 24px;
   }
 
   .ant-alert-message,
   .ant-alert-description {
     margin-left: 8px;
+  }
+
+  .ant-alert-description {
+    margin-top: 16px;
   }
 
   .ant-alert-info {
@@ -22,6 +41,23 @@
   .ant-alert-warning {
     background: var(--alert-warning-background-color);
     border: 1px solid var(--alert-warning-border-color);
+
+    .ant-alert-message {
+      color: var(--alert-warning-color);
+    }
+  }
+
+  .ant-alert-error {
+    background: var(--alert-error-background-color);
+    border: 1px solid var(--alert-error-border-color);
+
+    .ant-alert-icon {
+      color: var(--alert-error-color);
+    }
+
+    .ant-alert-message {
+      color: var(--alert-error-color);
+    }
   }
 
   .ant-alert-warning .ant-alert-icon {

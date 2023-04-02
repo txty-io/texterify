@@ -8,7 +8,7 @@ import styled from "styled-components";
 const UserAvatarWrapper = styled.div`
     height: 32px;
     width: 32px;
-    background: var(--avatar-color);
+    background: var(--avatar-background-color);
     color: #fff;
 
     .dark-theme & {

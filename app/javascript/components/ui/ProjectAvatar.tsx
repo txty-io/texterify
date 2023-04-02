@@ -14,8 +14,8 @@ interface IState {
 }
 
 const Avatar = styled.div`
-    background: ${Styles.COLOR_PRIMARY_LIGHT};
-    color: ${Styles.COLOR_PRIMARY};
+    background: var(--avatar-background-color);
+    color: var(--avatar-color);
 
     .dark-theme & {
         color: #fff;
