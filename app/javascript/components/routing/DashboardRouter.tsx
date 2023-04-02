@@ -88,10 +88,7 @@ export const MenuLinkWrapper = styled.div<IMenuLinkWrapperProps>`
         text-decoration: none;
         padding: 8px 20px;
         display: inline-block;
-
-        color: ${(props: IMenuLinkWrapperProps) => {
-            return props.isActive ? "#fff" : "rgba(255, 255, 255, 0.45)";
-        }};
+        color: #fff;
 
         &:hover {
             color: #fff;
