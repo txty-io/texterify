@@ -1,4 +1,4 @@
-import { DeploymentUnitOutlined, ProjectOutlined } from "@ant-design/icons";
+import { DeploymentUnitOutlined, ProjectOutlined, RightOutlined } from "@ant-design/icons";
 import { Breadcrumb } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -328,7 +328,7 @@ class BreadcrumbsUnwrapped extends React.Component<IProps> {
         return (
             <Breadcrumb
                 style={{ margin: "32px 16px 0", display: "flex", alignItems: "center", flexShrink: 0 }}
-                separator=">"
+                separator={<RightOutlined />}
             >
                 {items}
             </Breadcrumb>
