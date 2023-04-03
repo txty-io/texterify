@@ -1,24 +1,26 @@
 import {
     AlertOutlined,
     BlockOutlined,
-    EditOutlined,
     ExportOutlined,
-    GlobalOutlined,
-    HomeOutlined,
     ImportOutlined,
     KeyOutlined,
-    LineChartOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    MonitorOutlined,
-    OneToOneOutlined,
     RightSquareOutlined,
-    RobotOutlined,
-    SettingOutlined,
-    SwapOutlined,
-    TagsOutlined,
-    TeamOutlined
+    RobotOutlined
 } from "@ant-design/icons";
+import {
+    AdjustmentsHorizontalIcon,
+    Bars4Icon,
+    CheckBadgeIcon,
+    CloudIcon,
+    Cog6ToothIcon,
+    HomeIcon,
+    LanguageIcon,
+    PencilIcon,
+    TagIcon,
+    UsersIcon
+} from "@heroicons/react/24/outline";
 import { Layout, Menu, Tag } from "antd";
 import { CollapseType } from "antd/lib/layout/Sider";
 import { observer } from "mobx-react";
@@ -50,13 +52,13 @@ class ProjectSidebar extends React.Component<IProps> {
     getNavigationData(): INavigationData[] {
         return [
             {
-                icon: HomeOutlined,
+                icon: HomeIcon,
                 path: Routes.DASHBOARD.PROJECT.replace(":projectId", this.props.match.params.projectId),
                 text: "Home",
                 dataId: "project-sidebar-home"
             },
             {
-                icon: EditOutlined,
+                icon: PencilIcon,
                 path: Routes.DASHBOARD.PROJECT_EDITOR.replace(":projectId", this.props.match.params.projectId),
                 text: (
                     <span>
@@ -73,13 +75,13 @@ class ProjectSidebar extends React.Component<IProps> {
                 dataId: "project-sidebar-keys"
             },
             {
-                icon: GlobalOutlined,
+                icon: LanguageIcon,
                 path: Routes.DASHBOARD.PROJECT_LANGUAGES.replace(":projectId", this.props.match.params.projectId),
                 text: "Languages",
                 dataId: "project-sidebar-languages"
             },
             {
-                icon: MonitorOutlined,
+                icon: CheckBadgeIcon,
                 path: Routes.DASHBOARD.PROJECT_VALIDATIONS.replace(":projectId", this.props.match.params.projectId),
                 text: "QA",
                 roles: ROLES_TRANSLATOR_UP,
@@ -95,7 +97,7 @@ class ProjectSidebar extends React.Component<IProps> {
                 ]
             },
             {
-                icon: TagsOutlined,
+                icon: TagIcon,
                 path: Routes.DASHBOARD.PROJECT_TAGS.replace(":projectId", this.props.match.params.projectId),
                 text: "Tags",
                 roles: ROLES_DEVELOPER_UP,
@@ -218,26 +220,26 @@ class ProjectSidebar extends React.Component<IProps> {
                 // ]
             },
             {
-                icon: LineChartOutlined,
+                icon: Bars4Icon,
                 path: Routes.DASHBOARD.PROJECT_ACTIVITY.replace(":projectId", this.props.match.params.projectId),
                 text: "Activity",
                 dataId: "project-sidebar-activity"
             },
             {
-                icon: SwapOutlined,
+                icon: CloudIcon,
                 path: Routes.DASHBOARD.PROJECT_OTA.replace(":projectId", this.props.match.params.projectId),
                 text: "Over the Air",
                 roles: ROLES_DEVELOPER_UP,
                 dataId: "project-sidebar-ota"
             },
             {
-                icon: OneToOneOutlined,
+                icon: AdjustmentsHorizontalIcon,
                 path: Routes.DASHBOARD.PROJECT_POST_PROCESSING.replace(":projectId", this.props.match.params.projectId),
                 text: "Post Processing",
                 dataId: "project-sidebar-post-processing"
             },
             {
-                icon: TeamOutlined,
+                icon: UsersIcon,
                 path: Routes.DASHBOARD.PROJECT_MEMBERS.replace(":projectId", this.props.match.params.projectId),
                 text: "Users",
                 dataId: "project-sidebar-users"
@@ -250,7 +252,7 @@ class ProjectSidebar extends React.Component<IProps> {
                 dataId: "project-sidebar-integrations"
             },
             {
-                icon: SettingOutlined,
+                icon: Cog6ToothIcon,
                 path: Routes.DASHBOARD.PROJECT_SETTINGS_RESOLVER({
                     projectId: this.props.match.params.projectId
                 }),
@@ -323,7 +325,7 @@ class ProjectSidebar extends React.Component<IProps> {
                             disabled={!this.isMenuItemEnabled(data.roles)}
                             title={
                                 <div>
-                                    <data.icon />
+                                    <data.icon width={16} className="anticon" />
                                     <span>{data.text}</span>
                                 </div>
                             }
@@ -338,7 +340,7 @@ class ProjectSidebar extends React.Component<IProps> {
                                         disabled={!this.isMenuItemEnabled(subMenuItem.roles)}
                                     >
                                         <Link to={subMenuItem.path}>
-                                            <subMenuItem.icon />
+                                            <subMenuItem.icon width={16} className="anticon" />
                                             <span>{subMenuItem.text}</span>
                                         </Link>
                                     </Menu.Item>
@@ -350,7 +352,7 @@ class ProjectSidebar extends React.Component<IProps> {
 
                 const menuItem = (
                     <Link to={data.path}>
-                        <data.icon />
+                        <data.icon width={16} className="anticon" />
                         <span>{data.text}</span>
                     </Link>
                 );

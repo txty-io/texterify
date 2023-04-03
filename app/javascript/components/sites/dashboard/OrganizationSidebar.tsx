@@ -1,13 +1,5 @@
-import {
-    HomeOutlined,
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
-    MonitorOutlined,
-    ReloadOutlined,
-    RobotOutlined,
-    TeamOutlined,
-    ToolOutlined
-} from "@ant-design/icons";
+import { MenuFoldOutlined, MenuUnfoldOutlined, ReloadOutlined, RobotOutlined } from "@ant-design/icons";
+import { CheckBadgeIcon, Cog6ToothIcon, HomeIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { Layout, Menu } from "antd";
 import { CollapseType } from "antd/lib/layout/Sider";
 import { observer } from "mobx-react";
@@ -36,13 +28,13 @@ type IProps = RouteComponentProps<{ organizationId: string }>;
 class OrganizationSidebar extends React.Component<IProps> {
     navigationData: INavigationData[] = [
         {
-            icon: HomeOutlined,
+            icon: HomeIcon,
             path: Routes.DASHBOARD.ORGANIZATION.replace(":organizationId", this.props.match.params.organizationId),
             text: "Home",
             texterifyCloudOnly: false
         },
         {
-            icon: TeamOutlined,
+            icon: UsersIcon,
             path: Routes.DASHBOARD.ORGANIZATION_MEMBERS.replace(
                 ":organizationId",
                 this.props.match.params.organizationId
@@ -60,7 +52,7 @@ class OrganizationSidebar extends React.Component<IProps> {
             texterifyCloudOnly: false
         },
         {
-            icon: MonitorOutlined,
+            icon: CheckBadgeIcon,
             path: Routes.DASHBOARD.ORGANIZATION_VALIDATIONS_RESOLVER({
                 organizationId: this.props.match.params.organizationId
             }),
@@ -87,7 +79,7 @@ class OrganizationSidebar extends React.Component<IProps> {
             roles: ROLES_OWNER_UP
         },
         {
-            icon: ToolOutlined,
+            icon: Cog6ToothIcon,
             path: Routes.DASHBOARD.ORGANIZATION_SETTINGS.replace(
                 ":organizationId",
                 this.props.match.params.organizationId
@@ -161,7 +153,7 @@ class OrganizationSidebar extends React.Component<IProps> {
                 return (
                     <Menu.Item key={index} title={data.text} disabled={!this.isMenuItemEnabled(data.roles)}>
                         <Link to={data.path}>
-                            <data.icon />
+                            <data.icon width={16} className="anticon" />
                             <span>{data.text}</span>
                         </Link>
                     </Menu.Item>
