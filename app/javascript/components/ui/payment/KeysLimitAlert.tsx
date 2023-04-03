@@ -25,8 +25,8 @@ export function KeysLimitAlert(props: { style?: React.CSSProperties; project: IP
                 message="Key limit exceeded"
                 description={
                     <>
-                        You have reached your key limit ({organizationData?.data.attributes.keys_count}/
-                        {organizationData?.data.attributes.keys_limit}) and will no longer be able to edit or add new
+                        You have reached your key limit ({organizationData?.data.attributes.key_count}/
+                        {organizationData?.data.attributes.key_limit}) and will no longer be able to edit or add new
                         keys.
                         <br />
                         Delete keys or upgrade your plan to increase your limit and get access to more premium features.

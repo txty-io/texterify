@@ -31,8 +31,8 @@ interface IOrganizationAttributes {
     current_user_deactivated?: boolean;
     current_user_deactivated_reason?: "manually_by_admin" | "user_limit_exceeded";
     max_users_reached: boolean;
-    keys_count: number;
-    keys_limit: number;
+    key_count: number;
+    key_limit: number;
     key_limit_reached: boolean;
     project_count: number;
     project_limit: number;

@@ -7,12 +7,14 @@ class OrganizationSerializer
              :machine_translation_character_usage,
              :machine_translation_character_limit,
              :keys_count,
-             :keys_limit,
              :project_count,
              :project_limit,
              :project_limit_reached,
              :language_limit_per_project,
-             :deepl_api_token_type
+             :deepl_api_token_type,
+             :key_count,
+             :key_limit,
+             :key_limit_reached
   has_many :projects
 
   attribute :uses_custom_deepl_account do |object|
@@ -49,6 +51,10 @@ class OrganizationSerializer
     object.current_plan&.enabled_features || []
   end
 
+  attribute :key_count do |object|
+    object.keys_count
+  end
+
   attribute :current_user_deactivated, if: proc { |_, params| params[:current_user] } do |object, params|
     organization_user = OrganizationUser.find_by(organization_id: object.id, user_id: params[:current_user].id)
     organization_user&.deactivated
@@ -57,9 +63,5 @@ class OrganizationSerializer
   attribute :current_user_deactivated_reason, if: proc { |_, params| params[:current_user] } do |object, params|
     organization_user = OrganizationUser.find_by(organization_id: object.id, user_id: params[:current_user].id)
     organization_user&.deactivated_reason
-  end
-
-  attribute :key_limit_reached do |object|
-    object.keys_count > object.keys_limit
   end
 end

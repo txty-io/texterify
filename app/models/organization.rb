@@ -104,13 +104,24 @@ class Organization < ApplicationRecord
 
   # Returns true if the max number of projects has been reached.
   def project_limit_reached
-    self.project_limit.nil? ? false : self.projects.size >= self.project_limit
+    self.project_limit.nil? ? false : self.project_count >= self.project_limit
   end
 
   # Returns the max number of languages per project or nil if there is no limit.
   def language_limit_per_project
     organization_plan = self.current_plan
     organization_plan&.languages_limit
+  end
+
+  # Returns the max number of keys or nil if there is no limit.
+  def key_limit
+    organization_plan = self.current_plan
+    organization_plan&.keys_limit
+  end
+
+  # Returns true if the max number of keys has been reached.
+  def key_limit_reached
+    self.key_limit.nil? ? false : self.keys_count >= self.key_limit
   end
 
   # Returns true if the organization has a custom DeepL account set.
