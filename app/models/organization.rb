@@ -124,6 +124,11 @@ class Organization < ApplicationRecord
     self.key_limit.nil? ? false : self.keys_count >= self.key_limit
   end
 
+  # Returns true if the max number of keys has been exceeded.
+  def key_limit_exceeded
+    self.key_limit.nil? ? false : self.keys_count > self.key_limit
+  end
+
   # Returns true if the organization has a custom DeepL account set.
   def uses_custom_deepl_account?
     self.deepl_api_token.present? && self.deepl_api_token_type.present?

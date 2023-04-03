@@ -73,7 +73,7 @@ export const EditableCell: React.FC<IEditableCellProps> = (props: IEditableCellP
         isAllowedToChangeColumn &&
         !isNameColumnAndNotEditable &&
         isEditableForCurrentUser &&
-        !organizationResponse?.data.attributes.key_limit_reached;
+        !organizationResponse?.data.attributes.key_limit_exceeded;
 
     React.useEffect(() => {
         if (editing && inputRef && inputRef.current) {

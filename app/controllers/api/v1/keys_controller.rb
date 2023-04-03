@@ -128,6 +128,13 @@ class Api::V1::KeysController < Api::V1::ApiController
   def create
     project = current_user.projects.find(params[:project_id])
 
+    if project.organization.key_limit_reached
+      skip_authorization
+
+      render json: { error: true, message: 'MAXIMUM_NUMBER_OF_KEYS_REACHED' }, status: :bad_request
+      return
+    end
+
     key = Key.new(key_params)
     key.project = project
     authorize key
@@ -144,6 +151,14 @@ class Api::V1::KeysController < Api::V1::ApiController
 
   def update
     project = current_user.projects.find(params[:project_id])
+
+    if project.organization.key_limit_exceeded
+      skip_authorization
+
+      render json: { error: true, message: 'MAXIMUM_NUMBER_OF_KEYS_EXCEEDED' }, status: :bad_request
+      return
+    end
+
     key = project.keys.find(params[:id])
     authorize key
 

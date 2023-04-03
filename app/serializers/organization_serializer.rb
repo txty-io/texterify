@@ -14,7 +14,8 @@ class OrganizationSerializer
              :deepl_api_token_type,
              :key_count,
              :key_limit,
-             :key_limit_reached
+             :key_limit_reached,
+             :key_limit_exceeded
   has_many :projects
 
   attribute :uses_custom_deepl_account do |object|

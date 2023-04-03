@@ -1,0 +1,790 @@
+{
+      "data" => [
+    [0] {
+                 "id" => "__REMOVED__",
+               "type" => "project",
+         "attributes" => {
+                                          "id" => "__REMOVED__",
+                                        "name" => "Project 1",
+                                 "description" => nil,
+                 "machine_translation_enabled" => true,
+                     "auto_translate_new_keys" => false,
+                "auto_translate_new_languages" => false,
+         "machine_translation_character_usage" => 0,
+                                  "word_count" => 0,
+                             "character_count" => 0,
+                           "placeholder_start" => nil,
+                             "placeholder_end" => nil,
+                 "validate_leading_whitespace" => true,
+                "validate_trailing_whitespace" => true,
+                  "validate_double_whitespace" => true,
+                              "validate_https" => true,
+                             "organization_id" => "__REMOVED__",
+                                "issues_count" => 0,
+                              "language_count" => 0,
+                              "language_limit" => 2,
+                      "language_limit_reached" => false,
+                           "current_user_role" => "translator",
+                    "current_user_role_source" => "project",
+                            "enabled_features" => [
+          [ 0] "FEATURE_PERMISSION_SYSTEM",
+          [ 1] "FEATURE_VALIDATIONS",
+          [ 2] "FEATURE_KEY_HISTORY",
+          [ 3] "FEATURE_EXPORT_HIERARCHY",
+          [ 4] "FEATURE_POST_PROCESSING",
+          [ 5] "FEATURE_PROJECT_ACTIVITY",
+          [ 6] "FEATURE_TAGS",
+          [ 7] "FEATURE_HTML_EDITOR",
+          [ 8] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [ 9] "FEATURE_MACHINE_TRANSLATION_LANGUAGE",
+          [10] "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE"
+        ],
+                  "machine_translation_active" => true,
+                    "current_user_deactivated" => false,
+             "current_user_deactivated_reason" => nil,
+        "current_user_in_project_organization" => false,
+                     "current_user_in_project" => true
+      },
+      "relationships" => {
+           "organization" => {
+          "data" => {
+              "id" => "__REMOVED__",
+            "type" => "organization"
+          }
+        },
+                   "keys" => {
+          "data" => []
+        },
+              "languages" => {
+          "data" => []
+        },
+        "project_columns" => {
+          "data" => []
+        },
+               "releases" => {
+          "data" => []
+        },
+                   "tags" => {
+          "data" => []
+        }
+      }
+    },
+    [1] {
+                 "id" => "__REMOVED__",
+               "type" => "project",
+         "attributes" => {
+                                          "id" => "__REMOVED__",
+                                        "name" => "Project 10",
+                                 "description" => nil,
+                 "machine_translation_enabled" => true,
+                     "auto_translate_new_keys" => false,
+                "auto_translate_new_languages" => false,
+         "machine_translation_character_usage" => 0,
+                                  "word_count" => 0,
+                             "character_count" => 0,
+                           "placeholder_start" => nil,
+                             "placeholder_end" => nil,
+                 "validate_leading_whitespace" => true,
+                "validate_trailing_whitespace" => true,
+                  "validate_double_whitespace" => true,
+                              "validate_https" => true,
+                             "organization_id" => "__REMOVED__",
+                                "issues_count" => 0,
+                              "language_count" => 0,
+                              "language_limit" => 2,
+                      "language_limit_reached" => false,
+                           "current_user_role" => "translator",
+                    "current_user_role_source" => "project",
+                            "enabled_features" => [
+          [ 0] "FEATURE_PERMISSION_SYSTEM",
+          [ 1] "FEATURE_VALIDATIONS",
+          [ 2] "FEATURE_KEY_HISTORY",
+          [ 3] "FEATURE_EXPORT_HIERARCHY",
+          [ 4] "FEATURE_POST_PROCESSING",
+          [ 5] "FEATURE_PROJECT_ACTIVITY",
+          [ 6] "FEATURE_TAGS",
+          [ 7] "FEATURE_HTML_EDITOR",
+          [ 8] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [ 9] "FEATURE_MACHINE_TRANSLATION_LANGUAGE",
+          [10] "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE"
+        ],
+                  "machine_translation_active" => true,
+                    "current_user_deactivated" => false,
+             "current_user_deactivated_reason" => nil,
+        "current_user_in_project_organization" => false,
+                     "current_user_in_project" => true
+      },
+      "relationships" => {
+           "organization" => {
+          "data" => {
+              "id" => "__REMOVED__",
+            "type" => "organization"
+          }
+        },
+                   "keys" => {
+          "data" => []
+        },
+              "languages" => {
+          "data" => []
+        },
+        "project_columns" => {
+          "data" => []
+        },
+               "releases" => {
+          "data" => []
+        },
+                   "tags" => {
+          "data" => []
+        }
+      }
+    },
+    [2] {
+                 "id" => "__REMOVED__",
+               "type" => "project",
+         "attributes" => {
+                                          "id" => "__REMOVED__",
+                                        "name" => "Project 11",
+                                 "description" => nil,
+                 "machine_translation_enabled" => true,
+                     "auto_translate_new_keys" => false,
+                "auto_translate_new_languages" => false,
+         "machine_translation_character_usage" => 0,
+                                  "word_count" => 0,
+                             "character_count" => 0,
+                           "placeholder_start" => nil,
+                             "placeholder_end" => nil,
+                 "validate_leading_whitespace" => true,
+                "validate_trailing_whitespace" => true,
+                  "validate_double_whitespace" => true,
+                              "validate_https" => true,
+                             "organization_id" => "__REMOVED__",
+                                "issues_count" => 0,
+                              "language_count" => 0,
+                              "language_limit" => 2,
+                      "language_limit_reached" => false,
+                           "current_user_role" => "translator",
+                    "current_user_role_source" => "project",
+                            "enabled_features" => [
+          [ 0] "FEATURE_PERMISSION_SYSTEM",
+          [ 1] "FEATURE_VALIDATIONS",
+          [ 2] "FEATURE_KEY_HISTORY",
+          [ 3] "FEATURE_EXPORT_HIERARCHY",
+          [ 4] "FEATURE_POST_PROCESSING",
+          [ 5] "FEATURE_PROJECT_ACTIVITY",
+          [ 6] "FEATURE_TAGS",
+          [ 7] "FEATURE_HTML_EDITOR",
+          [ 8] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [ 9] "FEATURE_MACHINE_TRANSLATION_LANGUAGE",
+          [10] "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE"
+        ],
+                  "machine_translation_active" => true,
+                    "current_user_deactivated" => false,
+             "current_user_deactivated_reason" => nil,
+        "current_user_in_project_organization" => false,
+                     "current_user_in_project" => true
+      },
+      "relationships" => {
+           "organization" => {
+          "data" => {
+              "id" => "__REMOVED__",
+            "type" => "organization"
+          }
+        },
+                   "keys" => {
+          "data" => []
+        },
+              "languages" => {
+          "data" => []
+        },
+        "project_columns" => {
+          "data" => []
+        },
+               "releases" => {
+          "data" => []
+        },
+                   "tags" => {
+          "data" => []
+        }
+      }
+    },
+    [3] {
+                 "id" => "__REMOVED__",
+               "type" => "project",
+         "attributes" => {
+                                          "id" => "__REMOVED__",
+                                        "name" => "Project 2",
+                                 "description" => nil,
+                 "machine_translation_enabled" => true,
+                     "auto_translate_new_keys" => false,
+                "auto_translate_new_languages" => false,
+         "machine_translation_character_usage" => 0,
+                                  "word_count" => 0,
+                             "character_count" => 0,
+                           "placeholder_start" => nil,
+                             "placeholder_end" => nil,
+                 "validate_leading_whitespace" => true,
+                "validate_trailing_whitespace" => true,
+                  "validate_double_whitespace" => true,
+                              "validate_https" => true,
+                             "organization_id" => "__REMOVED__",
+                                "issues_count" => 0,
+                              "language_count" => 0,
+                              "language_limit" => 2,
+                      "language_limit_reached" => false,
+                           "current_user_role" => "translator",
+                    "current_user_role_source" => "project",
+                            "enabled_features" => [
+          [ 0] "FEATURE_PERMISSION_SYSTEM",
+          [ 1] "FEATURE_VALIDATIONS",
+          [ 2] "FEATURE_KEY_HISTORY",
+          [ 3] "FEATURE_EXPORT_HIERARCHY",
+          [ 4] "FEATURE_POST_PROCESSING",
+          [ 5] "FEATURE_PROJECT_ACTIVITY",
+          [ 6] "FEATURE_TAGS",
+          [ 7] "FEATURE_HTML_EDITOR",
+          [ 8] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [ 9] "FEATURE_MACHINE_TRANSLATION_LANGUAGE",
+          [10] "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE"
+        ],
+                  "machine_translation_active" => true,
+                    "current_user_deactivated" => false,
+             "current_user_deactivated_reason" => nil,
+        "current_user_in_project_organization" => false,
+                     "current_user_in_project" => true
+      },
+      "relationships" => {
+           "organization" => {
+          "data" => {
+              "id" => "__REMOVED__",
+            "type" => "organization"
+          }
+        },
+                   "keys" => {
+          "data" => []
+        },
+              "languages" => {
+          "data" => []
+        },
+        "project_columns" => {
+          "data" => []
+        },
+               "releases" => {
+          "data" => []
+        },
+                   "tags" => {
+          "data" => []
+        }
+      }
+    },
+    [4] {
+                 "id" => "__REMOVED__",
+               "type" => "project",
+         "attributes" => {
+                                          "id" => "__REMOVED__",
+                                        "name" => "Project 3",
+                                 "description" => nil,
+                 "machine_translation_enabled" => true,
+                     "auto_translate_new_keys" => false,
+                "auto_translate_new_languages" => false,
+         "machine_translation_character_usage" => 0,
+                                  "word_count" => 0,
+                             "character_count" => 0,
+                           "placeholder_start" => nil,
+                             "placeholder_end" => nil,
+                 "validate_leading_whitespace" => true,
+                "validate_trailing_whitespace" => true,
+                  "validate_double_whitespace" => true,
+                              "validate_https" => true,
+                             "organization_id" => "__REMOVED__",
+                                "issues_count" => 0,
+                              "language_count" => 0,
+                              "language_limit" => 2,
+                      "language_limit_reached" => false,
+                           "current_user_role" => "translator",
+                    "current_user_role_source" => "project",
+                            "enabled_features" => [
+          [ 0] "FEATURE_PERMISSION_SYSTEM",
+          [ 1] "FEATURE_VALIDATIONS",
+          [ 2] "FEATURE_KEY_HISTORY",
+          [ 3] "FEATURE_EXPORT_HIERARCHY",
+          [ 4] "FEATURE_POST_PROCESSING",
+          [ 5] "FEATURE_PROJECT_ACTIVITY",
+          [ 6] "FEATURE_TAGS",
+          [ 7] "FEATURE_HTML_EDITOR",
+          [ 8] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [ 9] "FEATURE_MACHINE_TRANSLATION_LANGUAGE",
+          [10] "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE"
+        ],
+                  "machine_translation_active" => true,
+                    "current_user_deactivated" => false,
+             "current_user_deactivated_reason" => nil,
+        "current_user_in_project_organization" => false,
+                     "current_user_in_project" => true
+      },
+      "relationships" => {
+           "organization" => {
+          "data" => {
+              "id" => "__REMOVED__",
+            "type" => "organization"
+          }
+        },
+                   "keys" => {
+          "data" => []
+        },
+              "languages" => {
+          "data" => []
+        },
+        "project_columns" => {
+          "data" => []
+        },
+               "releases" => {
+          "data" => []
+        },
+                   "tags" => {
+          "data" => []
+        }
+      }
+    },
+    [5] {
+                 "id" => "__REMOVED__",
+               "type" => "project",
+         "attributes" => {
+                                          "id" => "__REMOVED__",
+                                        "name" => "Project 4",
+                                 "description" => nil,
+                 "machine_translation_enabled" => true,
+                     "auto_translate_new_keys" => false,
+                "auto_translate_new_languages" => false,
+         "machine_translation_character_usage" => 0,
+                                  "word_count" => 0,
+                             "character_count" => 0,
+                           "placeholder_start" => nil,
+                             "placeholder_end" => nil,
+                 "validate_leading_whitespace" => true,
+                "validate_trailing_whitespace" => true,
+                  "validate_double_whitespace" => true,
+                              "validate_https" => true,
+                             "organization_id" => "__REMOVED__",
+                                "issues_count" => 0,
+                              "language_count" => 0,
+                              "language_limit" => 2,
+                      "language_limit_reached" => false,
+                           "current_user_role" => "translator",
+                    "current_user_role_source" => "project",
+                            "enabled_features" => [
+          [ 0] "FEATURE_PERMISSION_SYSTEM",
+          [ 1] "FEATURE_VALIDATIONS",
+          [ 2] "FEATURE_KEY_HISTORY",
+          [ 3] "FEATURE_EXPORT_HIERARCHY",
+          [ 4] "FEATURE_POST_PROCESSING",
+          [ 5] "FEATURE_PROJECT_ACTIVITY",
+          [ 6] "FEATURE_TAGS",
+          [ 7] "FEATURE_HTML_EDITOR",
+          [ 8] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [ 9] "FEATURE_MACHINE_TRANSLATION_LANGUAGE",
+          [10] "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE"
+        ],
+                  "machine_translation_active" => true,
+                    "current_user_deactivated" => false,
+             "current_user_deactivated_reason" => nil,
+        "current_user_in_project_organization" => false,
+                     "current_user_in_project" => true
+      },
+      "relationships" => {
+           "organization" => {
+          "data" => {
+              "id" => "__REMOVED__",
+            "type" => "organization"
+          }
+        },
+                   "keys" => {
+          "data" => []
+        },
+              "languages" => {
+          "data" => []
+        },
+        "project_columns" => {
+          "data" => []
+        },
+               "releases" => {
+          "data" => []
+        },
+                   "tags" => {
+          "data" => []
+        }
+      }
+    },
+    [6] {
+                 "id" => "__REMOVED__",
+               "type" => "project",
+         "attributes" => {
+                                          "id" => "__REMOVED__",
+                                        "name" => "Project 5",
+                                 "description" => nil,
+                 "machine_translation_enabled" => true,
+                     "auto_translate_new_keys" => false,
+                "auto_translate_new_languages" => false,
+         "machine_translation_character_usage" => 0,
+                                  "word_count" => 0,
+                             "character_count" => 0,
+                           "placeholder_start" => nil,
+                             "placeholder_end" => nil,
+                 "validate_leading_whitespace" => true,
+                "validate_trailing_whitespace" => true,
+                  "validate_double_whitespace" => true,
+                              "validate_https" => true,
+                             "organization_id" => "__REMOVED__",
+                                "issues_count" => 0,
+                              "language_count" => 0,
+                              "language_limit" => 2,
+                      "language_limit_reached" => false,
+                           "current_user_role" => "translator",
+                    "current_user_role_source" => "project",
+                            "enabled_features" => [
+          [ 0] "FEATURE_PERMISSION_SYSTEM",
+          [ 1] "FEATURE_VALIDATIONS",
+          [ 2] "FEATURE_KEY_HISTORY",
+          [ 3] "FEATURE_EXPORT_HIERARCHY",
+          [ 4] "FEATURE_POST_PROCESSING",
+          [ 5] "FEATURE_PROJECT_ACTIVITY",
+          [ 6] "FEATURE_TAGS",
+          [ 7] "FEATURE_HTML_EDITOR",
+          [ 8] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [ 9] "FEATURE_MACHINE_TRANSLATION_LANGUAGE",
+          [10] "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE"
+        ],
+                  "machine_translation_active" => true,
+                    "current_user_deactivated" => false,
+             "current_user_deactivated_reason" => nil,
+        "current_user_in_project_organization" => false,
+                     "current_user_in_project" => true
+      },
+      "relationships" => {
+           "organization" => {
+          "data" => {
+              "id" => "__REMOVED__",
+            "type" => "organization"
+          }
+        },
+                   "keys" => {
+          "data" => []
+        },
+              "languages" => {
+          "data" => []
+        },
+        "project_columns" => {
+          "data" => []
+        },
+               "releases" => {
+          "data" => []
+        },
+                   "tags" => {
+          "data" => []
+        }
+      }
+    },
+    [7] {
+                 "id" => "__REMOVED__",
+               "type" => "project",
+         "attributes" => {
+                                          "id" => "__REMOVED__",
+                                        "name" => "Project 6",
+                                 "description" => nil,
+                 "machine_translation_enabled" => true,
+                     "auto_translate_new_keys" => false,
+                "auto_translate_new_languages" => false,
+         "machine_translation_character_usage" => 0,
+                                  "word_count" => 0,
+                             "character_count" => 0,
+                           "placeholder_start" => nil,
+                             "placeholder_end" => nil,
+                 "validate_leading_whitespace" => true,
+                "validate_trailing_whitespace" => true,
+                  "validate_double_whitespace" => true,
+                              "validate_https" => true,
+                             "organization_id" => "__REMOVED__",
+                                "issues_count" => 0,
+                              "language_count" => 0,
+                              "language_limit" => 2,
+                      "language_limit_reached" => false,
+                           "current_user_role" => "translator",
+                    "current_user_role_source" => "project",
+                            "enabled_features" => [
+          [ 0] "FEATURE_PERMISSION_SYSTEM",
+          [ 1] "FEATURE_VALIDATIONS",
+          [ 2] "FEATURE_KEY_HISTORY",
+          [ 3] "FEATURE_EXPORT_HIERARCHY",
+          [ 4] "FEATURE_POST_PROCESSING",
+          [ 5] "FEATURE_PROJECT_ACTIVITY",
+          [ 6] "FEATURE_TAGS",
+          [ 7] "FEATURE_HTML_EDITOR",
+          [ 8] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [ 9] "FEATURE_MACHINE_TRANSLATION_LANGUAGE",
+          [10] "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE"
+        ],
+                  "machine_translation_active" => true,
+                    "current_user_deactivated" => false,
+             "current_user_deactivated_reason" => nil,
+        "current_user_in_project_organization" => false,
+                     "current_user_in_project" => true
+      },
+      "relationships" => {
+           "organization" => {
+          "data" => {
+              "id" => "__REMOVED__",
+            "type" => "organization"
+          }
+        },
+                   "keys" => {
+          "data" => []
+        },
+              "languages" => {
+          "data" => []
+        },
+        "project_columns" => {
+          "data" => []
+        },
+               "releases" => {
+          "data" => []
+        },
+                   "tags" => {
+          "data" => []
+        }
+      }
+    },
+    [8] {
+                 "id" => "__REMOVED__",
+               "type" => "project",
+         "attributes" => {
+                                          "id" => "__REMOVED__",
+                                        "name" => "Project 7",
+                                 "description" => nil,
+                 "machine_translation_enabled" => true,
+                     "auto_translate_new_keys" => false,
+                "auto_translate_new_languages" => false,
+         "machine_translation_character_usage" => 0,
+                                  "word_count" => 0,
+                             "character_count" => 0,
+                           "placeholder_start" => nil,
+                             "placeholder_end" => nil,
+                 "validate_leading_whitespace" => true,
+                "validate_trailing_whitespace" => true,
+                  "validate_double_whitespace" => true,
+                              "validate_https" => true,
+                             "organization_id" => "__REMOVED__",
+                                "issues_count" => 0,
+                              "language_count" => 0,
+                              "language_limit" => 2,
+                      "language_limit_reached" => false,
+                           "current_user_role" => "translator",
+                    "current_user_role_source" => "project",
+                            "enabled_features" => [
+          [ 0] "FEATURE_PERMISSION_SYSTEM",
+          [ 1] "FEATURE_VALIDATIONS",
+          [ 2] "FEATURE_KEY_HISTORY",
+          [ 3] "FEATURE_EXPORT_HIERARCHY",
+          [ 4] "FEATURE_POST_PROCESSING",
+          [ 5] "FEATURE_PROJECT_ACTIVITY",
+          [ 6] "FEATURE_TAGS",
+          [ 7] "FEATURE_HTML_EDITOR",
+          [ 8] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [ 9] "FEATURE_MACHINE_TRANSLATION_LANGUAGE",
+          [10] "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE"
+        ],
+                  "machine_translation_active" => true,
+                    "current_user_deactivated" => false,
+             "current_user_deactivated_reason" => nil,
+        "current_user_in_project_organization" => false,
+                     "current_user_in_project" => true
+      },
+      "relationships" => {
+           "organization" => {
+          "data" => {
+              "id" => "__REMOVED__",
+            "type" => "organization"
+          }
+        },
+                   "keys" => {
+          "data" => []
+        },
+              "languages" => {
+          "data" => []
+        },
+        "project_columns" => {
+          "data" => []
+        },
+               "releases" => {
+          "data" => []
+        },
+                   "tags" => {
+          "data" => []
+        }
+      }
+    },
+    [9] {
+                 "id" => "__REMOVED__",
+               "type" => "project",
+         "attributes" => {
+                                          "id" => "__REMOVED__",
+                                        "name" => "Project 8",
+                                 "description" => nil,
+                 "machine_translation_enabled" => true,
+                     "auto_translate_new_keys" => false,
+                "auto_translate_new_languages" => false,
+         "machine_translation_character_usage" => 0,
+                                  "word_count" => 0,
+                             "character_count" => 0,
+                           "placeholder_start" => nil,
+                             "placeholder_end" => nil,
+                 "validate_leading_whitespace" => true,
+                "validate_trailing_whitespace" => true,
+                  "validate_double_whitespace" => true,
+                              "validate_https" => true,
+                             "organization_id" => "__REMOVED__",
+                                "issues_count" => 0,
+                              "language_count" => 0,
+                              "language_limit" => 2,
+                      "language_limit_reached" => false,
+                           "current_user_role" => "translator",
+                    "current_user_role_source" => "project",
+                            "enabled_features" => [
+          [ 0] "FEATURE_PERMISSION_SYSTEM",
+          [ 1] "FEATURE_VALIDATIONS",
+          [ 2] "FEATURE_KEY_HISTORY",
+          [ 3] "FEATURE_EXPORT_HIERARCHY",
+          [ 4] "FEATURE_POST_PROCESSING",
+          [ 5] "FEATURE_PROJECT_ACTIVITY",
+          [ 6] "FEATURE_TAGS",
+          [ 7] "FEATURE_HTML_EDITOR",
+          [ 8] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [ 9] "FEATURE_MACHINE_TRANSLATION_LANGUAGE",
+          [10] "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE"
+        ],
+                  "machine_translation_active" => true,
+                    "current_user_deactivated" => false,
+             "current_user_deactivated_reason" => nil,
+        "current_user_in_project_organization" => false,
+                     "current_user_in_project" => true
+      },
+      "relationships" => {
+           "organization" => {
+          "data" => {
+              "id" => "__REMOVED__",
+            "type" => "organization"
+          }
+        },
+                   "keys" => {
+          "data" => []
+        },
+              "languages" => {
+          "data" => []
+        },
+        "project_columns" => {
+          "data" => []
+        },
+               "releases" => {
+          "data" => []
+        },
+                   "tags" => {
+          "data" => []
+        }
+      }
+    }
+  ],
+  "included" => [
+    [0] {
+                 "id" => "__REMOVED__",
+               "type" => "organization",
+         "attributes" => {
+                                         "id" => "__REMOVED__",
+                                       "name" => "Organization 1",
+                               "trial_active" => true,
+        "machine_translation_character_usage" => 0,
+        "machine_translation_character_limit" => 10000,
+                                 "keys_count" => 0,
+                              "project_count" => 11,
+                              "project_limit" => 1,
+                      "project_limit_reached" => true,
+                 "language_limit_per_project" => 2,
+                       "deepl_api_token_type" => nil,
+                                  "key_count" => 0,
+                                  "key_limit" => nil,
+                          "key_limit_reached" => false,
+                         "key_limit_exceeded" => false,
+                  "uses_custom_deepl_account" => false,
+                          "max_users_reached" => false,
+                            "deepl_api_token" => nil,
+                          "current_user_role" => nil,
+                              "trial_ends_at" => "__REMOVED__",
+                           "enabled_features" => [
+          [ 0] "FEATURE_PERMISSION_SYSTEM",
+          [ 1] "FEATURE_VALIDATIONS",
+          [ 2] "FEATURE_KEY_HISTORY",
+          [ 3] "FEATURE_EXPORT_HIERARCHY",
+          [ 4] "FEATURE_POST_PROCESSING",
+          [ 5] "FEATURE_PROJECT_ACTIVITY",
+          [ 6] "FEATURE_TAGS",
+          [ 7] "FEATURE_HTML_EDITOR",
+          [ 8] "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS",
+          [ 9] "FEATURE_MACHINE_TRANSLATION_LANGUAGE",
+          [10] "FEATURE_MACHINE_TRANSLATION_AUTO_TRANSLATE"
+        ],
+                   "current_user_deactivated" => nil,
+            "current_user_deactivated_reason" => nil
+      },
+      "relationships" => {
+        "projects" => {
+          "data" => [
+            [ 0] {
+                "id" => "__REMOVED__",
+              "type" => "project"
+            },
+            [ 1] {
+                "id" => "__REMOVED__",
+              "type" => "project"
+            },
+            [ 2] {
+                "id" => "__REMOVED__",
+              "type" => "project"
+            },
+            [ 3] {
+                "id" => "__REMOVED__",
+              "type" => "project"
+            },
+            [ 4] {
+                "id" => "__REMOVED__",
+              "type" => "project"
+            },
+            [ 5] {
+                "id" => "__REMOVED__",
+              "type" => "project"
+            },
+            [ 6] {
+                "id" => "__REMOVED__",
+              "type" => "project"
+            },
+            [ 7] {
+                "id" => "__REMOVED__",
+              "type" => "project"
+            },
+            [ 8] {
+                "id" => "__REMOVED__",
+              "type" => "project"
+            },
+            [ 9] {
+                "id" => "__REMOVED__",
+              "type" => "project"
+            },
+            [10] {
+                "id" => "__REMOVED__",
+              "type" => "project"
+            }
+          ]
+        }
+      }
+    }
+  ],
+      "meta" => {
+    "total" => 11
+  }
+}

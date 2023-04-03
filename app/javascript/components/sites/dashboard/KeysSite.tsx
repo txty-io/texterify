@@ -29,7 +29,7 @@ import { KeystrokeButtonWrapper } from "../../ui/KeystrokeButtonWrapper";
 import { KEYSTROKE_DEFINITIONS } from "../../ui/KeystrokeDefinitions";
 import { KeystrokeHandler } from "../../ui/KeystrokeHandler";
 import { KeyTags } from "../../ui/KeyTags";
-import { KeysLimitAlert } from "../../ui/payment/KeysLimitAlert";
+import { KeyLimitAlert } from "../../ui/payment/KeyLimitAlert";
 import { TagsFilter } from "../../ui/TagsFilter";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { TranslationUtils } from "../../utilities/TranslationUtils";
@@ -851,9 +851,10 @@ class KeysSite extends React.Component<IProps, IState> {
                     <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                         <h1>Keys</h1>
 
-                        <KeysLimitAlert
+                        <KeyLimitAlert
                             project={dashboardStore.currentProject}
                             refetchTrigger={this.state.keysResponse?.meta.total || 0}
+                            showOnlyIfLimitExceeded
                             style={{ marginBottom: 16 }}
                         />
 
@@ -867,7 +868,7 @@ class KeysSite extends React.Component<IProps, IState> {
                                     }}
                                     disabled={
                                         !PermissionUtils.isDeveloperOrHigher(dashboardStore.getCurrentRole()) ||
-                                        dashboardStore.getProjectOrganization()?.attributes.key_limit_reached
+                                        dashboardStore.getProjectOrganization()?.attributes.key_limit_exceeded
                                     }
                                 >
                                     Create key <KeystrokeButtonWrapper keys={KEYSTROKE_DEFINITIONS.KEYS_SITE_NEW_KEY} />

@@ -12,6 +12,7 @@ import FlagIcon from "../ui/FlagIcons";
 import { KeystrokeButtonWrapper } from "../ui/KeystrokeButtonWrapper";
 import { KEYSTROKE_DEFINITIONS } from "../ui/KeystrokeDefinitions";
 import { KeystrokeHandler } from "../ui/KeystrokeHandler";
+import { KeyLimitAlert } from "../ui/payment/KeyLimitAlert";
 import { TexterifyModal } from "../ui/TexterifyModal";
 import { LanguageUtils } from "../utilities/LanguageUtils";
 import { PermissionUtils } from "../utilities/PermissionUtils";
@@ -128,7 +129,13 @@ class NewKeyForm extends React.Component<IProps, IState> {
                             >
                                 Cancel <KeystrokeButtonWrapper keys={KEYSTROKE_DEFINITIONS.CLOSE_MODAL} />
                             </Button>
-                            <Button form="newKeyForm" type="primary" htmlType="submit" data-id="key-form-submit-button">
+                            <Button
+                                form="newKeyForm"
+                                type="primary"
+                                htmlType="submit"
+                                data-id="key-form-submit-button"
+                                disabled={dashboardStore.getProjectOrganization()?.attributes.key_limit_reached}
+                            >
                                 Create key <KeystrokeButtonWrapper keys={KEYSTROKE_DEFINITIONS.SUBMIT_MODAL_FORM} />
                             </Button>
                         </div>
@@ -201,6 +208,12 @@ class NewKeyForm extends React.Component<IProps, IState> {
                                                 <Checkbox>Enable pluralization</Checkbox>
                                             </Form.Item>
                                         </div>
+
+                                        <KeyLimitAlert
+                                            project={dashboardStore.currentProject}
+                                            refetchTrigger={0}
+                                            style={{ marginTop: 16 }}
+                                        />
                                     </>
                                 );
                             }}

@@ -34,6 +34,7 @@ interface IOrganizationAttributes {
     key_count: number;
     key_limit: number;
     key_limit_reached: boolean;
+    key_limit_exceeded: boolean;
     project_count: number;
     project_limit: number;
     project_limit_reached: boolean;

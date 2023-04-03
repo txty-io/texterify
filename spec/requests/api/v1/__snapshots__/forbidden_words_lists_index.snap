@@ -54,6 +54,9 @@
                              "validate_https" => true,
                             "organization_id" => "__REMOVED__",
                                "issues_count" => 0,
+                             "language_count" => 0,
+                             "language_limit" => 2,
+                     "language_limit_reached" => false,
                            "enabled_features" => [
           [ 0] "FEATURE_PERMISSION_SYSTEM",
           [ 1] "FEATURE_VALIDATIONS",
