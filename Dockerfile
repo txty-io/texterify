@@ -33,7 +33,7 @@ ENV NVM_DIR /usr/local/nvm
 RUN mkdir -p $NVM_DIR
 ENV NODE_VERSION 18.15.0
 ENV NODE_ENV=$NODE_ENV_ARG
-ENV NODE_OPTIONS="--max_old_space_size=8192"
+ENV NODE_OPTIONS="--max_old_space_size=8192 --openssl-legacy-provider"
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 
 # Install node and npm.
