@@ -79,15 +79,7 @@ class AddEditLanguageForm extends React.Component<IAddEditLanguageFormProps, ISt
 
         if (response.error) {
             if (response.message === "MAXIMUM_NUMBER_OF_LANGUAGES_REACHED") {
-                if (dashboardStore.getProjectOrganization()) {
-                    ErrorUtils.showError(
-                        "You have reached the maximum number of languages for a project on the free plan. Please upgrade to a paid plan to add more languages."
-                    );
-                } else {
-                    ErrorUtils.showError(
-                        "You have reached the maximum number of languages for private projects. Move the project to an organization to create more languages."
-                    );
-                }
+                ErrorUtils.showError("Please upgrade to a higher plan to add more languages.");
             }
         } else if (response.errors) {
             if (ErrorUtils.hasError("name", ERRORS.TAKEN, response.errors)) {

@@ -101,7 +101,6 @@ class OrganizationsSiteUnwrapped extends React.Component<IProps, IState> {
                 <Layout style={{ padding: "0 24px 24px", maxWidth: 800, margin: "0 auto", width: "100%" }}>
                     <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
                         <h1>Organizations</h1>
-                        <p>Organizations help you to easily share and manage projects within your company.</p>
                         <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
                             <div style={{ flexGrow: 1 }}>
                                 <PrimaryButton

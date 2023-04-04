@@ -88,13 +88,7 @@ function InviteUserFormModal(props: {
 
             if (createMemberResponse.error) {
                 if (createMemberResponse.message === "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE") {
-                    if (dashboardStore.currentOrganization) {
-                        ErrorUtils.showError("Please upgrade to a paid plan to add users to this project.");
-                    } else {
-                        ErrorUtils.showError(
-                            "This feature is not available for private projects. Please move your project to an organization."
-                        );
-                    }
+                    ErrorUtils.showError("Please upgrade to a higher plan to add more users to this project.");
                 } else if (createMemberResponse.message === "USER_ALREADY_ADDED") {
                     message.info("User has already been added to the project.");
                 } else if (createMemberResponse.message === "USER_NOT_FOUND") {

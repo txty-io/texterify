@@ -15,23 +15,6 @@ export function FeatureNotAvailable(props: { feature: IFeature; dataId?: string;
     if (dashboardStore.currentProject) {
         const currentOrganizationRelationship = dashboardStore.currentProject.relationships.organization.data;
 
-        if (!currentOrganizationRelationship) {
-            return (
-                <Alert
-                    showIcon
-                    message={
-                        <>
-                            Premium features are not available for private projects. Please move your project to an
-                            organization.
-                        </>
-                    }
-                    type="info"
-                    style={{ marginBottom: 16, maxWidth: 400, ...props.style }}
-                    data-id={props.dataId}
-                />
-            );
-        }
-
         currentOrganization = APIUtils.getIncludedObject(
             currentOrganizationRelationship,
             dashboardStore.currentProjectIncluded

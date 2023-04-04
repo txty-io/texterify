@@ -272,15 +272,9 @@ class MembersSite extends React.Component<IProps, IState> {
 
                                     if (response.error) {
                                         if (response.message === "BASIC_PERMISSION_SYSTEM_FEATURE_NOT_AVAILABLE") {
-                                            if (dashboardStore.currentOrganization) {
-                                                ErrorUtils.showError(
-                                                    "Please upgrade to a paid plan to add users to this project."
-                                                );
-                                            } else {
-                                                ErrorUtils.showError(
-                                                    "This feature is not available for private projects. Please move your project to an organization."
-                                                );
-                                            }
+                                            ErrorUtils.showError(
+                                                "Please upgrade to a higher plan to add more users to this project."
+                                            );
                                         } else if (response.message === "LAST_OWNER_CANT_BE_REMOVED") {
                                             message.error("The last user with an owner role can't be removed.");
                                         }

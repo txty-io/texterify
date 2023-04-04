@@ -306,20 +306,6 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                             }}
                         />
 
-                        {!dashboardStore.getProjectOrganization() && (
-                            <Alert
-                                showIcon
-                                message={
-                                    <>
-                                        Premium features are not available for private projects. Please move your
-                                        project to an organization.
-                                    </>
-                                }
-                                type="info"
-                                style={{ marginBottom: 16, maxWidth: 400 }}
-                            />
-                        )}
-
                         {dashboardStore.getProjectOrganization() && defaultLanguage && (
                             <div style={{ marginBottom: 24 }}>
                                 <h4 style={{ fontWeight: "bold" }}>Source language</h4>
