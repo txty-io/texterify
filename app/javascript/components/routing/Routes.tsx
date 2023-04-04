@@ -60,7 +60,7 @@ const Routes = {
             return Routes.DASHBOARD.PROJECT_EXPORT_DOWNLOAD.replace(":projectId", options.projectId);
         },
         PROJECT_MEMBERS: "/dashboard/projects/:projectId/members",
-        PROJECT_MACHINE_TRANSLATION: "/dashboard/projects/:projectId/machine-translation",
+        PROJECT_MACHINE_TRANSLATION: "/dashboard/projects/:projectId/machine-translation/translate",
         PROJECT_MACHINE_TRANSLATION_SETTINGS: "/dashboard/projects/:projectId/machine-translation/settings",
         PROJECT_MACHINE_TRANSLATION_USAGE: "/dashboard/projects/:projectId/machine-translation/usage",
         PROJECT_EXPORT_CONFIGURATIONS: "/dashboard/projects/:projectId/export/configurations",
