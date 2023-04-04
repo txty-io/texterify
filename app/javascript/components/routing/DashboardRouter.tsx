@@ -6,7 +6,7 @@ import {
     ServerStackIcon
 } from "@heroicons/react/24/solid";
 import * as antd from "antd";
-import WhiteLogoWithText from "images/logo_white_text.svg";
+import WhiteLogo from "images/logo_white.png";
 import { observer } from "mobx-react";
 import PubSub from "pubsub-js";
 import * as React from "react";
@@ -339,7 +339,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                         className="dark-theme"
                     >
                         <Link to={Routes.DASHBOARD.ROOT}>
-                            <img src={WhiteLogoWithText} style={{ maxHeight: 26, marginRight: 24 }} />
+                            <img src={WhiteLogo} style={{ maxHeight: 36, marginRight: 24 }} />
                         </Link>
                         <ul
                             className="dashboard-main-menu"
