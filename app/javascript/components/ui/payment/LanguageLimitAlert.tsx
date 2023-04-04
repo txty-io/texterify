@@ -27,6 +27,7 @@ export function LanguageLimitAlert(props: { style?: React.CSSProperties; project
             <Alert
                 showIcon
                 message="Language limit reached"
+                data-id="language-limit-reached-alert"
                 description={
                     <>
                         You have reached your language limit ({projectResponse.data.attributes.language_count}/

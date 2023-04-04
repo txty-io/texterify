@@ -42,6 +42,7 @@ declare global {
                 languageCode?: string;
                 countryCode?: string;
                 isDefault?: boolean;
+                expectLimitReached?: boolean;
             }): void;
             goToKeys(): void;
             goToProject(projectId: string): void;

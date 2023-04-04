@@ -66,25 +66,36 @@ Cypress.Commands.add("createProject", (projectName, fromOrganizationPage) => {
 
 Cypress.Commands.add(
     "addLanguage",
-    (data: { languageName: string; languageCode?: string; countryCode?: string; isDefault?: boolean }) => {
+    (data: {
+        languageName: string;
+        languageCode?: string;
+        countryCode?: string;
+        isDefault?: boolean;
+        expectLimitReached?: boolean;
+    }) => {
         cy.get('[title="Languages"] > a').click();
         cy.get(".ant-btn-default").click();
 
-        if (data.languageCode) {
-            cy.contains("div", "Select a language").type(data.languageCode);
-            cy.get("body").type("{enter}");
-        }
+        if (data.expectLimitReached) {
+            cy.get('[data-id="language-limit-reached-alert"]').should("exist");
+            cy.get('[data-id="language-form-submit-button"]').should("be.disabled");
+        } else {
+            if (data.languageCode) {
+                cy.contains("div", "Select a language").type(data.languageCode);
+                cy.get("body").type("{enter}");
+            }
 
-        if (data.countryCode) {
-            cy.contains("div", "Select a country").type(data.countryCode);
-            cy.get("body").type("{enter}");
-        }
+            if (data.countryCode) {
+                cy.contains("div", "Select a country").type(data.countryCode);
+                cy.get("body").type("{enter}");
+            }
 
-        cy.get("#name").clear().type(data.languageName);
-        if (data.isDefault) {
-            cy.get("#is_default").click();
+            cy.get("#name").clear().type(data.languageName);
+            if (data.isDefault) {
+                cy.get("#is_default").click();
+            }
+            cy.get('[data-id="language-form-submit-button"]').click();
         }
-        cy.get('[data-id="language-form-submit-button"]').click();
     }
 );
 
