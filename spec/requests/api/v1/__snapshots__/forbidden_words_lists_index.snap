@@ -54,6 +54,7 @@
                              "validate_https" => true,
                             "organization_id" => "__REMOVED__",
                                "issues_count" => 0,
+                                   "disabled" => false,
                            "enabled_features" => [
           [ 0] "FEATURE_TAGS",
           [ 1] "FEATURE_UNLIMITED_PROJECTS",

@@ -3,9 +3,20 @@ class Api::V1::TranslationsController < Api::V1::ApiController
     { project_id: params[:project_id] }
   end
 
+  before_action :set_current_project
+
+  # Sets the current project for the request and throws an error in case the project has been disabled.
+  def set_current_project
+    @project = current_user.projects.find(params[:project_id])
+
+    if @project.disabled
+      render json: { error: true, error_type: 'PROJECT_IS_DISABLED' }, status: :forbidden
+      false
+    end
+  end
+
   def create
-    project = current_user.projects.find(params[:project_id])
-    key = project.keys.find(params[:key_id])
+    key = @project.keys.find(params[:key_id])
 
     if params[:flavor_id].present?
       translation = key.translations.find_by(language_id: params[:language_id], flavor_id: params[:flavor_id])
@@ -27,9 +38,9 @@ class Api::V1::TranslationsController < Api::V1::ApiController
       end
     else
       if params[:language_id].present?
-        language = project.languages.find(params[:language_id])
+        language = @project.languages.find(params[:language_id])
       else
-        language = project.languages.find_by(is_default: true)
+        language = @project.languages.find_by(is_default: true)
 
         if !language
           skip_authorization
@@ -43,7 +54,7 @@ class Api::V1::TranslationsController < Api::V1::ApiController
       translation.language = language
       translation.key = key
       if params[:flavor_id]
-        flavor = project.flavors.find(params[:flavor_id])
+        flavor = @project.flavors.find(params[:flavor_id])
         translation.flavor = flavor
       end
 
