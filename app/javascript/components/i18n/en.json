@@ -1,0 +1,13 @@
+{
+    "network.error.general": "An unknown error occurred",
+    "component.login_form.error.user_is_deactivated": "Your account has been deactivated. Please contact support or your server admin if you think this is an error.",
+    "component.login_form.loading": "We are logging you in...",
+    "component.login_form.email.label": "Email",
+    "component.login_form.email.placeholder": "Email address",
+    "component.login_form.email.required": "Please enter your email address.",
+    "component.login_form.password.label": "Password",
+    "component.login_form.password.placeholder": "Password",
+    "component.login_form.password.required": "Please enter your password.",
+    "component.login_form.button.login": "Log in",
+    "component.login_form.button.signup": "Create new account"
+}

@@ -58,6 +58,7 @@
     "react-dropzone": "^10.1.8",
     "react-flag-icon-css": "^1.0.23",
     "react-hot-keys": "^2.6.2",
+    "react-intl": "^6.3.2",
     "react-markdown": "^8.0.3",
     "react-query": "^3.39.2",
     "react-router": "^5.0.1",

@@ -2,17 +2,17 @@ import * as localforage from "localforage";
 import * as _ from "lodash";
 import { computed, observable } from "mobx";
 import { create, persist } from "mobx-persist";
-import { IUserProfile } from "../api/v1/AuthAPI";
 import { ICustomSubscription } from "../api/v1/OrganizationsAPI";
 import { UsersAPI } from "../api/v1/UsersAPI";
+import { IUserProfile } from "../api/v1/AuthAPI";
 
 class AuthStore {
-    @persist("object") @observable currentUser: IUserProfile = null;
+    @persist("object") @observable currentUser: IUserProfile | null = null;
     @persist @observable accessToken: string | null = null;
     @persist @observable client: string | null = null;
     @persist @observable userImageUrl: string | null = null;
-    @observable confirmed: boolean = null;
-    @observable version: string = null;
+    @observable confirmed: boolean | null = null;
+    @observable version: string | null = null;
     @observable redeemableCustomSubscriptions: ICustomSubscription[] = [];
     @observable hydrationFinished = false;
 

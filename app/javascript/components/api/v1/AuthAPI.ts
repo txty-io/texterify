@@ -18,13 +18,6 @@ export interface IUserProfile {
     is_superadmin: boolean;
 }
 
-export type ILoginResponse =
-    | {
-          data?: IUserProfile;
-          errors?: any[];
-      }
-    | { error: true; error_type: "USER_IS_DEACTIVATED" };
-
 const AuthAPI = {
     signup: async (username: string, email: string, password: string, passwordConfirmation: string): Promise<any> => {
         return API.postRequest("auth", false, {
@@ -32,13 +25,6 @@ const AuthAPI = {
             email: email,
             password: password,
             password_confirmation: passwordConfirmation
-        });
-    },
-
-    login: async (email: string, password: string): Promise<ILoginResponse> => {
-        return API.postRequest("auth/sign_in", false, null, {
-            email: email,
-            password: password
         });
     },
 

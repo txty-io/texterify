@@ -15,7 +15,8 @@
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "resolveJsonModule": true
   },
   "exclude": [
     "**/*.spec.ts",
