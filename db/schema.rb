@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_04_02_231508) do
+ActiveRecord::Schema.define(version: 2023_04_06_094034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -465,6 +465,7 @@ ActiveRecord::Schema.define(version: 2023_04_02_231508) do
     t.integer "word_count", default: 0
     t.string "placeholder_start"
     t.string "placeholder_end"
+    t.boolean "disabled", default: false, null: false
     t.index ["organization_id"], name: "index_projects_on_organization_id"
   end
 

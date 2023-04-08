@@ -21,7 +21,8 @@ class ProjectSerializer
              :issues_count,
              :language_count,
              :language_limit,
-             :language_limit_reached
+             :language_limit_reached,
+             :disabled
 
   belongs_to :organization
 

@@ -23,6 +23,7 @@
                             "language_count" => 0,
                             "language_limit" => 2,
                     "language_limit_reached" => false,
+                                  "disabled" => false,
                          "current_user_role" => "owner",
                   "current_user_role_source" => "project",
                           "enabled_features" => [

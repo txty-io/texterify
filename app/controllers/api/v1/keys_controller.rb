@@ -3,10 +3,21 @@ class Api::V1::KeysController < Api::V1::ApiController
     { project_id: params[:project_id] }
   end
 
+  before_action :set_current_project
+
+  # Sets the current project for the request and throws an error in case the project has been disabled.
+  def set_current_project
+    @project = current_user.projects.find(params[:project_id])
+
+    if @project.disabled
+      render json: { error: true, error_type: 'PROJECT_IS_DISABLED' }, status: :forbidden
+      false
+    end
+  end
+
   def show
     skip_authorization
-    project = current_user.projects.find(params[:project_id])
-    key = project.keys.find(params[:id])
+    key = @project.keys.find(params[:id])
 
     options = {}
     options[:include] = [:translations, :'translations.language', :tags, :placeholders]
@@ -16,7 +27,6 @@ class Api::V1::KeysController < Api::V1::ApiController
 
   def index
     skip_authorization
-    project = current_user.projects.find(params[:project_id])
 
     page = parse_page(params[:page])
     per_page = parse_per_page(params[:per_page])
@@ -32,7 +42,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     flavor_ids = Array(params[:flavor_ids])
     tag_ids = Array(params[:tag_ids])
 
-    keys = project.keys.left_outer_joins(:translations).left_outer_joins(:tags)
+    keys = @project.keys.left_outer_joins(:translations).left_outer_joins(:tags)
 
     # Check if a search query has been applied.
     if params[:search]
@@ -67,7 +77,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     if only_untranslated
       ids = language_ids
       if ids.empty?
-        ids = project.languages.map(&:id)
+        ids = @project.languages.map(&:id)
       end
 
       untranslated_keys =
@@ -126,9 +136,7 @@ class Api::V1::KeysController < Api::V1::ApiController
   end
 
   def create
-    project = current_user.projects.find(params[:project_id])
-
-    if project.organization.key_limit_reached
+    if @project.organization.key_limit_reached
       skip_authorization
 
       render json: { error: true, message: 'MAXIMUM_NUMBER_OF_KEYS_REACHED' }, status: :bad_request
@@ -136,7 +144,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     end
 
     key = Key.new(key_params)
-    key.project = project
+    key.project = @project
     authorize key
 
     if key.save
@@ -150,16 +158,14 @@ class Api::V1::KeysController < Api::V1::ApiController
   end
 
   def update
-    project = current_user.projects.find(params[:project_id])
-
-    if project.organization.key_limit_exceeded
+    if @project.organization.key_limit_exceeded
       skip_authorization
 
       render json: { error: true, message: 'MAXIMUM_NUMBER_OF_KEYS_EXCEEDED' }, status: :bad_request
       return
     end
 
-    key = project.keys.find(params[:id])
+    key = @project.keys.find(params[:id])
     authorize key
 
     if key.update(permitted_attributes(key))
@@ -170,8 +176,7 @@ class Api::V1::KeysController < Api::V1::ApiController
   end
 
   def destroy
-    project = current_user.projects.find(params[:project_id])
-    key_to_destroy = project.keys.find(params[:key][:id])
+    key_to_destroy = @project.keys.find(params[:key][:id])
     authorize key_to_destroy
     key_to_destroy.destroy
 
@@ -179,22 +184,21 @@ class Api::V1::KeysController < Api::V1::ApiController
   end
 
   def destroy_multiple
-    project = current_user.projects.find(params[:project_id])
-    keys_to_destroy = project.keys.find(params[:keys])
+    keys_to_destroy = @project.keys.find(params[:keys])
     keys_to_destroy.each { |key| authorize key }
-    project.keys.destroy(keys_to_destroy)
+    @project.keys.destroy(keys_to_destroy)
 
     render json: { message: 'Keys deleted' }
   end
 
   def activity
     skip_authorization
-    project = current_user.projects.find(params[:project_id])
-    unless project.feature_enabled?(Plan::FEATURE_KEY_HISTORY)
+
+    unless @project.feature_enabled?(Plan::FEATURE_KEY_HISTORY)
       return
     end
 
-    key = project.keys.find(params[:key_id])
+    key = @project.keys.find(params[:key_id])
 
     options = {}
     options[:include] = [:translations, :'translations.language', :'translations.language.country_code', :key]
