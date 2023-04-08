@@ -8,6 +8,7 @@ import { authStore } from "../stores/AuthStore";
 import { CustomAlert } from "../ui/CustomAlert";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { SiteWrapperLink } from "../ui/SiteWrapperLink";
+import { history } from "../routing/history";
 
 interface IFormValues {
     email: string;
@@ -20,12 +21,21 @@ export function LoginForm() {
     const [loginErrorMessages, setLoginErrorMessages] = React.useState<string[]>([]);
 
     const handleSubmit = async (values: IFormValues) => {
+        setLoginErrorMessages([]);
+
         try {
             const response = await loginMutation.mutateAsync({ email: values.email, password: values.password });
 
             authStore.currentUser = response.data.data;
+            authStore.accessToken = response.headers["access-token"];
+            authStore.client = response.headers["client"];
+
+            history.push({
+                pathname: Routes.DASHBOARD.PROJECTS
+            });
         } catch (err) {
             authStore.resetAuth();
+
             if (axios.isAxiosError(err)) {
                 const errorResponse: ILoginErrorResponse = err.response?.data;
                 let errors = errorResponse.errors || [t("network.error.general")];

@@ -9,5 +9,6 @@
     "component.login_form.password.placeholder": "Password",
     "component.login_form.password.required": "Please enter your password.",
     "component.login_form.button.login": "Log in",
-    "component.login_form.button.signup": "Create new account"
+    "component.login_form.button.signup": "Create new account",
+    "component.login_site.title": "Log in"
 }

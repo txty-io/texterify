@@ -8,15 +8,16 @@ import { IUserProfile } from "../api/v1/AuthAPI";
 
 class AuthStore {
     @persist("object") @observable currentUser: IUserProfile | null = null;
-    @persist @observable accessToken: string | null = null;
-    @persist @observable client: string | null = null;
+    @persist @observable accessToken: string | undefined = undefined;
+    @persist @observable client: string | undefined = undefined;
     @persist @observable userImageUrl: string | null = null;
     @observable confirmed: boolean | null = null;
     @observable version: string | null = null;
     @observable redeemableCustomSubscriptions: ICustomSubscription[] = [];
     @observable hydrationFinished = false;
 
-    @computed get isAuthenticated(): boolean {
+    @computed get isAuthenticated() {
+        console.log("isAuthenticated()", this.accessToken, this.client, this.currentUser);
         return !_.isEmpty(this.accessToken) && !_.isEmpty(this.client) && !_.isEmpty(this.currentUser);
     }
 
@@ -28,8 +29,8 @@ class AuthStore {
     };
 
     resetAuth = () => {
-        this.accessToken = null;
-        this.client = null;
+        this.accessToken = undefined;
+        this.client = undefined;
         this.currentUser = null;
         this.userImageUrl = null;
         this.confirmed = null;
