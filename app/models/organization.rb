@@ -172,8 +172,10 @@ class Organization < ApplicationRecord
   def users_limit
     if custom_subscription
       custom_subscription.max_users
-    elsif trial_active || active_subscription
+    elsif trial_active
       nil
+    elsif active_subscription
+      active_subscription.plan.user_limit
     else
       license = License.current_active
 
