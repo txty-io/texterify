@@ -17,7 +17,6 @@ class AuthStore {
     @observable hydrationFinished = false;
 
     @computed get isAuthenticated() {
-        console.log("isAuthenticated()", this.accessToken, this.client, this.currentUser);
         return !_.isEmpty(this.accessToken) && !_.isEmpty(this.client) && !_.isEmpty(this.currentUser);
     }
 
