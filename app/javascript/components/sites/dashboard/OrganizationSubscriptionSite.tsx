@@ -14,6 +14,7 @@ import { CustomSubscription } from "../../ui/CustomSubscription";
 import { Features } from "../../ui/Features";
 import { BASIC_PLAN, BUSINESS_PLAN, Licenses, TEAM_PLAN } from "../../ui/Licenses";
 import { Utils } from "../../ui/Utils";
+import { CustomAlert } from "../../ui/CustomAlert";
 
 const gridStyle: React.CSSProperties = {
     width: "50%"
@@ -160,9 +161,8 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                             </span>
                         </p>
                         {!this.state.subscription && (
-                            <Alert
-                                showIcon
-                                message={
+                            <CustomAlert
+                                description={
                                     <>
                                         Your are currently on the trial period. You can experience all features during
                                         the trial for free. Select a plan that fits your needs to continue using the
