@@ -1,3 +1,4 @@
+import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
 import { Button, Empty, Layout, Modal, Table } from "antd";
 import { TableRowSelection } from "antd/lib/table/interface";
 import * as _ from "lodash";
@@ -7,10 +8,12 @@ import { RouteComponentProps } from "react-router";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { IGetPostProcessingRulesResponse, PostProcessingRulesAPI } from "../../api/v1/PostProcessingRulesAPI";
 import { AddEditPostProcessingRuleForm } from "../../forms/AddEditPostProcessingRuleForm";
+import { t } from "../../i18n/Util";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
+import { SiteHeader } from "../../ui/SiteHeader";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
@@ -228,6 +231,10 @@ class ProjectPostProcessingSite extends React.Component<IProps, IState> {
                     <Layout.Content
                         style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}
                     >
+                        <SiteHeader
+                            icon={<AdjustmentsHorizontalIcon />}
+                            title={t("component.post_processing_site.title")}
+                        />
                         <h1>Post Processing</h1>
                         <p style={{ maxWidth: 560 }}>
                             Create modification rules that are applied on your translations at export time. The rules

@@ -1,11 +1,14 @@
+import { TagIcon } from "@heroicons/react/24/outline";
 import { Skeleton } from "antd";
 import * as React from "react";
+import { t } from "../../i18n/Util";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import { LayoutWithSidebar } from "../../ui/LayoutWithSidebar";
 import { LayoutWithSidebarContentWrapper } from "../../ui/LayoutWithSidebarContentWrapper";
 import { LayoutWithSidebarContentWrapperInner } from "../../ui/LayoutWithSidebarContentWrapperInner";
+import { SiteHeader } from "../../ui/SiteHeader";
 import { TagsTable } from "../../ui/TagsTable";
 
 export function ProjectTagsSite() {
@@ -15,7 +18,7 @@ export function ProjectTagsSite() {
                 <LayoutWithSidebarContentWrapper>
                     <Breadcrumbs breadcrumbName="projectTags" />
                     <LayoutWithSidebarContentWrapperInner size="medium">
-                        <h1>Tags</h1>
+                        <SiteHeader icon={<TagIcon />} title={t("component.tags_site.title")} />
 
                         {!dashboardStore.currentProject && <Skeleton active />}
 

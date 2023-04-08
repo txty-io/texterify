@@ -1,5 +1,6 @@
 import { QuestionCircleOutlined, UserAddOutlined } from "@ant-design/icons";
-import { Button, Input, Layout, message, Modal, Select, Table, Tag, Tooltip } from "antd";
+import { UsersIcon } from "@heroicons/react/24/outline";
+import { Button, Input, Layout, Modal, Select, Table, Tag, Tooltip, message } from "antd";
 import { FormInstance } from "antd/lib/form";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
@@ -10,6 +11,7 @@ import { IGetUsersResponse, IUserRoleSource } from "../../api/v1/OrganizationMem
 import { IGetProjectInvitesResponse, ProjectInvitesAPI } from "../../api/v1/ProjectInvitesAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { InviteUserFormModal } from "../../forms/InviteUserFormModal";
+import { t } from "../../i18n/Util";
 import { Routes } from "../../routing/Routes";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
@@ -18,6 +20,7 @@ import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { ErrorUtils } from "../../ui/ErrorUtils";
 import { ProjectInvitesTable } from "../../ui/ProjectInvitesTable";
 import { RolesLegend } from "../../ui/RolesLegend";
+import { SiteHeader } from "../../ui/SiteHeader";
 import { UserAvatar } from "../../ui/UserAvatar";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 
@@ -371,7 +374,7 @@ class MembersSite extends React.Component<IProps, IState> {
                 <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%", maxWidth: 1200 }}>
                     <Breadcrumbs breadcrumbName="projectMembers" />
                     <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
-                        <h1>Users</h1>
+                        <SiteHeader icon={<UsersIcon />} title={t("component.users_site.title")} />
 
                         <Button
                             type="primary"

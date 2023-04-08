@@ -1,4 +1,5 @@
 import { CrownOutlined } from "@ant-design/icons";
+import { LanguageIcon } from "@heroicons/react/24/outline";
 import { Button, Empty, Input, Layout, Modal, Table } from "antd";
 import { TableRowSelection } from "antd/lib/table/interface";
 import * as _ from "lodash";
@@ -11,7 +12,9 @@ import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import FlagIcon from "../../ui/FlagIcons";
+import { SiteHeader } from "../../ui/SiteHeader";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
+import { t } from "../../i18n/Util";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -251,7 +254,8 @@ class LanguagesSite extends React.Component<IProps, IState> {
                 <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
                     <Breadcrumbs breadcrumbName="languages" />
                     <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
-                        <h1>Languages</h1>
+                        <SiteHeader icon={<LanguageIcon />} title={t("component.languages_site.title")} />
+
                         <div style={{ display: "flex" }}>
                             <div style={{ flexGrow: 1 }}>
                                 <Button

@@ -1,19 +1,22 @@
+import { CloudIcon } from "@heroicons/react/24/outline";
 import { Button, Empty, Layout, Modal, Table } from "antd";
+import { TableRowSelection } from "antd/lib/table/interface";
+import * as _ from "lodash";
 import { observer } from "mobx-react";
+import * as moment from "moment";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { APIUtils } from "../../api/v1/APIUtils";
 import { IGetReleasesOptions, IGetReleasesResponse, ReleasesAPI } from "../../api/v1/ReleasesAPI";
 import { AddReleaseForm } from "../../forms/AddReleaseForm";
+import { t } from "../../i18n/Util";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../../ui/Config";
-import { PermissionUtils } from "../../utilities/PermissionUtils";
-import * as _ from "lodash";
-import { TableRowSelection } from "antd/lib/table/interface";
-import FlagIcon from "../../ui/FlagIcons";
-import * as moment from "moment";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
+import FlagIcon from "../../ui/FlagIcons";
+import { SiteHeader } from "../../ui/SiteHeader";
+import { PermissionUtils } from "../../utilities/PermissionUtils";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -243,7 +246,7 @@ class ProjectOTASite extends React.Component<IProps, IState> {
                     <Layout.Content
                         style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}
                     >
-                        <h1>Over the Air Translations</h1>
+                        <SiteHeader icon={<CloudIcon />} title={t("component.over_the_air_site.title")} />
                         <p>
                             Update the translations of your mobile app without publishing new app versions on the app
                             store.

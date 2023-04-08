@@ -1,13 +1,16 @@
+import { Bars4Icon } from "@heroicons/react/24/outline";
 import { Layout } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
+import { t } from "../../i18n/Util";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Activity } from "../../ui/Activity";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import { Loading } from "../../ui/Loading";
+import { SiteHeader } from "../../ui/SiteHeader";
 const { Content } = Layout;
 
 type IProps = RouteComponentProps<{ projectId: string }>;
@@ -43,7 +46,8 @@ class ProjectActivitySite extends React.Component<IProps, IState> {
             <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
                 <Breadcrumbs breadcrumbName="projectActivity" />
                 <Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}>
-                    <h1>Activity</h1>
+                    <SiteHeader icon={<Bars4Icon />} title={t("component.activity_site.title")} />
+
                     {!dashboardStore.featureEnabled("FEATURE_PROJECT_ACTIVITY") && (
                         <FeatureNotAvailable feature="FEATURE_PROJECT_ACTIVITY" />
                     )}

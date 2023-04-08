@@ -1,4 +1,4 @@
-import { CrownOutlined, FilterOutlined, MoreOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { CrownOutlined, FilterOutlined, KeyOutlined, MoreOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Drawer, Input, Layout, Modal, Pagination, PaginationProps, Popover, Switch, Tag, Tooltip } from "antd";
 import * as _ from "lodash";
 import * as queryString from "query-string";
@@ -33,6 +33,8 @@ import { KeyLimitAlert } from "../../ui/payment/KeyLimitAlert";
 import { TagsFilter } from "../../ui/TagsFilter";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 import { TranslationUtils } from "../../utilities/TranslationUtils";
+import { t } from "../../i18n/Util";
+import { SiteHeader } from "../../ui/SiteHeader";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -849,7 +851,7 @@ class KeysSite extends React.Component<IProps, IState> {
                 <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
                     <Breadcrumbs breadcrumbName="keys" />
                     <Layout.Content style={{ margin: "24px 16px 0", minHeight: 360 }}>
-                        <h1>Keys</h1>
+                        <SiteHeader icon={<KeyOutlined size={16} />} title={t("component.keys_site.title")} />
 
                         <KeyLimitAlert
                             project={dashboardStore.currentProject}

@@ -10,5 +10,13 @@
     "component.login_form.password.required": "Please enter your password.",
     "component.login_form.button.login": "Log in",
     "component.login_form.button.signup": "Create new account",
-    "component.login_site.title": "Log in"
+    "component.login_site.title": "Log in",
+    "component.keys_site.title": "Keys",
+    "component.languages_site.title": "Languages",
+    "component.tags_site.title": "Tags",
+    "component.activity_site.title": "Activity",
+    "component.post_processing_site.title": "Activity",
+    "component.users_site.title": "Users",
+    "component.integrations_site.title": "Integrations",
+    "component.over_the_air_site.title": "Over the Air"
 }

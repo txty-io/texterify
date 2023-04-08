@@ -12,6 +12,21 @@ import { ListContent } from "../../ui/ListContent";
 import { Routes } from "../../routing/Routes";
 import { RouteComponentProps } from "react-router";
 import { history } from "../../routing/history";
+import {
+    AdjustmentsHorizontalIcon,
+    Bars4Icon,
+    CheckBadgeIcon,
+    CloudIcon,
+    Cog6ToothIcon,
+    HomeIcon,
+    LanguageIcon,
+    PencilIcon,
+    TagIcon,
+    UsersIcon
+} from "@heroicons/react/24/outline";
+import { t } from "../../i18n/Util";
+import { BlockOutlined } from "@ant-design/icons";
+import { SiteHeader } from "../../ui/SiteHeader";
 
 interface IIntegration {
     key: string;
@@ -132,7 +147,7 @@ class ProjectIntegrationsSite extends React.Component<IProps> {
                 <Layout.Content
                     style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}
                 >
-                    <h1>Integrations</h1>
+                    <SiteHeader icon={<BlockOutlined />} title={t("component.integrations_site.title")} />
 
                     <div style={{ display: "flex", flexWrap: "wrap" }}>
                         <List
