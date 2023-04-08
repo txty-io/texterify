@@ -25,6 +25,7 @@ import { Routes } from "../routing/Routes";
 import { DropZoneWrapper } from "./DropZoneWrapper";
 import { Loading } from "./Loading";
 import { LoadingOverlay } from "./LoadingOverlay";
+import { CustomAlert } from "./CustomAlert";
 
 export const SUPPORTED_FORMATS: {
     image?: string;
@@ -306,10 +307,9 @@ export const TranslationFileImporter = observer(
 
         if (languagesResponse?.data.length === 0) {
             return (
-                <Alert
+                <CustomAlert
                     type="info"
-                    showIcon
-                    message="No language"
+                    title="No language"
                     description={
                         <>
                             You need to{" "}

@@ -272,10 +272,6 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
                                 {this.loop(this.state.treeData)}
                             </Tree>
                         )}
-
-                        {this.state.responseLanguages &&
-                            this.state.responseLanguages.data.length === 0 &&
-                            "No languages available."}
                     </LayoutWithSubSidebarInnerContent>
                 </LayoutWithSubSidebarInner>
             </LayoutWithSubSidebar>

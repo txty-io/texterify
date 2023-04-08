@@ -2,6 +2,7 @@ import { Alert } from "antd";
 import * as React from "react";
 import { IOrganization } from "../stores/DashboardStore";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
+import { CustomAlert } from "./CustomAlert";
 
 export const OrganizationMachineTranslationTotalUsage = (props: {
     organization: IOrganization;
@@ -18,10 +19,9 @@ export const OrganizationMachineTranslationTotalUsage = (props: {
             </div>
 
             {IS_TEXTERIFY_CLOUD && !props.organization?.attributes.uses_custom_deepl_account && (
-                <Alert
-                    showIcon
+                <CustomAlert
                     type="info"
-                    message={
+                    description={
                         <>
                             Your available machine translation characters are reset on the first of every month. If you
                             need more monthly machine translation characters contact support via{" "}

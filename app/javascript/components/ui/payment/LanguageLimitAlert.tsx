@@ -34,8 +34,7 @@ export function LanguageLimitAlert(props: { style?: React.CSSProperties; project
                         {organizationData?.data.attributes.language_limit_per_project}) and will no longer be able to
                         add new languages.
                         <br />
-                        Delete a language or upgrade your plan to increase your limit and get access to more premium
-                        features.
+                        Delete a language or upgrade your plan to increase your limit.
                         <>
                             {IS_TEXTERIFY_CLOUD && (
                                 <div style={{ marginTop: 16, marginBottom: 4 }}>

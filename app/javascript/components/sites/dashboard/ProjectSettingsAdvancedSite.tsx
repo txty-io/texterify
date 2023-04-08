@@ -1,4 +1,4 @@
-import { Alert, Button, message, Modal } from "antd";
+import { Button, message, Modal } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -8,6 +8,7 @@ import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { CustomAlert } from "../../ui/CustomAlert";
 import { LayoutWithSubSidebar } from "../../ui/LayoutWithSubSidebar";
 import { LayoutWithSubSidebarInner } from "../../ui/LayoutWithSubSidebarInner";
 import { LayoutWithSubSidebarInnerContent } from "../../ui/LayoutWithSubSidebarInnerContent";
@@ -65,8 +66,8 @@ class ProjectSettingsAdvancedSite extends React.Component<IProps, IState> {
                         <h1>Advanced settings</h1>
 
                         <SettingsSectionWrapper>
-                            <Alert
-                                message="Delete project"
+                            <CustomAlert
+                                title="Delete project"
                                 description={
                                     <>
                                         Deleting a project will delete all data related to the project.
@@ -84,11 +85,10 @@ class ProjectSettingsAdvancedSite extends React.Component<IProps, IState> {
                                     </>
                                 }
                                 type="error"
-                                showIcon
                             />
 
-                            <Alert
-                                message="Transfer project"
+                            <CustomAlert
+                                title="Transfer project"
                                 description={
                                     <>
                                         Transfering this project to an organization will make it available to the users
@@ -107,7 +107,6 @@ class ProjectSettingsAdvancedSite extends React.Component<IProps, IState> {
                                     </>
                                 }
                                 type="error"
-                                showIcon
                                 style={{ marginTop: 40 }}
                             />
                         </SettingsSectionWrapper>

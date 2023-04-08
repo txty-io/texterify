@@ -1,10 +1,11 @@
-import { Alert, Button, Form, Select } from "antd";
+import { Button, Form, Select } from "antd";
 import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { ExportConfigsAPI, IGetExportConfigsResponse } from "../api/v1/ExportConfigsAPI";
 import { ReleasesAPI } from "../api/v1/ReleasesAPI";
 import { Routes } from "../routing/Routes";
+import { CustomAlert } from "../ui/CustomAlert";
 import { ErrorUtils } from "../ui/ErrorUtils";
 import { TexterifyModal } from "../ui/TexterifyModal";
 
@@ -115,10 +116,9 @@ class AddReleaseForm extends React.Component<IProps, IState> {
                 <Form ref={this.formRef} onFinish={this.handleSubmit} style={{ maxWidth: "100%" }} id="addReleaseForm">
                     <h3>Export config</h3>
                     {!this.hasExportConfigs() && (
-                        <Alert
+                        <CustomAlert
                             type="info"
-                            showIcon
-                            message="No export config"
+                            title="No export config"
                             description={
                                 <p>
                                     <Link

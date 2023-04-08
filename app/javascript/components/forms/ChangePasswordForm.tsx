@@ -3,6 +3,7 @@ import { Alert, Button, Input, Form } from "antd";
 import * as React from "react";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
+import { CustomAlert } from "../ui/CustomAlert";
 
 interface IState {
     isLoading: boolean;
@@ -31,7 +32,9 @@ class ChangePasswordForm extends React.Component<{}, IState> {
             <>
                 <LoadingOverlay isVisible={this.state.isLoading} loadingText="We are changing your password..." />
                 <Form onFinish={this.handleSubmit} style={{ maxWidth: "100%" }}>
-                    {this.state.loginErrors.length > 0 && <Alert showIcon message={this.renderErrors()} type="error" />}
+                    {this.state.loginErrors.length > 0 && (
+                        <CustomAlert description={this.renderErrors()} type="error" />
+                    )}
 
                     {this.state.success && <Alert showIcon message="Password changed successfully." type="success" />}
 

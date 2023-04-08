@@ -1,5 +1,5 @@
 import { DownloadOutlined } from "@ant-design/icons";
-import { Alert, Button, message, Skeleton } from "antd";
+import { Button, message, Skeleton } from "antd";
 import * as moment from "moment";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
@@ -9,6 +9,7 @@ import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { CustomAlert } from "../../ui/CustomAlert";
 import { LayoutWithSubSidebar } from "../../ui/LayoutWithSubSidebar";
 import { LayoutWithSubSidebarInner } from "../../ui/LayoutWithSubSidebarInner";
 import { LayoutWithSubSidebarInnerContent } from "../../ui/LayoutWithSubSidebarInnerContent";
@@ -54,10 +55,9 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
 
     renderNoExportConfigsInfo = () => {
         return (
-            <Alert
+            <CustomAlert
                 type="info"
-                showIcon
-                message="No export config"
+                title="No export config"
                 style={{ marginTop: this.state.languagesLoaded && this.state.languages?.length === 0 ? 8 : 0 }}
                 description={
                     <>
@@ -98,10 +98,9 @@ class ProjectExportDownloadSite extends React.Component<IProps, IState> {
                         )}
 
                         {this.state.languagesLoaded && this.state.languages?.length === 0 && (
-                            <Alert
+                            <CustomAlert
                                 type="info"
-                                showIcon
-                                message="No language"
+                                title="No language"
                                 description={
                                     <>
                                         <Link

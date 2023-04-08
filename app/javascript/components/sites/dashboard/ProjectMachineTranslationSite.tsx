@@ -23,6 +23,7 @@ import { MachineTranslationSourceSupportMessage } from "../../ui/MachineTranslat
 import { SupportedMachineTranslationLanguagesModal } from "../../ui/SupportedMachineTranslationLanguagesModal";
 import { LanguageUtils } from "../../utilities/LanguageUtils";
 import { MachineTranslationUtils } from "../../utilities/MachineTranslationUtils";
+import { CustomAlert } from "../../ui/CustomAlert";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -142,10 +143,9 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
                 {!this.state.languagesLoading &&
                     !this.state.supportedMachineTranslationLanguagesLoading &&
                     !defaultLanguage && (
-                        <Alert
-                            showIcon
+                        <CustomAlert
                             type="info"
-                            message="Please specify a default language for machine translation."
+                            description="Please specify a default language for machine translation."
                         />
                     )}
                 {this.defaultLanguageSupportsMachineTranslation() && (

@@ -612,8 +612,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                     <div
                                         style={{
                                             margin: "auto",
-                                            color: Styles.COLOR_TEXT_DISABLED,
-                                            fontStyle: "italic"
+                                            color: "var(--full-color)"
                                         }}
                                     >
                                         No keys found.
@@ -783,8 +782,7 @@ class EditorSite extends React.Component<IProps, IState> {
                             {!this.keyLoaded() && !this.props.match.params.keyId && (
                                 <p
                                     style={{
-                                        color: Styles.COLOR_TEXT_DISABLED,
-                                        fontStyle: "italic",
+                                        color: "var(--full-color)",
                                         marginTop: 160,
                                         textAlign: "center"
                                     }}

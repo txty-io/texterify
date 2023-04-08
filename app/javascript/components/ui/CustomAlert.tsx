@@ -1,4 +1,5 @@
 import { CloseCircleFilled } from "@ant-design/icons";
+import { ExclamationTriangleIcon, ExclamationCircleIcon } from "@heroicons/react/24/solid";
 import * as React from "react";
 
 export function CustomAlert(props: {
@@ -11,15 +12,20 @@ export function CustomAlert(props: {
     let backgroundColor = "";
     let borderColor = "";
     let textColor = "";
+    let icon: React.ReactNode = null;
 
     if (props.type === "error") {
         backgroundColor = "var(--alert-error-background-color)";
         borderColor = "var(--alert-error-border-color)";
         textColor = "var(--alert-error-color)";
+        const iconColor = "var(--alert-error-color)";
+        icon = <ExclamationTriangleIcon style={{ color: iconColor }} />;
     } else if (props.type === "info") {
         backgroundColor = "var(--alert-background-color)";
         borderColor = "var(--alert-border-color)";
         textColor = "var(--full-color)";
+        const iconColor = "var(--full-color)";
+        icon = <ExclamationCircleIcon style={{ color: iconColor, width: "100%" }} />;
     }
 
     return (
@@ -39,10 +45,11 @@ export function CustomAlert(props: {
                     flexShrink: 0,
                     marginRight: 20,
                     fontSize: props.title ? 24 : 20,
-                    lineHeight: props.title ? "24px" : "22px"
+                    lineHeight: props.title ? "24px" : "22px",
+                    width: 24
                 }}
             >
-                {props.icon ? props.icon : <CloseCircleFilled style={{ color: textColor }} />}
+                {props.icon ? props.icon : icon}
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
                 {props.title && (

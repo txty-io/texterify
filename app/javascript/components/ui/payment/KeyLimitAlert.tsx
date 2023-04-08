@@ -47,7 +47,7 @@ export function KeyLimitAlert(props: {
                             : "add new keys"}
                         .
                         <br />
-                        Upgrade your plan to increase your limits.
+                        Upgrade your plan to increase your limit.
                         <>
                             {IS_TEXTERIFY_CLOUD && (
                                 <div style={{ marginTop: 16, marginBottom: 4 }}>

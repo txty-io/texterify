@@ -20,7 +20,7 @@ export function ProjectLimitAlert(props: { style?: React.CSSProperties; organiza
                         {props.organization.attributes.project_limit}) of your organization and will no longer be able
                         to create new projects.
                         <br />
-                        Upgrade your plan to increase your limits.
+                        Upgrade your plan to increase your limit.
                         <>
                             {IS_TEXTERIFY_CLOUD && (
                                 <div style={{ marginTop: 16, marginBottom: 4 }}>
