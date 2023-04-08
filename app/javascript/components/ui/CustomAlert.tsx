@@ -37,10 +37,9 @@ export function CustomAlert(props: {
             <div
                 style={{
                     flexShrink: 0,
-                    display: "flex",
-                    marginRight: 24,
-                    fontSize: 24,
-                    lineHeight: "24px"
+                    marginRight: 20,
+                    fontSize: props.title ? 24 : 20,
+                    lineHeight: props.title ? "24px" : "22px"
                 }}
             >
                 {props.icon ? props.icon : <CloseCircleFilled style={{ color: textColor }} />}
@@ -51,7 +50,9 @@ export function CustomAlert(props: {
                         {props.title}
                     </div>
                 )}
-                <div style={{ color: props.title ? "var(--full-color)" : textColor }}>{props.description}</div>
+                <div style={{ color: props.title ? "var(--full-color)" : textColor, lineHeight: "22px" }}>
+                    {props.description}
+                </div>
             </div>
         </div>
     );
