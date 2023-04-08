@@ -19,6 +19,7 @@ import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import FlagIcon from "../../ui/FlagIcons";
 import { IssuesTag } from "../../ui/IssuesTag";
 import { ProjectAvatar } from "../../ui/ProjectAvatar";
+import { CustomAlert } from "../../ui/CustomAlert";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -273,10 +274,9 @@ class ProjectSite extends React.Component<IProps, IState> {
                     <div style={{ display: "flex", marginTop: 40 }}>
                         <div style={{ width: "50%", marginRight: 40 }}>
                             {dashboardStore.currentProject?.attributes.character_count === 0 && (
-                                <Alert
-                                    showIcon
+                                <CustomAlert
                                     icon="👋"
-                                    message="Welcome to your new project"
+                                    title="Welcome to your new project"
                                     description={
                                         <>
                                             To start translating{" "}
