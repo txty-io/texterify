@@ -44,9 +44,7 @@ export function LoginForm() {
             <LoadingOverlay isVisible={loginMutation.isLoading} loadingText={t("component.login_form.loading")} />
             <Form onFinish={handleSubmit}>
                 {loginErrorMessages.length > 0 && (
-                    <>
-                        <CustomAlert description={loginErrorMessages} type="error" style={{ marginBottom: 24 }} />
-                    </>
+                    <CustomAlert description={loginErrorMessages} type="error" style={{ marginBottom: 24 }} />
                 )}
 
                 <h3>{t("component.login_form.email.label")}</h3>
