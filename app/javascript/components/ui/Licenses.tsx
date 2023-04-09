@@ -8,68 +8,146 @@ import { authStore } from "../stores/AuthStore";
 import { IPlanIDS } from "../types/IPlan";
 import { Features } from "./Features";
 import styled from "styled-components";
+import { generalStore } from "../stores/GeneralStore";
 
+export interface IFeature {
+    name: string;
+    values: (string | number | boolean)[];
+}
+
+const FEATURES_MAPPING: IFeature[] = [
+    {
+        name: "Users",
+        values: [1, 5, 10, "Unlimited"]
+    },
+    {
+        name: "Projects",
+        values: [1, 2, 5, "Unlimited"]
+    },
+    {
+        name: "Keys",
+        values: [250, 1000, 2500, "Unlimited"]
+    },
+    {
+        name: "Languages",
+        values: [2, 3, 5, "Unlimited"]
+    },
+    {
+        name: "Collaborative online editor",
+        values: [true, true, true, true]
+    },
+    {
+        name: "White-label support",
+        values: [true, true, true, true]
+    },
+    {
+        name: "Dark mode",
+        values: [true, true, true, true]
+    },
+    {
+        name: "Tags",
+        values: [true, true, true, true]
+    },
+    {
+        name: "API/CLI",
+        values: [true, true, true, true]
+    },
+    {
+        name: "Permission and role management",
+        values: [false, true, true, true]
+    },
+    {
+        name: "Validations",
+        values: [false, false, true, true]
+    },
+    {
+        name: "Project activity",
+        values: [false, false, true, true]
+    },
+    {
+        name: "Translation suggestions",
+        values: [false, false, true, true]
+    },
+    {
+        name: "Language fallbacks",
+        values: [false, false, true, true]
+    },
+    {
+        name: "Key history",
+        values: [false, false, true, true]
+    },
+    {
+        name: "Post processing",
+        values: [false, false, true, true]
+    },
+    {
+        name: "HTML editor",
+        values: [false, false, false, true]
+    },
+    {
+        name: "Over the Air translations",
+        values: [false, false, false, true]
+    },
+    {
+        name: "Machine translation",
+        values: [false, false, false, true]
+    }
+];
+
+export const FREE_PLAN_FEATURE_INDEX = 1;
 export const FREE_PLAN: IPlan = {
     id: "free",
-    name: "Free 🌱",
+    name: "Free",
+    featureIndex: FREE_PLAN_FEATURE_INDEX,
+    pricePerMonthCloud: 0,
+    pricePerMonthOnPremise: 0,
     pricePerUserCloud: 0,
     pricePerUserOnPremise: 0,
-    features: ["1 user", "1 project", "2 languages", "Unlimited keys", "Unlimited translations"]
+    features: FEATURES_MAPPING.filter((f) => {
+        return f.values[FREE_PLAN_FEATURE_INDEX] !== false;
+    })
 };
 
+export const BASIC_PLAN_FEATURE_INDEX = 1;
 export const BASIC_PLAN: IPlan = {
     id: "basic",
-    name: "Basic 🌳",
+    name: "Basic",
+    featureIndex: BASIC_PLAN_FEATURE_INDEX,
+    pricePerMonthCloud: 19,
+    pricePerMonthOnPremise: 17,
     pricePerUserCloud: 9,
     pricePerUserOnPremise: 7,
-    features: ["Multi-user", "Unlimited projects", "Unlimited languages", "Unlimited keys", "Unlimited translations"]
+    features: FEATURES_MAPPING.filter((f) => {
+        return f.values[BASIC_PLAN_FEATURE_INDEX] !== false;
+    })
 };
 
+export const TEAM_PLAN_FEATURE_INDEX = 2;
 export const TEAM_PLAN: IPlan = {
     id: "team",
-    name: "Team 🚀",
+    name: "Team",
+    featureIndex: TEAM_PLAN_FEATURE_INDEX,
+    pricePerMonthCloud: 29,
+    pricePerMonthOnPremise: 24,
     pricePerUserCloud: 19,
     pricePerUserOnPremise: 14,
-    features: [
-        "Multi-user",
-        "Unlimited projects",
-        "Unlimited languages",
-        "Unlimited keys",
-        "Unlimited translations",
-        // "Validations",
-        "Key history",
-        "Export hierarchy",
-        "Post processing",
-        "Project activity",
-        "QA Features"
-        // "Tag management"
-    ]
+    features: FEATURES_MAPPING.filter((f) => {
+        return f.values[TEAM_PLAN_FEATURE_INDEX] !== false;
+    })
 };
 
+export const BUSINESS_PLAN_FEATURE_INDEX = 3;
 export const BUSINESS_PLAN: IPlan = {
     id: "business",
-    name: "Business 🌎",
+    name: "Business",
+    featureIndex: BUSINESS_PLAN_FEATURE_INDEX,
+    pricePerMonthCloud: 49,
+    pricePerMonthOnPremise: 42,
     pricePerUserCloud: 39,
     pricePerUserOnPremise: 31,
-    features: [
-        "Multi-user",
-        "Unlimited projects",
-        "Unlimited languages",
-        "Unlimited keys",
-        "Unlimited translations",
-        // "Validations",
-        "Key history",
-        "Export hierarchy",
-        "Post processing",
-        "Project activity",
-        "QA Features",
-        // "Tag management",
-        "OTA",
-        "HTML editor"
-        // "Templates",
-        // "Project groups",
-        // "Machine translations"
-    ]
+    features: FEATURES_MAPPING.filter((f) => {
+        return f.values[BUSINESS_PLAN_FEATURE_INDEX] !== false;
+    })
 };
 
 export function getPlanById(planId: IPlanIDS) {
@@ -87,9 +165,12 @@ export function getPlanById(planId: IPlanIDS) {
 interface IPlan {
     id: IPlanIDS;
     name: string;
+    featureIndex: number;
+    pricePerMonthCloud: number;
+    pricePerMonthOnPremise: number;
     pricePerUserCloud: number;
     pricePerUserOnPremise: number;
-    features: string[];
+    features: IFeature[];
 }
 
 export type IHostingType = "on-premise" | "cloud";
@@ -155,16 +236,22 @@ export const handleCheckout = async (
 };
 
 const PlanWrapper = styled.div`
-    border: 1px solid;
-    border-color: ${(props) => {
-        return props.selected ? "var(--primary-btn-color)" : "var(--border-color)";
+    border: ${(props) => {
+        return props.highlighted && generalStore.theme !== "dark" ? "none" : "1px solid";
     }};
-
-    &:hover {
-        border-color: ${(props) => {
-            return props.selected ? "var(--primary-btn-color)" : "var(--border-color-flashier)";
-        }};
-    }
+    border-color: ${(props) => {
+        return props.selected
+            ? generalStore.theme === "dark"
+                ? "var(--primary-btn-color)"
+                : "#000"
+            : "var(--border-color)";
+    }};
+    color: ${(props) => {
+        return props.highlighted ? "#fff" : undefined;
+    }};
+    background: ${(props) => {
+        return props.highlighted ? "var(--dark-color)" : undefined;
+    }};
 `;
 
 function PaymentPlan(props: {
@@ -177,13 +264,15 @@ function PaymentPlan(props: {
     style?: React.CSSProperties;
     hideSelectButton?: boolean;
     showFreeTrial?: boolean;
+    highlighted?: boolean;
     onClick?(): void;
-    onChangePlan?(plan: IPlan): void;
+    onChangePlan?(plan: IPlan): Promise<void>;
 }) {
     const [loading, setLoading] = React.useState<boolean>(false);
     const [usersCount, setUsersCount] = React.useState<number>(5);
 
-    const price = props.hostingType === "on-premise" ? props.plan.pricePerUserOnPremise : props.plan.pricePerUserCloud;
+    const price =
+        props.hostingType === "on-premise" ? props.plan.pricePerMonthOnPremise : props.plan.pricePerMonthCloud;
 
     return (
         <PlanWrapper
@@ -196,6 +285,7 @@ function PaymentPlan(props: {
                 ...props.style
             }}
             selected={props.selected}
+            highlighted={props.highlighted}
             onClick={props.onClick}
         >
             <div
@@ -207,20 +297,16 @@ function PaymentPlan(props: {
                     textAlign: "center"
                 }}
             >
-                <h2 style={{ fontSize: 24 }}>{props.plan.name}</h2>
+                <h2 style={{ fontSize: 24, fontWeight: 400, color: "inherit" }}>{props.plan.name}</h2>
                 {props.showFreeTrial && (
                     <div style={{ marginBottom: 16 }}>
                         <Tag color="magenta">7 day free trial</Tag>
                     </div>
                 )}
-                <div style={{ fontSize: 16 }}>
-                    <div style={{ fontSize: 20, fontWeight: "bold" }}>{price} €</div>
-                    user/month
-                </div>
 
-                <div style={{ marginTop: 8, fontWeight: "bold" }}>
-                    {props.annualBilling ? `1 year for ${price * 12} €` : "Monthly Billing"}
-                </div>
+                <div style={{ fontSize: 32, fontWeight: "bold" }}>{price} €</div>
+
+                <div style={{ marginTop: 8 }}>{props.annualBilling ? `1 year for ${price * 12} €` : "per month"}</div>
             </div>
             <div
                 style={{
@@ -232,7 +318,11 @@ function PaymentPlan(props: {
                     borderBottomRightRadius: 4
                 }}
             >
-                <Features features={props.plan.features} />
+                <Features
+                    features={props.plan.features}
+                    featureIndex={props.plan.featureIndex}
+                    highlighted={props.highlighted}
+                />
 
                 <div style={{ marginTop: "auto", paddingTop: 24, display: "flex", flexDirection: "column" }}>
                     {props.hostingType === "on-premise" && (
@@ -268,13 +358,13 @@ function PaymentPlan(props: {
                             </div>
                         </>
                     )}
-                    {!props.selected && !props.hideSelectButton && (
+                    {!props.hideSelectButton && (
                         <Button
                             onClick={async () => {
+                                setLoading(true);
                                 if (props.hasActivePlan) {
-                                    props.onChangePlan(props.plan);
+                                    await props.onChangePlan?.(props.plan);
                                 } else {
-                                    setLoading(true);
                                     await handleCheckout(
                                         props.plan,
                                         props.hostingType,
@@ -285,18 +375,21 @@ function PaymentPlan(props: {
                                               }
                                             : { organizationId: props.organizationId }
                                     );
-                                    setLoading(false);
                                 }
+                                setLoading(false);
                             }}
-                            style={{ width: "100%" }}
-                            disabled={loading}
+                            style={{
+                                width: "100%",
+                                color: props.highlighted && props.selected ? "#d9d9d9" : undefined
+                            }}
+                            disabled={loading || props.selected}
                             ghost={props.selected}
                             size="large"
                             type={props.selected ? undefined : "primary"}
+                            loading={loading}
                         >
                             {!loading && !props.selected && "Select"}
                             {props.selected && "Your plan"}
-                            {loading && !props.selected && <LoadingOutlined />}
                         </Button>
                     )}
                 </div>
@@ -314,7 +407,7 @@ export function Licenses(props: {
     selectByPlanClick?: boolean;
     showFreePlan?: boolean;
     showFreeTrial?: boolean;
-    onChangePlan?(plan: IPlan): void;
+    onChangePlan?(plan: IPlan): Promise<void>;
 }) {
     return (
         <div
@@ -369,6 +462,7 @@ export function Licenses(props: {
                 style={{ marginRight: 16, cursor: props.selectByPlanClick ? "pointer" : "default" }}
                 annualBilling={props.annualBilling}
                 hideSelectButton={props.hideSelectButtons}
+                highlighted
                 onClick={() => {
                     if (props.selectByPlanClick && props.onChangePlan) {
                         props.onChangePlan(TEAM_PLAN);

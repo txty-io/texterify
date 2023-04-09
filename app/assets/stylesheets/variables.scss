@@ -9,8 +9,8 @@
   --primary-light-color: #e3eaff;
   --background-highlight-color: #1c70f51a;
 
-  --color-primary: #557fff;
-  --color-primary-light: #0956f6;
+  --color-primary: #1067f1;
+  --color-primary-light: #1c70f5;
   --color-passive: #aaa;
   --color-passive-hover: #333;
   --color-success: #52c41a;
@@ -139,8 +139,8 @@
   --primary-light-color: #111d3a;
   --background-highlight-color: #177ddc1a;
 
-  --color-primary: #3368ff;
-  --color-primary-light: #255ffd;
+  --color-primary: #1067f1;
+  --color-primary-light: #1c70f5;
   --color-passive: #555;
   --color-passive-hover: #999;
   --color-warn: #e84b00;
@@ -188,8 +188,8 @@
 
   // input
   --input-border-color: #434343;
-  --input-border-hover-color: var(--a-link);
-  --input-border-focus-color: var(--a-link);
+  --input-border-hover-color: var(--color-primary);
+  --input-border-focus-color: var(--color-primary);
   --input-border-disabled-color: #434343;
 
   // popover
@@ -225,8 +225,10 @@
   --breadcrumbs-last-color: rgba(255, 255, 255, 1);
 
   // links
-  --a-link: #5696ff;
-  --a-link-hover: #5696ff;
+  // --a-link: #5696ff;
+  // --a-link-hover: #5696ff;
+  --a-link: var(--color-primary-light);
+  --a-link-hover: var(--color-primary-light);
 
   // typography code
   --typography-code-background: transparent;

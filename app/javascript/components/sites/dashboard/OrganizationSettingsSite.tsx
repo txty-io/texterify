@@ -52,14 +52,7 @@ class OrganizationSettingsSite extends React.Component<IProps, IState> {
                 <Breadcrumbs breadcrumbName="organizationSettings" />
                 <Content style={{ margin: "24px 16px 0", minHeight: 360, display: "flex", flexDirection: "column" }}>
                     <h1>Settings</h1>
-                    <Collapse
-                        bordered={false}
-                        defaultActiveKey={
-                            PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentOrganizationRole())
-                                ? "general"
-                                : undefined
-                        }
-                    >
+                    <Collapse bordered={false}>
                         <Collapse.Panel
                             header="General settings"
                             key="general"
