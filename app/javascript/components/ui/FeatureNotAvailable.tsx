@@ -37,7 +37,6 @@ export function FeatureNotAvailable(props: { feature: IFeature; dataId?: string;
             type="primary"
             style={{
                 cursor: buttonEnabled ? "pointer" : "default",
-                color: "#fff",
                 fontSize: 12,
                 height: "auto",
                 lineHeight: "20px",
