@@ -51,7 +51,7 @@ export function CustomAlert(props: {
             >
                 {props.icon ? props.icon : icon}
             </div>
-            <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
                 {props.title && (
                     <div style={{ color: textColor, fontSize: 18, lineHeight: "24px", marginBottom: 12 }}>
                         {props.title}

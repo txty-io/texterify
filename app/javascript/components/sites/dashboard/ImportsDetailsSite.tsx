@@ -14,6 +14,7 @@ import { ImportReviewTable } from "../../ui/ImportReviewTable";
 import { ImportSidebar } from "../../ui/ImportSidebar";
 import { Loading } from "../../ui/Loading";
 import { Utils } from "../../ui/Utils";
+import { CustomAlert } from "../../ui/CustomAlert";
 
 function ImportStatusChecker(props: { text: string; importReloader(): void }) {
     React.useEffect(() => {
@@ -74,11 +75,10 @@ function ImportDetailsContent(props: {
                     ]}
                 />
 
-                <Alert
+                <CustomAlert
                     style={{ marginTop: 40, maxWidth: "100%" }}
-                    showIcon
                     type="info"
-                    message={
+                    description={
                         <>
                             If you are having problems importing your files feel free to open a ticket{" "}
                             <a href={Constants.GITHUB_ISSUES_SITE} target="_blank">

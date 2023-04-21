@@ -3,7 +3,6 @@ import * as React from "react";
 import { Redirect, RouteComponentProps, Switch } from "react-router-dom";
 import { OrganizationsAPI } from "../api/v1/OrganizationsAPI";
 import { ProjectsAPI } from "../api/v1/ProjectsAPI";
-import { ImportsAssignSite } from "../sites/dashboard/ImportsAssignSite";
 import { ImportsDetailsSite } from "../sites/dashboard/ImportsDetailsSite";
 import { ImportsSite } from "../sites/dashboard/ImportsSite";
 import { KeysSite } from "../sites/dashboard/KeysSite";

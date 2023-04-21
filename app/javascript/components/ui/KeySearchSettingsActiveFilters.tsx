@@ -28,12 +28,7 @@ export function KeySearchSettingsActiveFilters(props: {
 
     return (
         <div style={{ display: "flex", ...props.style }}>
-            <div style={{ marginRight: 12, padding: "4px 0" }}>Active filters:</div>
             <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center" }}>
-                {!hasActiveFilter && (
-                    <span style={{ fontStyle: "italic", color: "var(--color-passive)" }}>No filters active</span>
-                )}
-
                 {currentQueryParams.m === "exactly" && (
                     <Tag color="magenta" style={TagStyle}>
                         text matches search exactly

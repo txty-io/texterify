@@ -41,7 +41,7 @@
 
   // alert warning
   --alert-warning-background-color: #ffb75b17;
-  --alert-warning-border-color: #ffb75b;
+  --alert-warning-border-color: #996625;
   --alert-warning-color: #fff;
 
   // alert error
@@ -104,8 +104,8 @@
   --breadcrumbs-last-color: rgba(0, 0, 0, 1);
 
   // links
-  --a-link: #4170ff;
-  --a-link-hover: #4170ff;
+  --a-link: #3885ff;
+  --a-link-hover: #3885ff;
 
   // select
   --select-single-color: rgba(0, 0, 0, 0.85);
@@ -225,10 +225,8 @@
   --breadcrumbs-last-color: rgba(255, 255, 255, 1);
 
   // links
-  // --a-link: #5696ff;
-  // --a-link-hover: #5696ff;
-  --a-link: var(--color-primary-light);
-  --a-link-hover: var(--color-primary-light);
+  --a-link: #3885ff;
+  --a-link-hover: #3885ff;
 
   // typography code
   --typography-code-background: transparent;

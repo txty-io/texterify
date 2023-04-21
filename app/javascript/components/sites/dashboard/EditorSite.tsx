@@ -35,6 +35,7 @@ import { TagsFilter } from "../../ui/TagsFilter";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
 import { DATE_TIME_FORMAT } from "../../ui/Utils";
 import { TranslationCard } from "./editor/TranslationCard";
+import { CustomAlert } from "../../ui/CustomAlert";
 
 const Key = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
@@ -709,9 +710,8 @@ class EditorSite extends React.Component<IProps, IState> {
                                             }}
                                         />
                                     ) : (
-                                        <Alert
-                                            showIcon
-                                            message={
+                                        <CustomAlert
+                                            description={
                                                 <>
                                                     Set a default language as source for translation by clicking{" "}
                                                     <Link
