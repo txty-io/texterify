@@ -12,6 +12,11 @@ module Texterify
     REGEX_KEY_VALUE = /#{REGEX_CONTENT}\s*=\s*#{REGEX_CONTENT}*/.freeze
 
     def self.parse_file_content(_file_name, file_content, file_format)
+      # Force encoding due to error
+      # "<Encoding::CompatibilityError: incompatible encoding regexp match (UTF-8 regexp with ASCII-8BIT string)>"
+      # when importing TOML data.
+      file_content.force_encoding(Encoding::UTF_8)
+
       if file_format == 'json'
         json?(file_content, true)
       elsif ['json-formatjs', 'json-poeditor'].include?(file_format)
