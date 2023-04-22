@@ -1,20 +1,20 @@
-import { Alert, Button, Layout, notification, Result, Skeleton } from "antd";
+import { Button, Layout, Result, Skeleton } from "antd";
 import * as React from "react";
 import { useParams } from "react-router";
-import { IGetImportResponse, IImportFile } from "../../api/v1/ImportsAPI";
+import { IGetImportResponse } from "../../api/v1/ImportsAPI";
 import useImport from "../../hooks/useImport";
 import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { BackButton } from "../../ui/BackButton";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { Constants } from "../../ui/Constants";
+import { CustomAlert } from "../../ui/CustomAlert";
 import { ImportFileAssigner } from "../../ui/ImportFileAssigner";
 import { ImportFilesTable } from "../../ui/ImportFilesTable";
 import { ImportReviewTable } from "../../ui/ImportReviewTable";
 import { ImportSidebar } from "../../ui/ImportSidebar";
 import { Loading } from "../../ui/Loading";
 import { Utils } from "../../ui/Utils";
-import { CustomAlert } from "../../ui/CustomAlert";
 
 function ImportStatusChecker(props: { text: string; importReloader(): void }) {
     React.useEffect(() => {

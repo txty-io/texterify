@@ -10,7 +10,8 @@ function PreviewItem(props: { children: React.ReactNode }) {
     return (
         <div
             style={{
-                marginBottom: 4
+                marginBottom: 4,
+                wordBreak: "break-word"
             }}
         >
             {props.children}
@@ -140,7 +141,7 @@ export function ImportReviewTable(props: {
                 rows.push({
                     key: `${languageId}-${keyName}`,
                     id: `${languageId}-${keyName}`,
-                    name: keyName,
+                    name: <div style={{ wordBreak: "break-word", minWidth: 320 }}>{keyName}</div>,
                     language: (
                         <LanguageNameWithFlag
                             languageName={language?.attributes.name}
