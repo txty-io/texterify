@@ -66,6 +66,7 @@ class ImportVerifyWorker
           else
             import_file.status = 'ERROR'
             import_file.status_message = 'ERROR_WHILE_PARSING'
+            import_file.error_message = parsed_result[:error_message]
           end
         rescue StandardError => e
           logger.error(e)
