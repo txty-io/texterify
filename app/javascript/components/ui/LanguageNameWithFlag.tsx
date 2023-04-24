@@ -2,8 +2,8 @@ import * as React from "react";
 import FlagIcon from "./FlagIcons";
 
 export function LanguageNameWithFlag(props: {
-    languageName: string;
-    countryCode: string;
+    languageName?: string;
+    countryCode?: string;
     showNameWithCountryCode?: boolean;
 }) {
     return (

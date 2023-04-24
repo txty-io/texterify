@@ -3,7 +3,6 @@ import * as React from "react";
 import { ImportsAPI } from "../api/v1/ImportsAPI";
 import useImportReview from "../hooks/useImportReview";
 import useLanguages from "../hooks/useLanguages";
-import { ImportFilesTable } from "./ImportFilesTable";
 import { LanguageNameWithFlag } from "./LanguageNameWithFlag";
 
 function PreviewItem(props: { children: React.ReactNode }) {
@@ -131,7 +130,15 @@ export function ImportReviewTable(props: {
             return [];
         }
 
-        const rows = [];
+        const rows: {
+            key: React.ReactNode;
+            id: React.ReactNode;
+            name: React.ReactNode;
+            language: React.ReactNode;
+            old: React.ReactNode;
+            new: React.ReactNode;
+            status: React.ReactNode;
+        }[] = [];
         Object.keys(importReviewResponse.new_translations).forEach((languageId) => {
             Object.keys(importReviewResponse.new_translations[languageId]).forEach((keyName) => {
                 const translationObject = importReviewResponse.new_translations[languageId][keyName];

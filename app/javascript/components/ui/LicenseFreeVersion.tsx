@@ -54,7 +54,7 @@ export function LicenseFreeTrial(props: { hasLicense: boolean; expiresAt: string
             <a
                 href={Constants.TEXTERIFY_NEW_LICENSE_SITE}
                 target="_blank"
-                style={{ marginLeft: 24, marginRight: 40, display: "flex", alignItems: "center" }}
+                style={{ whiteSpace: "nowrap", marginLeft: 24, marginRight: 40, display: "flex", alignItems: "center" }}
             >
                 Upgrade plan <ArrowUpRightIcon width={16} style={{ marginLeft: 8 }} />
             </a>
