@@ -19,10 +19,12 @@ import {
 } from "../../api/v1/MachineTranslationsAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { MenuLinkWrapper, MenuList } from "../../routing/DashboardRouter";
-import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
+import { history } from "../../routing/history";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
+import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
+import { CustomAlert } from "../../ui/CustomAlert";
 import { DarkModeToggle } from "../../ui/DarkModeToggle";
 import { EditorSidebarInfo } from "../../ui/EditorSidebarInfo";
 import FlagIcon from "../../ui/FlagIcons";
@@ -30,12 +32,10 @@ import { KeyHistory } from "../../ui/KeyHistory";
 import { ISearchSettings, KeySearchSettings, parseKeySearchSettingsFromURL } from "../../ui/KeySearchSettings";
 import { KeySearchSettingsActiveFilters } from "../../ui/KeySearchSettingsActiveFilters";
 import { KeyTags } from "../../ui/KeyTags";
-import { Styles } from "../../ui/Styles";
 import { TagsFilter } from "../../ui/TagsFilter";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
 import { DATE_TIME_FORMAT } from "../../ui/Utils";
 import { TranslationCard } from "./editor/TranslationCard";
-import { CustomAlert } from "../../ui/CustomAlert";
 
 const Key = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
@@ -639,6 +639,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                 style={{ alignSelf: "center", margin: 16 }}
                                 pageSize={dashboardStore.keysPerPageEditor}
                                 showSizeChanger
+                                pageSizeOptions={PAGE_SIZE_OPTIONS}
                             />
                         </div>
                         <div
