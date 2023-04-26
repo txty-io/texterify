@@ -19,10 +19,11 @@ import {
 } from "../../api/v1/MachineTranslationsAPI";
 import { ProjectsAPI } from "../../api/v1/ProjectsAPI";
 import { MenuLinkWrapper, MenuList } from "../../routing/DashboardRouter";
-import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
+import { history } from "../../routing/history";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
+import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { DarkModeToggle } from "../../ui/DarkModeToggle";
 import { EditorSidebarInfo } from "../../ui/EditorSidebarInfo";
 import FlagIcon from "../../ui/FlagIcons";
@@ -640,6 +641,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                 style={{ alignSelf: "center", margin: 16 }}
                                 pageSize={dashboardStore.keysPerPageEditor}
                                 showSizeChanger
+                                pageSizeOptions={PAGE_SIZE_OPTIONS}
                             />
                         </div>
                         <div
