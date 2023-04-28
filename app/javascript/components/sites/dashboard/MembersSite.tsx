@@ -209,7 +209,7 @@ class MembersSite extends React.Component<IProps, IState> {
                 render: (_text, record: IUserRow) => {
                     return (
                         <>
-                            <span style={{ color: "var(--full-color)", fontWeight: "bold" }}>{record.username}</span>
+                            <span style={{ color: "var(--color-full)", fontWeight: "bold" }}>{record.username}</span>
                             {record.deactivated_for_project && (
                                 <Tooltip title="User has been deactivated for this organization. Go to your organization users site to activate this user.">
                                     <Tag
@@ -240,7 +240,7 @@ class MembersSite extends React.Component<IProps, IState> {
                 title: "E-Mail",
                 key: "email",
                 render: (_text, record) => {
-                    return <span style={{ color: "var(--full-color)" }}>{record.email}</span>;
+                    return <span style={{ color: "var(--color-full)" }}>{record.email}</span>;
                 }
             },
             {

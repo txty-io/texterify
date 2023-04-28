@@ -130,7 +130,7 @@ function SearchOverlayResults(props: { loading: boolean; projects: any[]; includ
                         key={project.id}
                         style={{
                             padding: "8px 16px",
-                            background: isSelected ? "var(--primary-btn-color)" : undefined
+                            background: isSelected ? "var(--color-primary-500)" : undefined
                         }}
                     >
                         <ProjectAvatar

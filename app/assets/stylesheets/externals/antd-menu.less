@@ -1,6 +1,12 @@
 &,
 .dark-theme,
 .light-theme {
+  --main-sidebar-active-background-color: var(--color-background);
+  --main-sidebar-active-color: var(--color-full);
+  --main-sidebar-hover-color: var(--color-full);
+  --main-sidebar-color: var(--color-list-item-clickable);
+  --main-sidebar-indicator-color: var(--color-full);
+
   .ant-menu-vertical .ant-menu-item:after,
   .ant-menu-vertical-left .ant-menu-item:after,
   .ant-menu-vertical-right .ant-menu-item:after,
@@ -9,7 +15,7 @@
   }
 
   .ant-menu-submenu > .ant-menu {
-    background: var(--background-color);
+    background: var(--color-background);
   }
 
   .ant-menu-item > a {

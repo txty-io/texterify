@@ -123,7 +123,7 @@ const SearchInputWrapper = styled.div`
     margin-right: 40px;
 
     input::placeholder {
-        color: #7b8ca0 !important;
+        color: var(--color-list-item-clickable) !important;
     }
 
     &:hover {
@@ -489,7 +489,7 @@ class DashboardRouter extends React.Component<IProps, IState> {
                                                     color:
                                                         dashboardStore.activeBackgroundJobsResponse.meta?.total > 0
                                                             ? "#fff"
-                                                            : "var(--dark-color)",
+                                                            : "var(--color-dark)",
                                                     fontWeight: "bold",
                                                     fontSize: 10,
                                                     cursor: "pointer"

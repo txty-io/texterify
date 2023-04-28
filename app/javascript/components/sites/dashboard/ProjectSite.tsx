@@ -250,7 +250,7 @@ class ProjectSite extends React.Component<IProps, IState> {
                             {dashboardStore.currentProject && dashboardStore.currentProject.attributes.name}
                         </h1>
                         <div style={{ marginLeft: 120, display: "flex", fontSize: 13 }}>
-                            <span style={{ fontWeight: "bold", color: "var(--highlight-color)" }}>Project ID:</span>
+                            <span style={{ fontWeight: "bold", color: "var(--color-full)" }}>Project ID:</span>
                             <Paragraph
                                 style={{
                                     marginTop: 0,

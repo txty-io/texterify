@@ -45,22 +45,22 @@ const Key = styled.div<{ isSelected: boolean }>`
     font-size: 13px;
 
     background: ${(props) => {
-        return props.isSelected ? "var(--primary-light-color)" : "none";
+        return props.isSelected ? "var(--color-highlight-background)" : "none";
     }};
 
     color: ${(props) => {
-        return props.isSelected ? "var(--color-primary)" : "#333";
+        return props.isSelected ? "var(--color-primary-500)" : "#333";
     }};
 
     &:hover {
-        color: var(--color-primary);
+        color: var(--color-primary-500);
     }
 
     .dark-theme & {
         color: #fff;
 
         &:hover {
-            color: var(--color-primary);
+            color: var(--color-primary-500);
         }
     }
 `;
@@ -341,7 +341,7 @@ class EditorSite extends React.Component<IProps, IState> {
                             style={{
                                 display: "flex",
                                 flexDirection: "column",
-                                borderRight: "1px solid var(--border-color)",
+                                borderRight: "1px solid var(--color-border)",
                                 overflow: "auto",
                                 width: "25%",
                                 flexShrink: 0,
@@ -571,7 +571,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                                 isSelected={this.isSelectedKey(key.id)}
                                                 style={{
                                                     color: this.isSelectedKey(key.id)
-                                                        ? "var(--color-primary)"
+                                                        ? "var(--color-primary-500)"
                                                         : undefined,
                                                     flexShrink: 0
                                                 }}
@@ -613,7 +613,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                     <div
                                         style={{
                                             margin: "auto",
-                                            color: "var(--full-color)"
+                                            color: "var(--color-full)"
                                         }}
                                     >
                                         No keys found.
@@ -783,7 +783,7 @@ class EditorSite extends React.Component<IProps, IState> {
                             {!this.keyLoaded() && !this.props.match.params.keyId && (
                                 <p
                                     style={{
-                                        color: "var(--full-color)",
+                                        color: "var(--color-full)",
                                         marginTop: 160,
                                         textAlign: "center"
                                     }}
@@ -798,7 +798,7 @@ class EditorSite extends React.Component<IProps, IState> {
                                 style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    borderLeft: "1px solid var(--border-color)",
+                                    borderLeft: "1px solid var(--color-border)",
                                     overflow: "auto",
                                     width: "25%",
                                     flexShrink: 0

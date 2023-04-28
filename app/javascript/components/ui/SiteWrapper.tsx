@@ -18,7 +18,7 @@ class SiteWrapper extends React.Component<IProps> {
                     justifyContent: "flex-start",
                     alignItems: "center",
                     width: "100%",
-                    background: "var(--dark-color)",
+                    background: "var(--color-dark)",
                     ...this.props.style
                 }}
                 className="dark-theme"

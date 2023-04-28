@@ -52,7 +52,7 @@ export function ProjectInvitesTable(props: { loading: boolean; projectInvites: I
                 title: "E-Mail",
                 key: "email",
                 render: (_text, record) => {
-                    return <span style={{ color: "var(--full-color)" }}>{record.email}</span>;
+                    return <span style={{ color: "var(--color-full)" }}>{record.email}</span>;
                 }
             },
             {

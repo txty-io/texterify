@@ -37,7 +37,7 @@
     }
 
     .toolbar button.toolbar-item.active {
-        background-color: var(--toolbar-action-active-background-color);
+        background-color: var(--color-full-opacity-10);
     }
 
     .toolbar button.toolbar-item.active i {
@@ -45,11 +45,11 @@
     }
 
     .toolbar .toolbar-item:hover:not([disabled]) {
-        background-color: var(--toolbar-action-active-background-color);
+        background-color: var(--color-full-opacity-10);
     }
 
     .toolbar .toolbar-item.active:hover:not([disabled]) {
-        background-color: var(--toolbar-action-active-background-color);
+        background-color: var(--color-full-opacity-10);
     }
 
     .ant-input {

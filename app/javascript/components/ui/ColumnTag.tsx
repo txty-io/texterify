@@ -31,9 +31,9 @@ class ColumnTag extends React.Component<IColumnTagProps, IColumnTagState> {
                     checked={this.state.checked}
                     onChange={this.handleChange}
                     style={{
-                        background: this.state.checked ? "var(--column-tag-color)" : "transparent",
-                        borderColor: "var(--column-tag-color)",
-                        color: this.state.checked ? "#fff" : "var(--column-tag-color)"
+                        background: this.state.checked ? "var(--key-table-column-tag-color)" : "transparent",
+                        borderColor: "var(--key-table-column-tag-color)",
+                        color: this.state.checked ? "#fff" : "var(--key-table-column-tag-color)"
                     }}
                 />
             </div>

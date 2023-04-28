@@ -4,6 +4,7 @@ import * as React from "react";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { COLORS } from "./Colors";
 
 interface IElementData {
     title: React.ReactNode;
@@ -25,14 +26,12 @@ const MenuItem: typeof Menu.Item & CustomMenuItemProps = styled(Menu.Item)<Custo
         width: 100%;
         color: ${(props: CustomMenuItemProps) => {
             return props.selectedKeys.includes(props["data-id"])
-                ? "var(--sidebar-item-active-color) !important"
-                : "var(--sidebar-item-color)";
+                ? `${COLORS.COLOR_FULL} !important`
+                : COLORS.COLOR_LIST_ITEM_CLICKABLE;
         }};
         padding: 0 12px;
         background: ${(props: CustomMenuItemProps) => {
-            return props.selectedKeys.includes(props["data-id"])
-                ? "var(--sidebar-item-active-background-color)"
-                : undefined;
+            return props.selectedKeys.includes(props["data-id"]) ? COLORS.COLOR_HIGHLIGHT_BACKGROUND : undefined;
         }};
         border-radius: ${(props: CustomMenuItemProps) => {
             return props["data-no-border-radius"] ? "0" : "4px";
@@ -43,8 +42,8 @@ const MenuItem: typeof Menu.Item & CustomMenuItemProps = styled(Menu.Item)<Custo
         &:hover {
             color: ${(props: CustomMenuItemProps) => {
                 return props.selectedKeys.includes(props["data-id"])
-                    ? "var(--sidebar-item-active-color) !important"
-                    : "var(--sidebar-item-color-hover)";
+                    ? `${COLORS.COLOR_FULL} !important`
+                    : COLORS.COLOR_LIST_ITEM_CLICKABLE;
             }};
         }
     }
@@ -60,14 +59,12 @@ const SubMenu: typeof Menu.Item = styled(Menu.SubMenu)<SubMenuProps>`
         width: 100%;
         color: ${(props: MenuItemProps) => {
             return props.selectedKeys.includes(props["data-id"])
-                ? "var(--sidebar-item-active-color) !important"
-                : "var(--sidebar-item-color)";
+                ? `${COLORS.COLOR_FULL} !important`
+                : COLORS.COLOR_LIST_ITEM_CLICKABLE;
         }};
         padding: 0 12px;
         background: ${(props: SubMenuProps & { selectedKeys: string[] }) => {
-            return props.selectedKeys.includes(props["data-id"])
-                ? "var(--sidebar-item-active-background-color)"
-                : undefined;
+            return props.selectedKeys.includes(props["data-id"]) ? COLORS.COLOR_HIGHLIGHT_BACKGROUND : undefined;
         }};
         border-radius: 4px !important;
         letter-spacing: 0.25px;
@@ -76,8 +73,8 @@ const SubMenu: typeof Menu.Item = styled(Menu.SubMenu)<SubMenuProps>`
         &:hover {
             color: ${(props: MenuItemProps) => {
                 return props.selectedKeys.includes(props["data-id"])
-                    ? "var(--sidebar-item-active-color) !important"
-                    : "var(--sidebar-item-color-hover)";
+                    ? `${COLORS.COLOR_FULL} !important`
+                    : COLORS.COLOR_LIST_ITEM_CLICKABLE;
             }};
         }
     }
@@ -124,7 +121,7 @@ export function SubSidebar(props: ISubSidebarProps) {
                 flexDirection: "column",
                 padding: "32px 0",
                 background: "var(--sidebar-background-color)",
-                borderRight: "1px solid var(--sidebar-border-color)",
+                borderRight: "1px solid var(--color-border)",
                 minWidth: 200,
                 flexShrink: 0
             }}

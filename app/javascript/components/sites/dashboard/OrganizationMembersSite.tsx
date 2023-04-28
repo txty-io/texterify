@@ -295,7 +295,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                 render: (_text, record: IOrganizationUserRow | IProjectUserRow) => {
                     return (
                         <>
-                            <span style={{ color: "var(--full-color)", fontWeight: "bold" }}>
+                            <span style={{ color: "var(--color-full)", fontWeight: "bold" }}>
                                 {record.user.attributes.username}
                             </span>
                             {((record as IOrganizationUserRow).deactivated_for_organization ||
@@ -329,7 +329,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                 title: "E-Mail",
                 key: "email",
                 render: (_text, record) => {
-                    return <span style={{ color: "var(--full-color)" }}>{record.user.attributes.email}</span>;
+                    return <span style={{ color: "var(--color-full)" }}>{record.user.attributes.email}</span>;
                 }
             }
         ];
@@ -621,7 +621,7 @@ class OrganizationMembersSite extends React.Component<IProps, IState> {
                 title: "E-Mail",
                 key: "email",
                 render: (_text, record) => {
-                    return <span style={{ color: "var(--full-color)" }}>{record.email}</span>;
+                    return <span style={{ color: "var(--color-full)" }}>{record.email}</span>;
                 }
             },
             {

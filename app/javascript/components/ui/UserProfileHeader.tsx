@@ -15,7 +15,7 @@ import { UserAvatar } from "./UserAvatar";
 const AccountProfileContentWrapper = styled.div`
     a {
         display: block;
-        color: var(--select-single-color);
+        color: var(--color-list-item-clickable);
         padding: 4px 16px;
 
         .dark-theme & {
@@ -25,8 +25,7 @@ const AccountProfileContentWrapper = styled.div`
 
     a:hover {
         text-decoration: none;
-        color: var(--select-selected-color);
-        background: var(--select-selected-background-color);
+        color: var(--color-full);
     }
 `;
 

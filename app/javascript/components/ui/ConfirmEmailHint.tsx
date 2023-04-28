@@ -11,7 +11,7 @@ export function ConfirmEmailHint() {
         <div
             style={{
                 padding: "12px 24px",
-                background: "var(--primary-btn-color)",
+                background: "var(--color-primary-500)",
                 display: "flex",
                 alignItems: "center",
                 minHeight: 56,

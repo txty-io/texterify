@@ -25,7 +25,10 @@ export const DarkModeToggle = observer(
                     checked={generalStore.theme === "light"}
                     checkedChildren={<SunIcon />}
                     unCheckedChildren={<MoonIcon />}
-                    style={{ background: generalStore.theme === "light" ? "#3368ff" : "#122450" }}
+                    style={{
+                        background:
+                            generalStore.theme === "light" ? "var(--color-primary-500)" : "var(--color-primary-200)"
+                    }}
                 />
             </div>
         );

@@ -242,15 +242,15 @@ const PlanWrapper = styled.div`
     border-color: ${(props) => {
         return props.selected
             ? generalStore.theme === "dark"
-                ? "var(--primary-btn-color)"
+                ? "var(--color-primary-500)"
                 : "#000"
-            : "var(--border-color)";
+            : "var(--color-border)";
     }};
     color: ${(props) => {
         return props.highlighted ? "#fff" : undefined;
     }};
     background: ${(props) => {
-        return props.highlighted ? "var(--dark-color)" : undefined;
+        return props.highlighted ? "var(--color-dark)" : undefined;
     }};
 `;
 

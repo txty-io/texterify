@@ -78,9 +78,9 @@ class ProjectValidationsSite extends React.Component<IProps, IState> {
     renderValidationRule = (props: { name: string; description: string; property: string }) => {
         let dotColor = dashboardStore.currentProject.attributes[props.property]
             ? "var(--color-success)"
-            : "var(--error-color)";
+            : "var(--color-error)";
         if (!dashboardStore.featureEnabled("FEATURE_VALIDATIONS")) {
-            dotColor = "var(--border-color)";
+            dotColor = "var(--color-border)";
         }
 
         return (

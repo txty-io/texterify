@@ -1,6 +1,12 @@
 &,
 .dark-theme,
 .light-theme {
+  --select-selected-color: var(--color-full);
+  --select-selected-color-hover: var(--color-full);
+  --select-single-color: var(--color-full-opacity-85);
+  --select-active-background-color: var(--color-full-opacity-10);
+  --select-selected-background-color: var(--color-full-opacity-10);
+
   .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
     background-color: var(--select-active-background-color) !important;
   }
@@ -32,7 +38,7 @@
   .ant-select-disabled.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
     background: none;
     color: #434343;
-    border-color: var(--input-border-disabled-color);
+    border-color: var(--color-input-border-disabled);
   }
 
   .ant-select:not(.ant-select-disabled) .ant-select-selector {
@@ -60,6 +66,6 @@
   }
 
   .ant-select-dropdown {
-    background-color: var(--background-color);
+    background-color: var(--color-background);
   }
 }

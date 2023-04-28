@@ -14,7 +14,7 @@ class PricingCard extends React.Component<IProps> {
         return (
             <div
                 style={{
-                    border: "1px solid var(--border-color)",
+                    border: "1px solid var(--color-border)",
                     padding: "20px 24px",
                     textAlign: "center",
                     flexBasis: 1,

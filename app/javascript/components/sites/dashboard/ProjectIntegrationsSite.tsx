@@ -110,7 +110,7 @@ class ProjectIntegrationsSite extends React.Component<IProps> {
                 }}
             >
                 {integration.textLogo && (
-                    <div style={{ width: 40, fontSize: 24, color: "var(--full-color)", textAlign: "center" }}>
+                    <div style={{ width: 40, fontSize: 24, color: "var(--color-full)", textAlign: "center" }}>
                         {integration.textLogo}
                     </div>
                 )}
@@ -120,7 +120,7 @@ class ProjectIntegrationsSite extends React.Component<IProps> {
                         style={{
                             fontWeight: "bold",
                             fontSize: 18,
-                            color: "var(--full-color)"
+                            color: "var(--color-full)"
                         }}
                     >
                         {integration.name}

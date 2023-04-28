@@ -16,7 +16,7 @@ import { IOrganization } from "../stores/DashboardStore";
 const TypeSelection = styled.div<{ active: boolean }>`
     border: 1px solid
         ${(props) => {
-            return props.active ? "var(--color-primary)" : "var(--border-color)";
+            return props.active ? "var(--color-primary-500)" : "var(--color-border)";
         }};
     padding: 40px 24px;
     border-radius: ${Styles.DEFAULT_BORDER_RADIUS}px;
@@ -29,13 +29,13 @@ const TypeSelection = styled.div<{ active: boolean }>`
     font-weight: bold;
     cursor: pointer;
     color: ${(props) => {
-        return props.active ? "var(--color-primary)" : "unset";
+        return props.active ? "var(--color-primary-500)" : "unset";
     }};
 
     &:hover {
         border: 1px solid
             ${(props) => {
-                return props.active ? "var(--color-primary)" : "var(--border-color-flashier)";
+                return props.active ? "var(--color-primary-500)" : "var(--color-border-flashier)";
             }};
     }
 

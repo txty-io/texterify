@@ -21,10 +21,10 @@ export function CustomAlert(props: {
         const iconColor = "var(--alert-error-color)";
         icon = <ExclamationTriangleIcon style={{ color: iconColor }} />;
     } else if (props.type === "info") {
-        backgroundColor = "var(--alert-background-color)";
-        borderColor = "var(--alert-border-color)";
-        textColor = "var(--full-color)";
-        const iconColor = "var(--full-color)";
+        backgroundColor = "var(--alert-info-background-color)";
+        borderColor = "var(--alert-info-border-color)";
+        textColor = "var(--color-full)";
+        const iconColor = "var(--color-full)";
         icon = <ExclamationCircleIcon style={{ color: iconColor, width: "100%" }} />;
     }
 
@@ -57,7 +57,7 @@ export function CustomAlert(props: {
                         {props.title}
                     </div>
                 )}
-                <div style={{ color: props.title ? "var(--full-color)" : textColor, lineHeight: "22px" }}>
+                <div style={{ color: props.title ? "var(--color-full)" : textColor, lineHeight: "22px" }}>
                     {props.description}
                 </div>
             </div>

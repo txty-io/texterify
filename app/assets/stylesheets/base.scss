@@ -59,7 +59,7 @@ footer {
 
 mark {
   color: transparent;
-  background-color: var(--mark-background-color) !important;
+  background-color: var(--color-mark-background) !important;
   padding: 0px !important;
 }
 
@@ -89,69 +89,6 @@ mark {
   * {
     transition: none !important;
   }
-}
-
-.button {
-    padding: 14px 24px;
-    font-size: 14px;
-    border-radius: 4px;
-    color: #fff !important;
-    background: var(--primary-btn-color);
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
-    border: 0;
-    font-weight: 400;
-    cursor: pointer;
-
-    &[disabled] {
-      background: #999;
-      cursor: default;
-    }
-
-    &:hover:not([disabled]) {
-        color: #fff !important;
-        background: var(--primary-btn-hover-color);
-    }
-
-    &.button-dark {
-        background: var(--dark-color);
-
-        &:hover {
-            background: var(--dark-color-lighten);
-        }
-    }
-
-    &.button-light {
-        background: rgba(255, 255, 255, 0.05);
-
-        &:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-    }
-
-    &.button-white {
-        background: rgba(255, 255, 255, 0.95);
-        color: var(--dark-color) !important;
-
-        &:hover {
-            background: rgba(255, 255, 255, 1);
-        }
-    }
-
-    &.button-bordered {
-        background: #fff;
-        color: #000 !important;
-        border: 1px solid var(--border-color);
-
-        &:hover {
-            border-color: var(--border-color-flashier);
-        }
-    }
-
-    &.button-big {
-        padding: 16px 42px;
-        font-size: 16px;
-    }
 }
 
 .enable-ul {

@@ -1,7 +1,5 @@
 const Styles = {
-    COLOR_PRIMARY: "#000",
-    COLOR_PRIMARY_LIGHT: "var(--primary-light-color)",
-    COLOR_SECONDARY: "var(--color-primary)",
+    COLOR_SECONDARY: "var(--color-primary-500)",
     COLOR_SECONDARY_LIGHT: "#ecf1ff",
     COLOR_TEXT_DISABLED: "#787878",
     DEFAULT_BORDER_RADIUS: 4,
