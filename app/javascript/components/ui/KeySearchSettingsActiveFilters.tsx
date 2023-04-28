@@ -15,17 +15,6 @@ export function KeySearchSettingsActiveFilters(props: {
 }) {
     const currentQueryParams = useQuery();
 
-    const hasActiveFilter =
-        currentQueryParams.ou === "true" ||
-        currentQueryParams.cc === "true" ||
-        currentQueryParams.oo === "true" ||
-        currentQueryParams.he === "true" ||
-        currentQueryParams.l ||
-        currentQueryParams.ec ||
-        currentQueryParams.ca ||
-        currentQueryParams.cb ||
-        currentQueryParams.m === "exactly";
-
     return (
         <div style={{ display: "flex", ...props.style }}>
             <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center" }}>

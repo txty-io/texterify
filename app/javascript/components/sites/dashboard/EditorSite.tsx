@@ -36,6 +36,7 @@ import { TagsFilter } from "../../ui/TagsFilter";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
 import { DATE_TIME_FORMAT } from "../../ui/Utils";
 import { TranslationCard } from "./editor/TranslationCard";
+import { COLORS } from "../../ui/Colors";
 
 const Key = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
@@ -43,25 +44,18 @@ const Key = styled.div<{ isSelected: boolean }>`
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 13px;
+    flex-shrink: 0;
 
     background: ${(props) => {
         return props.isSelected ? "var(--color-highlight-background)" : "none";
     }};
 
     color: ${(props) => {
-        return props.isSelected ? "var(--color-primary-500)" : "#333";
+        return props.isSelected ? COLORS.COLOR_FULL : "var(--color-passive-hover)";
     }};
 
     &:hover {
-        color: var(--color-primary-500);
-    }
-
-    .dark-theme & {
-        color: #fff;
-
-        &:hover {
-            color: var(--color-primary-500);
-        }
+        color: var(--color-full);
     }
 `;
 
@@ -348,47 +342,17 @@ class EditorSite extends React.Component<IProps, IState> {
                                 minWidth: 240
                             }}
                         >
-                            <div style={{ margin: 24, width: "auto" }}>
-                                <KeySearchSettingsActiveFilters
-                                    languagesResponse={this.state.languagesResponse}
-                                    flavorsResponse={this.state.flavorsResponse}
-                                />
-                                <Input.Group
-                                    compact
-                                    style={{
-                                        width: "100%",
-                                        display: "flex",
-                                        marginTop: 4
-                                    }}
-                                >
-                                    <Popover
-                                        title="Search filters"
-                                        placement="bottomLeft"
-                                        trigger="click"
-                                        content={
-                                            <KeySearchSettings
-                                                languagesResponse={this.state.languagesResponse}
-                                                flavorsResponse={this.state.flavorsResponse}
-                                                onChange={(settings) => {
-                                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                                    this.setState({ searchSettings: settings }, this.fetchKeys);
-                                                }}
-                                            />
-                                        }
-                                    >
-                                        <Button>
-                                            <FilterOutlined />
-                                        </Button>
-                                    </Popover>
-                                    <Input.Search
-                                        placeholder="Search your translations"
-                                        onChange={this.onSearch}
-                                        data-id="project-keys-search"
-                                        allowClear
-                                        defaultValue={this.state.search}
-                                    />
-                                </Input.Group>
-
+                            <div
+                                style={{
+                                    margin: 24,
+                                    width: "auto",
+                                    display: "flex",
+                                    alignItems: "flex-end",
+                                    flexWrap: "wrap",
+                                    flexBasis: "auto",
+                                    gap: 16
+                                }}
+                            >
                                 <TagsFilter
                                     projectId={this.props.match.params.projectId}
                                     onChange={(values) => {
@@ -398,8 +362,49 @@ class EditorSite extends React.Component<IProps, IState> {
                                             this.fetchKeys
                                         );
                                     }}
-                                    style={{ minWidth: 140, marginTop: 8 }}
+                                    style={{ flexGrow: 1, minWidth: 120 }}
                                 />
+                                <div style={{ flexGrow: 1 }}>
+                                    <KeySearchSettingsActiveFilters
+                                        languagesResponse={this.state.languagesResponse}
+                                        flavorsResponse={this.state.flavorsResponse}
+                                    />
+                                    <Input.Group
+                                        compact
+                                        style={{
+                                            width: "100%",
+                                            display: "flex",
+                                            marginTop: 4
+                                        }}
+                                    >
+                                        <Popover
+                                            title="Search filters"
+                                            placement="bottomLeft"
+                                            trigger="click"
+                                            content={
+                                                <KeySearchSettings
+                                                    languagesResponse={this.state.languagesResponse}
+                                                    flavorsResponse={this.state.flavorsResponse}
+                                                    onChange={(settings) => {
+                                                        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                                        this.setState({ searchSettings: settings }, this.fetchKeys);
+                                                    }}
+                                                />
+                                            }
+                                        >
+                                            <Button>
+                                                <FilterOutlined />
+                                            </Button>
+                                        </Popover>
+                                        <Input.Search
+                                            placeholder="Search your translations"
+                                            onChange={this.onSearch}
+                                            data-id="project-keys-search"
+                                            allowClear
+                                            defaultValue={this.state.search}
+                                        />
+                                    </Input.Group>
+                                </div>
                             </div>
                             <div
                                 style={{
@@ -569,12 +574,6 @@ class EditorSite extends React.Component<IProps, IState> {
                                                     );
                                                 }}
                                                 isSelected={this.isSelectedKey(key.id)}
-                                                style={{
-                                                    color: this.isSelectedKey(key.id)
-                                                        ? "var(--color-primary-500)"
-                                                        : undefined,
-                                                    flexShrink: 0
-                                                }}
                                                 className="editor-key"
                                             >
                                                 <span style={{ fontWeight: "bold" }} className="editor-key-name">
