@@ -4,6 +4,8 @@
 
 - Fix bug that caused create OTA release button to be in loading state forever.
 - Fix invalid format of OTA releases for SDKs.
+- Fix bug where issues would not be created/resolved when updating an already existing translation.
+- Make colors more consistent by reducing the number of different colors.
 
 ## 1.2.1
 
