@@ -9,5 +9,6 @@ context("activity", () => {
         cy.get('[data-id="main-menu-activity"]').click();
         cy.get(".ant-layout-content").should("contain", "Activity");
         cy.get(".ant-layout-content").should("contain", "No activity available");
+        cy.compareSnapshot("activity");
     });
 });

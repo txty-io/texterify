@@ -60,6 +60,7 @@ declare global {
             addUser(email: string): void;
             checkIfKeyExists(options: { key: string; description?: string; content?: string }): void;
             importFile(options: { fileName: string; fileFormat: string; languageName: string; searchFor: string });
+            compareSnapshot(name: string, threshold?: number);
         }
     }
 }
@@ -75,3 +76,11 @@ beforeEach(() => {
     cy.app("clean");
     cy.app("load_seed");
 });
+
+after(() => {
+    cy.task("generateReport");
+});
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+import compareSnapshotCommand = require("cypress-image-diff-js/dist/command");
+compareSnapshotCommand();
