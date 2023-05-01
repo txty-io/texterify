@@ -1,11 +1,11 @@
-import { CloseCircleFilled } from "@ant-design/icons";
-import { ExclamationTriangleIcon, ExclamationCircleIcon } from "@heroicons/react/24/solid";
+import { ExclamationCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import * as React from "react";
 
 export function CustomAlert(props: {
     title?: string;
     description: React.ReactNode;
     type: "error" | "warning" | "info";
+    "data-id"?: string;
     icon?: React.ReactNode;
     style?: React.CSSProperties;
 }) {
@@ -45,6 +45,7 @@ export function CustomAlert(props: {
                 padding: 16,
                 ...props.style
             }}
+            data-id={props["data-id"]}
         >
             <div
                 style={{
