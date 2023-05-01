@@ -89,9 +89,11 @@ class ImportVerifyWorker
     import.save!
     background_job.complete!
   rescue StandardError => e
-    import.status = IMPORT_STATUS_ERROR
-    import.error_message = e.message
-    import.save!
+    if !import.nil?
+      import.status = IMPORT_STATUS_ERROR
+      import.error_message = e.message
+      import.save!
+    end
     background_job.error!
   end
 end
