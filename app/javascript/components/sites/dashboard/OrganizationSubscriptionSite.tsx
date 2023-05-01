@@ -1,4 +1,4 @@
-import { Alert, Button, Card, Layout, message, Skeleton } from "antd";
+import { Button, Layout, message, Skeleton } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
@@ -10,15 +10,11 @@ import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { IPlanIDS } from "../../types/IPlan";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { CustomAlert } from "../../ui/CustomAlert";
 import { CustomSubscription } from "../../ui/CustomSubscription";
-import { Features } from "../../ui/Features";
+import { FreeTrialEndingAtInfo } from "../../ui/FreeTrialEndingAtInfo";
 import { BASIC_PLAN, BUSINESS_PLAN, Licenses, TEAM_PLAN } from "../../ui/Licenses";
 import { Utils } from "../../ui/Utils";
-import { CustomAlert } from "../../ui/CustomAlert";
-
-const gridStyle: React.CSSProperties = {
-    width: "50%"
-};
 
 type IProps = RouteComponentProps<{ organizationId: string }>;
 interface IState {
@@ -152,34 +148,7 @@ class OrganizationSubscriptionSite extends React.Component<IProps, IState> {
                     </>
                 )}
 
-                {!this.state.customSubscription && dashboardStore.currentOrganization.attributes.trial_active && (
-                    <>
-                        <p>
-                            Your trial period ends on:{" "}
-                            <span style={{ fontWeight: "bold", marginLeft: 8 }}>
-                                {dashboardStore.currentOrganization.attributes.trial_ends_at}
-                            </span>
-                        </p>
-                        {!this.state.subscription && (
-                            <CustomAlert
-                                description={
-                                    <>
-                                        Your are currently on the trial period. You can experience all features during
-                                        the trial for free. Select a plan that fits your needs to continue using the
-                                        premium features after your trial ends. If you have any questions contact us by
-                                        sending us an email to{" "}
-                                        <a href="mailto:support@texterify.com" target="_blank">
-                                            support@texterify.com
-                                        </a>
-                                        .
-                                    </>
-                                }
-                                type="info"
-                                style={{ maxWidth: 560, marginBottom: 24 }}
-                            />
-                        )}
-                    </>
-                )}
+                <FreeTrialEndingAtInfo organizationId={dashboardStore.currentOrganization?.id} />
 
                 {!this.state.customSubscription && this.state.subscription && (
                     <>
