@@ -88,7 +88,7 @@ function SearchOverlayResults(props: { loading: boolean; projects: any[]; includ
     });
 
     if (props.loading) {
-        return <Loading />;
+        return <Loading style={{ padding: "40px 0" }} />;
     }
 
     if (props.projects.length === 0) {
