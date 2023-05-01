@@ -3,6 +3,7 @@ import { IPlanIDS } from "../../types/IPlan";
 import { IErrorsResponse } from "../../ui/ErrorUtils";
 import { API } from "./API";
 import { APIUtils, IGenericAPIResponse } from "./APIUtils";
+import { IProject } from "./ProjectsAPI";
 
 export interface IGetOrganizationsOptions {
     search?: string;
@@ -20,7 +21,7 @@ export interface IGetOrganizationsResponse {
 
 export interface IGetOrganizationResponse {
     data: IOrganization;
-    included: [];
+    included: IProject[];
     errors?: IErrorsResponse;
 }
 
