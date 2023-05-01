@@ -141,7 +141,7 @@ class Organization < ApplicationRecord
   end
 
   def current_plan
-    current_plan_name = 'free'
+    current_plan_name = self.created_at < Date.parse('2023-05-01') ? 'free_old' : 'free'
 
     if custom_subscription&.plan
       current_plan_name = custom_subscription.plan
@@ -156,7 +156,7 @@ class Organization < ApplicationRecord
       end
     end
 
-    Plan.find_by(name: current_plan_name || 'free')
+    Plan.find_by(name: current_plan_name)
   end
 
   def feature_enabled?(feature)
@@ -175,7 +175,7 @@ class Organization < ApplicationRecord
     elsif trial_active
       nil
     elsif active_subscription
-      active_subscription.plan.user_limit
+      Plan.find_by(name: active_subscription.plan)&.user_limit
     else
       license = License.current_active
 
