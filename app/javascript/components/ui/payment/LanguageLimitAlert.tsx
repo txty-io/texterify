@@ -1,9 +1,10 @@
-import { Alert, Button } from "antd";
+import { Button } from "antd";
 import * as React from "react";
 import { useOrganization } from "../../network/useOrganization";
 import { useProject } from "../../network/useProject";
 import { Routes } from "../../routing/Routes";
 import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
+import { CustomAlert } from "../CustomAlert";
 
 export function LanguageLimitAlert(props: { style?: React.CSSProperties; projectId?: string; refetchTrigger: number }) {
     const { data: projectResponse, refetch: projectResponseRefetch } = useProject({
@@ -24,9 +25,8 @@ export function LanguageLimitAlert(props: { style?: React.CSSProperties; project
 
     return (
         <div style={props.style}>
-            <Alert
-                showIcon
-                message="Language limit reached"
+            <CustomAlert
+                title="Language limit reached"
                 data-id="language-limit-reached-alert"
                 description={
                     <>

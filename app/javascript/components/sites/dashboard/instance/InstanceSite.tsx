@@ -11,12 +11,13 @@ import {
     SwapOutlined,
     TeamOutlined
 } from "@ant-design/icons";
-import { Alert, Card, Layout, Statistic } from "antd";
+import { Card, Layout, Statistic } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { IInstanceInfo, InstanceAPI } from "../../../api/v1/InstanceAPI";
 import { IGetMachineTranslationsUsage, MachineTranslationsAPI } from "../../../api/v1/MachineTranslationsAPI";
+import { CustomAlert } from "../../../ui/CustomAlert";
 import { Loading } from "../../../ui/Loading";
 import { IS_TEXTERIFY_CLOUD } from "../../../utilities/Env";
 
@@ -109,9 +110,9 @@ export const InstanceSite = observer(() => {
                             style={{ marginTop: 8 }}
                         />
                         {instanceInfos.sidekiq_processes === 0 && (
-                            <Alert
+                            <CustomAlert
                                 type="error"
-                                message="No Sidekiq processes are running. Some functionality might not work as expected."
+                                description="No Sidekiq processes are running. Some functionality might not work as expected."
                                 style={{ marginTop: 16 }}
                             />
                         )}

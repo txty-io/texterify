@@ -1,10 +1,11 @@
-import { Alert, Button, Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
 import * as queryString from "query-string";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { AuthAPI, IAuthData } from "../api/v1/AuthAPI";
-import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
+import { history } from "../routing/history";
+import { CustomAlert } from "../ui/CustomAlert";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 
 interface IState {
@@ -34,13 +35,14 @@ class NewPasswordForm extends React.Component<{}, IState> {
             <>
                 <LoadingOverlay isVisible={this.state.isLoading} loadingText="We are changing your password..." />
                 <Form onFinish={this.handleSubmit} style={{ maxWidth: "100%" }}>
-                    {this.state.loginErrors.length > 0 && <Alert showIcon message={this.renderErrors()} type="error" />}
+                    {this.state.loginErrors.length > 0 && (
+                        <CustomAlert description={this.renderErrors()} type="error" />
+                    )}
 
                     {this.state.success && (
-                        <Alert
-                            showIcon
-                            message="Password changed successfully."
-                            type="success"
+                        <CustomAlert
+                            description="Password changed successfully."
+                            type="info"
                             style={{ marginBottom: 16 }}
                         />
                     )}

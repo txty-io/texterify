@@ -1,9 +1,9 @@
 import { LockOutlined } from "@ant-design/icons";
-import { Alert } from "antd";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { Routes } from "../routing/Routes";
 import { dashboardStore, IOrganization } from "../stores/DashboardStore";
+import { CustomAlert } from "./CustomAlert";
 import { TexterifyModal } from "./TexterifyModal";
 
 function getTextByDeactivatedReason(reason: IOrganization["attributes"]["current_user_deactivated_reason"]) {
@@ -41,11 +41,9 @@ export function UserDeactivatedOrganizationModal() {
                 </>
             )}
             {getTextByDeactivatedReason(dashboardStore.currentOrganization.attributes.current_user_deactivated_reason)}
-            <Alert
+            <CustomAlert
                 type="info"
-                showIcon
-                message="Although your account has been disabled for this organization you might still be able to access other organizations."
-                description=""
+                description="Although your account has been disabled for this organization you might still be able to access other organizations."
                 style={{ marginBottom: 16 }}
             />
         </TexterifyModal>

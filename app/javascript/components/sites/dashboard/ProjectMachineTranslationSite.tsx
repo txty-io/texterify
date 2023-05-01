@@ -1,4 +1,4 @@
-import { Alert, Button, List, message, Popconfirm } from "antd";
+import { Button, List, message, Popconfirm } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -13,6 +13,7 @@ import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { CustomAlert } from "../../ui/CustomAlert";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import FlagIcon from "../../ui/FlagIcons";
 import { LayoutWithSubSidebar } from "../../ui/LayoutWithSubSidebar";
@@ -23,7 +24,6 @@ import { MachineTranslationSourceSupportMessage } from "../../ui/MachineTranslat
 import { SupportedMachineTranslationLanguagesModal } from "../../ui/SupportedMachineTranslationLanguagesModal";
 import { LanguageUtils } from "../../utilities/LanguageUtils";
 import { MachineTranslationUtils } from "../../utilities/MachineTranslationUtils";
-import { CustomAlert } from "../../ui/CustomAlert";
 
 type IProps = RouteComponentProps<{ projectId: string }>;
 interface IState {
@@ -118,10 +118,9 @@ class ProjectMachineTranslationSite extends React.Component<IProps, IState> {
         return (
             <>
                 {defaultLanguage && !this.defaultLanguageSupportsMachineTranslation() && (
-                    <Alert
-                        showIcon
+                    <CustomAlert
                         type="info"
-                        message={
+                        description={
                             <>
                                 Machine translation with your default language as source is not supported. <br />
                                 <a

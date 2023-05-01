@@ -1,9 +1,9 @@
 import { KeyOutlined } from "@ant-design/icons";
-import { Alert, Button, Input, Form } from "antd";
+import { Button, Form, Input } from "antd";
 import * as React from "react";
 import { AuthAPI } from "../api/v1/AuthAPI";
-import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { CustomAlert } from "../ui/CustomAlert";
+import { LoadingOverlay } from "../ui/LoadingOverlay";
 
 interface IState {
     isLoading: boolean;
@@ -36,7 +36,7 @@ class ChangePasswordForm extends React.Component<{}, IState> {
                         <CustomAlert description={this.renderErrors()} type="error" />
                     )}
 
-                    {this.state.success && <Alert showIcon message="Password changed successfully." type="success" />}
+                    {this.state.success && <CustomAlert description="Password changed successfully." type="info" />}
 
                     <h3>Change password</h3>
                     <p>Enter your old and new password to change your password.</p>

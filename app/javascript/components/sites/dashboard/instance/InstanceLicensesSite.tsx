@@ -1,10 +1,11 @@
 import { FileTextOutlined } from "@ant-design/icons";
-import { Alert, Card, Layout, message, Statistic } from "antd";
+import { Card, Layout, message, Statistic } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import Dropzone from "react-dropzone";
 import { ILicense, LicensesAPI } from "../../../api/v1/LicensesAPI";
 import { MESSAGE_DURATION_IMPORTANT } from "../../../configs/MessageDurations";
+import { CustomAlert } from "../../../ui/CustomAlert";
 import { DropZoneWrapper } from "../../../ui/DropZoneWrapper";
 import { Loading } from "../../../ui/Loading";
 import { PrimaryButton } from "../../../ui/PrimaryButton";
@@ -70,9 +71,8 @@ export const InstanceLicensesSite = observer(() => {
                     />
                 </div>
                 {license.attributes.expired && (
-                    <Alert
-                        showIcon
-                        message="This license has expired."
+                    <CustomAlert
+                        description="This license has expired."
                         type="error"
                         style={{ marginTop: 24, maxWidth: "100%" }}
                     />

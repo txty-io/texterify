@@ -1,8 +1,9 @@
-import { Alert, Button } from "antd";
+import { Button } from "antd";
 import * as React from "react";
 import { Routes } from "../../routing/Routes";
 import { IOrganization } from "../../stores/DashboardStore";
 import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
+import { CustomAlert } from "../CustomAlert";
 
 export function ProjectLimitAlert(props: { style?: React.CSSProperties; organization: IOrganization }) {
     if (!props.organization || !props.organization.attributes.project_limit_reached) {
@@ -11,9 +12,8 @@ export function ProjectLimitAlert(props: { style?: React.CSSProperties; organiza
 
     return (
         <div style={props.style}>
-            <Alert
-                showIcon
-                message="Project limit reached"
+            <CustomAlert
+                title="Project limit reached"
                 description={
                     <>
                         You have reached the project limit ({props.organization.attributes.project_count}/

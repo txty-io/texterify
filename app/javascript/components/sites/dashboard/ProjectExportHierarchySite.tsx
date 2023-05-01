@@ -1,5 +1,4 @@
-import { ArrowRightOutlined, RightOutlined, SwapRightOutlined } from "@ant-design/icons";
-import { Alert, Skeleton, Tree } from "antd";
+import { Skeleton, Tree } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -9,6 +8,7 @@ import { LanguagesAPI } from "../../api/v1/LanguagesAPI";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { CustomAlert } from "../../ui/CustomAlert";
 import { FeatureNotAvailable } from "../../ui/FeatureNotAvailable";
 import FlagIcon from "../../ui/FlagIcons";
 import { LayoutWithSubSidebar } from "../../ui/LayoutWithSubSidebar";
@@ -226,10 +226,9 @@ class ProjectExportHierarchySite extends React.Component<IProps> {
                         )}
 
                         {this.state.responseLanguages && this.state.responseLanguages.data.length < 2 && (
-                            <Alert
+                            <CustomAlert
                                 type="info"
-                                showIcon
-                                message="Create more languages"
+                                title="Create more languages"
                                 description={
                                     <>
                                         You need at least 2 languages to build a hierarchy.

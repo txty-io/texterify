@@ -1,8 +1,8 @@
-import { Alert, Button, Tooltip } from "antd";
+import { Button, Tooltip } from "antd";
 import * as React from "react";
 import { APIUtils } from "../api/v1/APIUtils";
-import { history } from "../routing/history";
 import { Routes } from "../routing/Routes";
+import { history } from "../routing/history";
 import { dashboardStore } from "../stores/DashboardStore";
 import { IFeature } from "../types/IFeature";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
@@ -73,38 +73,4 @@ export function FeatureNotAvailable(props: { feature: IFeature; dataId?: string;
             )}
         </div>
     );
-
-    // return (
-    //     <Alert
-    //         icon={<StarFilled />}
-    //         showIcon
-    //         message={
-    //             <>
-    //                 This feature is not available on your current plan. Please{" "}
-    //                 {PermissionUtils.isManagerOrHigher(dashboardStore.getCurrentRole()) ? (
-    //                     IS_TEXTERIFY_CLOUD ? (
-    //                         <Link
-    //                             to={Routes.DASHBOARD.ORGANIZATION_SUBSCRIPTION.replace(
-    //                                 ":organizationId",
-    //                                 currentOrganization.id
-    //                             )}
-    //                         >
-    //                             upgrade
-    //                         </Link>
-    //                     ) : (
-    //                         <a href={Constants.TEXTERIFY_PRICING_SITE} target="_blank">
-    //                             upgrade
-    //                         </a>
-    //                     )
-    //                 ) : (
-    //                     "upgrade"
-    //                 )}{" "}
-    //                 to a plan that supports this feature: {capitalizedFeatureAvailableInPlans}
-    //             </>
-    //         }
-    //         type="info"
-    //         style={{ marginBottom: 16, maxWidth: 400, ...props.style }}
-    //         data-id={props.dataId}
-    //     />
-    // );
 }

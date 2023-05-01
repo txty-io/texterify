@@ -1,17 +1,18 @@
-import { DeploymentUnitOutlined, LeftOutlined, LockOutlined, RightOutlined } from "@ant-design/icons";
-import { Alert, Button, Select } from "antd";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { Button, Select } from "antd";
 import * as React from "react";
-import { Styles } from "../ui/Styles";
-import { TexterifyModal } from "../ui/TexterifyModal";
-import { IProps as NewProjectFormProps, NewProjectForm } from "./NewProjectForm";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { IGetOrganizationsOptions, OrganizationsAPI } from "../api/v1/OrganizationsAPI";
-import { OrganizationAvatar } from "../ui/OrganizationAvatar";
-import { ModalStep } from "../ui/ModalStep";
-import { Link } from "react-router-dom";
 import { Routes } from "../routing/Routes";
-import { ProjectLimitAlert } from "../ui/payment/ProjectLimitAlert";
 import { IOrganization } from "../stores/DashboardStore";
+import { CustomAlert } from "../ui/CustomAlert";
+import { ModalStep } from "../ui/ModalStep";
+import { OrganizationAvatar } from "../ui/OrganizationAvatar";
+import { Styles } from "../ui/Styles";
+import { TexterifyModal } from "../ui/TexterifyModal";
+import { ProjectLimitAlert } from "../ui/payment/ProjectLimitAlert";
+import { NewProjectForm, IProps as NewProjectFormProps } from "./NewProjectForm";
 
 const TypeSelection = styled.div<{ active: boolean }>`
     border: 1px solid
@@ -96,10 +97,9 @@ class NewProjectFormModal extends React.Component<IProps, IState> {
 
     renderNoOrganizationsInfo = () => {
         return (
-            <Alert
+            <CustomAlert
                 type="info"
-                showIcon
-                message="No organizations"
+                title="No organizations"
                 description={
                     <p>
                         <Link to={Routes.DASHBOARD.ORGANIZATIONS}>Create an organization</Link> or join one before you

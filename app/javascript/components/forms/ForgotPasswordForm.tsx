@@ -1,8 +1,9 @@
-import { Alert, Button, Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
 import { FormInstance } from "antd/lib/form";
 import * as React from "react";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { Routes } from "../routing/Routes";
+import { CustomAlert } from "../ui/CustomAlert";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { SiteWrapperLink } from "../ui/SiteWrapperLink";
 
@@ -28,10 +29,9 @@ class ForgotPasswordForm extends React.Component<{}, IState> {
 
                 <Form ref={this.formRef} onFinish={this.handleSubmit}>
                     {this.state.success && (
-                        <Alert
-                            showIcon
-                            message="We sent you an email with instructions on how to reset your password."
-                            type="success"
+                        <CustomAlert
+                            description="We sent you an email with instructions on how to reset your password."
+                            type="info"
                             style={{ marginBottom: 16 }}
                         />
                     )}

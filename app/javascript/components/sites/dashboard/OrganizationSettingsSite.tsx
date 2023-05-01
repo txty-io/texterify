@@ -1,4 +1,4 @@
-import { Alert, Button, Collapse, Layout, message, Modal } from "antd";
+import { Button, Collapse, Layout, message, Modal } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -9,6 +9,7 @@ import { history } from "../../routing/history";
 import { Routes } from "../../routing/Routes";
 import { dashboardStore } from "../../stores/DashboardStore";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { CustomAlert } from "../../ui/CustomAlert";
 import { SettingsSectionWrapper } from "../../ui/SettingsSectionWrapper";
 import { PermissionUtils } from "../../utilities/PermissionUtils";
 const { Content } = Layout;
@@ -107,8 +108,8 @@ class OrganizationSettingsSite extends React.Component<IProps, IState> {
                             }
                         >
                             <SettingsSectionWrapper>
-                                <Alert
-                                    message="Remove organization"
+                                <CustomAlert
+                                    title="Remove organization"
                                     description={
                                         <>
                                             <p>
@@ -121,7 +122,6 @@ class OrganizationSettingsSite extends React.Component<IProps, IState> {
                                         </>
                                     }
                                     type="warning"
-                                    showIcon
                                 />
                                 <Button
                                     danger

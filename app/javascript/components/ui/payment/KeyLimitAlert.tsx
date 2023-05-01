@@ -1,9 +1,10 @@
-import { Alert, Button } from "antd";
+import { Button } from "antd";
 import * as React from "react";
 import { IProject } from "../../api/v1/ProjectsAPI";
 import { useOrganization } from "../../network/useOrganization";
 import { Routes } from "../../routing/Routes";
 import { IS_TEXTERIFY_CLOUD } from "../../utilities/Env";
+import { CustomAlert } from "../CustomAlert";
 
 export function KeyLimitAlert(props: {
     style?: React.CSSProperties;
@@ -32,9 +33,8 @@ export function KeyLimitAlert(props: {
 
     return (
         <div style={props.style}>
-            <Alert
-                showIcon
-                message={
+            <CustomAlert
+                title={
                     organizationResponse.data.attributes.key_limit_exceeded ? "Key limit exceeded" : "Key limit reached"
                 }
                 description={

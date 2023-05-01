@@ -5,7 +5,7 @@ import * as React from "react";
 export function CustomAlert(props: {
     title?: string;
     description: React.ReactNode;
-    type: "error" | "info";
+    type: "error" | "warning" | "info";
     icon?: React.ReactNode;
     style?: React.CSSProperties;
 }) {
@@ -23,8 +23,14 @@ export function CustomAlert(props: {
     } else if (props.type === "info") {
         backgroundColor = "var(--alert-info-background-color)";
         borderColor = "var(--alert-info-border-color)";
-        textColor = "var(--color-full)";
-        const iconColor = "var(--color-full)";
+        textColor = "var(--alert-info-color)";
+        const iconColor = "var(--alert-info-color)";
+        icon = <ExclamationCircleIcon style={{ color: iconColor, width: "100%" }} />;
+    } else if (props.type === "warning") {
+        backgroundColor = "var(--alert-warning-background-color)";
+        borderColor = "var(--alert-warning-border-color)";
+        textColor = "var(--alert-warning-color)";
+        const iconColor = "var(--alert-warning-color)";
         icon = <ExclamationCircleIcon style={{ color: iconColor, width: "100%" }} />;
     }
 

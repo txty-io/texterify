@@ -1,7 +1,7 @@
-import { Alert } from "antd";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { Routes } from "../../routing/Routes";
+import { CustomAlert } from "../../ui/CustomAlert";
 import { ErrorSiteWrapper } from "../../ui/ErrorSiteWrapper";
 import { SiteWrapperHeader } from "../../ui/SiteWrapperHeader";
 
@@ -10,9 +10,8 @@ export function InvalidPasswordResetLinkSite() {
         <ErrorSiteWrapper>
             <SiteWrapperHeader>Invalid password reset link</SiteWrapperHeader>
 
-            <Alert
-                showIcon
-                message="The password reset link is invalid or has already been used. Please request a new password reset link if needed."
+            <CustomAlert
+                description="The password reset link is invalid or has already been used. Please request a new password reset link if needed."
                 type="error"
             />
 

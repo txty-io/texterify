@@ -1,18 +1,19 @@
 import { CheckOutlined, RobotOutlined } from "@ant-design/icons";
-import { Alert, Button, message, Skeleton } from "antd";
+import { Button, Skeleton, message } from "antd";
 import DeeplLogo from "images/deepl_logo.svg";
 import * as React from "react";
 import { IGetKeyResponse } from "../api/v1/KeysAPI";
 import { IGetLanguagesResponse, ILanguage } from "../api/v1/LanguagesAPI";
 import {
+    IGetMachineTranslationSuggestion,
     IGetMachineTranslationsSourceLanguages,
     IGetMachineTranslationsTargetLanguages,
-    IGetMachineTranslationSuggestion,
     MachineTranslationsAPI
 } from "../api/v1/MachineTranslationsAPI";
 import { dashboardStore } from "../stores/DashboardStore";
 import { MachineTranslationUtils } from "../utilities/MachineTranslationUtils";
 import { TranslationUtils } from "../utilities/TranslationUtils";
+import { CustomAlert } from "./CustomAlert";
 import { FeatureNotAvailable } from "./FeatureNotAvailable";
 
 export function MachineTranslationSuggestion(props: {
@@ -129,10 +130,9 @@ export function MachineTranslationSuggestion(props: {
 
                     {dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_SUGGESTIONS") &&
                         !dashboardStore.currentProject?.attributes.machine_translation_active && (
-                            <Alert
-                                showIcon
+                            <CustomAlert
                                 type="warning"
-                                message="Machine translation is not enabled."
+                                description="Machine translation is not enabled."
                                 style={{ marginTop: 16, maxWidth: "100%" }}
                             />
                         )}
@@ -142,10 +142,9 @@ export function MachineTranslationSuggestion(props: {
                         props.supportedTargetLanguages &&
                         !machineTranslationsSupported(props.selectedLanguageId) &&
                         dashboardStore.featureEnabled("FEATURE_MACHINE_TRANSLATION_SUGGESTIONS") && (
-                            <Alert
-                                showIcon
+                            <CustomAlert
                                 type="info"
-                                message={
+                                description={
                                     <>
                                         {!defaultLanguageSupportsMachineTranslation() && (
                                             <div>
@@ -170,10 +169,9 @@ export function MachineTranslationSuggestion(props: {
                     )}
 
                     {machineTranslationLimitExceeded && (
-                        <Alert
-                            showIcon
+                        <CustomAlert
                             type="error"
-                            message="You have exceeded your machine translation limit."
+                            description="You have exceeded your machine translation limit."
                             style={{ marginTop: 16, maxWidth: "100%" }}
                         />
                     )}

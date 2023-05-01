@@ -1,4 +1,3 @@
-import { Alert } from "antd";
 import * as React from "react";
 import { IOrganization } from "../stores/DashboardStore";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
@@ -36,10 +35,9 @@ export const OrganizationMachineTranslationTotalUsage = (props: {
             )}
 
             {props.organization?.attributes.uses_custom_deepl_account && (
-                <Alert
-                    showIcon
+                <CustomAlert
                     type="info"
-                    message="The limits above represent the usage and limits of your own DeepL account. Check your DeepL account for further information."
+                    description="The limits above represent the usage and limits of your own DeepL account. Check your DeepL account for further information."
                     style={{ marginTop: 24 }}
                 />
             )}

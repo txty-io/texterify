@@ -1,8 +1,9 @@
 import { DownOutlined, RightOutlined } from "@ant-design/icons";
-import { Alert, Button, Table, Tag } from "antd";
+import { Button, Table, Tag } from "antd";
 import * as React from "react";
 import { IImportFile } from "../api/v1/ImportsAPI";
 import useImportFiles from "../hooks/useImportFiles";
+import { CustomAlert } from "./CustomAlert";
 
 function Status(props: { importFile: IImportFile }) {
     if (props.importFile.attributes.status === "CREATED") {
@@ -57,9 +58,8 @@ function ErrorDetails(props: { importFile: IImportFile }) {
                         )}
                     </Button>
                     {showDetails && (
-                        <Alert
-                            showIcon
-                            message={props.importFile.attributes.error_message}
+                        <CustomAlert
+                            description={props.importFile.attributes.error_message}
                             type="error"
                             style={{ marginTop: 8 }}
                         />
@@ -129,9 +129,8 @@ export function ImportFilesTable(props: {
     return (
         <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
             {props.showImportFailedOnesLaterHint && hasFailedImportFiles && hasVerifiedImportFiles && (
-                <Alert
-                    showIcon
-                    message="There are files which could not be verified, but you can still import the translations from the verified files and try the failed ones again later."
+                <CustomAlert
+                    description="There are files which could not be verified, but you can still import the translations from the verified files and try the failed ones again later."
                     type="info"
                     style={{ marginBottom: 16, maxWidth: "100%" }}
                 />

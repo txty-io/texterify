@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined, FilterOutlined, HddOutlined, LoadingOutlined } from "@ant-design/icons";
-import { Alert, Button, Input, Layout, Pagination, Popover, Skeleton, Tabs, Tag } from "antd";
+import { Button, Input, Layout, Pagination, Popover, Skeleton, Tabs, Tag } from "antd";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
 import * as moment from "moment";
@@ -23,6 +23,7 @@ import { Routes } from "../../routing/Routes";
 import { history } from "../../routing/history";
 import { authStore } from "../../stores/AuthStore";
 import { dashboardStore } from "../../stores/DashboardStore";
+import { COLORS } from "../../ui/Colors";
 import { PAGE_SIZE_OPTIONS } from "../../ui/Config";
 import { CustomAlert } from "../../ui/CustomAlert";
 import { DarkModeToggle } from "../../ui/DarkModeToggle";
@@ -36,7 +37,6 @@ import { TagsFilter } from "../../ui/TagsFilter";
 import { UserProfileHeader } from "../../ui/UserProfileHeader";
 import { DATE_TIME_FORMAT } from "../../ui/Utils";
 import { TranslationCard } from "./editor/TranslationCard";
-import { COLORS } from "../../ui/Colors";
 
 const Key = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
@@ -662,10 +662,9 @@ class EditorSite extends React.Component<IProps, IState> {
 
                                     {this.state.languagesResponse?.data &&
                                         this.state.languagesResponse.data.length === 0 && (
-                                            <Alert
+                                            <CustomAlert
                                                 type="info"
-                                                showIcon
-                                                message="No language"
+                                                title="No language"
                                                 description={
                                                     <p>
                                                         <Link
@@ -684,10 +683,9 @@ class EditorSite extends React.Component<IProps, IState> {
                                         )}
 
                                     {!this.state.keyResponse?.data.attributes.editable_for_current_user && (
-                                        <Alert
+                                        <CustomAlert
                                             type="info"
-                                            showIcon
-                                            message="Key not editable"
+                                            title="Key not editable"
                                             description="You are not allowed to edit this key. This key is either a system key or editing has been disabled via one of the assigned tags."
                                             style={{ marginBottom: 24, maxWidth: "100%" }}
                                         />

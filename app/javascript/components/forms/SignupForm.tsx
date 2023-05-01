@@ -1,14 +1,15 @@
-import { Alert, Button, Checkbox, Form, Input, message } from "antd";
+import { Button, Checkbox, Form, Input, message } from "antd";
+import * as queryString from "query-string";
 import * as React from "react";
 import { AuthAPI } from "../api/v1/AuthAPI";
 import { Routes } from "../routing/Routes";
+import { history } from "../routing/history";
 import { authStore } from "../stores/AuthStore";
+import { CustomAlert } from "../ui/CustomAlert";
 import { ErrorUtils } from "../ui/ErrorUtils";
 import { LoadingOverlay } from "../ui/LoadingOverlay";
 import { SiteWrapperLink } from "../ui/SiteWrapperLink";
 import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
-import * as queryString from "query-string";
-import { history } from "../routing/history";
 
 interface IProps {
     onAccountCreated(): any;
@@ -79,9 +80,8 @@ class SignupForm extends React.Component<IProps, IState> {
                 <LoadingOverlay isVisible={this.state.isLoading} loadingText="We are creating your account..." />
                 <Form onFinish={this.handleSubmit} initialValues={{ email: currentQueryParams.locked_email }}>
                     {(this.state.signupErrors.length > 0 || Object.keys(this.state.signupErrors).length > 0) && (
-                        <Alert
-                            showIcon
-                            message={this.getErrorMessage(this.state.signupErrors)}
+                        <CustomAlert
+                            description={this.getErrorMessage(this.state.signupErrors)}
                             type="error"
                             style={{ marginBottom: 24 }}
                         />
