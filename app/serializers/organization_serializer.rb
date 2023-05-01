@@ -15,7 +15,9 @@ class OrganizationSerializer
              :key_count,
              :key_limit,
              :key_limit_reached,
-             :key_limit_exceeded
+             :key_limit_exceeded,
+             :active_users_count,
+             :user_limit
   has_many :projects
 
   attribute :uses_custom_deepl_account do |object|
@@ -54,6 +56,10 @@ class OrganizationSerializer
 
   attribute :key_count do |object|
     object.keys_count
+  end
+
+  attribute :user_limit do |object|
+    object.users_limit
   end
 
   attribute :current_user_deactivated, if: proc { |_, params| params[:current_user] } do |object, params|

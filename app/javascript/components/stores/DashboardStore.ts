@@ -39,6 +39,8 @@ interface IOrganizationAttributes {
     project_limit: number;
     project_limit_reached: boolean;
     language_limit_per_project: number;
+    active_users_count: number;
+    user_limit: number;
 }
 
 class DashboardStore {
