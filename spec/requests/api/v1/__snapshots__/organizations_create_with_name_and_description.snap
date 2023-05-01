@@ -18,6 +18,8 @@
                                 "key_limit" => 250,
                         "key_limit_reached" => false,
                        "key_limit_exceeded" => false,
+                       "active_users_count" => 1,
+                               "user_limit" => 1,
                 "uses_custom_deepl_account" => false,
                         "max_users_reached" => true,
                           "deepl_api_token" => nil,
