@@ -118,19 +118,21 @@ export function OrganizationSite() {
                 </Layout.Content>
             </Layout>
 
-            <NewProjectFormModal
-                organization={organizationData?.data}
-                visible={addDialogVisible}
-                onCancelRequest={() => {
-                    setAddDialogVisible(false);
-                }}
-                newProjectFormProps={{
-                    organizationId: organizationId,
-                    onChanged: (project: IProject) => {
-                        history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", project.id));
-                    }
-                }}
-            />
+            {organizationData && (
+                <NewProjectFormModal
+                    organization={organizationData?.data}
+                    visible={addDialogVisible}
+                    onCancelRequest={() => {
+                        setAddDialogVisible(false);
+                    }}
+                    newProjectFormProps={{
+                        organizationId: organizationId,
+                        onChanged: (project: IProject) => {
+                            history.push(Routes.DASHBOARD.PROJECT.replace(":projectId", project.id));
+                        }
+                    }}
+                />
+            )}
         </>
     );
 }

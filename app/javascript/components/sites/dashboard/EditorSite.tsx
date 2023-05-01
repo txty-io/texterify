@@ -757,9 +757,8 @@ class EditorSite extends React.Component<IProps, IState> {
                                             />
                                         </div>
                                     ) : (
-                                        <Alert
-                                            showIcon
-                                            message={
+                                        <CustomAlert
+                                            description={
                                                 <>
                                                     Add more languages to translate by clicking{" "}
                                                     <Link
