@@ -36,6 +36,7 @@ context("import", () => {
         { id: "json-poeditor", file: "example_json_poeditor.json", searchFor: "json" },
         { id: "ios", file: "example_ios.strings", searchFor: "ios" },
         { id: "toml", file: "example_toml.toml", searchFor: "toml" },
+        { id: "toml", file: "example_toml_encoding_issue.toml", searchFor: "toml" },
         { id: "rails", file: "example_rails.yml", searchFor: "rails" },
         { id: "properties", file: "example_properties.properties", searchFor: "prop" },
         { id: "po", file: "example_po.po", searchFor: "po" },
