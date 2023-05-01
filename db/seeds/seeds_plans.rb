@@ -2,6 +2,28 @@ puts 'Seeding plans...'
 
 plans = [
   {
+    name: 'free_old',
+    keys_limit: nil,
+    projects_limit: 1,
+    languages_limit: 2,
+    user_limit: 1,
+    permission_system: false,
+    validations: false,
+    key_history: false,
+    export_hierarchy: false,
+    post_processing: false,
+    project_activity: false,
+    tags: true,
+    machine_translation_suggestions: false,
+    machine_translation_language: false,
+    machine_translation_auto_translate: false,
+    machine_translation_character_limit: 0,
+    over_the_air: false,
+    html_editor: false,
+    created_at: Time.now.utc,
+    updated_at: Time.now.utc
+  },
+  {
     name: 'free',
     keys_limit: 250,
     projects_limit: 1,
