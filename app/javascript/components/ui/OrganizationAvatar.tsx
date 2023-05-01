@@ -31,8 +31,14 @@ class OrganizationAvatar extends React.Component<IProps, IState> {
     };
 
     async componentDidMount() {
-        const imageResponse = await OrganizationsAPI.getImage({ organizationId: this.props.organization.id });
-        this.setState({ image: imageResponse.image, loading: false });
+        try {
+            const imageResponse = await OrganizationsAPI.getImage({ organizationId: this.props.organization.id });
+            this.setState({ image: imageResponse.image });
+        } catch (error) {
+            console.error(error);
+        } finally {
+            this.setState({ loading: false });
+        }
     }
 
     render() {
@@ -45,7 +51,6 @@ class OrganizationAvatar extends React.Component<IProps, IState> {
         return (
             <div style={{ display: "inline" }}>
                 <div
-                    className={this.state.loading ? undefined : "fade-in-fast"}
                     style={{
                         display: "flex",
                         opacity: this.state.loading ? 0 : 1,
