@@ -52,6 +52,9 @@ services:
     # security_opt:
     #   - seccomp:unconfined
 
+    environment:
+      - DB_TEST_HOST=db
+      - DB_TEST_USERNAME=postgres
     image: chrztoph/texterify:local
 
     env_file:

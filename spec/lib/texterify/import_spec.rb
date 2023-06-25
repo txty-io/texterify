@@ -1,4 +1,4 @@
-require 'texterify'
+require 'rails_helper'
 
 RSpec.describe Texterify::Import do
   describe 'parse XLIFF' do
@@ -33,7 +33,7 @@ RSpec.describe Texterify::Import do
     end
   end
 
-  describe 'parse YAML' do
+  describe 'parses YAML' do
     it 'parses YAML file' do
       file = File.read('spec/fixtures/yaml/devise_example.yml')
       parse_result = Texterify::Import.parse_file_content('', file, 'yaml')
@@ -47,6 +47,16 @@ RSpec.describe Texterify::Import do
           'en.errors.messages.confirmation_period_expired' =>
             'needs to be confirmed within {period}, please request a new one'
         }
+      )
+    end
+  end
+
+  describe 'parses stringsdict' do
+    it 'parses stringsdict file' do
+      file = File.read('spec/fixtures/stringsdict/example.stringsdict')
+      parse_result = Texterify::Import.parse_file_content('', file, 'stringsdict')
+      expect(parse_result[:content]).to eq(
+        { '%d home(s) found' => { one: '%d home found', other: '%d homes found', zero: 'No homes found' } }
       )
     end
   end

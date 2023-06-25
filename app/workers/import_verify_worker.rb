@@ -55,6 +55,12 @@ class ImportVerifyWorker
               elsif file_format == 'arb' && json_value.is_a?(Hash)
                 translation.other = json_value[:value]
                 translation.key_description = json_value[:description]
+              elsif json_value.is_a?(Hash)
+                translation.zero = json_value[:zero]
+                translation.one = json_value[:one]
+                translation.two = json_value[:two]
+                translation.many = json_value[:many]
+                translation.other = json_value[:other]
               else
                 translation.other = json_value
               end

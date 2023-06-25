@@ -37,6 +37,8 @@ module Texterify
         yaml?(file_content, remove_root_keys: true)
       elsif file_format == 'yaml'
         yaml?(file_content)
+      elsif file_format == 'stringsdict'
+        stringsdict?(file_content)
       else
         raise Texterify::MachineTranslation::InvalidFileFormatException.new({ file_format: file_format })
       end
@@ -121,6 +123,47 @@ module Texterify
       trans_units = xml.css('trans-unit')
       trans_units.map do |trans_unit|
         parsed[trans_unit['id']] = trans_unit.css(import_target ? 'target' : 'source').text
+      end
+
+      { success: true, content: parsed }
+    rescue StandardError => e
+      { success: false, error_message: e.message }
+    end
+
+    def self.stringsdict?(content)
+      parsed = {}
+
+      xml = Nokogiri.XML(content)
+
+      dicts = xml.css('> plist > dict')
+      dicts.map do |element|
+        key = element.css('> key').text
+        if key
+          parsed[key] = {}
+          content = element.css('> dict > dict')
+          content_element_key = nil
+          content
+            .css('key, string')
+            .each do |content_element|
+              if content_element.name == 'key'
+                content_element_key = content_element.text
+              elsif content_element.name == 'string'
+                if content_element_key == 'zero'
+                  parsed[key][:zero] = content_element.text
+                elsif content_element_key == 'one'
+                  parsed[key][:one] = content_element.text
+                elsif content_element_key == 'two'
+                  parsed[key][:two] = content_element.text
+                elsif content_element_key == 'few'
+                  parsed[key][:few] = content_element.text
+                elsif content_element_key == 'many'
+                  parsed[key][:many] = content_element.text
+                elsif content_element_key == 'other'
+                  parsed[key][:other] = content_element.text
+                end
+              end
+            end
+        end
       end
 
       { success: true, content: parsed }

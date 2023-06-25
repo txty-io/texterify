@@ -1,4 +1,4 @@
-require 'texterify'
+require 'rails_helper'
 
 RSpec.describe Texterify::Export do
   describe 'creates language export data correctly' do
