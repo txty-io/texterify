@@ -75,7 +75,7 @@
          "attributes" => {
                                             "id" => "__REMOVED__",
                                         "format" => "ios",
-                                          "name" => "iOS",
+                                          "name" => "iOS .strings",
                                 "import_support" => true,
                                 "export_support" => true,
                                 "plural_support" => true,
@@ -93,6 +93,29 @@
       }
     },
     [ 4] {
+                 "id" => "__REMOVED__",
+               "type" => "file_format",
+         "attributes" => {
+                                            "id" => "__REMOVED__",
+                                        "format" => "stringsdict",
+                                          "name" => "iOS .stringsdict",
+                                "import_support" => true,
+                                "export_support" => false,
+                                "plural_support" => false,
+        "skip_empty_plural_translations_support" => false
+      },
+      "relationships" => {
+        "file_format_extensions" => {
+          "data" => [
+            [0] {
+                "id" => "__REMOVED__",
+              "type" => "file_format_extension"
+            }
+          ]
+        }
+      }
+    },
+    [ 5] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -115,7 +138,7 @@
         }
       }
     },
-    [ 5] {
+    [ 6] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -138,7 +161,7 @@
         }
       }
     },
-    [ 6] {
+    [ 7] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -161,7 +184,7 @@
         }
       }
     },
-    [ 7] {
+    [ 8] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -184,7 +207,7 @@
         }
       }
     },
-    [ 8] {
+    [ 9] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -207,7 +230,7 @@
         }
       }
     },
-    [ 9] {
+    [10] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -234,7 +257,7 @@
         }
       }
     },
-    [10] {
+    [11] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -257,7 +280,7 @@
         }
       }
     },
-    [11] {
+    [12] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -280,7 +303,7 @@
         }
       }
     },
-    [12] {
+    [13] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
@@ -307,7 +330,7 @@
         }
       }
     },
-    [13] {
+    [14] {
                  "id" => "__REMOVED__",
                "type" => "file_format",
          "attributes" => {
