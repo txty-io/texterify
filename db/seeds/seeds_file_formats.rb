@@ -30,12 +30,21 @@ formats = [
   },
   {
     format: 'ios',
-    name: 'iOS',
+    name: 'iOS .strings',
     import_support: true,
     export_support: true,
     plural_support: true,
     skip_empty_plural_translations_support: true,
     file_format_extensions: ['strings']
+  },
+  {
+    format: 'stringsdict',
+    name: 'iOS .stringsdict',
+    import_support: true,
+    export_support: false,
+    plural_support: false,
+    skip_empty_plural_translations_support: false,
+    file_format_extensions: ['stringsdict']
   },
   {
     format: 'toml',
