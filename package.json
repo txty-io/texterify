@@ -78,7 +78,6 @@
     "cypress": "12.3.0",
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-mocha": "^9.0.0",
-    "husky": "^4.3.8",
     "less": "^4.1.1",
     "webpack-bundle-analyzer": "^4.4.0",
     "webpack-dev-server": "^3.11.2"
@@ -111,10 +110,5 @@
     "cypress:run": "yarn cypress run --project ./spec",
     "db:seed": "bundle exec rails db:seed",
     "codegen": "./docs/swagger-codegen.sh"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "yarn lint"
-    }
   }
 }
