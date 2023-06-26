@@ -43,13 +43,15 @@ export const ErrorUtils = {
     },
 
     showErrors(errors: IErrorsResponse) {
-        const keys = Object.keys(errors);
+        if (errors) {
+            const keys = Object.keys(errors);
 
-        keys.forEach((key) => {
-            errors[key].forEach((error) => {
-                this.showError(this.getErrorMessage(key, error.error));
+            keys.forEach((key) => {
+                errors[key].forEach((error) => {
+                    this.showError(this.getErrorMessage(key, error.error));
+                });
             });
-        });
+        }
     },
 
     getErrorMessage(name: string, error: ERRORS_MESSAGE_IDS) {
