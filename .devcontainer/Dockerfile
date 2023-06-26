@@ -42,7 +42,7 @@ RUN bundle install --jobs 20 --retry 5
 # Install nvm.
 ENV NVM_DIR /usr/local/nvm
 RUN mkdir -p $NVM_DIR
-ENV NODE_VERSION 14.13.1
+ENV NODE_VERSION 14.21.3
 ENV NODE_ENV="development"
 ENV NODE_OPTIONS="--max_old_space_size=8192"
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
@@ -52,6 +52,9 @@ RUN source $NVM_DIR/nvm.sh \
     && nvm install $NODE_VERSION \
     && nvm alias default $NODE_VERSION \
     && nvm use default
+
+# Install Python 2.
+RUN apt-get install -y python2
 
 # Add node and npm to path so the commands are available.
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules

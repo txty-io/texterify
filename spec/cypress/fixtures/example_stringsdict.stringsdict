@@ -1,0 +1,22 @@
+<plist version="1.0">
+    <dict>
+        <key>%d home(s) found</key>
+        <dict>
+            <key>NSStringLocalizedFormatKey</key>
+            <string>%#@homes@</string>
+            <key>homes</key>
+            <dict>
+                <key>NSStringFormatSpecTypeKey</key>
+                <string>NSStringPluralRuleType</string>
+                <key>NSStringFormatValueTypeKey</key>
+                <string>d</string>
+                <key>zero</key>
+                <string>No homes found</string>
+                <key>one</key>
+                <string>%d home found</string>
+                <key>other</key>
+                <string>%d homes found</string>
+            </dict>
+        </dict>
+    </dict>
+</plist>

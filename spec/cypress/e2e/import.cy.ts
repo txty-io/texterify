@@ -41,7 +41,8 @@ context("import", () => {
         { id: "po", file: "example_po.po", searchFor: "po" },
         { id: "arb", file: "example_arb.arb", searchFor: "arb" },
         { id: "yaml", file: "example_yaml.yml", searchFor: "yaml" },
-        { id: "xliff", file: "example_xliff.xlf", searchFor: "xliff" }
+        { id: "xliff", file: "example_xliff.xlf", searchFor: "xliff" },
+        { id: "stringsdict", file: "example_stringsdict.stringsdict", searchFor: "stringsdict" }
     ].forEach((fileFormat) => {
         it(`it imports ${fileFormat.id} files`, () => {
             cy.appScenario("default");
