@@ -56,7 +56,21 @@ RSpec.describe Texterify::Import do
       file = File.read('spec/fixtures/stringsdict/example.stringsdict')
       parse_result = Texterify::Import.parse_file_content('', file, 'stringsdict')
       expect(parse_result[:content]).to eq(
-        { '%d home(s) found' => { one: '%d home found', other: '%d homes found', zero: 'No homes found' } }
+        {
+          '%d home(s) found' => {
+            one: '%d home found',
+            other: '%d homes found',
+            zero: 'No homes found'
+          },
+          'second_key' => {
+            few: 'few values found',
+            many: 'many values found',
+            one: 'one value found',
+            other: 'other values found',
+            two: 'two values found',
+            zero: 'zero values found'
+          }
+        }
       )
     end
   end

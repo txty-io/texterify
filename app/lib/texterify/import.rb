@@ -135,34 +135,44 @@ module Texterify
 
       xml = Nokogiri.XML(content)
 
-      dicts = xml.css('> plist > dict')
-      dicts.map do |element|
-        key = element.css('> key').text
-        if key
+      keys_content = xml.css('> plist > dict')
+
+      keys_content.children.each do |element|
+        key = element.name == 'key' ? element.children.text : nil
+
+        if key.present?
           parsed[key] = {}
-          content = element.css('> dict > dict')
+
+          # Get the dict element for the current key.
+          dict_for_key = element.next_element
+
+          # Get the element that contains the key/string translation pairs.
+          content = dict_for_key.css('> dict')
+
           content_element_key = nil
-          content
-            .css('key, string')
-            .each do |content_element|
-              if content_element.name == 'key'
-                content_element_key = content_element.text
-              elsif content_element.name == 'string'
+          content.each do |content_element|
+            key_strings = content_element.css('key, string')
+
+            key_strings.each do |key_string|
+              if key_string.name == 'key'
+                content_element_key = key_string.text
+              elsif key_string.name == 'string'
                 if content_element_key == 'zero'
-                  parsed[key][:zero] = content_element.text
+                  parsed[key][:zero] = key_string.text
                 elsif content_element_key == 'one'
-                  parsed[key][:one] = content_element.text
+                  parsed[key][:one] = key_string.text
                 elsif content_element_key == 'two'
-                  parsed[key][:two] = content_element.text
+                  parsed[key][:two] = key_string.text
                 elsif content_element_key == 'few'
-                  parsed[key][:few] = content_element.text
+                  parsed[key][:few] = key_string.text
                 elsif content_element_key == 'many'
-                  parsed[key][:many] = content_element.text
+                  parsed[key][:many] = key_string.text
                 elsif content_element_key == 'other'
-                  parsed[key][:other] = content_element.text
+                  parsed[key][:other] = key_string.text
                 end
               end
             end
+          end
         end
       end
 
