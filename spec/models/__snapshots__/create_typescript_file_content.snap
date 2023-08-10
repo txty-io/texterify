@@ -1,6 +1,6 @@
 const language_name = {
   "a": "b",
   "c": "d"
-};
+} as const;
 
 export { language_name };
