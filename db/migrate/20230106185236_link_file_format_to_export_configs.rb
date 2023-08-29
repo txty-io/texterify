@@ -12,7 +12,7 @@ class LinkFileFormatToExportConfigs < ActiveRecord::Migration[6.1]
       export_config.save!
     end
 
-    change_column :export_configs, :file_format_id, :uuid, null: false
+    change_column :export_configs, :file_format_id, :uuid
     remove_column :export_configs, :file_format
   end
 end
