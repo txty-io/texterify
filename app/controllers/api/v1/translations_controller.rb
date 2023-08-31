@@ -62,6 +62,7 @@ class Api::V1::TranslationsController < Api::V1::ApiController
 
       if translation.save
         render json: TranslationSerializer.new(translation).serialized_json
+        translation.check
 
         if params[:trigger_auto_translate]
           translation.auto_translate_untranslated

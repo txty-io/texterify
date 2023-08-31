@@ -1,7 +1,7 @@
 class ImportImportWorker
   include Sidekiq::Worker
 
-  def perform(background_job_id, project_id, import_id)
+  def perform(background_job_id, project_id, import_id, user_id)
     background_job = BackgroundJob.find(background_job_id)
     background_job.start!
     background_job.progress!(20)
@@ -57,5 +57,31 @@ class ImportImportWorker
     import.status = IMPORT_STATUS_IMPORTED
     import.save!
     background_job.complete!
+
+    unless BackgroundJob.exists?(
+             project_id: project.id,
+             job_type: 'RECHECK_ALL_VALIDATIONS',
+             status: ['CREATED', 'RUNNING']
+           )
+      validation_background_job = BackgroundJob.new
+      validation_background_job.status = 'CREATED'
+      validation_background_job.job_type = 'RECHECK_ALL_VALIDATIONS'
+      validation_background_job.user_id = user_id
+      validation_background_job.project_id = project.id
+      validation_background_job.save!
+
+      CheckValidationsWorker.perform_async(validation_background_job.id, project.id)
+    end
+
+    unless BackgroundJob.exists?(project_id: project.id, job_type: 'CHECK_PLACEHOLDERS', status: ['CREATED', 'RUNNING'])
+      placeholders_background_job = BackgroundJob.new
+      placeholders_background_job.status = 'CREATED'
+      placeholders_background_job.job_type = 'CHECK_PLACEHOLDERS'
+      placeholders_background_job.user_id = user_id
+      placeholders_background_job.project_id = project.id
+      placeholders_background_job.save!
+
+      CheckPlaceholdersWorker.perform_async(placeholders_background_job.id, project.id)
+    end
   end
 end

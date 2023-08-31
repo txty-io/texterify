@@ -24,6 +24,8 @@ function getJobTypeText(jobType: IBackgroundJob["attributes"]["job_type"]) {
         return "Checking for placeholder issues";
     } else if (jobType === "IMPORT_VERIFY") {
         return "Verifying import";
+    } else if (jobType === "IMPORT_IMPORT") {
+        return "Importing translations";
     } else {
         return jobType;
     }

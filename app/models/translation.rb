@@ -8,7 +8,7 @@ class Translation < ApplicationRecord
   belongs_to :flavor, optional: true
 
   after_destroy :update_project_word_char_count_on_destroy
-  after_save :update_project_word_char_count_on_update, :check_placeholders, :check_validations
+  after_save :update_project_word_char_count_on_update
 
   # Checks all enabled validations and creates violations if necessary.
   # If a validation is given only that validation is checked.
@@ -300,5 +300,10 @@ class Translation < ApplicationRecord
   # Checks the placeholders for the key of the translation.
   def check_placeholders
     self.key.check_placeholders
+  end
+
+  def check
+    self.check_validations
+    self.check_placeholders
   end
 end

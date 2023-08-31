@@ -59,8 +59,10 @@ class Language < ApplicationRecord
                 translation.language = target_language
                 translation.key = key
                 translation.save!
+                translation.check
               else
                 target_translation.update(content: content)
+                target_translation.check
               end
             end
           end
