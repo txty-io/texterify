@@ -257,6 +257,11 @@ class Translation < ApplicationRecord
     }
   end
 
+  def check_all
+    self.check_validations
+    self.check_placeholders
+  end
+
   private
 
   # Updates the project character and word count after a translation is updated.
@@ -300,10 +305,5 @@ class Translation < ApplicationRecord
   # Checks the placeholders for the key of the translation.
   def check_placeholders
     self.key.check_placeholders
-  end
-
-  def check_all
-    self.check_validations
-    self.check_placeholders
   end
 end
