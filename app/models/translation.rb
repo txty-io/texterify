@@ -302,7 +302,7 @@ class Translation < ApplicationRecord
     self.key.check_placeholders
   end
 
-  def check
+  def check_all
     self.check_validations
     self.check_placeholders
   end

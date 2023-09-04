@@ -221,7 +221,7 @@ class Api::V1::WordpressPolylangConnectionsController < Api::V1::ApiController
 
         translation.content = content.wordpress_content
         translation.save!
-        translation.check
+        translation.check_all
       end
     end
 
