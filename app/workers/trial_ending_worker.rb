@@ -25,7 +25,7 @@ class TrialEndingWorker
           sent_email.user_id = owner.id
           sent_email.save!
 
-          SubscriptionMailer.trial_expiring(owner, organization).deliver_later
+          SubscriptionMailer.trial_expiring(owner, organization).deliver_now
         end
       end
     end

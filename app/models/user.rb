@@ -39,7 +39,7 @@ class User < ApplicationRecord
   # https://www.rubydoc.info/github/plataformatec/devise/Devise/Models/Confirmable:after_confirmation
   def after_confirmation
     if Texterify.cloud?
-      UserMailer.welcome(email, username).deliver_later
+      UserMailer.welcome(email, username).deliver_now
     end
 
     # Add user to organizations with open invites.
