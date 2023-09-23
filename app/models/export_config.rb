@@ -405,7 +405,7 @@ class ExportConfig < ApplicationRecord
 
     language_file = Tempfile.new(language.id.to_s)
     language_file.print("const #{language.name.downcase} = ")
-    language_file.puts("#{JSON.pretty_generate(plural_data)};")
+    language_file.puts("#{JSON.pretty_generate(plural_data)} as const;")
     language_file.puts
     language_file.puts("export { #{language.name.downcase} };")
     language_file.close

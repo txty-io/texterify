@@ -16,6 +16,6 @@ const language_name = {
     "few": "few text",
     "many": "many text"
   }
-};
+} as const;
 
 export { language_name };

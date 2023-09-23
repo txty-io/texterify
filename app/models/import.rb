@@ -63,7 +63,7 @@ class Import < ApplicationRecord
       background_job.import_id = self.id
       background_job.save!
 
-      ImportImportWorker.perform_async(background_job.id, project.id, self.id)
+      ImportImportWorker.perform_async(background_job.id, project.id, self.id, user.id)
     end
 
     background_job

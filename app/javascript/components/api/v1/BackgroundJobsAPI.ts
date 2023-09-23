@@ -8,7 +8,7 @@ export interface IBackgroundJob {
         id: string;
         status: "COMPLETED" | "RUNNING" | "FAILED";
         progress: number;
-        job_type: "RECHECK_ALL_VALIDATIONS" | "CHECK_PLACEHOLDERS";
+        job_type: "RECHECK_ALL_VALIDATIONS" | "CHECK_PLACEHOLDERS" | "IMPORT_VERIFY" | "IMPORT_IMPORT";
     };
 }
 
