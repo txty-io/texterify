@@ -27,6 +27,9 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     xauth \
     xvfb
 
+# Install Python 2.
+RUN apt-get install -y python2
+
 # Set workdir.
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
@@ -52,9 +55,6 @@ RUN source $NVM_DIR/nvm.sh \
     && nvm install $NODE_VERSION \
     && nvm alias default $NODE_VERSION \
     && nvm use default
-
-# Install Python 2.
-RUN apt-get install -y python2
 
 # Add node and npm to path so the commands are available.
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
