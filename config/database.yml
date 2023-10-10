@@ -26,6 +26,7 @@ development:
   host: <%= ENV.fetch("DB_DEV_HOST", "db") %>
   username: <%= ENV.fetch("DB_DEV_USERNAME", "postgres") %>
   database: <%= ENV.fetch("DB_DEV_DATABASE", "development") %>
+  port: <%= ENV.fetch("DB_DEV_PORT", 5432) %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -62,6 +63,7 @@ test:
   host: <%= ENV.fetch("DB_TEST_HOST", "db") %>
   username: <%= ENV.fetch("DB_TEST_USERNAME", "postgres") %>
   database: <%= ENV.fetch("DB_TEST_DATABASE", "test") %>
+  port: <%= ENV.fetch("DB_TEST_PORT", 5432) %>
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -88,3 +90,4 @@ production:
   username: <%= ENV.fetch("DB_PROD_USERNAME", "postgres") %>
   database: <%= ENV.fetch("DB_PROD_DATABASE", "production") %>
   password: <%= ENV.fetch("DB_PROD_PASSWORD", "") %>
+  port: <%= ENV.fetch("DB_PROD_PORT", 5432) %>
