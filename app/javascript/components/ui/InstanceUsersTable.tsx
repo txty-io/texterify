@@ -72,7 +72,7 @@ export function InstanceUsersTable(props: { tableReloader?: number; style?: Reac
         })();
     }, [props.tableReloader]);
 
-    const onDeleteAccount = async () => {
+    const onDeleteAccount = async (userId: string) => {
         setDeleteAccountLoading(true);
 
         Modal.confirm({
@@ -88,7 +88,7 @@ export function InstanceUsersTable(props: { tableReloader?: number; style?: Reac
             autoFocusButton: "cancel",
             onOk: async () => {
                 try {
-                    await UsersAPI.deleteAccount();
+                    await InstanceUsersAPI.deleteAccount({ userId });
                     message.success("Successfully deleted account.");
                     await reload();
                 } catch (error) {
@@ -148,14 +148,21 @@ export function InstanceUsersTable(props: { tableReloader?: number; style?: Reac
                                 {user.attributes.deactivated ? "Activate" : "Deactivate"}
                             </Button>
                         </Tooltip>
-                        <Button
-                            onClick={onDeleteAccount}
-                            danger
-                            style={{ marginLeft: 12 }}
-                            loading={deleteAccountLoading}
+                        <Tooltip
+                            title={user.attributes.is_superadmin ? "Instance admins can't be deleted." : undefined}
                         >
-                            Delete account
-                        </Button>
+                            <Button
+                                onClick={async () => {
+                                    await onDeleteAccount(user.id);
+                                }}
+                                danger
+                                disabled={user.attributes.is_superadmin}
+                                style={{ marginLeft: 12 }}
+                                loading={deleteAccountLoading}
+                            >
+                                Delete account
+                            </Button>
+                        </Tooltip>
                     </>
                 )
             };
