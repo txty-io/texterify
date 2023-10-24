@@ -1,4 +1,4 @@
-import { Button, Empty, Input, message, Table, Tooltip } from "antd";
+import { Button, Empty, Input, message, Modal, Table, Tooltip } from "antd";
 import * as React from "react";
 import { IGetInstanceUsersOptions, IGetInstanceUsersResponse, InstanceUsersAPI } from "../api/v1/InstanceUsersAPI";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "./Config";
@@ -7,6 +7,7 @@ import { Utils } from "./Utils";
 import { WarningIndicator } from "./WarningIndicator";
 import * as _ from "lodash";
 import { UsersAPI } from "../api/v1/UsersAPI";
+import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
 
 type DATA_INDEX =
     | "username"
@@ -147,7 +148,12 @@ export function InstanceUsersTable(props: { tableReloader?: number; style?: Reac
                                 {user.attributes.deactivated ? "Activate" : "Deactivate"}
                             </Button>
                         </Tooltip>
-                        <Button onClick={this.onDeleteAccount} danger style={{ marginLeft: 12 }}>
+                        <Button
+                            onClick={onDeleteAccount}
+                            danger
+                            style={{ marginLeft: 12 }}
+                            loading={deleteAccountLoading}
+                        >
                             Delete account
                         </Button>
                     </>
