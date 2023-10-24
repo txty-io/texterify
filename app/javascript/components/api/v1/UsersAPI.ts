@@ -53,6 +53,10 @@ const UsersAPI = {
         return API.postRequest(`users/${options.userId}/activate`, true)
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
+    },
+
+    deleteAccount: async (): Promise<{ success: boolean }> => {
+        return API.deleteRequest("users", true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
     }
 };
 

@@ -35,6 +35,25 @@ class User < ApplicationRecord
     ENV.fetch('EMAIL_CONFIRMATION_REQUIRED', 'false') == 'true'
   end
 
+  def delete_account
+    # For all organization the user is part of cancel the subscription and the trial
+    # if the user is the last owner.
+    self.organizations.each do |organization|
+      organization_owners_count = organization.owners_count
+      user_role = organization.role_of(self)
+
+      if user_role == 'owner' && organization_owners_count == 1
+        # Cancel any other active subscription.
+        organization.active_subscription&.interrupt
+
+        # Also cancel trial if active.
+        organization.cancel_trial
+      end
+    end
+
+    self.destroy
+  end
+
   # Override Devise::Confirmable#after_confirmation
   # https://www.rubydoc.info/github/plataformatec/devise/Devise/Models/Confirmable:after_confirmation
   def after_confirmation

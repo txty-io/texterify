@@ -6,11 +6,6 @@
 
 version: "3"
 
-networks:
-  default:
-    external:
-      name: txty-network
-
 # Use "host.docker.internal:<port>"" to access other docker services.
 
 services:
