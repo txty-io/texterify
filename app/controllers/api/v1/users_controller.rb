@@ -64,4 +64,14 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     render json: { error: false, details: 'USER_ACTIVATED' }
   end
+
+  def destroy
+    skip_authorization
+
+    if current_user.delete_account
+      render json: { success: true }
+    else
+      render json: { success: false }, status: :bad_request
+    end
+  end
 end

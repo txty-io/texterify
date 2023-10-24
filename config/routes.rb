@@ -66,6 +66,7 @@ Rails
 
         # Instance users
         get 'instance/users', to: 'instance_users#index'
+        delete 'instance/users/:id', to: 'instance_users#destroy'
 
         get :recently_viewed_projects, to: 'projects#recently_viewed'
 
@@ -190,6 +191,7 @@ Rails
         get 'users/image', to: 'users#image'
         post 'users/image', to: 'users#image_create'
         delete 'users/image', to: 'users#image_destroy'
+        delete 'users', to: 'users#destroy'
         post 'users/:id/deactivate', to: 'users#deactivate'
         post 'users/:id/activate', to: 'users#activate'
       end

@@ -40,6 +40,12 @@ const InstanceUsersAPI = {
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
+    },
+
+    deleteAccount: async (options: { userId: string }): Promise<{ success: boolean }> => {
+        return API.deleteRequest(`instance/users/${options.userId}`, true)
+            .then(APIUtils.handleErrors)
+            .catch(APIUtils.handleErrors);
     }
 };
 

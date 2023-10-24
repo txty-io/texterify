@@ -16,4 +16,21 @@ class Api::V1::InstanceUsersController < Api::V1::ApiController
     options[:meta] = { total: users.size }
     render json: InstanceUserSerializer.new(users.offset(page * per_page).limit(per_page), options).serialized_json
   end
+
+  def destroy
+    authorize :instance_user, :destroy?
+
+    user = User.find_by(params[:user_id])
+
+    if user.is_superadmin
+      render json: { errors: [{ code: 'SUPERADMIN_USER_CANT_BE_DELETED' }] }, status: :forbidden
+      return
+    end
+
+    if user.delete_account
+      render json: { success: true }
+    else
+      render json: { success: false }, status: :bad_request
+    end
+  end
 end

@@ -1,4 +1,4 @@
-import { Button, Empty, Input, message, Table, Tooltip } from "antd";
+import { Button, Empty, Input, message, Modal, Table, Tooltip } from "antd";
 import * as React from "react";
 import { IGetInstanceUsersOptions, IGetInstanceUsersResponse, InstanceUsersAPI } from "../api/v1/InstanceUsersAPI";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "./Config";
@@ -7,6 +7,7 @@ import { Utils } from "./Utils";
 import { WarningIndicator } from "./WarningIndicator";
 import * as _ from "lodash";
 import { UsersAPI } from "../api/v1/UsersAPI";
+import { IS_TEXTERIFY_CLOUD } from "../utilities/Env";
 
 type DATA_INDEX =
     | "username"
@@ -18,7 +19,8 @@ type DATA_INDEX =
     | "sign_in_count"
     | "last_sign_in_at"
     | "created_at"
-    | "created_at";
+    | "created_at"
+    | "controls";
 
 interface IColumn {
     title: string;
@@ -37,6 +39,7 @@ export function InstanceUsersTable(props: { tableReloader?: number; style?: Reac
     const [search, setSearch] = React.useState<string>("");
     const [usersResponse, setUsersResponse] = React.useState<IGetInstanceUsersResponse | null>(null);
     const [loading, setLoading] = React.useState<boolean>(false);
+    const [deleteAccountLoading, setDeleteAccountLoading] = React.useState<boolean>(false);
 
     async function reload(options?: IGetInstanceUsersOptions) {
         setLoading(true);
@@ -69,6 +72,38 @@ export function InstanceUsersTable(props: { tableReloader?: number; style?: Reac
         })();
     }, [props.tableReloader]);
 
+    const onDeleteAccount = async (userId: string) => {
+        setDeleteAccountLoading(true);
+
+        Modal.confirm({
+            title: "Do you really want to delete this account?",
+            content: IS_TEXTERIFY_CLOUD
+                ? "This cannot be undone. Subscriptions for organizations where the user is the only owner are automatically canceled."
+                : "This cannot be undone.",
+            okText: "Yes",
+            okButtonProps: {
+                danger: true
+            },
+            cancelText: "No",
+            autoFocusButton: "cancel",
+            onOk: async () => {
+                try {
+                    await InstanceUsersAPI.deleteAccount({ userId });
+                    message.success("Successfully deleted account.");
+                    await reload();
+                } catch (error) {
+                    console.error(error);
+                    message.error("Error while deleting account.");
+                } finally {
+                    setDeleteAccountLoading(false);
+                }
+            },
+            onCancel: () => {
+                setDeleteAccountLoading(false);
+            }
+        });
+    };
+
     function getRows(): IRow[] {
         if (!usersResponse) {
             return [];
@@ -89,29 +124,46 @@ export function InstanceUsersTable(props: { tableReloader?: number; style?: Reac
                     : "-",
                 created_at: Utils.formatDateTime(user.attributes.created_at),
                 controls: (
-                    <Tooltip
-                        title={
-                            user.attributes.is_superadmin && !user.attributes.deactivated
-                                ? "Instance admins can't be deactivated."
-                                : undefined
-                        }
-                    >
-                        <Button
-                            onClick={async () => {
-                                if (user.attributes.deactivated) {
-                                    await UsersAPI.activateUser({ userId: user.id });
-                                } else {
-                                    await UsersAPI.deactivateUser({ userId: user.id });
-                                }
-
-                                await reload();
-                            }}
-                            danger={!user.attributes.deactivated}
-                            disabled={user.attributes.is_superadmin && !user.attributes.deactivated}
+                    <>
+                        <Tooltip
+                            title={
+                                user.attributes.is_superadmin && !user.attributes.deactivated
+                                    ? "Instance admins can't be deactivated."
+                                    : undefined
+                            }
                         >
-                            {user.attributes.deactivated ? "Activate" : "Deactivate"}
-                        </Button>
-                    </Tooltip>
+                            <Button
+                                onClick={async () => {
+                                    if (user.attributes.deactivated) {
+                                        await UsersAPI.activateUser({ userId: user.id });
+                                    } else {
+                                        await UsersAPI.deactivateUser({ userId: user.id });
+                                    }
+
+                                    await reload();
+                                }}
+                                danger={!user.attributes.deactivated}
+                                disabled={user.attributes.is_superadmin && !user.attributes.deactivated}
+                            >
+                                {user.attributes.deactivated ? "Activate" : "Deactivate"}
+                            </Button>
+                        </Tooltip>
+                        <Tooltip
+                            title={user.attributes.is_superadmin ? "Instance admins can't be deleted." : undefined}
+                        >
+                            <Button
+                                onClick={async () => {
+                                    await onDeleteAccount(user.id);
+                                }}
+                                danger
+                                disabled={user.attributes.is_superadmin}
+                                style={{ marginLeft: 12 }}
+                                loading={deleteAccountLoading}
+                            >
+                                Delete account
+                            </Button>
+                        </Tooltip>
+                    </>
                 )
             };
         }, []);
