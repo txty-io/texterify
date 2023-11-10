@@ -33,6 +33,12 @@ class ImportVerifyWorker
                 next
               end
 
+              if key_name.blank?
+                next
+              end
+
+              key_name = key_name.strip
+
               translation =
                 import_file.import_file_translations.find_or_initialize_by(
                   import_file_id: import_file.id,
