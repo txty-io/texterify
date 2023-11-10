@@ -25,7 +25,7 @@ class ImportVerifyWorker
               if file_format == 'json-poeditor'
                 key_name = "#{json_key['context']}.#{json_key['term']}"
               else
-                key_name = json_key
+                key_name = json_key.to_s
               end
 
               # Skip "texterify_" keys because they are reserved and can't be imported.
