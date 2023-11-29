@@ -54,7 +54,7 @@ RUN SECRET_KEY_BASE=`bin/rails secret` \
 
 CMD ["rails", "server"]
 
-FROM builder AS production
+FROM ruby:2.7.1-alpine AS production
 
 ARG RAILS_ENV_ARG=production
 ARG NODE_ENV_ARG=production
