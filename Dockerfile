@@ -1,48 +1,32 @@
-FROM ruby:2.7.1 AS production-builder
-SHELL ["/bin/bash", "-c"]
+FROM ruby:2.7.1-alpine AS production
 
 EXPOSE 3000
 
 ARG RAILS_ENV_ARG=production
 ARG NODE_ENV_ARG=production
+ARG BUILD_PACKAGES="build-base curl-dev git"
+ARG RUN_PACKAGES="tzdata postgresql-dev yaml-dev zlib-dev"
 
 ENV RAILS_ENV=$RAILS_ENV_ARG
 ENV RAILS_ROOT /var/www/texterify
-
-# Install yarn.
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-
-# Install essential libraries.
-RUN apt-get update && apt-get install -y build-essential libpq-dev curl apt-transport-https yarn && apt-get -y autoclean
-
-# Set workdir.
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 
-# Install nvm.
-ENV NVM_DIR /usr/local/nvm
-RUN mkdir -p $NVM_DIR
-ENV NODE_VERSION 14.21.3
-ENV NODE_ENV=$NODE_ENV_ARG
-ENV NODE_OPTIONS="--max_old_space_size=8192"
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+# Install essential libraries.
+RUN apk update \
+    && apk upgrade \
+    && apk add --update --no-cache $BUILD_PACKAGES $DEV_PACKAGES $RUBY_PACKAGES
 
-# Install node and npm.
-RUN source $NVM_DIR/nvm.sh \
-    && nvm install $NODE_VERSION \
-    && nvm alias default $NODE_VERSION \
-    && nvm use default
-
-# Add node and npm to path so the commands are available.
-ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
-ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+# Install node.
+RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/v3.14/main nodejs yarn
 
 # Install gems.
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
 RUN gem install bundler:2.1.4
-RUN bundle install --jobs 20 --retry 5 --without development test
+RUN gem install nokogiri
+RUN bundle config --global frozen 1 \
+    && bundle install --without development test --jobs 20 --retry 5
 
 # Copy project files.
 COPY . .
@@ -72,21 +56,6 @@ RUN SECRET_KEY_BASE=`bin/rails secret` \
     STRIPE_PUBLIC_API_KEY=$STRIPE_PUBLIC_API_KEY \
     TEXTERIFY_PAYMENT_SERVER=$TEXTERIFY_PAYMENT_SERVER \
     SENTRY_DSN_FRONTEND=$SENTRY_DSN_FRONTEND \
-    bundle exec rails assets:precompile
-
-CMD ["rails", "server"]
-
-
-FROM production-builder AS production
-
-CMD ["rails", "server"]
-
-
-FROM production-builder AS testing
-
-RUN bundle install --with test
-RUN gem install mailcatcher
-RUN yarn install --production=false
-RUN apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+    bin/rails assets:precompile
 
 CMD ["rails", "server"]
