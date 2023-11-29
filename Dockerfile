@@ -5,7 +5,7 @@ EXPOSE 3000
 ARG RAILS_ENV_ARG=production
 ARG NODE_ENV_ARG=production
 ARG BUILD_PACKAGES="build-base curl-dev git"
-ARG RUN_PACKAGES="tzdata postgresql-dev libpq-dev yaml-dev zlib-dev"
+ARG RUN_PACKAGES="tzdata postgresql-dev yaml-dev zlib-dev"
 
 ENV RAILS_ENV=$RAILS_ENV_ARG
 ENV RAILS_ROOT /var/www/texterify
@@ -15,7 +15,7 @@ WORKDIR $RAILS_ROOT
 # Install essential libraries.
 RUN apk update \
     && apk upgrade \
-    && apk add --update --no-cache $BUILD_PACKAGES $RUN_PACKAGES $RUBY_PACKAGES
+    && apk add --update --no-cache $BUILD_PACKAGES $RUN_PACKAGES
 
 # Install node.
 RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/v3.14/main nodejs yarn
