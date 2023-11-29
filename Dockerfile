@@ -1,6 +1,4 @@
-FROM ruby:2.7.1-alpine AS production
-
-EXPOSE 3000
+FROM ruby:2.7.1-alpine AS builder
 
 ARG RAILS_ENV_ARG=production
 ARG NODE_ENV_ARG=production
@@ -12,15 +10,12 @@ ENV RAILS_ROOT /var/www/texterify
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 
-# Install essential libraries.
 RUN apk update \
     && apk upgrade \
     && apk add --update --no-cache $BUILD_PACKAGES $RUN_PACKAGES
 
-# Install node.
 RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/v3.14/main nodejs yarn
 
-# Install gems.
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
 RUN gem install bundler:2.1.4
@@ -28,7 +23,6 @@ RUN gem install nokogiri
 RUN bundle config --global frozen 1 \
     && bundle install --without development test --jobs 20 --retry 5
 
-# Copy project files.
 COPY . .
 
 ARG COMMIT_HASH
@@ -60,7 +54,29 @@ RUN SECRET_KEY_BASE=`bin/rails secret` \
 
 CMD ["rails", "server"]
 
-FROM production AS testing
+FROM builder AS production
+
+ARG RAILS_ENV_ARG=production
+ARG NODE_ENV_ARG=production
+ARG BUILD_PACKAGES="build-base curl-dev git"
+ARG RUN_PACKAGES="tzdata postgresql-dev yaml-dev zlib-dev"
+
+ENV RAILS_ENV=$RAILS_ENV_ARG
+ENV RAILS_ROOT /var/www/texterify
+RUN mkdir -p $RAILS_ROOT
+WORKDIR $RAILS_ROOT
+
+RUN apk update \
+    && apk upgrade \
+    && apk add --update --no-cache $RUN_PACKAGES
+
+COPY --from=builder $RAILS_ROOT $RAILS_ROOT
+
+EXPOSE 3000
+
+CMD ["rails", "server"]
+
+FROM builder AS testing
 
 RUN bundle install --with test
 RUN gem install mailcatcher
