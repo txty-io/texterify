@@ -9,6 +9,10 @@ ARG NODE_ENV_ARG=production
 ENV RAILS_ENV=$RAILS_ENV_ARG
 ENV RAILS_ROOT /var/www/texterify
 
+# Install yarn.
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+
 # Install essential libraries.
 RUN apt-get update && apt-get install -y build-essential libpq-dev curl apt-transport-https yarn && apt-get -y autoclean
 
@@ -33,10 +37,6 @@ RUN source $NVM_DIR/nvm.sh \
 # Add node and npm to path so the commands are available.
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
-
-# Install yarn.
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
 # Install gems.
 COPY Gemfile Gemfile
