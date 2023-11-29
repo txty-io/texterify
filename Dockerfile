@@ -5,7 +5,7 @@ EXPOSE 3000
 ARG RAILS_ENV_ARG=production
 ARG NODE_ENV_ARG=production
 ARG BUILD_PACKAGES="build-base curl-dev git"
-ARG RUN_PACKAGES="tzdata postgresql-dev yaml-dev zlib-dev"
+ARG RUN_PACKAGES="tzdata postgresql-dev libpq-dev yaml-dev zlib-dev"
 
 ENV RAILS_ENV=$RAILS_ENV_ARG
 ENV RAILS_ROOT /var/www/texterify
