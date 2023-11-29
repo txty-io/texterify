@@ -1,4 +1,4 @@
-FROM ruby:2.7.1 AS production
+FROM ruby:2.7.1 AS production-builder
 SHELL ["/bin/bash", "-c"]
 
 EXPOSE 3000
@@ -77,7 +77,12 @@ RUN SECRET_KEY_BASE=`bin/rails secret` \
 CMD ["rails", "server"]
 
 
-FROM production AS testing
+FROM production-builder AS production
+
+CMD ["rails", "server"]
+
+
+FROM production-builder AS testing
 
 RUN bundle install --with test
 RUN gem install mailcatcher
