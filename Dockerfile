@@ -7,6 +7,7 @@ ARG RUN_PACKAGES="tzdata postgresql-dev yaml-dev zlib-dev"
 
 ENV RAILS_ENV=$RAILS_ENV_ARG
 ENV RAILS_ROOT /var/www/texterify
+ENV BUNDLE_APP_CONFIG="$RAILS_ROOT/.bundle"
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 
@@ -20,8 +21,9 @@ COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
 RUN gem install bundler:2.1.4
 RUN gem install nokogiri
+RUN bundle config set without development test
 RUN bundle config --global frozen 1 \
-    && bundle install --without development test --jobs 20 --retry 5
+    && bundle install --jobs 20 --retry 5 --path=vendor/bundle
 
 COPY . .
 
@@ -58,7 +60,7 @@ FROM ruby:2.7.1-alpine AS production
 
 ARG RAILS_ENV_ARG=production
 ARG NODE_ENV_ARG=production
-ARG BUILD_PACKAGES="build-base curl-dev git"
+ENV BUNDLE_APP_CONFIG="$RAILS_ROOT/.bundle"
 ARG RUN_PACKAGES="tzdata postgresql-dev yaml-dev zlib-dev"
 
 ENV RAILS_ENV=$RAILS_ENV_ARG
