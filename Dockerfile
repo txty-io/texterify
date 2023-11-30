@@ -7,9 +7,10 @@ ARG RUN_PACKAGES="tzdata postgresql-dev yaml-dev zlib-dev"
 
 ENV RAILS_ENV=$RAILS_ENV_ARG
 ENV RAILS_ROOT /var/www/texterify
-ENV BUNDLE_APP_CONFIG="$RAILS_ROOT/.bundle"
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
+
+ENV BUNDLE_APP_CONFIG="$RAILS_ROOT/.bundle"
 
 RUN apk update \
     && apk upgrade \
@@ -60,13 +61,14 @@ FROM ruby:2.7.1-alpine AS production
 
 ARG RAILS_ENV_ARG=production
 ARG NODE_ENV_ARG=production
-ENV BUNDLE_APP_CONFIG="$RAILS_ROOT/.bundle"
 ARG RUN_PACKAGES="tzdata postgresql-dev yaml-dev zlib-dev"
 
 ENV RAILS_ENV=$RAILS_ENV_ARG
 ENV RAILS_ROOT /var/www/texterify
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
+
+ENV BUNDLE_APP_CONFIG="$RAILS_ROOT/.bundle"
 
 RUN apk update \
     && apk upgrade \
