@@ -49,6 +49,25 @@ jobs:
         run: |
           docker push chrztoph/texterify-cloud:${{ env.RELEASE_VERSION }}
 
+      # Push to DigitalOcean registry
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 1200
+
+      - name: Tag image if tag is set
+        if: env.RELEASE_VERSION
+        run: docker tag chrztoph/texterify-cloud:$GITHUB_SHA registry.digitalocean.com/voidly/txty-cloud:${{ env.RELEASE_VERSION }}
+
+      - name: Push images if tag is set to private registry
+        if: env.RELEASE_VERSION
+        run: |
+          docker push registry.digitalocean.com/voidly/txty-cloud:${{ env.RELEASE_VERSION }}
+
+      # Slack error message
       - name: Send notification to Slack if job fails
         uses: 8398a7/action-slack@v3
         with:
