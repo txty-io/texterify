@@ -88,3 +88,4 @@ production:
   username: <%= ENV.fetch("DB_PROD_USERNAME", "postgres") %>
   database: <%= ENV.fetch("DB_PROD_DATABASE", "txty_production") %>
   password: <%= ENV.fetch("DB_PROD_PASSWORD", "") %>
+  port: <%= ENV.fetch("DB_PROD_PORT", "5432") %>
