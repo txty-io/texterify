@@ -72,7 +72,8 @@ ENV BUNDLE_APP_CONFIG="$RAILS_ROOT/.bundle"
 
 RUN apk update \
     && apk upgrade \
-    && apk add --update --no-cache $RUN_PACKAGES
+    && apk add --update --no-cache $RUN_PACKAGES \
+    && apk add --repository http://dl-cdn.alpinelinux.org/alpine/v3.14/main nodejs
 
 COPY --from=builder $RAILS_ROOT $RAILS_ROOT
 
