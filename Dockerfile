@@ -79,7 +79,7 @@ COPY --from=builder $RAILS_ROOT $RAILS_ROOT
 
 EXPOSE 3000
 
-CMD ["bin/rails", "server"]
+CMD ["rails", "server"]
 
 FROM builder AS testing
 
@@ -89,4 +89,4 @@ RUN bundle install
 RUN yarn install --production=false
 # RUN apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
-CMD ["bin/rails", "server"]
+CMD ["rails", "server"]
