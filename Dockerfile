@@ -82,7 +82,7 @@ CMD ["rails", "server"]
 
 FROM builder AS testing
 
-RUN bundle config set without
+RUN bundle config --delete without
 RUN bundle install
 RUN gem install mailcatcher
 RUN yarn install --production=false
