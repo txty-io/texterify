@@ -84,7 +84,7 @@ FROM builder AS testing
 
 RUN bundle config --delete without
 RUN bundle install
-RUN gem install mailcatcher
+RUN gem install mailcatcher@0.8.2
 RUN yarn install --production=false
 # RUN apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
