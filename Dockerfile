@@ -79,7 +79,7 @@ EXPOSE 3000
 
 RUN chmod +x ./bootstrap.sh
 
-ENTRYPOINT ["./bootstrap.sh"]
+ENTRYPOINT ["$RAILS_ROOT/bootstrap.sh"]
 
 FROM builder AS testing
 
