@@ -77,7 +77,7 @@ COPY --from=builder $RAILS_ROOT $RAILS_ROOT
 
 EXPOSE 3000
 
-CMD "bundle exec sidekiq & bin/rails server"
+ENTRYPOINT ["./bootstrap.sh"]
 
 FROM builder AS testing
 
