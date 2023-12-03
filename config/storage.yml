@@ -11,6 +11,8 @@ digitalocean:
   endpoint: <%= ENV.fetch("DO_SPACE_ENDPOINT", "") %>
   access_key_id: <%= ENV.fetch("DO_SPACE_ACCESS_KEY", "") %>
   secret_access_key: <%= ENV.fetch("DO_SPACE_SECRET_KEY", "") %>
+  bucket: <%= ENV.fetch("DO_SPACE_SECRET_BUCKET", "") %>
+  region: unused
 
 # Remember not to checkin your GCS keyfile to a repository
 # google:
