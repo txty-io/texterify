@@ -77,7 +77,7 @@ COPY --from=builder $RAILS_ROOT $RAILS_ROOT
 
 EXPOSE 3000
 
-RUN chmod +x ./bootstrap.sh
+RUN chmod +x /var/www/app/bootstrap.sh
 
 ENTRYPOINT ["/var/www/app/bootstrap.sh"]
 
