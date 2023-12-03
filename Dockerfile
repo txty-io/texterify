@@ -6,7 +6,7 @@ ARG BUILD_PACKAGES="build-base curl-dev git"
 ARG RUN_PACKAGES="tzdata postgresql-dev yaml-dev zlib-dev"
 
 ENV RAILS_ENV=$RAILS_ENV_ARG
-ENV RAILS_ROOT /var/www/texterify
+ENV RAILS_ROOT /var/www/app
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 
@@ -62,7 +62,7 @@ ARG NODE_ENV_ARG=production
 ARG RUN_PACKAGES="tzdata postgresql-dev yaml-dev zlib-dev"
 
 ENV RAILS_ENV=$RAILS_ENV_ARG
-ENV RAILS_ROOT /var/www/texterify
+ENV RAILS_ROOT /var/www/app
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 
@@ -79,7 +79,7 @@ EXPOSE 3000
 
 RUN chmod +x ./bootstrap.sh
 
-ENTRYPOINT ["$RAILS_ROOT/bootstrap.sh"]
+ENTRYPOINT ["/var/www/app/bootstrap.sh"]
 
 FROM builder AS testing
 
