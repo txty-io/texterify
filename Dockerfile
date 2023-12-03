@@ -77,7 +77,7 @@ COPY --from=builder $RAILS_ROOT $RAILS_ROOT
 
 EXPOSE 3000
 
-CMD ["bin/rails", "server"]
+CMD "bundle exec sidekiq & bin/rails server"
 
 FROM builder AS testing
 
