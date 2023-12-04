@@ -124,4 +124,4 @@ gem 'php-serialize'
 # For encoding and decoding HTML entities.
 gem 'htmlentities'
 
-gem "aws-sdk-s3", require: false
+gem 'aws-sdk-s3', require: false
