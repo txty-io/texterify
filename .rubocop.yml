@@ -16,6 +16,7 @@ AllCops:
     - 'bin/**/*'
     - 'spec/cypress/fixtures/**/*'
     - 'vendor/**/*'
+    - 'lib/tasks/migrate_to_s3.rake'
   TargetRubyVersion: 2.7.1
 
 Rails:
