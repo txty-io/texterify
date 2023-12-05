@@ -54,6 +54,7 @@ namespace :active_storage do
         Rails.application.config.to_prepare { ActiveStorage::Blob.send(:include, AsDownloadPatch) }
 
         def migrate(from, to)
+            puts ActiveStorage::Blob # needed because otherwise error is thrown
             configs = Rails.configuration.active_storage.service_configurations
             from_service = ActiveStorage::Service.configure from, configs
             to_service = ActiveStorage::Service.configure to, configs
