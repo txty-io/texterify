@@ -58,14 +58,25 @@ jobs:
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
         run: doctl registry login --expiry-seconds 1200
 
-      - name: Tag image if tag is set
+      - name: Tag DigitalOcean image
+        if: env.RELEASE_VERSION
+        run: docker tag chrztoph/texterify-cloud:$GITHUB_SHA registry.digitalocean.com/voidly/txty-cloud:$GITHUB_SHA
+
+      - name: Tag DigitalOcean image if env.RELEASE_VERSION is set
         if: env.RELEASE_VERSION
         run: docker tag chrztoph/texterify-cloud:$GITHUB_SHA registry.digitalocean.com/voidly/txty-cloud:${{ env.RELEASE_VERSION }}
 
-      - name: Push images if tag is set to private registry
+      - name: Push DigitalOcean GITHUB_SHA image to private registry
+        run: |
+          docker push registry.digitalocean.com/voidly/txty-cloud:$GITHUB_SHA
+
+      - name: Push DigitalOcean env.RELEASE_VERSION image to private registry
         if: env.RELEASE_VERSION
         run: |
           docker push registry.digitalocean.com/voidly/txty-cloud:${{ env.RELEASE_VERSION }}
+
+      - name: Start garbage collection
+        run: yes | doctl registry garbage-collection start --force
 
       # Slack error message
       - name: Send notification to Slack if job fails
