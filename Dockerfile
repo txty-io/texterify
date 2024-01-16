@@ -21,7 +21,7 @@ RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/v3.14/main nodejs 
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
 RUN gem install bundler:2.1.4
-RUN gem install nokogiri
+RUN gem install nokogiri -v 1.15.5
 RUN bundle config set without development test
 RUN bundle config --global frozen 1 \
     && bundle install --jobs 20 --retry 5 --path=vendor/bundle
