@@ -25,6 +25,7 @@ module Texterify
       # Load the translations for the given language and export config.
       project
         .keys
+        .includes(:translations)
         .order_by_name
         .each do |key|
           key_translation = key.translation_for(language.id, export_config.id)
