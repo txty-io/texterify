@@ -153,13 +153,15 @@ class Key < ApplicationRecord
   end
 
   # Returns the translation of the key for the given language and export config.
-  def translation_for(language_id, export_config_id)
-    flavor = project.export_configs.find(export_config_id).flavor
-
+  def translation_for(language_id, flavor)
     key_translation_flavor = nil
     if flavor.present?
       key_translation_flavor =
-        self.translations.where(language_id: language_id, flavor_id: flavor.id).order(created_at: :desc).first
+        self
+          .translations
+          .sort_by(&:created_at)
+          .reverse
+          .find { |t| t.language_id == language_id && t.flavor_id == flavor.id }
     end
 
     # If there is a flavor translation use it.
@@ -167,7 +169,8 @@ class Key < ApplicationRecord
       key_translation = key_translation_flavor
     else
       # Otherwise use the default translation of the language.
-      key_translation = self.translations.where(language_id: language_id, flavor_id: nil).order(created_at: :desc).first
+      key_translation =
+        self.translations.sort_by(&:created_at).reverse.find { |t| t.language_id == language_id && t.flavor_id.nil? }
     end
 
     key_translation

@@ -22,13 +22,15 @@ module Texterify
     def self.create_language_export_data(project, export_config, language, post_processing_rules, **args)
       export_data = {}
 
+      flavor = project.export_configs.find(export_config.id).flavor
+
       # Load the translations for the given language and export config.
       project
         .keys
         .includes(:translations)
         .order_by_name
         .each do |key|
-          key_translation = key.translation_for(language.id, export_config.id)
+          key_translation = key.translation_for(language.id, flavor)
           translation_export_data = nil
 
           if key_translation
@@ -47,7 +49,7 @@ module Texterify
       while parent_language.present?
         parent_language.keys.each do |key|
           if export_data[key.name].nil? || export_data[key.name][:other].empty?
-            key_translation = key.translation_for(parent_language.id, export_config.id)
+            key_translation = key.translation_for(parent_language.id, flavor)
             translation_export_data = nil
 
             if key_translation
