@@ -68,7 +68,7 @@ RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/command-hist
     && echo $SNIPPET >> "/root/.bashrc"
 
 # Install mailcatcher.
-RUN gem install mailcatcher
+# RUN gem install mailcatcher
 
 RUN echo 'alias ys="yarn start"' >> ~/.bashrc
 RUN echo 'alias ysw="yarn start:watcher"' >> ~/.bashrc
