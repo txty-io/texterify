@@ -13,6 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install docker-compose
+        uses: ndeloof/install-compose-action@v0.0.1
+        with:
+          version: v2.1.0
+          legacy: true # will also install in PATH as `docker-compose`
+
       - name: Run docker-compose
         run: docker-compose up -d
 
