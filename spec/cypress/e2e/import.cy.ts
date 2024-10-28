@@ -35,6 +35,7 @@ context("import", () => {
         { id: "json-formatjs", file: "example_json_formatjs.json", searchFor: "json" },
         { id: "json-poeditor", file: "example_json_poeditor.json", searchFor: "json" },
         { id: "ios", file: "example_ios.strings", searchFor: "ios" },
+        { id: "android", file: "example_android.xml", searchFor: "android" },
         { id: "toml", file: "example_toml.toml", searchFor: "toml" },
         { id: "rails", file: "example_rails.yml", searchFor: "rails" },
         { id: "properties", file: "example_properties.properties", searchFor: "prop" },

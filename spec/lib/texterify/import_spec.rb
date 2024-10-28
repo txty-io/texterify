@@ -74,4 +74,33 @@ RSpec.describe Texterify::Import do
       )
     end
   end
+
+  describe 'parses android' do
+    it 'parses android file' do
+      file = File.read('spec/fixtures/android/example_android.xml')
+      parse_result = Texterify::Import.parse_file_content('', file, 'android')
+      expect(parse_result[:content]).to eq(
+        {
+          'my_title' => 'My title',
+          'my_description' => 'My description',
+          'plurals_item' => {
+            other: 'other text',
+            zero: 'zero text',
+            one: 'one text',
+            two: 'two text',
+            few: 'few text',
+            many: 'many text'
+          },
+          'plurals_item_with_one_only' => {
+            other: '',
+            zero: '',
+            one: '123',
+            two: '',
+            few: '',
+            many: ''
+          }
+        }
+      )
+    end
+  end
 end

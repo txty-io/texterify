@@ -121,7 +121,7 @@ formats = [
   {
     format: 'android',
     name: 'Android',
-    import_support: false,
+    import_support: true,
     export_support: true,
     plural_support: true,
     skip_empty_plural_translations_support: true,

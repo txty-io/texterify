@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<resources>
+    <string name="my_title">My title</string>
+    <string name="my_description">My description</string>
+    <plurals name="plurals_item">
+        <item quantity="other">other text</item>
+        <item quantity="zero">zero text</item>
+        <item quantity="one">one text</item>
+        <item quantity="two">two text</item>
+        <item quantity="few">few text</item>
+        <item quantity="many">many text</item>
+    </plurals>
+    <plurals name="plurals_item_with_one_only">
+        <item quantity="one">123</item>
+    </plurals>
+</resources>

@@ -23,6 +23,8 @@ module Texterify
         json?(file_content, false)
       elsif file_format == 'ios'
         strings?(file_content)
+      elsif file_format == 'android'
+        android?(file_content)
       elsif file_format == 'toml'
         toml?(file_content)
       elsif file_format == 'properties'
@@ -224,6 +226,33 @@ module Texterify
       end
 
       { success: true, content: json }
+    rescue StandardError => e
+      { success: false, error_message: e.message }
+    end
+
+    def self.android?(content)
+      parsed = {}
+
+      xml = Nokogiri.XML(content)
+
+      # <string name="xxx">
+      string_elements = xml.css('resources string')
+      string_elements.map { |string_element| parsed[string_element['name']] = string_element.text }
+
+      # <plurals name="xxx">
+      plurals_elements = xml.css('resources plurals')
+      plurals_elements.map do |plural_element|
+        parsed[plural_element['name']] = {
+          other: plural_element.css("item[quantity='other']").text,
+          zero: plural_element.css("item[quantity='zero']").text,
+          one: plural_element.css("item[quantity='one']").text,
+          two: plural_element.css("item[quantity='two']").text,
+          few: plural_element.css("item[quantity='few']").text,
+          many: plural_element.css("item[quantity='many']").text
+        }
+      end
+
+      { success: true, content: parsed }
     rescue StandardError => e
       { success: false, error_message: e.message }
     end

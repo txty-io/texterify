@@ -34,10 +34,12 @@
 		"misogi.ruby-rubocop",
 		"esbenp.prettier-vscode",
 		"castwide.solargraph",
-		"rebornix.ruby",
 		"heaths.vscode-guid",
 		"connorshea.vscode-ruby-test-adapter",
-		"hbenl.vscode-test-explorer"
+		"hbenl.vscode-test-explorer",
+		"ms-azuretools.vscode-docker",
+		"Shopify.ruby-lsp",
+		"redhat.vscode-xml"
 	],
 
 	// "postCreateCommand": "bundle exec rails db:create db:migrate db:seed"

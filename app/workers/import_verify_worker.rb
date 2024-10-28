@@ -65,6 +65,7 @@ class ImportVerifyWorker
                 translation.zero = json_value[:zero]
                 translation.one = json_value[:one]
                 translation.two = json_value[:two]
+                translation.few = json_value[:few]
                 translation.many = json_value[:many]
                 translation.other = json_value[:other]
               else

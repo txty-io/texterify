@@ -18,4 +18,8 @@ class ImportFileTranslation < ApplicationRecord
 
     zero_different || one_different || two_different || few_different || many_different || other_different
   end
+
+  def plurals_content?
+    self.zero || self.one || self.two || self.few || self.many
+  end
 end

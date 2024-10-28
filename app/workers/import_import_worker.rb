@@ -19,6 +19,14 @@ class ImportImportWorker
           key.project_id = project.id
         end
         key.description = import_file_translation.key_description
+
+        # If the imported translation has plural content convert the key to a plural key.
+        # If the key is a plural key don't convert to a simple key, because there might be
+        # plural content in some other language.
+        if import_file_translation.plurals_content?
+          key.pluralization_enabled = true
+        end
+
         key.save!
 
         # Update or create translation.
