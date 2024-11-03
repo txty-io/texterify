@@ -135,7 +135,11 @@ class Organization < ApplicationRecord
     FEATURE_POST_PROCESSING: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_PROJECT_ACTIVITY: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_TAGS: [],
-    FEATURE_MACHINE_TRANSLATION_SUGGESTIONS: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
+    FEATURE_MACHINE_TRANSLATION_SUGGESTIONS: [
+      Subscription::PLAN_BASIC,
+      Subscription::PLAN_TEAM,
+      Subscription::PLAN_BUSINESS
+    ],
     FEATURE_MACHINE_TRANSLATION_LANGUAGE: [Subscription::PLAN_TEAM, Subscription::PLAN_BUSINESS],
     FEATURE_ADVANCED_PERMISSION_SYSTEM: [Subscription::PLAN_BUSINESS],
     FEATURE_OTA: [Subscription::PLAN_BUSINESS],

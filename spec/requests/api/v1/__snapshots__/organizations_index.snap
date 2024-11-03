@@ -70,8 +70,9 @@
           ],
                                         "FEATURE_TAGS" => [],
              "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
-            [0] "team",
-            [1] "business"
+            [0] "basic",
+            [1] "team",
+            [2] "business"
           ],
                 "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
             [0] "team",
@@ -175,8 +176,9 @@
           ],
                                         "FEATURE_TAGS" => [],
              "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
-            [0] "team",
-            [1] "business"
+            [0] "basic",
+            [1] "team",
+            [2] "business"
           ],
                 "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
             [0] "team",
@@ -280,8 +282,9 @@
           ],
                                         "FEATURE_TAGS" => [],
              "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
-            [0] "team",
-            [1] "business"
+            [0] "basic",
+            [1] "team",
+            [2] "business"
           ],
                 "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
             [0] "team",
@@ -385,8 +388,9 @@
           ],
                                         "FEATURE_TAGS" => [],
              "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
-            [0] "team",
-            [1] "business"
+            [0] "basic",
+            [1] "team",
+            [2] "business"
           ],
                 "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
             [0] "team",
@@ -490,8 +494,9 @@
           ],
                                         "FEATURE_TAGS" => [],
              "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
-            [0] "team",
-            [1] "business"
+            [0] "basic",
+            [1] "team",
+            [2] "business"
           ],
                 "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
             [0] "team",
@@ -595,8 +600,9 @@
           ],
                                         "FEATURE_TAGS" => [],
              "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
-            [0] "team",
-            [1] "business"
+            [0] "basic",
+            [1] "team",
+            [2] "business"
           ],
                 "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
             [0] "team",
@@ -700,8 +706,9 @@
           ],
                                         "FEATURE_TAGS" => [],
              "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
-            [0] "team",
-            [1] "business"
+            [0] "basic",
+            [1] "team",
+            [2] "business"
           ],
                 "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
             [0] "team",
@@ -805,8 +812,9 @@
           ],
                                         "FEATURE_TAGS" => [],
              "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
-            [0] "team",
-            [1] "business"
+            [0] "basic",
+            [1] "team",
+            [2] "business"
           ],
                 "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
             [0] "team",
@@ -910,8 +918,9 @@
           ],
                                         "FEATURE_TAGS" => [],
              "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
-            [0] "team",
-            [1] "business"
+            [0] "basic",
+            [1] "team",
+            [2] "business"
           ],
                 "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
             [0] "team",
@@ -1015,8 +1024,9 @@
           ],
                                         "FEATURE_TAGS" => [],
              "FEATURE_MACHINE_TRANSLATION_SUGGESTIONS" => [
-            [0] "team",
-            [1] "business"
+            [0] "basic",
+            [1] "team",
+            [2] "business"
           ],
                 "FEATURE_MACHINE_TRANSLATION_LANGUAGE" => [
             [0] "team",
