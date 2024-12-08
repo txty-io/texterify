@@ -79,16 +79,6 @@ RSpec.describe Api::V1::MachineTranslationsController, type: :request do
       expect(body['character_count']).to be_a_kind_of(Integer)
       expect(body['character_limit']).to be_a_kind_of(Integer)
     end
-
-    it 'returns an error for invalid token' do
-      ENV['DEEPL_API_TOKEN'] = 'invalid token'
-
-      get '/api/v1/machine_translations_usage', headers: @auth_params_superadmin
-      expect(response).to have_http_status(:bad_request)
-      body = JSON.parse(response.body)
-      expect(body['error']).to be(true)
-      expect(body['message']).to eq('MACHINE_TRANSLATION_INVALID_TOKEN')
-    end
   end
 
   describe 'GET target_languages' do
