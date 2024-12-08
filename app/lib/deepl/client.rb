@@ -37,11 +37,6 @@ module Deepl
       else
         @api_token = ENV.fetch('DEEPL_API_TOKEN', nil)
         @api_endpoint = @api_token.ends_with?(':fx') ? DEEPL_FREE_API : DEEPL_PRO_API
-
-        response = self.usage
-        if response.nil?
-          raise DeeplInvalidTokenException
-        end
       end
     end
 
@@ -57,7 +52,7 @@ module Deepl
     # }
     def usage
       if Rails.env.test?
-        if @api_endpoint == DEEPL_FREE_API && @api_token == '<valid_free_token>'
+        if @api_endpoint == DEEPL_FREE_API && @api_token == '<valid_free_token>:fx'
           { "character_count": 1337, "character_limit": 500_000 }
         elsif @api_endpoint == DEEPL_PRO_API && @api_token == '<valid_pro_token>'
           { "character_count": 180_118, "character_limit": 1_250_000 }

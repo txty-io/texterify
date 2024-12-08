@@ -23,7 +23,7 @@ RSpec.describe Api::V1::MachineTranslationsController, type: :request do
       @target_language.country_code = 'US'
       @target_language.save!
 
-      ENV['DEEPL_API_TOKEN'] = '<valid_free_token>'
+      ENV['DEEPL_API_TOKEN'] = '<valid_free_token>:fx'
     end
   end
 
@@ -61,7 +61,7 @@ RSpec.describe Api::V1::MachineTranslationsController, type: :request do
     end
 
     it 'has status code 200 if super admin with free token' do
-      ENV['DEEPL_API_TOKEN'] = '<valid_free_token>'
+      ENV['DEEPL_API_TOKEN'] = '<valid_free_token>:fx'
 
       get '/api/v1/machine_translations_usage', headers: @auth_params_superadmin
       expect(response).to have_http_status(:ok)

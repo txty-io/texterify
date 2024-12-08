@@ -93,7 +93,7 @@ RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :request
     it 'updates settings with valid free token' do
       put "/api/v1/organizations/#{@organization.id}/machine_translation",
           params: {
-            deepl_api_token: '<valid_free_token>'
+            deepl_api_token: '<valid_free_token>:fx'
           },
           headers: @auth_params
       expect(response).to have_http_status(:ok)
