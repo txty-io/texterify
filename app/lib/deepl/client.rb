@@ -36,7 +36,7 @@ module Deepl
         end
       else
         @api_token = ENV.fetch('DEEPL_API_TOKEN', nil)
-        @api_endpoint = @api_token.ends_with?(":fx") ? DEEPL_FREE_API : DEEPL_PRO_API
+        @api_endpoint = @api_token.ends_with?(':fx') ? DEEPL_FREE_API : DEEPL_PRO_API
 
         response = self.usage
         if response.nil?
