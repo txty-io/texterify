@@ -99,7 +99,7 @@ RSpec.describe Api::V1::OrganizationMachineTranslationController, type: :request
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['data']['id']).to eq(@organization.id)
-      expect(body['data']['attributes']['deepl_api_token']).to eq('<v**************n>:fx')
+      expect(body['data']['attributes']['deepl_api_token']).to eq('<v*****************fx')
       expect(body['data']['attributes']['deepl_api_token_type']).to eq('free')
     end
 
