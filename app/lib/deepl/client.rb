@@ -36,18 +36,11 @@ module Deepl
         end
       else
         @api_token = ENV.fetch('DEEPL_API_TOKEN', nil)
-        @api_endpoint = DEEPL_PRO_API
+        @api_endpoint = @api_token.ends_with?(":fx") ? DEEPL_FREE_API : DEEPL_PRO_API
 
-        # Determine if the free or pro API is used.
         response = self.usage
         if response.nil?
-          # It is not the pro API, now try the free API.
-          @api_endpoint = DEEPL_FREE_API
-
-          response = self.usage
-          if response.nil?
-            raise DeeplInvalidTokenException
-          end
+          raise DeeplInvalidTokenException
         end
       end
     end
