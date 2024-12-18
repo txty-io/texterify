@@ -17,10 +17,11 @@ DEEPL_PRO_API = 'https://api.deepl.com/v2/'.freeze
 
 module Deepl
   class Client
-    attr_accessor :api_endpoint, :api_token
+    attr_accessor :api_endpoint, :api_token, :custom_deepl_account
 
     def initialize(organization = nil)
       if organization&.uses_custom_deepl_account?
+        @custom_deepl_account = true
         @api_token = organization.deepl_api_token
         if organization.deepl_api_token_type == 'free'
           @api_endpoint = DEEPL_FREE_API
@@ -35,6 +36,7 @@ module Deepl
                 )
         end
       else
+        @custom_deepl_account = false
         @api_token = ENV.fetch('DEEPL_API_TOKEN', nil)
         @api_endpoint = @api_token&.ends_with?(':fx') ? DEEPL_FREE_API : DEEPL_PRO_API
       end
@@ -115,6 +117,11 @@ module Deepl
           json['translations'][0]['text']
         end
       end
+    rescue => e
+      unless @custom_deepl_account
+        Sentry.capture_exception(e)
+      end
+      nil
     end
 
     private
