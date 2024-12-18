@@ -57,8 +57,6 @@ services:
 
     ports:
       - "3000:3000"
-      - "3011:3011"
-      - "1080:1080"
 
     # Overrides default command so things don't shut down after the process ends.
     command: /bin/sh -c "while sleep 1000; do :; done"
@@ -79,6 +77,11 @@ services:
 
   redis:
     image: redis:6.2.0-alpine
+
+  mail:
+    image: mailhog/mailhog:v1.0.1
+    ports:
+      - "3030:8025"
 
 volumes:
   txty-app-bash-history:

@@ -40,6 +40,5 @@ services:
       - db
       - redis
     command: bundle exec sidekiq
-
   redis:
     image: redis:6.2.0-alpine

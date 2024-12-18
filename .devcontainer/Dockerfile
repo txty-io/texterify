@@ -1,10 +1,6 @@
 FROM ruby:2.7.5-bullseye
 SHELL ["/bin/bash", "-c"]
 
-EXPOSE 3000
-EXPOSE 3011
-EXPOSE 1080
-
 ENV RAILS_ENV="development"
 ENV RAILS_ROOT /workspace
 
@@ -66,9 +62,3 @@ RUN npm install -g yarn
 # Keep bash history between runs.
 RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/command-history/.bash_history" \
     && echo $SNIPPET >> "/root/.bashrc"
-
-# Install mailcatcher.
-# RUN gem install mailcatcher
-
-RUN echo 'alias ys="yarn start"' >> ~/.bashrc
-RUN echo 'alias ysw="yarn start:watcher"' >> ~/.bashrc

@@ -3,9 +3,9 @@
 
 <h1>Your trial is expiring</h1>
 
-<p>Hello <%= @username %>,</p>
+<p>Hello <%=h @username %>,</p>
 
-<p>the trial of your organization <%= @organization.name %> is expiring in <%= @organization.trial_days_left %> days.</p>
+<p>the trial of your organization <%=h @organization.name %> is expiring in <%=h @organization.trial_days_left %> days.</p>
 
 <p>You can manage your subscription by clicking <a href="<%= @manage_subscription_link %>">here</a>.</p>
 

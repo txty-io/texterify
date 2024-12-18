@@ -1,7 +1,7 @@
 <% content_for :title do %>Confirmation instructions<% end %>
 <% content_for :preheader do %>Instructions to confirm your account<% end %>
 
-<h1><%= t(:welcome).capitalize + ' ' + @resource.username %></h1>
+<h1><%=h t(:welcome).capitalize + ' ' + @resource.username %></h1>
 
 <p><%= t '.confirm_link_msg' %> </p>
 
