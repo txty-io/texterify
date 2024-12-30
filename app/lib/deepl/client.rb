@@ -117,11 +117,6 @@ module Deepl
           json['translations'][0]['text']
         end
       end
-    rescue => e
-      unless @custom_deepl_account
-        Sentry.capture_exception(e)
-      end
-      nil
     end
 
     private
@@ -141,7 +136,9 @@ module Deepl
         )
       JSON.parse(response)
     rescue => e
-      Sentry.capture_exception(e)
+      unless @custom_deepl_account
+        Sentry.capture_exception(e)
+      end
       nil
     end
   end
