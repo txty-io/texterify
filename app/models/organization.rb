@@ -81,7 +81,9 @@ class Organization < ApplicationRecord
       deepl_client = Deepl::Client.new(self)
       usage = deepl_client.usage
       if usage
-        usage['character_limit']
+        return usage['character_limit'] || 0
+      else
+        return 0
       end
     else
       # Otherwise use the limit set for the organization.
