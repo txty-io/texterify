@@ -69,6 +69,7 @@ docker volume create --name=texterify-assets
 docker-compose up
 
 # After everything has started create the database in another terminal.
+# Make sure you are still in the `texterify-docker-compose-setup` directory.
 docker-compose exec app bin/rails db:create db:migrate db:seed
 
 # Service is now available at http://localhost. 🎉
