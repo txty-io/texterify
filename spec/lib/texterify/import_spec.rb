@@ -42,7 +42,7 @@ RSpec.describe Texterify::Import do
       file = File.read('spec/fixtures/json/json_invalid.json')
       parse_result = Texterify::Import.parse_file_content('', file, 'json')
 
-      expect(parse_result[:content]).to eq(nil)
+      expect(parse_result[:content]).to_be(nil)
     end
   end
 
