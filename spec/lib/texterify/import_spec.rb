@@ -1,6 +1,51 @@
 require 'rails_helper'
 
 RSpec.describe Texterify::Import do
+  describe 'parse JSON' do
+    it 'parses plurals json file but flattens it' do
+      file = File.read('spec/fixtures/json/json_with_plurals.json')
+      parse_result = Texterify::Import.parse_file_content('', file, 'json')
+
+      expect(parse_result[:content]).to eq(
+        {
+          'plural.few' => 'few text',
+          'plural.many' => 'many text',
+          'plural.one' => 'one text',
+          'plural.other' => 'other text',
+          'plural.two' => 'two text',
+          'plural.zero' => 'zero text',
+          'texterify_timestamp' => '2025-01-01T01:01:01Z'
+        }
+      )
+    end
+
+    it 'parses plurals json file' do
+      file = File.read('spec/fixtures/json/json_with_plurals.json')
+      parse_result = Texterify::Import.parse_file_content('', file, 'json-plurals')
+
+      expect(parse_result[:content]).to eq(
+        {
+          'plural' => {
+            'few' => 'few text',
+            'many' => 'many text',
+            'one' => 'one text',
+            'other' => 'other text',
+            'two' => 'two text',
+            'zero' => 'zero text'
+          },
+          'texterify_timestamp' => '2025-01-01T01:01:01Z'
+        }
+      )
+    end
+
+    it 'parses invalid JSON file' do
+      file = File.read('spec/fixtures/json/json_invalid.json')
+      parse_result = Texterify::Import.parse_file_content('', file, 'json')
+
+      expect(parse_result[:content]).to eq(nil)
+    end
+  end
+
   describe 'parse XLIFF' do
     it 'parses Angular extract XLIFF file' do
       file = File.read('spec/fixtures/xliff/angular_i18n_example_extract.xlf')

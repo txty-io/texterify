@@ -1,0 +1,10 @@
+{
+    "plural": {
+      "other": "other text",
+      "zero": "zero text",
+      "one": "one text",
+      "two": "two text",
+      "few": "few text",
+      "many": "many text"
+    },
+    "texterify_timestamp": "2025-01-01T01:01:01Z"

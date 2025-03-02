@@ -2,6 +2,7 @@ import { axiosInstance } from "./API";
 
 export type IImportFileFormat =
     | "json"
+    | "json-plurals"
     | "json-formatjs"
     | "json-poeditor"
     | "ios"

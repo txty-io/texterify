@@ -17,7 +17,9 @@ module Texterify
       # when importing TOML data.
       file_content.force_encoding(Encoding::UTF_8)
 
-      if file_format == 'json'
+      if file_format == 'json-plurals'
+        json?(file_content, false)
+      elsif file_format == 'json'
         json?(file_content, true)
       elsif ['json-formatjs', 'json-poeditor'].include?(file_format)
         json?(file_content, false)

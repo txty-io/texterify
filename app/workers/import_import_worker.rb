@@ -29,15 +29,6 @@ class ImportImportWorker
 
         key.save!
 
-        # Update or create translation.
-        # TODO: Add flavor import support.
-        # Load default translation or flavor translation.
-        # if flavor
-        #   translation = key.translations.find_by(language: language, flavor: flavor)
-        # else
-        # translation = key.translations.find_by(language: language, flavor: nil)
-        # end
-
         translation = key.translations.find_by(language_id: import_file.language_id, flavor: nil)
 
         # If there is no translation create a new one.
@@ -45,11 +36,6 @@ class ImportImportWorker
           translation = Translation.new
           translation.key_id = key.id
           translation.language_id = import_file.language_id
-
-          # TODO: Add flavor import support.
-          # if flavor
-          #   translation.flavor_id = flavor.id
-          # end
         end
 
         translation.content = import_file_translation.other

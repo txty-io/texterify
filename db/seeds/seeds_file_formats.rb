@@ -3,9 +3,18 @@ puts 'Seeding file formats...'
 formats = [
   {
     format: 'json',
-    name: 'JSON',
+    name: 'JSON (flattened)',
     import_support: true,
     export_support: true,
+    plural_support: true,
+    skip_empty_plural_translations_support: true,
+    file_format_extensions: ['json']
+  },
+  {
+    format: 'json-plurals',
+    name: 'JSON (plurals)',
+    import_support: true,
+    export_support: false,
     plural_support: true,
     skip_empty_plural_translations_support: true,
     file_format_extensions: ['json']
