@@ -528,13 +528,24 @@ class ExportConfig < ApplicationRecord
       end
     end
 
+    final_data = converted_data
+
+    # If the export config has a split_on specified split it.
+    unless self.split_on.nil?
+      final_data = {}
+      converted_data.each do |key, value|
+        splitted = key.split(self.split_on)
+        deep_set(final_data, value, *splitted)
+      end
+    end
+
     language_file = Tempfile.new(language.id.to_s)
     data = {}
 
     if group_by_language_and_country_code
-      data[language.language_tag] = converted_data
+      data[language.language_tag] = final_data
     else
-      data = converted_data
+      data = final_data
     end
 
     yaml = YAML.dump(data.deep_stringify_keys)

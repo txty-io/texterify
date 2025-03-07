@@ -334,12 +334,14 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
                         </Select>
                     </Form.Item>
 
-                    {selectedFileFormat?.attributes.format === "json" && (
+                    {(selectedFileFormat?.attributes.format === "json" ||
+                        selectedFileFormat?.attributes.format === "yaml" ||
+                        selectedFileFormat?.attributes.format === "rails") && (
                         <>
                             <h3>Split keys on</h3>
                             <p>
-                                Provide a string upon which the JSON keys are split and grouped together. This way you
-                                can created nested JSON.
+                                Provide a string upon which the keys are split and grouped together. This way you can
+                                create nested structures.
                             </p>
                             <Form.Item name="splitOn">
                                 <Input placeholder="For example: ." />

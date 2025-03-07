@@ -494,20 +494,21 @@ RSpec.describe ExportConfig, type: :model do
 
   # YAML
   context 'when file format is yaml' do
-    let(:export_config) do
+    it 'create yaml file content from parsed data' do
       export_config = ExportConfig.new
       export_config.file_format = FileFormat.find_by!(format: 'yaml')
       export_config.file_path = 'my_file_path'
-      export_config
-    end
 
-    it 'create yaml file content from parsed data' do
       files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
       files[0][:file].open
       expect(files[0][:file].read).to match_snapshot('create_yaml_file_content')
     end
 
     it 'create yaml file content from plural data' do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'yaml')
+      export_config.file_path = 'my_file_path'
+
       files =
         export_config.files(
           @language,
@@ -520,21 +521,48 @@ RSpec.describe ExportConfig, type: :model do
       files[0][:file].open
       expect(files[0][:file].read).to match_snapshot('create_yaml_file_content_plural')
     end
+
+    it 'create yaml file content from plural data with split on' do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'yaml')
+      export_config.file_path = 'my_file_path'
+      export_config.split_on = '.'
+
+      files =
+        export_config.files(
+          @language,
+          {
+            'a' => export_data_value('b', pluralization_enabled: true),
+            'c' => export_data_value('d', pluralization_enabled: true),
+            'x.y.z' => export_data_value('123')
+          }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_yaml_file_content_plural_split_on')
+    end
   end
 
   # Rails
   context 'when file format is rails' do
-    let(:export_config) do
+    it 'create rails file content from parsed data' do
       export_config = ExportConfig.new
       export_config.file_format = FileFormat.find_by!(format: 'rails')
       export_config.file_path = 'my_file_path'
-      export_config
-    end
 
-    it 'create rails file content from parsed data' do
       files = export_config.files(@language, { 'a' => export_data_value('b'), 'c' => export_data_value('d') })
       files[0][:file].open
       expect(files[0][:file].read).to match_snapshot('create_rails_file_content')
+    end
+
+    it 'create rails file content from parsed data with split on' do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'rails')
+      export_config.file_path = 'my_file_path'
+      export_config.split_on = '.'
+
+      files = export_config.files(@language, { 'a' => export_data_value('b'), 'x.y.z' => export_data_value('d') })
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_rails_file_content_split_on')
     end
   end
 
