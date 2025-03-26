@@ -118,7 +118,8 @@ export_config_1 =
     name: 'Export Config 1 Android',
     file_format: FileFormat.find_by!(format: 'android'),
     file_path: 'values-{languageCode}/strings.xml',
-    default_language_file_path: 'values/strings.xml'
+    default_language_file_path: 'values/strings.xml', 
+    export_timestamp: true
   )
 export_config_2 =
   ExportConfig.find_or_create_by!(
@@ -126,7 +127,8 @@ export_config_2 =
     project_id: project_1.id,
     name: 'Export Config 2 iOS',
     file_format: FileFormat.find_by!(format: 'ios'),
-    file_path: '{languageCode}.lproj/Localizable.strings'
+    file_path: '{languageCode}.lproj/Localizable.strings', 
+    export_timestamp: true
   )
 export_config_3 =
   ExportConfig.find_or_create_by!(
@@ -134,7 +136,8 @@ export_config_3 =
     project_id: project_1.id,
     name: 'Export Config 3 JSON',
     file_format: FileFormat.find_by!(format: 'json'),
-    file_path: '{languageCode}-{countryCode}.json'
+    file_path: '{languageCode}-{countryCode}.json', 
+    export_timestamp: true
   )
 
 ProjectUser.find_or_create_by!(project_id: project_1.id, user_id: user_1.id, role: 'owner')

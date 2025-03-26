@@ -37,6 +37,7 @@ export interface IExportConfig {
         default_language_file_path_stringsdict: string;
         split_on: string;
         skip_empty_plural_translations: boolean;
+        export_timestamp: boolean;
     };
     relationships: IExportConfigRelationships;
 }
@@ -80,6 +81,8 @@ const ExportConfigsAPI = {
         defaultLanguageFilePath: string;
         defaultLanguageFilePathStringsdict: string;
         skipEmptyPluralTranslations: boolean;
+        exportTimestamp: boolean;
+
     }) => {
         return API.postRequest(`projects/${options.projectId}/export_configs`, true, {
             name: options.name,
@@ -91,7 +94,8 @@ const ExportConfigsAPI = {
             default_language_file_path: options.defaultLanguageFilePath,
             default_language_file_path_stringsdict: options.defaultLanguageFilePathStringsdict,
             split_on: options.splitOn,
-            skip_empty_plural_translations: options.skipEmptyPluralTranslations
+            skip_empty_plural_translations: options.skipEmptyPluralTranslations,
+            export_timestamp: options.exportTimestamp
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
@@ -109,6 +113,7 @@ const ExportConfigsAPI = {
         defaultLanguageFilePath: string;
         defaultLanguageFilePathStringsdict: string;
         skipEmptyPluralTranslations: boolean;
+        exportTimestamp: boolean;
     }) => {
         return API.putRequest(`projects/${options.projectId}/export_configs/${options.exportConfigId}`, true, {
             name: options.name,
@@ -120,7 +125,8 @@ const ExportConfigsAPI = {
             default_language_file_path: options.defaultLanguageFilePath,
             default_language_file_path_stringsdict: options.defaultLanguageFilePathStringsdict,
             split_on: options.splitOn,
-            skip_empty_plural_translations: options.skipEmptyPluralTranslations
+            skip_empty_plural_translations: options.skipEmptyPluralTranslations,
+            export_timestamp: options.exportTimestamp
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);

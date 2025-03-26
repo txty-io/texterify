@@ -13,7 +13,8 @@
                     "default_language_file_path" => nil,
         "default_language_file_path_stringsdict" => nil,
                                       "split_on" => nil,
-                "skip_empty_plural_translations" => false
+                "skip_empty_plural_translations" => false,
+                              "export_timestamp" => true
       },
       "relationships" => {
         "language_configs" => {

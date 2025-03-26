@@ -67,7 +67,7 @@ module Texterify
         parent_language = parent_language.parent
       end
 
-      if !args[:skip_timestamp]
+      if !args[:skip_timestamp] && export_config.export_timestamp
         export_data['texterify_timestamp'] = language_export_data_line_from_simple_string(Time.now.utc.iso8601)
       end
 

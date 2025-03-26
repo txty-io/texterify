@@ -9,7 +9,8 @@ class ExportConfigSerializer
              :default_language_file_path,
              :default_language_file_path_stringsdict,
              :split_on,
-             :skip_empty_plural_translations
+             :skip_empty_plural_translations, 
+             :export_timestamp
 
   has_many :language_configs
   belongs_to :flavor

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_04_06_094034) do
+ActiveRecord::Schema.define(version: 2025_03_26_130153) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -126,6 +126,7 @@ ActiveRecord::Schema.define(version: 2023_04_06_094034) do
     t.uuid "flavor_id"
     t.boolean "skip_empty_plural_translations", default: false, null: false
     t.uuid "file_format_id", null: false
+    t.boolean "export_timestamp", default: true
     t.index ["file_format_id"], name: "index_export_configs_on_file_format_id"
     t.index ["flavor_id"], name: "index_export_configs_on_flavor_id"
     t.index ["project_id", "name"], name: "index_export_configs_on_project_id_and_name", unique: true

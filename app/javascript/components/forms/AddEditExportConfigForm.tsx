@@ -27,6 +27,7 @@ interface IFormValues {
     defaultLanguageFilePathStringsdict: string;
     splitOn: string;
     skipEmptyPluralTranslations: boolean;
+    exportTimestamp: boolean;
 }
 
 export interface IAddEditExportConfigFormProps {
@@ -83,7 +84,8 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
                 filePathStringsdict: values.filePathStringsdict,
                 name: values.name,
                 splitOn: values.splitOn,
-                skipEmptyPluralTranslations: values.skipEmptyPluralTranslations
+                skipEmptyPluralTranslations: values.skipEmptyPluralTranslations,
+                exportTimestamp: values.exportTimestamp
             });
         } else {
             response = await ExportConfigsAPI.createExportConfig({
@@ -96,7 +98,8 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
                 filePathStringsdict: values.filePathStringsdict,
                 name: values.name,
                 splitOn: values.splitOn,
-                skipEmptyPluralTranslations: values.skipEmptyPluralTranslations
+                skipEmptyPluralTranslations: values.skipEmptyPluralTranslations,
+                exportTimestamp: values.exportTimestamp
             });
         }
 
@@ -279,6 +282,7 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
                         defaultLanguageFilePathStringsdict:
                             props.exportConfigToEdit.attributes.default_language_file_path_stringsdict,
                         skipEmptyPluralTranslations: props.exportConfigToEdit.attributes.skip_empty_plural_translations,
+                        exportTimestamp: props.exportConfigToEdit.attributes.export_timestamp,
                         fileFormatId: props.exportConfigToEdit.attributes.file_format_id
                     } as IFormValues)
                 }
@@ -337,17 +341,17 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
                     {(selectedFileFormat?.attributes.format === "json" ||
                         selectedFileFormat?.attributes.format === "yaml" ||
                         selectedFileFormat?.attributes.format === "rails") && (
-                        <>
-                            <h3>Split keys on</h3>
-                            <p>
-                                Provide a string upon which the keys are split and grouped together. This way you can
-                                create nested structures.
-                            </p>
-                            <Form.Item name="splitOn">
-                                <Input placeholder="For example: ." />
-                            </Form.Item>
-                        </>
-                    )}
+                            <>
+                                <h3>Split keys on</h3>
+                                <p>
+                                    Provide a string upon which the keys are split and grouped together. This way you can
+                                    create nested structures.
+                                </p>
+                                <Form.Item name="splitOn">
+                                    <Input placeholder="For example: ." />
+                                </Form.Item>
+                            </>
+                        )}
 
                     {selectedFileFormat?.attributes.skip_empty_plural_translations_support && (
                         <>
@@ -365,6 +369,15 @@ export function AddEditExportConfigForm(props: IAddEditExportConfigFormProps) {
                             </Form.Item>
                         </>
                     )}
+                    <h3>Add timestamp on export</h3>
+                    <p>If activated a time stamp will be added to the strings using the key texterify_timestamp</p>
+                    <Form.Item
+                        name="exportTimestamp"
+                        rules={[{ required: false }]}
+                        valuePropName="checked"
+                    >
+                        <Checkbox>Add timestamp on export</Checkbox>
+                    </Form.Item>
 
                     <h3>File path *</h3>
                     <p>The file path specifies where files are placed in the exported folder.</p>

@@ -95,7 +95,8 @@ class Api::V1::ExportConfigsController < Api::V1::ApiController
         :default_language_file_path,
         :default_language_file_path_stringsdict,
         :split_on,
-        :skip_empty_plural_translations
+        :skip_empty_plural_translations, 
+        :export_timestamp
       )
   end
 end
