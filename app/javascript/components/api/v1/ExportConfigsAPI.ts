@@ -82,7 +82,6 @@ const ExportConfigsAPI = {
         defaultLanguageFilePathStringsdict: string;
         skipEmptyPluralTranslations: boolean;
         exportTimestamp: boolean;
-
     }) => {
         return API.postRequest(`projects/${options.projectId}/export_configs`, true, {
             name: options.name,
