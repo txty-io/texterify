@@ -145,6 +145,11 @@ module Texterify
                   file_path.delete_prefix!('/')
                 end
 
+                # Also remove trailing '/' as they also cause issues.
+                while file_path.end_with?('/')
+                  file_path.delete_suffix('/')
+                end
+
                 zip.add(file_path, export_file_object[:file])
                 break
               rescue Zip::EntryExistsError
