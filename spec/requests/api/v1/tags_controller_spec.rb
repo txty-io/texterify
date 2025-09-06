@@ -28,28 +28,16 @@ RSpec.describe Api::V1::TagsController, type: :request do
       expect(body['meta']['total']).to eq(0)
     end
 
-    it 'has status code 200 and returns data paginated' do
+    it 'has status code 200 and returns data' do
       create(:tag, project_id: @project.id)
       create(:tag, project_id: @project.id)
       create(:tag, project_id: @project.id)
-      get "/api/v1/projects/#{@project.id}/tags", headers: @auth_params, params: { per_page: 2 }
+      get "/api/v1/projects/#{@project.id}/tags", headers: @auth_params
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
-      expect(body['data'].length).to eq(2)
+      expect(body['data'].length).to eq(3)
       expect(body['meta']['total']).to eq(3)
-      expect(body).to match_snapshot('tags_controller_index_paginated_1', { snapshot_serializer: StripSerializer })
-
-      get "/api/v1/projects/#{@project.id}/tags", headers: @auth_params, params: { per_page: 2, page: 2 }
-      body = JSON.parse(response.body)
-      expect(body['data'].length).to eq(1)
-      expect(body['meta']['total']).to eq(3)
-      expect(body).to match_snapshot('tags_controller_index_paginated_2', { snapshot_serializer: StripSerializer })
-
-      get "/api/v1/projects/#{@project.id}/tags", headers: @auth_params, params: { per_page: 2, page: 3 }
-      body = JSON.parse(response.body)
-      expect(body['data'].length).to eq(0)
-      expect(body['meta']['total']).to eq(3)
-      expect(body).to match_snapshot('tags_controller_index_paginated_3', { snapshot_serializer: StripSerializer })
+      expect(body).to match_snapshot('tags_controller_index', { snapshot_serializer: StripSerializer })
     end
   end
 

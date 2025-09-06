@@ -7,8 +7,7 @@ import { IGetTagsResponse, ITag, TagsAPI } from "../api/v1/TagsAPI";
 import { TagFormModal } from "../forms/TagFormModal";
 import { dashboardStore } from "../stores/DashboardStore";
 import { PermissionUtils } from "../utilities/PermissionUtils";
-import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "./Config";
-import { DeleteLink } from "./DeleteLink";
+import { PAGE_SIZE_OPTIONS } from "./Config";
 
 type DATA_INDEX = "name" | "controls";
 
@@ -23,32 +22,22 @@ type IRow = {
     [k in DATA_INDEX]: React.ReactNode;
 };
 
-interface IReloadOptions {
-    search?: string;
-    page?: number;
-    perPage?: number;
-}
-
 export function TagsTable(props: { project: IProject; tableReloader?: number; style?: React.CSSProperties }) {
     const params = useParams<{ projectId: string }>();
 
-    const [page, setPage] = React.useState<number>(1);
-    const [perPage, setPerPage] = React.useState<number>(DEFAULT_PAGE_SIZE);
-    const [search, setSearch] = React.useState<string>(null);
-    const [tagsResponse, setTagsResponse] = React.useState<IGetTagsResponse>(null);
+    const [search, setSearch] = React.useState<string | null>(null);
+    const [tagsResponse, setTagsResponse] = React.useState<IGetTagsResponse | null>(null);
     const [loading, setLoading] = React.useState<boolean>(false);
     const [tagDialogVisible, setTagDialogVisible] = React.useState<boolean>(false);
-    const [tagToEdit, setTagToEdit] = React.useState<ITag>(null);
+    const [tagToEdit, setTagToEdit] = React.useState<ITag | null>(null);
 
-    async function reload(options?: IReloadOptions) {
+    async function reload(options?: { search?: string }) {
         setLoading(true);
 
         try {
             const response = await TagsAPI.getTags({
                 projectId: params.projectId,
-                search: options?.search || search,
-                page: options?.page || page,
-                perPage: options?.perPage || perPage
+                search: options?.search || search
             });
             setTagsResponse(response);
         } catch (error) {
@@ -61,7 +50,7 @@ export function TagsTable(props: { project: IProject; tableReloader?: number; st
 
     const debouncedSearch = React.useCallback(
         _.debounce((value: string) => {
-            reload({ search: value, page: 1 });
+            reload({ search: value });
         }, 500),
         []
     );
@@ -117,8 +106,7 @@ export function TagsTable(props: { project: IProject; tableReloader?: number; st
                                         }
 
                                         setLoading(false);
-                                        setPage(1);
-                                        await reload({ page: 1 });
+                                        await reload();
                                     }
                                 });
                             }}
@@ -190,21 +178,7 @@ export function TagsTable(props: { project: IProject; tableReloader?: number; st
                 pagination={{
                     pageSizeOptions: PAGE_SIZE_OPTIONS,
                     showSizeChanger: true,
-                    current: page,
-                    pageSize: perPage,
-                    total: tagsResponse?.meta?.total || 0,
-                    onChange: async (newPage, newPerPage) => {
-                        const isPageSizeChange = perPage !== newPerPage;
-
-                        if (isPageSizeChange) {
-                            setPage(1);
-                            setPerPage(newPerPage);
-                            reload({ page: 1, perPage: newPerPage });
-                        } else {
-                            setPage(newPage);
-                            reload({ page: newPage });
-                        }
-                    }
+                    total: tagsResponse?.meta?.total || 0
                 }}
                 locale={{
                     emptyText: <Empty description="No tags found" image={Empty.PRESENTED_IMAGE_SIMPLE} />
@@ -219,7 +193,7 @@ export function TagsTable(props: { project: IProject; tableReloader?: number; st
                 }}
                 formProps={{
                     projectId: params.projectId,
-                    tag: tagToEdit,
+                    tag: tagToEdit ?? undefined,
                     onSaved: async () => {
                         setTagDialogVisible(false);
                         setTagToEdit(null);

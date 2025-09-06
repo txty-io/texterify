@@ -19,9 +19,7 @@ export interface ITag {
 
 export interface IGetTagsOptions {
     projectId: string;
-    search?: string;
-    page?: number;
-    perPage?: number;
+    search: string | null;
 }
 
 export interface IGetTagsResponse {
