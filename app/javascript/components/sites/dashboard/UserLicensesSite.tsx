@@ -1,9 +1,10 @@
-import { Card, Layout, Statistic } from "antd";
+import { Alert, Card, Layout, Statistic } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { IUserLicense, UserLicensesAPI } from "../../api/v1/UserLicensesAPI";
-import { Licenses } from "../../ui/Licenses";
 import { Loading } from "../../ui/Loading";
+import { Link } from "react-router-dom";
+import { Routes } from "../../routing/Routes";
 
 export const UserLicensesSite = observer(() => {
     const [userLicenses, setUserLicenses] = React.useState<IUserLicense[]>();
@@ -75,15 +76,32 @@ export const UserLicensesSite = observer(() => {
     return (
         <Layout style={{ padding: "0 24px 24px", margin: "0", width: "100%" }}>
             <Layout.Content style={{ margin: "24px 16px 0" }}>
-                <h1>Get a license</h1>
+                <h1>On-Premise license</h1>
                 <p style={{ maxWidth: 480, marginTop: 16 }}>
-                    Setup Texterify in your own infrastructure. Make sure that your data never leaves your own
-                    infrastructure. Requires technical experience for installation. You can also get a subscription for
-                    the cloud version of Texterify in the subscription tab of your organization.
+                    Get an on-premise license and make sure that your data never leaves your infrastructure.
+                    <br />
+                    <br />
+                    Contact us at{" "}
+                    <a href="mailto:support@texterify.com" target="_blank">
+                        support@texterify.com
+                    </a>{" "}
+                    to get your on-premise license.
                 </p>
 
+                <Alert
+                    showIcon
+                    type="info"
+                    message={
+                        <>
+                            To get a monthly subscription for the cloud click{" "}
+                            <Link to={Routes.DASHBOARD.ORGANIZATIONS}>here</Link> and select your organization. On the
+                            left then click on <b>Subscription</b>.
+                        </>
+                    }
+                />
+
                 <div style={{ display: "flex" }}>
-                    {userLicenses?.length > 0 && (
+                    {userLicenses && userLicenses.length > 0 && (
                         <div style={{ width: 600, marginRight: 40 }}>
                             <h3 style={{ marginTop: 24 }}>Your licenses</h3>
                             {userLicenses.map((license, index) => {
@@ -94,10 +112,10 @@ export const UserLicensesSite = observer(() => {
                         </div>
                     )}
 
-                    <div style={{ flexGrow: 1, maxWidth: 1000 }}>
+                    {/* <div style={{ flexGrow: 1, maxWidth: 1000 }}>
                         <h3 style={{ marginTop: 24 }}>Get a new license</h3>
                         <Licenses hostingType="on-premise" annualBilling />
-                    </div>
+                    </div> */}
                 </div>
             </Layout.Content>
         </Layout>
