@@ -40,6 +40,7 @@ context("import", () => {
         { id: "rails", file: "example_rails.yml", searchFor: "rails" },
         { id: "properties", file: "example_properties.properties", searchFor: "prop" },
         { id: "po", file: "example_po.po", searchFor: "po" },
+        { id: "po", file: "example_po_with_bom.po", searchFor: "po" },
         { id: "arb", file: "example_arb.arb", searchFor: "arb" },
         { id: "yaml", file: "example_yaml.yml", searchFor: "yaml" },
         { id: "xliff", file: "example_xliff.xlf", searchFor: "xliff" },

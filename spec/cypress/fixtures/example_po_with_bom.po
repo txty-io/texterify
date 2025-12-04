@@ -1,0 +1,5 @@
+﻿msgid "a"
+msgstr "b"
+
+msgid "c"
+msgstr "d"
