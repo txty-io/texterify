@@ -200,10 +200,16 @@ module Texterify
     end
 
     def self.po?(content)
-      parsed =
-        PoParser.parse(
-          content.gsub!("\xEF\xBB\xBF".force_encoding('UTF-8'), '') # Remove BOM if present
-        ).to_h
+      # Handle empty PO files
+      if content.empty?
+        return { success: true, content: {} }
+      end
+
+      content.gsub!("\xEF\xBB\xBF".force_encoding('UTF-8'), '') # Remove BOM if present
+      content.gsub!(/\r\n/, "\n") # Replace crlf with lf because PoParser fails on crlf line endings
+
+      parsed = PoParser.parse(content)
+      parsed = parsed.to_h
       json = {}
 
       parsed.each do |entry|
