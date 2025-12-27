@@ -128,9 +128,7 @@ module Deepl
           url: @api_endpoint + endpoint,
           payload: data,
           headers: {
-            params: {
-              auth_key: @api_token
-            }
+            Authorization: "DeepL-Auth-Key #{@api_token}"
           },
           proxy: ENV.fetch('http_proxy_deepl', nil)
         )

@@ -129,7 +129,7 @@ export const InstanceSite = observer(() => {
                                         </div>
                                         <div style={{ marginTop: 4 }}>
                                             <a
-                                                href="https://www.deepl.com/pro-account/plan"
+                                                href="https://www.deepl.com/en/your-account"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 style={{ fontSize: 12 }}
