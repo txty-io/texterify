@@ -42,6 +42,24 @@ class ExportConfig < ApplicationRecord
     self[:file_path] = file_path.strip
   end
 
+  # Recursively converts string values that look like arrays (e.g. "[1, 2, 3]") into real arrays within a nested data structure.
+  def recursively_convert_string_arrays_to_real_arrays(data)
+    data.each do |key, value|
+      if value.is_a?(Hash)
+        recursively_convert_string_arrays_to_real_arrays(value)
+      elsif value.is_a?(String) && value.start_with?('[') && value.end_with?(']')
+        begin
+          parsed_array = JSON.parse(value)
+          if parsed_array.is_a?(Array)
+            data[key] = parsed_array
+          end
+        rescue JSON::ParserError
+          # If parsing fails, keep the original string.
+        end
+      end
+    end
+  end
+
   def filled_file_path(language, path_for: nil)
     path_to_use = self.file_path
     path_to_use_default_langage = self.default_language_file_path
@@ -547,6 +565,9 @@ class ExportConfig < ApplicationRecord
     else
       data = final_data
     end
+
+    # Recursively convert values that are strings in the format "[1, 2, 3]" to actual arrays.
+    data = recursively_convert_string_arrays_to_real_arrays(data)
 
     yaml = YAML.dump(data.deep_stringify_keys)
     language_file.puts(yaml)
