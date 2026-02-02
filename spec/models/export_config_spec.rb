@@ -540,6 +540,24 @@ RSpec.describe ExportConfig, type: :model do
       files[0][:file].open
       expect(files[0][:file].read).to match_snapshot('create_yaml_file_content_plural_split_on')
     end
+
+    it 'covert string arrays to real arrays' do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'yaml')
+      export_config.file_path = 'my_file_path'
+
+      files =
+        export_config.files(
+          @language,
+          {
+            'a' => export_data_value('["abc", "def", "ghi", "jkl"]'),
+            'b.c' => export_data_value('[123, 456, 789]'),
+            'd' => export_data_value('[xxx, yyy, zzz]') # should not be converted
+          }
+        )
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('create_yaml_file_content_convert_string_arrays_to_real_arrays')
+    end
   end
 
   # Rails

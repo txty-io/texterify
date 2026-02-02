@@ -1,0 +1,11 @@
+---
+a:
+- abc
+- def
+- ghi
+- jkl
+b.c:
+- 123
+- 456
+- 789
+d: "[xxx, yyy, zzz]"
