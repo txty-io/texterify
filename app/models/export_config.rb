@@ -60,6 +60,61 @@ class ExportConfig < ApplicationRecord
     end
   end
 
+  # Converts a scalar value to a specified type if possible.
+  # Supported types are "boolean" and "number".
+  def convert_scalar_to_type(value, target_type)
+    if target_type == 'boolean'
+      # If the value is already a boolean, return it as is.
+      if value == true || value == false
+        return value
+      end
+
+      # If the value is not a string, return it as is since we can't convert it.
+      unless value.is_a?(String)
+        return value
+      end
+
+      # Normalize the string and convert "true" to true and "false" to false.
+      # If it's neither, return the original string.
+      normalized = value.strip.downcase
+      if normalized == 'true'
+        return true
+      end
+      if normalized == 'false'
+        return false
+      end
+
+      value
+    elsif target_type == 'number'
+      # If the value is already a number, return it as is.
+      if value.is_a?(Numeric)
+        return value
+      end
+
+      # If the value is not a string, return it as is since we can't convert it.
+      unless value.is_a?(String)
+        return value
+      end
+
+      # Try to convert the string to an integer or float.
+      # If it fails, return the original string.
+      normalized = value.strip
+      begin
+        return Integer(normalized)
+      rescue ArgumentError
+        # fall through
+      end
+
+      begin
+        return Float(normalized)
+      rescue ArgumentError
+        value
+      end
+    else
+      raise StandardError
+    end
+  end
+
   def filled_file_path(language, path_for: nil)
     path_to_use = self.file_path
     path_to_use_default_langage = self.default_language_file_path
@@ -125,8 +180,30 @@ class ExportConfig < ApplicationRecord
       yaml(
         language,
         export_data,
-        group_by_language_and_country_code: true
-        # skip_empty_plural_translations: skip_empty_plural_translations
+        group_by_language_and_country_code: true,
+        # skip_empty_plural_translations: skip_empty_plural_translations,
+        convert_to_types: [
+          # https://github.com/rails/rails/blob/main/activesupport/lib/active_support/locale/en.yml#L40
+          { "number.format.precision": 'number' },
+          { "number.format.significant": 'boolean' },
+          { "number.format.strip_insignificant_zeros": 'boolean' },
+          # https://github.com/rails/rails/blob/main/activesupport/lib/active_support/locale/en.yml#L57
+          { "number.currency.format.precision": 'number' },
+          { "number.currency.format.significant": 'boolean' },
+          { "number.currency.format.strip_insignificant_zeros": 'boolean' },
+          # https://github.com/rails/rails/blob/main/activesupport/lib/active_support/locale/en.yml#L71
+          { "number.percentage.precision": 'number' },
+          { "number.percentage.significant": 'boolean' },
+          { "number.percentage.strip_insignificant_zeros": 'boolean' },
+          # https://github.com/rails/rails/blob/main/activesupport/lib/active_support/locale/en.yml#L82
+          { "number.precision.precision": 'number' },
+          { "number.precision.significant": 'boolean' },
+          { "number.precision.strip_insignificant_zeros": 'boolean' },
+          # https://github.com/rails/rails/blob/main/activesupport/lib/active_support/locale/en.yml#L93
+          { "number.human.format.precision": 'number' },
+          { "number.human.format.significant": 'boolean' },
+          { "number.human.format.strip_insignificant_zeros": 'boolean' }
+        ]
       )
     elsif self.file_format.format == 'toml'
       toml(
@@ -527,22 +604,25 @@ class ExportConfig < ApplicationRecord
   def yaml(
     language,
     export_data,
-    group_by_language_and_country_code: false
-    # skip_empty_plural_translations: false
+    group_by_language_and_country_code: false,
+    # skip_empty_plural_translations: false,
+    convert_to_types: []
   )
     converted_data = {}
     export_data.each do |key, value|
+      desired_type = convert_to_types.find { |t| t[key] }
+
       if value[:pluralization_enabled]
         converted_data[key] = {
-          zero: value[:zero],
-          one: value[:one],
-          two: value[:two],
-          few: value[:few],
-          many: value[:many],
-          other: value[:other]
+          zero: desired_type ? convert_scalar_to_type(value[:zero], desired_type) : value[:zero],
+          one: desired_type ? convert_scalar_to_type(value[:one], desired_type) : value[:one],
+          two: desired_type ? convert_scalar_to_type(value[:two], desired_type) : value[:two],
+          few: desired_type ? convert_scalar_to_type(value[:few], desired_type) : value[:few],
+          many: desired_type ? convert_scalar_to_type(value[:many], desired_type) : value[:many],
+          other: desired_type ? convert_scalar_to_type(value[:other], desired_type) : value[:other]
         }
       else
-        converted_data[key] = value[:other]
+        converted_data[key] = desired_type ? convert_scalar_to_type(value[:other], desired_type) : value[:other]
       end
     end
 

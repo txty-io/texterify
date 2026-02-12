@@ -582,6 +582,37 @@ RSpec.describe ExportConfig, type: :model do
       files[0][:file].open
       expect(files[0][:file].read).to match_snapshot('create_rails_file_content_split_on')
     end
+
+    it 'exports rails active support locale file correctly' do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'rails')
+      export_config.file_path = 'my_file_path'
+      export_config.split_on = '.'
+
+      # Parse the file content to get the correct format for the export function.
+      file = File.read('spec/fixtures/rails/rails_active_support_local_en.yml')
+      content = Texterify::Import.parse_file_content('', file, 'rails')[:content]
+
+      # Convert each value to the correct format.
+      content.each { |key, value| content[key] = export_data_value(value) }
+
+      # Create a language with the correct language code to be able to export the file.
+      language = Language.new
+      language.language_code = LanguageCode.find_by(code: 'en')
+      language.name = 'rails_active_support_local_en'
+      language.project_id = @project.id
+      language.save!
+
+      # Export the file and check if the content is correct.
+      files = export_config.files(language, content)
+      files[0][:file].open
+      export_content = files[0][:file].read
+      expect(export_content).to match_snapshot('export_rails_active_support_locale_file')
+
+      # Check if the exported content can be parsed back to the original content.
+      export_content_hash = YAML.safe_load(export_content)
+      expect(export_content_hash).to eq(YAML.safe_load(file))
+    end
   end
 
   # TOML

@@ -116,6 +116,9 @@ Style/SymbolProc:
 Style/MultilineTernaryOperator:
   Enabled: false
 
+Style/MultipleComparison:
+  Enabled: false
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: "indented"
 
