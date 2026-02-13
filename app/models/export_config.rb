@@ -184,25 +184,25 @@ class ExportConfig < ApplicationRecord
         # skip_empty_plural_translations: skip_empty_plural_translations,
         convert_to_types: [
           # https://github.com/rails/rails/blob/main/activesupport/lib/active_support/locale/en.yml#L40
-          { "number.format.precision": 'number' },
-          { "number.format.significant": 'boolean' },
-          { "number.format.strip_insignificant_zeros": 'boolean' },
+          { 'number.format.precision' => 'number' },
+          { 'number.format.significant' => 'boolean' },
+          { 'number.format.strip_insignificant_zeros' => 'boolean' },
           # https://github.com/rails/rails/blob/main/activesupport/lib/active_support/locale/en.yml#L57
-          { "number.currency.format.precision": 'number' },
-          { "number.currency.format.significant": 'boolean' },
-          { "number.currency.format.strip_insignificant_zeros": 'boolean' },
+          { 'number.currency.format.precision' => 'number' },
+          { 'number.currency.format.significant' => 'boolean' },
+          { 'number.currency.format.strip_insignificant_zeros' => 'boolean' },
           # https://github.com/rails/rails/blob/main/activesupport/lib/active_support/locale/en.yml#L71
-          { "number.percentage.precision": 'number' },
-          { "number.percentage.significant": 'boolean' },
-          { "number.percentage.strip_insignificant_zeros": 'boolean' },
+          { 'number.percentage.precision' => 'number' },
+          { 'number.percentage.significant' => 'boolean' },
+          { 'number.percentage.strip_insignificant_zeros' => 'boolean' },
           # https://github.com/rails/rails/blob/main/activesupport/lib/active_support/locale/en.yml#L82
-          { "number.precision.precision": 'number' },
-          { "number.precision.significant": 'boolean' },
-          { "number.precision.strip_insignificant_zeros": 'boolean' },
+          { 'number.precision.precision' => 'number' },
+          { 'number.precision.significant' => 'boolean' },
+          { 'number.precision.strip_insignificant_zeros' => 'boolean' },
           # https://github.com/rails/rails/blob/main/activesupport/lib/active_support/locale/en.yml#L93
-          { "number.human.format.precision": 'number' },
-          { "number.human.format.significant": 'boolean' },
-          { "number.human.format.strip_insignificant_zeros": 'boolean' }
+          { 'number.human.format.precision' => 'number' },
+          { 'number.human.format.significant' => 'boolean' },
+          { 'number.human.format.strip_insignificant_zeros' => 'boolean' }
         ]
       )
     elsif self.file_format.format == 'toml'
@@ -610,7 +610,8 @@ class ExportConfig < ApplicationRecord
   )
     converted_data = {}
     export_data.each do |key, value|
-      desired_type = convert_to_types.find { |t| t[key] }
+      desired_type_object = convert_to_types.find { |t| t[key] }
+      desired_type = desired_type_object ? desired_type_object[key] : nil
 
       if value[:pluralization_enabled]
         converted_data[key] = {

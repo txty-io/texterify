@@ -1,0 +1,11 @@
+---
+en:
+  other:
+    text: other content
+    number: '1'
+    boolean: 'false'
+  number:
+    format:
+      precision: 123
+      significant: true
+      strip_insignificant_zeros: false

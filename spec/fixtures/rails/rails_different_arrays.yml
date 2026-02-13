@@ -1,0 +1,10 @@
+en:
+  array_one: [Sunday, 3, false, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+  array_two: [~, true, 1, January, February, March, April, May, June, July, August, September, October, November, December]
+  array_three:
+    -
+    - year
+    - month
+    - true
+    - day
+    - 2

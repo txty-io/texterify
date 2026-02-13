@@ -608,10 +608,36 @@ RSpec.describe ExportConfig, type: :model do
       files[0][:file].open
       export_content = files[0][:file].read
       expect(export_content).to match_snapshot('export_rails_active_support_locale_file')
+    end
 
-      # Check if the exported content can be parsed back to the original content.
-      export_content_hash = YAML.safe_load(export_content)
-      expect(export_content_hash).to eq(YAML.safe_load(file))
+    it 'converts to correct types' do
+      export_config = ExportConfig.new
+      export_config.file_format = FileFormat.find_by!(format: 'rails')
+      export_config.file_path = 'my_file_path'
+      export_config.split_on = '.'
+
+      content = {
+        # Should not be converted.
+        'other.text' => export_data_value('other content'),
+        'other.number' => export_data_value('1'),
+        'other.boolean' => export_data_value('false'),
+        # Should be converted to correct types.
+        'number.format.precision' => export_data_value('123'),
+        'number.format.significant' => export_data_value('true'),
+        'number.format.strip_insignificant_zeros' => export_data_value('false')
+      }
+
+      # Create a language with the correct language code to be able to export the file.
+      language = Language.new
+      language.language_code = LanguageCode.find_by(code: 'en')
+      language.name = 'my_language'
+      language.project_id = @project.id
+      language.save!
+
+      # Create yaml content and check if the content is correct.
+      files = export_config.files(language, content)
+      files[0][:file].open
+      expect(files[0][:file].read).to match_snapshot('export_rails_yaml_converts_to_correct_types')
     end
   end
 

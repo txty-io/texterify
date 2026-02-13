@@ -96,6 +96,86 @@ RSpec.describe Texterify::Import do
     end
   end
 
+  describe 'parses Rails' do
+    it 'parses Rails file' do
+      file = File.read('spec/fixtures/rails/rails_active_support_local_en.yml')
+      parse_result = Texterify::Import.parse_file_content('', file, 'rails')
+      expect(parse_result[:content]).to eq(
+        {
+          'date.abbr_day_names' => '["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]',
+          'date.abbr_month_names' =>
+            '["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]',
+          'date.day_names' => '["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]',
+          'date.formats.default' => '%Y-%m-%d',
+          'date.formats.long' => '%B %d, %Y',
+          'date.formats.short' => '%b %d',
+          'date.month_names' =>
+            '["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]',
+          'date.order' => '["year", "month", "day"]',
+          'number.currency.format.delimiter' => ',',
+          'number.currency.format.format' => '%u%n',
+          'number.currency.format.negative_format' => '-%u%n',
+          'number.currency.format.precision' => '2',
+          'number.currency.format.separator' => '.',
+          'number.currency.format.significant' => 'false',
+          'number.currency.format.strip_insignificant_zeros' => 'false',
+          'number.currency.format.unit' => '$',
+          'number.format.delimiter' => ',',
+          'number.format.precision' => '3',
+          'number.format.round_mode' => 'default',
+          'number.format.separator' => '.',
+          'number.format.significant' => 'false',
+          'number.format.strip_insignificant_zeros' => 'false',
+          'number.human.decimal_units.format' => '%n %u',
+          'number.human.decimal_units.units.billion' => 'Billion',
+          'number.human.decimal_units.units.million' => 'Million',
+          'number.human.decimal_units.units.quadrillion' => 'Quadrillion',
+          'number.human.decimal_units.units.thousand' => 'Thousand',
+          'number.human.decimal_units.units.trillion' => 'Trillion',
+          'number.human.decimal_units.units.unit' => '',
+          'number.human.format.delimiter' => '',
+          'number.human.format.precision' => '3',
+          'number.human.format.significant' => 'true',
+          'number.human.format.strip_insignificant_zeros' => 'true',
+          'number.human.storage_units.format' => '%n %u',
+          'number.human.storage_units.units.byte.one' => 'Byte',
+          'number.human.storage_units.units.byte.other' => 'Bytes',
+          'number.human.storage_units.units.eb' => 'EB',
+          'number.human.storage_units.units.gb' => 'GB',
+          'number.human.storage_units.units.kb' => 'KB',
+          'number.human.storage_units.units.mb' => 'MB',
+          'number.human.storage_units.units.pb' => 'PB',
+          'number.human.storage_units.units.tb' => 'TB',
+          'number.human.storage_units.units.zb' => 'ZB',
+          'number.percentage.format.delimiter' => '',
+          'number.percentage.format.format' => '%n%',
+          'number.precision.format.delimiter' => '',
+          'support.array.last_word_connector' => ', and ',
+          'support.array.two_words_connector' => ' and ',
+          'support.array.words_connector' => ', ',
+          'time.am' => 'am',
+          'time.formats.default' => '%a, %d %b %Y %H:%M:%S %z',
+          'time.formats.long' => '%B %d, %Y %H:%M',
+          'time.formats.short' => '%d %b %H:%M',
+          'time.pm' => 'pm'
+        }
+      )
+    end
+
+    it 'parses different arrays' do
+      file = File.read('spec/fixtures/rails/rails_different_arrays.yml')
+      parse_result = Texterify::Import.parse_file_content('', file, 'rails')
+      expect(parse_result[:content]).to eq(
+        {
+          'array_one' => '["Sunday", 3, false, "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]',
+          'array_two' =>
+            '["", true, 1, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]',
+          'array_three' => '["", "year", "month", true, "day", 2]'
+        }
+      )
+    end
+  end
+
   describe 'parses stringsdict' do
     it 'parses stringsdict file' do
       file = File.read('spec/fixtures/stringsdict/example.stringsdict')

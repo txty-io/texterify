@@ -60,7 +60,12 @@ module Texterify
         if value.is_a?(Hash)
           flatten_nested_keys(value, flattened_content, combined_name)
         else
-          flattened_content[combined_name] = value
+          if value.is_a?(Array)
+            # Convert array nil values to empty strings.
+            value = value.map { |v| v.nil? ? '' : v }
+          end
+
+          flattened_content[combined_name] = value.to_s
         end
       end
 
