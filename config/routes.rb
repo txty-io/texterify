@@ -184,7 +184,6 @@ Rails
         resources :language_codes, only: [:index]
         resources :user_licenses, only: [:index]
         get 'dashboard/activity', to: 'dashboard#activity'
-        get 'dashboard/changelog', to: 'dashboard#changelog'
 
         # Users
         get 'users/info', to: 'users#info'

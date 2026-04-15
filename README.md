@@ -12,18 +12,7 @@
 
 Find out more at [texterify.com](https://texterify.com) or [sign up](https://app.texterify.com/signup) here.
 
-<h2>Table of contents</h2>
-
-- [Getting started](#getting-started)
-- [Tools & Integrations](#tools-and-integrations)
-- [Contributing](#contributing)
-- [Troubleshooting](#troubleshooting)
-- [Security](#security)
-- [Changelog](#changelog)
-- [Support](#support)
-- [License](#license)
-
-<h2 id="getting-started">🚀 Getting started</h2>
+<h2 id="getting-started">Getting started</h2>
 
 <h3>Installation</h3>
 
@@ -53,7 +42,7 @@ docker-compose up
 # Make sure you are still in the `texterify-docker-compose-setup` directory.
 docker-compose exec app bin/rails db:create db:migrate db:seed
 
-# Service is now available at http://localhost. 🎉
+# Service is now available at http://localhost.
 ```
 
 This will install the latest version of the service available at the time of setting up.
@@ -63,17 +52,7 @@ This will install the latest version of the service available at the time of set
 
 You can update to a newer version by following our upgrade guide [here](https://docs.texterify.com/installation/updating-the-service).
 
-<h2 id="tools-and-integrations">🛠️ Tools & Integrations</h2>
-
-We provide several different tools and integrations to make localization as easy as possible. If you are missing anything you would love to have create a ticket [here](https://github.com/texterify/texterify/issues) and let us know or tell us what you created and we will include it here.
-
-- Texterify VSC Extension (https://github.com/texterify/texterify-vsc)
-- Texterify CLI (https://github.com/texterify/texterify-cli)
-- Texterify Android SDK (https://github.com/texterify/texterify-android)
-- Texterify iOS SDK (https://github.com/texterify/texterify-ios)
-- Texterify API Node (https://github.com/texterify/texterify-api-node)
-
-<h2 id="contributing">🤝 Contributing</h2>
+<h2 id="contributing">Contributing</h2>
 
 Want to help build Texterify?
 
@@ -101,7 +80,7 @@ Having done that you can open [http://localhost:3000](http://localhost:3000) and
 
 Make sure to also check out our development docs page at [https://docs.texterify.com/development](https://docs.texterify.com/development).
 
-<h2 id="troubleshooting">👀 Troubleshooting</h2>
+<h2 id="troubleshooting">Troubleshooting</h2>
 
 ### Why is the watcher command failing randomly with exit code 137?
 
@@ -126,30 +105,13 @@ Try to run the following command:
 rails webpacker:compile
 ```
 
-<h2 id="security">🔒 Security</h2>
+<h2 id="security">Security</h2>
 
 Found a security issue? Please **don't** create an issue on GitHub. Instead send an email with your findings to [security@texterify.com](mailto:security@texterify.com) so a bugfix can be developed before the security flaw is publicly disclosed. We take security very seriously.
 
 See [SECURITY](SECURITY.md) for details.
 
-<h2 id="changelog">📋 Changelog</h2>
-
-See [CHANGELOG](CHANGELOG.md) for changelog.
-
-<h2 id="support">❤️ Support</h2>
-
-Our goal is to make software accessible to as many people as possible by making it super easy for teams to localize their software. Language should never be a barrier. This is the reason why we are offering a free plan and on-premise hosting so everybody can easily translate their software into multiple languages. If you want to help you can do the following:
-
-- Leave a 🌟 and recommend Texterify to your colleagues
-- [Create a pull request](https://github.com/texterify/texterify/pulls) and fix bugs or add new features
-- Propose new features [here](https://github.com/texterify/texterify/issues/new)
-- [Sponsor](https://github.com/sponsors/texterify) the project
-- Get a license or select a premium plan and get access to [advanced features](https://texterify.com/pricing)
-- Send us some kind words where and how you are using Texterify
-
-If you have any questions or just want to say hello you can always reach us at support@texterify.com.
-
-<h2 id="license">📝 License</h2>
+<h2 id="license">License</h2>
 
 See the [LICENSE](LICENSE) file for details.
 

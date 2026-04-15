@@ -8,9 +8,6 @@ const DashboardAPI = {
         })
             .then(APIUtils.handleErrors)
             .catch(APIUtils.handleErrors);
-    },
-    getChangelog: async (): Promise<{ changelog: string }> => {
-        return API.getRequest("dashboard/changelog", true).then(APIUtils.handleErrors).catch(APIUtils.handleErrors);
     }
 };
 
