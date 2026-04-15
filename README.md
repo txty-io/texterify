@@ -5,31 +5,12 @@
 </p>
 
 [![website](https://img.shields.io/badge/website-texterify.com-blue.svg)](https://texterify.com)
-[![open issues](https://img.shields.io/github/issues-raw/texterify/texterify.svg)](https://github.com/texterify/texterify/issues)
 [![stars](https://img.shields.io/github/stars/texterify/texterify)](https://github.com/texterify/texterify)
 [![docker pulls](https://img.shields.io/docker/pulls/chrztoph/texterify)](https://hub.docker.com/r/chrztoph/texterify)
 
-[Texterify](https://texterify.com) is a localization management platform which aims to make software localization as easy as possible. A very clean, fast and user friendly interface makes it super easy to use while providing full flexibility and powerful tools to perfectly integrate it into your workflow.
-
-- Beautiful light and dark mode for every situation
-- Built-in WYSIWYG HTML editor for easy rich content editing
-- Language inheritance and post processing
-- Flexible ways to export your translations
-- Translation and activity history
-- Collaboration features for teams
-- Over the air translations for fast app translation updates
-- A big selection of integrations
-- Cloud and on-premise options
-
-For future features see our [public roadmap](https://github.com/texterify/texterify/projects/1).
+[Texterify](https://texterify.com) is a localization management platform designed to simplify software localization. It features a clean, fast, and user-friendly interface that makes it easy to use, while still offering the flexibility and powerful tools needed to seamlessly integrate into your workflow.
 
 Find out more at [texterify.com](https://texterify.com) or [sign up](https://app.texterify.com/signup) here.
-
-<p align="center">
-  <img src="https://raw.github.com/texterify/texterify/screenshots/example_1.png" width="290">
-  <img src="https://raw.github.com/texterify/texterify/screenshots/example_2.png" width="290">
-  <img src="https://raw.github.com/texterify/texterify/screenshots/example_3.png" width="290">
-</p>
 
 <h2>Table of contents</h2>
 
