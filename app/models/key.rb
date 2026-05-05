@@ -6,6 +6,8 @@ class Key < ApplicationRecord
   # Note: For HTML keys "contains" is always used because it is otherwise hard to find keys with HTML content at all.
   scope :match_name_or_description_or_translation_content,
         lambda { |search, eq_op, exactly|
+          raise ArgumentError, "Invalid operator: #{eq_op}" unless %w[like ilike].include?(eq_op)
+
           where(
             "(keys.name #{eq_op} :search or keys.description #{eq_op} :search or translations.content #{eq_op} :search or translations.zero #{eq_op} :search or translations.one #{eq_op} :search or translations.two #{eq_op} :search or translations.few #{eq_op} :search or translations.many #{eq_op} :search)",
             search: exactly ? sanitize_sql_like(search) : "%#{sanitize_sql_like(search)}%"

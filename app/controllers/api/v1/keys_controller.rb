@@ -61,7 +61,7 @@ class Api::V1::KeysController < Api::V1::ApiController
         keys = keys.where(translations: { flavor_id: flavor_ids })
       end
 
-      keys = keys.match_name_or_description_or_translation_content(params[:search], eq_op, match == 'exactly')
+      keys = keys.match_name_or_description_or_translation_content(params[:search].to_s, eq_op, match == 'exactly')
     end
 
     if !tag_ids.empty?
@@ -109,19 +109,39 @@ class Api::V1::KeysController < Api::V1::ApiController
 
     if changed_before || changed_after
       if changed_before
+        begin
+          unless changed_before.match?(/\A\d{4}-\d{2}-\d{2}\z/)
+            raise ArgumentError
+          end
+          parsed_changed_before = Date.strptime(changed_before, '%Y-%m-%d')
+        rescue ArgumentError
+          render json: { error: true, message: 'Invalid changed_before date' }, status: :bad_request
+          return
+        end
+
         # Add 1 day because comparison uses 00:00 as time an we also want to include the selected day
         keys =
           keys.where(
             'translations.updated_at <= (:changed_before) or keys.updated_at <= (:changed_before)',
-            changed_before: Date.parse(changed_before) + 1.day
+            changed_before: parsed_changed_before + 1.day
           )
       end
 
       if changed_after
+        begin
+          unless changed_after.match?(/\A\d{4}-\d{2}-\d{2}\z/)
+            raise ArgumentError
+          end
+          parsed_changed_after = Date.strptime(changed_after, '%Y-%m-%d')
+        rescue ArgumentError
+          render json: { error: true, message: 'Invalid changed_after date' }, status: :bad_request
+          return
+        end
+
         keys =
           keys.where(
             'translations.updated_at >= (:changed_after) or keys.updated_at >= (:changed_after)',
-            changed_after: changed_after
+            changed_after: parsed_changed_after
           )
       end
     end
