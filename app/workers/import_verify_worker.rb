@@ -45,8 +45,6 @@ class ImportVerifyWorker
                   key_name: key_name
                 )
 
-              translation.other = json_value
-
               if file_format == 'json-formatjs' && json_value.is_a?(Hash)
                 translation.other = json_value['defaultMessage'] || json_value['message']
                 translation.key_description = json_value['description']
@@ -70,6 +68,8 @@ class ImportVerifyWorker
                 translation.few = plural_values[:few]
                 translation.many = plural_values[:many]
                 translation.other = plural_values[:other]
+              else
+                translation.other = json_value
               end
 
               translation.save!

@@ -27,6 +27,12 @@ RSpec.describe ImportVerifyWorker, type: :worker do
       allow(translations).to receive(:find_or_initialize_by).and_return(translation)
       allow(import_file).to receive(:status=)
       allow(import).to receive(:status=)
+      allow(translation).to receive(:zero=)
+      allow(translation).to receive(:one=)
+      allow(translation).to receive(:two=)
+      allow(translation).to receive(:few=)
+      allow(translation).to receive(:many=)
+      allow(translation).to receive(:other=)
 
       # Android and stringsdict parsers return plural categories as symbol keys.
       allow(Texterify::Import).to receive(:parse_file_content).and_return(
@@ -43,16 +49,16 @@ RSpec.describe ImportVerifyWorker, type: :worker do
         }
       )
 
-      # Verify that every symbol-keyed plural category is copied to the staged translation.
-      expect(translation).to receive(:zero=).with('zero items')
-      expect(translation).to receive(:one=).with('one item')
-      expect(translation).to receive(:two=).with('two items')
-      expect(translation).to receive(:few=).with('few items')
-      expect(translation).to receive(:many=).with('many items')
-      expect(translation).to receive(:other=).with('other items')
-
       # Run the worker with the stubbed background job and import IDs.
       described_class.new.perform(1, nil, 3)
+
+      # Verify that every symbol-keyed plural category is copied to the staged translation.
+      expect(translation).to have_received(:zero=).with('zero items')
+      expect(translation).to have_received(:one=).with('one item')
+      expect(translation).to have_received(:two=).with('two items')
+      expect(translation).to have_received(:few=).with('few items')
+      expect(translation).to have_received(:many=).with('many items')
+      expect(translation).to have_received(:other=).with('other items')
     end
   end
 end

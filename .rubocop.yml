@@ -31,6 +31,10 @@ Rails/FilePath:
 Rails/FindEach:
   Enabled: false
 
+Rails/SkipsModelValidations:
+  Exclude:
+    - 'spec/**/*.rb'
+
 Style/Documentation:
   Enabled: false
 

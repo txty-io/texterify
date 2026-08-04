@@ -12,7 +12,7 @@ RSpec.describe Api::V1::RegistrationsController, type: :request do
          as: :json
   end
 
-  before { Setting.sign_up_enabled = false }
+  before(:each) { Setting.sign_up_enabled = false }
 
   it 'allows an organization invite to sign up with different capitalization' do
     organization = create(:organization)
