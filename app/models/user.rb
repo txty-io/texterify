@@ -62,7 +62,7 @@ class User < ApplicationRecord
     end
 
     # Add user to organizations with open invites.
-    organization_invites = OrganizationInvite.where(email: email, open: true)
+    organization_invites = OrganizationInvite.for_email(email).where(open: true)
     organization_invites.each do |invite|
       organization_user = OrganizationUser.new
       organization_user.user = self
@@ -75,7 +75,7 @@ class User < ApplicationRecord
     end
 
     # Add user to projects with open invites.
-    project_invites = ProjectInvite.where(email: email, open: true)
+    project_invites = ProjectInvite.for_email(email).where(open: true)
     project_invites.each do |invite|
       project_user = ProjectUser.new
       project_user.user = self

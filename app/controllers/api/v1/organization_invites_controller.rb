@@ -18,8 +18,8 @@ class Api::V1::OrganizationInvitesController < Api::V1::ApiController
     authorize organization_invite
 
     # Check if there is already an invite for this organization or the user is already part of the organization.
-    if OrganizationInvite.exists?(organization_id: organization.id, email: email, open: true) ||
-         organization.users.exists?(email: email)
+    if OrganizationInvite.for_email(email).exists?(organization_id: organization.id, open: true) ||
+         organization.users.exists?(email: email.to_s.strip.downcase)
       render json: { error: true, message: 'USER_ALREADY_INVITED_OR_ADDED' }, status: :bad_request
     else
       organization_invite.save!

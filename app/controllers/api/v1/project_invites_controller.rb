@@ -18,7 +18,8 @@ class Api::V1::ProjectInvitesController < Api::V1::ApiController
     authorize project_invite
 
     # Check if there is already an invite for this project or the user is already part of the project.
-    if ProjectInvite.exists?(project_id: project.id, email: email, open: true) || project.users.exists?(email: email)
+    if ProjectInvite.for_email(email).exists?(project_id: project.id, open: true) ||
+         project.users.exists?(email: email.to_s.strip.downcase)
       render json: { error: true, message: 'USER_ALREADY_INVITED_OR_ADDED' }, status: :bad_request
     else
       project_invite.save!

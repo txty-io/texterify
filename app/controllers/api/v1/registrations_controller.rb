@@ -14,9 +14,9 @@ class Api::V1::RegistrationsController < DeviseTokenAuth::RegistrationsControlle
   private
 
   def check_if_user_can_sign_up
-    email = params['email']
-    has_project_invite = ProjectInvite.exists?(email: email, open: true)
-    has_organization_invite = OrganizationInvite.exists?(email: email, open: true)
+    email = params['email'].to_s.strip.downcase
+    has_project_invite = ProjectInvite.for_email(email).exists?(open: true)
+    has_organization_invite = OrganizationInvite.for_email(email).exists?(open: true)
 
     if !has_project_invite && !has_organization_invite
       # Check if the sign up is enabled.
@@ -29,7 +29,7 @@ class Api::V1::RegistrationsController < DeviseTokenAuth::RegistrationsControlle
       if Setting.domain_filter.present?
         email_domain = email.split('@')[-1]
 
-        if email_domain != Setting.domain_filter
+        if email_domain != Setting.domain_filter.downcase
           render json: { error: true, message: 'EMAIL_DOMAIN_IS_NOT_ALLOWED_TO_SIGN_UP' }, status: :bad_request
           return
         end
