@@ -93,7 +93,7 @@ RSpec.describe Api::V1::KeysController, type: :request do
         expect(body['message']).to eq('Invalid changed_after date')
       end
 
-      it 'returns 400 for a malformed changed_before date' do
+      it 'returns 400 for a malformed changed_before date (SQL injection attempt)' do
         get "/api/v1/projects/#{@project.id}/keys",
             params: {
               changed_before: "2024-01-01'; DROP TABLE keys; --"
@@ -103,7 +103,7 @@ RSpec.describe Api::V1::KeysController, type: :request do
         expect(response).to have_http_status(:bad_request)
       end
 
-      it 'returns 400 for a malformed changed_after date' do
+      it 'returns 400 for a malformed changed_after date (SQL injection attempt)' do
         get "/api/v1/projects/#{@project.id}/keys",
             params: {
               changed_after: "2024-01-01'; DROP TABLE keys; --"

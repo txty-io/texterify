@@ -44,12 +44,13 @@ class ImportVerifyWorker
                   import_file_id: import_file.id,
                   key_name: key_name
                 )
+
               translation.other = json_value
 
-              if file_format == 'json-formatjs'
+              if file_format == 'json-formatjs' && json_value.is_a?(Hash)
                 translation.other = json_value['defaultMessage'] || json_value['message']
                 translation.key_description = json_value['description']
-              elsif file_format == 'json-poeditor'
+              elsif file_format == 'json-poeditor' && json_key.is_a?(Hash)
                 translation.other = json_key['definition']
                 translation.key_description = json_key['comment']
               elsif file_format == 'toml' && json_value.is_a?(Hash)
@@ -62,14 +63,13 @@ class ImportVerifyWorker
                 translation.other = json_value[:value]
                 translation.key_description = json_value[:description]
               elsif json_value.is_a?(Hash)
-                translation.zero = json_value['zero']
-                translation.one = json_value['one']
-                translation.two = json_value['two']
-                translation.few = json_value['few']
-                translation.many = json_value['many']
-                translation.other = json_value['other']
-              else
-                translation.other = json_value
+                plural_values = json_value.with_indifferent_access
+                translation.zero = plural_values[:zero]
+                translation.one = plural_values[:one]
+                translation.two = plural_values[:two]
+                translation.few = plural_values[:few]
+                translation.many = plural_values[:many]
+                translation.other = plural_values[:other]
               end
 
               translation.save!
