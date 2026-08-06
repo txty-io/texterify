@@ -1,5 +1,6 @@
 class Api::V1::UsersController < Api::V1::ApiController
   before_action :check_if_user_activated, except: [:info, :image, :image_create, :image_destroy]
+  skip_after_action :update_auth_header, only: :destroy
 
   def info
     skip_authorization

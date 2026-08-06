@@ -45,4 +45,23 @@ RSpec.describe Api::V1::UsersController, type: :request do
       expect(body['confirmed']).to be(true)
     end
   end
+
+  describe 'DELETE destroy' do
+    it 'deletes the user and keeps their background jobs without a user' do
+      project = create(:project)
+      background_job = BackgroundJob.create!(
+        project: project,
+        user: @user_confirmed,
+        status: 'COMPLETED',
+        progress: 100,
+        job_type: 'IMPORT_VERIFY'
+      )
+
+      delete '/api/v1/users', headers: @auth_params_confirmed
+
+      expect(response).to have_http_status(:ok)
+      expect(User.exists?(@user_confirmed.id)).to be(false)
+      expect(background_job.reload.user_id).to be_nil
+    end
+  end
 end

@@ -1,7 +1,7 @@
 class ImportImportWorker
   include Sidekiq::Worker
 
-  def perform(background_job_id, project_id, import_id, user_id)
+  def perform(background_job_id, project_id, import_id, _user_id = nil)
     background_job = BackgroundJob.find(background_job_id)
     background_job.start!
     background_job.progress!(20)
@@ -51,6 +51,7 @@ class ImportImportWorker
     import.status = IMPORT_STATUS_IMPORTED
     import.save!
     background_job.complete!
+    user_id = background_job.reload.user_id
 
     unless BackgroundJob.exists?(
              project_id: project.id,

@@ -1,6 +1,6 @@
 class BackgroundJob < ApplicationRecord
   belongs_to :project
-  belongs_to :user
+  belongs_to :user, optional: true
   belongs_to :import, optional: true
 
   validates :status, presence: true
@@ -11,26 +11,14 @@ class BackgroundJob < ApplicationRecord
   def start!
     self.status = 'RUNNING'
     self.save!
-    JobsChannel.broadcast_to(
-      self.user,
-      event: 'JOB_STARTED',
-      type: self.job_type,
-      project_id: self.project_id,
-      import_id: self.import_id
-    )
+    broadcast('JOB_STARTED')
   end
 
   # Update the background job progress and sends an event to the channel.
   def progress!(new_progress)
     self.progress = new_progress
     self.save!
-    JobsChannel.broadcast_to(
-      self.user,
-      event: 'JOB_PROGRESS',
-      type: self.job_type,
-      project_id: self.project_id,
-      import_id: self.import_id
-    )
+    broadcast('JOB_PROGRESS')
   end
 
   # Completes the background job and sends an event to the channel.
@@ -38,9 +26,20 @@ class BackgroundJob < ApplicationRecord
     self.status = 'COMPLETED'
     self.progress = 100
     self.save!
+    broadcast('JOB_COMPLETED')
+  end
+
+  private
+
+  def broadcast(event)
+    user = User.find_by(id: self.user_id)
+    unless user
+      return
+    end
+
     JobsChannel.broadcast_to(
-      self.user,
-      event: 'JOB_COMPLETED',
+      user,
+      event: event,
       type: self.job_type,
       project_id: self.project_id,
       import_id: self.import_id
