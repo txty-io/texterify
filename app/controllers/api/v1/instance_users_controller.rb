@@ -20,7 +20,7 @@ class Api::V1::InstanceUsersController < Api::V1::ApiController
   def destroy
     authorize :instance_user, :destroy?
 
-    user = User.find_by(params[:user_id])
+    user = User.find(params[:id])
 
     if user.is_superadmin
       render json: { errors: [{ code: 'SUPERADMIN_USER_CANT_BE_DELETED' }] }, status: :forbidden

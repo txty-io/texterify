@@ -50,4 +50,39 @@ RSpec.describe Api::V1::InstanceUsersController, type: :request do
       expect(body['data'][0]['attributes']['username']).to eq('Test User 2')
     end
   end
+
+  describe 'DELETE destroy' do
+    it 'has status code 403 if not logged in', :skip_before do
+      user = create(:user)
+
+      delete "/api/v1/instance/users/#{user.id}"
+
+      expect(response).to have_http_status(:forbidden)
+      expect(User.exists?(user.id)).to be(true)
+    end
+
+    it 'has status code 403 if not logged in as superadmin' do
+      delete "/api/v1/instance/users/#{@user_superadmin.id}", headers: @auth_params
+
+      expect(response).to have_http_status(:forbidden)
+      expect(User.exists?(@user_superadmin.id)).to be(true)
+    end
+
+    it 'deletes the user identified by the route id' do
+      delete "/api/v1/instance/users/#{@user.id}", headers: @auth_params_superadmin
+
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)).to eq('success' => true)
+      expect(User.exists?(@user.id)).to be(false)
+      expect(User.exists?(@user_superadmin.id)).to be(true)
+    end
+
+    it 'does not delete a superadmin' do
+      delete "/api/v1/instance/users/#{@user_superadmin.id}", headers: @auth_params_superadmin
+
+      expect(response).to have_http_status(:forbidden)
+      expect(JSON.parse(response.body)).to eq('errors' => [{ 'code' => 'SUPERADMIN_USER_CANT_BE_DELETED' }])
+      expect(User.exists?(@user_superadmin.id)).to be(true)
+    end
+  end
 end
