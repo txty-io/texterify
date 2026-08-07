@@ -77,6 +77,23 @@ RSpec.describe Api::V1::InstanceUsersController, type: :request do
       expect(User.exists?(@user_superadmin.id)).to be(true)
     end
 
+    it 'deletes the user and keeps their background jobs without a user' do
+      project = create(:project)
+      background_job = BackgroundJob.create!(
+        project: project,
+        user: @user,
+        status: 'COMPLETED',
+        progress: 100,
+        job_type: 'IMPORT_VERIFY'
+      )
+
+      delete "/api/v1/instance/users/#{@user.id}", headers: @auth_params_superadmin
+
+      expect(response).to have_http_status(:ok)
+      expect(User.exists?(@user.id)).to be(false)
+      expect(background_job.reload.user_id).to be_nil
+    end
+
     it 'does not delete a superadmin' do
       delete "/api/v1/instance/users/#{@user_superadmin.id}", headers: @auth_params_superadmin
 
