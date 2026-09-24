@@ -21,11 +21,12 @@ RSpec.describe Api::V1::TranslationsController, type: :request do
     it 'returns forbidden for a disabled project' do
       @project.update!(disabled: true)
 
-      post "/api/v1/projects/#{@project.id}/keys/#{@key.id}/translations",
+      post "/api/v1/projects/#{@project.id}/translations",
            params: {
              translation: {
                content: 'Hello world'
              },
+             key_id: @key.id,
              language_id: @language.id
            },
            headers: @auth_params,
@@ -39,11 +40,12 @@ RSpec.describe Api::V1::TranslationsController, type: :request do
 
     it 'creates a translation when a language is provided' do
       expect do
-        post "/api/v1/projects/#{@project.id}/keys/#{@key.id}/translations",
+        post "/api/v1/projects/#{@project.id}/translations",
              params: {
                translation: {
                  content: 'Hello world'
                },
+               key_id: @key.id,
                language_id: @language.id
              },
              headers: @auth_params,
@@ -58,11 +60,12 @@ RSpec.describe Api::V1::TranslationsController, type: :request do
     end
 
     it 'returns bad request when no default language is available' do
-      post "/api/v1/projects/#{@project.id}/keys/#{@key.id}/translations",
+      post "/api/v1/projects/#{@project.id}/translations",
            params: {
              translation: {
                content: 'Hello world'
-             }
+             },
+             key_id: @key.id
            },
            headers: @auth_params,
            as: :json
