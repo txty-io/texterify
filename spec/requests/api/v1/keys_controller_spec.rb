@@ -46,6 +46,17 @@ RSpec.describe Api::V1::KeysController, type: :request do
       end
     end
 
+    it 'returns forbidden for a disabled project' do
+      @project.update!(disabled: true)
+
+      get "/api/v1/projects/#{@project.id}/keys", headers: @auth_params, as: :json
+
+      expect(response).to have_http_status(:forbidden)
+      body = JSON.parse(response.body)
+      expect(body['error']).to be(true)
+      expect(body['error_type']).to eq('PROJECT_IS_DISABLED')
+    end
+
     describe 'changed_before / changed_after filtering' do
       it 'returns keys changed before a valid date' do
         get "/api/v1/projects/#{@project.id}/keys",

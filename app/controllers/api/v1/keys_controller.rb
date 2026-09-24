@@ -10,6 +10,7 @@ class Api::V1::KeysController < Api::V1::ApiController
     @project = current_user.projects.find(params[:project_id])
 
     if @project.disabled
+      skip_authorization
       render json: { error: true, error_type: 'PROJECT_IS_DISABLED' }, status: :forbidden
       false
     end
