@@ -1,17 +1,10 @@
 import { Button, Layout, List } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { Breadcrumbs } from "../../ui/Breadcrumbs";
-import VisualStudioCodeLogo from "images/visual_studio_code_logo.svg";
-import AppleLogoBlack from "images/apple_logo_black.svg";
-import AppleLogoWhite from "images/apple_logo_white.svg";
-import AndroidLogo from "images/android_logo.svg";
-import WordpressLogo from "images/wordpress_logo.svg";
-import { generalStore } from "../../stores/GeneralStore";
-import { ListContent } from "../../ui/ListContent";
-import { Routes } from "../../routing/Routes";
 import { RouteComponentProps } from "react-router";
 import { history } from "../../routing/history";
+import { Breadcrumbs } from "../../ui/Breadcrumbs";
+import { ListContent } from "../../ui/ListContent";
 
 interface IIntegration {
     key: string;
@@ -28,56 +21,6 @@ type IProps = RouteComponentProps<{ projectId: string }>;
 
 @observer
 class ProjectIntegrationsSite extends React.Component<IProps> {
-    getIntegrations() {
-        return [
-            {
-                key: "cli",
-                textLogo: "CLI",
-                name: "CLI Tool",
-                description: "Manage your translations directly from the command line.",
-                link: "https://github.com/texterify/texterify-cli"
-            },
-            /* {this.renderIntegration({
-            textLogo: "API",
-            name: "Application Programming Interface",
-            description: "Use the API.",
-            link: "https://docs.texterify.com/api/basics"
-        })} */
-            {
-                key: "vsc",
-                logo: VisualStudioCodeLogo,
-                name: "Visual Studio Code Extension",
-                description: "Add and download translations right from your editor.",
-                link: "https://github.com/texterify/texterify-vsc"
-            },
-            {
-                key: "android",
-                logo: AndroidLogo,
-                name: "Android SDK",
-                description: "Use the Over the Air SDK to update the translations in your apps in real-time.",
-                link: "https://github.com/texterify/texterify-android"
-            },
-            {
-                key: "ios",
-                logo: generalStore.theme === "light" ? AppleLogoBlack : AppleLogoWhite,
-                name: "iOS SDK",
-                description: "Use the Over the Air SDK to update the translations in your apps in real-time.",
-                link: "https://github.com/texterify/texterify-ios"
-            },
-            {
-                key: "wordpress",
-                logo: WordpressLogo,
-                name: "WordPress",
-                description: "Synchonize content between Texterify and WordPress with ease.",
-                link: Routes.DASHBOARD.PROJECT_INTEGRATIONS_WORDPRESS_SETTINGS_RESOLVER({
-                    projectId: this.props.match.params.projectId
-                }),
-                hasSubpage: true,
-                buttonText: "Settings"
-            }
-        ] as IIntegration[];
-    }
-
     openIntegration(integration: IIntegration) {
         if (integration.hasSubpage) {
             history.push(integration.link);
@@ -137,7 +80,15 @@ class ProjectIntegrationsSite extends React.Component<IProps> {
                     <div style={{ display: "flex", flexWrap: "wrap" }}>
                         <List
                             size="default"
-                            dataSource={this.getIntegrations().sort((a, b) => {
+                            dataSource={[
+                                {
+                                    key: "cli",
+                                    textLogo: "CLI",
+                                    name: "CLI Tool",
+                                    description: "Manage your translations directly from the command line.",
+                                    link: "https://github.com/texterify/texterify-cli"
+                                }
+                            ].sort((a, b) => {
                                 return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
                             })}
                             style={{ flexGrow: 1 }}
