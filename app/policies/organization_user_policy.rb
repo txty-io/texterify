@@ -33,9 +33,22 @@ class OrganizationUserPolicy
   private
 
   def higher_role_or_both_highest
-    is_higher = ROLE_PRIORITY_MAP[organization_user_role.to_sym] > ROLE_PRIORITY_MAP[organization_user.role.to_sym]
+    if organization_user_role == ROLE_OWNER
+      return true
+    end
 
-    is_higher || organization_user_role == ROLE_OWNER
+    is_higher_than_old_role =
+      if organization_user.role_before_update.nil?
+        true
+      else
+        ROLE_PRIORITY_MAP[organization_user_role.to_sym] >
+          ROLE_PRIORITY_MAP[organization_user.role_before_update.to_sym]
+      end
+
+    is_higher_than_new_role =
+      ROLE_PRIORITY_MAP[organization_user_role.to_sym] > ROLE_PRIORITY_MAP[organization_user.role.to_sym]
+
+    is_higher_than_old_role && is_higher_than_new_role
   end
 
   def organization_user_role

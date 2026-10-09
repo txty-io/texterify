@@ -8,6 +8,8 @@ class OrganizationUser < ApplicationRecord
   belongs_to :user
   belongs_to :organization
 
+  attr_accessor :role_before_update
+
   private
 
   def update_subscription_users

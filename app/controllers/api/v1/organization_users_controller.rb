@@ -113,6 +113,13 @@ class Api::V1::OrganizationUsersController < Api::V1::ApiController
     end
 
     old_role = organization_user.role
+
+    # Store the old role before updating to the new role.
+    # This is used to check if the role has changed and to enforce role-related constraints.
+    if organization_user.persisted?
+      organization_user.role_before_update = old_role
+    end
+
     organization_user.role = params[:role]
 
     authorize organization_user
